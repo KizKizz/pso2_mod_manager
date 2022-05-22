@@ -1,12 +1,31 @@
+// ignore_for_file: unnecessary_new
+
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/custom_bottom_appbar.dart';
+import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:pso2_mod_manager/popup_handlers.dart';
+
+String binDirPath = '';
+String mainModDirPath = '';
+String modsDirPath = '';
+String backupDirPath = '';
+String checksumDirPath = '';
 
 void main() {
   runApp(const MyApp());
+  doWhenWindowReady(() {
+    const initialSize = Size(1280, 720);
+    appWindow.minSize = const Size(852, 480);
+    appWindow.size = initialSize;
+    appWindow.alignment = Alignment.center;
+    appWindow.title = 'PSO2NGS Mod Manager';
+    appWindow.show();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -36,138 +55,86 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String binDirPath = '';
-  String mainModDirPath = '';
-  String modsDirPath = '';
-  String backupDirPath = '';
-  String checksumDirPath = '';
+  bool isDataLoaded = false;
 
   @override
   void initState() {
-    super.initState();
     dirPathCheck();
+    super.initState();
   }
 
   void dirPathCheck() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    //prefs.clear();
     binDirPath = prefs.getString('binDirPath') ?? '';
     if (binDirPath.isEmpty) {
-      _binDirDialog();
+      getDirPath();
+    } else {
+      //Fill in paths
+      mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
+      modsDirPath = '$mainModDirPath\\Mods';
+      backupDirPath = '$mainModDirPath\\Backups';
+      checksumDirPath = '$mainModDirPath\\Checksum';
+      //Check if exist, create dirs
+      if (!Directory(mainModDirPath).existsSync()) {
+        await Directory(mainModDirPath).create(recursive: true);
+      }
+      if (!Directory(modsDirPath).existsSync()) {
+        await Directory(modsDirPath).create(recursive: true);
+      }
+      if (!Directory(backupDirPath).existsSync()) {
+        await Directory(backupDirPath).create(recursive: true);
+      }
+      if (!Directory(checksumDirPath).existsSync()) {
+        await Directory(checksumDirPath).create(recursive: true);
+      }
+      setState(() {
+        isDataLoaded = true;
+      });
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          //title: Text(widget.title),
-          ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+  void getDirPath() {
+    const CustomPopups().binDirDialog(context);
   }
 
-  //bin Folder Not Found Popup
-  _binDirDialog() async {
-    await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return _SystemPadding(
-            child: AlertDialog(
-              titlePadding: const EdgeInsets.only(top: 10),
-              title: const Center(
-                child: Text('Error',
-                    style: TextStyle(fontWeight: FontWeight.w700)),
+  @override
+  Widget build(BuildContext context) {
+    return !isDataLoaded
+        ? const CircularProgressIndicator()
+        : Scaffold(
+            body: WindowBorder(
+              color: Colors.black,
+              width: 1,
+              child: Column(
+                children: [
+                  WindowTitleBarBox(
+                    child: Container(
+                      color: Theme.of(context).canvasColor,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: MoveWindow(
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: const Text('PSO2NGS Mod Manager',
+                                style: TextStyle(fontWeight: FontWeight.w600),)
+                              ),
+                            )
+                          ),
+                          const WindowButtons(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const HomePage(),
+                ],
               ),
-              contentPadding: const EdgeInsets.only(left: 16, right: 16),
-              content: const SizedBox(
-                  //width: 300,
-                  height: 70,
-                  child: Center(
-                      child: Text(
-                          'pso2_bin\'s directory path not found. Select now?'))),
-              actions: <Widget>[
-                ElevatedButton(
-                    child: const Text('Exit'),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await windowManager.destroy();
-                    }),
-                ElevatedButton(
-                    onPressed: (() async {
-                      Navigator.of(context).pop();
-                      String? binDirTempPath = '';
-                      binDirTempPath =
-                          await FilePicker.platform.getDirectoryPath(
-                        dialogTitle: 'Select \'pso2_bin\' Directory Path',
-                        lockParentWindow: true,
-                      );
-
-                      if (binDirTempPath == null) {
-                        _binDirDialog();
-                      } else {
-                        List<String> getCorrectPath =
-                            binDirTempPath.toString().split('\\');
-                        //print(getCorrectPath.last);
-                        if (getCorrectPath.last == 'pso2_bin') {
-                          binDirPath = binDirTempPath.toString();
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setString('binDirPath', binDirPath);
-                          //Fill in paths
-                          mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
-                          modsDirPath = '$mainModDirPath\\Mods';
-                          backupDirPath = '$mainModDirPath\\Backups';
-                          checksumDirPath = '$mainModDirPath\\Checksum';
-                          //Check if exist, create dirs
-                          if (!Directory(mainModDirPath).existsSync()) {
-                            await Directory(mainModDirPath)
-                                .create(recursive: true);
-                          }
-                          if (!Directory(modsDirPath).existsSync()) {
-                            await Directory(modsDirPath)
-                                .create(recursive: true);
-                          }
-                          if (!Directory(backupDirPath).existsSync()) {
-                            await Directory(backupDirPath)
-                                .create(recursive: true);
-                          }
-                          if (!Directory(checksumDirPath).existsSync()) {
-                            await Directory(checksumDirPath)
-                                .create(recursive: true);
-                          }
-                        } else {
-                          binDirTempPath =
-                              await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select \'pso2_bin\' Directory Path',
-                            lockParentWindow: true,
-                          );
-                        }
-                      }
-                    }),
-                    child: const Text('Yes'))
-              ],
             ),
+            //bottomNavigationBar: const CustomBottomAppBar(
+                //fabLocation: _fabLocation,
+                //shape: _showNotch ? const CircularNotchedRectangle() : null,
+              //  ),
           );
-        });
-  }
-}
-
-class _SystemPadding extends StatelessWidget {
-  final Widget child;
-
-  const _SystemPadding({Key? key, required this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    return AnimatedContainer(
-        padding: mediaQuery.viewInsets,
-        duration: const Duration(milliseconds: 300),
-        child: child);
   }
 }
