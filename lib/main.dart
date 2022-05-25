@@ -1,20 +1,26 @@
 // ignore_for_file: unnecessary_new
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/contents_helper.dart';
 import 'package:pso2_mod_manager/custom_bottom_appbar.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
+import 'package:path/path.dart' as p;
 
 String binDirPath = '';
 String mainModDirPath = '';
 String modsDirPath = '';
 String backupDirPath = '';
 String checksumDirPath = '';
+Future? filesData = getDataFromModDirsFuture(modsDirPath);
+var dataStreamController = StreamController();
 
 void main() {
   runApp(const MyApp());
@@ -57,9 +63,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool isDataLoaded = false;
 
+  final imgStream = StreamController();
+
   @override
   void initState() {
     dirPathCheck();
+
     super.initState();
   }
 
@@ -100,6 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final Stream itemCategory = (() {
+      dataStreamController = StreamController(
+        onListen: () async {
+          dataStreamController.add(getDataFromModDirs(modsDirPath));
+          //await dataStreamController.close();
+        },
+      );
+      return dataStreamController.stream;
+    })();
+
     return !isDataLoaded
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -114,27 +133,80 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: MoveWindow(
-                              child: Container(
+                              child: MoveWindow(
+                            child: Container(
                                 padding: const EdgeInsets.only(left: 10),
-                                child: const Text('PSO2NGS Mod Manager',
-                                style: TextStyle(fontWeight: FontWeight.w600),)
-                              ),
-                            )
-                          ),
+                                child: const Text(
+                                  'PSO2NGS Mod Manager',
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                )),
+                          )),
                           const WindowButtons(),
                         ],
                       ),
                     ),
                   ),
-                  const HomePage(),
+                  FutureBuilder(
+                      future: filesData,
+                      builder: (
+                        BuildContext context,
+                        AsyncSnapshot snapshot,
+                      ) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          if (snapshot.hasError) {
+                            return const Text('Error');
+                          } else {
+                            mainDataList = snapshot.data;
+                            categoryList = getCategoryList(mainDataList);
+                            cateList = categoryAdder(mainDataList);
+
+                            //Mod Item
+                            for (var cate in cateList) {
+                              final filesList =
+                                  cate.categorySubList.whereType<File>();
+                              List<ModFile> filesInCate = [];
+                              for (var file in filesList) {
+                                final fileExtension = p.extension(file.path);
+                                List<File> imgList = [];
+                                if (fileExtension == '.jpg' ||
+                                    fileExtension == '.png') {
+                                  imgList.add(file);
+                                }
+                                if (fileExtension == '') {
+                                  ModFile newMod = ModFile(
+                                      file.path,
+                                      getDirHeader(file.parent),
+                                      getFileName(file),
+                                      getDirHeader(Directory(
+                                          getRootParentDirPath(
+                                              file, cate.categoryName))),
+                                      getRootParentDirPath(
+                                          file, cate.categoryName),
+                                      cate.categoryName,
+                                      imgList,
+                                      false,
+                                      true);
+                                  filesInCate.add(newMod);
+                                }
+                              }
+                              modFilesList.add(filesInCate);
+                            }
+
+                            return const HomePage();
+                          }
+                        }
+                      })
                 ],
               ),
             ),
             //bottomNavigationBar: const CustomBottomAppBar(
-                //fabLocation: _fabLocation,
-                //shape: _showNotch ? const CircularNotchedRectangle() : null,
-              //  ),
+            //fabLocation: _fabLocation,
+            //shape: _showNotch ? const CircularNotchedRectangle() : null,
+            //  ),
           );
   }
 }

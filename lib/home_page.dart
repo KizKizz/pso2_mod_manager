@@ -5,11 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:pso2_mod_manager/contents_helper.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/scroll_controller.dart';
 
-List<Directory> modCatDirsList = getDirsInParentDir(Directory(modsDirPath));
+List<Directory> categoryList = [];
+List<ModCategory> cateList = [];
+List<List<ModFile>> modFilesList = [];
+List<List<String>> modFileHeadersList = [];
+List<String> categoryNames = [];
+List<List<Directory>> itemsLists = [];
+List<List<String>> itemNames = [];
+List<List<Directory>> itemsInItemsList = [];
+
 List<List<Directory>> modItemDirsList = List.generate(
-    modCatDirsList.length, (i) => getDirsInParentDir(modCatDirsList[i]));
-List<String> modCatDirHeadersList = getHeadersFromList(modCatDirsList);
+    categoryList.length, (i) => getDirsInParentDir(categoryList[i]));
+List<String> modCatDirHeadersList = getHeadersFromList(categoryList);
 List<Directory> modDirsList = [];
 List<File> modPreviewImgList = [];
 Future? futureItemsGet = futureGetDirsInParentDir(Directory(modsDirPath));
@@ -28,14 +37,14 @@ class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _verticalViewsController =
       MultiSplitViewController(areas: [Area(weight: 0.5)]);
   String modsViewAppBarName = '';
-  List<int> selectedIndex = List.generate(modCatDirsList.length, (index) => -1);
+  List<int> selectedIndex = List.generate(categoryList.length, (index) => -1);
   final CarouselController imgSliderController = CarouselController();
 
   int modNameCatSelected = -1;
   bool isModSelected = false;
   bool isPreviewImgFound = false;
   int currentImg = 0;
-  
+
   bool isSameImgData = false;
 
   @override
@@ -69,13 +78,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget itemsView() {
-    List<List<List<Directory>>> iVDirsList = List.generate(
-        modItemDirsList.length,
-        (index) => getDirsInParentDirs(modItemDirsList[index]));
-
-    List<List<String>> iVDirHeadersList = List.generate(modItemDirsList.length,
-        (index) => getHeadersFromList(modItemDirsList[index]));
-
     return Column(
       children: [
         AppBar(
@@ -88,21 +90,21 @@ class _HomePageState extends State<HomePage> {
         ),
         Expanded(
           child: SingleChildScrollView(
-            controller: ScrollController(),
+            controller: AdjustableScrollController(80),
             child: ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: modCatDirsList.length,
+              itemCount: cateList.length,
               itemBuilder: (context, index) {
                 return ExpansionTile(
                   initiallyExpanded: false,
                   onExpansionChanged: (newState) {
                     setState(() {
                       if (!newState) {
-                        selectedIndex = List.filled(modCatDirsList.length, -1);
+                        selectedIndex = List.filled(categoryList.length, -1);
                         isPreviewImgFound = false;
                       } else {
-                        selectedIndex = List.filled(modCatDirsList.length, -1);
+                        selectedIndex = List.filled(categoryList.length, -1);
                         isPreviewImgFound = false;
                       }
                     });
@@ -110,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                   title: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(modCatDirHeadersList[index]),
+                      Text(cateList[index].categoryName),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, top: 3),
                         child: Container(
@@ -122,36 +124,45 @@ class _HomePageState extends State<HomePage> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5.0)),
                             ),
-                            child:
-                                Text('${modItemDirsList[index].length} Items',
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                    ))),
+                            child: Text(
+                                '${getSubDirsList(Directory(cateList[index].path)).length} Items',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                ))),
                       ),
                     ],
                   ),
                   children: [
-                    for (int i = 0; i < modItemDirsList[index].length; i++)
+                    for (int i = 0; i < cateList[index].numOfItems; i++)
                       Ink(
                         color: selectedIndex[index] == i
                             ? Theme.of(context).primaryColorLight
                             : Colors.transparent,
                         child: ListTile(
-                          leading: Image.file(
-                              itemsDirListIcon(modItemDirsList[index][i].path)),
-                          title: Text(iVDirHeadersList[index][i]),
+                          leading:
+                              Image.file(cateList[index].imageIcons[i].first),
+                          title: Text(cateList[index].itemNames[i]),
                           subtitle: Text(
-                              'Mods: ${iVDirsList[index][i].length} | Applied: 0'),
+                              'Mods: ${cateList[index].numOfMods[i]} | Applied: 0'),
                           onTap: () {
                             setState(() {
+                              getDataFromModDirsFuture(modsDirPath);
+                              cateList.add(ModCategory(
+                                  'Test',
+                                  'path',
+                                  ['Testname'],
+                                  [[]],
+                                  1,
+                                  [1],
+                                  []));
                               selectedIndex =
-                                  List.filled(modCatDirsList.length, -1);
+                                  List.filled(categoryList.length, -1);
                               selectedIndex[index] = i;
                               modNameCatSelected = -1;
-                              modsViewAppBarName = iVDirHeadersList[index][i];
-                              futureItemsGet = futureGetDirsInParentDir(
-                                  modItemDirsList[index][i]);
-                              isModSelected = true;
+                              modsViewAppBarName = cateList[index].itemNames[i];
+                              // futureItemsGet = futureGetDirsInParentDir(
+                              //     itemsInItemsList[index][i]);
+                              //isModSelected = true;
                               isPreviewImgFound = false;
                             });
                           },
@@ -227,97 +238,109 @@ class _HomePageState extends State<HomePage> {
                                             header)
                                         .toList());
                                   }
-                                  return Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                        side: BorderSide(
-                                            width: 1,
-                                            color: Theme.of(context)
-                                                .primaryColor)),
-                                    child: ExpansionTile(
-                                        //key: Key(index.toString()),
-                                        // initiallyExpanded:
-                                        //     index == modNameCatSelected,
-                                        // onExpansionChanged: ((newState) {
-                                        //   if (newState) {
-                                        //     setState(() {
-                                        //       //const Duration(seconds: 20000);
-                                        //       modNameCatSelected = index;
-                                        //     });
-                                        //   }
-                                        //   // else {
-                                        //   //   setState(() {
-                                        //   //     modNameCatSelected = -1;
-                                        //   //   });
-                                        //   // }
-                                        // }),
-                                        title: Text(fileHeaders),
-                                        onExpansionChanged: (value) {
-                                          setState(() {
-                                            if (value) {
-                                              futureImagesGet =
-                                                  futureGetImgInDir(Directory(
-                                                      modDirsList[index].path));
-                                              isPreviewImgFound = true;
-                                            } else {
-                                              isPreviewImgFound = false;
-                                            }
-                                          });
-                                        },
-                                        children: [
-                                          for (int i = 0;
-                                              i < modHeaders.length;
-                                              i++)
-                                            ExpansionTile(
-                                                initiallyExpanded:
-                                                    fileHeaders ==
-                                                        modHeaders[i],
-                                                onExpansionChanged: (value) {
-                                                  setState(() {
-                                                    futureImagesGet =
-                                                        futureGetImgInDir(
-                                                            Directory(
-                                                                modsByType[i][0]
-                                                                    .parent
-                                                                    .path));
-                                                    isPreviewImgFound = true;
-                                                    // print(
-                                                    //     '${modsByType[i][0]} \n');
-                                                  });
-                                                },
-                                                title: Text(modHeaders[i]),
-                                                children: [
-                                                  for (int n = 0;
-                                                      n < modsByType[i].length;
-                                                      n++)
-                                                    ListTile(
-                                                      title: Text(
-                                                          getFileHeadersFromList(
-                                                              modsByType[
-                                                                  i])[n]),
-                                                      subtitle: modsViewAppBarName !=
-                                                                  getMoreParentHeadersFromFilesList(
-                                                                          modsByType[
-                                                                              i])[
-                                                                      n] &&
-                                                              modHeaders[i] !=
-                                                                  getMoreParentHeadersFromFilesList(
-                                                                          modsByType[
-                                                                              i])[
-                                                                      n] &&
-                                                              fileHeaders !=
-                                                                  getMoreParentHeadersFromFilesList(
-                                                                      modsByType[
-                                                                          i])[n]
-                                                          ? Text(
-                                                              getMoreParentHeadersFromFilesList(
-                                                                  modsByType[
-                                                                      i])[n])
-                                                          : null,
-                                                    )
-                                                ])
-                                        ]),
+                                  return InkWell(
+                                    onTap: () {},
+                                    onHover: (value) {
+                                      setState(() {
+                                        if (value) {
+                                          futureImagesGet = futureGetImgInDir(
+                                              Directory(
+                                                  modDirsList[index].path));
+                                          isPreviewImgFound = true;
+                                        }
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                          side: BorderSide(
+                                              width: 1,
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                      child: ExpansionTile(
+                                          //key: Key(index.toString()),
+                                          // initiallyExpanded:
+                                          //     index == modNameCatSelected,
+                                          // onExpansionChanged: ((newState) {
+                                          //   if (newState) {
+                                          //     setState(() {
+                                          //       //const Duration(seconds: 20000);
+                                          //       modNameCatSelected = index;
+                                          //     });
+                                          //   }
+                                          //   // else {
+                                          //   //   setState(() {
+                                          //   //     modNameCatSelected = -1;
+                                          //   //   });
+                                          //   // }
+                                          // }),
+                                          title: Text(fileHeaders),
+                                          onExpansionChanged: (value) {
+                                            setState(() {
+                                              if (value) {
+                                                futureImagesGet =
+                                                    futureGetImgInDir(Directory(
+                                                        modDirsList[index]
+                                                            .path));
+                                                isPreviewImgFound = true;
+                                              } else {
+                                                isPreviewImgFound = false;
+                                              }
+                                            });
+                                          },
+                                          children: [
+                                            for (int i = 0;
+                                                i < modHeaders.length;
+                                                i++)
+                                              ExpansionTile(
+                                                  initiallyExpanded:
+                                                      fileHeaders ==
+                                                          modHeaders[i],
+                                                  onExpansionChanged: (value) {
+                                                    setState(() {
+                                                      futureImagesGet =
+                                                          futureGetImgInDir(
+                                                              Directory(
+                                                                  modsByType[i]
+                                                                          [0]
+                                                                      .parent
+                                                                      .path));
+                                                      isPreviewImgFound = true;
+                                                      // print(
+                                                      //     '${modsByType[i][0]} \n');
+                                                    });
+                                                  },
+                                                  title: Text(modHeaders[i]),
+                                                  children: [
+                                                    for (int n = 0;
+                                                        n <
+                                                            modsByType[i]
+                                                                .length;
+                                                        n++)
+                                                      ListTile(
+                                                        title: Text(
+                                                            getFileHeadersFromList(
+                                                                modsByType[
+                                                                    i])[n]),
+                                                        subtitle: modsViewAppBarName != getMoreParentHeadersFromFilesList(modsByType[i])[n] &&
+                                                                modHeaders[i] !=
+                                                                    getMoreParentHeadersFromFilesList(
+                                                                            modsByType[i])[
+                                                                        n] &&
+                                                                fileHeaders !=
+                                                                    getMoreParentHeadersFromFilesList(
+                                                                            modsByType[i])[
+                                                                        n]
+                                                            ? Text(
+                                                                getMoreParentHeadersFromFilesList(
+                                                                    modsByType[
+                                                                        i])[n])
+                                                            : null,
+                                                      )
+                                                  ])
+                                          ]),
+                                    ),
                                   );
                                 }));
                       }
@@ -376,50 +399,48 @@ class _HomePageState extends State<HomePage> {
                       return Column(
                         children: [
                           //if (isPreviewImgFound && !isSameImgData)
-                            Expanded(
-                              child: CarouselSlider(
-                                items: previewImageSliders,
-                                options: CarouselOptions(
-                                    autoPlay: previewImageSliders.length > 1,
-                                    reverse: true,
-                                    viewportFraction: 1,
-                                    enlargeCenterPage: true,
-                                    aspectRatio: 2.0,
-                                    onPageChanged: (index, reason) {
-                                      setState(() {
-                                        currentImg = index;
-                                      });
-                                    }),
-                              ),
+                          Expanded(
+                            child: CarouselSlider(
+                              items: previewImageSliders,
+                              options: CarouselOptions(
+                                  autoPlay: previewImageSliders.length > 1,
+                                  reverse: true,
+                                  viewportFraction: 1,
+                                  enlargeCenterPage: true,
+                                  aspectRatio: 2.0,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      currentImg = index;
+                                    });
+                                  }),
                             ),
+                          ),
                           //if (isPreviewImgFound && !isSameImgData)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: modPreviewImgList
-                                  .asMap()
-                                  .entries
-                                  .map((entry) {
-                                return GestureDetector(
-                                  // onTap: () => imgSliderController
-                                  //     .animateToPage(entry.key),
-                                  child: Container(
-                                    width: 7.0,
-                                    height: 7.0,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 4.0),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: (Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? Colors.white
-                                                : Colors.black)
-                                            .withOpacity(currentImg == entry.key
-                                                ? 0.9
-                                                : 0.4)),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:
+                                modPreviewImgList.asMap().entries.map((entry) {
+                              return GestureDetector(
+                                // onTap: () => imgSliderController
+                                //     .animateToPage(entry.key),
+                                child: Container(
+                                  width: 7.0,
+                                  height: 7.0,
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 4.0, horizontal: 4.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: (Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.black)
+                                          .withOpacity(currentImg == entry.key
+                                              ? 0.9
+                                              : 0.4)),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ],
                       );
                     }
