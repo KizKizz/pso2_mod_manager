@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void dirPathCheck() async {
     final prefs = await SharedPreferences.getInstance();
-    //prefs.clear();
+    prefs.clear();
     binDirPath = prefs.getString('binDirPath') ?? '';
     if (binDirPath.isEmpty) {
       getDirPath();
@@ -109,16 +109,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Stream itemCategory = (() {
-      dataStreamController = StreamController(
-        onListen: () async {
-          dataStreamController.add(getDataFromModDirs(modsDirPath));
-          //await dataStreamController.close();
-        },
-      );
-      return dataStreamController.stream;
-    })();
-
     return !isDataLoaded
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -155,7 +145,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                              child: SizedBox(
+                                width: 200,
+                                height: 200,
+                                child: Text('data')
+                                //CircularProgressIndicator()
+                                ));
                         } else {
                           if (snapshot.hasError) {
                             return const Text('Error');

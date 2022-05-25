@@ -146,15 +146,9 @@ class _HomePageState extends State<HomePage> {
                               'Mods: ${cateList[index].numOfMods[i]} | Applied: 0'),
                           onTap: () {
                             setState(() {
-                              getDataFromModDirsFuture(modsDirPath);
-                              cateList.add(ModCategory(
-                                  'Test',
-                                  'path',
-                                  ['Testname'],
-                                  [[]],
-                                  1,
-                                  [1],
-                                  []));
+                              filesData = getDataFromModDirsFuture(modsDirPath);
+                              cateList = categoryAdder(mainDataList);
+                              
                               selectedIndex =
                                   List.filled(categoryList.length, -1);
                               selectedIndex[index] = i;
