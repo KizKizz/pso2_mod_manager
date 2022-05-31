@@ -4,17 +4,20 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:pso2_mod_manager/contents_helper.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
 
 List<Directory> categoryList = [];
 List<ModCategory> cateList = [];
+Future? modFilesListGet;
 List<List<ModFile>> modFilesList = [];
-List<List<String>> modFileHeadersList = [];
 List<String> categoryNames = [];
 List<List<Directory>> itemsLists = [];
 List<List<String>> itemNames = [];
 List<List<Directory>> itemsInItemsList = [];
+bool originalFileFound = false;
+bool backupFileFound = false;
 
 List<List<Directory>> modItemDirsList = List.generate(
     categoryList.length, (i) => getDirsInParentDir(categoryList[i]));
@@ -42,10 +45,8 @@ class _HomePageState extends State<HomePage> {
 
   int modNameCatSelected = -1;
   bool isModSelected = false;
-  bool isPreviewImgFound = false;
   int currentImg = 0;
-
-  bool isSameImgData = false;
+  bool isPreviewImgsOn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +103,8 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       if (!newState) {
                         selectedIndex = List.filled(categoryList.length, -1);
-                        isPreviewImgFound = false;
                       } else {
                         selectedIndex = List.filled(categoryList.length, -1);
-                        isPreviewImgFound = false;
                       }
                     });
                   },
@@ -124,8 +123,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5.0)),
                             ),
-                            child: Text(
-                                '${getSubDirsList(Directory(cateList[index].path)).length} Items',
+                            child: Text('${cateList[index].numOfItems} Items',
                                 style: const TextStyle(
                                   fontSize: 13,
                                 ))),
@@ -136,28 +134,33 @@ class _HomePageState extends State<HomePage> {
                     for (int i = 0; i < cateList[index].numOfItems; i++)
                       Ink(
                         color: selectedIndex[index] == i
-                            ? Theme.of(context).primaryColorLight
+                            ? Theme.of(context).highlightColor
                             : Colors.transparent,
                         child: ListTile(
                           leading:
                               Image.file(cateList[index].imageIcons[i].first),
                           title: Text(cateList[index].itemNames[i]),
                           subtitle: Text(
-                              'Mods: ${cateList[index].numOfMods[i]} | Applied: 0'),
+                              'Mods: ${cateList[index].numOfMods[i]} | Applied: ${cateList[index].numOfApplied[i]}'),
                           onTap: () {
                             setState(() {
-                              filesData = getDataFromModDirsFuture(modsDirPath);
-                              cateList = categoryAdder(mainDataList);
-                              
+                              //filesData = getDataFromModDirsFuture(modsDirPath);
+                              //   cateList = categoryAdder(mainDataList);
+                              isPreviewImgsOn = false;
+                              modFilesListGet = modFileAdder(
+                                  cateList[index],
+                                  cateList[index].itemNames[i],
+                                  cateList[index].numOfMods[i]);
+                              //print('${cateList[index]} - ${cateList[index].itemNames[i]}');
+
                               selectedIndex =
                                   List.filled(categoryList.length, -1);
                               selectedIndex[index] = i;
                               modNameCatSelected = -1;
                               modsViewAppBarName = cateList[index].itemNames[i];
-                              // futureItemsGet = futureGetDirsInParentDir(
-                              //     itemsInItemsList[index][i]);
-                              //isModSelected = true;
-                              isPreviewImgFound = false;
+                              //   // futureItemsGet = futureGetDirsInParentDir(
+                              //   //     itemsInItemsList[index][i]);
+                              isModSelected = true;
                             });
                           },
                         ),
@@ -182,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   modsViewAppBarName.isEmpty
                       ? const Text('Available Mods')
-                      : Text('Mods for $modsViewAppBarName'),
+                      : Text(modsViewAppBarName),
                 ],
               )),
           backgroundColor: Theme.of(context).canvasColor,
@@ -192,7 +195,7 @@ class _HomePageState extends State<HomePage> {
         if (isModSelected)
           Expanded(
               child: FutureBuilder(
-                  future: futureItemsGet,
+                  future: modFilesListGet,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot snapshot,
@@ -203,143 +206,169 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.hasError) {
                         return const Text('Error');
                       } else {
-                        modDirsList = snapshot.data;
+                        modFilesList = snapshot.data;
                         return SingleChildScrollView(
-                            controller: ScrollController(),
+                            controller: AdjustableScrollController(80),
                             child: ListView.builder(
                                 key: Key(
                                     'builder ${modNameCatSelected.toString()}'),
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: modDirsList.length,
+                                itemCount: modFilesList.length,
                                 itemBuilder: (context, index) {
-                                  var filesFromPath =
-                                      getFilesFromPath(modDirsList[index].path);
-                                  var fileHeaders =
-                                      getHeaderFromDir(modDirsList[index]);
-                                  var modFileHeaders =
-                                      getFileHeadersFromList(filesFromPath);
-                                  var modHeaders =
-                                      getParentHeadersFromFilesList(
-                                              filesFromPath)
-                                          .toSet()
-                                          .toList();
-                                  List<List<FileSystemEntity>> modsByType = [];
-                                  for (var header in modHeaders) {
-                                    modsByType.add(filesFromPath
-                                        .where((e) =>
-                                            getParentHeaderFromFile(e) ==
-                                            header)
-                                        .toList());
-                                  }
                                   return InkWell(
-                                    onTap: () {},
-                                    onHover: (value) {
-                                      setState(() {
+                                      onTap: () {},
+                                      onHover: (value) {
                                         if (value) {
-                                          futureImagesGet = futureGetImgInDir(
-                                              Directory(
-                                                  modDirsList[index].path));
-                                          isPreviewImgFound = true;
+                                          setState(() {
+                                            isPreviewImgsOn = true;
+                                            futureImagesGet =
+                                                modFilesList[index]
+                                                    .first
+                                                    .images;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isPreviewImgsOn = false;
+                                          });
                                         }
-                                      });
-                                    },
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                          side: BorderSide(
-                                              width: 1,
-                                              color: Theme.of(context)
-                                                  .primaryColor)),
-                                      child: ExpansionTile(
-                                          //key: Key(index.toString()),
-                                          // initiallyExpanded:
-                                          //     index == modNameCatSelected,
-                                          // onExpansionChanged: ((newState) {
-                                          //   if (newState) {
-                                          //     setState(() {
-                                          //       //const Duration(seconds: 20000);
-                                          //       modNameCatSelected = index;
-                                          //     });
-                                          //   }
-                                          //   // else {
-                                          //   //   setState(() {
-                                          //   //     modNameCatSelected = -1;
-                                          //   //   });
-                                          //   // }
-                                          // }),
-                                          title: Text(fileHeaders),
-                                          onExpansionChanged: (value) {
-                                            setState(() {
-                                              if (value) {
-                                                futureImagesGet =
-                                                    futureGetImgInDir(Directory(
-                                                        modDirsList[index]
-                                                            .path));
-                                                isPreviewImgFound = true;
-                                              } else {
-                                                isPreviewImgFound = false;
-                                              }
-                                            });
-                                          },
-                                          children: [
-                                            for (int i = 0;
-                                                i < modHeaders.length;
-                                                i++)
-                                              ExpansionTile(
-                                                  initiallyExpanded:
-                                                      fileHeaders ==
-                                                          modHeaders[i],
-                                                  onExpansionChanged: (value) {
-                                                    setState(() {
-                                                      futureImagesGet =
-                                                          futureGetImgInDir(
-                                                              Directory(
-                                                                  modsByType[i]
-                                                                          [0]
-                                                                      .parent
-                                                                      .path));
-                                                      isPreviewImgFound = true;
-                                                      // print(
-                                                      //     '${modsByType[i][0]} \n');
-                                                    });
-                                                  },
-                                                  title: Text(modHeaders[i]),
-                                                  children: [
-                                                    for (int n = 0;
-                                                        n <
-                                                            modsByType[i]
-                                                                .length;
-                                                        n++)
-                                                      ListTile(
-                                                        title: Text(
-                                                            getFileHeadersFromList(
-                                                                modsByType[
-                                                                    i])[n]),
-                                                        subtitle: modsViewAppBarName != getMoreParentHeadersFromFilesList(modsByType[i])[n] &&
-                                                                modHeaders[i] !=
-                                                                    getMoreParentHeadersFromFilesList(
-                                                                            modsByType[i])[
-                                                                        n] &&
-                                                                fileHeaders !=
-                                                                    getMoreParentHeadersFromFilesList(
-                                                                            modsByType[i])[
-                                                                        n]
-                                                            ? Text(
-                                                                getMoreParentHeadersFromFilesList(
-                                                                    modsByType[
-                                                                        i])[n])
-                                                            : null,
-                                                      )
-                                                  ])
-                                          ]),
-                                    ),
-                                  );
+                                      },
+                                      child: Card(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(5.0)),
+                                              side: BorderSide(
+                                                  width: 1,
+                                                  color: Theme.of(context)
+                                                      .primaryColor)),
+                                          child: ExpansionTile(
+                                            initiallyExpanded: true,
+                                            title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                      modFilesList[index]
+                                                          .first
+                                                          .iceParent),
+                                                ),
+                                                if (modFilesList[index].length >
+                                                    1)
+                                                  SizedBox(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child: MaterialButton(
+                                                      onPressed: (() {
+                                                        setState(() {});
+                                                      }),
+                                                      child: Icon(
+                                                          Icons
+                                                              .add_circle_outline_outlined,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                            children: [
+                                              for (int i = 0;
+                                                  i <
+                                                      modFilesList[index]
+                                                          .length;
+                                                  i++)
+                                                InkWell(
+                                                  // onHover: (value) {
+                                                  //   if (value &&
+                                                  //       modPreviewImgList.indexWhere((e) =>
+                                                  //               e.path.contains(
+                                                  //                   modFilesList[
+                                                  //                           index]
+                                                  //                       .first
+                                                  //                       .iceParent)) ==
+                                                  //           -1) {
+                                                  //     setState(() {
+                                                  //       isPreviewImgsOn = true;
+                                                  //       futureImagesGet =
+                                                  //           modFilesList[index]
+                                                  //                   [i]
+                                                  //               .images;
+                                                  //     });
+                                                  //   }
+                                                  // },
+                                                  child: ListTile(
+                                                    title: Text(
+                                                        modFilesList[index][i]
+                                                            .iceName),
+                                                    //subtitle: Text(modFilesList[index][i].icePath),
+                                                    trailing: SizedBox(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child:
+                                                          modFilesList[index][i]
+                                                                  .isApplied
+                                                              ? MaterialButton(
+                                                                  onPressed:
+                                                                      (() {
+                                                                    setState(
+                                                                        () {
+                                                                      modsRemover([
+                                                                        modFilesList[
+                                                                            index][i]
+                                                                      ]);
+                                                                      if (!backupFileFound) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(SnackBar(
+                                                                          duration:
+                                                                              const Duration(seconds: 2),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content:
+                                                                              Text('Backup file of "${modFilesList[index][i].modName} > ${modFilesList[index][i].iceParent} > ${modFilesList[index][i].iceName}" not found'),
+                                                                        ));
+                                                                      }
+                                                                    });
+                                                                  }),
+                                                                  child: const Icon(
+                                                                      Icons
+                                                                          .remove_outlined),
+                                                                )
+                                                              : MaterialButton(
+                                                                  onPressed:
+                                                                      (() {
+                                                                    setState(
+                                                                        () {
+                                                                      singleModAdder(
+                                                                          [modFilesList[index]
+                                                                              [
+                                                                              i]]);
+                                                                      if (!originalFileFound) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(SnackBar(
+                                                                          duration:
+                                                                              const Duration(seconds: 2),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content:
+                                                                              Text('Original file of "${modFilesList[index][i].modName} > ${modFilesList[index][i].iceParent} > ${modFilesList[index][i].iceName}" not found'),
+                                                                        ));
+                                                                      }
+                                                                    });
+                                                                  }),
+                                                                  child: const Icon(
+                                                                      Icons
+                                                                          .add_outlined),
+                                                                ),
+                                                    ),
+                                                  ),
+                                                )
+                                            ],
+                                          )));
                                 }));
                       }
                     }
-                  })),
+                  }))
       ],
     );
   }
@@ -355,91 +384,87 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Theme.of(context).primaryColor,
           toolbarHeight: 30,
         ),
-        Expanded(
-            child: FutureBuilder(
-                future: futureImagesGet,
-                builder: (
-                  BuildContext context,
-                  AsyncSnapshot snapshot,
-                ) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    if (snapshot.hasError) {
-                      return const Text('Error');
+        if (isPreviewImgsOn)
+          Expanded(
+              child: FutureBuilder(
+                  future: futureImagesGet,
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot snapshot,
+                  ) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
                     } else {
-                      if (snapshot.data != modPreviewImgList) {
-                        isSameImgData = false;
-                        modPreviewImgList = snapshot.data;
+                      if (snapshot.hasError) {
+                        return const Text('Error');
                       } else {
-                        isSameImgData = true;
-                      }
-                      //print(modPreviewImgList.toString());
-                      List<Widget> previewImageSliders = modPreviewImgList
-                          .map((item) => Container(
-                                margin: const EdgeInsets.all(2.0),
-                                child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5.0)),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.file(item,
-                                            fit: BoxFit.cover, width: 1000.0),
-                                        //Text(modPreviewImgList.toString())
-                                      ],
-                                    )),
-                              ))
-                          .toList();
-                      return Column(
-                        children: [
-                          //if (isPreviewImgFound && !isSameImgData)
-                          Expanded(
-                            child: CarouselSlider(
-                              items: previewImageSliders,
-                              options: CarouselOptions(
-                                  autoPlay: previewImageSliders.length > 1,
-                                  reverse: true,
-                                  viewportFraction: 1,
-                                  enlargeCenterPage: true,
-                                  aspectRatio: 2.0,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      currentImg = index;
-                                    });
-                                  }),
+                        modPreviewImgList = snapshot.data;
+                        //print(modPreviewImgList.toString());
+                        List<Widget> previewImageSliders = modPreviewImgList
+                            .map((item) => Container(
+                                  margin: const EdgeInsets.all(2.0),
+                                  child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5.0)),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Image.file(item,
+                                              fit: BoxFit.cover, width: 1000.0),
+                                          //Text(modPreviewImgList.toString())
+                                        ],
+                                      )),
+                                ))
+                            .toList();
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: CarouselSlider(
+                                items: previewImageSliders,
+                                options: CarouselOptions(
+                                    autoPlay: previewImageSliders.length > 1,
+                                    reverse: true,
+                                    viewportFraction: 1,
+                                    enlargeCenterPage: true,
+                                    aspectRatio: 2.0,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        currentImg = index;
+                                      });
+                                    }),
+                              ),
                             ),
-                          ),
-                          //if (isPreviewImgFound && !isSameImgData)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                                modPreviewImgList.asMap().entries.map((entry) {
-                              return GestureDetector(
-                                // onTap: () => imgSliderController
-                                //     .animateToPage(entry.key),
-                                child: Container(
-                                  width: 7.0,
-                                  height: 7.0,
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 4.0, horizontal: 4.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.black)
-                                          .withOpacity(currentImg == entry.key
-                                              ? 0.9
-                                              : 0.4)),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      );
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: modPreviewImgList
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                return GestureDetector(
+                                  // onTap: () => imgSliderController
+                                  //     .animateToPage(entry.key),
+                                  child: Container(
+                                    width: 7.0,
+                                    height: 7.0,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 4.0, horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: (Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black)
+                                            .withOpacity(currentImg == entry.key
+                                                ? 0.9
+                                                : 0.4)),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        );
+                      }
                     }
-                  }
-                }))
+                  }))
       ],
     );
   }

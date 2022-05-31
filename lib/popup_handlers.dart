@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/contents_helper.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -38,26 +41,21 @@ class CustomPopups {
                     onPressed: (() async {
                       Navigator.of(context).pop();
                       String? binDirTempPath = '';
-                      binDirTempPath =
-                          await FilePicker.platform.getDirectoryPath(
-                        dialogTitle: 'Select \'pso2_bin\' Directory Path',
-                        lockParentWindow: true,
-                      );
-
-                      if (binDirTempPath == null) {
-                        await FilePicker.platform.getDirectoryPath(
+                      
+                      while (binDirTempPath == '') {
+                        binDirTempPath = await FilePicker.platform.getDirectoryPath(
                           dialogTitle:
-                              'Select \'pso2_bin\' Directory Path Again',
+                              'Select \'pso2_bin\' Directory Path',
                           lockParentWindow: true,
                         );
-                      } else {
                         List<String> getCorrectPath =
                             binDirTempPath.toString().split('\\');
-                        //print(getCorrectPath.last);
                         if (getCorrectPath.last == 'pso2_bin') {
                           binDirPath = binDirTempPath.toString();
                           final prefs = await SharedPreferences.getInstance();
                           prefs.setString('binDirPath', binDirPath);
+                      } 
+                      if (binDirPath != '') {
                           //Fill in paths
                           mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
                           modsDirPath = '$mainModDirPath\\Mods';
@@ -79,8 +77,12 @@ class CustomPopups {
                           if (!Directory(checksumDirPath).existsSync()) {
                             await Directory(checksumDirPath)
                                 .create(recursive: true);
-                            print(binDirPath);
                           }
+                          if (!File(modSettingsPath).existsSync()) {
+                            await File(modSettingsPath).create(recursive: true);
+                          }
+                            filesData = getDataFromModDirsFuture(modsDirPath);
+                            context.read<stateProvider>().mainBinFoundTrue();
                         } else {
                           binDirTempPath =
                               await FilePicker.platform.getDirectoryPath(
