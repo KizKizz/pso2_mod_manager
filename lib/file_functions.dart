@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:pso2_mod_manager/contents_helper.dart';
+import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 
 import 'main.dart';

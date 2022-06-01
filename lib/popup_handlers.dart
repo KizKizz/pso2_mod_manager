@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/contents_helper.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,7 +80,6 @@ class CustomPopups {
                           if (!File(modSettingsPath).existsSync()) {
                             await File(modSettingsPath).create(recursive: true);
                           }
-                            filesData = getDataFromModDirsFuture(modsDirPath);
                             context.read<stateProvider>().mainBinFoundTrue();
                         } else {
                           binDirTempPath =

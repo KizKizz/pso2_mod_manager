@@ -1,21 +1,18 @@
 // ignore_for_file: unnecessary_new
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/contents_helper.dart';
-import 'package:pso2_mod_manager/custom_bottom_appbar.dart';
+import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/home_page.dart';
+import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
-import 'package:path/path.dart' as p;
 
 String binDirPath = '';
 String mainModDirPath = '';
@@ -24,6 +21,7 @@ String backupDirPath = '';
 String checksumDirPath = '';
 String modSettingsPath = '';
 Future? filesData;
+List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 
 void main() {
@@ -105,9 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       if (!File(modSettingsPath).existsSync()) {
         await File(modSettingsPath).create(recursive: true);
-      } 
+      }
       setState(() {
-        filesData = getDataFromModDirsFuture(modsDirPath);
         context.read<stateProvider>().mainBinFoundTrue();
       });
     }
@@ -146,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             context.watch<stateProvider>().isMainBinFound
                 ? FutureBuilder(
-                    future: filesData,
+                    future: modsLoader(),
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -159,39 +156,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         } else if (!snapshot.hasData) {
                           return const CircularProgressIndicator();
                         } else {
-                          mainDataList = snapshot.data;
-                          categoryList = getCategoryList(mainDataList);
-                          cateList = categoryAdder(mainDataList);
-
-                          //Mod Item
-                          // for (var cate in cateList) {
-                          //   final filesList =
-                          //       cate.categorySubList.whereType<File>();
-                          //   List<ModFile> filesInCate = [];
-                          //   for (var file in filesList) {
-                          //     final fileExtension = p.extension(file.path);
-                          //     List<File> imgList = [];
-                          //     if (fileExtension == '.jpg' ||
-                          //         fileExtension == '.png') {
-                          //       imgList.add(file);
-                          //     }
-                          //     if (fileExtension == '') {
-                          //       ModFile newMod = ModFile(
-                          //           file.path,
-                          //           getDirHeader(file.parent),
-                          //           getFileName(file),
-                          //           getDirHeader(Directory(getRootParentDirPath(
-                          //               file, cate.categoryName))),
-                          //           getRootParentDirPath(file, cate.categoryName),
-                          //           cate.categoryName,
-                          //           imgList,
-                          //           false,
-                          //           true);
-                          //       filesInCate.add(newMod);
-                          //     }
-                          //   }
-                          //   modFilesList.add(filesInCate);
-                          // }
+                          allModFiles = snapshot.data;
+                          cateList = categories(allModFiles);
+                          print('${allModFiles.length} iceFiles Loaded');
 
                           return const HomePage();
                         }
