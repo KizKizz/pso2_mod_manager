@@ -1,6 +1,9 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:path/path.dart' as p;
 
@@ -22,7 +25,7 @@ Future<List<ModFile>> modsLoader() async {
   //JSON Loader
   void convertData(var jsonResponse) {
     for (var b in jsonResponse) {
-      ModFile mod = ModFile(0, b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW']);
+      ModFile mod = ModFile(0, b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW'], b['isNew']);
       mod.categoryPath = b['categoryPath'];
       mod.categoryName = b['categoryName'];
       modFilesFromJson.add(mod);
@@ -53,7 +56,9 @@ Future<List<ModFile>> modsLoader() async {
       }
     }
     iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ');
-    
+    if (iceParents == '') {
+      iceParents = '> $modName';
+    }
 
     //Image helper
     for (var imgFile in Directory(iceFile.parent.path).listSync(recursive: false).whereType<File>()) {
@@ -64,15 +69,18 @@ Future<List<ModFile>> modsLoader() async {
     var imgList = getImagesList(imgFiles);
 
     //New ModFile
-    ModFile newModFile = ModFile(0, modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true);
+    ModFile newModFile = ModFile(0, modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false);
     newModFile.categoryName = categoryName;
     newModFile.categoryPath = categoryPath;
-    final jsonModFile = modFilesFromJson.firstWhere((e) => e.icePath == newModFile.icePath);
+    var jsonModFile = modFilesFromJson.firstWhere((e) => e.icePath == newModFile.icePath, orElse: () {
+      return ModFile(0, '', '', '', '', '', '', '', null, false, true, false);
+    });
     if (jsonModFile.icePath.isNotEmpty) {
       newModFile.backupIcePath = jsonModFile.backupIcePath;
       newModFile.originalIcePath = jsonModFile.originalIcePath;
       newModFile.isApplied = jsonModFile.isApplied;
       newModFile.isSFW = jsonModFile.isSFW;
+      newModFile.isNew = jsonModFile.isNew;
     }
     allModFiles.add(newModFile);
   }
@@ -86,7 +94,7 @@ Future<List<ModFile>> modsLoader() async {
 
 //Category List
 List<ModCategory> categories(List<ModFile> allModFiles) {
-  File defaultCategoryItemIcon = File('assets/img/placeholder-square.jpg');
+  File defaultCategoryItemIcon = File('assets/img/placeholdersquare.jpg');
   List<ModCategory> categories = [];
 
   //Get categories
@@ -95,15 +103,23 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
 
     //Get Icons
     List<File> imgFiles = [];
-    final files = Directory(modFile.modPath).listSync(recursive: false).whereType<File>();
-    for (var file in files) {
-      if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
-        imgFiles.add(file);
+    final filesGet = Directory(modFile.modPath).listSync(recursive: false).whereType<File>();
+    if (filesGet.isNotEmpty) {
+      List<File> imgFilesGet = [];
+      for (var file in filesGet) {
+        if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+          imgFilesGet.add(file);
+        }
       }
-    }
-    if (imgFiles.isEmpty) {
+      if (imgFilesGet.isNotEmpty) {
+        imgFiles.addAll(imgFilesGet);
+      } else {
+        imgFiles.add(defaultCategoryItemIcon);
+      }
+    } else {
       imgFiles.add(defaultCategoryItemIcon);
     }
+    //print('${modFile.modName} ==== ${imgFiles.first.path}');
 
     //Add to list
     if (categories.isEmpty || categories.indexWhere((e) => e.categoryName == modFile.categoryName) == -1) {
@@ -141,6 +157,17 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
       }
     }
   }
+
+  //Add Empty Category
+  final cateDirs = Directory(modsDirPath).listSync(recursive: false).whereType<Directory>();
+  for (var dir in cateDirs) {
+    final emptyCateDirs = dir.listSync(recursive: false);
+    if (emptyCateDirs.isEmpty) {
+      categories.add(ModCategory(dir.path.split('\\').last, dir.path, [], [], 0, [], [], []));
+      categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+    }
+  }
+
   return categories;
 }
 

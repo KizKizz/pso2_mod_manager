@@ -44,6 +44,7 @@ class ModFile extends ModCategory {
     this.images,
     this.isApplied,
     this.isSFW,
+    this.isNew
   ) : super('', '', [], [], 0, [], [], []);
 
   int numOfSubItems;
@@ -57,6 +58,7 @@ class ModFile extends ModCategory {
   Future? images;
   bool isApplied;
   bool isSFW;
+  bool isNew;
 
   fromJson(Map<String, dynamic> json) {
     categoryName = json['categoryName'];
@@ -70,6 +72,7 @@ class ModFile extends ModCategory {
     backupIcePath = json['backupIcePath'];
     isApplied = json['isApplied'];
     isSFW = json['isSFW'];
+    isNew = json['isNew'];
   }
 
   Map<String, dynamic> toJson() {
@@ -85,14 +88,8 @@ class ModFile extends ModCategory {
     data['backupIcePath'] = backupIcePath;
     data['isApplied'] = isApplied;
     data['isSFW'] = isSFW;
+    data['isNew'] = isNew;
 
     return data;
   }
 }
-
-
-
-
-
-
-
