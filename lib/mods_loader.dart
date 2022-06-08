@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:path/path.dart' as p;
 
@@ -195,6 +196,33 @@ Future<List<List<ModFile>>> getModFilesByCategory(List<ModFile> allModFiles, Str
   }
 
   return modFilesList.toList();
+}
+
+//Applied List
+Future<List<List<ModFile>>> getAppliedModsList() async {
+  List<List<ModFile>> appliedList = [];
+  //Applied mods list add
+  final actualAppliedMods = allModFiles.where((element) => element.isApplied == true).toList();
+
+  //Applied mods list add
+  for (var mod in actualAppliedMods) {
+    if (appliedList.isEmpty) {
+      appliedList.add([mod]);
+    } else {
+      final tempMods = appliedList.firstWhere(
+        (modList) => modList.indexWhere((applied) => applied.iceParent == mod.iceParent && applied.modName == mod.modName) != -1,
+        orElse: () {
+          return [];
+        },
+      );
+      if (tempMods.isNotEmpty) {
+        tempMods.add(mod);
+      } else {
+        appliedList.add([mod]);
+      }
+    }
+  }
+  return appliedList;
 }
 
 Future<List<File>> getImagesList(List<File> imgFile) async {

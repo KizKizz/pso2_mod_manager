@@ -21,6 +21,7 @@ String modsDirPath = '';
 String backupDirPath = '';
 String checksumDirPath = '';
 String modSettingsPath = '';
+String deletedItemsPath = '';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
 Future? filesData;
@@ -29,7 +30,7 @@ var dataStreamController = StreamController();
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => stateProvider()),
-  ], child: const MyApp()));
+  ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
     const initialSize = Size(1280, 720);
     appWindow.minSize = const Size(852, 480);
@@ -110,6 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       backupDirPath = '$mainModDirPath\\Backups';
       checksumDirPath = '$mainModDirPath\\Checksum';
       modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+      deletedItemsPath = '$mainModDirPath\\Deleted Items';
       //Check if exist, create dirs
       if (!Directory(mainModDirPath).existsSync()) {
         await Directory(mainModDirPath).create(recursive: true);
@@ -132,6 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       if (!Directory(checksumDirPath).existsSync()) {
         await Directory(checksumDirPath).create(recursive: true);
+      }
+      if (!File(deletedItemsPath).existsSync()) {
+        await Directory(deletedItemsPath).create(recursive: true);
       }
       if (!File(modSettingsPath).existsSync()) {
         await File(modSettingsPath).create(recursive: true);
@@ -188,8 +193,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         // ),
                         //DarkMode Button
 
-                        
-
                         //Backup
                         Tooltip(
                           message: 'Reselect \'pso2_bin\' Folder',
@@ -213,6 +216,29 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
 
+                        //deleted items
+                        Tooltip(
+                          message: 'Open Deleted Items Folder',
+                          height: 25,
+                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          waitDuration: const Duration(seconds: 1),
+                          child: MaterialButton(
+                            onPressed: (() async {
+                             await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                            }),
+                            child: Row(
+                              children: const [
+                                Icon(
+                                  Icons.delete_rounded,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 5),
+                                Text('Deleted Items', style: TextStyle(fontWeight: FontWeight.w400))
+                              ],
+                            ),
+                          ),
+                        ),
+
                         //Checksum
                         Tooltip(
                           message: 'Open Checksum Folder',
@@ -222,18 +248,19 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: MaterialButton(
                             onPressed: (() async {
                               if (checksumLocation == null) {
-                                  checksumLocation = await FilePicker.platform.pickFiles(
-                                    dialogTitle: 'Select your checksum file',
-                                    allowMultiple: false,
-                                    // type: FileType.custom,
-                                    // allowedExtensions: ['\'\''],
-                                    lockParentWindow: true,);
-                                  if (checksumLocation != null) {
-                                    String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
-                                    checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';
-                                    setState(() {});
-                                  }
+                                checksumLocation = await FilePicker.platform.pickFiles(
+                                  dialogTitle: 'Select your checksum file',
+                                  allowMultiple: false,
+                                  // type: FileType.custom,
+                                  // allowedExtensions: ['\'\''],
+                                  lockParentWindow: true,
+                                );
+                                if (checksumLocation != null) {
+                                  String? checksumPath = checksumLocation!.paths.first;
+                                  File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
+                                  checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';
+                                  setState(() {});
+                                }
                               } else {
                                 await launchUrl(Uri.parse('file:$checksumDirPath'));
                               }
@@ -375,3 +402,35 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+class RestartWidget extends StatefulWidget {
+  const RestartWidget({required this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
+}
+

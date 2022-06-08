@@ -29,6 +29,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
             } else {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
+              appliedModsListGet = getAppliedModsList();
               //print('${allModFiles.length} iceFiles Loaded');
 
               return const HomePage();

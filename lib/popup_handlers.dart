@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:intl/intl.dart';
 
 class CustomPopups {
   const CustomPopups();
@@ -61,6 +64,7 @@ class CustomPopups {
                             backupDirPath = '$mainModDirPath\\Backups';
                             checksumDirPath = '$mainModDirPath\\Checksum';
                             modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+                            deletedItemsPath = '$mainModDirPath\\Deleted Items';
                             //Check if exist, create dirs
                             if (!Directory(mainModDirPath).existsSync()) {
                               await Directory(mainModDirPath).create(recursive: true);
@@ -83,6 +87,9 @@ class CustomPopups {
                             }
                             if (!Directory(checksumDirPath).existsSync()) {
                               await Directory(checksumDirPath).create(recursive: true);
+                            }
+                            if (!File(deletedItemsPath).existsSync()) {
+                              await Directory(deletedItemsPath).create(recursive: true);
                             }
                             if (!File(modSettingsPath).existsSync()) {
                               await File(modSettingsPath).create(recursive: true);
@@ -114,6 +121,7 @@ class CustomPopups {
                             backupDirPath = '$mainModDirPath\\Backups';
                             checksumDirPath = '$mainModDirPath\\Checksum';
                             modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+                            deletedItemsPath = '$mainModDirPath\\Deleted Items';
                             //Check if exist, create dirs
                             if (!Directory(mainModDirPath).existsSync()) {
                               await Directory(mainModDirPath).create(recursive: true);
@@ -137,6 +145,9 @@ class CustomPopups {
                             if (!Directory(checksumDirPath).existsSync()) {
                               await Directory(checksumDirPath).create(recursive: true);
                             }
+                            if (!File(deletedItemsPath).existsSync()) {
+                              await Directory(deletedItemsPath).create(recursive: true);
+                            }
                             if (!File(modSettingsPath).existsSync()) {
                               await File(modSettingsPath).create(recursive: true);
                             }
@@ -148,9 +159,297 @@ class CustomPopups {
                             );
                           }
                         }
+                        RestartWidget.restartApp(context);
                       }
                     }),
                     child: const Text('Yes'))
+              ],
+            );
+          });
+        });
+  }
+
+  //Remove Items Dialog
+  categoryDeleteDialog(context, double height, String popupTitle, String popupMessage, bool isYesOn, String curCatePath, List<ModFile> modsList) async {
+    await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            DateTime now = DateTime.now();
+            String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+            bool isDeleting = false;
+            return AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 10),
+              title: Center(
+                child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+              content: Container(
+                  constraints: BoxConstraints(minHeight: 40, maxHeight: height),
+                  child: SingleChildScrollView(
+                    child: Row(
+                      children: [
+                        Text(popupMessage),
+                      ],
+                    ),
+                  )),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: const Text('Close'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                if (isYesOn)
+                  ElevatedButton(
+                      onPressed: (() async {
+                        bool isRemovedFromList = false;
+                        isDeleting = true;
+                        if (!isRemovedFromList) {
+                          cateList.removeWhere((element) => element.categoryPath == curCatePath);
+                          isRemovedFromList = true;
+                          Navigator.of(context).pop();
+                        }
+                        if (modsList.isEmpty) {
+                          String newPath = '';
+                          var curPathSplit = curCatePath.split('\\');
+                          for (var element in curPathSplit) {
+                            if (element == 'Mods') {
+                              element = 'Deleted Items\\$formattedDate';
+                            }
+                            if (element != curPathSplit.last) {
+                              newPath += '$element\\';
+                            } else {
+                              newPath += element;
+                            }
+                          }
+                          Directory(newPath).createSync(recursive: true);
+                          Directory(curCatePath).deleteSync(recursive: true);
+                        } else {
+                          for (var mod in modsList) {
+                            await Future(
+                              () {
+                                String newPath = '';
+                                String newDirPath = '';
+                                var curPathSplit = mod.icePath.split('\\');
+                                for (var element in curPathSplit) {
+                                  if (element == 'Mods') {
+                                    element = 'Deleted Items\\$formattedDate';
+                                  }
+                                  if (element != curPathSplit.last) {
+                                    newPath += '$element\\';
+                                  } else {
+                                    newDirPath = newPath;
+                                    newPath += element;
+                                  }
+                                }
+
+                                if (!File(newPath).existsSync() && isRemovedFromList) {
+                                  Directory(newDirPath).createSync(recursive: true);
+                                  File(mod.icePath).copySync(newPath);
+                                }
+                              },
+                            );
+                          }
+                          File(curCatePath).deleteSync(recursive: true);
+                        }
+                      }),
+                      child: isDeleting ? const Center(child: CircularProgressIndicator()) : const Text('Sure'))
+              ],
+            );
+          });
+        });
+  }
+
+//Remove Items Dialog
+  itemDeleteDialog(context, double height, String popupTitle, String popupMessage, bool isYesOn, String curCatePath, String curItem, List<ModFile> modsList) async {
+    await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            DateTime now = DateTime.now();
+            String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+            bool isDeleting = false;
+            return AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 10),
+              title: Center(
+                child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+              content: Container(
+                  constraints: BoxConstraints(minHeight: 40, maxHeight: height),
+                  child: SingleChildScrollView(
+                    child: Row(
+                      children: [
+                        Text(popupMessage),
+                      ],
+                    ),
+                  )),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: const Text('Close'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                if (isYesOn)
+                  ElevatedButton(
+                      onPressed: (() async {
+                        bool isRemovedFromList = false;
+                        isDeleting = true;
+                        if (!isRemovedFromList) {
+                          List<String> itemFound = [];
+                          for (var cate in cateList) {
+                            for (var name in cate.itemNames) {
+                              if (name == curItem) {
+                                itemFound = cate.itemNames;
+                              }
+                            }
+                          }
+                          itemFound.removeWhere((element) => element == curItem);
+
+                          isRemovedFromList = true;
+                          Navigator.of(context).pop();
+                        }
+                        if (modsList.isEmpty) {
+                          String newPath = '';
+                          var curPathSplit = curCatePath.split('\\');
+                          for (var element in curPathSplit) {
+                            if (element == 'Mods') {
+                              element = 'Deleted Items\\$formattedDate';
+                            }
+                            if (element != curPathSplit.last) {
+                              newPath += '$element\\';
+                            } else {
+                              newPath += '$element\\$curItem';
+                            }
+                          }
+                          Directory(newPath).createSync(recursive: true);
+                          Directory('$curCatePath\\$curItem').deleteSync(recursive: true);
+                        } else {
+                          for (var mod in modsList) {
+                            await Future(
+                              () {
+                                if (mod.modName == curItem) {
+                                  String newPath = '';
+                                  String newDirPath = '';
+                                  var curPathSplit = mod.icePath.split('\\');
+                                  for (var element in curPathSplit) {
+                                    if (element == 'Mods') {
+                                      element = 'Deleted Items\\$formattedDate';
+                                    }
+                                    if (element != curPathSplit.last) {
+                                      newPath += '$element\\';
+                                    } else {
+                                      newDirPath = newPath;
+                                      newPath += element;
+                                    }
+                                  }
+
+                                  if (!File(newPath).existsSync() && isRemovedFromList) {
+                                    Directory(newDirPath).createSync(recursive: true);
+                                    File(mod.icePath).copySync(newPath);
+                                  }
+                                }
+                              },
+                            );
+                          }
+                          File('$curCatePath\\$curItem').deleteSync(recursive: true);
+                        }
+                      }),
+                      child: isDeleting ? const Center(child: CircularProgressIndicator()) : const Text('Sure'))
+              ],
+            );
+          });
+        });
+  }
+
+  //Remove Mod Dialog
+  modDeleteDialog(context, double height, String popupTitle, String popupMessage, bool isYesOn, String curModPath, String curModParent, String curModName, List<ModFile> modsList) async {
+    await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            DateTime now = DateTime.now();
+            String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+            bool isDeleting = false;
+            return AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 10),
+              title: Center(
+                child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+              content: Container(
+                  constraints: BoxConstraints(minHeight: 40, maxHeight: height),
+                  child: SingleChildScrollView(
+                    child: Row(
+                      children: [
+                        Text(popupMessage),
+                      ],
+                    ),
+                  )),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: const Text('Close'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                if (isYesOn)
+                  ElevatedButton(
+                      onPressed: (() async {
+                        bool isRemovedFromList = false;
+                        isDeleting = true;
+                        String getModPath = '';
+                        if (!isRemovedFromList) {
+                          List<ModFile> itemFound = [];
+                          for (var list in modFilesList) {
+                            for (var mod in list) {
+                              if (mod.modName == curModName && mod.iceParent == curModParent) {
+                                itemFound = list;
+                              }
+                            }
+                          }
+                          modFilesList.removeWhere((element) => element == itemFound);
+
+                          isRemovedFromList = true;
+                          Navigator.of(context).pop();
+                        }
+                        if (modsList.isNotEmpty) {
+                          for (var mod in modsList) {
+                            await Future(
+                              () {
+                                if (mod.modName == curModName && mod.iceParent == curModParent) {
+                                  String newPath = '';
+                                  String newDirPath = '';
+                                  var curPathSplit = mod.icePath.split('\\');
+                                  for (var element in curPathSplit) {
+                                    if (element == 'Mods') {
+                                      element = 'Deleted Items\\$formattedDate';
+                                    }
+                                    if (element != curPathSplit.last) {
+                                      newPath += '$element\\';
+                                    } else {
+                                      newDirPath = newPath;
+                                      newPath += element;
+                                    }
+                                  }
+
+                                  if (!File(newPath).existsSync() && isRemovedFromList) {
+                                    Directory(newDirPath).createSync(recursive: true);
+                                    File(mod.icePath).copySync(newPath);
+                                  }
+                                  File(mod.icePath).deleteSync(recursive: true);
+                                }
+                              },
+                            );
+
+                            String getModPath = curModParent.replaceAll(' > ', '\\');
+                            if (Directory(mod.modPath + getModPath).listSync(recursive: true).whereType<File>().isEmpty) {
+                              Directory(mod.modPath + getModPath).deleteSync(recursive: true);
+                            }
+                            print(mod.modPath + getModPath);
+                          }
+                        }
+                      }),
+                      child: isDeleting ? const Center(child: CircularProgressIndicator()) : const Text('Sure'))
               ],
             );
           });

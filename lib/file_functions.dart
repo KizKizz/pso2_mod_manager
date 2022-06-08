@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:cross_file/cross_file.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
@@ -14,6 +15,8 @@ Directory dataDir = Directory('$binDirPath\\data');
 void modsToDataAdder(List<ModFile> modList) async {
   final iceFiles = dataDir.listSync(recursive: true).whereType<File>();
   List<List<ModFile>> duplicateModsApplied = [];
+  List<ModFile> actualAppliedMods = [];
+  originalFilesMissingList.clear();
   //Checksum
   if (checkSumFilePath != null) {
     File(checkSumFilePath!).copySync('$binDirPath\\data\\win32\\${checkSumFilePath!.split('\\').last}');
@@ -31,7 +34,6 @@ void modsToDataAdder(List<ModFile> modList) async {
 
     if (matchedFile.path != '') {
       modFile.originalIcePath = matchedFile.path;
-      originalFileFound = true;
 
       final backupFiles = Directory(backupDirPath).listSync(recursive: true).whereType<File>();
       final matchedBackup = backupFiles.firstWhere(
@@ -48,31 +50,84 @@ void modsToDataAdder(List<ModFile> modList) async {
       } else {
         //check for dub applied mod
         modFile.backupIcePath = '$backupDirPath\\${modFile.iceName}';
-        duplicateModsApplied = modFilesList.where((element) => element.indexWhere((e) => e.iceName == modFile.iceName && e.isApplied == true) != -1).toList();
+        for (var modList in modFilesList) {
+          List<ModFile> tempList = [];
+          for (var mod in modList) {
+            if (mod.iceName == modFile.iceName && mod.isApplied == true) {
+              tempList.add(mod);
+
+              //remove from applied list
+              if (appliedModsList.isNotEmpty) {
+                List<List<ModFile>> emptyList = [];
+                for (var appliedList in appliedModsList) {
+                  List<ModFile> tempList = appliedList;
+                  ModFile? tempMod;
+                  for (var appliedMod in appliedList) {
+                    if (appliedMod.iceName == mod.iceName) {
+                      tempMod = appliedMod;
+                    }
+                  }
+                  if (tempList.isNotEmpty && tempMod != null) {
+                    tempList.remove(tempMod);
+                  }
+                  if (appliedList.isEmpty) {
+                    emptyList.add(appliedList);
+                  }
+                }
+                for (var element in emptyList) {
+                  appliedModsList.remove(element);
+                }
+              }
+            }
+          }
+          duplicateModsApplied.add(tempList);
+        }
+
+        for (var element in duplicateModsApplied) {
+          for (var e in element) {
+            print(e.iceName);
+          }
+        }
 
         for (var modList in duplicateModsApplied) {
           for (var element in modList) {
             modAppliedDup.add(element);
             File(element.backupIcePath).copySync(element.originalIcePath);
             element.isApplied = false;
-            //print('${element.backupIcePath} ==== ${element.originalIcePath}');
           }
         }
-        //print(duplicateModsApplied.first.first.icePath);
       }
 
       //File actions
-
       File(modFile.icePath).copySync(modFile.originalIcePath);
       modFile.isApplied = true;
       modFile.isNew = false;
-
-      // for (var modList in modFilesList) {
-      //   modList.map((mod) => mod.toJson()).toList();
-      //   File(modSettingsPath).writeAsStringSync(json.encode(modList));
-      // }
+      actualAppliedMods.add(modFile);
     } else {
-      originalFileFound = false;
+      originalFilesMissingList.add(modFile);
+    }
+
+    //Applied mods list add
+    for (var mod in actualAppliedMods) {
+      if (appliedModsList.isNotEmpty) {
+        List<ModFile> tempList = [];
+        ModFile? tempMod;
+        for (var modList in appliedModsList) {
+          tempList = modList;
+          for (var appliedMod in modList) {
+            if (appliedMod.iceParent == mod.iceParent) {
+              tempMod = mod;
+            }
+          }
+        }
+        if (tempMod != null && tempList.isNotEmpty && tempMod.iceParent == mod.iceParent) {
+          tempList.add(tempMod);
+        } else {
+          appliedModsList.add(actualAppliedMods);
+        }
+      } else {
+        appliedModsList.add(actualAppliedMods);
+      }
     }
   }
 
@@ -82,6 +137,9 @@ void modsToDataAdder(List<ModFile> modList) async {
 
 void modsRemover(List<ModFile> modsList) {
   final backupFiles = Directory(backupDirPath).listSync(recursive: true).whereType<File>();
+  List<ModFile> actualRemovedMods = [];
+  backupFilesMissingList.clear();
+
   for (var mod in modsList) {
     final matchedBackup = backupFiles.firstWhere(
       (e) => p.extension(e.path) == '' && e.path.split('\\').last == mod.iceName,
@@ -91,12 +149,35 @@ void modsRemover(List<ModFile> modsList) {
     );
 
     if (matchedBackup.path != '') {
-      backupFileFound = true;
       File(mod.backupIcePath).copySync(mod.originalIcePath);
       mod.isApplied = false;
+      actualRemovedMods.add(mod);
       File(mod.backupIcePath).deleteSync();
+
+      //remove from applied list
+      if (appliedModsList.isNotEmpty) {
+        List<List<ModFile>> emptyList = [];
+        for (var appliedList in appliedModsList) {
+          List<ModFile> tempList = appliedList;
+          ModFile? tempMod;
+          for (var appliedMod in appliedList) {
+            if (appliedMod.iceName == mod.iceName) {
+              tempMod = appliedMod;
+            }
+          }
+          if (tempList.isNotEmpty && tempMod != null) {
+            tempList.remove(tempMod);
+          }
+          if (appliedList.isEmpty) {
+            emptyList.add(appliedList);
+          }
+        }
+        for (var element in emptyList) {
+          appliedModsList.remove(element);
+        }
+      }
     } else {
-      backupFileFound = false;
+      backupFilesMissingList.add(mod);
     }
   }
 
@@ -105,7 +186,7 @@ void modsRemover(List<ModFile> modsList) {
 }
 
 // New File Adders
-void dragDropFilesAdd(List<XFile> newItemDragDropList, String? selectedCategoryName, String newItemName) {
+void dragDropFilesAdd(List<XFile> newItemDragDropList, String? selectedCategoryName, String? newItemName) {
   final categoryName = selectedCategoryName;
   final catePath = cateList.firstWhere((element) => element.categoryName == categoryName).categoryPath;
 
@@ -113,15 +194,67 @@ void dragDropFilesAdd(List<XFile> newItemDragDropList, String? selectedCategoryN
     final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
     if (files.isNotEmpty) {
       for (var file in files) {
-        final xFileTail = file.path.split(xFile.name).last;
-        String newPath = '';
-        if (newItemName.isEmpty) {
-          newPath = '$catePath\\${xFile.name}$xFileTail';
+        final fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
+        String newPath = catePath;
+        if (fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na') != -1) {
+          fileTailPath.removeRange(fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na'), fileTailPath.indexOf(fileTailPath.last));
+          String finalTailPath = fileTailPath.join('\\');
+          if (newItemName == null) {
+            //Item suffix
+            if (categoryName == 'Basewears') {
+              newPath += '\\${xFile.name} [Ba]\\$finalTailPath';
+            } else if (categoryName == 'Innerwears') {
+              newPath += '\\${xFile.name} [In]\\$finalTailPath';
+            } else if (categoryName == 'Outerwears') {
+              newPath += '\\${xFile.name} [Ou]\\$finalTailPath';
+            } else if (categoryName == 'Setwears') {
+              newPath += '\\${xFile.name} [Se]\\$finalTailPath';
+            } else {
+              newPath += '\\${xFile.name}\\$finalTailPath';
+            }
+          } else {
+            if (categoryName == 'Basewears') {
+              newPath += '\\$newItemName [Ba]\\$finalTailPath';
+            } else if (categoryName == 'Innerwears') {
+              newPath += '\\$newItemName [In]\\$finalTailPath';
+            } else if (categoryName == 'Outerwears') {
+              newPath += '\\$newItemName [Ou]\\$finalTailPath';
+            } else if (categoryName == 'Setwears') {
+              newPath += '\\$newItemName [Se]\\$finalTailPath';
+            } else {
+              newPath += '\\$newItemName\\$finalTailPath';
+            }
+          }
         } else {
-          newPath = '$catePath\\$newItemName$xFileTail';
+          String finalTailPath = fileTailPath.join('\\');
+          if (newItemName == null) {
+            //Item suffix
+            if (categoryName == 'Basewears') {
+              newPath += '\\${xFile.name} [Ba]\\$finalTailPath';
+            } else if (categoryName == 'Innerwears') {
+              newPath += '\\${xFile.name} [In]\\$finalTailPath';
+            } else if (categoryName == 'Outerwears') {
+              newPath += '\\${xFile.name} [Ou]\\$finalTailPath';
+            } else if (categoryName == 'Setwears') {
+              newPath += '\\${xFile.name} [Se]\\$finalTailPath';
+            } else {
+              newPath += '\\${xFile.name}\\$finalTailPath';
+            }
+          } else {
+            if (categoryName == 'Basewears') {
+              newPath += '\\$newItemName [Ba]\\$finalTailPath';
+            } else if (categoryName == 'Innerwears') {
+              newPath += '\\$newItemName [In]\\$finalTailPath';
+            } else if (categoryName == 'Outerwears') {
+              newPath += '\\$newItemName [Ou]\\$finalTailPath';
+            } else if (categoryName == 'Setwears') {
+              newPath += '\\$newItemName [Se]\\$finalTailPath';
+            } else {
+              newPath += '\\$newItemName\\$finalTailPath';
+            }
+          }
         }
 
-        //Write to Folder
         File(newPath).createSync(recursive: true);
         File(file.path).copySync(newPath);
       }
@@ -130,12 +263,52 @@ void dragDropFilesAdd(List<XFile> newItemDragDropList, String? selectedCategoryN
     String modName = '';
     String newItemPath = '';
     bool dubItemFound = false;
-    if (newItemName.isEmpty) {
-      modName = xFile.name;
-      newItemPath = '$catePath\\${xFile.name}';
+    if (newItemName == null) {
+      if (categoryName == 'Basewears') {
+        modName = '${xFile.name} [Ba]';
+      } else if (categoryName == 'Innerwears') {
+        modName = '${xFile.name} [In]';
+      } else if (categoryName == 'Outerwears') {
+        modName = '${xFile.name} [Ou]';
+      } else if (categoryName == 'Setwears') {
+        modName = '${xFile.name} [Se]';
+      } else {
+        modName = xFile.name;
+      }
+      if (categoryName == 'Basewears') {
+        newItemPath = '$catePath\\${xFile.name} [Ba]';
+      } else if (categoryName == 'Innerwears') {
+        newItemPath = '$catePath\\${xFile.name} [In]';
+      } else if (categoryName == 'Outerwears') {
+        newItemPath = '$catePath\\${xFile.name} [Ou]';
+      } else if (categoryName == 'Setwears') {
+        newItemPath = '$catePath\\${xFile.name} [Se]';
+      } else {
+        newItemPath = '$catePath\\${xFile.name}';
+      }
     } else {
-      modName = newItemName;
-      newItemPath = '$catePath\\$newItemName';
+      if (categoryName == 'Basewears') {
+        modName = '$newItemName [Ba]';
+      } else if (categoryName == 'Innerwears') {
+        modName = '$newItemName [In]';
+      } else if (categoryName == 'Outerwears') {
+        modName = '$newItemName [Ou]';
+      } else if (categoryName == 'Setwears') {
+        modName = '$newItemName [Se]';
+      } else {
+        modName = xFile.name;
+      }
+      if (categoryName == 'Basewears') {
+        newItemPath = '$catePath\\$newItemName [Ba]';
+      } else if (categoryName == 'Innerwears') {
+        newItemPath = '$catePath\\$newItemName [In]';
+      } else if (categoryName == 'Outerwears') {
+        newItemPath = '$catePath\\$newItemName [Ou]';
+      } else if (categoryName == 'Setwears') {
+        newItemPath = '$catePath\\$newItemName [Se]';
+      } else {
+        newItemPath = '$catePath\\$newItemName';
+      }
     }
 
     //Add to list
@@ -193,17 +366,28 @@ void dragDropFilesAdd(List<XFile> newItemDragDropList, String? selectedCategoryN
 }
 
 // New Mod Adders
-void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String itemPath, int index, String newItemName) {
+void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String itemPath, int index, String? newItemName) {
   for (var xFile in newModDragDropList) {
     final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
     if (files.isNotEmpty) {
       for (var file in files) {
-        final xFileTail = file.path.split(xFile.name).last;
-        String newPath = '';
-        if (newItemName.isEmpty) {
-          newPath = '$itemPath\\${xFile.name}$xFileTail';
+        final fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
+        String newPath = itemPath;
+        if (fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na') != -1) {
+          fileTailPath.removeRange(fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na'), fileTailPath.indexOf(fileTailPath.last));
+          String finalTailPath = fileTailPath.join('\\');
+          if (newItemName == null) {
+            newPath += '\\${xFile.name}\\$finalTailPath';
+          } else {
+            newPath += '\\$newItemName\\$finalTailPath';
+          }
         } else {
-          newPath = '$itemPath\\$newItemName$xFileTail';
+          String finalTailPath = fileTailPath.join('\\');
+          if (newItemName == null) {
+            newPath += '\\${xFile.name}\\$finalTailPath';
+          } else {
+            newPath += '\\$newItemName\\$finalTailPath';
+          }
         }
 
         File(newPath).createSync(recursive: true);
@@ -212,7 +396,7 @@ void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String 
     }
 
     String newModPath = '';
-    if (newItemName.isEmpty) {
+    if (newItemName == null) {
       newModPath = '$itemPath\\${xFile.name}';
     } else {
       newModPath = '$itemPath\\$newItemName';
@@ -222,6 +406,7 @@ void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String 
     List<ModFile> newMods = [];
     final matchedCategory = cateList.firstWhere((element) => element.itemNames.indexWhere((e) => e == curItemName) != -1);
     final filesList = Directory(newModPath).listSync(recursive: true).whereType<File>();
+    List<String> parentsList = [];
     for (var file in filesList) {
       if (p.extension(file.path) == '') {
         final iceName = file.path.split('\\').last;
@@ -232,6 +417,7 @@ void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String 
         newModFile.categoryName = matchedCategory.categoryName;
         newModFile.categoryPath = matchedCategory.categoryPath;
         newMods.add(newModFile);
+        parentsList.add(newModFile.iceParent);
 
         //Json Write
         allModFiles.add(newModFile);
@@ -240,7 +426,11 @@ void dragDropModsAdd(List<XFile> newModDragDropList, String curItemName, String 
       }
     }
 
-    modFilesList.add(newMods);
+    final parents = parentsList.toSet().toList();
+    for (var parent in parents) {
+      final sameParentMods = newMods.where((element) => element.iceParent == parent);
+      modFilesList.add(sameParentMods.toList());
+    }
 
     matchedCategory.allModFiles.addAll(newMods);
     matchedCategory.numOfMods.add(newMods.length);
