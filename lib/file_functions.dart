@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:cross_file/cross_file.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';

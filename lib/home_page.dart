@@ -9,6 +9,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
@@ -16,6 +17,7 @@ import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 List<ModCategory> cateList = [];
@@ -160,11 +162,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ? null
                               : (() {
                                   setState(() {
-                                    //addCategoryVisible = true;
                                     switch (cateAdderAniController.status) {
-                                      // case AnimationStatus.completed:
-                                      //   itemAdderAniController.reverse();
-                                      //   break;
                                       case AnimationStatus.dismissed:
                                         addCategoryVisible = true;
                                         cateAdderAniController.forward();
@@ -214,9 +212,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               : (() {
                                   setState(() {
                                     switch (itemAdderAniController.status) {
-                                      // case AnimationStatus.completed:
-                                      //   itemAdderAniController.reverse();
-                                      //   break;
                                       case AnimationStatus.dismissed:
                                         addItemVisible = true;
                                         itemAdderAniController.forward();
@@ -299,7 +294,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     onPressed: (() {
                                       setState(() {
                                         if (cateList[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
-                                          const CustomPopups().categoryDeleteDialog(context, 100, 'Remove Category', 'Remove ${cateList[index].categoryName} and move it to Deleted Items folder?\nThis will also remove all items in this category\n(Might froze on large amount of files)', true, cateList[index].categoryPath, cateList[index].allModFiles);
+                                          categoryDeleteDialog(context, 100, 'Remove Category', 'Remove ${cateList[index].categoryName} and move it to Deleted Items folder?\nThis will also remove all items in this category\n(Might froze on large amount of files)', true, 
+                                            cateList[index].categoryPath, cateList[index].allModFiles).then((_) {
+                                            setState(() {
+                                              //setstate to refresh list
+                                            });
+                                          });
                                         } else {
                                           List<ModFile> tempList = cateList[index].allModFiles.where((element) => element.isApplied == true).toList();
                                           List<String> stillAppliedList = [];
@@ -309,7 +309,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             popupHeight += 24;
                                           }
                                           String stillApplied = stillAppliedList.join('\n');
-                                          const CustomPopups().categoryDeleteDialog(context, popupHeight, 'Remove Category', 'Cannot remove ${cateList[index].categoryName}. Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
+                                          categoryDeleteDialog(context, popupHeight, 'Remove Category', 'Cannot remove ${cateList[index].categoryName}. Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
                                         }
                                       });
                                     }),
@@ -381,7 +381,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         onPressed: (() {
                                           setState(() {
                                             if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
-                                              const CustomPopups().itemDeleteDialog(context, 100, 'Remove Item', 'Remove ${cateList[index].itemNames[i]} and move it to Deleted Items folder?\nThis will also remove all mods in this item\n(Might froze on large amount of files)', true, cateList[index].categoryPath, cateList[index].itemNames[i], cateList[index].allModFiles);
+                                              itemDeleteDialog(context, 100, 'Remove Item', 'Remove ${cateList[index].itemNames[i]} and move it to Deleted Items folder?\nThis will also remove all mods in this item\n(Might froze on large amount of files)', 
+                                              true, cateList[index], cateList[index].itemNames[i], cateList[index].allModFiles).then((_) {
+                                                setState(() {
+                                                  //setstate
+                                                });
+                                              });
                                             } else {
                                               List<ModFile> tempList = cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
                                               List<String> stillAppliedList = [];
@@ -391,7 +396,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 popupHeight += 24;
                                               }
                                               String stillApplied = stillAppliedList.join('\n');
-                                              const CustomPopups().itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove ${cateList[index].itemNames[i]}. Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, cateList[index].itemNames[i], []);
+                                              itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove ${cateList[index].itemNames[i]}. Unaplly these mods first:\n\n$stillApplied', false, cateList[index], cateList[index].itemNames[i], []);
                                             }
                                           });
                                         }),
@@ -498,10 +503,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         setState(() {});
                                       });
                                       break;
-                                    // case AnimationStatus.dismissed:
-                                    //   addCategoryVisible = true;
-                                    //   cateAdderAniController.forward();
-                                    //   break;
+
                                     default:
                                   }
                                 });
@@ -713,10 +715,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         setState(() {});
                                       });
                                       break;
-                                    // case AnimationStatus.dismissed:
-                                    //   itemAdderAniController.forward();
-                                    //   addItemVisible = true;
-                                    //   break;
                                     default:
                                   }
                                 });
@@ -791,9 +789,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               setState(() {
                                 //addModToItemVisible = true;
                                 switch (modAdderAniController.status) {
-                                  // case AnimationStatus.completed:
-                                  //   itemAdderAniController.reverse();
-                                  //   break;
                                   case AnimationStatus.dismissed:
                                     addModToItemVisible = true;
                                     modAdderAniController.forward();
@@ -931,7 +926,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               onPressed: (() {
                                                                 setState(() {
                                                                   if (modFilesList[index].indexWhere((element) => element.isApplied == true) == -1) {
-                                                                    const CustomPopups().modDeleteDialog(context, 100, 'Remove Mod', 'Remove ${modFilesList[index].first.iceParent} and move it to Deleted Items folder?\nThis will also remove all filess in this mod\n(Might froze on large amount of files)', true, modFilesList[index].first.modPath, modFilesList[index].first.iceParent, modFilesList[index].first.modName, modFilesList[index]);
+                                                                    modDeleteDialog(context, 100, 'Remove Mod', 'Remove ${modFilesList[index].first.iceParent} and move it to Deleted Items folder?\nThis will also remove all filess in this mod\n(Might froze on large amount of files)', true, 
+                                                                      modFilesList[index].first.modPath, modFilesList[index].first.iceParent, modFilesList[index].first.modName, modFilesList[index]).then((_) {
+                                                                      setState(() {
+                                                                        //setstate to refresh list
+                                                                      });
+                                                                    });
                                                                   } else {
                                                                     List<ModFile> tempList = cateList[index].allModFiles.where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true).toList();
                                                                     List<String> stillAppliedList = [];
@@ -941,7 +941,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       popupHeight += 24;
                                                                     }
                                                                     String stillApplied = stillAppliedList.join('\n');
-                                                                    const CustomPopups().modDeleteDialog(context, popupHeight, 'Remove Mod', 'Cannot remove ${modFilesList[index].first.iceParent}. Unaplly these files first:\n\n$stillApplied', false, modFilesList[index].first.modPath, modFilesList[index].first.iceParent, modFilesList[index].first.modName, []);
+                                                                    modDeleteDialog(context, popupHeight, 'Remove Mod', 'Cannot remove ${modFilesList[index].first.iceParent}. Unaplly these files first:\n\n$stillApplied', false, modFilesList[index].first.modPath, modFilesList[index].first.iceParent, modFilesList[index].first.modName, []);
                                                                   }
                                                                 });
                                                               }),
@@ -1209,10 +1209,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         setState(() {});
                                       });
                                       break;
-                                    // case AnimationStatus.dismissed:
-                                    //   addCategoryVisible = true;
-                                    //   cateAdderAniController.forward();
-                                    //   break;
                                     default:
                                   }
                                 });

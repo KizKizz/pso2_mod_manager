@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path/path.dart' as p;
 
 String binDirPath = '';
 String mainModDirPath = '';
@@ -146,14 +147,20 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       //Checksum check
-      if (Directory(checksumDirPath).listSync().whereType<File>().isNotEmpty && checkSumFilePath == null) {
-        checkSumFilePath = Directory(checksumDirPath).listSync().whereType<File>().first.path;
+      if (checkSumFilePath == null) {
+        final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
+        for (var file in filesInCSFolder) {
+          if (p.extension(file.path) == '') {
+            checkSumFilePath = file.path;
+            break;
+          }
+        }
       }
     }
   }
 
   void getDirPath() {
-    const CustomPopups().binDirDialog(context, 'Error', 'pso2_bin folder not found. Select now?', false);
+    binDirDialog(context, 'Error', 'pso2_bin folder not found. Select now?', false);
   }
 
   @override
@@ -179,203 +186,217 @@ class _MyHomePageState extends State<MyHomePage> {
                           )),
                     )),
                     //Buttons
-                    Row(
-                      children: [
-                        //Add Mod Button
-                        // MaterialButton(
-                        //   onPressed: (() {
-                        //     const CustomPopups().addModDialog(context);
-                        //     //setState(() {});
-                        //   }),
-                        //   child: Row(
-                        //     children: const [Icon(Icons.add), SizedBox(width: 2.5), Text('Add Mod')],
-                        //   ),
-                        // ),
-                        //DarkMode Button
-
-                        //Backup
-                        Tooltip(
-                          message: 'Reselect \'pso2_bin\' Folder',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
-                          child: MaterialButton(
-                            onPressed: (() {
-                              const CustomPopups().binDirDialog(context, 'Info', 'Reselecting pso2_bin folder?', true);
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.folder_outlined,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('_bin Reselect', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        //deleted items
-                        Tooltip(
-                          message: 'Open Deleted Items Folder',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
-                          child: MaterialButton(
-                            onPressed: (() async {
-                             await launchUrl(Uri.parse('file:$deletedItemsPath'));
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.delete_rounded,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('Deleted Items', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        //Checksum
-                        Tooltip(
-                          message: 'Open Checksum Folder',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
-                          child: MaterialButton(
-                            onPressed: (() async {
-                              if (checksumLocation == null) {
-                                checksumLocation = await FilePicker.platform.pickFiles(
-                                  dialogTitle: 'Select your checksum file',
-                                  allowMultiple: false,
-                                  // type: FileType.custom,
-                                  // allowedExtensions: ['\'\''],
-                                  lockParentWindow: true,
-                                );
-                                if (checksumLocation != null) {
-                                  String? checksumPath = checksumLocation!.paths.first;
-                                  File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
-                                  checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';
-                                  setState(() {});
-                                }
-                              } else {
-                                await launchUrl(Uri.parse('file:$checksumDirPath'));
-                              }
-                            }),
-                            child: checkSumFilePath != null
-                                ? Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.fingerprint,
-                                        size: 18,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text('Checksum', style: TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  )
-                                : Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.fingerprint,
-                                        size: 18,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text('Checksum file missing. Click here!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                    ],
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 9),
+                      child: Row(
+                        children: [
+                          //reload app
+                          Tooltip(
+                            message: 'Reload Entire App',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                RestartWidget.restartApp(context);
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.refresh,
+                                    size: 18,
                                   ),
+                                  SizedBox(width: 5),
+                                  Text('Reload App', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
 
-                        //Backup
-                        Tooltip(
-                          message: 'Open Backup Folder',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
-                          child: MaterialButton(
-                            onPressed: (() async {
-                              await launchUrl(Uri.parse('file:$backupDirPath'));
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.backup_table,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('Backup', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
+                          //pso2bin reselect
+                          Tooltip(
+                            message: 'Reselect \'pso2_bin\' Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() {
+                                binDirDialog(context, 'Info', 'Reselecting pso2_bin folder?', true);
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.folder_outlined,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('_bin Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
                             ),
                           ),
-                        ),
 
-                        //Mod
-                        Tooltip(
-                          message: 'Open Mods Folder',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
-                          child: MaterialButton(
-                            onPressed: (() async {
-                              await launchUrl(Uri.parse('file:$modsDirPath'));
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.rule_folder_outlined,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('Mods', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
+                          //deleted items
+                          Tooltip(
+                            message: 'Open Deleted Items Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.delete_rounded,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('Deleted Items', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
                             ),
                           ),
-                        ),
 
-                        //Dark theme
-                        if (MyApp.themeNotifier.value == ThemeMode.dark)
-                          MaterialButton(
-                            onPressed: (() async {
-                              final prefs = await SharedPreferences.getInstance();
-                              MyApp.themeNotifier.value = ThemeMode.light;
-                              prefs.setBool('isDarkModeOn', false);
-                              //setState(() {});
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.light_mode_outlined,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
+                          //Checksum
+                          Tooltip(
+                            message: 'Open Checksum Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                if (checkSumFilePath == null) {
+                                  checksumLocation = await FilePicker.platform.pickFiles(
+                                    dialogTitle: 'Select your checksum file',
+                                    allowMultiple: false,
+                                    // type: FileType.custom,
+                                    // allowedExtensions: ['\'\''],
+                                    lockParentWindow: true,
+                                  );
+                                  if (checkSumFilePath != null) {
+                                    String? checksumPath = checksumLocation!.paths.first;
+                                    File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
+                                    checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';
+                                    setState(() {});
+                                  }
+                                } else {
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                }
+                              }),
+                              child: checkSumFilePath != null
+                                  ? Row(
+                                      children: const [
+                                        Icon(
+                                          Icons.fingerprint,
+                                          size: 18,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text('Checksum', style: TextStyle(fontWeight: FontWeight.w400))
+                                      ],
+                                    )
+                                  : Row(
+                                      children: const [
+                                        Icon(
+                                          Icons.fingerprint,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text('Checksum file missing. Click here!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                      ],
+                                    ),
                             ),
                           ),
-                        if (MyApp.themeNotifier.value == ThemeMode.light)
-                          MaterialButton(
-                            onPressed: (() async {
-                              final prefs = await SharedPreferences.getInstance();
-                              MyApp.themeNotifier.value = ThemeMode.dark;
-                              prefs.setBool('isDarkModeOn', true);
-                              //setState(() {});
-                            }),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.dark_mode_outlined,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 5),
-                                Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
-                              ],
+
+                          //Backup
+                          Tooltip(
+                            message: 'Open Backup Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                await launchUrl(Uri.parse('file:$backupDirPath'));
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.backup_table,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('Backup', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
                             ),
                           ),
-                      ],
+
+                          //Mod
+                          Tooltip(
+                            message: 'Open Mods Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                await launchUrl(Uri.parse('file:$modsDirPath'));
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.rule_folder_outlined,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('Mods', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          //Dark theme
+                          if (MyApp.themeNotifier.value == ThemeMode.dark)
+                            MaterialButton(
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                MyApp.themeNotifier.value = ThemeMode.light;
+                                prefs.setBool('isDarkModeOn', false);
+                                //setState(() {});
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.light_mode_outlined,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
+                          if (MyApp.themeNotifier.value == ThemeMode.light)
+                            MaterialButton(
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                MyApp.themeNotifier.value = ThemeMode.dark;
+                                prefs.setBool('isDarkModeOn', true);
+                                //setState(() {});
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.dark_mode_outlined,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                     const WindowButtons(),
                   ],
@@ -433,4 +454,3 @@ class _RestartWidgetState extends State<RestartWidget> {
     );
   }
 }
-
