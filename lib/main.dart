@@ -152,7 +152,6 @@ class _MyHomePageState extends State<MyHomePage> {
         for (var file in filesInCSFolder) {
           if (p.extension(file.path) == '') {
             checkSumFilePath = file.path;
-            break;
           }
         }
       }
@@ -221,7 +220,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() {
-                                binDirDialog(context, 'Info', 'Reselecting pso2_bin folder?', true);
+                                binDirDialog(context, 'Info', 'Reselecting pso2_bin folder?', true).then((_) {
+                                  //RestartWidget.restartApp(context);
+                                  setState(() {
+                                    //setstate
+                                  });
+                                });
                               }),
                               child: Row(
                                 children: const [
@@ -275,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     // allowedExtensions: ['\'\''],
                                     lockParentWindow: true,
                                   );
-                                  if (checkSumFilePath != null) {
+                                  if (checksumLocation != null) {
                                     String? checksumPath = checksumLocation!.paths.first;
                                     File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
                                     checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';

@@ -11,8 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:intl/intl.dart';
 
-binDirDialog(context, String popupTitle, String popupMessage, bool isReselect) async {
+Future binDirDialog(context, String popupTitle, String popupMessage, bool isReselect) async {
   await showDialog<String>(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
@@ -156,7 +157,6 @@ binDirDialog(context, String popupTitle, String popupMessage, bool isReselect) a
                           );
                         }
                       }
-                      RestartWidget.restartApp(context);
                     }
                   }),
                   child: const Text('Yes'))
@@ -289,61 +289,35 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                     onPressed: (() {
                       setState(
                         () {
-                          bool isCateRemovedFromList = false;
-                          if (!isCateRemovedFromList) {
-                            curCate.itemNames.removeWhere((element) => element == curItem);
-                            curCate.allModFiles.removeWhere((element) => element.modName == curItem);
-                            curCate.numOfItems--;
-                            allModFiles.removeWhere((element) => element.categoryPath == curCate.categoryPath && element.modName == curItem);
+                          Navigator.of(context).pop();
 
-                            isCateRemovedFromList = true;
-                            Navigator.of(context).pop();
-                          }
-                          if (modsList.isEmpty) {
-                            String newPath = '';
-                            var curPathSplit = curCate.categoryPath.split('\\');
-                            for (var element in curPathSplit) {
-                              if (element == 'Mods') {
-                                element = 'Deleted Items\\$formattedDate';
-                              }
-                              if (element != curPathSplit.last) {
-                                newPath += '$element\\';
-                              } else {
-                                newPath += '$element\\$curItem';
-                              }
-                            }
-                            Directory(newPath).createSync(recursive: true);
+                          String deleteBackupPath = '$deletedItemsPath\\$formattedDate\\${curCate.categoryName}\\$curItem';
+                          final modsInCurItem = modsList.where((element) => element.modName == curItem);
+                          if (modsInCurItem.isEmpty) {
+                            Directory(deleteBackupPath).createSync(recursive: true);
                             Directory('${curCate.categoryPath}\\$curItem').deleteSync(recursive: true);
                           } else {
-                            for (var mod in modsList) {
-                              //await Future(
-                              // () {
-                              if (mod.modName == curItem) {
-                                String newPath = '';
-                                String newDirPath = '';
-                                var curPathSplit = mod.icePath.split('\\');
-                                for (var element in curPathSplit) {
-                                  if (element == 'Mods') {
-                                    element = 'Deleted Items\\$formattedDate';
-                                  }
-                                  if (element != curPathSplit.last) {
-                                    newPath += '$element\\';
-                                  } else {
-                                    newDirPath = newPath;
-                                    newPath += element;
-                                  }
-                                }
-
-                                if (!File(newPath).existsSync() && isCateRemovedFromList) {
-                                  Directory(newDirPath).createSync(recursive: true);
-                                  File(mod.icePath).copySync(newPath);
-                                }
-                              }
-                              // },
-                              //);
+                            for (var mod in modsInCurItem) {
+                              String fileDeleteBackupPath = deleteBackupPath + mod.icePath.split(mod.modPath).last;
+                              File(fileDeleteBackupPath).createSync(recursive: true);
+                              File(mod.icePath).copySync(fileDeleteBackupPath);
+                              File(mod.icePath).deleteSync(recursive: false);
                             }
-                            File('${curCate.categoryPath}\\$curItem').deleteSync(recursive: true);
+                            final leftOverFiles = Directory('${curCate.categoryPath}\\$curItem').listSync(recursive: true).whereType<File>();
+                            for (var file in leftOverFiles) {
+                              String leftOverFileDeleteBackupPath = deleteBackupPath + file.path.split('${curCate.categoryPath}\\$curItem').last;
+                              File(leftOverFileDeleteBackupPath).createSync(recursive: true);
+                              File(file.path).copySync(leftOverFileDeleteBackupPath);
+                              File(file.path).deleteSync(recursive: true);
+                            }
+                            Directory(('${curCate.categoryPath}\\$curItem')).deleteSync(recursive: true);
                           }
+
+                          curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
+                          curCate.itemNames.removeWhere((element) => element == curItem);
+                          curCate.allModFiles.removeWhere((element) => element.modName == curItem);
+                          curCate.numOfItems--;
+                          allModFiles.removeWhere((element) => element.categoryPath == curCate.categoryPath && element.modName == curItem);
                         },
                       );
                     }),
@@ -362,7 +336,6 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
         return StatefulBuilder(builder: (context, setState) {
           DateTime now = DateTime.now();
           String formattedDate = DateFormat('MM-dd-yyyy').format(now);
-          bool isDeleting = false;
           return AlertDialog(
             titlePadding: const EdgeInsets.only(top: 10),
             title: Center(
@@ -386,64 +359,43 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                   }),
               if (isYesOn)
                 ElevatedButton(
-                    onPressed: (() async {
-                      bool isRemovedFromList = false;
-                      isDeleting = true;
-                      String getModPath = '';
-                      if (!isRemovedFromList) {
-                        List<ModFile> itemFound = [];
-                        for (var list in modFilesList) {
-                          for (var mod in list) {
-                            if (mod.modName == curModName && mod.iceParent == curModParent) {
-                              itemFound = list;
-                            }
-                          }
-                        }
-                        ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
-                        curCate.numOfMods[curCate.allModFiles.indexWhere((element) => element.modPath == curModPath && element.modName == curModName)]--; 
-                        modFilesList.removeWhere((element) => element == itemFound);
+                    onPressed: (() {
+                      Navigator.of(context).pop();
 
-                        isRemovedFromList = true;
-                        Navigator.of(context).pop();
-                      }
                       if (modsList.isNotEmpty) {
+                        String sourcePath = '';
+                        String curCateName = '';
                         for (var mod in modsList) {
-                          await Future(
-                            () {
-                              if (mod.modName == curModName && mod.iceParent == curModParent) {
-                                String newPath = '';
-                                String newDirPath = '';
-                                var curPathSplit = mod.icePath.split('\\');
-                                for (var element in curPathSplit) {
-                                  if (element == 'Mods') {
-                                    element = 'Deleted Items\\$formattedDate';
-                                  }
-                                  if (element != curPathSplit.last) {
-                                    newPath += '$element\\';
-                                  } else {
-                                    newDirPath = newPath;
-                                    newPath += element;
-                                  }
-                                }
-
-                                if (!File(newPath).existsSync() && isRemovedFromList) {
-                                  Directory(newDirPath).createSync(recursive: true);
-                                  File(mod.icePath).copySync(newPath);
-                                }
-                                File(mod.icePath).deleteSync(recursive: true);
-                              }
-                            },
-                          );
-
-                          String getModPath = curModParent.replaceAll(' > ', '\\');
-                          if (Directory(mod.modPath + getModPath).listSync(recursive: true).whereType<File>().isEmpty) {
-                            Directory(mod.modPath + getModPath).deleteSync(recursive: true);
-                          }
-                          //print(mod.modPath + getModPath);
+                          String fileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\${mod.categoryName}\\$curModName${mod.icePath.split(mod.modPath).last}';
+                         // print(fileDeleteBackupPath);
+                          sourcePath = '${mod.categoryPath}\\$curModName${mod.icePath.split(mod.modPath).last}'.split('\\${mod.iceName}').first;
+                          curCateName = mod.categoryName;
+                          File(fileDeleteBackupPath).createSync(recursive: true);
+                          File(mod.icePath).copySync(fileDeleteBackupPath);
+                          File(mod.icePath).deleteSync(recursive: false);
                         }
+                        //Remove extras
+                        final leftOverFiles = Directory(sourcePath).listSync(recursive: false).whereType<File>();
+                        for (var file in leftOverFiles) {
+                          String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\$curCateName\\$curModName${file.path.split(sourcePath).last}';
+                          //print(sourcePath);
+                          File(leftOverFileDeleteBackupPath).createSync(recursive: true);
+                          File(file.path).copySync(leftOverFileDeleteBackupPath);
+                          File(file.path).deleteSync(recursive: true);
+                        }
+
+                        if (Directory(sourcePath).listSync(recursive: true).whereType<File>().isEmpty) {
+                          Directory(sourcePath).deleteSync(recursive: true);
+                        }
+
+                        ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
+                        final curModIndex = curCate.itemNames.indexOf(curModName);
+                        curCate.numOfMods[curModIndex]--;
+                        modFilesList.removeWhere((element) => element == modsList);
+                        allModFiles.removeWhere((element) => element.categoryPath == curCate.categoryPath && element.modName == curModName);
                       }
                     }),
-                    child: isDeleting ? const Center(child: CircularProgressIndicator()) : const Text('Sure'))
+                    child: const Text('Sure'))
             ],
           );
         });

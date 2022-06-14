@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -23,13 +26,23 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
             return const Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.hasError) {
-              return const Text('Error');
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error when loading data. Reload the app.',
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                  ),
+                ],
+              );
             } else if (!snapshot.hasData) {
               return const CircularProgressIndicator();
             } else {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
+              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
               //print('${allModFiles.length} iceFiles Loaded');
 
               return const HomePage();

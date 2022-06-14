@@ -1,11 +1,14 @@
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 
 class stateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
-  bool _isCateDeleted = false;
+  String _newItemDropDisplay = '';
+  String _newModDropDisplay = '';
 
   bool get isMainBinFound => _isMainBinFound;
-  bool get isCateDeleted => _isCateDeleted;
+  String get newItemDropDisplay => _newItemDropDisplay;
+  String get newModDropDisplay => _newModDropDisplay;
 
   void mainBinFoundTrue() {
     _isMainBinFound = true;
@@ -17,14 +20,43 @@ class stateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //Cate Delete
-   void cateDeletedTrue() {
-    _isCateDeleted = true;
+  //itemList Display
+  void itemsDropAdd(List<XFile> paramList) {
+    for (var file in paramList) {
+      if (file != paramList.last) {
+        _newItemDropDisplay += '${file.name}\n ';
+      } else {
+        _newItemDropDisplay += file.name;
+      }
+    }
     notifyListeners();
   }
 
-  void cateDeletedFalse() {
-    _isCateDeleted = false;
+  void itemsDropAddRemoveFirst() {
+    var temp = _newItemDropDisplay.split('\n');
+    temp.removeAt(0);
+    _newItemDropDisplay = temp.join('\n');
+    _newItemDropDisplay.trim();
+    notifyListeners();
+  }
+
+  //itemList Display
+  void modsDropAdd(List<XFile> paramList) {
+    for (var file in paramList) {
+      if (file != paramList.last) {
+        _newModDropDisplay += '${file.name}\n ';
+      } else {
+        _newModDropDisplay += file.name;
+      }
+    }
+    notifyListeners();
+  }
+
+  void modsDropAddRemoveFirst() {
+    var temp = _newModDropDisplay.split('\n');
+    temp.removeAt(0);
+    _newModDropDisplay = temp.join('\n');
+    _newModDropDisplay.trim();
     notifyListeners();
   }
 }
