@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart' as p;
+import 'package:window_manager/window_manager.dart';
 
 String binDirPath = '';
 String mainModDirPath = '';
@@ -25,21 +26,42 @@ String modSettingsPath = '';
 String deletedItemsPath = '';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
+double windowsWidth = 1280.0;
+double windowsHeight = 720.0;
 Future? filesData;
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  windowsWidth = (prefs.getDouble('windowsWidth') ?? 1280.0);
+  windowsHeight = (prefs.getDouble('windowsHeight') ?? 720.0);
+  
+  // WindowOptions windowOptions = const WindowOptions(
+  //   size: Size(1280, 720),
+  //   center: true,
+  //   //backgroundColor: Colors.transparent,
+  //   skipTaskbar: true,
+  //   //titleBarStyle: TitleBarStyle.hidden
+  // );
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => stateProvider()),
   ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
-    const initialSize = Size(1280, 720);
+    Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1030, 500);
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
     appWindow.show();
   });
+
+  // windowManager.waitUntilReadyToShow(windowOptions, () async {
+  //   await windowManager.show();
+  //   await windowManager.focus();
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -55,9 +77,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              //primarySwatch: Colors.blueGrey
-              primaryColor: Colors.black
-            ),
+                //primarySwatch: Colors.blueGrey
+                primaryColor: Colors.black),
             darkTheme: ThemeData.dark(),
             themeMode: currentMode,
             home: const MyHomePage(
@@ -77,15 +98,31 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
   bool isDarkModeOn = false;
 
   @override
   void initState() {
+    windowManager.addListener(this);
     miscCheck();
     dirPathCheck();
     super.initState();
+  }
+
+  @override
+  void onWindowFocus() {
+    // Make sure to call once.
+    setState(() {});
+    // do something
+  }
+
+  @override
+  Future<void> onWindowResized() async {
+    Size curWindowSize = await windowManager.getSize();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('windowsWidth', curWindowSize.width);
+    prefs.setDouble('windowsHeight', curWindowSize.height);
   }
 
   void miscCheck() async {
