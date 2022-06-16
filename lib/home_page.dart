@@ -39,14 +39,18 @@ TextEditingController categoryAddController = TextEditingController();
 
 //NewItem
 bool addItemVisible = false;
-final newItemFormKey = GlobalKey<FormState>();
+final newMultipleItemsFormKey = GlobalKey<FormState>();
+final newSingleItemFormKey = GlobalKey<FormState>();
 TextEditingController newItemAddController = TextEditingController();
+TextEditingController newSingleItemAddController = TextEditingController();
 List<String> dropdownCategories = [];
-String? selectedCategory;
+String? selectedCategoryForMutipleItems;
+String? selectedCategoryForSingleItem;
 final _newItemDropdownKey = GlobalKey<FormState>();
 bool _dragging = false;
 //final List<XFile> _newItemDragDropList = [XFile('E:\\PSO2_ModTest\\7 Bite o Donut Test')];
 final List<XFile> _newItemDragDropList = [];
+final List<XFile> _newSingleItemDragDropList = [];
 bool isItemAddBtnClicked = false;
 
 //NewItem Exist Item
@@ -78,6 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int currentImg = 0;
   bool isPreviewImgsOn = false;
   bool modViewExpandAll = false;
+  bool isErrorInSingleItemName = false;
 
   late AnimationController cateAdderAniController;
   late Animation<Offset> cateAdderAniOffset;
@@ -86,10 +91,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController modAdderAniController;
   late Animation<Offset> modAdderAniOffset;
 
+  late TabController _itemAdderTabcontroller;
+
   @override
   void initState() {
     super.initState();
-
+    _itemAdderTabcontroller = TabController(length: 2, vsync: this);
     cateAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     cateAdderAniOffset = Tween<Offset>(begin: const Offset(0.0, 1.1), end: const Offset(0.0, 0.0)).animate(cateAdderAniController);
     itemAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
@@ -103,6 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     cateAdderAniController.dispose();
     itemAdderAniController.dispose();
     modAdderAniController.dispose();
+    _itemAdderTabcontroller.dispose();
     super.dispose();
   }
 
@@ -302,7 +310,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   context,
                                                   100,
                                                   'Remove Category',
-                                                  'Remove ${cateList[index].categoryName} and move it to Deleted Items folder?\nThis will also remove all items in this category\n(Might froze on large amount of files)',
+                                                  'Remove "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
                                                   true,
                                                   cateList[index].categoryPath,
                                                   cateList[index].allModFiles)
@@ -320,7 +328,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             popupHeight += 24;
                                           }
                                           String stillApplied = stillAppliedList.join('\n');
-                                          categoryDeleteDialog(context, popupHeight, 'Remove Category', 'Cannot remove ${cateList[index].categoryName}. Unaplly these mods first:\n\n$stillApplied',
+                                          categoryDeleteDialog(context, popupHeight, 'Remove Category', 'Cannot remove "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied',
                                               false, cateList[index].categoryPath, []);
                                         }
                                       });
@@ -403,7 +411,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       context,
                                                       100,
                                                       'Remove Item',
-                                                      'Remove ${cateList[index].itemNames[i]} and move it to Deleted Items folder?\nThis will also remove all mods in this item\n(Might froze on large amount of files)',
+                                                      'Remove "${cateList[index].itemNames[i]}" and move it to Deleted Items folder?\nThis will also remove all mods in this item',
                                                       true,
                                                       cateList[index],
                                                       cateList[index].itemNames[i],
@@ -425,8 +433,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 popupHeight += 24;
                                               }
                                               String stillApplied = stillAppliedList.join('\n');
-                                              itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove ${cateList[index].itemNames[i]}. Unaplly these mods first:\n\n$stillApplied', false,
-                                                  cateList[index], cateList[index].itemNames[i], []);
+                                              itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                  false, cateList[index], cateList[index].itemNames[i], []);
                                             }
                                           });
                                         }),
@@ -539,10 +547,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Close')],
-                              )),
+                              child: const Text('Close')),
                         ),
                       ),
                       Expanded(
@@ -568,10 +573,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Add Category')],
-                              )),
+                              child: const Text('Add Category')),
                         ),
                       ),
                     ],
@@ -599,125 +601,330 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                //Drop Zone,
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-                  child: DropTarget(
-                    //enable: true,
-                    onDragDone: (detail) {
-                      setState(() {
-                        detail.files.sort(((a, b) => a.name.compareTo(b.name)));
-                        _newItemDragDropList.addAll(detail.files);
-                        context.read<stateProvider>().itemsDropAdd(detail.files);
-                      });
-                    },
-                    onDragEntered: (detail) {
-                      setState(() {
-                        _dragging = true;
-                      });
-                    },
-                    onDragExited: (detail) {
-                      setState(() {
-                        _dragging = false;
-                      });
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: Theme.of(context).hintColor),
-                          color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                        ),
-                        height: 150,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (_newItemDragDropList.isEmpty) const Center(child: Text("Drop Modded Item Folder(s) Here To Add")),
-                            if (_newItemDragDropList.isNotEmpty)
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  controller: ScrollController(),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: SizedBox(width: double.infinity, child: Text(' ${context.watch<stateProvider>().newItemDropDisplay}')),
-                                  ),
-                                ),
-                              )
-                          ],
-                        )),
-                  ),
-                ),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 5),
-                        child: CustomDropdownButton2(
-                          key: _newItemDropdownKey,
-                          hint: 'Select a Category',
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(color: Theme.of(context).cardColor),
-                          ),
-                          buttonDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(color: Theme.of(context).hintColor),
-                          ),
-                          //buttonWidth: 300,
-                          buttonHeight: 43,
-                          itemHeight: 40,
-                          dropdownElevation: 3,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 30,
-                          //dropdownWidth: 361,
-                          dropdownHeight: double.maxFinite,
-                          dropdownItems: dropdownCategories,
-                          value: selectedCategory,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCategory = value;
-                            });
-                          },
-                        ),
-                      ),
+                TabBar(
+                  labelColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                  controller: _itemAdderTabcontroller,
+                  onTap: (index) {
+                    if (index == 0) {
+                      _newItemDragDropList.clear();
+                      newItemAddController.clear();
+                      selectedCategoryForMutipleItems = null;
+                      //isErrorInSingleItemName = false;
+                      context.read<stateProvider>().itemsDropAddClear();
+                    } else {
+                      _newSingleItemDragDropList.clear();
+                      newSingleItemAddController.clear();
+                      selectedCategoryForMutipleItems = null;
+                      isErrorInSingleItemName = false;
+                      context.read<stateProvider>().singleItemDropAddClear();
+                    }
+                  },
+                  tabs: const [
+                    Tab(
+                      height: 25,
+                      text: 'Single Item',
                     ),
-                    Expanded(
-                      child: Form(
-                        key: newItemFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 0, left: 5, right: 10),
-                          child: TextFormField(
-                            controller: newItemAddController,
-                            //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            //maxLength: 100,
-                            style: const TextStyle(fontSize: 15),
-                            decoration: const InputDecoration(
-                              labelText: 'Change Item Name\n(optional, single item)',
-                              border: OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            validator: (value) {
-                              // if (value == null || value.isEmpty) {
-                              //   return 'Category name can\'t be empty';
-                              // }
-                              if (cateList.indexWhere((e) => e.categoryName == selectedCategory && e.itemNames.indexWhere((element) => element == value) != -1) != -1) {
-                                return 'Item name already exist';
-                              }
-                              return null;
-                            },
-                            onChanged: (text) {
-                              setState(() {
-                                setState(
-                                  () {},
-                                );
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                    Tab(
+                      height: 25,
+                      text: 'Multiple Items',
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: !isErrorInSingleItemName ? 220 : 250,
+                  child: TabBarView(
+                    controller: _itemAdderTabcontroller,
+                    children: [
+                      // Single Item adder tab
+                      Column(
+                        children: [
+                          //Drop Zone,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+                            child: DropTarget(
+                              //enable: true,
+                              onDragDone: (detail) {
+                                setState(() {
+                                  detail.files.sort(((a, b) => a.name.compareTo(b.name)));
+                                  _newSingleItemDragDropList.addAll(detail.files);
+                                  context.read<stateProvider>().singleItemsDropAdd(detail.files);
+                                });
+                              },
+                              onDragEntered: (detail) {
+                                setState(() {
+                                  _dragging = true;
+                                });
+                              },
+                              onDragExited: (detail) {
+                                setState(() {
+                                  _dragging = false;
+                                });
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    border: Border.all(color: Theme.of(context).hintColor),
+                                    color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
+                                  ),
+                                  height: 110,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (_newSingleItemDragDropList.isEmpty) const Center(child: Text("Drop Modded .ice Files And Folder(s) Here To Add")),
+                                      if (_newSingleItemDragDropList.isNotEmpty)
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            controller: ScrollController(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 10),
+                                              child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                    child: Text(context.watch<stateProvider>().newSingleItemDropDisplay),
+                                                  )),
+                                            ),
+                                          ),
+                                        )
+                                    ],
+                                  )),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                                  child: CustomDropdownButton2(
+                                    hint: 'Select a Category',
+                                    dropdownDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(color: Theme.of(context).cardColor),
+                                    ),
+                                    buttonDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(color: Theme.of(context).hintColor),
+                                    ),
+                                    //buttonWidth: 300,
+                                    buttonHeight: 40,
+                                    itemHeight: 40,
+                                    dropdownElevation: 3,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 30,
+                                    //dropdownWidth: 361,
+                                    dropdownHeight: double.maxFinite,
+                                    dropdownItems: dropdownCategories,
+                                    value: selectedCategoryForSingleItem,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedCategoryForSingleItem = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Form(
+                              key: newSingleItemFormKey,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                                child: TextFormField(
+                                  controller: newSingleItemAddController,
+                                  //maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  //maxLength: 100,
+                                  style: const TextStyle(fontSize: 15),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Item Name',
+                                    border: OutlineInputBorder(),
+                                    isDense: true,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      isErrorInSingleItemName = true;
+                                      return 'Name can\'t be empty';
+                                    }
+                                    if (cateList.indexWhere((e) => e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element == value) != -1) != -1) {
+                                      isErrorInSingleItemName = true;
+                                      return 'The name already exist';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (text) {
+                                    setState(() {
+                                      setState(
+                                        () {},
+                                      );
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      //Multiple Item Adding Tab
+                      Column(
+                        children: [
+                          //Drop Zone,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+                            child: DropTarget(
+                              //enable: true,
+                              onDragDone: (detail) {
+                                setState(() {
+                                  var leftoverFiles = [];
+                                  detail.files.sort(((a, b) => a.name.compareTo(b.name)));
+                                  for (var file in detail.files) {
+                                    if (Directory(file.path).existsSync()) {
+                                      _newItemDragDropList.addAll(detail.files);
+                                      context.read<stateProvider>().itemsDropAdd(detail.files);
+                                    } else {
+                                      leftoverFiles.add(file.name);
+                                    }
+                                  }
+
+                                  if (leftoverFiles.isNotEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        duration: Duration(seconds: leftoverFiles.length),
+                                        //backgroundColor: Theme.of(context).focusColor,
+                                        content: SizedBox(
+                                          height: 20 + (leftoverFiles.length * 20),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'The file(s) bellow won\'t be added. Use the \'Single Item\' Tab or \'Add Mod\' instead.',
+                                                style: TextStyle(fontWeight: FontWeight.w600),
+                                              ),
+                                              for (int i = 0; i < leftoverFiles.length; i++) Text(leftoverFiles[i]),
+                                            ],
+                                          ),
+                                        )));
+                                  }
+                                  leftoverFiles.clear();
+                                });
+                              },
+                              onDragEntered: (detail) {
+                                setState(() {
+                                  _dragging = true;
+                                });
+                              },
+                              onDragExited: (detail) {
+                                setState(() {
+                                  _dragging = false;
+                                });
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    border: Border.all(color: Theme.of(context).hintColor),
+                                    color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
+                                  ),
+                                  height: 150,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (_newItemDragDropList.isEmpty) const Center(child: Text("Drop Modded Item Folder(s) Here To Add")),
+                                      if (_newItemDragDropList.isNotEmpty)
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            controller: ScrollController(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 10),
+                                              child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                                    child: Text(context.watch<stateProvider>().newItemDropDisplay),
+                                                  )),
+                                            ),
+                                          ),
+                                        )
+                                    ],
+                                  )),
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                                  child: CustomDropdownButton2(
+                                    key: _newItemDropdownKey,
+                                    hint: 'Select a Category',
+                                    dropdownDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(color: Theme.of(context).cardColor),
+                                    ),
+                                    buttonDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      border: Border.all(color: Theme.of(context).hintColor),
+                                    ),
+                                    //buttonWidth: 300,
+                                    buttonHeight: 43,
+                                    itemHeight: 40,
+                                    dropdownElevation: 3,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 30,
+                                    //dropdownWidth: 361,
+                                    dropdownHeight: double.maxFinite,
+                                    dropdownItems: dropdownCategories,
+                                    value: selectedCategoryForMutipleItems,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedCategoryForMutipleItems = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              // Expanded(
+                              //   child: Form(
+                              //     key: newMultipleItemsFormKey,
+                              //     child: Padding(
+                              //       padding: const EdgeInsets.only(top: 10, bottom: 0, left: 5, right: 10),
+                              //       child: TextFormField(
+                              //         controller: newItemAddController,
+                              //         //maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              //         //maxLength: 100,
+                              //         style: const TextStyle(fontSize: 15),
+                              //         decoration: const InputDecoration(
+                              //           labelText: 'Change Item Name\n(optional, single item)',
+                              //           border: OutlineInputBorder(),
+                              //           isDense: true,
+                              //         ),
+                              //         validator: (value) {
+                              //           // if (value == null || value.isEmpty) {
+                              //           //   return 'Category name can\'t be empty';
+                              //           // }
+                              //           if (cateList.indexWhere((e) => e.categoryName == selectedCategoryForMutipleItems && e.itemNames.indexWhere((element) => element == value) != -1) != -1) {
+                              //             return 'The name already exist';
+                              //           }
+                              //           return null;
+                              //         },
+                              //         onChanged: (text) {
+                              //           setState(() {
+                              //             setState(
+                              //               () {},
+                              //             );
+                              //           });
+                              //         },
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
 
                 //Buttons
@@ -735,8 +942,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 : (() {
                                     setState(() {
                                       _newItemDragDropList.clear();
+                                      _newSingleItemDragDropList.clear();
                                       newItemAddController.clear();
-                                      selectedCategory = null;
+                                      newSingleItemAddController.clear();
+                                      selectedCategoryForMutipleItems = null;
+                                      selectedCategoryForSingleItem = null;
+                                      isErrorInSingleItemName = false;
+                                      context.read<stateProvider>().singleItemDropAddClear();
+                                      context.read<stateProvider>().itemsDropAddClear();
                                       //addItemVisible = false;
                                       switch (itemAdderAniController.status) {
                                         case AnimationStatus.completed:
@@ -757,12 +970,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: ElevatedButton(
-                              onPressed: selectedCategory != null && _newItemDragDropList.isNotEmpty && !isItemAddBtnClicked
+                              onPressed: (selectedCategoryForMutipleItems != null && _newItemDragDropList.isNotEmpty && !isItemAddBtnClicked) ||
+                                      (selectedCategoryForSingleItem != null && _newSingleItemDragDropList.isNotEmpty && !isItemAddBtnClicked)
                                   ? (() {
                                       setState(() {
-                                        if (newItemFormKey.currentState!.validate()) {
+                                        //if (newMultipleItemsFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 1) {
+                                        if (_itemAdderTabcontroller.index == 1) {
                                           isItemAddBtnClicked = true;
-                                          dragDropFilesAdd(context, _newItemDragDropList, selectedCategory, newItemAddController.text.isEmpty ? null : newItemAddController.text).then((_) {
+                                          dragDropFilesAdd(context, _newItemDragDropList, selectedCategoryForMutipleItems, newItemAddController.text.isEmpty ? null : newItemAddController.text)
+                                              .then((_) {
                                             setState(() {
                                               //setstate to refresh list
                                               _newItemDragDropList.clear();
@@ -770,17 +986,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               isItemAddBtnClicked = false;
                                             });
                                           });
-                                          //selectedCategory = null;
-
+                                          //selectedCategoryForMutipleItems = null;
                                           //addItemVisible = false;
-
+                                        } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
+                                          isErrorInSingleItemName = false;
+                                          isItemAddBtnClicked = true;
+                                          dragDropSingleFilesAdd(
+                                                  context, _newSingleItemDragDropList, selectedCategoryForSingleItem, newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
+                                              .then((_) {
+                                            setState(() {
+                                              //setstate to refresh list
+                                              _newSingleItemDragDropList.clear();
+                                              newSingleItemAddController.clear();
+                                              isItemAddBtnClicked = false;
+                                            });
+                                          });
                                         }
                                       });
                                     })
                                   : null,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Add Item(s)')],
+                                children: const [Text('Add')],
                               )),
                         ),
                       ),
@@ -810,7 +1037,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           toolbarHeight: 30,
           actions: [
             Tooltip(
-                message: 'Add Mod to $modsViewAppBarName',
+                message: modsViewAppBarName == '' || modsViewAppBarName == 'Available Mods' ? 'Add Mods' : 'Add Mods To $modsViewAppBarName',
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -818,7 +1045,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   width: 40,
                   height: 30,
                   child: MaterialButton(
-                      onPressed: addModToItemVisible || modsViewAppBarName.isEmpty
+                      onPressed: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
                           ? null
                           : (() {
                               setState(() {
@@ -836,7 +1063,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         children: [
                           Icon(
                             Icons.add_box_outlined,
-                            color: addModToItemVisible || modsViewAppBarName.isEmpty
+                            color: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
                                 ? Theme.of(context).disabledColor
                                 : MyApp.themeNotifier.value == ThemeMode.light
                                     ? Theme.of(context).primaryColorDark
@@ -921,7 +1148,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         width: 40,
                                                         height: 40,
                                                         child: Tooltip(
-                                                          message: 'Remove all mods under ${modFilesList[index].first.iceParent} from the game',
+                                                          message: 'Remove all mods under "$modsViewAppBarName ${modFilesList[index].first.iceParent}" from the game',
                                                           height: 25,
                                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                           waitDuration: const Duration(seconds: 1),
@@ -966,7 +1193,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" not found'),
+                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -1001,7 +1228,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ),
                                                       ),
                                                     Tooltip(
-                                                        message: 'Remove ${modFilesList[index].first.iceParent}',
+                                                        message: 'Remove $modsViewAppBarName ${modFilesList[index].first.iceParent}',
                                                         height: 25,
                                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                         waitDuration: const Duration(seconds: 2),
@@ -1015,8 +1242,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                     modDeleteDialog(
                                                                             context,
                                                                             100,
-                                                                            'Remove Mod',
-                                                                            'Remove ${modFilesList[index].first.iceParent} and move it to Deleted Items folder?\nThis will also remove all filess in this mod\n(Might froze on large amount of files)',
+                                                                            'Remove Mods',
+                                                                            'Remove "$modsViewAppBarName ${modFilesList[index].first.iceParent}" and move it to Deleted Items folder?\nThis will also remove all filess in this mod',
                                                                             true,
                                                                             modFilesList[index].first.modPath,
                                                                             modFilesList[index].first.iceParent,
@@ -1043,7 +1270,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                         context,
                                                                         popupHeight,
                                                                         'Remove Mod',
-                                                                        'Cannot remove ${modFilesList[index].first.iceParent}. Unaplly these files first:\n\n$stillApplied',
+                                                                        'Cannot remove "$modsViewAppBarName ${modFilesList[index].first.iceParent}". Unaplly these files first:\n\n$stillApplied',
                                                                         false,
                                                                         modFilesList[index].first.modPath,
                                                                         modFilesList[index].first.iceParent,
@@ -1121,7 +1348,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             children: [
                                                                               for (int i = 0; i < backupFilesMissingList.length; i++)
                                                                                 Text(
-                                                                                    'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" not found'),
+                                                                                    'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
                                                                             ],
                                                                           ),
                                                                         )));
@@ -1151,7 +1378,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             children: [
                                                                               for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                 Text(
-                                                                                    'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" not found'),
+                                                                                    'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
                                                                             ],
                                                                           ),
                                                                         )));
@@ -1240,7 +1467,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (_newModToItemDragDropList.isEmpty) const Center(child: Text("Drop Mod Folder(s) Here To Add")),
+                            if (_newModToItemDragDropList.isEmpty) const Center(child: Text("Drop Modded .ice Files And Folder(s) Here To Add")),
                             if (_newModToItemDragDropList.isNotEmpty)
                               Expanded(
                                 child: SingleChildScrollView(
@@ -1268,14 +1495,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             //maxLength: 100,
                             style: const TextStyle(fontSize: 15),
                             decoration: const InputDecoration(
-                              labelText: 'Change Mod Name (optional, single mod)',
+                              labelText: 'Mod Name',
                               border: OutlineInputBorder(),
                               isDense: true,
                             ),
                             validator: (value) {
-                              // if (value == null || value.isEmpty) {
-                              //   return 'Category name can\'t be empty';
-                              // }
+                              if (value == null || value.isEmpty) {
+                                return 'Mod name can\'t be empty';
+                              }
                               if (modFilesList.indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
                                 return 'Mod name already exist';
                               }
@@ -1311,6 +1538,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       setState(() {
                                         _newModToItemDragDropList.clear();
                                         newModToItemAddController.clear();
+                                        context.read<stateProvider>().modsDropAddClear();
                                         //addModToItemVisible = false;
                                         switch (modAdderAniController.status) {
                                           case AnimationStatus.completed:
@@ -1323,10 +1551,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         }
                                       });
                                     }),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Close')],
-                              )),
+                              child: const Text('Close')),
                         ),
                       ),
                       Expanded(
@@ -1340,13 +1565,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           if (modFilesList.isNotEmpty) {
                                             isModAddBtnClicked = true;
                                             dragDropModsAdd(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
-                                                    newModToItemAddController.text.isEmpty ? null : newItemAddController.text)
+                                                    newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
                                                 .then((_) {
                                               setState(() {
                                                 //setstate to refresh list
                                                 _newModToItemDragDropList.clear();
                                                 newModToItemAddController.clear();
                                                 isModAddBtnClicked = false;
+                                                isPreviewImgsOn = false;
                                               });
                                             });
                                           }
@@ -1356,10 +1582,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       });
                                     })
                                   : null,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Add Mod(s)')],
-                              )),
+                              child: const Text('Add')),
                         ),
                       ),
                     ],
@@ -1581,32 +1804,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 ],
                                               )),
                                               //if (appliedModsList[index].length > 1)
-                                                Row(
-                                                  children: [
-                                                    if (appliedModsList.indexWhere((element) => element.indexWhere((e) => e.isApplied == true) != -1) != -1)
-                                                      SizedBox(
-                                                        width: 40,
-                                                        height: 40,
-                                                        child: Tooltip(
-                                                          message: 'Remove mods under ${appliedModsList[index].first.iceParent} from the game',
-                                                          height: 25,
-                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                          waitDuration: const Duration(seconds: 2),
-                                                          child: MaterialButton(
-                                                            onPressed: (() {
-                                                              setState(() {
-                                                                modsRemover(appliedModsList[index].toList());
-                                                              });
-                                                            }),
-                                                            child: Icon(
-                                                              Icons.playlist_remove,
-                                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            ),
+                                              Row(
+                                                children: [
+                                                  if (appliedModsList.indexWhere((element) => element.indexWhere((e) => e.isApplied == true) != -1) != -1)
+                                                    SizedBox(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child: Tooltip(
+                                                        message: 'Remove mods under "$modsViewAppBarName ${appliedModsList[index].first.iceParent}" from the game',
+                                                        height: 25,
+                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                        waitDuration: const Duration(seconds: 2),
+                                                        child: MaterialButton(
+                                                          onPressed: (() {
+                                                            setState(() {
+                                                              modsRemover(appliedModsList[index].toList());
+                                                            });
+                                                          }),
+                                                          child: Icon(
+                                                            Icons.playlist_remove,
+                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                           ),
                                                         ),
                                                       ),
-                                                  ],
-                                                )
+                                                    ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                           children: [
@@ -1665,7 +1888,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             children: [
                                                                               for (int i = 0; i < backupFilesMissingList.length; i++)
                                                                                 Text(
-                                                                                    'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" not found'),
+                                                                                    'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
                                                                             ],
                                                                           ),
                                                                         )));
@@ -1695,7 +1918,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             children: [
                                                                               for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                 Text(
-                                                                                    'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" not found'),
+                                                                                    'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
                                                                             ],
                                                                           ),
                                                                         )));

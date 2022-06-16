@@ -34,7 +34,7 @@ void main() {
   ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
     const initialSize = Size(1280, 720);
-    appWindow.minSize = const Size(852, 480);
+    appWindow.minSize = const Size(1030, 500);
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
@@ -55,7 +55,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              //primarySwatch: Colors.blueGrey
+              primaryColor: Colors.black
             ),
             darkTheme: ThemeData.dark(),
             themeMode: currentMode,
@@ -321,6 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
+                              //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
                                 await launchUrl(Uri.parse('file:$backupDirPath'));
                               }),
@@ -331,7 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     size: 18,
                                   ),
                                   SizedBox(width: 5),
-                                  Text('Backup', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Backups', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),

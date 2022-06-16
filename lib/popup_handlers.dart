@@ -297,20 +297,47 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                             Directory(deleteBackupPath).createSync(recursive: true);
                             Directory('${curCate.categoryPath}\\$curItem').deleteSync(recursive: true);
                           } else {
+                            List<String> parentPaths = [];
                             for (var mod in modsInCurItem) {
-                              String fileDeleteBackupPath = deleteBackupPath + mod.icePath.split(mod.modPath).last;
-                              File(fileDeleteBackupPath).createSync(recursive: true);
-                              File(mod.icePath).copySync(fileDeleteBackupPath);
-                              File(mod.icePath).deleteSync(recursive: false);
+                              parentPaths.add(File(mod.icePath).parent.path);
+                              if (File(mod.icePath).existsSync()) {
+                                String fileDeleteBackupPath = deleteBackupPath + mod.icePath.split(mod.modPath).last;
+                                File(fileDeleteBackupPath).createSync(recursive: true);
+                                File(mod.icePath).copySync(fileDeleteBackupPath);
+                                File(mod.icePath).deleteSync(recursive: false);
+                              }
                             }
-                            final leftOverFiles = Directory('${curCate.categoryPath}\\$curItem').listSync(recursive: true).whereType<File>();
-                            for (var file in leftOverFiles) {
-                              String leftOverFileDeleteBackupPath = deleteBackupPath + file.path.split('${curCate.categoryPath}\\$curItem').last;
-                              File(leftOverFileDeleteBackupPath).createSync(recursive: true);
-                              File(file.path).copySync(leftOverFileDeleteBackupPath);
-                              File(file.path).deleteSync(recursive: true);
+
+                            //Remove leftover files
+                            parentPaths.toSet();
+                            for (var path in parentPaths) {
+                              if (Directory(path).existsSync()) {
+                                final leftOverFiles = Directory(path).listSync(recursive: false).whereType<File>();
+                                if (leftOverFiles.isNotEmpty) {
+                                  for (var file in leftOverFiles) {
+                                    String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\${curCate.categoryName}\\$curItem${file.path.split(curItem).last}';
+                                    //print(sourcePath);
+                                    File(leftOverFileDeleteBackupPath).createSync(recursive: true);
+                                    File(file.path).copySync(leftOverFileDeleteBackupPath);
+                                    File(file.path).deleteSync(recursive: true);
+                                  }
+                                }
+                              }
                             }
-                            Directory(('${curCate.categoryPath}\\$curItem')).deleteSync(recursive: true);
+                            for (var path in parentPaths) {
+                              if (Directory(path).existsSync() &&
+                                  Directory(path).listSync(recursive: true).whereType<File>().isEmpty &&
+                                  Directory(path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                                Directory(path).deleteSync(recursive: true);
+                              }
+                            }
+
+                            final subFolderList = Directory(curCate.categoryPath).listSync().whereType<Directory>();
+                            for (var folder in subFolderList) {
+                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                                Directory(folder.path).deleteSync(recursive: true);
+                              }
+                            }
                           }
 
                           curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
@@ -363,29 +390,49 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                       Navigator.of(context).pop();
 
                       if (modsList.isNotEmpty) {
-                        String sourcePath = '';
+                        List<String> parentPaths = [];
                         String curCateName = '';
+                        //Remove ice files
                         for (var mod in modsList) {
-                          String fileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\${mod.categoryName}\\$curModName${mod.icePath.split(mod.modPath).last}';
-                         // print(fileDeleteBackupPath);
-                          sourcePath = '${mod.categoryPath}\\$curModName${mod.icePath.split(mod.modPath).last}'.split('\\${mod.iceName}').first;
-                          curCateName = mod.categoryName;
-                          File(fileDeleteBackupPath).createSync(recursive: true);
-                          File(mod.icePath).copySync(fileDeleteBackupPath);
+                          if (curCateName == '') {
+                            curCateName = mod.categoryName;
+                          }
+                          parentPaths.add(File(mod.icePath).parent.path);
+                          String deleteBackupPath = '$deletedItemsPath\\$formattedDate\\${mod.categoryName}\\$curModName${mod.icePath.split(curModName).last}';
+                          File(deleteBackupPath).createSync(recursive: true);
+                          File(mod.icePath).copySync(deleteBackupPath);
                           File(mod.icePath).deleteSync(recursive: false);
                         }
-                        //Remove extras
-                        final leftOverFiles = Directory(sourcePath).listSync(recursive: false).whereType<File>();
-                        for (var file in leftOverFiles) {
-                          String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\$curCateName\\$curModName${file.path.split(sourcePath).last}';
-                          //print(sourcePath);
-                          File(leftOverFileDeleteBackupPath).createSync(recursive: true);
-                          File(file.path).copySync(leftOverFileDeleteBackupPath);
-                          File(file.path).deleteSync(recursive: true);
+                        //Remove leftover files
+                        parentPaths.toSet();
+                        for (var path in parentPaths) {
+                          final leftOverFiles = Directory(path).listSync(recursive: false).whereType<File>();
+                          if (leftOverFiles.isNotEmpty) {
+                            for (var file in leftOverFiles) {
+                              String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\$curCateName\\$curModName${file.path.split(curModName).last}';
+                              //print(sourcePath);
+                              File(leftOverFileDeleteBackupPath).createSync(recursive: true);
+                              File(file.path).copySync(leftOverFileDeleteBackupPath);
+                              File(file.path).deleteSync(recursive: true);
+                            }
+                          }
+                        }
+                        for (var path in parentPaths) {
+                          if (Directory(path).existsSync() &&
+                              Directory(path).listSync(recursive: true).whereType<File>().isEmpty &&
+                              Directory(path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                            Directory(path).deleteSync(recursive: true);
+                          }
                         }
 
-                        if (Directory(sourcePath).listSync(recursive: true).whereType<File>().isEmpty) {
-                          Directory(sourcePath).deleteSync(recursive: true);
+                        final subFolderList = Directory(curModPath).listSync().whereType<Directory>();
+                        for (var folder in subFolderList) {
+                          if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                            Directory(folder.path).deleteSync(recursive: true);
+                          }
+                        }
+                        if (Directory(curModPath).listSync(recursive: true).whereType<File>().isEmpty && Directory(curModPath).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                          Directory(curModPath).deleteSync(recursive: true);
                         }
 
                         ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);

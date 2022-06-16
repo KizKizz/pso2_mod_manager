@@ -56,7 +56,7 @@ Future<List<ModFile>> modsLoader() async {
         modPath = iceFile.path.split(modName).first + modName;
       }
     }
-    iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ');
+    iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ').trim();
     if (iceParents == '') {
       iceParents = '> $modName';
     }
@@ -130,7 +130,26 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
       newCategory.itemNames.add(modFile.modName);
       newCategory.imageIcons.add(imgFiles);
       newCategory.numOfItems++;
-      newCategory.numOfMods.add(Directory(modFile.modPath).listSync(recursive: false).whereType<Directory>().length);
+      int curItemIndex = 0;
+      if (newCategory.itemNames.isNotEmpty) {
+        curItemIndex = newCategory.itemNames.indexOf(modFile.modName);
+      }
+      List<ModFile> sameMod = newCategory.allModFiles.where((element) => element.modName == modFile.modName).toList();
+      List<String> parentsList = [];
+      if (sameMod.isNotEmpty) {
+        parentsList.add(modFile.iceParent);
+        for (var file in sameMod) {
+          if (parentsList.indexWhere((element) => element == file.iceParent) == -1) {
+            parentsList.add(file.iceParent);
+          }
+        }
+      }
+      if (newCategory.numOfMods.isEmpty) {
+        newCategory.numOfMods.add(1);
+      } else {
+        newCategory.numOfMods[curItemIndex] = parentsList.length;
+      }
+
       if (modFile.isApplied) {
         newCategory.numOfApplied.add(1);
       } else {
@@ -139,16 +158,36 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
       newCategory.allModFiles.add(modFile);
     } else {
       ModCategory matchedCategory = categories.firstWhere((e) => e.categoryName == modFile.categoryName);
+
       if (matchedCategory.itemNames.indexWhere((element) => element == modFile.modName) != -1) {
         if (modFile.isApplied && matchedCategory.itemNames.indexWhere((element) => element == modFile.modName) == -1) {
           matchedCategory.numOfApplied[matchedCategory.itemNames.indexWhere((element) => element == modFile.modName)]++;
+        }
+        int curItemIndex = 0;
+        if (matchedCategory.itemNames.isNotEmpty) {
+          curItemIndex = matchedCategory.itemNames.indexOf(modFile.modName);
+        }
+        List<ModFile> sameMod = matchedCategory.allModFiles.where((element) => element.modName == modFile.modName).toList();
+        List<String> parentsList = [];
+        if (sameMod.isNotEmpty) {
+          parentsList.add(modFile.iceParent);
+          for (var file in sameMod) {
+            if (parentsList.indexWhere((element) => element == file.iceParent) == -1) {
+              parentsList.add(file.iceParent);
+            }
+          }
+        }
+        matchedCategory.numOfMods[curItemIndex] = parentsList.length;
+        if (modFile.isApplied) {
+          matchedCategory.numOfApplied[curItemIndex]++;
         }
         matchedCategory.allModFiles.add(modFile);
       } else {
         matchedCategory.itemNames.add(modFile.modName);
         matchedCategory.imageIcons.add(imgFiles);
         matchedCategory.numOfItems++;
-        matchedCategory.numOfMods.add(Directory(modFile.modPath).listSync(recursive: false).whereType<Directory>().length);
+        matchedCategory.numOfMods.add(1);
+        //matchedCategory.numOfMods.add(Directory(modFile.modPath).listSync(recursive: true).whereType<Directory>().length);
         if (modFile.isApplied) {
           matchedCategory.numOfApplied.add(1);
         } else {
