@@ -1,0 +1,12 @@
+{
+    "[dart]": {
+        "editor.autoIndent": "full",
+        "editor.guides.indentation": true
+    },
+    "editor.rulers": [
+        
+    
+    ],
+    "editor.defaultFormatter": null,
+    "dart.enableSdkFormatter": true
+}
