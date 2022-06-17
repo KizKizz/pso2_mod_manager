@@ -334,13 +334,14 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
 
                             final subFolderList = Directory(curCate.categoryPath).listSync().whereType<Directory>();
                             for (var folder in subFolderList) {
-                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty) {
                                 Directory(folder.path).deleteSync(recursive: true);
                               }
                             }
                           }
 
                           curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
+                          curCate.numOfMods.removeAt(curCate.itemNames.indexWhere((element) => element == curItem));
                           curCate.itemNames.removeWhere((element) => element == curItem);
                           curCate.allModFiles.removeWhere((element) => element.modName == curItem);
                           curCate.numOfItems--;

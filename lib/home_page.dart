@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:dart_vlc/dart_vlc.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,15 @@ final List<XFile> _newModToItemDragDropList = [];
 int _newModToItemIndex = 0;
 bool isModAddBtnClicked = false;
 
+//Media Player controls
+Player previewPlayer = Player(id: 69, registerTexture: true);
+MediaType mediaType = MediaType.file;
+CurrentState current = CurrentState();
+List<Media> medias = <Media>[
+  Media.file(File('E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Emotes\\Glow stick Wave 1\\FS_Cowgirl3_Over_Glowstickwave1\\FS_Cowgirl3_Preview.mp4')),
+  Media.file(File('E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Emotes\\Glow stick Wave 1\\FS_Cowgirl3_Over_Glowstickwave1\\FS_Cowgirl3_Preview.mp4')),
+];
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -71,7 +81,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.3), Area(weight: 0.3)]);
+  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.30), Area(weight: 0.325)]);
+  final MultiSplitViewController _viewsControllerNoPreview = MultiSplitViewController(areas: [Area(weight: 0.30), Area(weight: 0.5)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.5)]);
   String modsViewAppBarName = '';
   List<int> selectedIndex = List.generate(cateList.length, (index) => -1);
@@ -81,6 +92,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isModSelected = false;
   int currentImg = 0;
   bool isPreviewImgsOn = false;
+  bool isPreviewVidOn = true;
   bool modViewExpandAll = false;
   bool isErrorInSingleItemName = false;
 
@@ -111,6 +123,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     itemAdderAniController.dispose();
     modAdderAniController.dispose();
     _itemAdderTabcontroller.dispose();
+    previewPlayer.dispose();
+    _viewsController.dispose();
+    _viewsControllerNoPreview.dispose();
+    _verticalViewsController.dispose();
     super.dispose();
   }
 
@@ -124,7 +140,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         MultiSplitView(
           axis: Axis.vertical,
           controller: _verticalViewsController,
-          children: [modPreviewView(), filesView()],
+          children: context.watch<stateProvider>().previewWindowVisible ? [modPreviewView(), filesView()] : [filesView()],
         )
       ],
     );
@@ -840,7 +856,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   width: double.infinity,
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(vertical: 5),
-                                                    child: Text(context.watch<stateProvider>().newItemDropDisplay),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                      child: Text(context.watch<stateProvider>().newItemDropDisplay),
+                                                    ),
                                                   )),
                                             ),
                                           ),
@@ -1110,6 +1129,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           setState(() {
                                             isPreviewImgsOn = true;
                                             futureImagesGet = modFilesList[index].first.images;
+                                            previewPlayer.stop();
+                                            previewPlayer.setVolume(0);
+                                            previewPlayer.open(Playlist(medias: medias), autoStart: true);
+                                            ;
                                           });
                                         }
                                         // else {
@@ -1473,7 +1496,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 child: SingleChildScrollView(
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 10),
-                                    child: SizedBox(width: double.infinity, child: Text(' ${context.watch<stateProvider>().newModDropDisplay}')),
+                                    child: SizedBox(
+                                        width: double.infinity,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                                          child: Text(context.watch<stateProvider>().newModDropDisplay),
+                                        )),
                                   ),
                                 ),
                               )
@@ -1598,13 +1626,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget modPreviewView() {
     return Column(
       children: [
+        //if (context.watch<stateProvider>().previewWindowVisible)
         AppBar(
           title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Preview')),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
         ),
-        if (isPreviewImgsOn)
+        if (isPreviewImgsOn && !isPreviewVidOn)
           Expanded(
               child: FutureBuilder(
                   future: futureImagesGet,
@@ -1693,7 +1722,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         );
                       }
                     }
-                  }))
+                  })),
+        if (isPreviewVidOn)
+          Expanded(
+            child: Scaffold(
+              body: Video(
+                player: previewPlayer,
+                fit: BoxFit.fill,
+              ),
+            ),
+          )
       ],
     );
   }

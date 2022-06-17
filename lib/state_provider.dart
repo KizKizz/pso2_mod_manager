@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 
 class stateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
+  bool _previewWindowVisible = false;
   String _newItemDropDisplay = '';
   String _newSingleItemDropDisplay = '';
   String _newModDropDisplay = '';
 
   bool get isMainBinFound => _isMainBinFound;
+  bool get previewWindowVisible => _previewWindowVisible;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
@@ -19,6 +21,16 @@ class stateProvider with ChangeNotifier {
 
   void mainBinFoundFalse() {
     _isMainBinFound = false;
+    notifyListeners();
+  }
+
+  void previewWindowVisibleSetTrue() {
+    _previewWindowVisible = true;
+    notifyListeners();
+  }
+
+  void previewWindowVisibleSetFalse() {
+    _previewWindowVisible = false;
     notifyListeners();
   }
 

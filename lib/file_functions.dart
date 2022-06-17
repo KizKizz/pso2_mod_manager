@@ -563,7 +563,7 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
         final selectedCategory = cateList.firstWhere((element) => element.categoryName == categoryName);
         if (selectedCategory.itemNames.indexWhere((element) => element == modName) == -1) {
           dubItemFound = false;
-          selectedCategory.itemNames.add(modName);
+          selectedCategory.itemNames.insert(0, modName);
         } else {
           dubItemFound = true;
         }
@@ -573,12 +573,12 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
             if (cate.itemNames.indexWhere((e) => e == modName) != -1) {
               int index = 0;
               if (cate.itemNames.length > 1) {
-                index = cate.itemNames.indexOf(newItemName.toString());
+                index = cate.itemNames.indexOf(modName);
               }
               cate.allModFiles.addAll(newModList);
               //cate.allModFiles = [];
-              cate.imageIcons.add(thumbnails);
-              cate.numOfMods.add(0);
+              cate.imageIcons.insert(0, thumbnails);
+              cate.numOfMods.insert(0, 0);
               cate.numOfMods[index] = numOfMods;
               cate.numOfItems++;
               cate.numOfApplied.add(0);
