@@ -32,6 +32,7 @@ List<ModFile> modAppliedDup = [];
 List<ModFile> originalFilesMissingList = [];
 List<ModFile> backupFilesMissingList = [];
 List<bool> isLoading = [];
+bool isModAddFolderOnly = true;
 
 //New Cate
 bool addCategoryVisible = false;
@@ -65,13 +66,10 @@ int _newModToItemIndex = 0;
 bool isModAddBtnClicked = false;
 
 //Media Player controls
-Player previewPlayer = Player(id: 69, registerTexture: true);
+Player previewPlayer = Player(id: 69, registerTexture: true, commandlineArguments: ['--no-video-title-show']);
 MediaType mediaType = MediaType.file;
 CurrentState current = CurrentState();
-List<Media> medias = <Media>[
-  Media.file(File('E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Emotes\\Glow stick Wave 1\\FS_Cowgirl3_Over_Glowstickwave1\\FS_Cowgirl3_Preview.mp4')),
-  Media.file(File('E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Emotes\\Glow stick Wave 1\\FS_Cowgirl3_Over_Glowstickwave1\\FS_Cowgirl3_Preview.mp4')),
-];
+List<Media> medias = <Media>[];
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -92,7 +90,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isModSelected = false;
   int currentImg = 0;
   bool isPreviewImgsOn = false;
-  bool isPreviewVidOn = true;
+  bool isPreviewVidOn = false;
   bool modViewExpandAll = false;
   bool isErrorInSingleItemName = false;
 
@@ -1127,19 +1125,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       onHover: (value) {
                                         if (value) {
                                           setState(() {
-                                            isPreviewImgsOn = true;
-                                            futureImagesGet = modFilesList[index].first.images;
-                                            previewPlayer.stop();
-                                            previewPlayer.setVolume(0);
-                                            previewPlayer.open(Playlist(medias: medias), autoStart: true);
-                                            ;
+                                            if (modFilesList[index].first.images != null) {
+                                              isPreviewImgsOn = true;
+                                              futureImagesGet = modFilesList[index].first.images;
+                                            }
+                                            //print(modFilesList[index].first.previewVids!.length);
+                                            if (modFilesList[index].first.previewVids!.isNotEmpty) {
+                                              isPreviewVidOn = true;
+                                              isPreviewImgsOn = false;
+                                              previewPlayer.setVolume(0.0);
+                                              bool itemFound = false;
+                                              for (var vid in modFilesList[index].first.previewVids!) {
+                                                if (medias.contains(Media.file(vid))) {
+                                                  itemFound = true;
+                                                } else {
+                                                  medias.clear();
+                                                }
+                                              }
+
+                                              if (medias.isEmpty || !itemFound) {
+                                                for (var vid in modFilesList[index].first.previewVids!) {
+                                                  medias.add(Media.file(vid));
+                                                }
+                                                previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                              } else {
+                                                previewPlayer.bufferingProgressController.done;
+                                                previewPlayer.play();
+                                              }
+                                            }
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isPreviewImgsOn = false;
+                                            isPreviewVidOn = false;
+                                            previewPlayer.pause();
+                                            //isPreviewImgsOn = false;
+                                            // {
+                                            //   previewPlayer.pause();
+                                            // }
                                           });
                                         }
-                                        // else {
-                                        //   setState(() {
-                                        //     isPreviewImgsOn = false;
-                                        //   });
-                                        // }
                                       },
                                       child: Card(
                                           shape: RoundedRectangleBorder(
@@ -1467,6 +1492,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         detail.files.sort(((a, b) => a.name.compareTo(b.name)));
                         _newModToItemDragDropList.addAll(detail.files);
                         context.read<stateProvider>().modsDropAdd(detail.files);
+                        for (var element in detail.files) {
+                          if (!Directory(element.path).existsSync()) {
+                            isModAddFolderOnly = false;
+                            break;
+                          } 
+                        }
                       });
                     },
                     onDragEntered: (detail) {
@@ -1518,6 +1549,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                           child: TextFormField(
+                            enabled: !isModAddFolderOnly,
                             controller: newModToItemAddController,
                             //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             //maxLength: 100,
@@ -1528,7 +1560,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               isDense: true,
                             ),
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (!isModAddFolderOnly && (value == null || value.isEmpty)) {
                                 return 'Mod name can\'t be empty';
                               }
                               if (modFilesList.indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
@@ -1566,6 +1598,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       setState(() {
                                         _newModToItemDragDropList.clear();
                                         newModToItemAddController.clear();
+                                        isModAddFolderOnly = true;
                                         context.read<stateProvider>().modsDropAddClear();
                                         //addModToItemVisible = false;
                                         switch (modAdderAniController.status) {
@@ -1592,17 +1625,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         if (newModToItemFormKey.currentState!.validate()) {
                                           if (modFilesList.isNotEmpty) {
                                             isModAddBtnClicked = true;
-                                            dragDropModsAdd(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
-                                                    newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
-                                                .then((_) {
-                                              setState(() {
-                                                //setstate to refresh list
-                                                _newModToItemDragDropList.clear();
-                                                newModToItemAddController.clear();
-                                                isModAddBtnClicked = false;
-                                                isPreviewImgsOn = false;
+                                            if (isModAddFolderOnly) {
+                                              dragDropModsAddFoldersOnly(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex, null).then((_) {
+                                                setState(() {
+                                                  //setstate to refresh list
+                                                  _newModToItemDragDropList.clear();
+                                                  newModToItemAddController.clear();
+                                                  isModAddBtnClicked = false;
+                                                  isPreviewImgsOn = false;
+                                                });
                                               });
-                                            });
+                                            } else {
+                                              isModAddFolderOnly = true;
+                                              dragDropModsAdd(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
+                                                      newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
+                                                  .then((_) {
+                                                setState(() {
+                                                  //setstate to refresh list
+                                                  _newModToItemDragDropList.clear();
+                                                  newModToItemAddController.clear();
+                                                  isModAddBtnClicked = false;
+                                                  isPreviewImgsOn = false;
+                                                });
+                                              });
+                                            }
                                           }
 
                                           //addItemVisible = false;
@@ -1633,7 +1679,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
         ),
-        if (isPreviewImgsOn && !isPreviewVidOn)
+        if (isPreviewImgsOn)
           Expanded(
               child: FutureBuilder(
                   future: futureImagesGet,

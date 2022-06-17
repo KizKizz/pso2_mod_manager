@@ -33,19 +33,20 @@ class ModCategory {
 
 class ModFile extends ModCategory {
   ModFile(
-    this.numOfSubItems,
-    this.modPath, //mod folder path
-    this.modName, //mod folder name,
-    this.icePath,
-    this.iceName,
-    this.iceParent,
-    this.originalIcePath,
-    this.backupIcePath,
-    this.images,
-    this.isApplied,
-    this.isSFW,
-    this.isNew
-  ) : super('', '', [], [], 0, [], [], []);
+      this.numOfSubItems,
+      this.modPath, //mod folder path
+      this.modName, //mod folder name,
+      this.icePath,
+      this.iceName,
+      this.iceParent,
+      this.originalIcePath,
+      this.backupIcePath,
+      this.images,
+      this.isApplied,
+      this.isSFW,
+      this.isNew,
+      this.previewVids)
+      : super('', '', [], [], 0, [], [], []);
 
   int numOfSubItems;
   String modPath;
@@ -59,6 +60,7 @@ class ModFile extends ModCategory {
   bool isApplied;
   bool isSFW;
   bool isNew;
+  List<File>? previewVids;
 
   fromJson(Map<String, dynamic> json) {
     categoryName = json['categoryName'];

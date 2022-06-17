@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
+import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -426,21 +427,28 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                           }
                         }
 
-                        final subFolderList = Directory(curModPath).listSync().whereType<Directory>();
-                        for (var folder in subFolderList) {
-                          if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                            Directory(folder.path).deleteSync(recursive: true);
+                        if (Directory(curModPath).existsSync()) {
+                          final subFolderList = Directory(curModPath).listSync().whereType<Directory>();
+                          for (var folder in subFolderList) {
+                            if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                              Directory(folder.path).deleteSync(recursive: true);
+                            }
                           }
-                        }
-                        if (Directory(curModPath).listSync(recursive: true).whereType<File>().isEmpty && Directory(curModPath).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                          Directory(curModPath).deleteSync(recursive: true);
+
+                          if (Directory(curModPath).listSync(recursive: true).whereType<File>().isEmpty && Directory(curModPath).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                            Directory(curModPath).deleteSync(recursive: true);
+                          }
                         }
 
                         ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
                         final curModIndex = curCate.itemNames.indexOf(curModName);
                         curCate.numOfMods[curModIndex]--;
-                        modFilesList.removeWhere((element) => element == modsList);
-                        allModFiles.removeWhere((element) => element.categoryPath == curCate.categoryPath && element.modName == curModName);
+                        modFilesList.removeAt(modFilesList.indexOf(modsList));
+                        for (var element in modsList) {
+                          curCate.allModFiles.remove(element);
+                          allModFiles.remove(element);
+                        }
+                        
                       }
                     }),
                     child: const Text('Sure'))

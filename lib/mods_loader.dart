@@ -26,7 +26,8 @@ Future<List<ModFile>> modsLoader() async {
   //JSON Loader
   void convertData(var jsonResponse) {
     for (var b in jsonResponse) {
-      ModFile mod = ModFile(0, b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW'], b['isNew']);
+      ModFile mod =
+          ModFile(0, b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW'], b['isNew'], null);
       mod.categoryPath = b['categoryPath'];
       mod.categoryName = b['categoryName'];
       modFilesFromJson.add(mod);
@@ -44,6 +45,7 @@ Future<List<ModFile>> modsLoader() async {
     String modName = '', modPath = '';
     String iceParents = '';
     List<File> imgFiles = [];
+    List<File> vidFiles = [];
 
     //Helpers
     for (var element in iceFilePathSplit) {
@@ -69,12 +71,19 @@ Future<List<ModFile>> modsLoader() async {
     }
     var imgList = getImagesList(imgFiles);
 
+    //Vids helper
+    for (var vidFile in Directory(iceFile.parent.path).listSync(recursive: false).whereType<File>()) {
+      if (p.extension(vidFile.path) == '.mp4' || p.extension(vidFile.path) == '.webm') {
+        vidFiles.add(vidFile);
+      }
+    }
+
     //New ModFile
-    ModFile newModFile = ModFile(0, modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false);
+    ModFile newModFile = ModFile(0, modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false, vidFiles);
     newModFile.categoryName = categoryName;
     newModFile.categoryPath = categoryPath;
     var jsonModFile = modFilesFromJson.firstWhere((e) => e.icePath == newModFile.icePath, orElse: () {
-      return ModFile(0, '', '', '', '', '', '', '', null, false, true, false);
+      return ModFile(0, '', '', '', '', '', '', '', null, false, true, false, []);
     });
     if (jsonModFile.icePath.isNotEmpty) {
       newModFile.backupIcePath = jsonModFile.backupIcePath;
@@ -112,6 +121,7 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
           imgFilesGet.add(file);
         }
       }
+      
       if (imgFilesGet.isNotEmpty) {
         imgFiles.addAll(imgFilesGet);
       } else {

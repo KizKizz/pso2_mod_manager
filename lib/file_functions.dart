@@ -351,7 +351,7 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
 
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
 
-      ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true);
+      ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, []);
       newModFile.categoryName = selectedCategoryName.toString();
       newModFile.categoryPath = catePath;
       newModList.add(newModFile);
@@ -542,7 +542,9 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
 
             List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
 
-            ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true);
+            List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
+
+            ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
             newModFile.categoryName = selectedCategoryName.toString();
             newModFile.categoryPath = catePath;
             newModList.add(newModFile);
@@ -648,8 +650,9 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
       final iceName = file.path.split('\\').last;
       final iceParents = file.path.split(curItemName).last.split('\\$iceName').first.replaceAll('\\', ' > ').trim();
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
+      List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
 
-      ModFile newModFile = ModFile(0, newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true);
+      ModFile newModFile = ModFile(0, newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
       newModFile.categoryName = matchedCategory.categoryName;
       newModFile.categoryPath = matchedCategory.categoryPath;
       newMods.add(newModFile);
@@ -676,4 +679,79 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
   isLoading.clear();
   matchedCategory.allModFiles.addAll(newMods);
   matchedCategory.numOfMods[index] += parents.length;
+}
+
+// New Mod Adders Folder Only
+Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList, String curItemName, String itemPath, int index, String? newItemName) async {
+  for (var xFile in newModDragDropList) {
+    await Future(
+      () {
+        final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
+        if (files.isNotEmpty) {
+          for (var file in files) {
+            final fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
+            String newPath = itemPath;
+            if (fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na') != -1) {
+              fileTailPath.removeRange(fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na'), fileTailPath.indexOf(fileTailPath.last));
+              String finalTailPath = fileTailPath.join('\\');
+              if (newItemName == null) {
+                newPath += '\\${xFile.name}\\$finalTailPath';
+              }
+            } else {
+              String finalTailPath = fileTailPath.join('\\');
+              if (newItemName == null) {
+                newPath += '\\${xFile.name}\\$finalTailPath';
+              }
+            }
+
+            File(newPath).createSync(recursive: true);
+            File(file.path).copySync(newPath);
+          }
+        }
+
+        String newModPath = '$itemPath\\${xFile.name}';
+
+        //Add to list
+        List<ModFile> newMods = [];
+        final matchedCategory = cateList.firstWhere((element) => element.itemNames.indexWhere((e) => e == curItemName) != -1);
+        final filesList = Directory(newModPath).listSync(recursive: true).whereType<File>();
+        List<String> parentsList = [];
+        for (var file in filesList) {
+          if (p.extension(file.path) == '') {
+            final iceName = file.path.split('\\').last;
+            final iceParents = file.path.split(curItemName).last.split('\\$iceName').first.replaceAll('\\', ' > ').trim();
+            List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
+            List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
+
+            ModFile newModFile = ModFile(0, newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
+            newModFile.categoryName = matchedCategory.categoryName;
+            newModFile.categoryPath = matchedCategory.categoryPath;
+            newMods.add(newModFile);
+            parentsList.add(newModFile.iceParent);
+
+            //Json Write
+            allModFiles.add(newModFile);
+            allModFiles.map((mod) => mod.toJson()).toList();
+            File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
+          }
+        }
+
+        final parents = parentsList.toSet().toList();
+        for (var parent in parents) {
+          final sameParentMods = newMods.where((element) => element.iceParent == parent);
+          modFilesList.add(sameParentMods.toList());
+        }
+
+        int index = 0;
+        if (matchedCategory.itemNames.length > 1) {
+          index = matchedCategory.itemNames.indexOf(curItemName);
+        }
+
+        isLoading.clear();
+        matchedCategory.allModFiles.addAll(newMods);
+        matchedCategory.numOfMods[index] += parents.length;
+      },
+    );
+    Provider.of<stateProvider>(context, listen: false).modsDropAddRemoveFirst();
+  }
 }
