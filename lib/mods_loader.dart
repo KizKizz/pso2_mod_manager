@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:path/path.dart' as p;
@@ -26,8 +27,8 @@ Future<List<ModFile>> modsLoader() async {
   //JSON Loader
   void convertData(var jsonResponse) {
     for (var b in jsonResponse) {
-      ModFile mod =
-          ModFile(0, b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW'], b['isNew'], null);
+      ModFile mod = ModFile(b['appliedDate'], b['modPath'], b['modName'], b['icePath'], b['iceName'], b['iceParent'], b['originalIcePath'], b['backupIcePath'], null, b['isApplied'], b['isSFW'],
+          b['isNew'], b['isFav'], null);
       mod.categoryPath = b['categoryPath'];
       mod.categoryName = b['categoryName'];
       modFilesFromJson.add(mod);
@@ -79,18 +80,20 @@ Future<List<ModFile>> modsLoader() async {
     }
 
     //New ModFile
-    ModFile newModFile = ModFile(0, modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false, vidFiles);
+    ModFile newModFile = ModFile('', modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false, false, vidFiles);
     newModFile.categoryName = categoryName;
     newModFile.categoryPath = categoryPath;
     var jsonModFile = modFilesFromJson.firstWhere((e) => e.icePath == newModFile.icePath, orElse: () {
-      return ModFile(0, '', '', '', '', '', '', '', null, false, true, false, []);
+      return ModFile('', '', '', '', '', '', '', '', null, false, true, false, false, []);
     });
     if (jsonModFile.icePath.isNotEmpty) {
+      newModFile.appliedDate = jsonModFile.appliedDate;
       newModFile.backupIcePath = jsonModFile.backupIcePath;
       newModFile.originalIcePath = jsonModFile.originalIcePath;
       newModFile.isApplied = jsonModFile.isApplied;
       newModFile.isSFW = jsonModFile.isSFW;
       newModFile.isNew = jsonModFile.isNew;
+      newModFile.isFav = jsonModFile.isFav;
     }
     allModFiles.add(newModFile);
   }
@@ -121,7 +124,7 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
           imgFilesGet.add(file);
         }
       }
-      
+
       if (imgFilesGet.isNotEmpty) {
         imgFiles.addAll(imgFilesGet);
       } else {
@@ -218,6 +221,52 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
     }
   }
 
+  //Fav
+  List<ModFile> favModListGet = [];
+  for (var cate in categories) {
+    for (var mod in cate.allModFiles) {
+      if (mod.isFav) {
+        favModListGet.add(mod);
+      }
+    }
+  }
+
+  List<String> modNames = [];
+  for (var mod in favModListGet) {
+    if (modNames.isEmpty || modNames.indexWhere((element) => element == mod.modName) == -1) {
+      modNames.add(mod.modName);
+    }
+  }
+
+  List<List<ModFile>> favModsList = [];
+  for (var name in modNames) {
+    List<ModFile> sameMods = [];
+    for (var modFile in favModListGet) {
+      if (modFile.modName == name) {
+        sameMods.add(modFile);
+      }
+    }
+
+    List<String> parents = [];
+    for (var modFile in sameMods) {
+      if (parents.indexWhere((element) => element == modFile.iceParent) == -1) {
+        parents.add(modFile.iceParent);
+      }
+    }
+
+    for (var parent in parents) {
+      List<ModFile> sameParent = sameMods.where((element) => element.iceParent == parent).toList();
+      favModsList.add(sameParent);
+    }
+  }
+
+  ModCategory tempFavCate = ModCategory('Favorites', '', [], [], 0, [], [], []);
+  for (var list in favModsList) {
+    tempFavCate = addOrRemoveFav(categories, list, tempFavCate, true);
+  }
+  tempFavCate.itemNames.sort();
+  categories.insert(0, tempFavCate);
+
   return categories;
 }
 
@@ -267,10 +316,11 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
       if (tempMods.isNotEmpty) {
         tempMods.add(mod);
       } else {
-        appliedList.add([mod]);
+        appliedList.insert(0, [mod]);
       }
     }
   }
+  appliedList.sort(((a, b) => b.first.appliedDate.compareTo(b.first.appliedDate)));
   return appliedList;
 }
 

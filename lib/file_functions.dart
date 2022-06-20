@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -154,8 +156,11 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
 
   //Applied mods to app list
   for (var mod in actualAppliedMods) {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM-dd-yyyy').format(now);
     if (appliedModsList.isEmpty) {
-      appliedModsList.add([mod]);
+      mod.appliedDate = formattedDate;
+      appliedModsList.insert(0, [mod]);
     } else {
       final tempMods = appliedModsList.firstWhere(
         (modList) => modList.indexWhere((applied) => applied.iceParent == mod.iceParent && applied.modName == mod.modName) != -1,
@@ -166,9 +171,11 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
       if (tempMods.isNotEmpty) {
         tempMods.add(mod);
       } else {
-        appliedModsList.add([mod]);
+        mod.appliedDate = formattedDate;
+        appliedModsList.insert(0, [mod]);
       }
     }
+    appliedModsList.sort(((a, b) => a.first.appliedDate.compareTo(b.first.appliedDate)));
   }
 
   allModFiles.map((mod) => mod.toJson()).toList();
@@ -351,7 +358,7 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
 
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
 
-      ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, []);
+      ModFile newModFile = ModFile('', newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, []);
       newModFile.categoryName = selectedCategoryName.toString();
       newModFile.categoryPath = catePath;
       newModList.add(newModFile);
@@ -544,7 +551,7 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
 
             List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
 
-            ModFile newModFile = ModFile(0, newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
+            ModFile newModFile = ModFile('', newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
             newModFile.categoryName = selectedCategoryName.toString();
             newModFile.categoryPath = catePath;
             newModList.add(newModFile);
@@ -652,7 +659,7 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
       List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
 
-      ModFile newModFile = ModFile(0, newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
+      ModFile newModFile = ModFile('', newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
       newModFile.categoryName = matchedCategory.categoryName;
       newModFile.categoryPath = matchedCategory.categoryPath;
       newMods.add(newModFile);
@@ -723,7 +730,7 @@ Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList,
             List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
             List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
 
-            ModFile newModFile = ModFile(0, newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, vidList);
+            ModFile newModFile = ModFile('', newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
             newModFile.categoryName = matchedCategory.categoryName;
             newModFile.categoryPath = matchedCategory.categoryPath;
             newMods.add(newModFile);
@@ -754,4 +761,46 @@ Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList,
     );
     Provider.of<stateProvider>(context, listen: false).modsDropAddRemoveFirst();
   }
+}
+
+ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramModFileList, ModCategory paramFavCate, bool isAdding) {
+  ModCategory tempFavCate = paramFavCate;
+  var curCate = categoryList.singleWhere((element) => element.categoryName == paramModFileList.first.categoryName);
+  if (isAdding) {
+    for (var element in paramModFileList) {
+      element.isFav = true;
+      tempFavCate.allModFiles.add(element);
+    }
+    if (tempFavCate.itemNames.indexWhere((element) => element == paramModFileList.first.modName) == -1) {
+      tempFavCate.itemNames.insert(0, paramModFileList.first.modName);
+      tempFavCate.imageIcons.insert(0, curCate.imageIcons[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.numOfMods.insert(0, 1);
+      tempFavCate.numOfApplied.insert(0, curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.numOfItems++;
+    } else {
+      tempFavCate.numOfMods[tempFavCate.itemNames.indexOf(paramModFileList.first.modName)] += 1;
+      tempFavCate.numOfApplied[tempFavCate.itemNames.indexOf(paramModFileList.first.modName)] = curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)];
+    }
+  } else {
+    for (var element in paramModFileList) {
+      element.isFav = false;
+      tempFavCate.allModFiles.remove(element);
+    }
+    if (isViewingFav) {
+      modFilesList.remove(paramModFileList);
+    }
+    if (tempFavCate.allModFiles.indexWhere((element) => element.modName == paramModFileList.first.modName) == -1) {
+      tempFavCate.imageIcons.removeAt(tempFavCate.itemNames.indexOf(paramModFileList.first.modName));
+      tempFavCate.numOfMods.removeAt(tempFavCate.itemNames.indexOf(paramModFileList.first.modName));
+      tempFavCate.numOfApplied.removeAt(tempFavCate.itemNames.indexOf(paramModFileList.first.modName));
+      tempFavCate.itemNames.remove(paramModFileList.first.modName);
+      tempFavCate.numOfItems--;
+    }
+  }
+  
+  tempFavCate.itemNames.sort();
+  allModFiles.map((mod) => mod.toJson()).toList();
+  File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
+
+  return tempFavCate;
 }

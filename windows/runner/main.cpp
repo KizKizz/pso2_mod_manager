@@ -4,7 +4,6 @@ auto bdw = bitsdojo_window_configure(BDW_CUSTOM_FRAME | BDW_HIDE_ON_STARTUP);
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
 
-#include "flutter_native_view/flutter_native_view_plugin.h"
 
 #include "flutter_window.h"
 #include "utils.h"
@@ -36,7 +35,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   }
   window.SetQuitOnClose(true);
 
-  flutternativeview::NativeViewContainer::GetInstance()->Create();
 
   ::MSG msg;
   while (::GetMessage(&msg, nullptr, 0, 0)) {

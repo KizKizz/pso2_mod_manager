@@ -33,7 +33,7 @@ class ModCategory {
 
 class ModFile extends ModCategory {
   ModFile(
-      this.numOfSubItems,
+      this.appliedDate,
       this.modPath, //mod folder path
       this.modName, //mod folder name,
       this.icePath,
@@ -45,10 +45,11 @@ class ModFile extends ModCategory {
       this.isApplied,
       this.isSFW,
       this.isNew,
+      this.isFav,
       this.previewVids)
       : super('', '', [], [], 0, [], [], []);
 
-  int numOfSubItems;
+  String appliedDate;
   String modPath;
   String modName;
   String icePath;
@@ -60,11 +61,13 @@ class ModFile extends ModCategory {
   bool isApplied;
   bool isSFW;
   bool isNew;
+  bool isFav;
   List<File>? previewVids;
 
   fromJson(Map<String, dynamic> json) {
     categoryName = json['categoryName'];
     categoryPath = json['categoryPath'];
+    appliedDate = json['appliedDate'];
     modPath = json['modPath'];
     modName = json['modName'];
     icePath = json['icePath'];
@@ -75,12 +78,14 @@ class ModFile extends ModCategory {
     isApplied = json['isApplied'];
     isSFW = json['isSFW'];
     isNew = json['isNew'];
+    isFav = json['isFav'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['categoryPath'] = categoryPath;
     data['categoryName'] = categoryName;
+    data['appliedDate'] = appliedDate;
     data['modPath'] = modPath;
     data['modName'] = modName;
     data['iceName'] = iceName;
@@ -91,6 +96,7 @@ class ModFile extends ModCategory {
     data['isApplied'] = isApplied;
     data['isSFW'] = isSFW;
     data['isNew'] = isNew;
+    data['isFav'] = isFav;
 
     return data;
   }

@@ -7,6 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/home_page.dart';
@@ -34,8 +35,9 @@ double windowsHeight = 720.0;
 Future? filesData;
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
+
 Future<void> main() async {
-  DartVLC.initialize(useFlutterNativeView: true);
+  DartVLC.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -105,13 +107,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
   bool isDarkModeOn = false;
+  String appVersion = '';
 
   @override
   void initState() {
     windowManager.addListener(this);
     miscCheck();
     dirPathCheck();
+    getAppVer();
     super.initState();
+  }
+
+  Future<void> getAppVer() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
   }
 
   @override
@@ -228,11 +237,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                         child: MoveWindow(
                       child: Container(
                           padding: const EdgeInsets.only(left: 10),
-                          child: const Text(
+                          child: Tooltip(
+                            message: 'Version: $appVersion | Build by キス★',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 2),
+                            child: const Text(
                             'PSO2NGS Mod Manager',
                             style: TextStyle(fontWeight: FontWeight.w500),
                           )),
-                    )),
+                    )),),
                     //Buttons
                     Padding(
                       padding: const EdgeInsets.only(bottom: 9),
@@ -412,7 +426,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Preview
                           Tooltip(
-                            message: 'Open/Hide Preview Window',
+                            message: 'Show/Hide Preview Window',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
@@ -454,41 +468,47 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Dark theme
                           if (MyApp.themeNotifier.value == ThemeMode.dark)
-                            MaterialButton(
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                MyApp.themeNotifier.value = ThemeMode.light;
-                                prefs.setBool('isDarkModeOn', false);
-                                //setState(() {});
-                              }),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.light_mode_outlined,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
-                                ],
+                            SizedBox(
+                              width: 70,
+                              child: MaterialButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  MyApp.themeNotifier.value = ThemeMode.light;
+                                  prefs.setBool('isDarkModeOn', false);
+                                  //setState(() {});
+                                }),
+                                child: Row(
+                                  children: const [
+                                    Icon(
+                                      Icons.light_mode_outlined,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
                               ),
                             ),
                           if (MyApp.themeNotifier.value == ThemeMode.light)
-                            MaterialButton(
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                MyApp.themeNotifier.value = ThemeMode.dark;
-                                prefs.setBool('isDarkModeOn', true);
-                                //setState(() {});
-                              }),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.dark_mode_outlined,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
-                                ],
+                            SizedBox(
+                              width: 70,
+                              child: MaterialButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  MyApp.themeNotifier.value = ThemeMode.dark;
+                                  prefs.setBool('isDarkModeOn', true);
+                                  //setState(() {});
+                                }),
+                                child: Row(
+                                  children: const [
+                                    Icon(
+                                      Icons.dark_mode_outlined,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
                               ),
                             ),
                         ],

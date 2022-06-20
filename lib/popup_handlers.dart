@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
@@ -448,7 +452,6 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                           curCate.allModFiles.remove(element);
                           allModFiles.remove(element);
                         }
-                        
                       }
                     }),
                     child: const Text('Sure'))
@@ -458,14 +461,105 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
       });
 }
 
-class _SystemPadding extends StatelessWidget {
-  final Widget child;
-
-  const _SystemPadding({Key? key, required this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    return AnimatedContainer(padding: mediaQuery.viewInsets, duration: const Duration(milliseconds: 300), child: child);
-  }
+//Remove Mod Dialog
+Future pictureDialog(context, List<Widget> previewImageSliders) async {
+  CarouselController imgSliderController = CarouselController();
+  int currentImg = 0;
+  await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            contentPadding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+            content: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InteractiveViewer(
+                  scaleEnabled: true,
+                  panEnabled: true,
+                  child: AspectRatio(
+                    aspectRatio: 16/9,
+                    child: CarouselSlider(
+                      items: previewImageSliders,
+                      carouselController: imgSliderController,
+                      options: CarouselOptions(
+                          //height: double.maxFinite,
+                          autoPlay: false,
+                          reverse: true,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          aspectRatio: 1,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              currentImg = index;
+                            });
+                          }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 250, child: Text('Scroll wheel: Zoom | Right mouse: Pan',)),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (previewImageSliders.isNotEmpty)
+                          SizedBox(
+                            width: 40,
+                            child: MaterialButton(
+                              onPressed: (() => imgSliderController.previousPage()),
+                              child: const Icon(Icons.arrow_left),
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: modPreviewImgList.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => imgSliderController.animateToPage(entry.key),
+                              child: Container(
+                                width: 10.0,
+                                height: 10.0,
+                                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(currentImg == entry.key ? 0.9 : 0.4)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        if (previewImageSliders.isNotEmpty)
+                          SizedBox(
+                            width: 40,
+                            child: MaterialButton(
+                              onPressed: (() => imgSliderController.nextPage()),
+                              child: const Icon(Icons.arrow_right),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 250,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                            child: const Text('Close'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+      });
 }
