@@ -234,19 +234,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 child: Row(
                   children: [
                     Expanded(
-                        child: MoveWindow(
-                      child: Container(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Tooltip(
+                      child: MoveWindow(
+                          child: Container(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Tooltip(
                             message: 'Version: $appVersion | Build by キス★',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 2),
                             child: const Text(
-                            'PSO2NGS Mod Manager',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          )),
-                    )),),
+                              'PSO2NGS Mod Manager',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            )),
+                      )),
+                    ),
                     //Buttons
                     Padding(
                       padding: const EdgeInsets.only(bottom: 9),
