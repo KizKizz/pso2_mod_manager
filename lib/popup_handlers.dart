@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -334,13 +335,14 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
 
                             final subFolderList = Directory(curCate.categoryPath).listSync().whereType<Directory>();
                             for (var folder in subFolderList) {
-                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty) {
                                 Directory(folder.path).deleteSync(recursive: true);
                               }
                             }
                           }
 
                           curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
+                          curCate.numOfMods.removeAt(curCate.itemNames.indexWhere((element) => element == curItem));
                           curCate.itemNames.removeWhere((element) => element == curItem);
                           curCate.allModFiles.removeWhere((element) => element.modName == curItem);
                           curCate.numOfItems--;
@@ -425,21 +427,27 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                           }
                         }
 
-                        final subFolderList = Directory(curModPath).listSync().whereType<Directory>();
-                        for (var folder in subFolderList) {
-                          if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                            Directory(folder.path).deleteSync(recursive: true);
+                        if (Directory(curModPath).existsSync()) {
+                          final subFolderList = Directory(curModPath).listSync().whereType<Directory>();
+                          for (var folder in subFolderList) {
+                            if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty && Directory(folder.path).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                              Directory(folder.path).deleteSync(recursive: true);
+                            }
                           }
-                        }
-                        if (Directory(curModPath).listSync(recursive: true).whereType<File>().isEmpty && Directory(curModPath).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                          Directory(curModPath).deleteSync(recursive: true);
+
+                          if (Directory(curModPath).listSync(recursive: true).whereType<File>().isEmpty && Directory(curModPath).listSync(recursive: true).whereType<Directory>().isEmpty) {
+                            Directory(curModPath).deleteSync(recursive: true);
+                          }
                         }
 
                         ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
                         final curModIndex = curCate.itemNames.indexOf(curModName);
                         curCate.numOfMods[curModIndex]--;
-                        modFilesList.removeWhere((element) => element == modsList);
-                        allModFiles.removeWhere((element) => element.categoryPath == curCate.categoryPath && element.modName == curModName);
+                        modFilesList.removeAt(modFilesList.indexOf(modsList));
+                        for (var element in modsList) {
+                          curCate.allModFiles.remove(element);
+                          allModFiles.remove(element);
+                        }
                       }
                     }),
                     child: const Text('Sure'))
@@ -449,14 +457,105 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
       });
 }
 
-class _SystemPadding extends StatelessWidget {
-  final Widget child;
-
-  const _SystemPadding({Key? key, required this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    return AnimatedContainer(padding: mediaQuery.viewInsets, duration: const Duration(milliseconds: 300), child: child);
-  }
+//Remove Mod Dialog
+Future pictureDialog(context, List<Widget> previewImageSliders) async {
+  CarouselController imgSliderController = CarouselController();
+  int currentImg = 0;
+  await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            contentPadding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+            content: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InteractiveViewer(
+                  scaleEnabled: true,
+                  panEnabled: true,
+                  child: AspectRatio(
+                    aspectRatio: 16/9,
+                    child: CarouselSlider(
+                      items: previewImageSliders,
+                      carouselController: imgSliderController,
+                      options: CarouselOptions(
+                          //height: double.maxFinite,
+                          autoPlay: false,
+                          reverse: true,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          aspectRatio: 1,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              currentImg = index;
+                            });
+                          }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 250, child: Text('Scroll wheel: Zoom | Right mouse: Pan',)),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (previewImageSliders.isNotEmpty)
+                          SizedBox(
+                            width: 40,
+                            child: MaterialButton(
+                              onPressed: (() => imgSliderController.previousPage()),
+                              child: const Icon(Icons.arrow_left),
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: modPreviewImgList.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => imgSliderController.animateToPage(entry.key),
+                              child: Container(
+                                width: 10.0,
+                                height: 10.0,
+                                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(currentImg == entry.key ? 0.9 : 0.4)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        if (previewImageSliders.isNotEmpty)
+                          SizedBox(
+                            width: 40,
+                            child: MaterialButton(
+                              onPressed: (() => imgSliderController.nextPage()),
+                              child: const Icon(Icons.arrow_right),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 250,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                            child: const Text('Close'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+      });
 }

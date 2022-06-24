@@ -4,10 +4,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:dart_vlc/dart_vlc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
+import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -26,18 +29,21 @@ String modSettingsPath = '';
 String deletedItemsPath = '';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
+bool _previewWindowVisible = false;
 double windowsWidth = 1280.0;
 double windowsHeight = 720.0;
 Future? filesData;
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
+
 Future<void> main() async {
+  DartVLC.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   windowsWidth = (prefs.getDouble('windowsWidth') ?? 1280.0);
   windowsHeight = (prefs.getDouble('windowsHeight') ?? 720.0);
-  
+
   // WindowOptions windowOptions = const WindowOptions(
   //   size: Size(1280, 720),
   //   center: true,
@@ -51,7 +57,7 @@ Future<void> main() async {
   ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
-    appWindow.minSize = const Size(1030, 500);
+    appWindow.minSize = const Size(1160, 500);
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
@@ -101,13 +107,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
   bool isDarkModeOn = false;
+  String appVersion = '';
 
   @override
   void initState() {
     windowManager.addListener(this);
     miscCheck();
     dirPathCheck();
+    getAppVer();
     super.initState();
+  }
+
+  Future<void> getAppVer() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
   }
 
   @override
@@ -132,6 +145,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       isDarkModeOn = (prefs.getBool('isDarkModeOn') ?? false);
       if (isDarkModeOn) {
         MyApp.themeNotifier.value = ThemeMode.dark;
+      }
+      //previewWindows Check
+      _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? false);
+      if (_previewWindowVisible) {
+        Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+      } else {
+        Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetFalse();
       }
     });
   }
@@ -214,14 +234,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 child: Row(
                   children: [
                     Expanded(
-                        child: MoveWindow(
-                      child: Container(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: const Text(
-                            'PSO2NGS Mod Manager',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          )),
-                    )),
+                      child: MoveWindow(
+                          child: Container(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Tooltip(
+                            message: 'Version: $appVersion | Build by キス★',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 2),
+                            child: const Text(
+                              'PSO2NGS Mod Manager',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            )),
+                      )),
+                    ),
                     //Buttons
                     Padding(
                       padding: const EdgeInsets.only(bottom: 9),
@@ -346,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         SizedBox(width: 5),
-                                        Text('Checksum file missing. Click here!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        Text('Checksum missing. Click!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -399,43 +425,91 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             ),
                           ),
 
-                          //Dark theme
-                          if (MyApp.themeNotifier.value == ThemeMode.dark)
-                            MaterialButton(
+                          //Preview
+                          Tooltip(
+                            message: 'Show/Hide Preview Window',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
                                 final prefs = await SharedPreferences.getInstance();
-                                MyApp.themeNotifier.value = ThemeMode.light;
-                                prefs.setBool('isDarkModeOn', false);
-                                //setState(() {});
+                                if (Provider.of<stateProvider>(context, listen: false).previewWindowVisible) {
+                                  Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                  prefs.setBool('previewWindowVisible', false);
+                                  previewPlayer.stop();
+                                } else {
+                                  Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  prefs.setBool('previewWindowVisible', true);
+                                }
                               }),
                               child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.light_mode_outlined,
+                                children: [
+                                  const Icon(
+                                    Icons.preview_outlined,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
+                                  const SizedBox(width: 5),
+                                  const Text('Preview: ', style: TextStyle(fontWeight: FontWeight.w400)),
+                                  if (context.watch<stateProvider>().previewWindowVisible)
+                                    SizedBox(
+                                        width: 23,
+                                        child: Text('ON',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
+                                  if (context.watch<stateProvider>().previewWindowVisible == false)
+                                    const SizedBox(width: 23, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)))
                                 ],
                               ),
                             ),
+                          ),
+
+                          //Dark theme
+                          if (MyApp.themeNotifier.value == ThemeMode.dark)
+                            SizedBox(
+                              width: 70,
+                              child: MaterialButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  MyApp.themeNotifier.value = ThemeMode.light;
+                                  prefs.setBool('isDarkModeOn', false);
+                                  //setState(() {});
+                                }),
+                                child: Row(
+                                  children: const [
+                                    Icon(
+                                      Icons.light_mode_outlined,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
+                              ),
+                            ),
                           if (MyApp.themeNotifier.value == ThemeMode.light)
-                            MaterialButton(
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                MyApp.themeNotifier.value = ThemeMode.dark;
-                                prefs.setBool('isDarkModeOn', true);
-                                //setState(() {});
-                              }),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.dark_mode_outlined,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
-                                ],
+                            SizedBox(
+                              width: 70,
+                              child: MaterialButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  MyApp.themeNotifier.value = ThemeMode.dark;
+                                  prefs.setBool('isDarkModeOn', true);
+                                  //setState(() {});
+                                }),
+                                child: Row(
+                                  children: const [
+                                    Icon(
+                                      Icons.dark_mode_outlined,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
                               ),
                             ),
                         ],
@@ -451,7 +525,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 : Column(
                     children: const [
                       Text(
-                        'Waiting for user action',
+                        'Waiting for user\'s action',
                         style: TextStyle(fontSize: 20),
                       ),
                       SizedBox(

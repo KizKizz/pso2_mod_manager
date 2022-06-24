@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
+  dart_vlc
   desktop_drop
+  flutter_native_view
   screen_retriever
   url_launcher_windows
   window_manager
