@@ -107,7 +107,7 @@ Future<List<ModFile>> modsLoader() async {
 
 //Category List
 List<ModCategory> categories(List<ModFile> allModFiles) {
-  File defaultCategoryItemIcon = File('assets/img/placeholdersquare.jpg');
+  File defaultCategoryItemIcon = File('assets/img/placeholdersquare.png');
   List<ModCategory> categories = [];
 
   //Get categories

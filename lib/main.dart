@@ -372,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         SizedBox(width: 5),
-                                        Text('Checksum file missing. Click here!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        Text('Checksum missing. Click!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),

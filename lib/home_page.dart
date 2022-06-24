@@ -449,7 +449,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Ink(
                               color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
                               child: ListTile(
-                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.png'
                                     ? SizedBox(
                                         width: 50,
                                         height: 50,
@@ -462,6 +462,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         height: 50,
                                         child: Image.asset(
                                           cateList[index].imageIcons[i].first.path,
+                                          filterQuality: FilterQuality.none,
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateList[index].itemNames[i]),
@@ -596,7 +597,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Ink(
                               color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
                               child: ListTile(
-                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.png'
                                     ? SizedBox(
                                         width: 50,
                                         height: 50,
@@ -609,6 +610,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         height: 50,
                                         child: Image.asset(
                                           cateList[index].imageIcons[i].first.path,
+                                          filterQuality: FilterQuality.none,
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateList[index].itemNames[i]),
@@ -849,7 +851,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Ink(
                               color: searchListSelectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
                               child: ListTile(
-                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.png'
                                     ? SizedBox(
                                         width: 50,
                                         height: 50,
@@ -862,6 +864,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         height: 50,
                                         child: Image.asset(
                                           cateListSearchResult[index].imageIcons[i].first.path,
+                                          filterQuality: FilterQuality.none,
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateListSearchResult[index].itemNames[i]),
@@ -942,7 +945,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Ink(
                               color: searchListSelectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
                               child: ListTile(
-                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.png'
                                     ? SizedBox(
                                         width: 50,
                                         height: 50,
@@ -955,6 +958,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         height: 50,
                                         child: Image.asset(
                                           cateListSearchResult[index].imageIcons[i].first.path,
+                                          filterQuality: FilterQuality.none,
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateListSearchResult[index].itemNames[i]),

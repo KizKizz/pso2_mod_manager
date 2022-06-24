@@ -374,7 +374,7 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
   final newModRoot = Directory(newItemPath).listSync(recursive: false).whereType<File>();
   final thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png').toList();
   if (thumbnails.isEmpty) {
-    thumbnails.add(File('assets/img/placeholdersquare.jpg'));
+    thumbnails.add(File('assets/img/placeholdersquare.png'));
   }
   final selectedCategory = cateList.firstWhere((element) => element.categoryName == categoryName);
   if (selectedCategory.itemNames.indexWhere((element) => element == modName) == -1) {
@@ -567,7 +567,7 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
         final newModRoot = Directory(newItemPath).listSync(recursive: false).whereType<File>();
         final thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png').toList();
         if (thumbnails.isEmpty) {
-          thumbnails.add(File('assets/img/placeholdersquare.jpg'));
+          thumbnails.add(File('assets/img/placeholdersquare.png'));
         }
         final selectedCategory = cateList.firstWhere((element) => element.categoryName == categoryName);
         if (selectedCategory.itemNames.indexWhere((element) => element == modName) == -1) {

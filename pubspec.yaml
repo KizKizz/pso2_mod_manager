@@ -71,7 +71,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/img/placeholdersquare.jpg
+    - assets/img/placeholdersquare.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
