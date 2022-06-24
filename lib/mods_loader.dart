@@ -270,6 +270,88 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   return categories;
 }
 
+//Search result
+List<ModCategory> searchFilterResults(List<ModCategory> paramCateList, String searchText) {
+  List<ModCategory> resultList = [];
+
+  for (var cate in paramCateList) {
+    if (cate.categoryName != 'Favorites') {
+      List<String> itemNameResults = [];
+      if (cate.categoryName == 'Basewears' || cate.categoryName == 'Outerwears' || cate.categoryName == 'Innerwears' || cate.categoryName == 'Setwears') {
+        itemNameResults = cate.itemNames.where((element) => element.replaceRange(element.length - 4, null, '').toLowerCase().contains(searchText.toLowerCase())).toList();
+      } else {
+        itemNameResults = cate.itemNames.where((element) => element.toLowerCase().contains(searchText.toLowerCase())).toList();
+      }
+
+      if (itemNameResults.isNotEmpty) {
+        ModCategory newCate = ModCategory(cate.categoryName, cate.categoryPath, [], [], itemNameResults.length, [], [], []);
+        for (var itemName in itemNameResults) {
+          int itemIndex = cate.itemNames.indexOf(itemName);
+          List<File> imgFiles = cate.imageIcons[itemIndex];
+          int numofMod = cate.numOfMods[itemIndex];
+          int numofApplied = cate.numOfApplied[itemIndex];
+          List<ModFile> modsInItems = cate.allModFiles.where((element) => element.modName == itemName).toList();
+
+          //Populate newcate
+          newCate.itemNames.add(itemName);
+          newCate.imageIcons.add(imgFiles);
+          newCate.numOfMods.add(numofMod);
+          newCate.numOfApplied.add(numofApplied);
+          newCate.allModFiles.addAll(modsInItems);
+        }
+        resultList.add(newCate);
+      } else {
+        List<ModFile> modFileResults =
+            cate.allModFiles.where((element) => element.iceName.toLowerCase().contains(searchText.toLowerCase()) || element.iceParent.toLowerCase().contains(searchText.toLowerCase())).toList();
+
+        if (modFileResults.isNotEmpty) {
+          // List<String> parentsFromMods = [];
+          // for (var element in modFileResults) {
+          //   if (parentsFromMods.indexWhere((e) => e == element.iceParent) == -1) {
+          //     parentsFromMods.add(element.iceParent);
+          //   }
+          // }
+          List<String> itemNamesfromMods = [];
+          for (var element in modFileResults) {
+            if (itemNamesfromMods.indexWhere((e) => e == element.modName) == -1) {
+              itemNamesfromMods.add(element.modName);
+            }
+          }
+
+          ModCategory newCate = ModCategory(cate.categoryName, cate.categoryPath, [], [], itemNamesfromMods.length, [], [], []);
+          for (var itemName in itemNamesfromMods) {
+            int itemIndex = cate.itemNames.indexOf(itemName);
+            List<File> imgFiles = cate.imageIcons[itemIndex];
+            List<String> parentsInItems = [];
+            for (var element in modFileResults.where((element) => element.modName == itemName)) {
+              if (parentsInItems.indexWhere((e) => e == element.iceParent) == -1) {
+                parentsInItems.add(element.iceParent);
+              }
+            }
+            int numofMod = parentsInItems.length;
+            int numofApplied = modFileResults.where((element) => element.isApplied == true).length; // need to change
+            List<ModFile> modsInItems = modFileResults.where((element) => element.modName == itemName).toList();
+            //List<ModFile> modsInItems = [];
+            // for (var parent in parentsFromMods) {
+            //   modsInItems = modFileResults.where((element) => element.modName == itemName).toList();
+            // }
+
+            //Populate newcate
+            newCate.itemNames.add(itemName);
+            newCate.imageIcons.add(imgFiles);
+            newCate.numOfMods.add(numofMod);
+            newCate.numOfApplied.add(numofApplied);
+            newCate.allModFiles.addAll(modsInItems);
+          }
+          resultList.add(newCate);
+        }
+      }
+    }
+  }
+
+  return resultList;
+}
+
 //Mod List
 Future<List<List<ModFile>>> getModFilesByCategory(List<ModFile> allModFiles, String modName) async {
   List<List<ModFile>> modFilesList = [];

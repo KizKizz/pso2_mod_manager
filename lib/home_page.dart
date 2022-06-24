@@ -23,6 +23,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 List<ModCategory> cateList = [];
+List<ModCategory> cateListSearchResult = [];
 Future? modFilesListGet;
 Future? futureImagesGet;
 Future? appliedModsListGet;
@@ -35,6 +36,8 @@ List<ModFile> backupFilesMissingList = [];
 List<bool> isLoading = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
+bool isSearching = false;
+TextEditingController searchBoxTextController = TextEditingController();
 
 //New Cate
 bool addCategoryVisible = false;
@@ -86,6 +89,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.5)]);
   String modsViewAppBarName = '';
   List<int> selectedIndex = List.generate(cateList.length, (index) => -1);
+  List<int> searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
   CarouselController imgSliderController = CarouselController();
   List<Widget> previewImageSliders = [];
 
@@ -96,6 +100,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isPreviewVidOn = false;
   bool modViewExpandAll = false;
   bool isErrorInSingleItemName = false;
+  double searchBoxLeftPadding = 80;
 
   late AnimationController cateAdderAniController;
   late Animation<Offset> cateAdderAniOffset;
@@ -170,10 +175,74 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Items')),
+          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Items')),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          flexibleSpace: Container(
+              height: 30,
+              width: double.maxFinite,
+              padding: EdgeInsets.only(left: searchBoxLeftPadding, right: 100, bottom: 3),
+              child: Focus(
+                onFocusChange: (hasFocus) {
+                  setState(() {
+                    if (hasFocus) {
+                      searchBoxLeftPadding = 15;
+                    } else {
+                      if (searchBoxTextController.text.isEmpty) {
+                        searchBoxLeftPadding = 80;
+                      } else {
+                        searchBoxLeftPadding = 15;
+                      }
+                    }
+                  });
+                },
+                child: TextFormField(
+                  controller: searchBoxTextController,
+                  enableSuggestions: true,
+                  maxLines: 1,
+                  onChanged: (value) {
+                    if (value != '') {
+                      setState(() {
+                        modFilesList.clear();
+                        modsViewAppBarName = 'Available Mods';
+                        isSearching = true;
+                        cateListSearchResult = searchFilterResults(cateList, value);
+                        searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
+                      });
+                    } else {
+                      setState(() {
+                        isSearching = false;
+                        modFilesList.clear();
+                        modsViewAppBarName = 'Available Mods';
+                        cateListSearchResult = [];
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                      border: const OutlineInputBorder(),
+                      hintText: 'Search',
+                      suffixIcon: searchBoxTextController.text == ''
+                          ? null
+                          : SizedBox(
+                              width: 25,
+                              child: MaterialButton(
+                                  onPressed: searchBoxTextController.text == ''
+                                      ? null
+                                      : (() {
+                                          setState(() {
+                                            searchBoxTextController.clear();
+                                            modFilesList.clear();
+                                            modsViewAppBarName = 'Available Mods';
+                                            isSearching = false;
+                                            searchBoxLeftPadding = 80;
+                                          });
+                                        }),
+                                  child: const Icon(Icons.clear)),
+                            )),
+                ),
+              )),
           actions: [
             Padding(
                 padding: const EdgeInsets.only(right: 2.5),
@@ -265,356 +334,89 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
 
         //Category List
-        Expanded(
-          child: SingleChildScrollView(
-            controller: AdjustableScrollController(80),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: cateList.length,
-              itemBuilder: (context, index) {
-                return ExpansionTile(
-                  initiallyExpanded: false,
-                  textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                  iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                  collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                  collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                  // textColor: cateList[index].categoryName != 'Favorites'
-                  //   ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
-                  //   : MyApp.themeNotifier.value == ThemeMode.light ? Colors.orange.shade900 : Theme.of(context).iconTheme.color,
-                  // iconColor: cateList[index].categoryName != 'Favorites'
-                  //   ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
-                  //   : MyApp.themeNotifier.value == ThemeMode.light ? Colors.orange.shade900 : Theme.of(context).iconTheme.color,
-                  // collapsedTextColor: cateList[index].categoryName != 'Favorites'
-                  //   ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
-                  //   : MyApp.themeNotifier.value == ThemeMode.light ? Colors.orange.shade900 : Theme.of(context).iconTheme.color,
-                  // collapsedIconColor: cateList[index].categoryName != 'Favorites'
-                  //   ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
-                  //   : MyApp.themeNotifier.value == ThemeMode.light ? Colors.orange.shade900 : Theme.of(context).iconTheme.color,
-                  onExpansionChanged: (newState) {
-                    setState(() {
-                      if (!newState) {
-                        selectedIndex = List.filled(cateList.length, -1);
-                      } else {
-                        selectedIndex = List.filled(cateList.length, -1);
-                      }
-                    });
-                  },
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
+        if (!isSearching)
+          Expanded(
+            child: SingleChildScrollView(
+              controller: AdjustableScrollController(80),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: cateList.length,
+                itemBuilder: (context, index) {
+                  return AbsorbPointer(
+                    absorbing: isSearching,
+                    child: ExpansionTile(
+                      initiallyExpanded: false,
+                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      onExpansionChanged: (newState) {
+                        setState(() {
+                          if (!newState) {
+                            selectedIndex = List.filled(cateList.length, -1);
+                          } else {
+                            selectedIndex = List.filled(cateList.length, -1);
+                          }
+                        });
+                      },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          if (cateList[index].categoryName == 'Favorites')
-                            Text(
-                              cateList[index].categoryName,
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                          if (cateList[index].categoryName != 'Favorites') Text(cateList[index].categoryName),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10, top: 3),
-                            child: Container(
-                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Theme.of(context).highlightColor),
-                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                          Row(
+                            children: [
+                              if (cateList[index].categoryName == 'Favorites')
+                                Text(
+                                  cateList[index].categoryName,
+                                  style: const TextStyle(fontWeight: FontWeight.w500),
                                 ),
-                                child: Text('${cateList[index].numOfItems} Items',
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                    ))),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          if (cateList[index].categoryName != 'Favorites')
-                            Tooltip(
-                                message: 'Remove ${cateList[index].categoryName}',
-                                height: 25,
-                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                waitDuration: const Duration(seconds: 2),
-                                child: SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: MaterialButton(
-                                      onPressed: (() {
-                                        setState(() {
-                                          if (cateList[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
-                                            categoryDeleteDialog(
-                                                    context,
-                                                    100,
-                                                    'Remove Category',
-                                                    'Remove "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
-                                                    true,
-                                                    cateList[index].categoryPath,
-                                                    cateList[index].allModFiles)
-                                                .then((_) {
-                                              setState(() {
-                                                //setstate to refresh list
-                                              });
-                                            });
-                                          } else {
-                                            List<ModFile> tempList = cateList[index].allModFiles.where((element) => element.isApplied == true).toList();
-                                            List<String> stillAppliedList = [];
-                                            double popupHeight = 40;
-                                            for (var element in tempList) {
-                                              stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                                              popupHeight += 24;
-                                            }
-                                            String stillApplied = stillAppliedList.join('\n');
-                                            categoryDeleteDialog(context, popupHeight, 'Remove Category', 'Cannot remove "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied',
-                                                false, cateList[index].categoryPath, []);
-                                          }
-                                        });
-                                      }),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.delete_sweep_rounded,
-                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                          )
-                                        ],
-                                      )),
-                                )),
-                        ],
-                      )
-                    ],
-                  ),
-                  children: [
-                    //Fav list
-                    if (cateList[index].categoryName == 'Favorites')
-                      for (int i = 0; i < cateList[index].itemNames.length; i++)
-                        Ink(
-                          color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
-                          child: ListTile(
-                            leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
-                                ? SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.file(
-                                      cateList[index].imageIcons[i].first,
-                                      fit: BoxFit.fitWidth,
-                                    ))
-                                : SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.asset(
-                                      cateList[index].imageIcons[i].first.path,
-                                      fit: BoxFit.fitWidth,
-                                    )),
-                            title: Text(cateList[index].itemNames[i]),
-                            subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Applied: ${cateList[index].numOfApplied[i]}'),
-                            trailing: Wrap(
-                              children: [
-                                if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
-                                  const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
-
-                                //Buttons
-                                Tooltip(
-                                    message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
-                                    height: 25,
-                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                    waitDuration: const Duration(seconds: 2),
-                                    child: SizedBox(
-                                      width: 34,
-                                      height: 50,
-                                      child: MaterialButton(
-                                          onPressed: (() async {
-                                            await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
-                                          }),
-                                          child: Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.folder_open_rounded,
-                                                size: 18,
-                                              )
-                                            ],
-                                          )),
-                                    )),
-                                if (cateList[index].categoryName == 'Favorites')
-                                  SizedBox(
-                                    width: 34,
-                                    height: 50,
-                                    child: Tooltip(
-                                      message: 'Remove "${cateList[index].itemNames[i]}" from favorites',
-                                      height: 25,
-                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                      waitDuration: const Duration(seconds: 1),
-                                      child: MaterialButton(
-                                          onPressed: (() async {
-                                            List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
-                                            for (var element in modListToRemoveFav) {
-                                              cateList[index] = addOrRemoveFav(cateList, element, cateList[index], false);
-                                            }
-                                            setState(() {});
-                                          }),
-                                          child: const FaIcon(
-                                            FontAwesomeIcons.heartCircleXmark,
-                                            size: 17,
-                                            //color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
-                                          )),
+                              if (cateList[index].categoryName != 'Favorites') Text(cateList[index].categoryName),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, top: 3),
+                                child: Container(
+                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Theme.of(context).highlightColor),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
-                                  ),
-
-                                // if (cateList[index].categoryName != 'Favorites')
-                                // Tooltip(
-                                //     message: 'Remove ${cateList[index].itemNames[i]}',
-                                //     height: 25,
-                                //     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                //     waitDuration: const Duration(seconds: 2),
-                                //     child: SizedBox(
-                                //       width: 36,
-                                //       height: 50,
-                                //       child: MaterialButton(
-                                //           onPressed: (() {
-                                //             setState(() {
-                                //               if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
-                                //                 itemDeleteDialog(
-                                //                         context,
-                                //                         100,
-                                //                         'Remove Item',
-                                //                         'Remove "${cateList[index].itemNames[i]}" and move it to Deleted Items folder?\nThis will also remove all mods in this item',
-                                //                         true,
-                                //                         cateList[index],
-                                //                         cateList[index].itemNames[i],
-                                //                         cateList[index].allModFiles)
-                                //                     .then((_) {
-                                //                   setState(() {
-                                //                     modsViewAppBarName = 'Available Mods';
-                                //                     isModSelected = false;
-                                //                     //setstate
-                                //                   });
-                                //                 });
-                                //               } else {
-                                //                 List<ModFile> tempList =
-                                //                     cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
-                                //                 List<String> stillAppliedList = [];
-                                //                 double popupHeight = 40;
-                                //                 for (var element in tempList) {
-                                //                   stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                                //                   popupHeight += 24;
-                                //                 }
-                                //                 String stillApplied = stillAppliedList.join('\n');
-                                //                 itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                //                     false, cateList[index], cateList[index].itemNames[i], []);
-                                //               }
-                                //             });
-                                //           }),
-                                //           child: Row(
-                                //             children: const [
-                                //               Icon(
-                                //                 Icons.delete_forever_outlined,
-                                //                 size: 20,
-                                //               )
-                                //             ],
-                                //           )),
-                                //     )),
-                              ],
-                            ),
-                            onTap: () {
-                              setState(() {
-                                isViewingFav = true;
-                                isPreviewImgsOn = false;
-                                modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
-                                selectedIndex = List.filled(cateList.length, -1);
-                                selectedIndex[index] = i;
-                                modNameCatSelected = -1;
-                                modsViewAppBarName = cateList[index].itemNames[i];
-                                _newModToItemIndex = index;
-                                isModSelected = true;
-                                isLoading.clear();
-                              });
-                            },
+                                    child: Text('${cateList[index].numOfItems} Items',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                        ))),
+                              ),
+                            ],
                           ),
-                        ),
-
-                    //Non fav
-                    if (cateList[index].categoryName != 'Favorites')
-                      for (int i = 0; i < cateList[index].itemNames.length; i++)
-                        Ink(
-                          color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
-                          child: ListTile(
-                            leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
-                                ? SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.file(
-                                      cateList[index].imageIcons[i].first,
-                                      fit: BoxFit.fitWidth,
-                                    ))
-                                : SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.asset(
-                                      cateList[index].imageIcons[i].first.path,
-                                      fit: BoxFit.fitWidth,
-                                    )),
-                            title: Text(cateList[index].itemNames[i]),
-                            subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Files applied: ${cateList[index].numOfApplied[i]}'),
-                            trailing: Wrap(
-                              children: [
-                                if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
-                                  const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
-
-                                //Buttons
+                          Row(
+                            children: [
+                              if (cateList[index].categoryName != 'Favorites')
                                 Tooltip(
-                                    message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                    message: 'Remove ${cateList[index].categoryName}',
                                     height: 25,
                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                     waitDuration: const Duration(seconds: 2),
                                     child: SizedBox(
-                                      width: 34,
-                                      height: 50,
-                                      child: MaterialButton(
-                                          onPressed: (() async {
-                                            await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
-                                          }),
-                                          child: Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.folder_open_rounded,
-                                                size: 18,
-                                              )
-                                            ],
-                                          )),
-                                    )),
-                                Tooltip(
-                                    message: 'Delete ${cateList[index].itemNames[i]}',
-                                    height: 25,
-                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                    waitDuration: const Duration(seconds: 2),
-                                    child: SizedBox(
-                                      width: 36,
-                                      height: 50,
+                                      width: 40,
+                                      height: 40,
                                       child: MaterialButton(
                                           onPressed: (() {
                                             setState(() {
-                                              if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
-                                                itemDeleteDialog(
+                                              if (cateList[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
+                                                categoryDeleteDialog(
                                                         context,
                                                         100,
-                                                        'Delete Item',
-                                                        'Delete "${cateList[index].itemNames[i]}" and move it to \'Deleted\' Items folder?\nThis will also delete all mods in this item',
+                                                        'Remove Category',
+                                                        'Remove "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
                                                         true,
-                                                        cateList[index],
-                                                        cateList[index].itemNames[i],
+                                                        cateList[index].categoryPath,
                                                         cateList[index].allModFiles)
                                                     .then((_) {
                                                   setState(() {
-                                                    modsViewAppBarName = 'Available Mods';
-                                                    isModSelected = false;
-                                                    //setstate
+                                                    //setstate to refresh list
                                                   });
                                                 });
-                                              } else if (cateList[index].allModFiles.indexWhere((element) => element.isFav && element.modName == cateList[index].itemNames[i]) != -1) {
-                                                double popupHeight = 40;
-                                                itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Remove from Favorites first', false,
-                                                    cateList[index], cateList[index].itemNames[i], []);
                                               } else {
-                                                List<ModFile> tempList =
-                                                    cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
+                                                List<ModFile> tempList = cateList[index].allModFiles.where((element) => element.isApplied == true).toList();
                                                 List<String> stillAppliedList = [];
                                                 double popupHeight = 40;
                                                 for (var element in tempList) {
@@ -622,44 +424,672 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   popupHeight += 24;
                                                 }
                                                 String stillApplied = stillAppliedList.join('\n');
-                                                itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                                    false, cateList[index], cateList[index].itemNames[i], []);
+                                                categoryDeleteDialog(context, popupHeight, 'Remove Category',
+                                                    'Cannot remove "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
                                               }
                                             });
                                           }),
                                           child: Row(
-                                            children: const [
+                                            children: [
                                               Icon(
-                                                Icons.delete_forever_outlined,
-                                                size: 20,
+                                                Icons.delete_sweep_rounded,
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                               )
                                             ],
                                           )),
                                     )),
-                              ],
+                            ],
+                          )
+                        ],
+                      ),
+                      children: [
+                        //Fav list
+                        if (cateList[index].categoryName == 'Favorites')
+                          for (int i = 0; i < cateList[index].itemNames.length; i++)
+                            Ink(
+                              color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
+                              child: ListTile(
+                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                    ? SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.file(
+                                          cateList[index].imageIcons[i].first,
+                                          fit: BoxFit.fitWidth,
+                                        ))
+                                    : SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.asset(
+                                          cateList[index].imageIcons[i].first.path,
+                                          fit: BoxFit.fitWidth,
+                                        )),
+                                title: Text(cateList[index].itemNames[i]),
+                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Applied: ${cateList[index].numOfApplied[i]}'),
+                                trailing: Wrap(
+                                  children: [
+                                    if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
+                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+
+                                    //Buttons
+                                    Tooltip(
+                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 34,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.folder_open_rounded,
+                                                    size: 18,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                    if (cateList[index].categoryName == 'Favorites')
+                                      SizedBox(
+                                        width: 34,
+                                        height: 50,
+                                        child: Tooltip(
+                                          message: 'Remove "${cateList[index].itemNames[i]}" from favorites',
+                                          height: 25,
+                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                          waitDuration: const Duration(seconds: 1),
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
+                                                for (var element in modListToRemoveFav) {
+                                                  cateList[index] = addOrRemoveFav(cateList, element, cateList[index], false);
+                                                }
+                                                setState(() {});
+                                              }),
+                                              child: const FaIcon(
+                                                FontAwesomeIcons.heartCircleXmark,
+                                                size: 17,
+                                                //color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
+                                              )),
+                                        ),
+                                      ),
+
+                                    // if (cateList[index].categoryName != 'Favorites')
+                                    // Tooltip(
+                                    //     message: 'Remove ${cateList[index].itemNames[i]}',
+                                    //     height: 25,
+                                    //     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                    //     waitDuration: const Duration(seconds: 2),
+                                    //     child: SizedBox(
+                                    //       width: 36,
+                                    //       height: 50,
+                                    //       child: MaterialButton(
+                                    //           onPressed: (() {
+                                    //             setState(() {
+                                    //               if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
+                                    //                 itemDeleteDialog(
+                                    //                         context,
+                                    //                         100,
+                                    //                         'Remove Item',
+                                    //                         'Remove "${cateList[index].itemNames[i]}" and move it to Deleted Items folder?\nThis will also remove all mods in this item',
+                                    //                         true,
+                                    //                         cateList[index],
+                                    //                         cateList[index].itemNames[i],
+                                    //                         cateList[index].allModFiles)
+                                    //                     .then((_) {
+                                    //                   setState(() {
+                                    //                     modsViewAppBarName = 'Available Mods';
+                                    //                     isModSelected = false;
+                                    //                     //setstate
+                                    //                   });
+                                    //                 });
+                                    //               } else {
+                                    //                 List<ModFile> tempList =
+                                    //                     cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
+                                    //                 List<String> stillAppliedList = [];
+                                    //                 double popupHeight = 40;
+                                    //                 for (var element in tempList) {
+                                    //                   stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                                    //                   popupHeight += 24;
+                                    //                 }
+                                    //                 String stillApplied = stillAppliedList.join('\n');
+                                    //                 itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                    //                     false, cateList[index], cateList[index].itemNames[i], []);
+                                    //               }
+                                    //             });
+                                    //           }),
+                                    //           child: Row(
+                                    //             children: const [
+                                    //               Icon(
+                                    //                 Icons.delete_forever_outlined,
+                                    //                 size: 20,
+                                    //               )
+                                    //             ],
+                                    //           )),
+                                    //     )),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isViewingFav = true;
+                                    isPreviewImgsOn = false;
+                                    modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
+                                    selectedIndex = List.filled(cateList.length, -1);
+                                    selectedIndex[index] = i;
+                                    modNameCatSelected = -1;
+                                    modsViewAppBarName = cateList[index].itemNames[i];
+                                    _newModToItemIndex = index;
+                                    isModSelected = true;
+                                    isLoading.clear();
+                                  });
+                                },
+                              ),
                             ),
-                            onTap: () {
-                              setState(() {
-                                isViewingFav = false;
-                                isPreviewImgsOn = false;
-                                modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
-                                selectedIndex = List.filled(cateList.length, -1);
-                                selectedIndex[index] = i;
-                                modNameCatSelected = -1;
-                                modsViewAppBarName = cateList[index].itemNames[i];
-                                _newModToItemIndex = index;
-                                isModSelected = true;
-                                isLoading.clear();
-                              });
-                            },
-                          ),
-                        )
-                  ],
-                );
-              },
+
+                        //Non fav
+                        if (cateList[index].categoryName != 'Favorites')
+                          for (int i = 0; i < cateList[index].itemNames.length; i++)
+                            Ink(
+                              color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
+                              child: ListTile(
+                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                    ? SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.file(
+                                          cateList[index].imageIcons[i].first,
+                                          fit: BoxFit.fitWidth,
+                                        ))
+                                    : SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.asset(
+                                          cateList[index].imageIcons[i].first.path,
+                                          fit: BoxFit.fitWidth,
+                                        )),
+                                title: Text(cateList[index].itemNames[i]),
+                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Files applied: ${cateList[index].numOfApplied[i]}'),
+                                trailing: Wrap(
+                                  children: [
+                                    if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
+                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+
+                                    //Buttons
+                                    Tooltip(
+                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 34,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.folder_open_rounded,
+                                                    size: 18,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                    Tooltip(
+                                        message: 'Delete ${cateList[index].itemNames[i]}',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 36,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() {
+                                                setState(() {
+                                                  if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
+                                                    itemDeleteDialog(
+                                                            context,
+                                                            100,
+                                                            'Delete Item',
+                                                            'Delete "${cateList[index].itemNames[i]}" and move it to \'Deleted\' Items folder?\nThis will also delete all mods in this item',
+                                                            true,
+                                                            cateList[index],
+                                                            cateList[index].itemNames[i],
+                                                            cateList[index].allModFiles)
+                                                        .then((_) {
+                                                      setState(() {
+                                                        modsViewAppBarName = 'Available Mods';
+                                                        isModSelected = false;
+                                                        //setstate
+                                                      });
+                                                    });
+                                                  } else if (cateList[index].allModFiles.indexWhere((element) => element.isFav && element.modName == cateList[index].itemNames[i]) != -1) {
+                                                    double popupHeight = 40;
+                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Remove from Favorites first', false,
+                                                        cateList[index], cateList[index].itemNames[i], []);
+                                                  } else {
+                                                    List<ModFile> tempList =
+                                                        cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
+                                                    List<String> stillAppliedList = [];
+                                                    double popupHeight = 40;
+                                                    for (var element in tempList) {
+                                                      stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                                                      popupHeight += 24;
+                                                    }
+                                                    String stillApplied = stillAppliedList.join('\n');
+                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        false, cateList[index], cateList[index].itemNames[i], []);
+                                                  }
+                                                });
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.delete_forever_outlined,
+                                                    size: 20,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isViewingFav = false;
+                                    isPreviewImgsOn = false;
+                                    modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
+                                    selectedIndex = List.filled(cateList.length, -1);
+                                    selectedIndex[index] = i;
+                                    modNameCatSelected = -1;
+                                    modsViewAppBarName = cateList[index].itemNames[i];
+                                    _newModToItemIndex = index;
+                                    isModSelected = true;
+                                    isLoading.clear();
+                                  });
+                                },
+                              ),
+                            )
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-        ),
+
+        //Search Result Category List
+        if (isSearching && cateListSearchResult.isEmpty)
+          const Expanded(
+              child: Padding(
+            padding: EdgeInsets.only(top: 5.0),
+            child: Text('No Results Found'),
+          )),
+        if (isSearching && cateListSearchResult.isNotEmpty)
+          Expanded(
+            child: SingleChildScrollView(
+              controller: AdjustableScrollController(80),
+              child: AbsorbPointer(
+                absorbing: !isSearching,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: cateListSearchResult.length,
+                  itemBuilder: (context, index) {
+                    return ExpansionTile(
+                      initiallyExpanded: false,
+                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      onExpansionChanged: (newState) {
+                        setState(() {
+                          if (!newState) {
+                            searchListSelectedIndex = List.filled(cateListSearchResult.length, -1);
+                          } else {
+                            searchListSelectedIndex = List.filled(cateListSearchResult.length, -1);
+                          }
+                        });
+                      },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              if (cateListSearchResult[index].categoryName == 'Favorites')
+                                Text(
+                                  cateListSearchResult[index].categoryName,
+                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                              if (cateListSearchResult[index].categoryName != 'Favorites') Text(cateListSearchResult[index].categoryName),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, top: 3),
+                                child: Container(
+                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Theme.of(context).highlightColor),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    child: Text('${cateListSearchResult[index].numOfItems} Items',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                        ))),
+                              ),
+                            ],
+                          ),
+                          // Row(
+                          //   children: [
+                          //     if (cateListSearchResult[index].categoryName != 'Favorites')
+                          //       Tooltip(
+                          //           message: 'Remove ${cateListSearchResult[index].categoryName}',
+                          //           height: 25,
+                          //           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //           waitDuration: const Duration(seconds: 2),
+                          //           child: SizedBox(
+                          //             width: 40,
+                          //             height: 40,
+                          //             child: MaterialButton(
+                          //                 onPressed: (() {
+                          //                   setState(() {
+                          //                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
+                          //                       categoryDeleteDialog(
+                          //                               context,
+                          //                               100,
+                          //                               'Remove Category',
+                          //                               'Remove "${cateListSearchResult[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
+                          //                               true,
+                          //                               cateListSearchResult[index].categoryPath,
+                          //                               cateListSearchResult[index].allModFiles)
+                          //                           .then((_) {
+                          //                         setState(() {
+                          //                           //setstate to refresh list
+                          //                         });
+                          //                       });
+                          //                     } else {
+                          //                       List<ModFile> tempList = cateListSearchResult[index].allModFiles.where((element) => element.isApplied == true).toList();
+                          //                       List<String> stillAppliedList = [];
+                          //                       double popupHeight = 40;
+                          //                       for (var element in tempList) {
+                          //                         stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                          //                         popupHeight += 24;
+                          //                       }
+                          //                       String stillApplied = stillAppliedList.join('\n');
+                          //                       categoryDeleteDialog(
+                          //                           context,
+                          //                           popupHeight,
+                          //                           'Remove Category',
+                          //                           'Cannot remove "${cateListSearchResult[index].categoryName}". Unaplly these mods first:\n\n$stillApplied',
+                          //                           false,
+                          //                           cateListSearchResult[index].categoryPath, []);
+                          //                     }
+                          //                   });
+                          //                 }),
+                          //                 child: Row(
+                          //                   children: [
+                          //                     Icon(
+                          //                       Icons.delete_sweep_rounded,
+                          //                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                          //                     )
+                          //                   ],
+                          //                 )),
+                          //           )),
+                          //   ],
+                          // )
+                        ],
+                      ),
+                      children: [
+                        //Fav list
+                        if (cateListSearchResult[index].categoryName == 'Favorites')
+                          for (int i = 0; i < cateListSearchResult[index].itemNames.length; i++)
+                            Ink(
+                              color: searchListSelectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
+                              child: ListTile(
+                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                    ? SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.file(
+                                          cateListSearchResult[index].imageIcons[i].first,
+                                          fit: BoxFit.fitWidth,
+                                        ))
+                                    : SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.asset(
+                                          cateListSearchResult[index].imageIcons[i].first.path,
+                                          fit: BoxFit.fitWidth,
+                                        )),
+                                title: Text(cateListSearchResult[index].itemNames[i]),
+                                subtitle: Text('Mods: ${cateListSearchResult[index].numOfMods[i]} | Applied: ${cateListSearchResult[index].numOfApplied[i]}'),
+                                trailing: Wrap(
+                                  children: [
+                                    if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
+                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+
+                                    //Buttons
+                                    Tooltip(
+                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 34,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}\\${cateListSearchResult[index].itemNames[i]}'));
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.folder_open_rounded,
+                                                    size: 18,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                    if (cateListSearchResult[index].categoryName == 'Favorites')
+                                      SizedBox(
+                                        width: 34,
+                                        height: 50,
+                                        child: Tooltip(
+                                          message: 'Remove "${cateListSearchResult[index].itemNames[i]}" from favorites',
+                                          height: 25,
+                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                          waitDuration: const Duration(seconds: 1),
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                                for (var element in modListToRemoveFav) {
+                                                  cateListSearchResult[index] = addOrRemoveFav(cateListSearchResult, element, cateListSearchResult[index], false);
+                                                }
+                                                setState(() {});
+                                              }),
+                                              child: const FaIcon(
+                                                FontAwesomeIcons.heartCircleXmark,
+                                                size: 17,
+                                                //color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
+                                              )),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isViewingFav = true;
+                                    isPreviewImgsOn = false;
+                                    modFilesListGet = getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                    searchListSelectedIndex = List.filled(cateListSearchResult.length, -1);
+                                    searchListSelectedIndex[index] = i;
+                                    modNameCatSelected = -1;
+                                    modsViewAppBarName = cateListSearchResult[index].itemNames[i];
+                                    _newModToItemIndex = index;
+                                    isModSelected = true;
+                                    isLoading.clear();
+                                  });
+                                },
+                              ),
+                            ),
+
+                        //Non fav
+                        if (cateListSearchResult[index].categoryName != 'Favorites')
+                          for (int i = 0; i < cateListSearchResult[index].itemNames.length; i++)
+                            Ink(
+                              color: searchListSelectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
+                              child: ListTile(
+                                leading: cateListSearchResult[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.jpg'
+                                    ? SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.file(
+                                          cateListSearchResult[index].imageIcons[i].first,
+                                          fit: BoxFit.fitWidth,
+                                        ))
+                                    : SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.asset(
+                                          cateListSearchResult[index].imageIcons[i].first.path,
+                                          fit: BoxFit.fitWidth,
+                                        )),
+                                title: Text(cateListSearchResult[index].itemNames[i]),
+                                subtitle: Text('Mods: ${cateListSearchResult[index].numOfMods[i]} | Files applied: ${cateListSearchResult[index].numOfApplied[i]}'),
+                                trailing: Wrap(
+                                  children: [
+                                    if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
+                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+
+                                    //Buttons
+                                    Tooltip(
+                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 34,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() async {
+                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}\\${cateListSearchResult[index].itemNames[i]}'));
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.folder_open_rounded,
+                                                    size: 18,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                    Tooltip(
+                                        message: 'Delete ${cateListSearchResult[index].itemNames[i]}',
+                                        height: 25,
+                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                        waitDuration: const Duration(seconds: 2),
+                                        child: SizedBox(
+                                          width: 36,
+                                          height: 50,
+                                          child: MaterialButton(
+                                              onPressed: (() {
+                                                setState(() {
+                                                  if (cateListSearchResult[index]
+                                                          .allModFiles
+                                                          .indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isApplied == true) ==
+                                                      -1) {
+                                                    ModCategory curCate = cateList.firstWhere((element) => element.categoryName == cateListSearchResult[index].categoryName);
+                                                    String curItem = cateListSearchResult[index].itemNames[i];
+                                                    itemDeleteDialog(
+                                                            context,
+                                                            100,
+                                                            'Delete Item',
+                                                            'Delete "${cateListSearchResult[index].itemNames[i]}" and move it to \'Deleted\' Items folder?\nThis will also delete all mods in this item',
+                                                            true,
+                                                            cateListSearchResult[index],
+                                                            cateListSearchResult[index].itemNames[i],
+                                                            cateListSearchResult[index].allModFiles)
+                                                        .then((_) {
+                                                      //Remove from normal Item List
+
+                                                      curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
+                                                      curCate.numOfMods.removeAt(curCate.itemNames.indexWhere((element) => element == curItem));
+                                                      curCate.itemNames.removeWhere((element) => element == curItem);
+                                                      curCate.allModFiles.removeWhere((element) => element.modName == curItem);
+                                                      curCate.numOfItems--;
+                                                      setState(() {
+                                                        modsViewAppBarName = 'Available Mods';
+                                                        isModSelected = false;
+                                                        //setstate
+                                                      });
+                                                    });
+                                                  } else if (cateListSearchResult[index]
+                                                          .allModFiles
+                                                          .indexWhere((element) => element.isFav && element.modName == cateListSearchResult[index].itemNames[i]) !=
+                                                      -1) {
+                                                    double popupHeight = 40;
+                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Remove from Favorites first',
+                                                        false, cateListSearchResult[index], cateListSearchResult[index].itemNames[i], []);
+                                                  } else {
+                                                    List<ModFile> tempList = cateListSearchResult[index]
+                                                        .allModFiles
+                                                        .where((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isApplied == true)
+                                                        .toList();
+                                                    List<String> stillAppliedList = [];
+                                                    double popupHeight = 40;
+                                                    for (var element in tempList) {
+                                                      stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                                                      popupHeight += 24;
+                                                    }
+                                                    String stillApplied = stillAppliedList.join('\n');
+                                                    itemDeleteDialog(
+                                                        context,
+                                                        popupHeight,
+                                                        'Delete Item',
+                                                        'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        false,
+                                                        cateListSearchResult[index],
+                                                        cateListSearchResult[index].itemNames[i], []);
+                                                  }
+                                                });
+                                              }),
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.delete_forever_outlined,
+                                                    size: 20,
+                                                  )
+                                                ],
+                                              )),
+                                        )),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isViewingFav = false;
+                                    isPreviewImgsOn = false;
+                                    modFilesListGet = getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                    searchListSelectedIndex = List.filled(cateListSearchResult.length, -1);
+                                    searchListSelectedIndex[index] = i;
+                                    modNameCatSelected = -1;
+                                    modsViewAppBarName = cateListSearchResult[index].itemNames[i];
+                                    _newModToItemIndex = index;
+                                    isModSelected = true;
+                                    isLoading.clear();
+                                  });
+                                },
+                              ),
+                            )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
 
         //Add Category Panel
         if (addCategoryVisible)
@@ -947,12 +1377,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         selectedCategoryForSingleItem == 'Setwears' ||
                                         selectedCategoryForSingleItem == 'Outerewears' ||
                                         selectedCategoryForSingleItem == 'Innerwears') {
-                                          if (cateList.indexWhere((e) => e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase().contains(value.toLowerCase())) != -1) != -1) {
+                                      if (cateList.indexWhere((e) =>
+                                              e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase().contains(value.toLowerCase())) != -1) !=
+                                          -1) {
                                         isErrorInSingleItemName = true;
                                         return 'The name already exist';
                                       }
                                     } else {
-                                      if (cateList.indexWhere((e) => e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) != -1) {
+                                      if (cateList.indexWhere(
+                                              (e) => e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
+                                          -1) {
                                         isErrorInSingleItemName = true;
                                         return 'The name already exist';
                                       }
@@ -1419,7 +1853,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           child: CircularProgressIndicator(),
                                                         ),
 
-                                                      if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
+                                                      //if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
+                                                      if (modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
                                                         SizedBox(
                                                           width: 40,
                                                           height: 40,

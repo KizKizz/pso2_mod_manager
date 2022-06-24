@@ -175,7 +175,7 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
         appliedModsList.insert(0, [mod]);
       }
     }
-    appliedModsList.sort(((a, b) => a.first.appliedDate.compareTo(b.first.appliedDate)));
+    //appliedModsList.sort(((a, b) => a.first.appliedDate.compareTo(b.first.appliedDate)));
   }
 
   allModFiles.map((mod) => mod.toJson()).toList();
