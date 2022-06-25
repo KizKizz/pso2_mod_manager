@@ -29,7 +29,7 @@ String modSettingsPath = '';
 String deletedItemsPath = '';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
-bool _previewWindowVisible = false;
+bool _previewWindowVisible = true;
 double windowsWidth = 1280.0;
 double windowsHeight = 720.0;
 Future? filesData;
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         MyApp.themeNotifier.value = ThemeMode.dark;
       }
       //previewWindows Check
-      _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? false);
+      _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
       if (_previewWindowVisible) {
         Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetTrue();
       } else {
