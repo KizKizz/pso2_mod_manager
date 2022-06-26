@@ -1432,8 +1432,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   detail.files.sort(((a, b) => a.name.compareTo(b.name)));
                                   for (var file in detail.files) {
                                     if (Directory(file.path).existsSync()) {
-                                      _newItemDragDropList.addAll(detail.files);
-                                      context.read<stateProvider>().itemsDropAdd(detail.files);
+                                      _newItemDragDropList.add(file);
+                                      context.read<stateProvider>().itemsDropAdd([file]);
                                     } else {
                                       leftoverFiles.add(file.name);
                                     }
@@ -2542,12 +2542,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             modsRemover(tempDelete);
                             isPreviewImgsOn = false;
                             isPreviewVidOn = false;
+                            totalAppliedFiles = 0;
+                            totalAppliedItems = 0;
                           });
                         }),
                   onPressed: appliedModsList.isEmpty || totalAppliedItems < 1 ? null : () {},
                   child: Icon(
                     Icons.remove_from_queue,
-                    color: totalAppliedItems < 1 
+                    color: totalAppliedItems < 1
                         ? Theme.of(context).disabledColor
                         : MyApp.themeNotifier.value == ThemeMode.light
                             ? Theme.of(context).primaryColorDark
