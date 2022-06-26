@@ -380,10 +380,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       border: Border.all(color: Theme.of(context).highlightColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
-                                    child: Text('${cateList[index].numOfItems} Items',
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                        ))),
+                                    child: cateList[index].numOfItems < 2
+                                        ? Text('${cateList[index].numOfItems} Item',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                            ))
+                                        : Text('${cateList[index].numOfItems} Items',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                            ))),
                               ),
                             ],
                           ),
@@ -1796,6 +1801,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       child: GestureDetector(
                                         onSecondaryTap: () => previewImageSliders.isNotEmpty ? pictureDialog(context, previewImageSliders) : null,
                                         child: Card(
+                                            margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                 side: BorderSide(width: 1, color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1 ? Colors.amber : Theme.of(context).primaryColor)),
@@ -2476,6 +2482,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget filesView() {
+    //mod files count
+    int totalItems = 0;
+    for (var item in appliedModsList) {
+      totalItems += item.length;
+    }
+
     return Column(
       children: [
         AppBar(
@@ -2484,6 +2496,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
           actions: [
+            if (appliedModsList.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 10, top: 3),
+                child: Container(
+                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).highlightColor),
+                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: appliedModsList.length < 2
+                        ? Text('${appliedModsList.length} Item | $totalItems Files Applied}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ))
+                        : Text('${appliedModsList.length} Items | $totalItems Files Applied',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ))),
+              ),
             SizedBox(
               width: 40,
               height: 40,
@@ -2510,7 +2541,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         }),
                   onPressed: appliedModsList.isEmpty ? null : () {},
                   child: Icon(
-                    Icons.playlist_remove,
+                    Icons.remove_from_queue,
                     color: appliedModsList.isEmpty
                         ? Theme.of(context).disabledColor
                         : MyApp.themeNotifier.value == ThemeMode.light
@@ -2590,6 +2621,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     child: GestureDetector(
                                       onSecondaryTap: () => previewImageSliders.isNotEmpty ? pictureDialog(context, previewImageSliders) : null,
                                       child: Card(
+                                          margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
                                           shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
                                           child: ExpansionTile(
                                             initiallyExpanded: false,
