@@ -1432,8 +1432,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   detail.files.sort(((a, b) => a.name.compareTo(b.name)));
                                   for (var file in detail.files) {
                                     if (Directory(file.path).existsSync()) {
-                                      _newItemDragDropList.addAll(detail.files);
-                                      context.read<stateProvider>().itemsDropAdd(detail.files);
+                                      _newItemDragDropList.add(file);
+                                      context.read<stateProvider>().itemsDropAdd([file]);
                                     } else {
                                       leftoverFiles.add(file.name);
                                     }
