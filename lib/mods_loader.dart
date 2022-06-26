@@ -402,6 +402,13 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
       }
     }
   }
+
+  //Applied count
+  totalAppliedItems = appliedList.length;
+  for (var item in appliedList) {
+    totalAppliedFiles += item.length;
+  }
+
   appliedList.sort(((a, b) => b.first.appliedDate.compareTo(b.first.appliedDate)));
   return appliedList;
 }
