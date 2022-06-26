@@ -2529,7 +2529,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
                 child: MaterialButton(
-                  onLongPress: appliedModsList.isEmpty
+                  onLongPress: appliedModsList.isEmpty || totalAppliedItems < 1
                       ? null
                       : (() {
                           setState(() {
@@ -2544,10 +2544,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             isPreviewVidOn = false;
                           });
                         }),
-                  onPressed: appliedModsList.isEmpty ? null : () {},
+                  onPressed: appliedModsList.isEmpty || totalAppliedItems < 1 ? null : () {},
                   child: Icon(
                     Icons.remove_from_queue,
-                    color: appliedModsList.isEmpty
+                    color: totalAppliedItems < 1 
                         ? Theme.of(context).disabledColor
                         : MyApp.themeNotifier.value == ThemeMode.light
                             ? Theme.of(context).primaryColorDark
