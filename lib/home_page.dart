@@ -37,6 +37,8 @@ List<bool> isLoading = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
+int totalAppliedItems = 0;
+int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
 
 //New Cate
@@ -373,9 +375,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                               if (cateList[index].categoryName != 'Favorites') Text(cateList[index].categoryName),
                               Padding(
-                                padding: const EdgeInsets.only(left: 10, top: 3),
+                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                 child: Container(
-                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Theme.of(context).highlightColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2482,10 +2484,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget filesView() {
-    //mod files count
-    int totalItems = 0;
-    for (var item in appliedModsList) {
-      totalItems += item.length;
+    //Applied count
+    if (appliedModsList.isNotEmpty) {
+      totalAppliedFiles = 0;
+      totalAppliedItems = appliedModsList.length;
+      for (var item in appliedModsList) {
+        totalAppliedFiles += item.length;
+      }
     }
 
     return Column(
@@ -2496,21 +2501,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
           actions: [
-            if (appliedModsList.isNotEmpty)
+            if (appliedModsList.isNotEmpty || totalAppliedItems > 0)
               Padding(
-                padding: const EdgeInsets.only(left: 10, top: 3),
+                padding: const EdgeInsets.only(left: 10, top: 6, bottom: 4),
                 child: Container(
-                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
                     decoration: BoxDecoration(
                       border: Border.all(color: Theme.of(context).highlightColor),
                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                     ),
-                    child: appliedModsList.length < 2
-                        ? Text('${appliedModsList.length} Item | $totalItems Files Applied}',
+                    child: totalAppliedItems < 2
+                        ? Text('$totalAppliedItems Item | $totalAppliedFiles Files Applied',
                             style: const TextStyle(
                               fontSize: 13,
                             ))
-                        : Text('${appliedModsList.length} Items | $totalItems Files Applied',
+                        : Text('$totalAppliedItems Items | $totalAppliedFiles Files Applied',
                             style: const TextStyle(
                               fontSize: 13,
                             ))),
