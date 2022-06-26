@@ -1,2 +1,9 @@
-# pso2_mod_manager
- PSO2_NGS_Mod_Manager
+# PSO2NGS Mod Manager 
+ An app to manage and apply mod files to Phantasy Star Online 2 New Genesis.
+ 
+
+# Usage
+
+# Download
+
+# Built With
