@@ -61,7 +61,7 @@
    ![Screenshot 2022-06-26 150632-crop](https://user-images.githubusercontent.com/101075148/175837210-387cfbb5-48e0-4497-89b6-e63c628a451c.png)
 
 # Known Issues
-Drag & drop won't work if app is running with Adminitrator.
+Drag & drop won't work if app is running with Adminitrator
 
 # Built With
 
