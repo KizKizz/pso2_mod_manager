@@ -33,6 +33,9 @@
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 143310-crop](https://user-images.githubusercontent.com/101075148/175836775-7cb5bcda-d86b-4be9-8b80-a3931487cc8a.png)
 
 **Adding item(s):**
+
+**Note:** Only extracted files and folders, open zipped files then drag and drop to add
+
 - Single item
 
    ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175837010-bdbfad68-1b7a-40bb-9c0b-ffa71f456325.png)  
@@ -45,6 +48,8 @@
    ![Screenshot 2022-06-26 144507-crop](https://user-images.githubusercontent.com/101075148/175837827-831291c7-2b26-4276-8a4d-bc1b26e30745.png)
 
 **Adding Mod(s) to existing item:**
+
+**Note:** Only extracted files and folders, open zipped files then drag and drop to add
 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 144710-crop](https://user-images.githubusercontent.com/101075148/175837076-44cc3b2b-929c-4501-b3c4-14730cba7c09.png)  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 144826-crop](https://user-images.githubusercontent.com/101075148/175837078-8d0583d0-bc64-46ee-a103-ad4469f36c60.png)
