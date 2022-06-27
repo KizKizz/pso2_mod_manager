@@ -103,6 +103,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool modViewExpandAll = false;
   bool isErrorInSingleItemName = false;
   double searchBoxLeftPadding = 80;
+  int reappliedCount = 0;
 
   late AnimationController cateAdderAniController;
   late Animation<Offset> cateAdderAniOffset;
@@ -2492,6 +2493,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         totalAppliedFiles += item.length;
       }
     }
+    
 
     return Column(
       children: [
@@ -2520,6 +2522,68 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               fontSize: 13,
                             ))),
               ),
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: Tooltip(
+                message: 'Hold to reapply all mods to the game',
+                height: 25,
+                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                waitDuration: const Duration(seconds: 1),
+                child: MaterialButton(
+                  onLongPress: appliedModsList.isEmpty || totalAppliedItems < 1
+                      ? null
+                      : (() {
+                          setState(() {
+                            reappliedCount = appliedModsList.length;
+                            for (var modList in appliedModsList) {
+                              reapplyMods(modList).then((_) {
+                                setState(() {
+                                  reappliedCount--;
+                                  if (reappliedCount == 0) {
+                                    if (originalFilesMissingList.isNotEmpty) {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          duration: const Duration(seconds: 2),
+                                          //backgroundColor: Theme.of(context).focusColor,
+                                          content: SizedBox(
+                                            height: originalFilesMissingList.length * 20,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                  Text(
+                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                              ],
+                                            ),
+                                          )));
+                                    }
+                                    originalFilesMissingList.clear();
+                                    const Text('Done');
+                                  }
+                                });
+                              });
+                            }
+                          });
+                        }),
+                  onPressed: appliedModsList.isEmpty || totalAppliedItems < 1 ? null : () {},
+                  child: Row(
+                    children: [
+                      if (reappliedCount > 0)
+                      const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                      if (reappliedCount < 1)
+                      Icon(
+                        Icons.add_to_queue,
+                        color: totalAppliedItems < 1
+                            ? Theme.of(context).disabledColor
+                            : MyApp.themeNotifier.value == ThemeMode.light
+                                ? Theme.of(context).primaryColorDark
+                                : Theme.of(context).iconTheme.color,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             SizedBox(
               width: 40,
               height: 40,
