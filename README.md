@@ -9,7 +9,12 @@
 [Release page](https://github.com/KizKizz/pso2_mod_manager/releases)
 
 # Usage
-**Note:** Restore the game files to their originals before using the app
+**Note:**  
+- Restore the game files to their originals before using the app
+- App's settings (light\dark mode, pso2_bin path, ect) are stored in:  
+  ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
+- Mod files settings are stored in:  
+  ```...\pso2_bin\PSO2 Mod Manager\PSO2ModManSettings.json```
 
 **First time setup:**
 
@@ -55,8 +60,12 @@
    ![Screenshot 2022-06-26 15063277-crop](https://user-images.githubusercontent.com/101075148/175837209-ec4156b6-4217-4c00-8948-b34e9ba51635.png)  
    ![Screenshot 2022-06-26 150632-crop](https://user-images.githubusercontent.com/101075148/175837210-387cfbb5-48e0-4497-89b6-e63c628a451c.png)
 
+# Known Issues
+Drag & drop won't work if app is run with Adminitrator.
+
 # Built With
 
 Flutter and various libraries from [pub.dev](https://pub.dev/packages) 
 
-Made by キス★ (KizKizz)
+Made by キス★ (KizKizz)  
+<sup>I'm not taking any responsibility if your game files messed up</sup>
