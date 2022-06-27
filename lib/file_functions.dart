@@ -221,6 +221,8 @@ void modsRemover(List<ModFile> modsList) {
         }
         for (var element in emptyList) {
           appliedModsList.remove(element);
+          totalAppliedFiles -= element.length;
+          totalAppliedItems--;
         }
       }
     } else {
@@ -797,7 +799,7 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
       tempFavCate.numOfItems--;
     }
   }
-  
+
   tempFavCate.itemNames.sort();
   allModFiles.map((mod) => mod.toJson()).toList();
   File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
