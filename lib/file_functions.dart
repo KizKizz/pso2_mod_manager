@@ -16,6 +16,87 @@ import 'package:path/path.dart' as p;
 Directory dataDir = Directory('$binDirPath\\data');
 List<File> iceFiles = [];
 
+Future<void> reapplyMods(List<ModFile> modList) async {
+  //Checksum
+  if (checkSumFilePath != null) {
+    File(checkSumFilePath!).copySync('$binDirPath\\data\\win32\\${checkSumFilePath!.split('\\').last}');
+  }
+
+  if (modList.length > 1) {
+    for (var modFile in modList) {
+      await Future(
+        () {
+          //Backup file check and apply
+          final matchedFile = iceFiles.firstWhere(
+            (e) => e.path.split('\\').last == modFile.iceName,
+            orElse: () {
+              return File('');
+            },
+          );
+
+          if (matchedFile.path != '') {
+            modFile.originalIcePath = matchedFile.path;
+            final matchedBackup = Directory(backupDirPath).listSync(recursive: true).whereType<File>().firstWhere(
+              (e) => p.extension(e.path) == '' && e.path.split('\\').last == modFile.iceName,
+              orElse: () {
+                return File('');
+              },
+            );
+
+            if (matchedBackup.path == '') {
+              modFile.backupIcePath = '$backupDirPath\\${modFile.iceName}';
+              //Backup file if not already
+              File(modFile.originalIcePath).copySync(modFile.backupIcePath);
+            }
+
+            //File actions
+            File(modFile.icePath).copySync(modFile.originalIcePath);
+          } else {
+            originalFilesMissingList.add(modFile);
+          }
+        },
+      );
+    }
+  } else {
+    for (var modFile in modList) {
+      //Backup file check and apply
+      final matchedFile = iceFiles.firstWhere(
+        (e) => e.path.split('\\').last == modFile.iceName,
+        orElse: () {
+          return File('');
+        },
+      );
+
+      if (matchedFile.path != '') {
+        modFile.originalIcePath = matchedFile.path;
+        final matchedBackup = Directory(backupDirPath).listSync(recursive: true).whereType<File>().firstWhere(
+          (e) => p.extension(e.path) == '' && e.path.split('\\').last == modFile.iceName,
+          orElse: () {
+            return File('');
+          },
+        );
+
+        if (matchedBackup.path == '') {
+          modFile.backupIcePath = '$backupDirPath\\${modFile.iceName}';
+          //Backup file if not already
+          File(modFile.originalIcePath).copySync(modFile.backupIcePath);
+        }
+
+        //File actions
+        File(modFile.icePath).copySync(modFile.originalIcePath);
+        DateTime now = DateTime.now();
+        String formattedDate = DateFormat('MM-dd-yyyy HH:mm:ss').format(now);
+        modFile.appliedDate = formattedDate;
+      } else {
+        originalFilesMissingList.add(modFile);
+      }
+    }
+  }
+
+  allModFiles.map((mod) => mod.toJson()).toList();
+  File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
+}
+
 Future<void> modsToDataAdder(List<ModFile> modList) async {
   List<List<ModFile>> duplicateModsApplied = [];
   List<ModFile> actualAppliedMods = [];
@@ -157,7 +238,7 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
   //Applied mods to app list
   for (var mod in actualAppliedMods) {
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+    String formattedDate = DateFormat('MM-dd-yyyy HH:mm:ss').format(now);
     if (appliedModsList.isEmpty) {
       mod.appliedDate = formattedDate;
       appliedModsList.insert(0, [mod]);
