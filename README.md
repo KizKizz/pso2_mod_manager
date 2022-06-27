@@ -65,7 +65,9 @@ Drag & drop won't work if app is running with Adminitrator
 
 # Built With
 
-Flutter and various libraries from [pub.dev](https://pub.dev/packages) 
+Flutter and various libraries from [pub.dev](https://pub.dev/packages)
+
+Found a bug? [Leave a message here](https://github.com/KizKizz/pso2_mod_manager/issues)
 
 Made by キス★ (KizKizz)  
 <sup>I'm not taking any responsibility if your game files messed up</sup>
