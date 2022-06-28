@@ -9,6 +9,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
@@ -57,9 +58,11 @@ String? selectedCategoryForMutipleItems;
 String? selectedCategoryForSingleItem;
 final _newItemDropdownKey = GlobalKey<FormState>();
 bool _dragging = false;
+bool _draggingItemIcon = false;
 //final List<XFile> _newItemDragDropList = [XFile('E:\\PSO2_ModTest\\7 Bite o Donut Test')];
 final List<XFile> _newItemDragDropList = [];
 final List<XFile> _newSingleItemDragDropList = [];
+XFile? _singleItemIcon;
 bool isItemAddBtnClicked = false;
 
 //NewItem Exist Item
@@ -105,6 +108,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double searchBoxLeftPadding = 80;
   int reappliedCount = 0;
 
+  //Slide up
   late AnimationController cateAdderAniController;
   late Animation<Offset> cateAdderAniOffset;
   late AnimationController itemAdderAniController;
@@ -264,6 +268,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   setState(() {
                                     switch (cateAdderAniController.status) {
                                       case AnimationStatus.dismissed:
+                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
                                         addCategoryVisible = true;
                                         cateAdderAniController.forward();
                                         break;
@@ -313,6 +318,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   setState(() {
                                     switch (itemAdderAniController.status) {
                                       case AnimationStatus.dismissed:
+                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
                                         addItemVisible = true;
                                         itemAdderAniController.forward();
                                         break;
@@ -1171,6 +1177,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     case AnimationStatus.completed:
                                       cateAdderAniController.reverse().whenComplete(() {
                                         addCategoryVisible = false;
+                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
                                         setState(() {});
                                       });
                                       break;
@@ -1201,6 +1208,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     }
 
                                     categoryAddController.clear();
+                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
                                     //addCategoryVisible = false;
                                   }
                                 });
@@ -1330,92 +1338,156 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   )),
                             ),
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-                                  child: CustomDropdownButton2(
-                                    hint: 'Select a Category',
-                                    dropdownDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(color: Theme.of(context).cardColor),
-                                    ),
-                                    buttonDecoration: BoxDecoration(
+                          Row(children: [
+                            //Item icon Drop Zone,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+                              child: DropTarget(
+                                //enable: true,
+                                onDragDone: (detail) {
+                                  setState(() {
+                                    _singleItemIcon = detail.files.last;
+                                  });
+                                },
+                                onDragEntered: (detail) {
+                                  setState(() {
+                                    _draggingItemIcon = true;
+                                  });
+                                },
+                                onDragExited: (detail) {
+                                  setState(() {
+                                    _draggingItemIcon = false;
+                                  });
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       border: Border.all(color: Theme.of(context).hintColor),
+                                      color: _draggingItemIcon ? Colors.blue.withOpacity(0.4) : Colors.black26,
                                     ),
-                                    //buttonWidth: 300,
-                                    buttonHeight: 40,
-                                    itemHeight: 40,
-                                    dropdownElevation: 3,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 30,
-                                    //dropdownWidth: 361,
-                                    dropdownHeight: double.maxFinite,
-                                    dropdownItems: dropdownCategories,
-                                    value: selectedCategoryForSingleItem,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedCategoryForSingleItem = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Expanded(
-                            child: Form(
-                              key: newSingleItemFormKey,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-                                child: TextFormField(
-                                  controller: newSingleItemAddController,
-                                  //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                  //maxLength: 100,
-                                  style: const TextStyle(fontSize: 15),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Item Name',
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      isErrorInSingleItemName = true;
-                                      return 'Name can\'t be empty';
-                                    }
-                                    if (selectedCategoryForSingleItem == 'Basewears' ||
-                                        selectedCategoryForSingleItem == 'Setwears' ||
-                                        selectedCategoryForSingleItem == 'Outerewears' ||
-                                        selectedCategoryForSingleItem == 'Innerwears') {
-                                      if (cateList.indexWhere((e) =>
-                                              e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase().contains(value.toLowerCase())) != -1) !=
-                                          -1) {
-                                        isErrorInSingleItemName = true;
-                                        return 'The name already exist';
-                                      }
-                                    } else {
-                                      if (cateList.indexWhere(
-                                              (e) => e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
-                                          -1) {
-                                        isErrorInSingleItemName = true;
-                                        return 'The name already exist';
-                                      }
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (text) {
-                                    setState(() {
-                                      setState(
-                                        () {},
-                                      );
-                                    });
-                                  },
-                                ),
+                                    height: 85,
+                                    width: 85,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        if (_singleItemIcon == null)
+                                          Center(
+                                              child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: const [
+                                              Text('Drop Item\'s'),
+                                              Text('Icon Here'),
+                                              Text('(Optional)'),
+                                            ],
+                                          )),
+                                        if (_singleItemIcon != null)
+                                          Expanded(
+                                            child: SizedBox(
+                                                width: double.infinity,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 1),
+                                                  child: Center(
+                                                    child: Image.file(
+                                                      File(_singleItemIcon!.path),
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ),
+                                                )),
+                                          )
+                                      ],
+                                    )),
                               ),
                             ),
-                          ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
+                                    child: CustomDropdownButton2(
+                                      hint: 'Select a Category',
+                                      dropdownDecoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3),
+                                        border: Border.all(color: Theme.of(context).cardColor),
+                                      ),
+                                      buttonDecoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3),
+                                        border: Border.all(color: Theme.of(context).hintColor),
+                                      ),
+                                      buttonWidth: double.infinity,
+                                      buttonHeight: 37.5,
+                                      itemHeight: 40,
+                                      dropdownElevation: 3,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      iconSize: 30,
+                                      //dropdownWidth: 361,
+                                      dropdownHeight: double.maxFinite,
+                                      dropdownItems: dropdownCategories,
+                                      value: selectedCategoryForSingleItem,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedCategoryForSingleItem = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Form(
+                                    key: newSingleItemFormKey,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
+                                      child: SizedBox(
+                                        height: 37.5,
+                                        child: TextFormField(
+                                          controller: newSingleItemAddController,
+                                          //maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                          //maxLength: 100,
+                                          style: const TextStyle(fontSize: 15),
+                                          decoration: const InputDecoration(
+                                            labelText: 'Item Name',
+                                            border: OutlineInputBorder(),
+                                            isDense: true,
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              isErrorInSingleItemName = true;
+                                              return 'Name can\'t be empty';
+                                            }
+                                            if (selectedCategoryForSingleItem == 'Basewears' ||
+                                                selectedCategoryForSingleItem == 'Setwears' ||
+                                                selectedCategoryForSingleItem == 'Outerewears' ||
+                                                selectedCategoryForSingleItem == 'Innerwears') {
+                                              if (cateList.indexWhere((e) =>
+                                                      e.categoryName == selectedCategoryForSingleItem &&
+                                                      e.itemNames.indexWhere((element) => element.toLowerCase().contains(value.toLowerCase())) != -1) !=
+                                                  -1) {
+                                                isErrorInSingleItemName = true;
+                                                return 'The name already exist';
+                                              }
+                                            } else {
+                                              if (cateList.indexWhere((e) =>
+                                                      e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
+                                                  -1) {
+                                                isErrorInSingleItemName = true;
+                                                return 'The name already exist';
+                                              }
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (text) {
+                                            setState(() {
+                                              setState(
+                                                () {},
+                                              );
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ]),
                         ],
                       ),
 
@@ -1599,6 +1671,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     setState(() {
                                       _newItemDragDropList.clear();
                                       _newSingleItemDragDropList.clear();
+                                      _singleItemIcon = null;
                                       newItemAddController.clear();
                                       newSingleItemAddController.clear();
                                       selectedCategoryForMutipleItems = null;
@@ -1606,6 +1679,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       isErrorInSingleItemName = false;
                                       context.read<stateProvider>().singleItemDropAddClear();
                                       context.read<stateProvider>().itemsDropAddClear();
+                                      Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
                                       //addItemVisible = false;
                                       switch (itemAdderAniController.status) {
                                         case AnimationStatus.completed:
@@ -1638,6 +1712,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             setState(() {
                                               //setstate to refresh list
                                               _newItemDragDropList.clear();
+                                              _singleItemIcon = null;
                                               newItemAddController.clear();
                                               isItemAddBtnClicked = false;
                                             });
@@ -1647,14 +1722,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
                                           isErrorInSingleItemName = false;
                                           isItemAddBtnClicked = true;
-                                          dragDropSingleFilesAdd(
-                                                  context, _newSingleItemDragDropList, selectedCategoryForSingleItem, newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
+                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon!, selectedCategoryForSingleItem,
+                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
                                               .then((_) {
                                             setState(() {
                                               //setstate to refresh list
                                               _newSingleItemDragDropList.clear();
                                               newSingleItemAddController.clear();
                                               isItemAddBtnClicked = false;
+                                              _singleItemIcon = null;
                                             });
                                           });
                                         }
@@ -1710,6 +1786,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   case AnimationStatus.dismissed:
                                     addModToItemVisible = true;
                                     modAdderAniController.forward();
+                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
                                     break;
                                   default:
                                 }
@@ -2295,6 +2372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           case AnimationStatus.completed:
                                             modAdderAniController.reverse().whenComplete(() {
                                               addModToItemVisible = false;
+                                              Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
                                               setState(() {});
                                             });
                                             break;
@@ -2323,6 +2401,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   newModToItemAddController.clear();
                                                   isModAddBtnClicked = false;
                                                   isPreviewImgsOn = false;
+                                                  Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
                                                 });
                                               });
                                             } else {
@@ -2493,7 +2572,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         totalAppliedFiles += item.length;
       }
     }
-    
 
     return Column(
       children: [
@@ -2568,17 +2646,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   onPressed: appliedModsList.isEmpty || totalAppliedItems < 1 ? null : () {},
                   child: Row(
                     children: [
-                      if (reappliedCount > 0)
-                      const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                      if (reappliedCount > 0) const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
                       if (reappliedCount < 1)
-                      Icon(
-                        Icons.add_to_queue,
-                        color: totalAppliedItems < 1
-                            ? Theme.of(context).disabledColor
-                            : MyApp.themeNotifier.value == ThemeMode.light
-                                ? Theme.of(context).primaryColorDark
-                                : Theme.of(context).iconTheme.color,
-                      ),
+                        Icon(
+                          Icons.add_to_queue,
+                          color: totalAppliedItems < 1
+                              ? Theme.of(context).disabledColor
+                              : MyApp.themeNotifier.value == ThemeMode.light
+                                  ? Theme.of(context).primaryColorDark
+                                  : Theme.of(context).iconTheme.color,
+                        ),
                     ],
                   ),
                 ),

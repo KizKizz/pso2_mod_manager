@@ -309,36 +309,9 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                               }
                             }
 
-                            //Remove leftover files
-                            parentPaths.toSet();
-                            for (var path in parentPaths) {
-                              if (Directory(path).existsSync()) {
-                                final leftOverFiles = Directory(path).listSync(recursive: false).whereType<File>();
-                                if (leftOverFiles.isNotEmpty) {
-                                  for (var file in leftOverFiles) {
-                                    String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\${curCate.categoryName}\\$curItem${file.path.split(curItem).last}';
-                                    //print(sourcePath);
-                                    File(leftOverFileDeleteBackupPath).createSync(recursive: true);
-                                    File(file.path).copySync(leftOverFileDeleteBackupPath);
-                                    File(file.path).deleteSync(recursive: true);
-                                  }
-                                }
-                              }
-                            }
-                            for (var path in parentPaths) {
-                              if (Directory(path).existsSync() &&
-                                  Directory(path).listSync(recursive: true).whereType<File>().isEmpty &&
-                                  Directory(path).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                                Directory(path).deleteSync(recursive: true);
-                              }
-                            }
-
-                            final subFolderList = Directory(curCate.categoryPath).listSync().whereType<Directory>();
-                            for (var folder in subFolderList) {
-                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty) {
-                                Directory(folder.path).deleteSync(recursive: true);
-                              }
-                            }
+                            //Remove files
+                            String itemPath = '${curCate.categoryPath}\\$curItem';
+                            Directory(itemPath).deleteSync(recursive: true);
                           }
 
                           curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
@@ -475,7 +448,7 @@ Future pictureDialog(context, List<Widget> previewImageSliders) async {
                   scaleEnabled: true,
                   panEnabled: true,
                   child: AspectRatio(
-                    aspectRatio: 16/9,
+                    aspectRatio: 16 / 9,
                     child: CarouselSlider(
                       items: previewImageSliders,
                       carouselController: imgSliderController,
@@ -500,7 +473,11 @@ Future pictureDialog(context, List<Widget> previewImageSliders) async {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(width: 250, child: Text('Scroll wheel: Zoom | Right mouse: Pan',)),
+                  const SizedBox(
+                      width: 250,
+                      child: Text(
+                        'Scroll wheel: Zoom | Right mouse: Pan',
+                      )),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

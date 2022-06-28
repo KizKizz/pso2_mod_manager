@@ -316,54 +316,42 @@ void modsRemover(List<ModFile> modsList) {
 }
 
 // New File Adders
-Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, String? selectedCategoryName, String? newItemName) async {
+Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XFile? itemIcon, String? selectedCategoryName, String? newItemName) async {
   final categoryName = selectedCategoryName;
   final catePath = cateList.firstWhere((element) => element.categoryName == categoryName).categoryPath;
-
+  bool isFilesFound = false;
   for (var xFile in newItemDragDropList) {
-    await Future(
-      () {
-        if (!Directory(xFile.path).existsSync()) {
-          String newPath = catePath;
-          final fileParent = File(xFile.path).parent.path.split('\\').last;
-          if (newItemName != null) {
-            //Item suffix
-            if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-              newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}';
-            } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-              newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}';
-            } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-              newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}';
-            } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-              newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}';
-            } else {
-              newPath += '\\$newItemName\\$fileParent\\${xFile.name}';
-            }
-          }
-          File(newPath).createSync(recursive: true);
-          File(xFile.path).copySync(newPath);
-        } else {
+    if (!Directory(xFile.path).existsSync()) {
+      isFilesFound = true;
+      break;
+    }
+  }
+
+  if (!isFilesFound) {
+    for (var xFile in newItemDragDropList) {
+      await Future(
+        () {
           final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
           if (files.isNotEmpty) {
             for (var file in files) {
               final fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
               String newPath = catePath;
-              final fileParent = File(xFile.path).parent.path.split('\\').last;
+              //final fileParent = File(xFile.path).parent.path.split('\\').last;
               if (fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na') != -1) {
                 fileTailPath.removeRange(fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na'), fileTailPath.indexOf(fileTailPath.last));
                 String finalTailPath = fileTailPath.join('\\');
                 if (newItemName != null) {
                   //Item suffix
                   if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                    newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Ba]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                    newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [In]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                    newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Ou]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-                    newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Se]\\${xFile.name}\\$finalTailPath';
                   } else {
-                    newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName\\${xFile.name}\\$finalTailPath';
                   }
                 }
               } else {
@@ -371,15 +359,15 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
                 if (newItemName != null) {
                   //Item suffix
                   if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                    newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Ba]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                    newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [In]\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                    newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Ou]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-                    newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [Se]\\${xFile.name}\\$finalTailPath';
                   } else {
-                    newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName\\${xFile.name}\\$finalTailPath';
                   }
                 }
               }
@@ -388,10 +376,84 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
               File(file.path).copySync(newPath);
             }
           }
-        }
-      },
-    );
-    Provider.of<stateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+        },
+      );
+      Provider.of<stateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+    }
+  } else {
+    for (var xFile in newItemDragDropList) {
+      await Future(
+        () {
+          if (!Directory(xFile.path).existsSync()) {
+            String newPath = catePath;
+            final fileParent = File(xFile.path).parent.path.split('\\').last;
+            if (newItemName != null) {
+              //Item suffix
+              if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
+                newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}';
+              } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
+                newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}';
+              } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
+                newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}';
+              } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
+                newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}';
+              } else {
+                newPath += '\\$newItemName\\$fileParent\\${xFile.name}';
+              }
+            }
+            File(newPath).createSync(recursive: true);
+            File(xFile.path).copySync(newPath);
+          } else {
+            final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
+            if (files.isNotEmpty) {
+              for (var file in files) {
+                final fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
+                String newPath = catePath;
+                final fileParent = File(xFile.path).parent.path.split('\\').last;
+                if (fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na') != -1) {
+                  fileTailPath.removeRange(fileTailPath.indexWhere((e) => e == 'win32' || e == 'win32_na' || e == 'win32reboot' || e == 'win32reboot_na'), fileTailPath.indexOf(fileTailPath.last));
+                  String finalTailPath = fileTailPath.join('\\');
+                  if (newItemName != null) {
+                    //Item suffix
+                    if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
+                      newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
+                      newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
+                      newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
+                      newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else {
+                      newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    }
+                  }
+                } else {
+                  String finalTailPath = fileTailPath.join('\\');
+                  if (newItemName != null) {
+                    //Item suffix
+                    if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
+                      newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
+                      newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
+                      newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
+                      newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    } else {
+                      newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                    }
+                  }
+                }
+
+                File(newPath).createSync(recursive: true);
+                File(file.path).copySync(newPath);
+              }
+            }
+          }
+        },
+      );
+      Provider.of<stateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+    }
   }
 
   String modName = '';
@@ -420,6 +482,11 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
     } else {
       newItemPath = '$catePath\\$newItemName';
     }
+  }
+
+  if (itemIcon != null) {
+    File('$newItemPath\\${itemIcon.name}').createSync(recursive: true);
+    File(itemIcon.path).copySync('$newItemPath\\${itemIcon.name}');
   }
 
   //Add to list
@@ -455,9 +522,12 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
 
   //Update Cate list
   final newModRoot = Directory(newItemPath).listSync(recursive: false).whereType<File>();
-  final thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png').toList();
+  Iterable<File> thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
+  List<File> icons = [];
   if (thumbnails.isEmpty) {
-    thumbnails.add(File('assets/img/placeholdersquare.png'));
+    icons.add(File('assets/img/placeholdersquare.png'));
+  } else {
+    icons.addAll(thumbnails);
   }
   final selectedCategory = cateList.firstWhere((element) => element.categoryName == categoryName);
   if (selectedCategory.itemNames.indexWhere((element) => element == modName) == -1) {
@@ -472,10 +542,10 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, St
       if (cate.itemNames.indexWhere((e) => e == modName) != -1) {
         int index = 0;
         if (cate.itemNames.length > 1) {
-          index = cate.itemNames.indexOf(newItemName.toString());
+          index = cate.itemNames.indexOf(modName.toString());
         }
         cate.allModFiles.addAll(newModList);
-        cate.imageIcons.add(thumbnails);
+        cate.imageIcons.insert(index, icons);
         cate.numOfMods.add(0);
         cate.numOfMods[index] = numOfMods;
         cate.numOfItems++;
