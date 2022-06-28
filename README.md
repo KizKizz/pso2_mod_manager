@@ -11,7 +11,7 @@
 - Add, remove single/multiple items or mods
 - Apply entire mod, or single .ice file
 - Backup originals from the game, restore when unapplying mods
-- Preview mods by hovering mouse cursor on them(if there are images or videos included inside the folder)
+- Preview mods by hovering mouse cursor on them, and right click to room(if there are images or videos included inside the folder)
 - Search, favorites
 
 and more..
