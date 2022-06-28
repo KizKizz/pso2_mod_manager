@@ -1,15 +1,19 @@
 # PSO2NGS Mod Manager 
  An app to manage and apply mod files to Phantasy Star Online 2 New Genesis  
- and more
  
 ![Screenshot 2022-06-26 142518](https://user-images.githubusercontent.com/101075148/175835622-b329d51f-8b75-4da2-a9c7-c1f5776d9683.png)
 
 # Features
+
+![Screenshot 2022-06-28 101749](https://user-images.githubusercontent.com/101075148/176244070-efc65efd-1311-481a-9e4c-cb9f0f52161f.png)
+
 - Organize, keep track of available and applied mods
-- Add, remove single/multiple mods
+- Add, remove single/multiple items or mods
 - Apply entire mod, or single .ice file
 - Backup originals from the game, restore when unapplying mods
-- Preview mods (if there are images or videos included inside the folder)
+- Preview mods by hovering mouse cursor on them(if there are images or videos included inside the folder)
+- Search, favorites  
+and more..
 
 # Download
 
