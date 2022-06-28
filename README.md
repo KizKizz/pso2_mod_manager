@@ -4,6 +4,13 @@
  
 ![Screenshot 2022-06-26 142518](https://user-images.githubusercontent.com/101075148/175835622-b329d51f-8b75-4da2-a9c7-c1f5776d9683.png)
 
+# Features
+- Organize, keep track of available and applied mods
+- Add, remove single/multiple mods
+- Apply entire mod, or single .ice file
+- Backup originals from the game, restore when unapplying mods
+- Preview mods (if there are images or videos included inside the folder)
+
 # Download
 
 [Release page](https://github.com/KizKizz/pso2_mod_manager/releases)
