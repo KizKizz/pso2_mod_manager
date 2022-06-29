@@ -44,11 +44,10 @@ and more..
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836771-62ce70ce-c8fa-423a-ae97-77fe00c178f0.png)  
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 143310-crop](https://user-images.githubusercontent.com/101075148/175836775-7cb5bcda-d86b-4be9-8b80-a3931487cc8a.png)
 
-**Adding item(s):**
+**Adding item(s):**  
+Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` and restart the app
 
-**Note:**  
-Only extracted files and folders, open zipped files then drag and drop to add
-Mods can also be added by copying your mod folders into each category folder in ```\PSO2 Mod Manager\Mods``` and restart the app
+**Note:** Only extracted files and folders, open zipped files then drag and drop to add
 
 - Single item
 
