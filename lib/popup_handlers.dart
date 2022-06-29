@@ -11,6 +11,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 
 Future binDirDialog(context, String popupTitle, String popupMessage, bool isReselect) async {
   await showDialog<String>(
@@ -19,15 +20,12 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
-            titlePadding: const EdgeInsets.only(top: 10),
+            titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
             title: Center(
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
             contentPadding: const EdgeInsets.only(left: 16, right: 16),
-            content: SizedBox(
-                //width: 300,
-                height: 70,
-                child: Center(child: Text(popupMessage))),
+            content: SizedBox(width: 350, height: 70, child: Center(child: Text(popupMessage))),
             actions: <Widget>[
               ElevatedButton(
                   child: const Text('Exit'),
@@ -57,42 +55,6 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                           prefs.setString('binDirPath', binDirPath);
                         }
                         if (binDirPath != '') {
-                          //Fill in paths
-                          mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
-                          modsDirPath = '$mainModDirPath\\Mods';
-                          backupDirPath = '$mainModDirPath\\Backups';
-                          checksumDirPath = '$mainModDirPath\\Checksum';
-                          modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-                          deletedItemsPath = '$mainModDirPath\\Deleted Items';
-                          //Check if exist, create dirs
-                          if (!Directory(mainModDirPath).existsSync()) {
-                            await Directory(mainModDirPath).create(recursive: true);
-                          }
-                          if (!Directory(modsDirPath).existsSync()) {
-                            await Directory(modsDirPath).create(recursive: true);
-                            await Directory('$modsDirPath\\Accessories').create(recursive: true);
-                            await Directory('$modsDirPath\\Basewears').create(recursive: true);
-                            await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-                            await Directory('$modsDirPath\\Emotes').create(recursive: true);
-                            await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-                            await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-                            await Directory('$modsDirPath\\Misc').create(recursive: true);
-                            await Directory('$modsDirPath\\Motions').create(recursive: true);
-                            await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-                            await Directory('$modsDirPath\\Setwears').create(recursive: true);
-                          }
-                          if (!Directory(backupDirPath).existsSync()) {
-                            await Directory(backupDirPath).create(recursive: true);
-                          }
-                          if (!Directory(checksumDirPath).existsSync()) {
-                            await Directory(checksumDirPath).create(recursive: true);
-                          }
-                          if (!File(deletedItemsPath).existsSync()) {
-                            await Directory(deletedItemsPath).create(recursive: true);
-                          }
-                          if (!File(modSettingsPath).existsSync()) {
-                            await File(modSettingsPath).create(recursive: true);
-                          }
                           context.read<stateProvider>().mainBinFoundTrue();
                         } else {
                           binDirTempPath = await FilePicker.platform.getDirectoryPath(
@@ -114,8 +76,226 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                           prefs.setString('binDirPath', binDirPath);
                         }
                         if (binDirPath != '') {
+                          // //Fill in paths
+                          // mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
+                          // modsDirPath = '$mainModDirPath\\Mods';
+                          // backupDirPath = '$mainModDirPath\\Backups';
+                          // checksumDirPath = '$mainModDirPath\\Checksum';
+                          // modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+                          // deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                          // //Check if exist, create dirs
+                          // if (!Directory(mainModDirPath).existsSync()) {
+                          //   await Directory(mainModDirPath).create(recursive: true);
+                          // }
+                          // if (!Directory(modsDirPath).existsSync()) {
+                          //   await Directory(modsDirPath).create(recursive: true);
+                          //   await Directory('$modsDirPath\\Accessories').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Basewears').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Body Paints').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Emotes').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Face Paints').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Innerwears').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Misc').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Motions').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Outerwears').create(recursive: true);
+                          //   await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                          // }
+                          // if (!Directory(backupDirPath).existsSync()) {
+                          //   await Directory(backupDirPath).create(recursive: true);
+                          // }
+                          // if (!Directory(checksumDirPath).existsSync()) {
+                          //   await Directory(checksumDirPath).create(recursive: true);
+                          // }
+                          // if (!File(deletedItemsPath).existsSync()) {
+                          //   await Directory(deletedItemsPath).create(recursive: true);
+                          // }
+                          // if (!File(modSettingsPath).existsSync()) {
+                          //   await File(modSettingsPath).create(recursive: true);
+                          // }
+                          context.read<stateProvider>().mainBinFoundTrue();
+                        } else {
+                          binDirTempPath = await FilePicker.platform.getDirectoryPath(
+                            dialogTitle: 'Select \'pso2_bin\' Directory Path',
+                            lockParentWindow: true,
+                          );
+                        }
+                      }
+                    }
+                  }),
+                  child: const Text('Yes'))
+            ],
+          );
+        });
+      });
+}
+
+//Main Mod Dir Select
+Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool isReselect) async {
+  await showDialog<String>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+            title: Center(
+              child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
+            ),
+            contentPadding: const EdgeInsets.only(left: 16, right: 16),
+            content: SizedBox(
+                //width: 300,
+                height: 70,
+                child: Center(child: Text(popupMessage))),
+            actions: <Widget>[
+              ElevatedButton(
+                  child: const Text('No'),
+                  onPressed: () async {
+                    if (!isReselect) {
+                      Navigator.of(context).pop();
+                      mainModManDirPath = binDirPath;
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setString('mainModManDirPath', mainModManDirPath);
+
+                      //Fill in paths
+                      mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
+                      modsDirPath = '$mainModDirPath\\Mods';
+                      backupDirPath = '$mainModDirPath\\Backups';
+                      checksumDirPath = '$mainModDirPath\\Checksum';
+                      modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+                      deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                      //Check if exist, create dirs
+                      if (!Directory(mainModDirPath).existsSync()) {
+                        await Directory(mainModDirPath).create(recursive: true);
+                      }
+                      if (!Directory(modsDirPath).existsSync()) {
+                        await Directory(modsDirPath).create(recursive: true);
+                        await Directory('$modsDirPath\\Accessories').create(recursive: true);
+                        await Directory('$modsDirPath\\Basewears').create(recursive: true);
+                        await Directory('$modsDirPath\\Body Paints').create(recursive: true);
+                        await Directory('$modsDirPath\\Emotes').create(recursive: true);
+                        await Directory('$modsDirPath\\Face Paints').create(recursive: true);
+                        await Directory('$modsDirPath\\Innerwears').create(recursive: true);
+                        await Directory('$modsDirPath\\Misc').create(recursive: true);
+                        await Directory('$modsDirPath\\Motions').create(recursive: true);
+                        await Directory('$modsDirPath\\Outerwears').create(recursive: true);
+                        await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                      }
+                      if (!Directory(backupDirPath).existsSync()) {
+                        await Directory(backupDirPath).create(recursive: true);
+                      }
+                      if (!Directory(checksumDirPath).existsSync()) {
+                        await Directory(checksumDirPath).create(recursive: true);
+                      }
+                      if (!File(deletedItemsPath).existsSync()) {
+                        await Directory(deletedItemsPath).create(recursive: true);
+                      }
+                      if (!File(modSettingsPath).existsSync()) {
+                        await File(modSettingsPath).create(recursive: true);
+                      }
+
+                      //Checksum check
+                      if (checkSumFilePath == null) {
+                        final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
+                        for (var file in filesInCSFolder) {
+                          if (p.extension(file.path) == '') {
+                            checkSumFilePath = file.path;
+                          }
+                        }
+                      }
+                      context.read<stateProvider>().mainModManPathFoundTrue();
+                    } else {
+                      Navigator.of(context).pop();
+                    }
+                  }),
+              ElevatedButton(
+                  onPressed: (() async {
+                    String? mainModManDirTempPath;
+
+                    if (!isReselect) {
+                      mainModManDirTempPath = await FilePicker.platform.getDirectoryPath(
+                        dialogTitle: 'Select a path to store Mod Manager Folder',
+                        lockParentWindow: true,
+                      );
+
+                      if (mainModManDirTempPath != null) {
+                        if (mainModManDirTempPath.split('\\').last == 'PSO2 Mod Manager') {
+                          List<String> newPathSplit = mainModManDirTempPath.split('\\');
+                          newPathSplit.removeLast();
+                          mainModManDirPath = newPathSplit.join('\\');
+                        } else {
+                          mainModManDirPath = mainModManDirTempPath.toString();
+                        }
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('mainModManDirPath', mainModManDirPath);
+
+                        //Fill in paths
+                        mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
+                        modsDirPath = '$mainModDirPath\\Mods';
+                        backupDirPath = '$mainModDirPath\\Backups';
+                        checksumDirPath = '$mainModDirPath\\Checksum';
+                        modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
+                        deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                        //Check if exist, create dirs
+                        if (!Directory(mainModDirPath).existsSync()) {
+                          await Directory(mainModDirPath).create(recursive: true);
+                        }
+                        if (!Directory(modsDirPath).existsSync()) {
+                          await Directory(modsDirPath).create(recursive: true);
+                          await Directory('$modsDirPath\\Accessories').create(recursive: true);
+                          await Directory('$modsDirPath\\Basewears').create(recursive: true);
+                          await Directory('$modsDirPath\\Body Paints').create(recursive: true);
+                          await Directory('$modsDirPath\\Emotes').create(recursive: true);
+                          await Directory('$modsDirPath\\Face Paints').create(recursive: true);
+                          await Directory('$modsDirPath\\Innerwears').create(recursive: true);
+                          await Directory('$modsDirPath\\Misc').create(recursive: true);
+                          await Directory('$modsDirPath\\Motions').create(recursive: true);
+                          await Directory('$modsDirPath\\Outerwears').create(recursive: true);
+                          await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                        }
+                        if (!Directory(backupDirPath).existsSync()) {
+                          await Directory(backupDirPath).create(recursive: true);
+                        }
+                        if (!Directory(checksumDirPath).existsSync()) {
+                          await Directory(checksumDirPath).create(recursive: true);
+                        }
+                        if (!File(deletedItemsPath).existsSync()) {
+                          await Directory(deletedItemsPath).create(recursive: true);
+                        }
+                        if (!File(modSettingsPath).existsSync()) {
+                          await File(modSettingsPath).create(recursive: true);
+                        }
+
+                        //Checksum check
+                        if (checkSumFilePath == null) {
+                          final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
+                          for (var file in filesInCSFolder) {
+                            if (p.extension(file.path) == '') {
+                              checkSumFilePath = file.path;
+                            }
+                          }
+                        }
+                        context.read<stateProvider>().mainModManPathFoundTrue();
+                        Navigator.of(context).pop();
+                      }
+                    } else {
+                      mainModManDirTempPath = await FilePicker.platform.getDirectoryPath(
+                        dialogTitle: 'Select a path to store Mod Manager Folder',
+                        lockParentWindow: true,
+                      );
+                      if (mainModManDirTempPath != null) {
+                        if (mainModManDirPath != '') {
+                          if (mainModManDirTempPath.split('\\').last == 'PSO2 Mod Manager') {
+                            List<String> newPathSplit = mainModManDirTempPath.split('\\');
+                            newPathSplit.removeLast();
+                            mainModManDirPath = newPathSplit.join('\\');
+                          } else {
+                            mainModManDirPath = mainModManDirTempPath.toString();
+                          }
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setString('mainModManDirPath', mainModManDirPath);
+
                           //Fill in paths
-                          mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
+                          mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
                           modsDirPath = '$mainModDirPath\\Mods';
                           backupDirPath = '$mainModDirPath\\Backups';
                           checksumDirPath = '$mainModDirPath\\Checksum';
@@ -151,11 +331,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                             await File(modSettingsPath).create(recursive: true);
                           }
                           context.read<stateProvider>().mainBinFoundTrue();
-                        } else {
-                          binDirTempPath = await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select \'pso2_bin\' Directory Path',
-                            lockParentWindow: true,
-                          );
+                          Navigator.of(context).pop();
                         }
                       }
                     }
@@ -176,7 +352,7 @@ categoryDeleteDialog(context, double height, String popupTitle, String popupMess
           DateTime now = DateTime.now();
           String formattedDate = DateFormat('MM-dd-yyyy').format(now);
           return AlertDialog(
-            titlePadding: const EdgeInsets.only(top: 10),
+            titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
             title: Center(
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
@@ -265,7 +441,7 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
           DateTime now = DateTime.now();
           String formattedDate = DateFormat('MM-dd-yyyy').format(now);
           return AlertDialog(
-            titlePadding: const EdgeInsets.only(top: 10),
+            titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
             title: Center(
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
@@ -309,36 +485,9 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                               }
                             }
 
-                            //Remove leftover files
-                            parentPaths.toSet();
-                            for (var path in parentPaths) {
-                              if (Directory(path).existsSync()) {
-                                final leftOverFiles = Directory(path).listSync(recursive: false).whereType<File>();
-                                if (leftOverFiles.isNotEmpty) {
-                                  for (var file in leftOverFiles) {
-                                    String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\${curCate.categoryName}\\$curItem${file.path.split(curItem).last}';
-                                    //print(sourcePath);
-                                    File(leftOverFileDeleteBackupPath).createSync(recursive: true);
-                                    File(file.path).copySync(leftOverFileDeleteBackupPath);
-                                    File(file.path).deleteSync(recursive: true);
-                                  }
-                                }
-                              }
-                            }
-                            for (var path in parentPaths) {
-                              if (Directory(path).existsSync() &&
-                                  Directory(path).listSync(recursive: true).whereType<File>().isEmpty &&
-                                  Directory(path).listSync(recursive: true).whereType<Directory>().isEmpty) {
-                                Directory(path).deleteSync(recursive: true);
-                              }
-                            }
-
-                            final subFolderList = Directory(curCate.categoryPath).listSync().whereType<Directory>();
-                            for (var folder in subFolderList) {
-                              if (Directory(folder.path).listSync(recursive: true).whereType<File>().isEmpty) {
-                                Directory(folder.path).deleteSync(recursive: true);
-                              }
-                            }
+                            //Remove files
+                            String itemPath = '${curCate.categoryPath}\\$curItem';
+                            Directory(itemPath).deleteSync(recursive: true);
                           }
 
                           curCate.imageIcons.removeAt(curCate.itemNames.indexOf(curItem));
@@ -366,7 +515,7 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
           DateTime now = DateTime.now();
           String formattedDate = DateFormat('MM-dd-yyyy').format(now);
           return AlertDialog(
-            titlePadding: const EdgeInsets.only(top: 10),
+            titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
             title: Center(
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
@@ -457,7 +606,7 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
       });
 }
 
-//Remove Mod Dialog
+//Zoom Dialog
 Future pictureDialog(context, List<Widget> previewImageSliders) async {
   CarouselController imgSliderController = CarouselController();
   int currentImg = 0;
@@ -475,7 +624,7 @@ Future pictureDialog(context, List<Widget> previewImageSliders) async {
                   scaleEnabled: true,
                   panEnabled: true,
                   child: AspectRatio(
-                    aspectRatio: 16/9,
+                    aspectRatio: 16 / 9,
                     child: CarouselSlider(
                       items: previewImageSliders,
                       carouselController: imgSliderController,
@@ -500,7 +649,11 @@ Future pictureDialog(context, List<Widget> previewImageSliders) async {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(width: 250, child: Text('Scroll wheel: Zoom | Right mouse: Pan',)),
+                  const SizedBox(
+                      width: 250,
+                      child: Text(
+                        'Scroll wheel: Zoom | Right mouse: Pan',
+                      )),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
