@@ -507,8 +507,34 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
       }
 
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
+      List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
 
-      ModFile newModFile = ModFile('', newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, []);
+      if (imgList.isEmpty || vidList.isEmpty) {
+        List<String> filePathSplit = file.path.split('$newItemPath\\').last.split('\\');
+        filePathSplit.insert(0, newItemName!);
+        String fileName = filePathSplit.removeLast();
+        String tempPath = file.path.split('\\$fileName').first;
+        for (var folderPath in filePathSplit.reversed) {
+          List<File> imgVidGet = Directory(tempPath)
+              .listSync(recursive: false)
+              .whereType<File>()
+              .where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png' || p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+              .toList();
+          if (imgVidGet.isNotEmpty) {
+            for (var file in imgVidGet) {
+              if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+                imgList.add(file);
+              }
+              if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+                vidList.add(file);
+              }
+            }
+          }
+          tempPath = tempPath.split('\\$folderPath').first;
+        }
+      }
+
+      ModFile newModFile = ModFile('', newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
       newModFile.categoryName = selectedCategoryName.toString();
       newModFile.categoryPath = catePath;
       newModList.add(newModFile);
@@ -701,8 +727,34 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
             }
 
             List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
-
             List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
+
+            if (imgList.isEmpty || vidList.isEmpty) {
+              List<String> filePathSplit = file.path.split('$newItemPath\\').last.split('\\');
+              if (filePathSplit.isNotEmpty) {
+                filePathSplit.insert(0, xFile.name);
+                String fileName = filePathSplit.removeLast();
+                String tempPath = file.path.split('\\$fileName').first;
+                for (var folderPath in filePathSplit.reversed) {
+                  List<File> imgVidGet = Directory(tempPath)
+                      .listSync(recursive: false)
+                      .whereType<File>()
+                      .where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png' || p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+                      .toList();
+                  if (imgVidGet.isNotEmpty) {
+                    for (var file in imgVidGet) {
+                      if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+                        imgList.add(file);
+                      }
+                      if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+                        vidList.add(file);
+                      }
+                    }
+                  }
+                  tempPath = tempPath.split('\\$folderPath').first;
+                }
+              }
+            }
 
             ModFile newModFile = ModFile('', newItemPath, modName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
             newModFile.categoryName = selectedCategoryName.toString();

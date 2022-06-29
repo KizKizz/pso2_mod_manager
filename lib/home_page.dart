@@ -1724,7 +1724,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
                                           isErrorInSingleItemName = false;
                                           isItemAddBtnClicked = true;
-                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon!, selectedCategoryForSingleItem,
+                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon, selectedCategoryForSingleItem,
                                                   newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
                                               .then((_) {
                                             setState(() {
