@@ -755,13 +755,13 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
 }
 
 // New Mod Adders
-Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String curItemName, String itemPath, int index, String? newItemName) async {
+Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String curCate, String curItemName, String itemPath, int index, String? newItemName) async {
   for (var xFile in newModDragDropList) {
     await Future(
       () {
         if (!Directory(xFile.path).existsSync()) {
           String newPath = itemPath;
-          final fileParent = File(xFile.path).parent.path.split('\\').last;
+          //final fileParent = File(xFile.path).parent.path.split('\\').last;
           if (newItemName != null) {
             //Item suffix
             newPath += '\\$newItemName\\${xFile.name}';
@@ -802,7 +802,7 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
 
   //Add to list
   List<ModFile> newMods = [];
-  final matchedCategory = cateList.firstWhere((element) => element.itemNames.indexWhere((e) => e == curItemName) != -1);
+  final matchedCategory = cateList.firstWhere((element) => element.categoryName == curCate);
   final filesList = Directory(newModPath).listSync(recursive: true).whereType<File>();
   List<String> parentsList = [];
   for (var file in filesList) {
@@ -811,6 +811,31 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
       final iceParents = file.path.split(curItemName).last.split('\\$iceName').first.replaceAll('\\', ' > ').trim();
       List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
       List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
+
+      if (imgList.isEmpty || vidList.isEmpty) {
+        List<String> filePathSplit = file.path.split('$newModPath\\').last.split('\\');
+        filePathSplit.insert(0, newItemName!);
+        String fileName = filePathSplit.removeLast();
+        String tempPath = file.path.split('\\$fileName').first;
+        for (var folderPath in filePathSplit.reversed) {
+          List<File> imgVidGet = Directory(tempPath)
+              .listSync(recursive: false)
+              .whereType<File>()
+              .where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png' || p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+              .toList();
+          if (imgVidGet.isNotEmpty) {
+            for (var file in imgVidGet) {
+              if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+                imgList.add(file);
+              }
+              if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+                vidList.add(file);
+              }
+            }
+          }
+          tempPath = tempPath.split('\\$folderPath').first;
+        }
+      }
 
       ModFile newModFile = ModFile('', newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
       newModFile.categoryName = matchedCategory.categoryName;

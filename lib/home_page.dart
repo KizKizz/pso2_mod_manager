@@ -2406,7 +2406,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               });
                                             } else {
                                               isModAddFolderOnly = true;
-                                              dragDropModsAdd(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
+                                              dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
                                                       newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
                                                   .then((_) {
                                                 setState(() {

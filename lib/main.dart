@@ -7,7 +7,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
@@ -55,7 +54,7 @@ Future<void> main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => stateProvider()),
-  ], child: Phoenix(child: const MyApp())));
+  ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1160, 500);
@@ -261,11 +260,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
-                              onPressed: !Provider.of<stateProvider>(context, listen: false).addingBoxState
-                                  ? (() async {
-                                      Phoenix.rebirth(context);
-                                    })
-                                  : null,
+                              onPressed: Provider.of<stateProvider>(context, listen: false).addingBoxState
+                              ? null
+                              :(() async {
+                                RestartWidget.restartApp(context);
+                              }),
                               child: Row(
                                 children: const [
                                   Icon(
@@ -540,6 +539,37 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           ],
         ),
       ),
+    );
+  }
+}
+
+class RestartWidget extends StatefulWidget {
+  const RestartWidget({required this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
     );
   }
 }
