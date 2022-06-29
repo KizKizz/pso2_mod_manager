@@ -46,7 +46,9 @@ and more..
 
 **Adding item(s):**
 
-**Note:** Only extracted files and folders, open zipped files then drag and drop to add
+**Note:**  
+Only extracted files and folders, open zipped files then drag and drop to add
+Mods can also be added by copying your mod folders into each category folder in ```\PSO2 Mod Manager\Mods``` and restart the app
 
 - Single item
 
