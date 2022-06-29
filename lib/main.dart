@@ -21,6 +21,7 @@ import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
 String binDirPath = '';
+String mainModManDirPath = '';
 String mainModDirPath = '';
 String modsDirPath = '';
 String backupDirPath = '';
@@ -57,7 +58,7 @@ Future<void> main() async {
   ], child: const RestartWidget(child: MyApp())));
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
-    appWindow.minSize = const Size(1160, 500);
+    appWindow.minSize = const Size(1280, 500);
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
@@ -160,12 +161,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     //prefs.clear();
     binDirPath = prefs.getString('binDirPath') ?? '';
+    mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
 
-    if (binDirPath.isEmpty) {
-      getDirPath();
+    if (mainModManDirPath.isEmpty) {
+      getMainModManDirPath();
     } else {
       //Fill in paths
-      mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
+      mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
       modsDirPath = '$mainModDirPath\\Mods';
       backupDirPath = '$mainModDirPath\\Backups';
       checksumDirPath = '$mainModDirPath\\Checksum';
@@ -200,8 +202,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       if (!File(modSettingsPath).existsSync()) {
         await File(modSettingsPath).create(recursive: true);
       }
+
       setState(() {
-        context.read<stateProvider>().mainBinFoundTrue();
+        context.read<stateProvider>().mainModManPathFoundTrue();
       });
 
       //Checksum check
@@ -214,10 +217,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         }
       }
     }
+    if (binDirPath.isEmpty) {
+      getDirPath();
+    } else {
+      setState(() {
+        context.read<stateProvider>().mainBinFoundTrue();
+      });
+    }
   }
 
   void getDirPath() {
-    binDirDialog(context, 'Error', 'pso2_bin folder not found. Select now?', false);
+    binDirDialog(context, 'Error', 'pso2_bin folder not found. Select it now?\n\'Exit\' will close the app', false);
+  }
+
+  void getMainModManDirPath() {
+    mainModManDirDialog(context, 'Mod Manager Folder Not Found', 'Select a path to store your mods?\n\'No\' will create a folder inside \'pso2_bin\'', false);
   }
 
   @override
@@ -242,9 +256,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 2),
-                            child: const Text(
+                            child: Text(
                               'PSO2NGS Mod Manager',
-                              style: TextStyle(fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: checkSumFilePath == null ? 13 : 15,
+                              ),
                             )),
                       )),
                     ),
@@ -261,18 +278,18 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: Provider.of<stateProvider>(context, listen: false).addingBoxState
-                              ? null
-                              :(() async {
-                                RestartWidget.restartApp(context);
-                              }),
+                                  ? null
+                                  : (() async {
+                                      RestartWidget.restartApp(context);
+                                    }),
                               child: Row(
                                 children: const [
                                   Icon(
                                     Icons.refresh,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text('Reload App', style: TextStyle(fontWeight: FontWeight.w400))
+                                  SizedBox(width: 2.5),
+                                  Text('Reload', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -296,11 +313,38 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               child: Row(
                                 children: const [
                                   Icon(
-                                    Icons.folder_outlined,
+                                    Icons.folder,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 2.5),
                                   Text('_bin Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          //MM Dir reselect
+                          Tooltip(
+                            message: 'Reselect Path to store Mod Manager Folder',
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() {
+                                mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Select a new path to store your mods?', false).then((_) {
+                                  setState(() {
+                                    //setstate
+                                  });
+                                });
+                              }),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.folder_open_outlined,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 2.5),
+                                  Text('Path Reselect', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -322,7 +366,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     Icons.delete_rounded,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 2.5),
                                   Text('Deleted Items', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
@@ -362,7 +406,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           Icons.fingerprint,
                                           size: 18,
                                         ),
-                                        SizedBox(width: 5),
+                                        SizedBox(width: 2.5),
                                         Text('Checksum', style: TextStyle(fontWeight: FontWeight.w400))
                                       ],
                                     )
@@ -373,7 +417,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           size: 18,
                                           color: Colors.red,
                                         ),
-                                        SizedBox(width: 5),
+                                        SizedBox(width: 2.5),
                                         Text('Checksum missing. Click!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
@@ -397,7 +441,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     Icons.backup_table,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 2.5),
                                   Text('Backups', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
@@ -420,7 +464,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     Icons.rule_folder_outlined,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 2.5),
                                   Text('Mods', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
@@ -452,7 +496,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     Icons.preview_outlined,
                                     size: 18,
                                   ),
-                                  const SizedBox(width: 5),
+                                  const SizedBox(width: 2.5),
                                   const Text('Preview: ', style: TextStyle(fontWeight: FontWeight.w400)),
                                   if (context.watch<stateProvider>().previewWindowVisible)
                                     SizedBox(
@@ -486,7 +530,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       Icons.light_mode_outlined,
                                       size: 18,
                                     ),
-                                    SizedBox(width: 5),
+                                    SizedBox(width: 2.5),
                                     Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
@@ -508,7 +552,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       Icons.dark_mode_outlined,
                                       size: 18,
                                     ),
-                                    SizedBox(width: 5),
+                                    SizedBox(width: 2.5),
                                     Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
@@ -522,7 +566,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 ),
               ),
             ),
-            context.watch<stateProvider>().isMainBinFound
+            context.watch<stateProvider>().isMainBinFound && context.watch<stateProvider>().isMainModManPathFound
                 ? const DataLoadingPage()
                 : Column(
                     children: const [

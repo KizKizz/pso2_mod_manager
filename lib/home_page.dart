@@ -628,7 +628,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateList[index].itemNames[i]),
-                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Files applied: ${cateList[index].numOfApplied[i]}'),
+                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Files Applied: ${cateList[index].numOfApplied[i]}'),
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)

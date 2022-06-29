@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 class stateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
+  bool _isMainModManPathFound = false;
   bool _previewWindowVisible = false;
   bool _addingBoxState = false;
   String _newItemDropDisplay = '';
@@ -10,11 +11,22 @@ class stateProvider with ChangeNotifier {
   String _newModDropDisplay = '';
 
   bool get isMainBinFound => _isMainBinFound;
+  bool get isMainModManPathFound => _isMainModManPathFound;
   bool get previewWindowVisible => _previewWindowVisible;
   bool get addingBoxState => _addingBoxState;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
+
+  void mainModManPathFoundTrue() {
+    _isMainModManPathFound = true;
+    notifyListeners();
+  }
+
+  void mainModManPathFoundFalse() {
+    _isMainModManPathFound = false;
+    notifyListeners();
+  }
 
   void addingBoxStateTrue() {
     _addingBoxState = true;
@@ -25,7 +37,7 @@ class stateProvider with ChangeNotifier {
     _addingBoxState = false;
     notifyListeners();
   }
-  
+
   void mainBinFoundTrue() {
     _isMainBinFound = true;
     notifyListeners();
