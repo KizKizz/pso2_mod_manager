@@ -176,7 +176,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget itemsView() {
     dropdownCategories.clear();
     for (var category in cateList) {
-      dropdownCategories.add(category.categoryName);
+      if (category.categoryName != 'Favorites') {
+        dropdownCategories.add(category.categoryName);
+      }
     }
 
     return Column(
@@ -356,10 +358,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     absorbing: isSearching,
                     child: ExpansionTile(
                       initiallyExpanded: false,
-                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                      collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                      collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
                       onExpansionChanged: (newState) {
                         setState(() {
                           if (!newState) {

@@ -334,6 +334,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                 mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Select a new path to store your mods?', false).then((_) {
                                   setState(() {
                                     //setstate
+                                    RestartWidget.restartApp(context);
                                   });
                                 });
                               }),
