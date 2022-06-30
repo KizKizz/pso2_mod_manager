@@ -522,10 +522,10 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
               .toList();
           if (imgVidGet.isNotEmpty) {
             for (var file in imgVidGet) {
-              if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+              if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                 imgList.add(file);
               }
-              if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+              if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                 vidList.add(file);
               }
             }
@@ -743,10 +743,12 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
                       .toList();
                   if (imgVidGet.isNotEmpty) {
                     for (var file in imgVidGet) {
-                      if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+                      if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') &&
+                          imgList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                         imgList.add(file);
                       }
-                      if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+                      if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') &&
+                          vidList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                         vidList.add(file);
                       }
                     }
@@ -877,10 +879,10 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
               .toList();
           if (imgVidGet.isNotEmpty) {
             for (var file in imgVidGet) {
-              if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
+              if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                 imgList.add(file);
               }
-              if (p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') {
+              if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
                 vidList.add(file);
               }
             }
@@ -959,6 +961,31 @@ Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList,
             final iceParents = file.path.split(curItemName).last.split('\\$iceName').first.replaceAll('\\', ' > ').trim();
             List<File> imgList = filesList.where((e) => (p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png') && e.parent.path == file.parent.path).toList();
             List<File> vidList = filesList.where((e) => (p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm') && e.parent.path == file.parent.path).toList();
+
+            if (imgList.isEmpty || vidList.isEmpty) {
+              List<String> filePathSplit = file.path.split('$newModPath\\').last.split('\\');
+              filePathSplit.insert(0, newItemName!);
+              String fileName = filePathSplit.removeLast();
+              String tempPath = file.path.split('\\$fileName').first;
+              for (var folderPath in filePathSplit.reversed) {
+                List<File> imgVidGet = Directory(tempPath)
+                    .listSync(recursive: false)
+                    .whereType<File>()
+                    .where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png' || p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+                    .toList();
+                if (imgVidGet.isNotEmpty) {
+                  for (var file in imgVidGet) {
+                    if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+                      imgList.add(file);
+                    }
+                    if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidList.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+                      vidList.add(file);
+                    }
+                  }
+                }
+                tempPath = tempPath.split('\\$folderPath').first;
+              }
+            }
 
             ModFile newModFile = ModFile('', newModPath, curItemName, file.path, iceName, iceParents, '', '', getImagesList(imgList), false, true, true, false, vidList);
             newModFile.categoryName = matchedCategory.categoryName;
