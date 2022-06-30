@@ -4,9 +4,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
+import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -25,10 +27,10 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
             contentPadding: const EdgeInsets.only(left: 16, right: 16),
-            content: SizedBox(width: 350, height: 70, child: Center(child: Text(popupMessage))),
+            content: Container(width: isReselect ? null : 350, height: 90, constraints: const BoxConstraints(minWidth: 300), child: Text(popupMessage)),
             actions: <Widget>[
               ElevatedButton(
-                  child: const Text('Exit'),
+                  child: isReselect ? const Text('No') : const Text('Exit'),
                   onPressed: () async {
                     if (!isReselect) {
                       Navigator.of(context).pop();
@@ -39,7 +41,6 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                   }),
               ElevatedButton(
                   onPressed: (() async {
-                    Navigator.of(context).pop();
                     String? binDirTempPath;
 
                     if (!isReselect) {
@@ -56,6 +57,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                         }
                         if (binDirPath != '') {
                           context.read<stateProvider>().mainBinFoundTrue();
+                          Navigator.of(context).pop();
                         } else {
                           binDirTempPath = await FilePicker.platform.getDirectoryPath(
                             dialogTitle: 'Select \'pso2_bin\' Directory Path',
@@ -76,48 +78,10 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                           prefs.setString('binDirPath', binDirPath);
                         }
                         if (binDirPath != '') {
-                          // //Fill in paths
-                          // mainModDirPath = '$binDirPath\\PSO2 Mod Manager';
-                          // modsDirPath = '$mainModDirPath\\Mods';
-                          // backupDirPath = '$mainModDirPath\\Backups';
-                          // checksumDirPath = '$mainModDirPath\\Checksum';
-                          // modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-                          // deletedItemsPath = '$mainModDirPath\\Deleted Items';
-                          // //Check if exist, create dirs
-                          // if (!Directory(mainModDirPath).existsSync()) {
-                          //   await Directory(mainModDirPath).create(recursive: true);
-                          // }
-                          // if (!Directory(modsDirPath).existsSync()) {
-                          //   await Directory(modsDirPath).create(recursive: true);
-                          //   await Directory('$modsDirPath\\Accessories').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Basewears').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Emotes').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Misc').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Motions').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-                          //   await Directory('$modsDirPath\\Setwears').create(recursive: true);
-                          // }
-                          // if (!Directory(backupDirPath).existsSync()) {
-                          //   await Directory(backupDirPath).create(recursive: true);
-                          // }
-                          // if (!Directory(checksumDirPath).existsSync()) {
-                          //   await Directory(checksumDirPath).create(recursive: true);
-                          // }
-                          // if (!File(deletedItemsPath).existsSync()) {
-                          //   await Directory(deletedItemsPath).create(recursive: true);
-                          // }
-                          // if (!File(modSettingsPath).existsSync()) {
-                          //   await File(modSettingsPath).create(recursive: true);
-                          // }
+                          dataDir = Directory('$binDirPath\\data');
+                          iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
                           context.read<stateProvider>().mainBinFoundTrue();
-                        } else {
-                          binDirTempPath = await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select \'pso2_bin\' Directory Path',
-                            lockParentWindow: true,
-                          );
+                          Navigator.of(context).pop();
                         }
                       }
                     }
@@ -142,10 +106,11 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
             contentPadding: const EdgeInsets.only(left: 16, right: 16),
-            content: SizedBox(
+            content: Container(
                 //width: 300,
-                height: 70,
-                child: Center(child: Text(popupMessage))),
+                height: 90,
+                constraints: const BoxConstraints(minWidth: 300),
+                child: Text(popupMessage)),
             actions: <Widget>[
               ElevatedButton(
                   child: const Text('No'),
@@ -331,6 +296,15 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             await File(modSettingsPath).create(recursive: true);
                           }
                           context.read<stateProvider>().mainBinFoundTrue();
+
+                          allModFiles = await modsLoader();
+                          cateList = categories(allModFiles);
+                          appliedModsListGet = getAppliedModsList();
+                          //iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+                          //print(cateList.length);
+                          context.read<stateProvider>().cateListItemCountSet(cateList.length);
+                          //Provider.of<stateProvider>(context, listen: false).cateListItemCountSet(cateList.length);
+                          setState(() {});
                           Navigator.of(context).pop();
                         }
                       }
@@ -608,6 +582,13 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
 
 //Zoom Dialog
 Future pictureDialog(context, List<Widget> previewImageSliders) async {
+  List<Widget> previewImageSlidersFit = [];
+  for (var element in previewImageSliders) {
+    previewImageSlidersFit.add(FittedBox(
+      fit: BoxFit.contain,
+      child: element,
+    ));
+  }
   CarouselController imgSliderController = CarouselController();
   int currentImg = 0;
   await showDialog<String>(
@@ -616,34 +597,29 @@ Future pictureDialog(context, List<Widget> previewImageSliders) async {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             contentPadding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-            content: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                InteractiveViewer(
-                  scaleEnabled: true,
-                  panEnabled: true,
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: CarouselSlider(
-                      items: previewImageSliders,
-                      carouselController: imgSliderController,
-                      options: CarouselOptions(
-                          //height: double.maxFinite,
-                          autoPlay: false,
-                          reverse: true,
-                          viewportFraction: 1.0,
-                          enlargeCenterPage: true,
-                          aspectRatio: 1,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              currentImg = index;
-                            });
-                          }),
-                    ),
-                  ),
+            content: InteractiveViewer(
+              scaleEnabled: true,
+              panEnabled: true,
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: CarouselSlider(
+                  items: previewImageSlidersFit,
+                  carouselController: imgSliderController,
+                  options: CarouselOptions(
+                      //height: double.maxFinite,
+                      autoPlay: false,
+                      reverse: true,
+                      viewportFraction: 1.0,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: previewImageSliders.length > 1,
+                      //aspectRatio: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentImg = index;
+                        });
+                      }),
                 ),
-              ],
+              ),
             ),
             actions: [
               Row(

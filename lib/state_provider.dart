@@ -6,6 +6,7 @@ class stateProvider with ChangeNotifier {
   bool _isMainModManPathFound = false;
   bool _previewWindowVisible = false;
   bool _addingBoxState = false;
+  int _cateListItemCount = 0;
   String _newItemDropDisplay = '';
   String _newSingleItemDropDisplay = '';
   String _newModDropDisplay = '';
@@ -14,9 +15,24 @@ class stateProvider with ChangeNotifier {
   bool get isMainModManPathFound => _isMainModManPathFound;
   bool get previewWindowVisible => _previewWindowVisible;
   bool get addingBoxState => _addingBoxState;
+  int get cateListItemCount => _cateListItemCount;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
+
+  void cateListItemCountSet(int itemCount) {
+    _cateListItemCount = itemCount;
+    notifyListeners();
+  }
+
+  void cateListItemCountSetNoListener(int itemCount) {
+    _cateListItemCount = itemCount;
+  }
+
+  void cateListItemCountReset() {
+    _cateListItemCount = 0;
+    notifyListeners();
+  }
 
   void mainModManPathFoundTrue() {
     _isMainModManPathFound = true;

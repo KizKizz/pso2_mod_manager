@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 
 class DataLoadingPage extends StatefulWidget {
   const DataLoadingPage({Key? key}) : super(key: key);
@@ -43,6 +45,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
               iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+              Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
               //print('${allModFiles.length} iceFiles Loaded');
 
               return const HomePage();

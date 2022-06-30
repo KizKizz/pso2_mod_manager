@@ -70,7 +70,7 @@ Future<List<ModFile>> modsLoader() async {
         imgFiles.add(imgFile);
       }
     }
-    var imgList = getImagesList(imgFiles);
+    
 
     //Vids helper
     for (var vidFile in Directory(iceFile.parent.path).listSync(recursive: false).whereType<File>()) {
@@ -79,8 +79,35 @@ Future<List<ModFile>> modsLoader() async {
       }
     }
 
+    if (imgFiles.isEmpty || vidFiles.isEmpty) {
+      List<String> filePathSplit = iceFile.path.split('$modPath\\').last.split('\\');
+      if (filePathSplit.isNotEmpty) {
+        filePathSplit.insert(0, modName);
+        String fileName = filePathSplit.removeLast();
+        String tempPath = iceFile.path.split('\\$fileName').first;
+        for (var folderPath in filePathSplit.reversed) {
+          List<File> imgVidGet = Directory(tempPath)
+              .listSync(recursive: false)
+              .whereType<File>()
+              .where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png' || p.extension(e.path) == '.mp4' || p.extension(e.path) == '.webm')
+              .toList();
+          if (imgVidGet.isNotEmpty) {
+            for (var file in imgVidGet) {
+              if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgFiles.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+                imgFiles.add(file);
+              }
+              if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidFiles.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+                vidFiles.add(file);
+              }
+            }
+          }
+          tempPath = tempPath.split('\\$folderPath').first;
+        }
+      }
+    }
+
     //New ModFile
-    ModFile newModFile = ModFile('', modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', imgList, false, true, false, false, vidFiles);
+    ModFile newModFile = ModFile('', modPath, modName, iceFile.path, iceFilePathSplit.last, iceParents, '', '', getImagesList(imgFiles), false, true, false, false, vidFiles);
     newModFile.categoryName = categoryName;
     newModFile.categoryPath = categoryPath;
     var jsonModFile = modFilesFromJson.firstWhere((e) => e.icePath == newModFile.icePath, orElse: () {

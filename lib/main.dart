@@ -10,9 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
@@ -303,8 +305,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() {
-                                binDirDialog(context, 'Info', 'Reselecting pso2_bin folder?', true).then((_) {
-                                  //RestartWidget.restartApp(context);
+                                binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true).then((_) {
                                   setState(() {
                                     //setstate
                                   });
@@ -331,12 +332,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() {
-                                mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Select a new path to store your mods?', false).then((_) {
-                                  setState(() {
-                                    //setstate
-                                    RestartWidget.restartApp(context);
-                                  });
-                                });
+                                mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
                               }),
                               child: Row(
                                 children: const [

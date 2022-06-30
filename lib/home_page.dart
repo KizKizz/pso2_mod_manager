@@ -143,6 +143,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void refreshHomePage() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     MultiSplitView mainViews = MultiSplitView(
@@ -352,7 +356,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: cateList.length,
+                itemCount: Provider.of<stateProvider>(context, listen: false).cateListItemCount,
                 itemBuilder: (context, index) {
                   return AbsorbPointer(
                     absorbing: isSearching,
@@ -700,8 +704,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       popupHeight += 24;
                                                     }
                                                     String stillApplied = stillAppliedList.join('\n');
-                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                                        false, cateList[index], cateList[index].itemNames[i], []);
+                                                    itemDeleteDialog(
+                                                        context,
+                                                        popupHeight,
+                                                        'Delete Item',
+                                                        'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        false,
+                                                        cateList[index],
+                                                        cateList[index].itemNames[i], []);
                                                   }
                                                 });
                                               }),
@@ -923,7 +933,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           waitDuration: const Duration(seconds: 1),
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                                List<List<ModFile>> modListToRemoveFav =
+                                                    await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
                                                 for (var element in modListToRemoveFav) {
                                                   cateListSearchResult[index] = addOrRemoveFav(cateListSearchResult, element, cateListSearchResult[index], false);
                                                 }
@@ -1724,7 +1735,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
                                           isErrorInSingleItemName = false;
                                           isItemAddBtnClicked = true;
-                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon!, selectedCategoryForSingleItem,
+                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon, selectedCategoryForSingleItem,
                                                   newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
                                               .then((_) {
                                             setState(() {
@@ -1877,6 +1888,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             isPreviewImgsOn = false;
                                             isPreviewVidOn = false;
                                             previewPlayer.pause();
+                                            currentImg = 0;
                                           });
                                         }
                                       },
@@ -2408,8 +2420,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               });
                                             } else {
                                               isModAddFolderOnly = true;
-                                              dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex,
-                                                      newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
+                                              dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath,
+                                                      _newModToItemIndex, newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
                                                   .then((_) {
                                                 setState(() {
                                                   //setstate to refresh list
@@ -2467,13 +2479,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         modPreviewImgList = snapshot.data;
                         //print(modPreviewImgList.toString());
                         previewImageSliders = modPreviewImgList
+
                             .map((item) => Container(
                                   margin: const EdgeInsets.all(2.0),
                                   child: ClipRRect(
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                       child: Stack(
                                         children: <Widget>[
-                                          Image.file(item, fit: BoxFit.cover, width: 1000.0),
+                                          Image.file(item),
                                           //Text(modPreviewImgList.toString())
                                         ],
                                       )),
@@ -2482,7 +2495,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         List<Widget> previewImageSlidersBox = [];
                         for (var element in previewImageSliders) {
                           previewImageSlidersBox.add(FittedBox(
-                            fit: BoxFit.fitHeight,
+                            fit: BoxFit.contain,
                             child: element,
                           ));
                         }
@@ -2765,6 +2778,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           isPreviewImgsOn = false;
                                           isPreviewVidOn = false;
                                           previewPlayer.pause();
+                                          currentImg = 0;
                                         });
                                       }
                                     },
