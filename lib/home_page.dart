@@ -38,6 +38,7 @@ List<bool> isLoading = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
+bool previewZoomState = true;
 int totalAppliedItems = 0;
 int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
@@ -704,14 +705,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       popupHeight += 24;
                                                     }
                                                     String stillApplied = stillAppliedList.join('\n');
-                                                    itemDeleteDialog(
-                                                        context,
-                                                        popupHeight,
-                                                        'Delete Item',
-                                                        'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                                        false,
-                                                        cateList[index],
-                                                        cateList[index].itemNames[i], []);
+                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        false, cateList[index], cateList[index].itemNames[i], []);
                                                   }
                                                 });
                                               }),
@@ -933,8 +928,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           waitDuration: const Duration(seconds: 1),
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                List<List<ModFile>> modListToRemoveFav =
-                                                    await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
                                                 for (var element in modListToRemoveFav) {
                                                   cateListSearchResult[index] = addOrRemoveFav(cateListSearchResult, element, cateListSearchResult[index], false);
                                                 }
@@ -1860,6 +1854,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             }
                                             //print(modFilesList[index].first.previewVids!.length);
                                             if (modFilesList[index].first.previewVids!.isNotEmpty) {
+                                              previewZoomState = false;
                                               isPreviewVidOn = true;
                                               isPreviewImgsOn = false;
                                               previewPlayer.setVolume(0.0);
@@ -1887,13 +1882,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           setState(() {
                                             isPreviewImgsOn = false;
                                             isPreviewVidOn = false;
+                                            previewZoomState = true;
                                             previewPlayer.pause();
                                             currentImg = 0;
                                           });
                                         }
                                       },
                                       child: GestureDetector(
-                                        onSecondaryTap: () => previewImageSliders.isNotEmpty ? pictureDialog(context, previewImageSliders) : null,
+                                        onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
                                         child: Card(
                                             margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
                                             shape: RoundedRectangleBorder(
@@ -2479,7 +2475,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         modPreviewImgList = snapshot.data;
                         //print(modPreviewImgList.toString());
                         previewImageSliders = modPreviewImgList
-
                             .map((item) => Container(
                                   margin: const EdgeInsets.all(2.0),
                                   child: ClipRRect(
@@ -2504,7 +2499,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onSecondaryTap: (() => previewImageSliders.isNotEmpty ? pictureDialog(context, previewImageSliders) : null),
+                                onSecondaryTap: (() => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null),
                                 child: CarouselSlider(
                                   items: previewImageSliders,
                                   carouselController: imgSliderController,
@@ -2750,6 +2745,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           }
                                           //print(modFilesList[index].first.previewVids!.length);
                                           if (appliedModsList[index].first.previewVids!.isNotEmpty) {
+                                            previewZoomState = false;
                                             isPreviewVidOn = true;
                                             isPreviewImgsOn = false;
                                             previewPlayer.setVolume(0.0);
@@ -2777,13 +2773,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         setState(() {
                                           isPreviewImgsOn = false;
                                           isPreviewVidOn = false;
+                                          previewZoomState = true;
                                           previewPlayer.pause();
                                           currentImg = 0;
                                         });
                                       }
                                     },
                                     child: GestureDetector(
-                                      onSecondaryTap: () => previewImageSliders.isNotEmpty ? pictureDialog(context, previewImageSliders) : null,
+                                      onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
                                       child: Card(
                                           margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
                                           shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
