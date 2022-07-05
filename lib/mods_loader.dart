@@ -59,7 +59,11 @@ Future<List<ModFile>> modsLoader() async {
         modPath = iceFile.path.split(modName).first + modName;
       }
     }
-    iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ').trim();
+    //iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ').trim();
+    List<String> pathSplit = iceFile.path.split('\\');
+    final iceName = pathSplit.removeLast();
+    pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
+    iceParents = pathSplit.join(' > ').trim();
     if (iceParents == '') {
       iceParents = '> $modName';
     }
@@ -70,7 +74,6 @@ Future<List<ModFile>> modsLoader() async {
         imgFiles.add(imgFile);
       }
     }
-    
 
     //Vids helper
     for (var vidFile in Directory(iceFile.parent.path).listSync(recursive: false).whereType<File>()) {
