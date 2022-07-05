@@ -10,8 +10,6 @@ Check back for latest releases
 
 # Features
 
-![Screenshot 2022-06-28 101749](https://user-images.githubusercontent.com/101075148/176244070-efc65efd-1311-481a-9e4c-cb9f0f52161f.png)
-
 - Organize, keep track of available and applied mods
 - Add, remove single/multiple items or mods
 - Apply entire mod, or single .ice file
