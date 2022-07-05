@@ -3,6 +3,11 @@
  
 ![Screenshot 2022-06-26 142518](https://user-images.githubusercontent.com/101075148/175835622-b329d51f-8b75-4da2-a9c7-c1f5776d9683.png)
 
+# Download
+
+[Release page](https://github.com/KizKizz/pso2_mod_manager/releases)  
+Check back for latest releases
+
 # Features
 
 ![Screenshot 2022-06-28 101749](https://user-images.githubusercontent.com/101075148/176244070-efc65efd-1311-481a-9e4c-cb9f0f52161f.png)
@@ -11,14 +16,10 @@
 - Add, remove single/multiple items or mods
 - Apply entire mod, or single .ice file
 - Backup originals from the game, restore when unapplying mods
-- Preview mods by hovering mouse cursor on them, and right click to zoom (if there are images or videos included inside the folder)
-- Search, favorites
+- Preview mods by hovering mouse cursor on them, and right click to zoom on an image (if there are images [.jpg, .png] or videos [.mp4, .webm] included inside the mod)
+- Search (literally any keyword, even .ice file), favorites list
 
 and more..
-
-# Download
-
-[Release page](https://github.com/KizKizz/pso2_mod_manager/releases)
 
 # Usage
 **Note:**  
@@ -26,7 +27,7 @@ and more..
 - App's settings (light\dark mode, pso2_bin path, ect) are stored in:  
   ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
 - Mod files settings are stored in:  
-  ```...\pso2_bin\PSO2 Mod Manager\PSO2ModManSettings.json```
+  ```...\PSO2 Mod Manager\PSO2ModManSettings.json```
 
 **First time setup:**
 
