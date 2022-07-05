@@ -123,6 +123,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _itemAdderTabcontroller = TabController(length: 2, vsync: this);
+    _itemAdderTabcontroller.addListener(() {
+      setState(() {
+        if (_itemAdderTabcontroller.index == 0) {
+          _newItemDragDropList.clear();
+          newItemAddController.clear();
+          selectedCategoryForMutipleItems = null;
+          //isErrorInSingleItemName = false;
+          context.read<stateProvider>().itemsDropAddClear();
+        } else {
+          _newSingleItemDragDropList.clear();
+          _singleItemIcon = null;
+          newSingleItemAddController.clear();
+          selectedCategoryForSingleItem = null;
+          isErrorInSingleItemName = false;
+          context.read<stateProvider>().singleItemDropAddClear();
+        }
+      });
+    });
     cateAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     cateAdderAniOffset = Tween<Offset>(begin: const Offset(0.0, 1.1), end: const Offset(0.0, 0.0)).animate(cateAdderAniController);
     itemAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
@@ -1251,21 +1269,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 TabBar(
                   labelColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                   controller: _itemAdderTabcontroller,
-                  onTap: (index) {
-                    if (index == 0) {
-                      _newItemDragDropList.clear();
-                      newItemAddController.clear();
-                      selectedCategoryForMutipleItems = null;
-                      //isErrorInSingleItemName = false;
-                      context.read<stateProvider>().itemsDropAddClear();
-                    } else {
-                      _newSingleItemDragDropList.clear();
-                      newSingleItemAddController.clear();
-                      selectedCategoryForMutipleItems = null;
-                      isErrorInSingleItemName = false;
-                      context.read<stateProvider>().singleItemDropAddClear();
-                    }
-                  },
+                  onTap: (index) {},
                   tabs: const [
                     Tab(
                       height: 25,
@@ -1443,7 +1447,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     child: Padding(
                                       padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
                                       child: SizedBox(
-                                        height: 37.5,
+                                        height: isErrorInSingleItemName ? 62.5 : 37.5,
                                         child: TextFormField(
                                           controller: newSingleItemAddController,
                                           //maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -1461,21 +1465,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             }
                                             if (selectedCategoryForSingleItem == 'Basewears' ||
                                                 selectedCategoryForSingleItem == 'Setwears' ||
-                                                selectedCategoryForSingleItem == 'Outerewears' ||
+                                                selectedCategoryForSingleItem == 'Outerwears' ||
                                                 selectedCategoryForSingleItem == 'Innerwears') {
                                               if (cateList.indexWhere((e) =>
                                                       e.categoryName == selectedCategoryForSingleItem &&
-                                                      e.itemNames.indexWhere((element) => element.toLowerCase().contains(value.toLowerCase())) != -1) !=
+                                                      e.itemNames.indexWhere((element) => element.toLowerCase().substring(0, element.length - 4).trim() == value.toLowerCase()) != -1) !=
                                                   -1) {
                                                 isErrorInSingleItemName = true;
-                                                return 'The name already exist';
+                                                return 'The name already exists';
                                               }
                                             } else {
                                               if (cateList.indexWhere((e) =>
                                                       e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
                                                   -1) {
                                                 isErrorInSingleItemName = true;
-                                                return 'The name already exist';
+                                                return 'The name already exists';
                                               }
                                             }
                                             return null;
@@ -2341,7 +2345,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 return 'Mod name can\'t be empty';
                               }
                               if (modFilesList.indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
-                                return 'Mod name already exist';
+                                return 'Mod name already exists';
                               }
                               return null;
                             },
