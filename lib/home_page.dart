@@ -1220,7 +1220,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           child: ElevatedButton(
                               onPressed: (() {
                                 setState(() {
-                                  //more
+                                  modFilesList.clear();
+                                  modsViewAppBarName = 'Available Mods';
                                   if (categoryFormKey.currentState!.validate()) {
                                     cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
                                     cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
@@ -1716,6 +1717,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ? (() {
                                       setState(() {
                                         //if (newMultipleItemsFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 1) {
+                                        selectedIndex.fillRange(0, selectedIndex.length, -1);
+                                        modFilesList.clear();
+                                        modsViewAppBarName = 'Available Mods';
                                         if (_itemAdderTabcontroller.index == 1) {
                                           isItemAddBtnClicked = true;
                                           dragDropFilesAdd(context, _newItemDragDropList, selectedCategoryForMutipleItems, newItemAddController.text.isEmpty ? null : newItemAddController.text)
