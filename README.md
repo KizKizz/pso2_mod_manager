@@ -82,6 +82,10 @@ Mods can also be added by copying your mod folders into each category folder in 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
 
+# Plans
+More improvements  
+Maybe a Linux version for steam deck
+
 # Built With
 
 Flutter and various libraries from [pub.dev](https://pub.dev/packages)
