@@ -65,7 +65,7 @@ Future<List<ModFile>> modsLoader() async {
     pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
     iceParents = pathSplit.join(' > ').trim();
     if (iceParents == '') {
-      iceParents = '> $modName';
+      iceParents = modName;
     }
 
     //Image helper

@@ -334,12 +334,14 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
           if (files.isNotEmpty) {
             for (var file in files) {
               List<String> fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
-              fileTailPath.insert(0, xFile.name);
+              if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+                fileTailPath.insert(0, xFile.name);
+              }
               String newPath = catePath;
-              //final fileParent = File(xFile.path).parent.path.split('\\').last;
               if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
                 fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
                     fileTailPath.indexOf(fileTailPath.last));
+
                 String finalTailPath = fileTailPath.join('\\');
                 if (newItemName != null) {
                   //Item suffix
@@ -356,14 +358,13 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   }
                 }
               } else {
-                fileTailPath.removeAt(0);
                 String finalTailPath = fileTailPath.join('\\');
                 if (newItemName != null) {
                   //Item suffix
                   if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
                     newPath += '\\$newItemName [Ba]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                    newPath += '\\$newItemName [In]\${xFile.name}\\$finalTailPath';
+                    newPath += '\\$newItemName [In]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
                     newPath += '\\$newItemName [Ou]\\${xFile.name}\\$finalTailPath';
                   } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
@@ -388,19 +389,18 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
         () {
           if (!Directory(xFile.path).existsSync()) {
             String newPath = catePath;
-            final fileParent = File(xFile.path).parent.path.split('\\').last;
             if (newItemName != null) {
               //Item suffix
               if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}';
+                newPath += '\\$newItemName [Ba]\\_$newItemName\\${xFile.name}';
               } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}';
+                newPath += '\\$newItemName [In]\\_$newItemName\\${xFile.name}';
               } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}';
+                newPath += '\\$newItemName [Ou]\\_$newItemName\\${xFile.name}';
               } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-                newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}';
+                newPath += '\\$newItemName [Se]\\_$newItemName\\${xFile.name}';
               } else {
-                newPath += '\\$newItemName\\$fileParent\\${xFile.name}';
+                newPath += '\\$newItemName\\_$newItemName\\${xFile.name}';
               }
             }
             File(newPath).createSync(recursive: true);
@@ -410,9 +410,10 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
             if (files.isNotEmpty) {
               for (var file in files) {
                 List<String> fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
-                fileTailPath.insert(0, xFile.name);
+                if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+                  fileTailPath.insert(0, xFile.name);
+                }
                 String newPath = catePath;
-                final fileParent = File(xFile.path).parent.path.split('\\').last;
                 if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
                   fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
                       fileTailPath.indexOf(fileTailPath.last));
@@ -420,32 +421,31 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   if (newItemName != null) {
                     //Item suffix
                     if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                      newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Ba]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                      newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [In]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                      newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Ou]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-                      newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Se]\\${xFile.name}\\$finalTailPath';
                     } else {
-                      newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName\\${xFile.name}\\$finalTailPath';
                     }
                   }
                 } else {
-                  fileTailPath.removeAt(0);
                   String finalTailPath = fileTailPath.join('\\');
                   if (newItemName != null) {
                     //Item suffix
                     if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                      newPath += '\\$newItemName [Ba]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Ba]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
-                      newPath += '\\$newItemName [In]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [In]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                      newPath += '\\$newItemName [Ou]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Ou]\\${xFile.name}\\$finalTailPath';
                     } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
-                      newPath += '\\$newItemName [Se]\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName [Se]\\${xFile.name}\\$finalTailPath';
                     } else {
-                      newPath += '\\$newItemName\\$fileParent\\${xFile.name}\\$finalTailPath';
+                      newPath += '\\$newItemName\\${xFile.name}\\$finalTailPath';
                     }
                   }
                 }
@@ -508,7 +508,7 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
       pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
       String iceParents = pathSplit.join(' > ').trim();
       if (iceParents == '') {
-        iceParents = '> $modName';
+        iceParents = modName;
       }
       if (tempParentTracker == '' || tempParentTracker != iceParents) {
         tempParentTracker = iceParents;
@@ -616,12 +616,14 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
         if (files.isNotEmpty) {
           for (var file in files) {
             List<String> fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
-            fileTailPath.insert(0, xFile.name);
+            if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+              fileTailPath.insert(0, xFile.name);
+            }
             String newPath = catePath;
             if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
               fileTailPath.removeRange(
                   fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')), fileTailPath.indexOf(fileTailPath.last));
-              if (xFile.name == 'win32' || xFile.name == 'win32_na' || xFile.name == 'win32reboot' || xFile.name == 'win32reboot_na') {
+              if (xFile.name == 'win32' || xFile.name == 'win32_na' || xFile.name == 'win32reboot' || xFile.name == 'win32reboot_na' || fileTailPath.length <= 1) {
                 fileTailPath.insert(0, '_$xFileName');
               }
 
@@ -653,8 +655,9 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
                 }
               }
             } else {
-              // ignore: prefer_interpolation_to_compose_strings
-              fileTailPath.first = '_' + fileTailPath.first;
+              if (fileTailPath.length < 2) {
+                fileTailPath.insert(0, '_$xFileName');
+              }
               String finalTailPath = fileTailPath.join('\\');
               if (newItemName == null) {
                 //Item suffix
@@ -752,7 +755,7 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
             pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
             String iceParents = pathSplit.join(' > ').trim();
             if (iceParents == '') {
-              iceParents = '> $modName';
+              iceParents = modName;
             }
             if (tempParentTracker == '' || tempParentTracker != iceParents) {
               tempParentTracker = iceParents;
@@ -859,7 +862,9 @@ Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String cur
           if (files.isNotEmpty) {
             for (var file in files) {
               List<String> fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
-              fileTailPath.insert(0, xFile.name);
+              if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+                fileTailPath.insert(0, xFile.name);
+              }
               String newPath = itemPath;
               if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
                 fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
@@ -975,7 +980,9 @@ Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList,
         if (files.isNotEmpty) {
           for (var file in files) {
             List<String> fileTailPath = file.path.split('${xFile.name}\\').last.split('\\');
-            fileTailPath.insert(0, xFile.name);
+            if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+              fileTailPath.insert(0, xFile.name);
+            }
             String newPath = itemPath;
             if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
               fileTailPath.removeRange(
@@ -985,7 +992,6 @@ Future<void> dragDropModsAddFoldersOnly(context, List<XFile> newModDragDropList,
                 newPath += '\\$xFileName\\$finalTailPath';
               }
             } else {
-              fileTailPath.removeAt(0);
               String finalTailPath = fileTailPath.join('\\');
               if (newItemName == null) {
                 newPath += '\\$xFileName\\$finalTailPath';
