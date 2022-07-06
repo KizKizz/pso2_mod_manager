@@ -254,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           child: Container(
                         padding: const EdgeInsets.only(left: 10),
                         child: Tooltip(
-                            message: 'Version: $appVersion | Build by キス★',
+                            message: 'Version: $appVersion | Made by キス★',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 2),
