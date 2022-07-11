@@ -5,5 +5,7 @@
         "Added new version notification",
         "Linux version beta",
         "Bug fixes"
-    ]
+    ],
+    "windows_file": "",
+    "linux_file": ""
 }
