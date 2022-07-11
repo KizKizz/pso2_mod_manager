@@ -9,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
@@ -112,7 +113,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
   bool isDarkModeOn = false;
-  
 
   @override
   void initState() {
@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     miscCheck();
     dirPathCheck();
     getAppVer();
+    checkForUpdates();
     super.initState();
   }
 
@@ -509,7 +510,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                 fontSize: 13,
                                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
                                   if (context.watch<stateProvider>().previewWindowVisible == false)
-                                    const SizedBox(width: 23, child: FittedBox( fit: BoxFit.contain, child:Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
                                 ],
                               ),
                             ),
