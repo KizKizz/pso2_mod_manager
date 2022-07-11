@@ -31,6 +31,7 @@ String checksumDirPath = '';
 String modSettingsPath = '';
 String deletedItemsPath = '';
 String s = '/';
+String appVersion = '';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
 bool _previewWindowVisible = true;
@@ -111,7 +112,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
   bool isDarkModeOn = false;
-  String appVersion = '';
+  
 
   @override
   void initState() {
