@@ -156,6 +156,13 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
             modFile.isApplied = true;
             modFile.isNew = false;
             actualAppliedMods.add(modFile);
+            final curCate = cateList.firstWhere((element) => element.categoryName == modFile.categoryName && element.categoryPath == modFile.categoryPath);
+            final curItemIndex = curCate.itemNames.indexOf(modFile.modName);
+            curCate.numOfApplied[curItemIndex]++;
+            if (modFile.isFav) {
+              final favIndex = cateList.firstWhere((element) => element.categoryName == 'Favorites').itemNames.indexOf(modFile.modName);
+              cateList.firstWhere((element) => element.categoryName == 'Favorites').numOfApplied[favIndex]++;
+            }
           } else {
             originalFilesMissingList.add(modFile);
           }
@@ -223,6 +230,10 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
         final curCate = cateList.firstWhere((element) => element.categoryName == modFile.categoryName && element.categoryPath == modFile.categoryPath);
         final curItemIndex = curCate.itemNames.indexOf(modFile.modName);
         curCate.numOfApplied[curItemIndex]++;
+        if (modFile.isFav) {
+          final favIndex = cateList.firstWhere((element) => element.categoryName == 'Favorites').itemNames.indexOf(modFile.modName);
+          cateList.firstWhere((element) => element.categoryName == 'Favorites').numOfApplied[favIndex]++;
+        }
       } else {
         originalFilesMissingList.add(modFile);
       }
@@ -282,6 +293,13 @@ void modsRemover(List<ModFile> modsList) {
       File(mod.backupIcePath).copySync(mod.originalIcePath);
       mod.isApplied = false;
       actualRemovedMods.add(mod);
+      final curCate = cateList.firstWhere((element) => element.categoryName == mod.categoryName && element.categoryPath == mod.categoryPath);
+      final curItemIndex = curCate.itemNames.indexOf(mod.modName);
+      curCate.numOfApplied[curItemIndex]--;
+      if (mod.isFav) {
+        final favIndex = cateList.firstWhere((element) => element.categoryName == 'Favorites').itemNames.indexOf(mod.modName);
+        cateList.firstWhere((element) => element.categoryName == 'Favorites').numOfApplied[favIndex]--;
+      }
       File(mod.backupIcePath).deleteSync();
 
       //remove from applied list
