@@ -282,6 +282,9 @@ void modsRemover(List<ModFile> modsList) {
       File(mod.backupIcePath).copySync(mod.originalIcePath);
       mod.isApplied = false;
       actualRemovedMods.add(mod);
+      final curCate = cateList.firstWhere((element) => element.categoryName == mod.categoryName && element.categoryPath == mod.categoryPath);
+        final curItemIndex = curCate.itemNames.indexOf(mod.modName);
+        curCate.numOfApplied[curItemIndex]--;
       File(mod.backupIcePath).deleteSync();
 
       //remove from applied list
