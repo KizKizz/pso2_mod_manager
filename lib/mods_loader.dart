@@ -41,7 +41,7 @@ Future<List<ModFile>> modsLoader() async {
 
   //Create ModFiles
   for (var iceFile in iceFiles) {
-    List<String> iceFilePathSplit = iceFile.path.split('\\');
+    List<String> iceFilePathSplit = iceFile.path.split(s);
     String categoryName = '', categoryPath = '';
     String modName = '', modPath = '';
     String iceParents = '';
@@ -59,8 +59,8 @@ Future<List<ModFile>> modsLoader() async {
         modPath = iceFile.path.split(modName).first + modName;
       }
     }
-    //iceParents = iceFile.path.split(modName).last.split('\\${iceFilePathSplit.last}').first.replaceAll('\\', ' > ').trim();
-    List<String> pathSplit = iceFile.path.split('\\');
+    //iceParents = iceFile.path.split(modName).last.split('$s${iceFilePathSplit.last}').first.replaceAll('$s', ' > ').trim();
+    List<String> pathSplit = iceFile.path.split(s);
     final iceName = pathSplit.removeLast();
     pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
     iceParents = pathSplit.join(' > ').trim();
@@ -83,11 +83,11 @@ Future<List<ModFile>> modsLoader() async {
     }
 
     if (imgFiles.isEmpty || vidFiles.isEmpty) {
-      List<String> filePathSplit = iceFile.path.split('$modPath\\').last.split('\\');
+      List<String> filePathSplit = iceFile.path.split('$modPath\\').last.split(s);
       if (filePathSplit.isNotEmpty) {
         filePathSplit.insert(0, modName);
         String fileName = filePathSplit.removeLast();
-        String tempPath = iceFile.path.split('\\$fileName').first;
+        String tempPath = iceFile.path.split('$s$fileName').first;
         for (var folderPath in filePathSplit.reversed) {
           List<File> imgVidGet = Directory(tempPath)
               .listSync(recursive: false)
@@ -96,15 +96,15 @@ Future<List<ModFile>> modsLoader() async {
               .toList();
           if (imgVidGet.isNotEmpty) {
             for (var file in imgVidGet) {
-              if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgFiles.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+              if ((p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') && imgFiles.indexWhere((element) => element.path.split(s).last == file.path.split(s).last) == -1) {
                 imgFiles.add(file);
               }
-              if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidFiles.indexWhere((element) => element.path.split('\\').last == file.path.split('\\').last) == -1) {
+              if ((p.extension(file.path) == '.mp4' || p.extension(file.path) == '.webm') && vidFiles.indexWhere((element) => element.path.split(s).last == file.path.split(s).last) == -1) {
                 vidFiles.add(file);
               }
             }
           }
-          tempPath = tempPath.split('\\$folderPath').first;
+          tempPath = tempPath.split('$s$folderPath').first;
         }
       }
     }
@@ -246,7 +246,7 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   for (var dir in cateDirs) {
     final emptyCateDirs = dir.listSync(recursive: false);
     if (emptyCateDirs.isEmpty) {
-      categories.add(ModCategory(dir.path.split('\\').last, dir.path, [], [], 0, [], [], []));
+      categories.add(ModCategory(dir.path.split(s).last, dir.path, [], [], 0, [], [], []));
       categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
     }
   }

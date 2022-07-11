@@ -30,6 +30,7 @@ String backupDirPath = '';
 String checksumDirPath = '';
 String modSettingsPath = '';
 String deletedItemsPath = '';
+String s = '/';
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
 bool _previewWindowVisible = true;
@@ -114,6 +115,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   void initState() {
+    if (Platform.isWindows) {
+      s = '\\';
+    }
     windowManager.addListener(this);
     miscCheck();
     dirPathCheck();
@@ -169,28 +173,28 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       getMainModManDirPath();
     } else {
       //Fill in paths
-      mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
-      modsDirPath = '$mainModDirPath\\Mods';
-      backupDirPath = '$mainModDirPath\\Backups';
-      checksumDirPath = '$mainModDirPath\\Checksum';
-      modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-      deletedItemsPath = '$mainModDirPath\\Deleted Items';
+      mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
+      modsDirPath = '$mainModDirPath${s}Mods';
+      backupDirPath = '$mainModDirPath${s}Backups';
+      checksumDirPath = '$mainModDirPath${s}Checksum';
+      modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+      deletedItemsPath = '$mainModDirPath${s}Deleted Items';
       //Check if exist, create dirs
       if (!Directory(mainModDirPath).existsSync()) {
         await Directory(mainModDirPath).create(recursive: true);
       }
       if (!Directory(modsDirPath).existsSync()) {
         await Directory(modsDirPath).create(recursive: true);
-        await Directory('$modsDirPath\\Accessories').create(recursive: true);
-        await Directory('$modsDirPath\\Basewears').create(recursive: true);
-        await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-        await Directory('$modsDirPath\\Emotes').create(recursive: true);
-        await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-        await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-        await Directory('$modsDirPath\\Misc').create(recursive: true);
-        await Directory('$modsDirPath\\Motions').create(recursive: true);
-        await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-        await Directory('$modsDirPath\\Setwears').create(recursive: true);
+        await Directory('$modsDirPath${s}Accessories').create(recursive: true);
+        await Directory('$modsDirPath${s}Basewears').create(recursive: true);
+        await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
+        await Directory('$modsDirPath${s}Emotes').create(recursive: true);
+        await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
+        await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
+        await Directory('$modsDirPath${s}Misc').create(recursive: true);
+        await Directory('$modsDirPath${s}Motions').create(recursive: true);
+        await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
+        await Directory('$modsDirPath${s}Setwears').create(recursive: true);
       }
       if (!Directory(backupDirPath).existsSync()) {
         await Directory(backupDirPath).create(recursive: true);
@@ -388,8 +392,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   );
                                   if (checksumLocation != null) {
                                     String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync('$checksumDirPath\\${checksumPath.split('\\').last}');
-                                    checkSumFilePath = '$checksumDirPath\\${checksumPath.split('\\').last}';
+                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
+                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
                                     setState(() {});
                                   }
                                 } else {
@@ -504,7 +508,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                 fontSize: 13,
                                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
                                   if (context.watch<stateProvider>().previewWindowVisible == false)
-                                    const SizedBox(width: 23, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)))
+                                    const SizedBox(width: 23, child: FittedBox( fit: BoxFit.contain, child:Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
                                 ],
                               ),
                             ),

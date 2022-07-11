@@ -49,7 +49,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                           dialogTitle: 'Select \'pso2_bin\' Directory Path',
                           lockParentWindow: true,
                         );
-                        List<String> getCorrectPath = binDirTempPath.toString().split('\\');
+                        List<String> getCorrectPath = binDirTempPath.toString().split(s);
                         if (getCorrectPath.last == 'pso2_bin') {
                           binDirPath = binDirTempPath.toString();
                           final prefs = await SharedPreferences.getInstance();
@@ -71,7 +71,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                         lockParentWindow: true,
                       );
                       if (binDirTempPath != null) {
-                        List<String> getCorrectPath = binDirTempPath.toString().split('\\');
+                        List<String> getCorrectPath = binDirTempPath.toString().split(s);
                         if (getCorrectPath.last == 'pso2_bin') {
                           binDirPath = binDirTempPath.toString();
                           final prefs = await SharedPreferences.getInstance();
@@ -122,28 +122,28 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                       prefs.setString('mainModManDirPath', mainModManDirPath);
 
                       //Fill in paths
-                      mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
-                      modsDirPath = '$mainModDirPath\\Mods';
-                      backupDirPath = '$mainModDirPath\\Backups';
-                      checksumDirPath = '$mainModDirPath\\Checksum';
-                      modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-                      deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                      mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
+                      modsDirPath = '$mainModDirPath${s}Mods';
+                      backupDirPath = '$mainModDirPath${s}Backups';
+                      checksumDirPath = '$mainModDirPath${s}Checksum';
+                      modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                      deletedItemsPath = '$mainModDirPath${s}Deleted Items';
                       //Check if exist, create dirs
                       if (!Directory(mainModDirPath).existsSync()) {
                         await Directory(mainModDirPath).create(recursive: true);
                       }
                       if (!Directory(modsDirPath).existsSync()) {
                         await Directory(modsDirPath).create(recursive: true);
-                        await Directory('$modsDirPath\\Accessories').create(recursive: true);
-                        await Directory('$modsDirPath\\Basewears').create(recursive: true);
-                        await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-                        await Directory('$modsDirPath\\Emotes').create(recursive: true);
-                        await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-                        await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-                        await Directory('$modsDirPath\\Misc').create(recursive: true);
-                        await Directory('$modsDirPath\\Motions').create(recursive: true);
-                        await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-                        await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                        await Directory('$modsDirPath${s}Accessories').create(recursive: true);
+                        await Directory('$modsDirPath${s}Basewears').create(recursive: true);
+                        await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
+                        await Directory('$modsDirPath${s}Emotes').create(recursive: true);
+                        await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
+                        await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
+                        await Directory('$modsDirPath${s}Misc').create(recursive: true);
+                        await Directory('$modsDirPath${s}Motions').create(recursive: true);
+                        await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
+                        await Directory('$modsDirPath${s}Setwears').create(recursive: true);
                       }
                       if (!Directory(backupDirPath).existsSync()) {
                         await Directory(backupDirPath).create(recursive: true);
@@ -183,10 +183,10 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                       );
 
                       if (mainModManDirTempPath != null) {
-                        if (mainModManDirTempPath.split('\\').last == 'PSO2 Mod Manager') {
-                          List<String> newPathSplit = mainModManDirTempPath.split('\\');
+                        if (mainModManDirTempPath.split(s).last == 'PSO2 Mod Manager') {
+                          List<String> newPathSplit = mainModManDirTempPath.split(s);
                           newPathSplit.removeLast();
-                          mainModManDirPath = newPathSplit.join('\\');
+                          mainModManDirPath = newPathSplit.join(s);
                         } else {
                           mainModManDirPath = mainModManDirTempPath.toString();
                         }
@@ -194,28 +194,28 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         prefs.setString('mainModManDirPath', mainModManDirPath);
 
                         //Fill in paths
-                        mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
-                        modsDirPath = '$mainModDirPath\\Mods';
-                        backupDirPath = '$mainModDirPath\\Backups';
-                        checksumDirPath = '$mainModDirPath\\Checksum';
-                        modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-                        deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                        mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
+                        modsDirPath = '$mainModDirPath${s}Mods';
+                        backupDirPath = '$mainModDirPath${s}Backups';
+                        checksumDirPath = '$mainModDirPath${s}Checksum';
+                        modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                        deletedItemsPath = '$mainModDirPath${s}Deleted Items';
                         //Check if exist, create dirs
                         if (!Directory(mainModDirPath).existsSync()) {
                           await Directory(mainModDirPath).create(recursive: true);
                         }
                         if (!Directory(modsDirPath).existsSync()) {
                           await Directory(modsDirPath).create(recursive: true);
-                          await Directory('$modsDirPath\\Accessories').create(recursive: true);
-                          await Directory('$modsDirPath\\Basewears').create(recursive: true);
-                          await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-                          await Directory('$modsDirPath\\Emotes').create(recursive: true);
-                          await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-                          await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-                          await Directory('$modsDirPath\\Misc').create(recursive: true);
-                          await Directory('$modsDirPath\\Motions').create(recursive: true);
-                          await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-                          await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                          await Directory('$modsDirPath${s}Accessories').create(recursive: true);
+                          await Directory('$modsDirPath${s}Basewears').create(recursive: true);
+                          await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
+                          await Directory('$modsDirPath${s}Emotes').create(recursive: true);
+                          await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
+                          await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
+                          await Directory('$modsDirPath${s}Misc').create(recursive: true);
+                          await Directory('$modsDirPath${s}Motions').create(recursive: true);
+                          await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
+                          await Directory('$modsDirPath${s}Setwears').create(recursive: true);
                         }
                         if (!Directory(backupDirPath).existsSync()) {
                           await Directory(backupDirPath).create(recursive: true);
@@ -249,10 +249,10 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                       );
                       if (mainModManDirTempPath != null) {
                         if (mainModManDirPath != '') {
-                          if (mainModManDirTempPath.split('\\').last == 'PSO2 Mod Manager') {
-                            List<String> newPathSplit = mainModManDirTempPath.split('\\');
+                          if (mainModManDirTempPath.split(s).last == 'PSO2 Mod Manager') {
+                            List<String> newPathSplit = mainModManDirTempPath.split(s);
                             newPathSplit.removeLast();
-                            mainModManDirPath = newPathSplit.join('\\');
+                            mainModManDirPath = newPathSplit.join(s);
                           } else {
                             mainModManDirPath = mainModManDirTempPath.toString();
                           }
@@ -260,28 +260,28 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           prefs.setString('mainModManDirPath', mainModManDirPath);
 
                           //Fill in paths
-                          mainModDirPath = '$mainModManDirPath\\PSO2 Mod Manager';
-                          modsDirPath = '$mainModDirPath\\Mods';
-                          backupDirPath = '$mainModDirPath\\Backups';
-                          checksumDirPath = '$mainModDirPath\\Checksum';
-                          modSettingsPath = '$mainModDirPath\\PSO2ModManSettings.json';
-                          deletedItemsPath = '$mainModDirPath\\Deleted Items';
+                          mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
+                          modsDirPath = '$mainModDirPath${s}Mods';
+                          backupDirPath = '$mainModDirPath${s}Backups';
+                          checksumDirPath = '$mainModDirPath${s}Checksum';
+                          modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                          deletedItemsPath = '$mainModDirPath${s}Deleted Items';
                           //Check if exist, create dirs
                           if (!Directory(mainModDirPath).existsSync()) {
                             await Directory(mainModDirPath).create(recursive: true);
                           }
                           if (!Directory(modsDirPath).existsSync()) {
                             await Directory(modsDirPath).create(recursive: true);
-                            await Directory('$modsDirPath\\Accessories').create(recursive: true);
-                            await Directory('$modsDirPath\\Basewears').create(recursive: true);
-                            await Directory('$modsDirPath\\Body Paints').create(recursive: true);
-                            await Directory('$modsDirPath\\Emotes').create(recursive: true);
-                            await Directory('$modsDirPath\\Face Paints').create(recursive: true);
-                            await Directory('$modsDirPath\\Innerwears').create(recursive: true);
-                            await Directory('$modsDirPath\\Misc').create(recursive: true);
-                            await Directory('$modsDirPath\\Motions').create(recursive: true);
-                            await Directory('$modsDirPath\\Outerwears').create(recursive: true);
-                            await Directory('$modsDirPath\\Setwears').create(recursive: true);
+                            await Directory('$modsDirPath${s}Accessories').create(recursive: true);
+                            await Directory('$modsDirPath${s}Basewears').create(recursive: true);
+                            await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
+                            await Directory('$modsDirPath${s}Emotes').create(recursive: true);
+                            await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
+                            await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
+                            await Directory('$modsDirPath${s}Misc').create(recursive: true);
+                            await Directory('$modsDirPath${s}Motions').create(recursive: true);
+                            await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
+                            await Directory('$modsDirPath${s}Setwears').create(recursive: true);
                           }
                           if (!Directory(backupDirPath).existsSync()) {
                             await Directory(backupDirPath).create(recursive: true);
@@ -357,13 +357,13 @@ categoryDeleteDialog(context, double height, String popupTitle, String popupMess
                       }
                       if (modsList.isEmpty) {
                         String newPath = '';
-                        var curPathSplit = curCatePath.split('\\');
+                        var curPathSplit = curCatePath.split(s);
                         for (var element in curPathSplit) {
                           if (element == 'Mods') {
-                            element = 'Deleted Items\\$formattedDate';
+                            element = 'Deleted Items$s$formattedDate';
                           }
                           if (element != curPathSplit.last) {
-                            newPath += '$element\\';
+                            newPath += '$element$s';
                           } else {
                             newPath += element;
                           }
@@ -376,13 +376,13 @@ categoryDeleteDialog(context, double height, String popupTitle, String popupMess
                             () {
                               String newPath = '';
                               String newDirPath = '';
-                              var curPathSplit = mod.icePath.split('\\');
+                              var curPathSplit = mod.icePath.split(s);
                               for (var element in curPathSplit) {
                                 if (element == 'Mods') {
-                                  element = 'Deleted Items\\$formattedDate';
+                                  element = 'Deleted Items$s$formattedDate';
                                 }
                                 if (element != curPathSplit.last) {
-                                  newPath += '$element\\';
+                                  newPath += '$element$s';
                                 } else {
                                   newDirPath = newPath;
                                   newPath += element;
@@ -442,11 +442,11 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                         () {
                           Navigator.of(context).pop();
 
-                          String deleteBackupPath = '$deletedItemsPath\\$formattedDate\\${curCate.categoryName}\\$curItem';
+                          String deleteBackupPath = '$deletedItemsPath$s$formattedDate$s${curCate.categoryName}$s$curItem';
                           final modsInCurItem = modsList.where((element) => element.modName == curItem);
                           if (modsInCurItem.isEmpty) {
                             Directory(deleteBackupPath).createSync(recursive: true);
-                            Directory('${curCate.categoryPath}\\$curItem').deleteSync(recursive: true);
+                            Directory('${curCate.categoryPath}$s$curItem').deleteSync(recursive: true);
                           } else {
                             List<String> parentPaths = [];
                             for (var mod in modsInCurItem) {
@@ -460,7 +460,7 @@ Future itemDeleteDialog(context, double height, String popupTitle, String popupM
                             }
 
                             //Remove files
-                            String itemPath = '${curCate.categoryPath}\\$curItem';
+                            String itemPath = '${curCate.categoryPath}$s$curItem';
                             Directory(itemPath).deleteSync(recursive: true);
                           }
 
@@ -523,7 +523,7 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                             curCateName = mod.categoryName;
                           }
                           parentPaths.add(File(mod.icePath).parent.path);
-                          String deleteBackupPath = '$deletedItemsPath\\$formattedDate\\${mod.categoryName}\\$curModName${mod.icePath.split(curModName).last}';
+                          String deleteBackupPath = '$deletedItemsPath$s$formattedDate$s${mod.categoryName}$s$curModName${mod.icePath.split(curModName).last}';
                           File(deleteBackupPath).createSync(recursive: true);
                           File(mod.icePath).copySync(deleteBackupPath);
                           File(mod.icePath).deleteSync(recursive: false);
@@ -534,7 +534,7 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                           final leftOverFiles = Directory(path).listSync(recursive: false).whereType<File>();
                           if (leftOverFiles.isNotEmpty) {
                             for (var file in leftOverFiles) {
-                              String leftOverFileDeleteBackupPath = '$deletedItemsPath\\$formattedDate\\$curCateName\\$curModName${file.path.split(curModName).last}';
+                              String leftOverFileDeleteBackupPath = '$deletedItemsPath$s$formattedDate$s$curCateName$s$curModName${file.path.split(curModName).last}';
                               //print(sourcePath);
                               File(leftOverFileDeleteBackupPath).createSync(recursive: true);
                               File(file.path).copySync(leftOverFileDeleteBackupPath);
