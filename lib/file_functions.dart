@@ -156,6 +156,9 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
             modFile.isApplied = true;
             modFile.isNew = false;
             actualAppliedMods.add(modFile);
+            final curCate = cateList.firstWhere((element) => element.categoryName == modFile.categoryName && element.categoryPath == modFile.categoryPath);
+            final curItemIndex = curCate.itemNames.indexOf(modFile.modName);
+            curCate.numOfApplied[curItemIndex]++;
           } else {
             originalFilesMissingList.add(modFile);
           }
@@ -283,8 +286,8 @@ void modsRemover(List<ModFile> modsList) {
       mod.isApplied = false;
       actualRemovedMods.add(mod);
       final curCate = cateList.firstWhere((element) => element.categoryName == mod.categoryName && element.categoryPath == mod.categoryPath);
-        final curItemIndex = curCate.itemNames.indexOf(mod.modName);
-        curCate.numOfApplied[curItemIndex]--;
+      final curItemIndex = curCate.itemNames.indexOf(mod.modName);
+      curCate.numOfApplied[curItemIndex]--;
       File(mod.backupIcePath).deleteSync();
 
       //remove from applied list
