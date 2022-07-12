@@ -4,7 +4,7 @@
     "description": [
         "Added new version notification",
         "Linux version beta",
-        "Remove reload app button (it's faster to just close and reopen)",
+        "Removed app reload button (it's faster to just close and reopen)",
         "Bug fixes"
     ],
     "windows_file": "",
