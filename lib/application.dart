@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 
 String newVersion = '';
 String patchNotes = '';
+List<String> patchNoteSplit = [];
 
 class ApplicationConfig {
   static List<String> currentVersionValues = appVersion.split('.');
@@ -26,6 +27,7 @@ class ApplicationConfig {
         newVersion = newVersionValue;
         String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
         patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
+        patchNoteSplit = patchNotes.split(', ');
         //debugPrint('Response: ${patchNotes.first}');
         Provider.of<stateProvider>(context, listen: false).isUpdateAvailableTrue();
       }
