@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
@@ -120,10 +121,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       s = '\\';
     }
     windowManager.addListener(this);
+    getAppVer();
+    ApplicationConfig().checkForUpdates(context);
     miscCheck();
     dirPathCheck();
-    getAppVer();
-    checkForUpdates();
     super.initState();
   }
 
@@ -279,29 +280,29 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       child: Row(
                         children: [
                           //reload app
-                          Tooltip(
-                            message: 'Reload Entire App',
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: MaterialButton(
-                              onPressed: Provider.of<stateProvider>(context, listen: false).addingBoxState
-                                  ? null
-                                  : (() async {
-                                      RestartWidget.restartApp(context);
-                                    }),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.refresh,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 2.5),
-                                  Text('Reload', style: TextStyle(fontWeight: FontWeight.w400))
-                                ],
-                              ),
-                            ),
-                          ),
+                          // Tooltip(
+                          //   message: 'Reload Entire App',
+                          //   height: 25,
+                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //   waitDuration: const Duration(seconds: 1),
+                          //   child: MaterialButton(
+                          //     onPressed: Provider.of<stateProvider>(context, listen: false).addingBoxState
+                          //         ? null
+                          //         : (() async {
+                          //             RestartWidget.restartApp(context);
+                          //           }),
+                          //     child: Row(
+                          //       children: const [
+                          //         Icon(
+                          //           Icons.refresh,
+                          //           size: 18,
+                          //         ),
+                          //         SizedBox(width: 2.5),
+                          //         Text('Reload', style: TextStyle(fontWeight: FontWeight.w400))
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
 
                           //pso2bin reselect
                           Tooltip(
@@ -569,6 +570,62 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 ),
               ),
             ),
+            //New version banner
+            if (context.watch<stateProvider>().isUpdateAvailable)
+              ScaffoldMessenger(
+                  child: MaterialBanner(
+                padding: const EdgeInsets.all(0),
+                leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+                leading: const Icon(
+                  Icons.new_releases,
+                  color: Colors.amber,
+                ),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'New Update Available!',
+                          style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.w500),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text('New Version: $newVersion - Your Version: $appVersion'),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Text(
+                            '- Patch Notes: ',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Text(patchNotes, overflow: TextOverflow.ellipsis)
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                            onPressed: (() {
+                              Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
+                              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                            }),
+                            child: const Text('Update')),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: ElevatedButton(
+                              onPressed: (() {
+                                Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                setState(() {});
+                              }),
+                              child: const Text('Dismiss')),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                actions: const [SizedBox()],
+              )),
             context.watch<stateProvider>().isMainBinFound && context.watch<stateProvider>().isMainModManPathFound
                 ? const DataLoadingPage()
                 : Column(

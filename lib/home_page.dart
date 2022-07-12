@@ -614,6 +614,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
+                                    //close add mods window
+                                    _newModToItemDragDropList.clear();
+                                    newModToItemAddController.clear();
+                                    isModAddFolderOnly = true;
+                                    context.read<stateProvider>().modsDropAddClear();
+                                    //addModToItemVisible = false;
+                                    switch (modAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        modAdderAniController.reverse().whenComplete(() {
+                                          addModToItemVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+                                    //main func
                                     isViewingFav = true;
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
@@ -740,6 +757,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
+                                    //close add mods window
+                                    _newModToItemDragDropList.clear();
+                                    newModToItemAddController.clear();
+                                    isModAddFolderOnly = true;
+                                    context.read<stateProvider>().modsDropAddClear();
+                                    //addModToItemVisible = false;
+                                    switch (modAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        modAdderAniController.reverse().whenComplete(() {
+                                          addModToItemVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+                                    //main func
                                     isViewingFav = false;
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
@@ -962,6 +996,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
+                                    //add mod window reset
+                                    _newModToItemDragDropList.clear();
+                                    newModToItemAddController.clear();
+                                    isModAddFolderOnly = true;
+                                    context.read<stateProvider>().modsDropAddClear();
+                                    //addModToItemVisible = false;
+                                    switch (modAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        modAdderAniController.reverse().whenComplete(() {
+                                          addModToItemVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+
+                                    //main func
                                     isViewingFav = true;
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
@@ -1111,6 +1163,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
+                                    //close add mods window
+                                    _newModToItemDragDropList.clear();
+                                    newModToItemAddController.clear();
+                                    isModAddFolderOnly = true;
+                                    context.read<stateProvider>().modsDropAddClear();
+                                    //addModToItemVisible = false;
+                                    switch (modAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        modAdderAniController.reverse().whenComplete(() {
+                                          addModToItemVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+
+                                    //main func
                                     isViewingFav = false;
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
