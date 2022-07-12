@@ -570,56 +570,60 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 ),
               ),
             ),
+
             //New version banner
             if (context.watch<stateProvider>().isUpdateAvailable)
               ScaffoldMessenger(
                   child: MaterialBanner(
+                backgroundColor: Theme.of(context).canvasColor,
+                elevation: 0,
                 padding: const EdgeInsets.all(0),
                 leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-                leading: const Icon(
+                leading: Icon(
                   Icons.new_releases,
-                  color: Colors.amber,
+                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
                 ),
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        const Text(
+                        Text(
                           'New Update Available!',
-                          style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, 
+                            fontWeight: FontWeight.w500),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: Text('New Version: $newVersion - Your Version: $appVersion'),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            '- Patch Notes: ',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Text(patchNotes, overflow: TextOverflow.ellipsis)
+                        TextButton(
+                            onPressed: (() {
+                              setState(() {
+                                patchNotesDialog(context);
+                              });
+                            }),
+                            child: const Text('Patch Notes...')),
                       ],
                     ),
                     Row(
                       children: [
-                        ElevatedButton(
-                            onPressed: (() {
-                              Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
-                              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
-                            }),
-                            child: const Text('Update')),
                         Padding(
-                          padding: const EdgeInsets.only(left: 5),
+                          padding: const EdgeInsets.only(right: 5),
                           child: ElevatedButton(
                               onPressed: (() {
                                 Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
                                 setState(() {});
                               }),
                               child: const Text('Dismiss')),
-                        )
+                        ),
+                        ElevatedButton(
+                            onPressed: (() {
+                              Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
+                              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                            }),
+                            child: const Text('Update')),
                       ],
                     )
                   ],

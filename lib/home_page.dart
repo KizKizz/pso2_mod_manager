@@ -508,7 +508,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
-                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber)),
 
                                     //Buttons
                                     Tooltip(
@@ -673,7 +673,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
-                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
 
                                     //Buttons
                                     Tooltip(
@@ -944,7 +944,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
-                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
 
                                     //Buttons
                                     Tooltip(
@@ -1056,7 +1056,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
-                                      const SizedBox(height: 50, child: Icon(Icons.new_releases, color: Colors.amber)),
+                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
 
                                     //Buttons
                                     Tooltip(
@@ -1971,7 +1971,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                side: BorderSide(width: 1, color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1 ? Colors.amber : Theme.of(context).primaryColor)),
+                                                side: BorderSide(width: 1, color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1 ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber : Theme.of(context).primaryColor)),
                                             child: ExpansionTile(
                                               initiallyExpanded: modViewExpandAll,
                                               textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -2216,9 +2216,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       // },
                                                       child: ListTile(
                                                     leading: modFilesList[index][i].isNew == true
-                                                        ? const Icon(
+                                                        ? Icon(
                                                             Icons.new_releases,
-                                                            color: Colors.amber,
+                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
                                                           )
                                                         : null,
                                                     title: Text(modFilesList[index][i].iceName),
