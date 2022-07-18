@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "description": [
-        "Added a new refresh list button (near search bar)",
-        "Fixed a bug when applying duplicated mods",
+        "Fixed a bug when applying duplicated mods - part 2",
         "Minor bug fixes"
     ],
     "windows_file": "",

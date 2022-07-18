@@ -105,6 +105,7 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
     File(checkSumFilePath!).copySync('$binDirPath${s}data${s}win32$s${checkSumFilePath!.split(s).last}');
   }
 
+  //Bulk apply
   if (modList.length > 1) {
     for (var modFile in modList) {
       await Future(
@@ -134,17 +135,35 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
               //check for dub applied mod
               //set backup path to file
               modFile.backupIcePath = '$backupDirPath$s${modFile.iceName}';
-              for (var lists in modFilesList) {
-                List<ModFile> matchingList = lists.where((element) => element.iceName == modFile.iceName && element.isApplied == true).toList();
-                if (matchingList.isNotEmpty) {
-                  duplicateModsApplied.add(matchingList);
+              //   for (var lists in modFilesList) {
+              //     List<ModFile> matchingList = lists.where((element) => element.iceName == modFile.iceName && element.isApplied == true).toList();
+              //     if (matchingList.isNotEmpty) {
+              //       duplicateModsApplied.add(matchingList);
+
+              //       if (appliedModsList.isNotEmpty) {
+              //         for (var mod in matchingList) {
+              //           for (var appliedList in appliedModsList) {
+              //             appliedList.firstWhere((element) => element.iceName == mod.iceName).isApplied = false;
+              //             appliedList.remove(mod);
+              //           }
+              //            mod.isApplied = false;
+              //             mod.appliedDate = '';
+              //         }
+              //         appliedModsList.removeWhere((element) => element.isEmpty);
+              //       }
+              //     }
+              //   }
+              // }
+
+              for (var file in allModFiles) {
+                if (file.iceName == modFile.iceName && file.isApplied) {
+                  duplicateModsApplied.add([file]);
 
                   if (appliedModsList.isNotEmpty) {
-                    for (var mod in matchingList) {
-                      for (var appliedList in appliedModsList) {
-                        appliedList.remove(mod);
-                      }
+                    for (var appliedList in appliedModsList) {
+                      appliedList.remove(file);
                     }
+
                     appliedModsList.removeWhere((element) => element.isEmpty);
                   }
                 }
@@ -178,6 +197,8 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
         element.isApplied = false;
       }
     }
+
+    //Single apply
   } else {
     for (var modFile in modList) {
       //Backup file check and apply
@@ -205,18 +226,31 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
           //check for dub applied mod
           //set backup path to file
           modFile.backupIcePath = '$backupDirPath$s${modFile.iceName}';
-          for (var lists in modFilesList) {
-            List<ModFile> matchingList =
-                lists.where((element) => (element.iceName == modFile.iceName || element.modName == modFile.modName) && element.isApplied == true).toList();
-            if (matchingList.isNotEmpty) {
-              duplicateModsApplied.add(matchingList);
+          //   for (var lists in modFilesList) {
+          //     List<ModFile> matchingList = lists.where((element) => (element.iceName == modFile.iceName) && element.isApplied == true).toList();
+          //     if (matchingList.isNotEmpty) {
+          //       duplicateModsApplied.add(matchingList);
+
+          //       if (appliedModsList.isNotEmpty) {
+          //         for (var mod in matchingList) {
+          //           for (var appliedList in appliedModsList) {
+          //             appliedList.remove(mod);
+          //           }
+          //         }
+          //         appliedModsList.removeWhere((element) => element.isEmpty);
+          //       }
+          //     }
+          //   }
+
+          for (var file in allModFiles) {
+            if (file.iceName == modFile.iceName && file.isApplied) {
+              duplicateModsApplied.add([file]);
 
               if (appliedModsList.isNotEmpty) {
-                for (var mod in matchingList) {
-                  for (var appliedList in appliedModsList) {
-                    appliedList.remove(mod);
-                  }
+                for (var appliedList in appliedModsList) {
+                  appliedList.remove(file);
                 }
+
                 appliedModsList.removeWhere((element) => element.isEmpty);
               }
             }
