@@ -3,6 +3,7 @@
     "version": "1.4.1",
     "description": [
         "Added a new refresh list button (near search bar)",
+        "Fixed a bug when applying duplicated mods",
         "Minor bug fixes"
     ],
     "windows_file": "",
