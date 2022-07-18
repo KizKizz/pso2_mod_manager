@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": [
-        "Fixed a bug when applying duplicated mods - part 2",
+        "Fixed a bug when applying duplicated mods - part 3",
         "Minor bug fixes"
     ],
     "windows_file": "",
