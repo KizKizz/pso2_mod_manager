@@ -206,7 +206,8 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
           //set backup path to file
           modFile.backupIcePath = '$backupDirPath$s${modFile.iceName}';
           for (var lists in modFilesList) {
-            List<ModFile> matchingList = lists.where((element) => element.iceName == modFile.iceName && element.isApplied == true).toList();
+            List<ModFile> matchingList =
+                lists.where((element) => (element.iceName == modFile.iceName || element.modName == modFile.modName) && element.isApplied == true).toList();
             if (matchingList.isNotEmpty) {
               duplicateModsApplied.add(matchingList);
 

@@ -37,6 +37,7 @@ List<bool> isLoading = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
+bool isRefreshing = false;
 bool previewZoomState = true;
 int totalAppliedItems = 0;
 int totalAppliedFiles = 0;
@@ -213,7 +214,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           flexibleSpace: Container(
               height: 30,
               width: double.maxFinite,
-              padding: EdgeInsets.only(left: searchBoxLeftPadding, right: 100, bottom: 3),
+              padding: EdgeInsets.only(left: searchBoxLeftPadding, right: 135, bottom: 3),
               child: Focus(
                 onFocusChange: (hasFocus) {
                   setState(() {
@@ -275,56 +276,88 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               )),
           actions: [
-            Padding(
-                padding: const EdgeInsets.only(right: 2.5),
-                child: Tooltip(
-                    message: 'New Category',
-                    height: 25,
-                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                    waitDuration: const Duration(seconds: 1),
-                    child: SizedBox(
-                      width: 40,
-                      height: 30,
-                      child: MaterialButton(
-                          onPressed: addCategoryVisible
-                              ? null
-                              : (() {
-                                  setState(() {
-                                    switch (cateAdderAniController.status) {
-                                      case AnimationStatus.dismissed:
-                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
-                                        addCategoryVisible = true;
-                                        cateAdderAniController.forward();
-                                        break;
-                                      default:
-                                    }
-                                  });
-                                }),
-                          child: Stack(
-                            children: [
-                              Icon(
-                                Icons.category_outlined,
+            Tooltip(
+                message: 'Refresh List',
+                height: 25,
+                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                waitDuration: const Duration(seconds: 1),
+                child: SizedBox(
+                  width: 40,
+                  height: 30,
+                  child: MaterialButton(
+                      onPressed: addItemVisible || isRefreshing
+                          ? null
+                          : (() {
+                              if (!isRefreshing) {
+                                isModSelected = false;
+                                modsViewAppBarName = 'Available Mods';
+                                isRefreshing = true;
+                                //cateList.clear();
+                                setState(() {});
+                              }
+                              refreshList();
+                            }),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.refresh,
+                            color: addItemVisible || isRefreshing
+                                ? Theme.of(context).disabledColor
+                                : MyApp.themeNotifier.value == ThemeMode.light
+                                    ? Theme.of(context).primaryColorDark
+                                    : Theme.of(context).iconTheme.color,
+                          )
+                        ],
+                      )),
+                )),
+            Tooltip(
+                message: 'New Category',
+                height: 25,
+                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                waitDuration: const Duration(seconds: 1),
+                child: SizedBox(
+                  width: 40,
+                  height: 30,
+                  child: MaterialButton(
+                      onPressed: addCategoryVisible
+                          ? null
+                          : (() {
+                              setState(() {
+                                switch (cateAdderAniController.status) {
+                                  case AnimationStatus.dismissed:
+                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
+                                    addCategoryVisible = true;
+                                    cateAdderAniController.forward();
+                                    break;
+                                  default:
+                                }
+                              });
+                            }),
+                      child: Stack(
+                        children: [
+                          Icon(
+                            Icons.category_outlined,
+                            color: addCategoryVisible
+                                ? Theme.of(context).disabledColor
+                                : MyApp.themeNotifier.value == ThemeMode.light
+                                    ? Theme.of(context).primaryColorDark
+                                    : Theme.of(context).iconTheme.color,
+                          ),
+                          Positioned(
+                              left: 11.5,
+                              bottom: 10,
+                              child: Icon(
+                                Icons.add,
+                                size: 16,
                                 color: addCategoryVisible
                                     ? Theme.of(context).disabledColor
                                     : MyApp.themeNotifier.value == ThemeMode.light
                                         ? Theme.of(context).primaryColorDark
                                         : Theme.of(context).iconTheme.color,
-                              ),
-                              Positioned(
-                                  left: 11.5,
-                                  bottom: 10,
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 16,
-                                    color: addCategoryVisible
-                                        ? Theme.of(context).disabledColor
-                                        : MyApp.themeNotifier.value == ThemeMode.light
-                                            ? Theme.of(context).primaryColorDark
-                                            : Theme.of(context).iconTheme.color,
-                                  )),
-                            ],
-                          )),
-                    ))),
+                              )),
+                        ],
+                      )),
+                )),
             Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Tooltip(
@@ -367,7 +400,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
 
         //Category List
-        if (!isSearching)
+        if (isRefreshing)
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text(
+              'Refreshing List',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ),
+        if (!isSearching && !isRefreshing)
           Expanded(
             child: SingleChildScrollView(
               controller: AdjustableScrollController(80),
@@ -673,7 +714,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
-                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
+                                      SizedBox(
+                                          height: 50,
+                                          child: Icon(
+                                            Icons.new_releases,
+                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                          )),
 
                                     //Buttons
                                     Tooltip(
@@ -944,7 +990,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
-                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
+                                      SizedBox(
+                                          height: 50,
+                                          child: Icon(
+                                            Icons.new_releases,
+                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                          )),
 
                                     //Buttons
                                     Tooltip(
@@ -1056,7 +1107,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
-                                      SizedBox(height: 50, child: Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,)),
+                                      SizedBox(
+                                          height: 50,
+                                          child: Icon(
+                                            Icons.new_releases,
+                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                          )),
 
                                     //Buttons
                                     Tooltip(
@@ -1971,7 +2027,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                side: BorderSide(width: 1, color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1 ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber : Theme.of(context).primaryColor)),
+                                                side: BorderSide(
+                                                    width: 1,
+                                                    color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1
+                                                        ? MyApp.themeNotifier.value == ThemeMode.light
+                                                            ? Theme.of(context).primaryColorDark
+                                                            : Colors.amber
+                                                        : Theme.of(context).primaryColor)),
                                             child: ExpansionTile(
                                               initiallyExpanded: modViewExpandAll,
                                               textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -3022,5 +3084,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }))
       ],
     );
+  }
+
+  //Helpers functions
+
+  void refreshList() {
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      allModFiles = await modsLoader();
+      cateList = categories(allModFiles);
+      appliedModsListGet = getAppliedModsList();
+      iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+      Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+      isRefreshing = false;
+    }).whenComplete(() {
+      isRefreshing = false;
+      setState(() {});
+    });
   }
 }
