@@ -285,23 +285,92 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   width: 40,
                   height: 30,
                   child: MaterialButton(
-                      onPressed: addItemVisible || isRefreshing
+                      onPressed: isRefreshing
                           ? null
                           : (() {
                               if (!isRefreshing) {
-                                isModSelected = false;
-                                modsViewAppBarName = 'Available Mods';
-                                isRefreshing = true;
-                                //cateList.clear();
-                                setState(() {});
+                                //closing adders
+                                setState(() {
+                                  if (addCategoryVisible) {
+                                    categoryAddController.clear();
+                                    //addCategoryVisible = false;
+                                    switch (cateAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        cateAdderAniController.reverse().whenComplete(() {
+                                          addCategoryVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+
+                                      default:
+                                    }
+                                  }
+
+                                  if (addItemVisible) {
+                                    _newItemDragDropList.clear();
+                                    _newSingleItemDragDropList.clear();
+                                    _singleItemIcon = null;
+                                    newItemAddController.clear();
+                                    newSingleItemAddController.clear();
+                                    selectedCategoryForMutipleItems = null;
+                                    selectedCategoryForSingleItem = null;
+                                    isErrorInSingleItemName = false;
+                                    context.read<stateProvider>().singleItemDropAddClear();
+                                    context.read<stateProvider>().itemsDropAddClear();
+                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                    //addItemVisible = false;
+                                    switch (itemAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        itemAdderAniController.reverse().whenComplete(() {
+                                          addItemVisible = false;
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+                                  }
+
+                                  if (addModToItemVisible) {
+                                    _newModToItemDragDropList.clear();
+                                    newModToItemAddController.clear();
+                                    isModAddFolderOnly = true;
+                                    context.read<stateProvider>().modsDropAddClear();
+                                    //addModToItemVisible = false;
+                                    switch (modAdderAniController.status) {
+                                      case AnimationStatus.completed:
+                                        modAdderAniController.reverse().whenComplete(() {
+                                          addModToItemVisible = false;
+                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          setState(() {});
+                                        });
+                                        break;
+                                      default:
+                                    }
+                                  }
+                                  
+                                  isModSelected = false;
+                                  modsViewAppBarName = 'Available Mods';
+                                  isRefreshing = true;
+                                });
                               }
-                              refreshList();
+                              Future.delayed(const Duration(milliseconds: 500), () async {
+                                allModFiles = await modsLoader();
+                                cateList = categories(allModFiles);
+                                appliedModsListGet = getAppliedModsList();
+                                iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+                                Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+                                isRefreshing = false;
+                              }).whenComplete(() {
+                                isRefreshing = false;
+                                setState(() {});
+                              });
                             }),
                       child: Row(
                         children: [
                           Icon(
                             Icons.refresh,
-                            color: addItemVisible || isRefreshing
+                            color: isRefreshing
                                 ? Theme.of(context).disabledColor
                                 : MyApp.themeNotifier.value == ThemeMode.light
                                     ? Theme.of(context).primaryColorDark
@@ -3084,21 +3153,5 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }))
       ],
     );
-  }
-
-  //Helpers functions
-
-  void refreshList() {
-    Future.delayed(const Duration(milliseconds: 500), () async {
-      allModFiles = await modsLoader();
-      cateList = categories(allModFiles);
-      appliedModsListGet = getAppliedModsList();
-      iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-      Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
-      isRefreshing = false;
-    }).whenComplete(() {
-      isRefreshing = false;
-      setState(() {});
-    });
   }
 }

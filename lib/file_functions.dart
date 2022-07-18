@@ -193,7 +193,7 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
     for (var modList in duplicateModsApplied) {
       for (var element in modList) {
         modAppliedDup.add(element);
-        File(element.backupIcePath).copySync(element.originalIcePath);
+        //File(element.backupIcePath).copySync(element.originalIcePath);
         element.isApplied = false;
       }
     }
@@ -277,7 +277,7 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
     for (var modList in duplicateModsApplied) {
       for (var element in modList) {
         modAppliedDup.add(element);
-        File(element.backupIcePath).copySync(element.originalIcePath);
+        //File(element.backupIcePath).copySync(element.originalIcePath);
         element.isApplied = false;
       }
     }
