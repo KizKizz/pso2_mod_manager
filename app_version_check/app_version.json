@@ -1,11 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "description": [
-        "Added new version notification",
-        "Linux version beta",
-        "Removed app reload button (it's faster to just close and reopen)",
-        "Bug fixes"
+        "Added a new refresh list button (near search bar)",
+        "Minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
