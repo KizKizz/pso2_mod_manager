@@ -412,7 +412,18 @@ Future<List<List<ModFile>>> getModFilesByCategory(List<ModFile> allModFiles, Str
 Future<List<List<ModFile>>> getAppliedModsList() async {
   List<List<ModFile>> appliedList = [];
   //Applied mods list add
-  final actualAppliedMods = allModFiles.where((element) => element.isApplied == true).toList();
+  List<ModFile> actualAppliedMods = allModFiles.where((element) => element.isApplied == true).toList();
+  List<String> parentPathsList = [];
+
+  for (var file in actualAppliedMods) {
+    if (parentPathsList.indexWhere((element) => element == file.icePath.replaceFirst(file.iceName, '')) == -1) {
+      parentPathsList.add(file.icePath.replaceFirst(file.iceName, ''));
+    }
+  }
+
+  for (var path in parentPathsList) {
+      actualAppliedMods.addAll(allModFiles.where((element) => element.icePath.replaceFirst(element.iceName, '') == path && element.isApplied == false).toList());
+  }
 
   //Applied mods list add
   for (var mod in actualAppliedMods) {

@@ -34,6 +34,7 @@ List<ModFile> modAppliedDup = [];
 List<ModFile> originalFilesMissingList = [];
 List<ModFile> backupFilesMissingList = [];
 List<bool> isLoading = [];
+List<bool> isLoadingAppliedList = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
@@ -348,7 +349,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       default:
                                     }
                                   }
-                                  
+
                                   isModSelected = false;
                                   modsViewAppBarName = 'Available Mods';
                                   isRefreshing = true;
@@ -2174,7 +2175,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             child: MaterialButton(
                                                               onPressed: (() {
                                                                 setState(() {
-                                                                  modsRemover(modFilesList[index].toList());
+                                                                  modsRemover(modFilesList[index].where((element) => element.isApplied).toList());
                                                                 });
                                                               }),
                                                               child: Icon(
@@ -2198,7 +2199,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               onPressed: (() {
                                                                 setState(() {
                                                                   isLoading[index] = true;
-                                                                  modsToDataAdder(modFilesList[index]).then((_) {
+                                                                  modsToDataAdder(modFilesList[index].where((element) => element.isApplied == false).toList()).then((_) {
                                                                     setState(() {
                                                                       isLoading[index] = false;
                                                                       //Messages
@@ -2833,7 +2834,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           setState(() {
                             reappliedCount = appliedModsList.length;
                             for (var modList in appliedModsList) {
-                              reapplyMods(modList).then((_) {
+                              reapplyMods(modList.where((element) => element.isApplied).toList()).then((_) {
                                 setState(() {
                                   reappliedCount--;
                                   if (reappliedCount == 0) {
@@ -2898,7 +2899,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 tempDelete.add(mod);
                               }
                             }
-                            modsRemover(tempDelete);
+                            modsRemover(tempDelete.where((element) => element.isApplied).toList());
                             isPreviewImgsOn = false;
                             isPreviewVidOn = false;
                             totalAppliedFiles = 0;
@@ -2933,6 +2934,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       return const Text('Error');
                     } else {
                       appliedModsList = snapshot.data;
+                      //if (isLoadingAppliedList.isEmpty) {
+                      isLoadingAppliedList = List.generate(appliedModsList.length, (index) => false);
+                      //}
                       //print(snapshot.data);
                       return SingleChildScrollView(
                           controller: AdjustableScrollController(80),
@@ -3012,9 +3016,79 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     Text(appliedModsList[index].first.iceParent.trimLeft()),
                                                   ],
                                                 )),
+
+                                                //loading && add
+                                                if (isLoadingAppliedList[index])
+                                                  const SizedBox(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child: CircularProgressIndicator(),
+                                                  ),
                                                 //if (appliedModsList[index].length > 1)
                                                 Row(
                                                   children: [
+                                                    if (appliedModsList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoadingAppliedList[index])
+                                                      SizedBox(
+                                                        width: 40,
+                                                        height: 40,
+                                                        child: Tooltip(
+                                                          message: 'Apply unapplied mods under ${appliedModsList[index].first.iceParent} to the game',
+                                                          height: 25,
+                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                          waitDuration: const Duration(seconds: 1),
+                                                          child: MaterialButton(
+                                                            onPressed: (() {
+                                                              setState(() {
+                                                                isLoadingAppliedList[index] = true;
+                                                                modsToDataAdder(appliedModsList[index].where((element) => element.isApplied == false).toList()).then((_) {
+                                                                  setState(() {
+                                                                    isLoadingAppliedList[index] = false;
+                                                                    //Messages
+                                                                    if (originalFilesMissingList.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          duration: const Duration(seconds: 2),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content: SizedBox(
+                                                                            height: originalFilesMissingList.length * 20,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                                  Text(
+                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                              ],
+                                                                            ),
+                                                                          )));
+                                                                    }
+
+                                                                    if (modAppliedDup.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          duration: Duration(seconds: modAppliedDup.length),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content: SizedBox(
+                                                                            height: modAppliedDup.length * 20,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                for (int i = 0; i < modAppliedDup.length; i++)
+                                                                                  Text(
+                                                                                      'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                              ],
+                                                                            ),
+                                                                          )));
+                                                                      modAppliedDup.clear();
+                                                                    }
+                                                                  });
+                                                                });
+                                                              });
+                                                            }),
+                                                            child: Icon(
+                                                              Icons.playlist_add,
+                                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
                                                     if (appliedModsList.indexWhere((element) => element.indexWhere((e) => e.isApplied == true) != -1) != -1)
                                                       SizedBox(
                                                         width: 40,
@@ -3029,7 +3103,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               setState(() {
                                                                 isPreviewImgsOn = false;
                                                                 isPreviewVidOn = false;
-                                                                modsRemover(appliedModsList[index].toList());
+                                                                modsRemover(appliedModsList[index].where((element) => element.isApplied).toList());
                                                               });
                                                             }),
                                                             child: Icon(
@@ -3040,7 +3114,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ),
                                                       ),
                                                   ],
-                                                )
+                                                ),
                                               ],
                                             ),
                                             children: [
