@@ -1,9 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": [
-        "Fixed a bug when applying duplicated mods - part 3",
-        "Minor bug fixes"
+        "Applied List improvement", 
+        " - Keep track of duplicated files instead of removing them from list",
+        " - Reapply mods directly from applied list (For duplicate mods that have different number of ices)"
     ],
     "windows_file": "",
     "linux_file": ""

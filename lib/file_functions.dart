@@ -135,37 +135,19 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
               //check for dub applied mod
               //set backup path to file
               modFile.backupIcePath = '$backupDirPath$s${modFile.iceName}';
-              //   for (var lists in modFilesList) {
-              //     List<ModFile> matchingList = lists.where((element) => element.iceName == modFile.iceName && element.isApplied == true).toList();
-              //     if (matchingList.isNotEmpty) {
-              //       duplicateModsApplied.add(matchingList);
-
-              //       if (appliedModsList.isNotEmpty) {
-              //         for (var mod in matchingList) {
-              //           for (var appliedList in appliedModsList) {
-              //             appliedList.firstWhere((element) => element.iceName == mod.iceName).isApplied = false;
-              //             appliedList.remove(mod);
-              //           }
-              //            mod.isApplied = false;
-              //             mod.appliedDate = '';
-              //         }
-              //         appliedModsList.removeWhere((element) => element.isEmpty);
-              //       }
-              //     }
-              //   }
-              // }
 
               for (var file in allModFiles) {
                 if (file.iceName == modFile.iceName && file.isApplied) {
                   duplicateModsApplied.add([file]);
 
-                  if (appliedModsList.isNotEmpty) {
-                    for (var appliedList in appliedModsList) {
-                      appliedList.remove(file);
-                    }
+                  // if (appliedModsList.isNotEmpty) {
+                  //   // for (var appliedList in appliedModsList) {
+                  //   //   //appliedList.remove(file);
+                  //   // }
 
-                    appliedModsList.removeWhere((element) => element.isEmpty);
-                  }
+                  //   appliedModsList.removeWhere((element) => element.isEmpty);
+                  //   appliedModsList.removeWhere((element) => element.every((file) => file.isApplied == false));
+                  // }
                 }
               }
             }
@@ -226,33 +208,19 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
           //check for dub applied mod
           //set backup path to file
           modFile.backupIcePath = '$backupDirPath$s${modFile.iceName}';
-          //   for (var lists in modFilesList) {
-          //     List<ModFile> matchingList = lists.where((element) => (element.iceName == modFile.iceName) && element.isApplied == true).toList();
-          //     if (matchingList.isNotEmpty) {
-          //       duplicateModsApplied.add(matchingList);
-
-          //       if (appliedModsList.isNotEmpty) {
-          //         for (var mod in matchingList) {
-          //           for (var appliedList in appliedModsList) {
-          //             appliedList.remove(mod);
-          //           }
-          //         }
-          //         appliedModsList.removeWhere((element) => element.isEmpty);
-          //       }
-          //     }
-          //   }
 
           for (var file in allModFiles) {
             if (file.iceName == modFile.iceName && file.isApplied) {
               duplicateModsApplied.add([file]);
 
-              if (appliedModsList.isNotEmpty) {
-                for (var appliedList in appliedModsList) {
-                  appliedList.remove(file);
-                }
-
-                appliedModsList.removeWhere((element) => element.isEmpty);
-              }
+              // if (appliedModsList.isNotEmpty) {
+              //   for (var appliedList in appliedModsList) {
+              //     //appliedList.remove(file);
+              //     appliedList.firstWhere((element) => element.iceName == file.iceName).isApplied = false;
+              //   }
+              //   appliedModsList.removeWhere((element) => element.every((file) => file.isApplied == false));
+              //   appliedModsList.removeWhere((element) => element.isEmpty);
+              // }
             }
           }
         }
@@ -298,12 +266,15 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
         },
       );
       if (tempMods.isNotEmpty) {
-        tempMods.add(mod);
+        if (tempMods.indexWhere((element) => element.iceName == mod.iceName) == -1) {
+          tempMods.add(mod);
+        }
       } else {
         mod.appliedDate = formattedDate;
         appliedModsList.insert(0, [mod]);
       }
     }
+    appliedModsList.removeWhere((element) => element.every((file) => file.isApplied == false));
     //appliedModsList.sort(((a, b) => a.first.appliedDate.compareTo(b.first.appliedDate)));
   }
 
@@ -348,10 +319,10 @@ void modsRemover(List<ModFile> modsList) {
               tempMod = appliedMod;
             }
           }
-          if (tempList.isNotEmpty && tempMod != null) {
+          if (tempList.isNotEmpty && tempMod != null && tempMod.isApplied) {
             tempList.remove(tempMod);
           }
-          if (appliedList.isEmpty) {
+          if (appliedList.isEmpty || appliedList.indexWhere((element) => element.isApplied) == -1) {
             emptyList.add(appliedList);
           }
         }
