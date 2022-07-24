@@ -632,7 +632,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           height: 50,
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
+                                                await launchUrl(Uri.parse('file:${cateList[index].allModFiles.firstWhere((element) => element.modName == cateList[index].itemNames[i]).modPath}'));
                                               }),
                                               child: Row(
                                                 children: const [
@@ -802,7 +802,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           height: 50,
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                await launchUrl(Uri.parse('file:${cateList[index].categoryPath}\\${cateList[index].itemNames[i]}'));
+                                                await launchUrl(Uri.parse('file:${cateList[index].categoryPath}$s${cateList[index].itemNames[i]}'));
                                               }),
                                               child: Row(
                                                 children: const [
@@ -1078,7 +1078,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           height: 50,
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}\\${cateListSearchResult[index].itemNames[i]}'));
+                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}$s${cateListSearchResult[index].itemNames[i]}'));
                                               }),
                                               child: Row(
                                                 children: const [
@@ -1195,7 +1195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           height: 50,
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}\\${cateListSearchResult[index].itemNames[i]}'));
+                                                await launchUrl(Uri.parse('file:${cateListSearchResult[index].categoryPath}$s${cateListSearchResult[index].itemNames[i]}'));
                                               }),
                                               child: Row(
                                                 children: const [
