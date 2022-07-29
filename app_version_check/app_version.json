@@ -1,8 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.6",
+    "version": "1.4.7",
     "description": [
-        "Fixed an issue where duplicate files found in _na data folders would not apply correctly"
+        "Fixed an issue where duplicate files found in _na data folders would not apply correctly",
+        "Applied List bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
