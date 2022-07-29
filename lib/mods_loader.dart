@@ -451,7 +451,7 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
     totalAppliedFiles += item.length;
   }
 
-  appliedList.sort(((a, b) => b.first.appliedDate.compareTo(b.first.appliedDate)));
+  appliedList.sort(((a, b) => b.first.appliedDate.compareTo(a.first.appliedDate)));
   return appliedList;
 }
 
