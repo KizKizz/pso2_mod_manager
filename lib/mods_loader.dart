@@ -61,6 +61,7 @@ Future<List<ModFile>> modsLoader() async {
     }
     //iceParents = iceFile.path.split(modName).last.split('$s${iceFilePathSplit.last}').first.replaceAll('$s', ' > ').trim();
     List<String> pathSplit = iceFile.path.split(s);
+    // ignore: unused_local_variable
     final iceName = pathSplit.removeLast();
     pathSplit.removeRange(0, pathSplit.indexWhere((element) => element == modName) + 1);
     iceParents = pathSplit.join(' > ').trim();

@@ -202,6 +202,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       if (!Directory(backupDirPath).existsSync()) {
         await Directory(backupDirPath).create(recursive: true);
       }
+      if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
+        await Directory('$backupDirPath${s}win32_na').create(recursive: true);
+      }
+      if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
+        await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
+      }
       if (!Directory(checksumDirPath).existsSync()) {
         await Directory(checksumDirPath).create(recursive: true);
       }
@@ -590,9 +596,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       children: [
                         Text(
                           'New Update Available!',
-                          style: TextStyle(
-                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, 
-                            fontWeight: FontWeight.w500),
+                          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),

@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.5",
+    "version": "1.4.6",
     "description": [
-        "Fixed an issue with open item's folder in Favorites list to work properly"
+        "Fixed an issue where duplicate files found in _na data folders would not apply correctly"
     ],
     "windows_file": "",
     "linux_file": ""
