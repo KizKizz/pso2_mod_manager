@@ -221,6 +221,12 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         if (!Directory(backupDirPath).existsSync()) {
                           await Directory(backupDirPath).create(recursive: true);
                         }
+                        if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
+                          await Directory('$backupDirPath${s}win32_na').create(recursive: true);
+                        }
+                        if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
+                          await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
+                        }
                         if (!Directory(checksumDirPath).existsSync()) {
                           await Directory(checksumDirPath).create(recursive: true);
                         }
@@ -286,6 +292,12 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           }
                           if (!Directory(backupDirPath).existsSync()) {
                             await Directory(backupDirPath).create(recursive: true);
+                          }
+                          if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
+                            await Directory('$backupDirPath${s}win32_na').create(recursive: true);
+                          }
+                          if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
+                            await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
                           }
                           if (!Directory(checksumDirPath).existsSync()) {
                             await Directory(checksumDirPath).create(recursive: true);
