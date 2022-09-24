@@ -12,6 +12,7 @@ class DataLoadingPage extends StatefulWidget {
   const DataLoadingPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _DataLoadingPageState createState() => _DataLoadingPageState();
 }
 
@@ -45,7 +46,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
               iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-              Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+              Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
               //print('${allModFiles.length} iceFiles Loaded');
 
               return const HomePage();

@@ -55,6 +55,7 @@ final newMultipleItemsFormKey = GlobalKey<FormState>();
 final newSingleItemFormKey = GlobalKey<FormState>();
 TextEditingController newItemAddController = TextEditingController();
 TextEditingController newSingleItemAddController = TextEditingController();
+TextEditingController newSingleItemModNameController = TextEditingController();
 List<String> dropdownCategories = [];
 String? selectedCategoryForMutipleItems;
 String? selectedCategoryForSingleItem;
@@ -87,6 +88,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -131,14 +133,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           newItemAddController.clear();
           selectedCategoryForMutipleItems = null;
           //isErrorInSingleItemName = false;
-          context.read<stateProvider>().itemsDropAddClear();
+          context.read<StateProvider>().itemsDropAddClear();
         } else {
           _newSingleItemDragDropList.clear();
           _singleItemIcon = null;
           newSingleItemAddController.clear();
+          newSingleItemModNameController.clear();
           selectedCategoryForSingleItem = null;
           isErrorInSingleItemName = false;
-          context.read<stateProvider>().singleItemDropAddClear();
+          context.read<StateProvider>().singleItemDropAddClear();
         }
       });
     });
@@ -177,7 +180,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         MultiSplitView(
           axis: Axis.vertical,
           controller: _verticalViewsController,
-          children: context.watch<stateProvider>().previewWindowVisible ? [modPreviewView(), filesView()] : [filesView()],
+          children: context.watch<StateProvider>().previewWindowVisible ? [modPreviewView(), filesView()] : [filesView()],
         )
       ],
     );
@@ -299,7 +302,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       case AnimationStatus.completed:
                                         cateAdderAniController.reverse().whenComplete(() {
                                           addCategoryVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -314,12 +317,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _singleItemIcon = null;
                                     newItemAddController.clear();
                                     newSingleItemAddController.clear();
+                                    newSingleItemModNameController.clear();
                                     selectedCategoryForMutipleItems = null;
                                     selectedCategoryForSingleItem = null;
                                     isErrorInSingleItemName = false;
-                                    context.read<stateProvider>().singleItemDropAddClear();
-                                    context.read<stateProvider>().itemsDropAddClear();
-                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                    context.read<StateProvider>().singleItemDropAddClear();
+                                    context.read<StateProvider>().itemsDropAddClear();
+                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                     //addItemVisible = false;
                                     switch (itemAdderAniController.status) {
                                       case AnimationStatus.completed:
@@ -336,13 +340,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _newModToItemDragDropList.clear();
                                     newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
-                                    context.read<stateProvider>().modsDropAddClear();
+                                    context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
                                     switch (modAdderAniController.status) {
                                       case AnimationStatus.completed:
                                         modAdderAniController.reverse().whenComplete(() {
                                           addModToItemVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -360,7 +364,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 cateList = categories(allModFiles);
                                 appliedModsListGet = getAppliedModsList();
                                 iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-                                Provider.of<stateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+                                // ignore: use_build_context_synchronously
+                                Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
                                 isRefreshing = false;
                               }).whenComplete(() {
                                 isRefreshing = false;
@@ -395,7 +400,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               setState(() {
                                 switch (cateAdderAniController.status) {
                                   case AnimationStatus.dismissed:
-                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
+                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
                                     addCategoryVisible = true;
                                     cateAdderAniController.forward();
                                     break;
@@ -445,7 +450,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   setState(() {
                                     switch (itemAdderAniController.status) {
                                       case AnimationStatus.dismissed:
-                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
+                                        Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
                                         addItemVisible = true;
                                         itemAdderAniController.forward();
                                         break;
@@ -485,7 +490,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: Provider.of<stateProvider>(context, listen: false).cateListItemCount,
+                itemCount: Provider.of<StateProvider>(context, listen: false).cateListItemCount,
                 itemBuilder: (context, index) {
                   return AbsorbPointer(
                     absorbing: isSearching,
@@ -729,13 +734,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _newModToItemDragDropList.clear();
                                     newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
-                                    context.read<stateProvider>().modsDropAddClear();
+                                    context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
                                     switch (modAdderAniController.status) {
                                       case AnimationStatus.completed:
                                         modAdderAniController.reverse().whenComplete(() {
                                           addModToItemVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -877,13 +882,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _newModToItemDragDropList.clear();
                                     newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
-                                    context.read<stateProvider>().modsDropAddClear();
+                                    context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
                                     switch (modAdderAniController.status) {
                                       case AnimationStatus.completed:
                                         modAdderAniController.reverse().whenComplete(() {
                                           addModToItemVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -1121,13 +1126,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _newModToItemDragDropList.clear();
                                     newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
-                                    context.read<stateProvider>().modsDropAddClear();
+                                    context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
                                     switch (modAdderAniController.status) {
                                       case AnimationStatus.completed:
                                         modAdderAniController.reverse().whenComplete(() {
                                           addModToItemVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -1293,13 +1298,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     _newModToItemDragDropList.clear();
                                     newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
-                                    context.read<stateProvider>().modsDropAddClear();
+                                    context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
                                     switch (modAdderAniController.status) {
                                       case AnimationStatus.completed:
                                         modAdderAniController.reverse().whenComplete(() {
                                           addModToItemVisible = false;
-                                          Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                           setState(() {});
                                         });
                                         break;
@@ -1397,7 +1402,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     case AnimationStatus.completed:
                                       cateAdderAniController.reverse().whenComplete(() {
                                         addCategoryVisible = false;
-                                        Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                        Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                         setState(() {});
                                       });
                                       break;
@@ -1429,7 +1434,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     }
 
                                     categoryAddController.clear();
-                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                     //addCategoryVisible = false;
                                   }
                                 });
@@ -1478,7 +1483,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ],
                 ),
                 SizedBox(
-                  height: !isErrorInSingleItemName ? 220 : 250,
+                  height: !isErrorInSingleItemName ? 270 : 300,
                   child: TabBarView(
                     controller: _itemAdderTabcontroller,
                     children: [
@@ -1494,7 +1499,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 setState(() {
                                   detail.files.sort(((a, b) => a.name.compareTo(b.name)));
                                   _newSingleItemDragDropList.addAll(detail.files);
-                                  context.read<stateProvider>().singleItemsDropAdd(detail.files);
+                                  context.read<StateProvider>().singleItemsDropAdd(detail.files);
                                 });
                               },
                               onDragEntered: (detail) {
@@ -1536,7 +1541,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   width: double.infinity,
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                    child: Text(context.watch<stateProvider>().newSingleItemDropDisplay),
+                                                    child: Text(context.watch<StateProvider>().newSingleItemDropDisplay),
                                                   )),
                                             ),
                                           ),
@@ -1545,6 +1550,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   )),
                             ),
                           ),
+                          Expanded(
+                              child: Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                                      child: CustomDropdownButton2(
+                                        hint: 'Select a Category',
+                                        dropdownDecoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          border: Border.all(color: Theme.of(context).cardColor),
+                                        ),
+                                        buttonDecoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          border: Border.all(color: Theme.of(context).hintColor),
+                                        ),
+                                        buttonWidth: double.infinity,
+                                        buttonHeight: 37.5,
+                                        itemHeight: 40,
+                                        dropdownElevation: 3,
+                                        icon: const Icon(Icons.arrow_drop_down),
+                                        iconSize: 30,
+                                        //dropdownWidth: 361,
+                                        dropdownHeight: double.maxFinite,
+                                        dropdownItems: dropdownCategories,
+                                        value: selectedCategoryForSingleItem,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedCategoryForSingleItem = value;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                            ),
                           Row(children: [
                             //Item icon Drop Zone,
                             Padding(
@@ -1609,35 +1645,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
-                                    child: CustomDropdownButton2(
-                                      hint: 'Select a Category',
-                                      dropdownDecoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(color: Theme.of(context).cardColor),
-                                      ),
-                                      buttonDecoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(color: Theme.of(context).hintColor),
-                                      ),
-                                      buttonWidth: double.infinity,
-                                      buttonHeight: 37.5,
-                                      itemHeight: 40,
-                                      dropdownElevation: 3,
-                                      icon: const Icon(Icons.arrow_drop_down),
-                                      iconSize: 30,
-                                      //dropdownWidth: 361,
-                                      dropdownHeight: double.maxFinite,
-                                      dropdownItems: dropdownCategories,
-                                      value: selectedCategoryForSingleItem,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedCategoryForSingleItem = value;
-                                        });
-                                      },
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
+                                  //   child: CustomDropdownButton2(
+                                  //     hint: 'Select a Category',
+                                  //     dropdownDecoration: BoxDecoration(
+                                  //       borderRadius: BorderRadius.circular(3),
+                                  //       border: Border.all(color: Theme.of(context).cardColor),
+                                  //     ),
+                                  //     buttonDecoration: BoxDecoration(
+                                  //       borderRadius: BorderRadius.circular(3),
+                                  //       border: Border.all(color: Theme.of(context).hintColor),
+                                  //     ),
+                                  //     buttonWidth: double.infinity,
+                                  //     buttonHeight: 37.5,
+                                  //     itemHeight: 40,
+                                  //     dropdownElevation: 3,
+                                  //     icon: const Icon(Icons.arrow_drop_down),
+                                  //     iconSize: 30,
+                                  //     //dropdownWidth: 361,
+                                  //     dropdownHeight: double.maxFinite,
+                                  //     dropdownItems: dropdownCategories,
+                                  //     value: selectedCategoryForSingleItem,
+                                  //     onChanged: (value) {
+                                  //       setState(() {
+                                  //         selectedCategoryForSingleItem = value;
+                                  //       });
+                                  //     },
+                                  //   ),
+                                  // ),
                                   Form(
                                     key: newSingleItemFormKey,
                                     child: Padding(
@@ -1691,6 +1727,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                     ),
                                   ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
+                                    child: SizedBox(
+                                      height: isErrorInSingleItemName ? 62.5 : 37.5,
+                                      child: TextFormField(
+                                        controller: newSingleItemModNameController,
+                                        //maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                        //maxLength: 100,
+                                        style: const TextStyle(fontSize: 15),
+                                        decoration: const InputDecoration(
+                                          labelText: 'Mod Name (Optional)',
+                                          border: OutlineInputBorder(),
+                                          isDense: true,
+                                        ),
+                                        onChanged: (text) {
+                                          setState(() {
+                                            setState(
+                                              () {},
+                                            );
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -1713,7 +1773,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   for (var file in detail.files) {
                                     if (Directory(file.path).existsSync()) {
                                       _newItemDragDropList.add(file);
-                                      context.read<stateProvider>().itemsDropAdd([file]);
+                                      context.read<StateProvider>().itemsDropAdd([file]);
                                     } else {
                                       leftoverFiles.add(file.name);
                                     }
@@ -1774,7 +1834,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     padding: const EdgeInsets.symmetric(vertical: 5),
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                      child: Text(context.watch<stateProvider>().newItemDropDisplay),
+                                                      child: Text(context.watch<StateProvider>().newItemDropDisplay),
                                                     ),
                                                   )),
                                             ),
@@ -1881,12 +1941,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       _singleItemIcon = null;
                                       newItemAddController.clear();
                                       newSingleItemAddController.clear();
+                                      newSingleItemModNameController.clear();
                                       selectedCategoryForMutipleItems = null;
                                       selectedCategoryForSingleItem = null;
                                       isErrorInSingleItemName = false;
-                                      context.read<stateProvider>().singleItemDropAddClear();
-                                      context.read<stateProvider>().itemsDropAddClear();
-                                      Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                      context.read<StateProvider>().singleItemDropAddClear();
+                                      context.read<StateProvider>().itemsDropAddClear();
+                                      Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                       //addItemVisible = false;
                                       switch (itemAdderAniController.status) {
                                         case AnimationStatus.completed:
@@ -1933,12 +1994,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           isErrorInSingleItemName = false;
                                           isItemAddBtnClicked = true;
                                           dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon, selectedCategoryForSingleItem,
-                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text)
+                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text, newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
                                               .then((_) {
                                             setState(() {
                                               //setstate to refresh list
                                               _newSingleItemDragDropList.clear();
                                               newSingleItemAddController.clear();
+                                              newSingleItemModNameController.clear();
                                               isItemAddBtnClicked = false;
                                               _singleItemIcon = null;
                                             });
@@ -1996,7 +2058,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   case AnimationStatus.dismissed:
                                     addModToItemVisible = true;
                                     modAdderAniController.forward();
-                                    Provider.of<stateProvider>(context, listen: false).addingBoxStateTrue();
+                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
                                     break;
                                   default:
                                 }
@@ -2477,7 +2539,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       setState(() {
                         detail.files.sort(((a, b) => a.name.compareTo(b.name)));
                         _newModToItemDragDropList.addAll(detail.files);
-                        context.read<stateProvider>().modsDropAdd(detail.files);
+                        context.read<StateProvider>().modsDropAdd(detail.files);
                         for (var element in detail.files) {
                           if (!Directory(element.path).existsSync()) {
                             isModAddFolderOnly = false;
@@ -2517,7 +2579,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         width: double.infinity,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 5),
-                                          child: Text(context.watch<stateProvider>().newModDropDisplay),
+                                          child: Text(context.watch<StateProvider>().newModDropDisplay),
                                         )),
                                   ),
                                 ),
@@ -2585,13 +2647,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         _newModToItemDragDropList.clear();
                                         newModToItemAddController.clear();
                                         isModAddFolderOnly = true;
-                                        context.read<stateProvider>().modsDropAddClear();
+                                        context.read<StateProvider>().modsDropAddClear();
                                         //addModToItemVisible = false;
                                         switch (modAdderAniController.status) {
                                           case AnimationStatus.completed:
                                             modAdderAniController.reverse().whenComplete(() {
                                               addModToItemVisible = false;
-                                              Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                              Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                               setState(() {});
                                             });
                                             break;
@@ -2620,7 +2682,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   newModToItemAddController.clear();
                                                   isModAddBtnClicked = false;
                                                   isPreviewImgsOn = false;
-                                                  Provider.of<stateProvider>(context, listen: false).addingBoxStateFalse();
+                                                  Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
                                                 });
                                               });
                                             } else {
@@ -2660,14 +2722,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget modPreviewView() {
     return Column(
       children: [
-        //if (context.watch<stateProvider>().previewWindowVisible)
+        //if (context.watch<StateProvider>().previewWindowVisible)
         AppBar(
           title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Preview')),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
         ),
-        if (isPreviewImgsOn && context.watch<stateProvider>().previewWindowVisible)
+        if (isPreviewImgsOn && context.watch<StateProvider>().previewWindowVisible)
           Expanded(
               child: FutureBuilder(
                   future: futureImagesGet,
@@ -2769,7 +2831,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       }
                     }
                   })),
-        if (isPreviewVidOn && context.watch<stateProvider>().previewWindowVisible)
+        if (isPreviewVidOn && context.watch<StateProvider>().previewWindowVisible)
           Expanded(
             child: Scaffold(
               body: Video(

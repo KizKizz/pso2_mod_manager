@@ -29,7 +29,7 @@ class ApplicationConfig {
         patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
         patchNoteSplit = patchNotes.split(', ');
         //debugPrint('Response: ${patchNotes.first}');
-        Provider.of<stateProvider>(context, listen: false).isUpdateAvailableTrue();
+        Provider.of<StateProvider>(context, listen: false).isUpdateAvailableTrue();
       }
     }
   }
