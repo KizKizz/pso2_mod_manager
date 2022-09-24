@@ -1,8 +1,7 @@
-// ignore_for_file: unnecessary_new, unused_import
+// ignore_for_file: unnecessary_new, unused_import, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
@@ -21,6 +20,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:url_launcher/url_launcher.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
@@ -60,8 +60,8 @@ Future<void> main() async {
   // );
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => stateProvider()),
-  ], child: const RestartWidget(child: MyApp())));
+    ChangeNotifierProvider(create: (_) => StateProvider()),
+  ], child: const MyApp()));
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1280, 500);
@@ -159,9 +159,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       //previewWindows Check
       _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
       if (_previewWindowVisible) {
-        Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
       } else {
-        Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
       }
     });
   }
@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       setState(() {
-        context.read<stateProvider>().mainModManPathFoundTrue();
+        context.read<StateProvider>().mainModManPathFoundTrue();
       });
 
       //Checksum check
@@ -236,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       getDirPath();
     } else {
       setState(() {
-        context.read<stateProvider>().mainBinFoundTrue();
+        context.read<StateProvider>().mainBinFoundTrue();
       });
     }
   }
@@ -285,31 +285,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       padding: const EdgeInsets.only(bottom: 9),
                       child: Row(
                         children: [
-                          //reload app
-                          // Tooltip(
-                          //   message: 'Reload Entire App',
-                          //   height: 25,
-                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: MaterialButton(
-                          //     onPressed: Provider.of<stateProvider>(context, listen: false).addingBoxState
-                          //         ? null
-                          //         : (() async {
-                          //             RestartWidget.restartApp(context);
-                          //           }),
-                          //     child: Row(
-                          //       children: const [
-                          //         Icon(
-                          //           Icons.refresh,
-                          //           size: 18,
-                          //         ),
-                          //         SizedBox(width: 2.5),
-                          //         Text('Reload', style: TextStyle(fontWeight: FontWeight.w400))
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-
                           //pso2bin reselect
                           Tooltip(
                             message: 'Reselect \'pso2_bin\' Folder',
@@ -491,12 +466,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
                                 final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<stateProvider>(context, listen: false).previewWindowVisible) {
-                                  Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
                                   prefs.setBool('previewWindowVisible', false);
                                   previewPlayer.stop();
                                 } else {
-                                  Provider.of<stateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
                                   prefs.setBool('previewWindowVisible', true);
                                 }
                               }),
@@ -508,7 +483,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   ),
                                   const SizedBox(width: 2.5),
                                   const Text('Preview: ', style: TextStyle(fontWeight: FontWeight.w400)),
-                                  if (context.watch<stateProvider>().previewWindowVisible)
+                                  if (context.watch<StateProvider>().previewWindowVisible)
                                     SizedBox(
                                         width: 23,
                                         child: Text('ON',
@@ -516,7 +491,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 13,
                                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
-                                  if (context.watch<stateProvider>().previewWindowVisible == false)
+                                  if (context.watch<StateProvider>().previewWindowVisible == false)
                                     const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
                                 ],
                               ),
@@ -578,7 +553,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             ),
 
             //New version banner
-            if (context.watch<stateProvider>().isUpdateAvailable)
+            if (context.watch<StateProvider>().isUpdateAvailable)
               ScaffoldMessenger(
                   child: MaterialBanner(
                 backgroundColor: Theme.of(context).canvasColor,
@@ -617,14 +592,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           padding: const EdgeInsets.only(right: 5),
                           child: ElevatedButton(
                               onPressed: (() {
-                                Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                 setState(() {});
                               }),
                               child: const Text('Dismiss')),
                         ),
                         ElevatedButton(
                             onPressed: (() {
-                              Provider.of<stateProvider>(context, listen: false).isUpdateAvailableFalse();
+                              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                               launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                             }),
                             child: const Text('Update')),
@@ -634,7 +609,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 ),
                 actions: const [SizedBox()],
               )),
-            context.watch<stateProvider>().isMainBinFound && context.watch<stateProvider>().isMainModManPathFound
+            context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
                 ? const DataLoadingPage()
                 : Column(
                     children: const [
@@ -651,37 +626,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           ],
         ),
       ),
-    );
-  }
-}
-
-class RestartWidget extends StatefulWidget {
-  const RestartWidget({required this.child});
-
-  final Widget child;
-
-  static void restartApp(BuildContext context) {
-    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
-  }
-
-  @override
-  _RestartWidgetState createState() => _RestartWidgetState();
-}
-
-class _RestartWidgetState extends State<RestartWidget> {
-  Key key = UniqueKey();
-
-  void restartApp() {
-    setState(() {
-      key = UniqueKey();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: key,
-      child: widget.child,
     );
   }
 }

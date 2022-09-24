@@ -5,6 +5,7 @@ class WindowButtons extends StatefulWidget {
   const WindowButtons({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _WindowButtonsState createState() => _WindowButtonsState();
 }
 

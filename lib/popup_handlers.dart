@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -14,6 +16,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:intl/intl.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
 Future binDirDialog(context, String popupTitle, String popupMessage, bool isReselect) async {
@@ -57,7 +60,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                           prefs.setString('binDirPath', binDirPath);
                         }
                         if (binDirPath != '') {
-                          context.read<stateProvider>().mainBinFoundTrue();
+                          context.read<StateProvider>().mainBinFoundTrue();
                           Navigator.of(context).pop();
                         } else {
                           binDirTempPath = await FilePicker.platform.getDirectoryPath(
@@ -81,7 +84,7 @@ Future binDirDialog(context, String popupTitle, String popupMessage, bool isRese
                         if (binDirPath != '') {
                           dataDir = Directory('$binDirPath\\data');
                           iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-                          context.read<stateProvider>().mainBinFoundTrue();
+                          context.read<StateProvider>().mainBinFoundTrue();
                           Navigator.of(context).pop();
                         }
                       }
@@ -168,7 +171,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           }
                         }
                       }
-                      context.read<stateProvider>().mainModManPathFoundTrue();
+                      context.read<StateProvider>().mainModManPathFoundTrue();
                     } else {
                       Navigator.of(context).pop();
                     }
@@ -246,7 +249,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             }
                           }
                         }
-                        context.read<stateProvider>().mainModManPathFoundTrue();
+                        context.read<StateProvider>().mainModManPathFoundTrue();
                         Navigator.of(context).pop();
                       }
                     } else {
@@ -308,15 +311,15 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           if (!File(modSettingsPath).existsSync()) {
                             await File(modSettingsPath).create(recursive: true);
                           }
-                          context.read<stateProvider>().mainBinFoundTrue();
+                          context.read<StateProvider>().mainBinFoundTrue();
 
                           allModFiles = await modsLoader();
                           cateList = categories(allModFiles);
                           appliedModsListGet = getAppliedModsList();
                           //iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
                           //print(cateList.length);
-                          context.read<stateProvider>().cateListItemCountSet(cateList.length);
-                          //Provider.of<stateProvider>(context, listen: false).cateListItemCountSet(cateList.length);
+                          context.read<StateProvider>().cateListItemCountSet(cateList.length);
+                          //Provider.of<StateProvider>(context, listen: false).cateListItemCountSet(cateList.length);
                           setState(() {});
                           Navigator.of(context).pop();
                         }

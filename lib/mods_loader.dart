@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
 import 'mod_classes.dart';

@@ -1,7 +1,7 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 
-class stateProvider with ChangeNotifier {
+class StateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
   bool _isMainModManPathFound = false;
   bool _previewWindowVisible = false;
