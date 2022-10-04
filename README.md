@@ -102,6 +102,7 @@ Mods can also be added by copying your mod folders into each category folder in 
    
    
 **Preview:**
+
 Add images and videos when adding your mods to preview them (or just drop images and videos inside their folders).
 
 ![Screenshot 2022-10-03 221410](https://user-images.githubusercontent.com/101075148/193740743-db6a6ad2-c84f-48b7-b360-9b73aa0906ee.png)
