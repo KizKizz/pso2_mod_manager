@@ -1,7 +1,7 @@
 # PSO2NGS Mod Manager 
  An app to manage and apply mod files to Phantasy Star Online 2 New Genesis  
  
- ![Screenshot 2022-07-05 000852-crop](https://user-images.githubusercontent.com/101075148/177271056-5db27ce7-fa35-479d-81b1-cc77c9ee418b.png)
+![Screenshot 2022-10-03 223040](https://user-images.githubusercontent.com/101075148/193741786-da2d2e63-4c5f-4bb3-8941-9733a206f47d.png)
 
 # Download
 
@@ -46,42 +46,67 @@ and more..
  
 **Adding item's Category:**
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836771-62ce70ce-c8fa-423a-ae97-77fe00c178f0.png)  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 143310-crop](https://user-images.githubusercontent.com/101075148/175836775-7cb5bcda-d86b-4be9-8b80-a3931487cc8a.png)
+Only if you want to add more, the app already creates default categories after the first run.
 
-**Adding item(s):**  
-Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then restart the app
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Screenshot 2022-10-03 210742](https://user-images.githubusercontent.com/101075148/193732721-3aebd1f3-ae9f-4059-8f1d-87d701671ff3.png)
+ 
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-10-03 210837](https://user-images.githubusercontent.com/101075148/193732744-d6f284e9-8b57-4a60-b181-d0df4ef11619.png)
+
+**Adding item(s):**
+
+Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
+
+![Screenshot 2022-10-03 220844](https://user-images.githubusercontent.com/101075148/193739194-abb5080e-f08a-4c9f-bc71-0a0efeabd90a.png)
 
 **Note:** Only extracted files and folders, open zipped files then drag and drop to add
 
+- Add item button
+
+  ![Screenshot 2022-10-03 211433](https://user-images.githubusercontent.com/101075148/193734145-34e7c51e-f007-4706-a8e1-10589e912cc9.png)
+
 - Single item
 
-   ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175837010-bdbfad68-1b7a-40bb-9c0b-ffa71f456325.png)  
-   ![Screenshot 2022-06-26 143344-crop](https://user-images.githubusercontent.com/101075148/175837655-350eef0b-67d3-4ade-b7ac-38a091d2f309.png)
-   ![Screenshot 2022-06-26 144028-crop](https://user-images.githubusercontent.com/101075148/175837024-1ac89fc3-6f51-400f-8e90-76c1db14fe28.png)
+   ![Screenshot 2022-10-03 211545](https://user-images.githubusercontent.com/101075148/193733863-79ecd18a-bdab-4145-a591-0d6dae40ae91.png)
+   ![Screenshot 2022-10-03 212212](https://user-images.githubusercontent.com/101075148/193733886-ee36c433-0f13-4e12-8984-cf621ab67718.png)
 
 - Multiple items
 
-   ![Screenshot 2022-06-26 143357-crop](https://user-images.githubusercontent.com/101075148/175837773-3a280f49-cbb1-4a01-98b0-a42731eecfc7.png)
-   ![Screenshot 2022-06-26 144507-crop](https://user-images.githubusercontent.com/101075148/175837827-831291c7-2b26-4276-8a4d-bc1b26e30745.png)
+   ![Screenshot 2022-10-03 213441](https://user-images.githubusercontent.com/101075148/193735353-9bc82b6e-c922-421e-857a-4fdb4a887a8a.png)
+   ![Screenshot 2022-10-03 213543](https://user-images.githubusercontent.com/101075148/193735364-4a7f2c5f-acb0-4774-a79a-992b829d123c.png)
+
+   
 
 **Adding Mod(s) to existing item:**
 
 **Note:** Only extracted files and folders, open zipped files then drag and drop to add
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 144710-crop](https://user-images.githubusercontent.com/101075148/175837076-44cc3b2b-929c-4501-b3c4-14730cba7c09.png)  
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Screenshot 2022-06-26 144826-crop](https://user-images.githubusercontent.com/101075148/175837078-8d0583d0-bc64-46ee-a103-ad4469f36c60.png)
+- Add Mods to existing item button
+
+    ![Screenshot 2022-10-03 214111](https://user-images.githubusercontent.com/101075148/193736351-4fc2d5ee-c2d6-40c3-95af-f58c47008dd5.png)
+
+- Add New Mods to existing item
+
+    ![Screenshot 2022-10-03 214202](https://user-images.githubusercontent.com/101075148/193736518-2fbd42a2-e222-4a00-ae52-ae1a5038e68e.png)
+    ![Screenshot 2022-10-03 214405](https://user-images.githubusercontent.com/101075148/193736526-90233d52-5963-40a2-8054-220c5c40905c.png)
+
 
 **Applying - unapplying mod(s):**
 
 - Applying mod(s) to the game
 
-   ![Screenshot 2022-06-26 150449-crop](https://user-images.githubusercontent.com/101075148/175837118-23c1a8f3-28bd-497e-868c-b52397b58b81.png)
+   ![Screenshot 2022-10-03 215212](https://user-images.githubusercontent.com/101075148/193738228-041f0d31-a369-446e-b32f-422d4b1cd643.png)
 
 - Unapplying
 
-   ![Screenshot 2022-06-26 15063277-crop](https://user-images.githubusercontent.com/101075148/175837209-ec4156b6-4217-4c00-8948-b34e9ba51635.png)  
-   ![Screenshot 2022-06-26 150632-crop](https://user-images.githubusercontent.com/101075148/175837210-387cfbb5-48e0-4497-89b6-e63c628a451c.png)
+   ![Screenshot 2022-10-03 215149](https://user-images.githubusercontent.com/101075148/193738266-d3ccbabf-452a-4a1e-8e5d-2c9bee0e7846.png)
+   
+   
+**Preview:**
+Add images and videos when adding your mods to preview them (or just drop images and videos inside their folders).
+
+![Screenshot 2022-10-03 221410](https://user-images.githubusercontent.com/101075148/193740743-db6a6ad2-c84f-48b7-b360-9b73aa0906ee.png)
+![Screenshot 2022-10-03 221456](https://user-images.githubusercontent.com/101075148/193740766-179e4e6d-f971-4637-adff-1e7f81ec1e51.png)
+
 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
