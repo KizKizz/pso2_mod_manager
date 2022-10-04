@@ -26,6 +26,10 @@ and more..
   ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
 - Mod files settings are stored in:  
   ```...\PSO2 Mod Manager\PSO2ModManSettings.json```
+- If the app wont start or crashing on start:
+  ```Right click on PSO2NGSModManager.exe > Properties > Compatibility tab > Check the box under Compatibility mode > Apply```
+  ![Screenshot 2022-10-03 195833-side](https://user-images.githubusercontent.com/101075148/193726661-01acdf9c-c698-490e-af08-e7445adde2cb.png)
+
 
 **First time setup:**
 
