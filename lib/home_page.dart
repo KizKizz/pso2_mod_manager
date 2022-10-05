@@ -1816,7 +1816,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     border: Border.all(color: Theme.of(context).hintColor),
                                     color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
                                   ),
-                                  height: 150,
+                                  height: 205,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,

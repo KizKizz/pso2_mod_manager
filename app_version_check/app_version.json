@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.8",
+    "version": "1.4.9",
     "description": [
-        "Fixes some bugs within the new items adding function",
-        "Cleaned up some codes"
+        "Minor fix for the app not running after upgrading Windows 11 to 22H2 version"
     ],
     "windows_file": "",
     "linux_file": ""
