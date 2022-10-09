@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.4.9",
+    "version": "1.5.0",
     "description": [
-        "Minor fix for the app not running after upgrading Windows 11 to 22H2 version"
+        "Fixed blank white screen on Windows 10 (temporary)"
     ],
     "windows_file": "",
     "linux_file": ""

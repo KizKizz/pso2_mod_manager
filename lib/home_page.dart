@@ -95,7 +95,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _viewsControllerNoPreview = MultiSplitViewController(areas: [Area(weight: 0.30), Area(weight: 0.5)]);
-  final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.5)]);
+  final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.4)]);
   String modsViewAppBarName = '';
   List<int> selectedIndex = List.generate(cateList.length, (index) => -1);
   List<int> searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);

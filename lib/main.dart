@@ -65,7 +65,15 @@ Future<void> main() async {
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1280, 500);
-    appWindow.size = initialSize;
+    //Temp fix for windows 10 white screen, remove when conflicts solved
+    if (Platform.isWindows) {
+      WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
+        appWindow.size = initialSize + const Offset(0, 1);
+      });
+    } else {
+      appWindow.size = initialSize;
+    }
+    //appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
     appWindow.show();
