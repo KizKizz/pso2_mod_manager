@@ -211,6 +211,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
+          automaticallyImplyLeading: false,
           title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Items')),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
