@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -66,14 +67,14 @@ Future<void> main() async {
     Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1280, 500);
     //Temp fix for windows 10 white screen, remove when conflicts solved
-    if (Platform.isWindows) {
-      WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-        appWindow.size = initialSize + const Offset(0, 1);
-      });
-    } else {
-      appWindow.size = initialSize;
-    }
-    //appWindow.size = initialSize;
+    // if (Platform.isWindows) {
+    //   WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
+    //     appWindow.size = initialSize + const Offset(0, 1);
+    //   });
+    // } else {
+    //   appWindow.size = initialSize;
+    // }
+    appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
     appWindow.show();
@@ -293,51 +294,142 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       padding: const EdgeInsets.only(bottom: 9),
                       child: Row(
                         children: [
-                          //pso2bin reselect
+                          // //pso2bin reselect
+                          // Tooltip(
+                          //   message: 'Reselect \'pso2_bin\' Folder',
+                          //   height: 25,
+                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //   waitDuration: const Duration(seconds: 1),
+                          //   child: MaterialButton(
+                          //     onPressed: (() {
+                          //       binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true).then((_) {
+                          //         setState(() {
+                          //           //setstate
+                          //         });
+                          //       });
+                          //     }),
+                          //     child: Row(
+                          //       children: const [
+                          //         Icon(
+                          //           Icons.folder,
+                          //           size: 18,
+                          //         ),
+                          //         SizedBox(width: 2.5),
+                          //         Text('_bin Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+
+                          // //MM Dir reselect
+                          // Tooltip(
+                          //   message: 'Reselect Path to store Mod Manager Folder',
+                          //   height: 25,
+                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //   waitDuration: const Duration(seconds: 1),
+                          //   child: MaterialButton(
+                          //     onPressed: (() {
+                          //       mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
+                          //     }),
+                          //     child: Row(
+                          //       children: const [
+                          //         Icon(
+                          //           Icons.folder_open_outlined,
+                          //           size: 18,
+                          //         ),
+                          //         SizedBox(width: 2.5),
+                          //         Text('Path Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+
+                          //Path menu
+
                           Tooltip(
-                            message: 'Reselect \'pso2_bin\' Folder',
+                            message: 'Reselect \'pso2_bin\' Folder and Mod Manager Folder Path',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
-                            child: MaterialButton(
-                              onPressed: (() {
-                                binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true).then((_) {
-                                  setState(() {
-                                    //setstate
-                                  });
-                                });
-                              }),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.folder,
-                                    size: 18,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: MaterialButton(
+                                      onPressed: (() {}),
+                                      child: Row(
+                                        children: const [
+                                          Icon(
+                                            Icons.folder_open_outlined,
+                                            size: 18,
+                                          ),
+                                          SizedBox(width: 2.5),
+                                          Text('Paths Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(width: 2.5),
-                                  Text('_bin Reselect', style: TextStyle(fontWeight: FontWeight.w400))
-                                ],
+                                  isDense: true,
+                                  // focusColor: Theme.of(context).highlightColor,
+                                  // iconSize: 20,
+                                  // iconEnabledColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+                                  // icon: const Icon(Icons.arrow_drop_down),
+                                  // iconOnClick: const Icon(Icons.arrow_drop_up),
+                                  // hint: Text('Paths Reselect',
+                                  //     style: TextStyle(
+                                  //         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                  //         fontSize: 14,
+                                  //         fontWeight: FontWeight.w400)),
+                                  items: [
+                                    ...MenuItems.firstItems.map(
+                                      (item) => DropdownMenuItem<MenuItem>(
+                                        value: item,
+                                        child: MenuItems.buildItem(context, item),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    MenuItems.onChanged(context, value as MenuItem);
+                                  },
+                                  itemHeight: 35,
+                                  dropdownWidth: 130,
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                  ),
+                                  dropdownElevation: 8,
+                                  offset: const Offset(0, -3),
+                                ),
                               ),
                             ),
                           ),
 
-                          //MM Dir reselect
+                          //Mod sets
                           Tooltip(
-                            message: 'Reselect Path to store Mod Manager Folder',
+                            message: 'Manage Mod Sets',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() {
-                                mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
+                                // binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true).then((_) {
+                                //   setState(() {
+                                //     //setstate
+                                //   });
+                                // });
                               }),
                               child: Row(
                                 children: const [
                                   Icon(
-                                    Icons.folder_open_outlined,
+                                    Icons.album,
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Path Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Mod Sets', style: TextStyle(fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -635,5 +727,52 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         ),
       ),
     );
+  }
+}
+
+class MenuItem {
+  final String text;
+  final IconData icon;
+
+  const MenuItem({
+    required this.text,
+    required this.icon,
+  });
+}
+
+class MenuItems {
+  static const List<MenuItem> firstItems = [_binFolder, modManFolder];
+
+  static const _binFolder = MenuItem(text: 'pso2_bin', icon: Icons.folder);
+  static const modManFolder = MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
+
+  static Widget buildItem(context, MenuItem item) {
+    return Row(
+      children: [
+        Icon(
+          item.icon,
+          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+          size: 20,
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(
+          item.text,
+          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, MenuItem item) {
+    switch (item) {
+      case MenuItems._binFolder:
+        binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true);
+        break;
+      case MenuItems.modManFolder:
+        mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
+        break;
+    }
   }
 }
