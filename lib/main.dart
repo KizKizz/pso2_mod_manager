@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
+import 'package:pso2_mod_manager/scroll_controller.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
@@ -774,11 +775,251 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   size: 18,
                                 ),
                                 SizedBox(width: 2.5),
-                                Text('Add set', style: TextStyle(fontWeight: FontWeight.w400))
+                                Text('Add Set', style: TextStyle(fontWeight: FontWeight.w400))
                               ],
                             ),
                           ),
                         ),
+
+                        //List
+                        FutureBuilder(
+                future: appliedModsListGet,
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot snapshot,
+                ) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    if (snapshot.hasError) {
+                      return const Text('Error');
+                    } else {
+                      appliedModsList = snapshot.data;
+                      //if (isLoadingAppliedList.isEmpty) {
+                      isLoadingAppliedList = List.generate(appliedModsList.length, (index) => false);
+                      //}
+                      //print(snapshot.data);
+                      return SingleChildScrollView(
+                          controller: AdjustableScrollController(80),
+                          child: ListView.builder(
+                              //key: Key('builder ${modNameCatSelected.toString()}'),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: appliedModsList.length,
+                              itemBuilder: (context, index) {
+                                return 
+                                Card(
+                                    margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
+                                    shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
+                                    child: ExpansionTile(
+                                      initiallyExpanded: false,
+                                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      title: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                              child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('${appliedModsList[index].first.categoryName} > ${appliedModsList[index].first.modName}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                  )),
+                                              Text(appliedModsList[index].first.iceParent.trimLeft()),
+                                            ],
+                                          )),
+
+                                          //loading && add
+                                          if (isLoadingAppliedList[index])
+                                            const SizedBox(
+                                              width: 40,
+                                              height: 40,
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          //if (appliedModsList[index].length > 1)
+                                          Row(
+                                            children: [
+                                              if (appliedModsList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoadingAppliedList[index])
+                                                SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: Tooltip(
+                                                    message: 'Apply unapplied mods under ${appliedModsList[index].first.iceParent} to the game',
+                                                    height: 25,
+                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                    waitDuration: const Duration(seconds: 1),
+                                                    child: MaterialButton(
+                                                      onPressed: (() {
+                                                        setState(() {
+                                                          isLoadingAppliedList[index] = true;
+                                                          modsToDataAdder(appliedModsList[index].where((element) => element.isApplied == false).toList()).then((_) {
+                                                            setState(() {
+                                                              isLoadingAppliedList[index] = false;
+                                                              //Messages
+                                                              if (originalFilesMissingList.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    duration: const Duration(seconds: 2),
+                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                    content: SizedBox(
+                                                                      height: originalFilesMissingList.length * 20,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                            Text(
+                                                                                'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                        ],
+                                                                      ),
+                                                                    )));
+                                                              }
+
+                                                              if (modAppliedDup.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    duration: Duration(seconds: modAppliedDup.length),
+                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                    content: SizedBox(
+                                                                      height: modAppliedDup.length * 20,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          for (int i = 0; i < modAppliedDup.length; i++)
+                                                                            Text(
+                                                                                'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                        ],
+                                                                      ),
+                                                                    )));
+                                                                modAppliedDup.clear();
+                                                              }
+                                                            });
+                                                          });
+                                                        });
+                                                      }),
+                                                      child: Icon(
+                                                        Icons.playlist_add,
+                                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (appliedModsList.indexWhere((element) => element.indexWhere((e) => e.isApplied == true) != -1) != -1)
+                                                Icon(
+                                                  Icons.playlist_remove,
+                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      children: [
+                                        for (int i = 0; i < appliedModsList[index].length; i++)
+                                          InkWell(
+                                            // onHover: (value) {
+                                            //   if (value &&
+                                            //       modPreviewImgList.indexWhere((e) =>
+                                            //               e.path.contains(
+                                            //                   modFilesList[
+                                            //                           index]
+                                            //                       .first
+                                            //                       .iceParent)) ==
+                                            //           -1) {
+                                            //     setState(() {
+                                            //       isPreviewImgsOn = true;
+                                            //       futureImagesGet =
+                                            //           modFilesList[index]
+                                            //                   [i]
+                                            //               .images;
+                                            //     });
+                                            //   }
+                                            // },
+                                            child: ListTile(
+                                              // leading: appliedModsList[index][i].isNew == true
+                                              //     ? Icon(
+                                              //         Icons.new_releases,
+                                              //         color: Theme.of(context).indicatorColor,
+                                              //       )
+                                              //     : null,
+                                              title: Text(appliedModsList[index][i].iceName),
+                                              //subtitle: Text(modFilesList[index][i].icePath),
+                                              minLeadingWidth: 10,
+                                              trailing: SizedBox(
+                                                width: 40,
+                                                height: 40,
+                                                child: appliedModsList[index][i].isApplied
+                                                    ? Tooltip(
+                                                        message: 'Remove this mod from the game',
+                                                        height: 25,
+                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                        waitDuration: const Duration(seconds: 2),
+                                                        child: MaterialButton(
+                                                          onPressed: (() {
+                                                            setState(() {
+                                                              // isPreviewImgsOn = false;
+                                                              // isPreviewVidOn = false;
+                                                              modsRemover([appliedModsList[index][i]]);
+                                                              //appliedModsList.remove(modFilesList[index]);
+                                                              if (backupFilesMissingList.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    duration: const Duration(seconds: 2),
+                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                    content: SizedBox(
+                                                                      height: backupFilesMissingList.length * 20,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          for (int i = 0; i < backupFilesMissingList.length; i++)
+                                                                            Text(
+                                                                                'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
+                                                                        ],
+                                                                      ),
+                                                                    )));
+                                                              }
+                                                            });
+                                                          }),
+                                                          child: const Icon(Icons.replay),
+                                                        ))
+                                                    : Tooltip(
+                                                        message: 'Apply this mod to the game',
+                                                        height: 25,
+                                                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                        waitDuration: const Duration(seconds: 1),
+                                                        child: MaterialButton(
+                                                          onPressed: (() {
+                                                            setState(() {
+                                                              modsToDataAdder([appliedModsList[index][i]]);
+                                                              //appliedModsList.add(modFilesList[index]);
+                                                              if (originalFilesMissingList.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    duration: const Duration(seconds: 2),
+                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                    content: SizedBox(
+                                                                      height: originalFilesMissingList.length * 20,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                            Text(
+                                                                                'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                        ],
+                                                                      ),
+                                                                    )));
+                                                              }
+                                                            });
+                                                          }),
+                                                          child: const Icon(Icons.add_to_drive),
+                                                        ),
+                                                      ),
+                                              ),
+                                            ),
+                                          )
+                                      ],
+                                    ));
+                              }));
+                    }
+                  }
+                })
                       ],
                     ))
               ],
