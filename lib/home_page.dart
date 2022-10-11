@@ -43,6 +43,7 @@ bool previewZoomState = true;
 int totalAppliedItems = 0;
 int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
+GlobalKey<ScaffoldState> drawerKey = GlobalKey<ScaffoldState>();
 
 //New Cate
 bool addCategoryVisible = false;
@@ -1552,36 +1553,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ),
                           Expanded(
-                              child: Padding(
-                                      padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-                                      child: CustomDropdownButton2(
-                                        hint: 'Select a Category',
-                                        dropdownDecoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          border: Border.all(color: Theme.of(context).cardColor),
-                                        ),
-                                        buttonDecoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          border: Border.all(color: Theme.of(context).hintColor),
-                                        ),
-                                        buttonWidth: double.infinity,
-                                        buttonHeight: 37.5,
-                                        itemHeight: 40,
-                                        dropdownElevation: 3,
-                                        icon: const Icon(Icons.arrow_drop_down),
-                                        iconSize: 30,
-                                        //dropdownWidth: 361,
-                                        dropdownHeight: double.maxFinite,
-                                        dropdownItems: dropdownCategories,
-                                        value: selectedCategoryForSingleItem,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedCategoryForSingleItem = value;
-                                          });
-                                        },
-                                      ),
-                                    ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+                              child: CustomDropdownButton2(
+                                hint: 'Select a Category',
+                                dropdownDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).cardColor),
+                                ),
+                                buttonDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor),
+                                ),
+                                buttonWidth: double.infinity,
+                                buttonHeight: 37.5,
+                                itemHeight: 40,
+                                dropdownElevation: 3,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                iconSize: 30,
+                                //dropdownWidth: 361,
+                                dropdownHeight: double.maxFinite,
+                                dropdownItems: dropdownCategories,
+                                value: selectedCategoryForSingleItem,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedCategoryForSingleItem = value;
+                                  });
+                                },
+                              ),
                             ),
+                          ),
                           Row(children: [
                             //Item icon Drop Zone,
                             Padding(
@@ -1994,8 +1995,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
                                           isErrorInSingleItemName = false;
                                           isItemAddBtnClicked = true;
-                                          dragDropSingleFilesAdd(context, _newSingleItemDragDropList, _singleItemIcon, selectedCategoryForSingleItem,
-                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text, newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
+                                          dragDropSingleFilesAdd(
+                                                  context,
+                                                  _newSingleItemDragDropList,
+                                                  _singleItemIcon,
+                                                  selectedCategoryForSingleItem,
+                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text,
+                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
                                               .then((_) {
                                             setState(() {
                                               //setstate to refresh list
