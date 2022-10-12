@@ -43,7 +43,6 @@ bool previewZoomState = true;
 int totalAppliedItems = 0;
 int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
-GlobalKey<ScaffoldState> drawerKey = GlobalKey<ScaffoldState>();
 
 //New Cate
 bool addCategoryVisible = false;
