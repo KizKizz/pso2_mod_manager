@@ -101,3 +101,30 @@ class ModFile extends ModCategory {
     return data;
   }
 }
+
+class ModSet {
+  ModSet(
+    this.setName,
+    this.numOfItems,
+    this.modFiles,
+  );
+
+  String setName;
+  int numOfItems;
+  String modFiles;
+
+  fromJson(Map<String, dynamic> json) {
+    setName = json['setName'];
+    numOfItems = json['numOfItems'];
+    modFiles = json['modFiles'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['setName'] = setName;
+    data['numOfItems'] = numOfItems;
+    data['modFiles'] = modFiles;
+
+    return data;
+  }
+}

@@ -33,6 +33,7 @@ List<List<ModFile>> appliedModsList = [];
 List<ModFile> modAppliedDup = [];
 List<ModFile> originalFilesMissingList = [];
 List<ModFile> backupFilesMissingList = [];
+List<ModSet> setsList = [];
 List<bool> isLoading = [];
 List<bool> isLoadingAppliedList = [];
 bool isModAddFolderOnly = true;
@@ -94,8 +95,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
-  final MultiSplitViewController _viewsControllerNoPreview = MultiSplitViewController(areas: [Area(weight: 0.30), Area(weight: 0.5)]);
-  final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.4)]);
+  final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   String modsViewAppBarName = '';
   List<int> selectedIndex = List.generate(cateList.length, (index) => -1);
   List<int> searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
@@ -161,7 +161,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _itemAdderTabcontroller.dispose();
     previewPlayer.dispose();
     _viewsController.dispose();
-    _viewsControllerNoPreview.dispose();
     _verticalViewsController.dispose();
     super.dispose();
   }
@@ -175,13 +174,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     MultiSplitView mainViews = MultiSplitView(
       controller: _viewsController,
       children: [
-        itemsView(),
-        modsView(),
-        MultiSplitView(
-          axis: Axis.vertical,
-          controller: _verticalViewsController,
-          children: context.watch<StateProvider>().previewWindowVisible ? [modPreviewView(), filesView()] : [filesView()],
-        )
+        if (!context.watch<StateProvider>().setsWindowVisible) itemsView(),
+        if (!context.watch<StateProvider>().setsWindowVisible) modsView(),
+        if (context.watch<StateProvider>().setsWindowVisible) setList(),
+        if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
+        if (!context.watch<StateProvider>().previewWindowVisible) filesView(),
+        if (context.watch<StateProvider>().previewWindowVisible)
+          MultiSplitView(
+            axis: Axis.vertical,
+            controller: _verticalViewsController,
+            children: [modPreviewView(), filesView()],
+          )
       ],
     );
 
@@ -236,7 +239,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
                 child: TextFormField(
                   controller: searchBoxTextController,
-                  enableSuggestions: true,
                   maxLines: 1,
                   onChanged: (value) {
                     if (value != '') {
@@ -3078,10 +3080,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text('${appliedModsList[index].first.categoryName} > ${appliedModsList[index].first.modName}',
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                           fontWeight: FontWeight.w600,
+                                                          color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.black : Colors.white,
                                                         )),
-                                                    Text(appliedModsList[index].first.iceParent.trimLeft()),
+                                                    Text(
+                                                      appliedModsList[index].first.iceParent.trimLeft(),
+                                                      style: TextStyle(
+                                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.black : Colors.white,
+                                                      ),
+                                                    ),
                                                   ],
                                                 )),
 
@@ -3293,6 +3301,168 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     }
                   }
                 }))
+      ],
+    );
+  }
+
+  Widget setList() {
+    return Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+      AppBar(
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Sets')),
+        backgroundColor: Theme.of(context).canvasColor,
+        foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+        toolbarHeight: 30,
+        flexibleSpace: Container(
+            height: 30,
+            width: double.maxFinite,
+            padding: EdgeInsets.only(left: searchBoxLeftPadding, right: 105, bottom: 3),
+            child: Form(
+              key: newSetFormKey,
+              child: SizedBox(
+                height: 30,
+                width: double.maxFinite,
+                child: TextFormField(
+                  controller: newSetTextController,
+                  maxLines: 1,
+                  //maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  //maxLength: 100,
+                  style: const TextStyle(fontSize: 15),
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.only(left: 10, top: 10),
+                    hintText: 'New Set Name',
+                    border: OutlineInputBorder(),
+                    //isDense: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Set name can\'t be empty';
+                    }
+                    if (cateList.indexWhere((e) => e.categoryName == value) != -1) {
+                      return 'Set name already exist';
+                    }
+                    return null;
+                  },
+                  onChanged: (text) {
+                    setState(() {
+                      setState(
+                        () {},
+                      );
+                    });
+                  },
+                ),
+              ),
+            )),
+        actions: [
+          SizedBox(
+            width: 95,
+            height: 40,
+            child: Tooltip(
+              message: 'Add New Set',
+              height: 25,
+              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+              waitDuration: const Duration(seconds: 1),
+              child: MaterialButton(
+                onPressed: newSetTextController.text.isNotEmpty
+                    ? (() {
+                        if (newSetFormKey.currentState!.validate()) {
+                          setsList.insert(0, ModSet(newSetTextController.text, 0, ''));
+                          newSetTextController.clear();
+                          setState(() {});
+                        }
+                      })
+                    : null,
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.add_to_queue,
+                    ),
+                    Text(' Add Set'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      //List
+      Expanded(
+        child: FutureBuilder(
+            future: appliedModsListGet,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot snapshot,
+            ) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                if (snapshot.hasError) {
+                  return const Text('Error');
+                } else {
+                  //appliedModsList = snapshot.data;
+                  //if (isLoadingAppliedList.isEmpty) {
+                  //isLoadingAppliedList = List.generate(appliedModsList.length, (index) => false);
+                  //}
+                  //print(snapshot.data);
+                  return SingleChildScrollView(
+                      controller: AdjustableScrollController(80),
+                      child: ListView.builder(
+                          //key: Key('builder ${modNameCatSelected.toString()}'),
+                          shrinkWrap: true,
+                          //physics: const NeverScrollableScrollPhysics(),
+                          itemCount: setsList.length,
+                          itemBuilder: (context, index) {
+                            return SizedBox(
+                              height: 60,
+                              child: Card(
+                                margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
+                                shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
+                                child: ListTile(
+                                  minVerticalPadding: 0,
+                                  title: Row(
+                                    children: [
+                                      Text(setsList[index].setName),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                        child: Container(
+                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Theme.of(context).highlightColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                            ),
+                                            child: setsList[index].numOfItems < 2
+                                                ? Text('${setsList[index].numOfItems} Item',
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                    ))
+                                                : Text('${setsList[index].numOfItems} Items',
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                    ))),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {},
+                                ),
+                              ),
+                            );
+                          }));
+                }
+              }
+            }),
+      )
+    ]);
+  }
+
+  Widget modInSetList() {
+    return Column(
+      children: [
+        AppBar(
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Mods In Set')),
+          backgroundColor: Theme.of(context).canvasColor,
+          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+          toolbarHeight: 30,
+        ),
       ],
     );
   }
