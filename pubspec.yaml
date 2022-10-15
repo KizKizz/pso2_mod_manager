@@ -48,7 +48,6 @@ dependencies:
   package_info_plus: ^1.4.2
   http: ^0.13.4
   path_provider: ^2.0.11
-  side_sheet: ^1.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -22,7 +22,6 @@ import 'package:pso2_mod_manager/scroll_controller.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
-import 'package:side_sheet/side_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -35,6 +34,7 @@ String modsDirPath = '';
 String backupDirPath = '';
 String checksumDirPath = '';
 String modSettingsPath = '';
+String modSetsSettingsPath = '';
 String deletedItemsPath = '';
 String s = '/';
 String appVersion = '';
@@ -48,7 +48,8 @@ List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
-final MultiSplitViewController _setSplitController = MultiSplitViewController(areas: [Area(weight: 0.262)]);
+final MultiSplitViewController _setSplitController =
+    MultiSplitViewController(areas: [Area(weight: 0.262)]);
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -75,7 +76,7 @@ Future<void> main() async {
     //Temp fix for windows 10 white screen, remove when conflicts solved
     if (Platform.isWindows) {
       WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-        appWindow.size = initialSize + const Offset(0, 0.1);
+        appWindow.size = initialSize + const Offset(0, 000.1);
       });
     } else {
       appWindow.size = initialSize;
@@ -94,7 +95,8 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+  static final ValueNotifier<ThemeMode> themeNotifier =
+      ValueNotifier(ThemeMode.light);
 
   // This widget is the root of your application.
   @override
@@ -161,16 +163,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     prefs.setDouble('windowsWidth', curWindowSize.width);
     prefs.setDouble('windowsHeight', curWindowSize.height);
-    windowsWidth = curWindowSize.width;
-  }
-
-  @override
-  Future<void> onWindowMaximize() async {
-    Size curWindowSize = await windowManager.getSize();
-    // final prefs = await SharedPreferences.getInstance();
-    // prefs.setDouble('windowsWidth', curWindowSize.width);
-    // prefs.setDouble('windowsHeight', curWindowSize.height);
-    windowsWidth = curWindowSize.width;
   }
 
   void miscCheck() async {
@@ -184,9 +176,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       //previewWindows Check
       _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
       if (_previewWindowVisible) {
-        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+        Provider.of<StateProvider>(context, listen: false)
+            .previewWindowVisibleSetTrue();
       } else {
-        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+        Provider.of<StateProvider>(context, listen: false)
+            .previewWindowVisibleSetFalse();
       }
     });
   }
@@ -206,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       backupDirPath = '$mainModDirPath${s}Backups';
       checksumDirPath = '$mainModDirPath${s}Checksum';
       modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+      modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
       deletedItemsPath = '$mainModDirPath${s}Deleted Items';
       //Check if exist, create dirs
       if (!Directory(mainModDirPath).existsSync()) {
@@ -231,7 +226,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         await Directory('$backupDirPath${s}win32_na').create(recursive: true);
       }
       if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
-        await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
+        await Directory('$backupDirPath${s}win32reboot_na')
+            .create(recursive: true);
       }
       if (!Directory(checksumDirPath).existsSync()) {
         await Directory(checksumDirPath).create(recursive: true);
@@ -242,6 +238,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       if (!File(modSettingsPath).existsSync()) {
         await File(modSettingsPath).create(recursive: true);
       }
+      if (!File(modSetsSettingsPath).existsSync()) {
+        await File(modSetsSettingsPath).create(recursive: true);
+      }
 
       setState(() {
         context.read<StateProvider>().mainModManPathFoundTrue();
@@ -249,7 +248,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       //Checksum check
       if (checkSumFilePath == null) {
-        final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
+        final filesInCSFolder =
+            Directory(checksumDirPath).listSync().whereType<File>();
         for (var file in filesInCSFolder) {
           if (p.extension(file.path) == '') {
             checkSumFilePath = file.path;
@@ -267,11 +267,19 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   }
 
   void getDirPath() {
-    binDirDialog(context, 'Error', 'pso2_bin folder not found. Select it now?\n\'Exit\' will close the app', false);
+    binDirDialog(
+        context,
+        'Error',
+        'pso2_bin folder not found. Select it now?\n\'Exit\' will close the app',
+        false);
   }
 
   void getMainModManDirPath() {
-    mainModManDirDialog(context, 'Mod Manager Folder Not Found', 'Select a path to store your mods?\n\'No\' will create a folder inside \'pso2_bin\'', false);
+    mainModManDirDialog(
+        context,
+        'Mod Manager Folder Not Found',
+        'Select a path to store your mods?\n\'No\' will create a folder inside \'pso2_bin\'',
+        false);
   }
 
   @override
@@ -294,7 +302,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                         child: Tooltip(
                             message: 'Version: $appVersion | Made by キス★',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 2),
                             child: Text(
                               'PSO2NGS Mod Manager',
@@ -362,9 +372,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Path menu
                           Tooltip(
-                            message: 'Reselect \'pso2_bin\' Folder and Mod Manager Folder Path',
+                            message:
+                                'Reselect \'pso2_bin\' Folder and Mod Manager Folder Path',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
@@ -381,7 +394,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                             size: 18,
                                           ),
                                           SizedBox(width: 2.5),
-                                          Text('Paths Reselect', style: TextStyle(fontWeight: FontWeight.w400))
+                                          Text('Paths Reselect',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400))
                                         ],
                                       ),
                                     ),
@@ -401,20 +416,27 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     ...MenuItems.firstItems.map(
                                       (item) => DropdownMenuItem<MenuItem>(
                                         value: item,
-                                        child: MenuItems.buildItem(context, item),
+                                        child:
+                                            MenuItems.buildItem(context, item),
                                       ),
                                     ),
                                   ],
                                   onChanged: (value) {
-                                    MenuItems.onChanged(context, value as MenuItem);
+                                    MenuItems.onChanged(
+                                        context, value as MenuItem);
                                   },
                                   itemHeight: 35,
                                   dropdownWidth: 130,
-                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                                  itemPadding:
+                                      const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding:
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                    color: MyApp.themeNotifier.value ==
+                                            ThemeMode.light
+                                        ? Theme.of(context).cardColor
+                                        : Theme.of(context).primaryColor,
                                   ),
                                   dropdownElevation: 8,
                                   offset: const Offset(0, -3),
@@ -427,14 +449,22 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Manage Mod Sets',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() {
-                                 if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                  Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                if (Provider.of<StateProvider>(context,
+                                        listen: false)
+                                    .setsWindowVisible) {
+                                  Provider.of<StateProvider>(context,
+                                          listen: false)
+                                      .setsWindowVisibleSetFalse();
                                 } else {
-                                  Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                  Provider.of<StateProvider>(context,
+                                          listen: false)
+                                      .setsWindowVisibleSetTrue();
                                 }
                               }),
                               child: Row(
@@ -444,7 +474,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Mod Sets', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Mod Sets',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -454,11 +486,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Open Deleted Items Folder',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() async {
-                                await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                                await launchUrl(
+                                    Uri.parse('file:$deletedItemsPath'));
                               }),
                               child: Row(
                                 children: const [
@@ -467,7 +502,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Deleted Items', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Deleted Items',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -477,12 +514,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Open Checksum Folder',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() async {
                                 if (checkSumFilePath == null) {
-                                  checksumLocation = await FilePicker.platform.pickFiles(
+                                  checksumLocation =
+                                      await FilePicker.platform.pickFiles(
                                     dialogTitle: 'Select your checksum file',
                                     allowMultiple: false,
                                     // type: FileType.custom,
@@ -490,13 +530,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     lockParentWindow: true,
                                   );
                                   if (checksumLocation != null) {
-                                    String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
-                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    String? checksumPath =
+                                        checksumLocation!.paths.first;
+                                    File(checksumPath!).copySync(
+                                        '$checksumDirPath$s${checksumPath.split(s).last}');
+                                    checkSumFilePath =
+                                        '$checksumDirPath$s${checksumPath.split(s).last}';
                                     setState(() {});
                                   }
                                 } else {
-                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(
+                                      Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
                               child: checkSumFilePath != null
@@ -507,7 +551,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           size: 18,
                                         ),
                                         SizedBox(width: 2.5),
-                                        Text('Checksum', style: TextStyle(fontWeight: FontWeight.w400))
+                                        Text('Checksum',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400))
                                       ],
                                     )
                                   : Row(
@@ -518,7 +564,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         SizedBox(width: 2.5),
-                                        Text('Checksum missing. Click!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        Text('Checksum missing. Click!',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -528,12 +577,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Open Backup Folder',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
-                                await launchUrl(Uri.parse('file:$backupDirPath'));
+                                await launchUrl(
+                                    Uri.parse('file:$backupDirPath'));
                               }),
                               child: Row(
                                 children: const [
@@ -542,7 +594,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Backups', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Backups',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -552,7 +606,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Open Mods Folder',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() async {
@@ -565,7 +621,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Mods', style: TextStyle(fontWeight: FontWeight.w400))
+                                  Text('Mods',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400))
                                 ],
                               ),
                             ),
@@ -575,18 +633,27 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Show/Hide Preview Window',
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context,
+                                        listen: false)
+                                    .previewWindowVisible) {
+                                  Provider.of<StateProvider>(context,
+                                          listen: false)
+                                      .previewWindowVisibleSetFalse();
                                   prefs.setBool('previewWindowVisible', false);
                                   previewPlayer.stop();
                                 } else {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  Provider.of<StateProvider>(context,
+                                          listen: false)
+                                      .previewWindowVisibleSetTrue();
                                   prefs.setBool('previewWindowVisible', true);
                                 }
                               }),
@@ -597,17 +664,38 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   const SizedBox(width: 2.5),
-                                  const Text('Preview: ', style: TextStyle(fontWeight: FontWeight.w400)),
-                                  if (context.watch<StateProvider>().previewWindowVisible)
+                                  const Text('Preview: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                  if (context
+                                      .watch<StateProvider>()
+                                      .previewWindowVisible)
                                     SizedBox(
                                         width: 23,
                                         child: Text('ON',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 13,
-                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
-                                  if (context.watch<StateProvider>().previewWindowVisible == false)
-                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                                color:
+                                                    MyApp.themeNotifier.value ==
+                                                            ThemeMode.light
+                                                        ? Theme.of(context)
+                                                            .primaryColorDark
+                                                        : Theme.of(context)
+                                                            .iconTheme
+                                                            .color))),
+                                  if (context
+                                          .watch<StateProvider>()
+                                          .previewWindowVisible ==
+                                      false)
+                                    const SizedBox(
+                                        width: 23,
+                                        child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Text('OFF',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 13))))
                                 ],
                               ),
                             ),
@@ -619,7 +707,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               width: 70,
                               child: MaterialButton(
                                 onPressed: (() async {
-                                  final prefs = await SharedPreferences.getInstance();
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
                                   MyApp.themeNotifier.value = ThemeMode.light;
                                   prefs.setBool('isDarkModeOn', false);
                                   //setState(() {});
@@ -631,7 +720,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       size: 18,
                                     ),
                                     SizedBox(width: 2.5),
-                                    Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
+                                    Text('Light',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -641,7 +732,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               width: 70,
                               child: MaterialButton(
                                 onPressed: (() async {
-                                  final prefs = await SharedPreferences.getInstance();
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
                                   MyApp.themeNotifier.value = ThemeMode.dark;
                                   prefs.setBool('isDarkModeOn', true);
                                   //setState(() {});
@@ -653,7 +745,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       size: 18,
                                     ),
                                     SizedBox(width: 2.5),
-                                    Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
+                                    Text('Dark',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -677,7 +771,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 leadingPadding: const EdgeInsets.only(left: 15, right: 5),
                 leading: Icon(
                   Icons.new_releases,
-                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                  color: MyApp.themeNotifier.value == ThemeMode.light
+                      ? Theme.of(context).primaryColorDark
+                      : Colors.amberAccent,
                 ),
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -686,11 +782,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       children: [
                         Text(
                           'New Update Available!',
-                          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              color:
+                                  MyApp.themeNotifier.value == ThemeMode.light
+                                      ? Theme.of(context).primaryColorDark
+                                      : Colors.amberAccent,
+                              fontWeight: FontWeight.w500),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),
-                          child: Text('New Version: $newVersion - Your Version: $appVersion'),
+                          child: Text(
+                              'New Version: $newVersion - Your Version: $appVersion'),
                         ),
                         TextButton(
                             onPressed: (() {
@@ -707,15 +809,19 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           padding: const EdgeInsets.only(right: 5),
                           child: ElevatedButton(
                               onPressed: (() {
-                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                Provider.of<StateProvider>(context,
+                                        listen: false)
+                                    .isUpdateAvailableFalse();
                                 setState(() {});
                               }),
                               child: const Text('Dismiss')),
                         ),
                         ElevatedButton(
                             onPressed: (() {
-                              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                              Provider.of<StateProvider>(context, listen: false)
+                                  .isUpdateAvailableFalse();
+                              launchUrl(Uri.parse(
+                                  'https://github.com/KizKizz/pso2_mod_manager/releases'));
                             }),
                             child: const Text('Update')),
                       ],
@@ -724,8 +830,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 ),
                 actions: const [SizedBox()],
               )),
-            
-            context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
+
+            context.watch<StateProvider>().isMainBinFound &&
+                    context.watch<StateProvider>().isMainModManPathFound
                 ? const DataLoadingPage()
                 : Column(
                     children: const [
@@ -760,14 +867,17 @@ class MenuItems {
   static const List<MenuItem> firstItems = [_binFolder, modManFolder];
 
   static const _binFolder = MenuItem(text: 'pso2_bin', icon: Icons.folder);
-  static const modManFolder = MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
+  static const modManFolder =
+      MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
 
   static Widget buildItem(context, MenuItem item) {
     return Row(
       children: [
         Icon(
           item.icon,
-          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+          color: MyApp.themeNotifier.value == ThemeMode.light
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).iconTheme.color,
           size: 20,
         ),
         const SizedBox(
@@ -775,7 +885,12 @@ class MenuItems {
         ),
         Text(
           item.text,
-          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: MyApp.themeNotifier.value == ThemeMode.light
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).iconTheme.color,
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
         ),
       ],
     );
@@ -784,10 +899,12 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) {
     switch (item) {
       case MenuItems._binFolder:
-        binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true);
+        binDirDialog(context, 'pso2_bin Path Reselect',
+            'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true);
         break;
       case MenuItems.modManFolder:
-        mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
+        mainModManDirDialog(context, 'Mod Manager Path Reselect',
+            'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
         break;
     }
   }

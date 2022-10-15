@@ -103,20 +103,18 @@ class ModFile extends ModCategory {
 }
 
 class ModSet {
-  ModSet(
-    this.setName,
-    this.numOfItems,
-    this.modFiles,
-  );
+  ModSet(this.setName, this.numOfItems, this.modFiles, this.isApplied);
 
   String setName;
   int numOfItems;
   String modFiles;
+  bool isApplied;
 
   fromJson(Map<String, dynamic> json) {
     setName = json['setName'];
     numOfItems = json['numOfItems'];
     modFiles = json['modFiles'];
+    isApplied = json['isApplied'];
   }
 
   Map<String, dynamic> toJson() {
@@ -124,6 +122,7 @@ class ModSet {
     data['setName'] = setName;
     data['numOfItems'] = numOfItems;
     data['modFiles'] = modFiles;
+    data['isApplied'] = isApplied;
 
     return data;
   }
