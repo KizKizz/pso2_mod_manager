@@ -26,11 +26,13 @@ import 'package:url_launcher/url_launcher.dart';
 List<ModCategory> cateList = [];
 List<ModCategory> cateListSearchResult = [];
 Future? modFilesListGet;
+Future? modFilesListFromSetGet;
 Future? futureImagesGet;
 Future? appliedModsListGet;
 Future? modSetsListGet;
 List<File> modPreviewImgList = [];
 List<List<ModFile>> modFilesList = [];
+List<List<ModFile>> modFilesFromSetList = [];
 List<List<ModFile>> appliedModsList = [];
 List<ModFile> modAppliedDup = [];
 List<ModFile> originalFilesMissingList = [];
@@ -39,6 +41,8 @@ List<ModSet> setsList = [];
 List<String> setsDropDownList = [];
 String? setsSelectedDropDown;
 List<bool> isLoading = [];
+List<bool> isLoadingSetList = [];
+List<bool> isLoadingModSetList = [];
 List<bool> isLoadingAppliedList = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
@@ -108,6 +112,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   int modNameCatSelected = -1;
   bool isModSelected = false;
+  bool isSetSelected = false;
   int currentImg = 0;
   bool isPreviewImgsOn = false;
   bool isPreviewVidOn = false;
@@ -2868,9 +2873,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     void getSets() async {
       List<ModSet> tempSetsList = await modSetsListGet;
+      if (setsList.isEmpty) {
+        setsList = await modSetsListGet;
+      }
       for (var set in tempSetsList) {
         setsDropDownList.add(set.setName);
       }
+      setState(() {});
     }
 
     if (setsDropDownList.isEmpty) {
@@ -2905,7 +2914,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ))),
               ),
             Tooltip(
-              message: 'Add to sets',
+              message: 'Save all mods in applied list to sets',
               height: 25,
               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
               waitDuration: const Duration(seconds: 1),
@@ -2920,10 +2929,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: MaterialButton(
                         onPressed: (() {}),
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(
                               Icons.list_alt_outlined,
                               size: 25,
+                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
                             ),
                           ],
                         ),
@@ -2943,22 +2953,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   dropdownWidth: 120,
                   iconSize: 15,
                   itemHeight: 30,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 5),
                   items: setsDropDownList
                       .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                //fontWeight: FontWeight.bold,
-                                //color: Colors.white,
+                          value: item,
+                          child: Row(
+                            children: [
+                              Container(
+                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Theme.of(context).highlightColor),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Text('${setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems}',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                      ))),
+                              const SizedBox(
+                                width: 3,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ))
+                              Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  //fontWeight: FontWeight.bold,
+                                  //color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          )))
                       .toList(),
                   value: setsSelectedDropDown,
                   onChanged: (value) {
+                    setsSelectedDropDown = value.toString();
+                    List<String> appliedList = [];
+                    for (var list in appliedModsList) {
+                      for (var file in list) {
+                        appliedList.add(file.icePath);
+                      }
+                    }
+                    final setIndex = setsList.indexWhere((element) => element.setName == value.toString());
+                    setsList[setIndex].modFiles = appliedList.join('|');
+                    setsList[setIndex].numOfItems = totalAppliedItems;
+                    //Json Write
+                    setsList.map((set) => set.toJson()).toList();
+                    File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
                     setState(() {});
                   },
                 )),
@@ -3486,9 +3526,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       }
                     }
                   }
-                  //if (isLoadingAppliedList.isEmpty) {
-                  //isLoadingAppliedList = List.generate(appliedModsList.length, (index) => false);
-                  //}
+                  if (isLoadingSetList.isEmpty) {
+                    isLoadingSetList = List.generate(setsList.length, (index) => false);
+                  }
                   //print(snapshot.data);
                   return SingleChildScrollView(
                       controller: AdjustableScrollController(80),
@@ -3528,7 +3568,108 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                     ],
                                   ),
-                                  onTap: () {},
+                                  onTap: setsList[index].numOfItems > 0
+                                      ? () {
+                                          setState(() {
+                                            //main func
+                                            isViewingFav = false;
+                                            isPreviewImgsOn = false;
+                                            modFilesListFromSetGet = getModFilesBySet(setsList[index].modFiles);
+                                            selectedIndex = List.filled(cateList.length, -1);
+                                            selectedIndex[index] = index;
+                                            modNameCatSelected = -1;
+                                            //modsViewAppBarName = cateList[index].itemNames[i];
+                                            _newModToItemIndex = index;
+                                            isSetSelected = true;
+                                            isLoadingModSetList.clear();
+                                          });
+                                        }
+                                      : null,
+                                  trailing: Wrap(
+                                    children: [
+                                      if (isLoadingSetList[index])
+                                        const SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: Tooltip(
+                                          message: 'Apply mods under ${setsList[index].setName} set to the game',
+                                          height: 25,
+                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                          waitDuration: const Duration(seconds: 1),
+                                          child: MaterialButton(
+                                            onPressed: (() async {
+                                              isLoadingSetList[index] = true;
+                                              modFilesFromSetList = await getModFilesBySet(setsList[index].modFiles);
+                                              List<List<ModFile>> modFilesToApply = [];
+                                              for (var list in modFilesFromSetList) {
+                                                List<ModFile> temp = [];
+                                                for (var file in list) {
+                                                  if (!file.isApplied) {
+                                                    temp.add(file);
+                                                  }
+                                                }
+                                                modFilesToApply.add(temp);
+                                              }
+                                              setState(() {
+                                                for (var list in modFilesToApply) {
+                                                  modsToDataAdder(list.where((element) => element.isApplied == false).toList()).then((_) {
+                                                    setState(() {
+                                                      isLoadingSetList[index] = false;
+                                                      setsList[index].isApplied = true;
+                                                      //Messages
+                                                      if (originalFilesMissingList.isNotEmpty) {
+                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                            duration: const Duration(seconds: 2),
+                                                            //backgroundColor: Theme.of(context).focusColor,
+                                                            content: SizedBox(
+                                                              height: originalFilesMissingList.length * 20,
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                    Text(
+                                                                        'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                ],
+                                                              ),
+                                                            )));
+                                                      }
+
+                                                      if (modAppliedDup.isNotEmpty) {
+                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                            duration: Duration(seconds: modAppliedDup.length),
+                                                            //backgroundColor: Theme.of(context).focusColor,
+                                                            content: SizedBox(
+                                                              height: modAppliedDup.length * 20,
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int i = 0; i < modAppliedDup.length; i++)
+                                                                    Text(
+                                                                        'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                ],
+                                                              ),
+                                                            )));
+                                                        modAppliedDup.clear();
+                                                      }
+                                                    });
+                                                  });
+                                                }
+                                              });
+                                            }),
+                                            child: Icon(
+                                              Icons.playlist_add,
+                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
@@ -3549,44 +3690,437 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
         ),
+        if (isSetSelected)
+          Expanded(
+              child: FutureBuilder(
+                  future: modFilesListFromSetGet,
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot snapshot,
+                  ) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      if (snapshot.hasError) {
+                        return const Text('Error');
+                      } else {
+                        modFilesFromSetList = snapshot.data;
+                        if (isLoadingModSetList.isEmpty) {
+                          isLoadingModSetList = List.generate(modFilesFromSetList.length, (index) => false);
+                        }
+                        //print(snapshot.data);
+                        return SingleChildScrollView(
+                            controller: AdjustableScrollController(80),
+                            child: ListView.builder(
+                                //key: Key('builder ${modNameCatSelected.toString()}'),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: modFilesFromSetList.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                      onTap: () {},
+                                      onHover: (value) {
+                                        if (value) {
+                                          setState(() {
+                                            if (modFilesFromSetList[index].first.images != null) {
+                                              isPreviewImgsOn = true;
+                                              futureImagesGet = modFilesFromSetList[index].first.images;
+                                            }
+                                            //print(modFilesFromSetList[index].first.previewVids!.length);
+                                            if (modFilesFromSetList[index].first.previewVids!.isNotEmpty) {
+                                              previewZoomState = false;
+                                              isPreviewVidOn = true;
+                                              isPreviewImgsOn = false;
+                                              previewPlayer.setVolume(0.0);
+                                              bool itemFound = false;
+                                              for (var vid in modFilesFromSetList[index].first.previewVids!) {
+                                                if (medias.contains(Media.file(vid))) {
+                                                  itemFound = true;
+                                                } else {
+                                                  medias.clear();
+                                                }
+                                              }
+
+                                              if (medias.isEmpty || !itemFound) {
+                                                for (var vid in modFilesFromSetList[index].first.previewVids!) {
+                                                  medias.add(Media.file(vid));
+                                                }
+                                                previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                              } else {
+                                                previewPlayer.bufferingProgressController.done;
+                                                previewPlayer.play();
+                                              }
+                                            }
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isPreviewImgsOn = false;
+                                            isPreviewVidOn = false;
+                                            previewZoomState = true;
+                                            previewPlayer.pause();
+                                            currentImg = 0;
+                                          });
+                                        }
+                                      },
+                                      child: GestureDetector(
+                                        onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
+                                        child: Card(
+                                            margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                side: BorderSide(
+                                                    width: 1,
+                                                    color: modFilesFromSetList[index].indexWhere((e) => e.isNew == true) != -1
+                                                        ? MyApp.themeNotifier.value == ThemeMode.light
+                                                            ? Theme.of(context).primaryColorDark
+                                                            : Colors.amber
+                                                        : Theme.of(context).primaryColor)),
+                                            child: ExpansionTile(
+                                              initiallyExpanded: modViewExpandAll,
+                                              textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                              iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                              collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                              title: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(modFilesFromSetList[index].first.iceParent),
+                                                  ),
+                                                  //if (modFilesFromSetList[index].length > 1)
+                                                  Row(
+                                                    children: [
+                                                      //Buttons
+                                                      SizedBox(
+                                                        width: 40,
+                                                        height: 40,
+                                                        child: Tooltip(
+                                                          message: modFilesFromSetList[index].first.isFav
+                                                              ? 'Remove "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" to favorites'
+                                                              : 'Add "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" to favorites',
+                                                          height: 25,
+                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                          waitDuration: const Duration(seconds: 1),
+                                                          child: MaterialButton(
+                                                            onPressed: (() {
+                                                              setState(() {
+                                                                var favCate = cateList.singleWhere((element) => element.categoryName == 'Favorites');
+                                                                if (modFilesFromSetList[index].first.isFav) {
+                                                                  favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, false);
+                                                                } else {
+                                                                  favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, true);
+                                                                }
+                                                              });
+                                                            }),
+                                                            child: modFilesFromSetList[index].first.isFav
+                                                                ? FaIcon(
+                                                                    FontAwesomeIcons.heartCircleMinus,
+                                                                    size: 19,
+                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
+                                                                  )
+                                                                : FaIcon(
+                                                                    FontAwesomeIcons.heartCirclePlus,
+                                                                    size: 19,
+                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                  ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      //loading && add
+                                                      if (isLoadingModSetList[index])
+                                                        const SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: CircularProgressIndicator(),
+                                                        ),
+
+                                                      //if (modFilesFromSetList[index].length > 1 && modFilesFromSetList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoadingModSetList[index])
+                                                      if (modFilesFromSetList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoadingModSetList[index])
+                                                        SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: Tooltip(
+                                                            message: 'Remove all mods under "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" from the game',
+                                                            height: 25,
+                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                            waitDuration: const Duration(seconds: 1),
+                                                            child: MaterialButton(
+                                                              onPressed: (() {
+                                                                setState(() {
+                                                                  modsRemover(modFilesFromSetList[index].where((element) => element.isApplied).toList());
+                                                                });
+                                                              }),
+                                                              child: Icon(
+                                                                Icons.playlist_remove,
+                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      //if (modFilesFromSetList[index].length > 1 && modFilesFromSetList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoadingModSetList[index])
+                                                      if (modFilesFromSetList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoadingModSetList[index])
+                                                        SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: Tooltip(
+                                                            message: 'Apply mods under ${modFilesFromSetList[index].first.iceParent} to the game',
+                                                            height: 25,
+                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                            waitDuration: const Duration(seconds: 1),
+                                                            child: MaterialButton(
+                                                              onPressed: (() {
+                                                                setState(() {
+                                                                  isLoadingModSetList[index] = true;
+                                                                  modsToDataAdder(modFilesFromSetList[index].where((element) => element.isApplied == false).toList()).then((_) {
+                                                                    setState(() {
+                                                                      isLoadingModSetList[index] = false;
+                                                                      //Messages
+                                                                      if (originalFilesMissingList.isNotEmpty) {
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                            duration: const Duration(seconds: 2),
+                                                                            //backgroundColor: Theme.of(context).focusColor,
+                                                                            content: SizedBox(
+                                                                              height: originalFilesMissingList.length * 20,
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                                    Text(
+                                                                                        'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                ],
+                                                                              ),
+                                                                            )));
+                                                                      }
+
+                                                                      if (modAppliedDup.isNotEmpty) {
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                            duration: Duration(seconds: modAppliedDup.length),
+                                                                            //backgroundColor: Theme.of(context).focusColor,
+                                                                            content: SizedBox(
+                                                                              height: modAppliedDup.length * 20,
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  for (int i = 0; i < modAppliedDup.length; i++)
+                                                                                    Text(
+                                                                                        'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                ],
+                                                                              ),
+                                                                            )));
+                                                                        modAppliedDup.clear();
+                                                                      }
+                                                                    });
+                                                                  });
+                                                                });
+                                                              }),
+                                                              child: Icon(
+                                                                Icons.playlist_add,
+                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      if (!isViewingFav)
+                                                        Tooltip(
+                                                            message: 'Delete $modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}',
+                                                            height: 25,
+                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                            waitDuration: const Duration(seconds: 2),
+                                                            child: SizedBox(
+                                                              width: 36,
+                                                              height: 40,
+                                                              child: MaterialButton(
+                                                                  onPressed: (() {
+                                                                    setState(() {
+                                                                      if (modFilesFromSetList[index].indexWhere((element) => element.isApplied == true) == -1) {
+                                                                        modDeleteDialog(
+                                                                                context,
+                                                                                100,
+                                                                                'Delete Mods',
+                                                                                'Delete "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" and move it to \'Deleted Items\' folder?\nThis will also delete all files in this mod',
+                                                                                true,
+                                                                                modFilesFromSetList[index].first.modPath,
+                                                                                modFilesFromSetList[index].first.iceParent,
+                                                                                modFilesFromSetList[index].first.modName,
+                                                                                modFilesFromSetList[index])
+                                                                            .then((_) {
+                                                                          setState(() {
+                                                                            //setstate to refresh list
+                                                                          });
+                                                                        });
+                                                                      } else if (modFilesFromSetList[index].first.isFav) {
+                                                                        double popupHeight = 40;
+                                                                        modDeleteDialog(
+                                                                            context,
+                                                                            popupHeight,
+                                                                            'Delete Mod',
+                                                                            'Cannot delete "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}". Remove from Favorites first',
+                                                                            false,
+                                                                            modFilesFromSetList[index].first.modPath,
+                                                                            modFilesFromSetList[index].first.iceParent,
+                                                                            modFilesFromSetList[index].first.modName, []);
+                                                                      } else {
+                                                                        List<ModFile> tempList = cateList[index]
+                                                                            .allModFiles
+                                                                            .where((element) => element.modName == modFilesFromSetList[index].first.modName && element.isApplied == true)
+                                                                            .toList();
+                                                                        List<String> stillAppliedList = [];
+                                                                        double popupHeight = 40;
+                                                                        for (var element in tempList) {
+                                                                          stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                                                                          popupHeight += 24;
+                                                                        }
+                                                                        String stillApplied = stillAppliedList.join('\n');
+                                                                        modDeleteDialog(
+                                                                            context,
+                                                                            popupHeight,
+                                                                            'Delete Mod',
+                                                                            'Cannot delete "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}". Unaplly these files first:\n\n$stillApplied',
+                                                                            false,
+                                                                            modFilesFromSetList[index].first.modPath,
+                                                                            modFilesFromSetList[index].first.iceParent,
+                                                                            modFilesFromSetList[index].first.modName, []);
+                                                                      }
+                                                                    });
+                                                                  }),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons.delete_rounded,
+                                                                        size: 20,
+                                                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      )
+                                                                    ],
+                                                                  )),
+                                                            )),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              children: [
+                                                for (int i = 0; i < modFilesFromSetList[index].length; i++)
+                                                  InkWell(
+                                                      // onHover: (value) {
+                                                      //   if (value &&
+                                                      //       modPreviewImgList.indexWhere((e) =>
+                                                      //               e.path.contains(
+                                                      //                   modFilesFromSetList[
+                                                      //                           index]
+                                                      //                       .first
+                                                      //                       .iceParent)) ==
+                                                      //           -1) {
+                                                      //     setState(() {
+                                                      //       isPreviewImgsOn = true;
+                                                      //       futureImagesGet =
+                                                      //           modFilesFromSetList[index]
+                                                      //                   [i]
+                                                      //               .images;
+                                                      //     });
+                                                      //   }
+                                                      // },
+                                                      child: ListTile(
+                                                    leading: modFilesFromSetList[index][i].isNew == true
+                                                        ? Icon(
+                                                            Icons.new_releases,
+                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                                          )
+                                                        : null,
+                                                    title: Text(modFilesFromSetList[index][i].iceName),
+                                                    //subtitle: Text(modFilesFromSetList[index][i].icePath),
+                                                    minLeadingWidth: 10,
+                                                    trailing: SizedBox(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child: modFilesFromSetList[index][i].isApplied
+                                                          ? Tooltip(
+                                                              message: 'Remove this mod from the game',
+                                                              height: 25,
+                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                              waitDuration: const Duration(seconds: 2),
+                                                              child: MaterialButton(
+                                                                onPressed: (() {
+                                                                  setState(() {
+                                                                    modsRemover([modFilesFromSetList[index][i]]);
+                                                                    //appliedModsList.remove(modFilesFromSetList[index]);
+                                                                    if (backupFilesMissingList.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          duration: const Duration(seconds: 2),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content: SizedBox(
+                                                                            height: backupFilesMissingList.length * 20,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                for (int i = 0; i < backupFilesMissingList.length; i++)
+                                                                                  Text(
+                                                                                      'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
+                                                                              ],
+                                                                            ),
+                                                                          )));
+                                                                    }
+                                                                  });
+                                                                }),
+                                                                child: const Icon(Icons.replay),
+                                                              ))
+                                                          : Tooltip(
+                                                              message: 'Apply this mod to the game',
+                                                              height: 25,
+                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                              waitDuration: const Duration(seconds: 2),
+                                                              child: MaterialButton(
+                                                                onPressed: (() {
+                                                                  setState(() {
+                                                                    modsToDataAdder([modFilesFromSetList[index][i]]);
+                                                                    //appliedModsList.add(modFilesFromSetList[index]);
+                                                                    if (originalFilesMissingList.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          duration: const Duration(seconds: 2),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content: SizedBox(
+                                                                            height: originalFilesMissingList.length * 20,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                                  Text(
+                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                              ],
+                                                                            ),
+                                                                          )));
+                                                                    }
+
+                                                                    if (modAppliedDup.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                          duration: Duration(seconds: modAppliedDup.length),
+                                                                          //backgroundColor: Theme.of(context).focusColor,
+                                                                          content: SizedBox(
+                                                                            height: modAppliedDup.length * 20,
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                for (int i = 0; i < modAppliedDup.length; i++)
+                                                                                  Text(
+                                                                                      'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                              ],
+                                                                            ),
+                                                                          )));
+                                                                    }
+
+                                                                    modAppliedDup.clear();
+                                                                  });
+                                                                }),
+                                                                child: const Icon(Icons.add_to_drive),
+                                                              ),
+                                                            ),
+                                                    ),
+                                                  ))
+                                              ],
+                                            )),
+                                      ));
+                                }));
+                      }
+                    }
+                  })),
       ],
     );
-  }
-}
-
-class MenuItem {
-  final String text;
-
-  const MenuItem({
-    required this.text,
-  });
-}
-
-class MenuItems {
-  List<MenuItem> getItems(List<ModSet> paramList) {
-    List<MenuItem> setsFromList = [];
-
-    for (int i = 0; i < paramList.length; i++) {
-      MenuItem curItem = MenuItem(text: paramList[i].setName);
-      setsFromList.add(curItem);
-    }
-
-    return setsFromList;
-  }
-
-  static List<MenuItem> firstItems = List.generate(setsList.length, (index) => const MenuItem(text: 'test'));
-
-  static const _binFolder = MenuItem(text: 'pso2_bin');
-  static const modManFolder = MenuItem(text: 'Mod Manager');
-
-  static Widget buildItem(context, MenuItem item) {
-    return Text(
-      item.text,
-      style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
-    );
-  }
-
-  static onChanged(BuildContext context, MenuItem item) {
-    for (var itemInList in firstItems) {}
   }
 }

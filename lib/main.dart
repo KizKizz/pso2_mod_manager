@@ -48,8 +48,6 @@ List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
-final MultiSplitViewController _setSplitController =
-    MultiSplitViewController(areas: [Area(weight: 0.262)]);
 
 Future<void> main() async {
   DartVLC.initialize();
