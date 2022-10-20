@@ -470,7 +470,9 @@ Future<List<ModSet>> getSetsList() async {
         b['numOfItems'],
         b['modFiles'],
         b['isApplied'],
+        [],
       );
+      set.filesInSetList = set.getModFiles(set.modFiles);
       returnSetsList.add(set);
     }
   }

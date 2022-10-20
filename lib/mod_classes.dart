@@ -103,12 +103,24 @@ class ModFile extends ModCategory {
 }
 
 class ModSet {
-  ModSet(this.setName, this.numOfItems, this.modFiles, this.isApplied);
+  ModSet(this.setName, this.numOfItems, this.modFiles, this.isApplied, this.filesInSetList);
 
   String setName;
   int numOfItems;
   String modFiles;
   bool isApplied;
+  List<ModFile> filesInSetList;
+
+  List<ModFile> getModFiles(String filesString) {
+    List<ModFile> returnList = [];
+    if (filesString.isNotEmpty) {
+      List<String> tempList = filesString.split('|');
+      for (var fileLoc in tempList) {
+        returnList.add(allModFiles.firstWhere((element) => element.icePath == fileLoc));
+      }
+    }
+    return returnList;
+  }
 
   fromJson(Map<String, dynamic> json) {
     setName = json['setName'];
