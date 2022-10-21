@@ -492,7 +492,9 @@ Future<List<List<ModFile>>> getModFilesBySet(String modSetList) async {
   List<String> modSeparated = modSetList.split('|');
 
   for (var modPath in modSeparated) {
-    modFilesFromSet.add(allModFiles.firstWhere((element) => element.icePath == modPath));
+    if (allModFiles.indexWhere((element) => element.icePath == modPath) != -1) {
+      modFilesFromSet.add(allModFiles.firstWhere((element) => element.icePath == modPath));
+    }
   }
 
   List<String> modNamesList = [];

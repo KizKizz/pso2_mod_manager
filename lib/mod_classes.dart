@@ -116,10 +116,28 @@ class ModSet {
     if (filesString.isNotEmpty) {
       List<String> tempList = filesString.split('|');
       for (var fileLoc in tempList) {
-        returnList.add(allModFiles.firstWhere((element) => element.icePath == fileLoc));
+        if (allModFiles.indexWhere((element) => element.icePath == fileLoc) != -1) {
+          returnList.add(allModFiles.firstWhere((element) => element.icePath == fileLoc));
+        } else {
+          removeNotFoundFiles(fileLoc);
+        }
       }
+
+      List<String> modNamesList = [];
+      for (var modFile in returnList) {
+        modNamesList.add(modFile.modName);
+      }
+      modNamesList = modNamesList.toSet().toList();
+      numOfItems = modNamesList.length;
     }
+
     return returnList;
+  }
+
+  void removeNotFoundFiles(String removeItem) {
+    List<String> tempList = modFiles.split('|');
+    tempList.remove(removeItem);
+    modFiles = tempList.join('|');
   }
 
   fromJson(Map<String, dynamic> json) {

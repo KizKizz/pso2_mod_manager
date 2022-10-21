@@ -52,6 +52,8 @@ bool previewZoomState = true;
 int totalAppliedItems = 0;
 int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
+String modsViewAppBarName = '';
+String modsSetAppBarName = '';
 
 //New Cate
 bool addCategoryVisible = false;
@@ -104,8 +106,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
-  String modsViewAppBarName = '';
-  String modsSetAppBarName = '';
+
   List<int> selectedIndex = List.generate(cateList.length, (index) => -1);
   List<int> searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
   CarouselController imgSliderController = CarouselController();
@@ -559,7 +560,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             children: [
                               if (cateList[index].categoryName != 'Favorites')
                                 Tooltip(
-                                    message: 'Remove ${cateList[index].categoryName}',
+                                    message: 'Delete ${cateList[index].categoryName}',
                                     height: 25,
                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                     waitDuration: const Duration(seconds: 2),
@@ -573,12 +574,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 categoryDeleteDialog(
                                                         context,
                                                         100,
-                                                        'Remove Category',
-                                                        'Remove "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
+                                                        'Delete Category',
+                                                        'Delete "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
                                                         true,
                                                         cateList[index].categoryPath,
                                                         cateList[index].allModFiles)
-                                                    .then((_) {
+                                                    .then((_) async {
+                                                  modSetsListGet = getSetsList();
+                                                  setsList = await modSetsListGet;
+                                                  setsDropDownList.clear();
+                                                  for (var set in setsList) {
+                                                    setsDropDownList.add(set.setName);
+                                                  }
+                                                  setsList.map((set) => set.toJson()).toList();
+                                                  File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
                                                   setState(() {
                                                     //setstate to refresh list
                                                   });
@@ -592,8 +601,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   popupHeight += 24;
                                                 }
                                                 String stillApplied = stillAppliedList.join('\n');
-                                                categoryDeleteDialog(context, popupHeight, 'Remove Category',
-                                                    'Cannot remove "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
+                                                categoryDeleteDialog(context, popupHeight, 'Delete Category',
+                                                    'Cannot delete "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
                                               }
                                             });
                                           }),
@@ -854,9 +863,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             cateList[index].itemNames[i],
                                                             cateList[index].allModFiles)
                                                         .then((_) {
-                                                      setState(() {
+                                                      setState(() async {
                                                         modsViewAppBarName = 'Available Mods';
                                                         isModSelected = false;
+                                                        modSetsListGet = getSetsList();
+                                                        setsList = await modSetsListGet;
+                                                        setsDropDownList.clear();
+                                                        for (var set in setsList) {
+                                                          setsDropDownList.add(set.setName);
+                                                        }
+                                                        setsList.map((set) => set.toJson()).toList();
+                                                        File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
                                                         //setstate
                                                       });
                                                     });
@@ -1571,7 +1588,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 hint: 'Select a Category',
                                 dropdownDecoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
-                                  border: Border.all(color: Theme.of(context).cardColor),
+                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                 ),
                                 buttonDecoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
@@ -1869,7 +1886,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     hint: 'Select a Category',
                                     dropdownDecoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(color: Theme.of(context).cardColor),
+                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                     ),
                                     buttonDecoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
@@ -2249,7 +2266,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Remove all mods under "$modsViewAppBarName ${modFilesList[index].first.iceParent}" from the game',
+                                                            message: 'Unapply all mods under "$modsViewAppBarName ${modFilesList[index].first.iceParent}" from the game',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -2352,7 +2369,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                                 modFilesList[index].first.iceParent,
                                                                                 modFilesList[index].first.modName,
                                                                                 modFilesList[index])
-                                                                            .then((_) {
+                                                                            .then((_) async {
+                                                                          modSetsListGet = getSetsList();
+                                                                          setsList = await modSetsListGet;
+                                                                          setsDropDownList.clear();
+                                                                          for (var set in setsList) {
+                                                                            setsDropDownList.add(set.setName);
+                                                                          }
+                                                                          setsList.map((set) => set.toJson()).toList();
+                                                                          File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
                                                                           setState(() {
                                                                             //setstate to refresh list
                                                                           });
@@ -2916,7 +2941,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ))),
               ),
             Tooltip(
-              message: 'Save all mods in applied list to sets',
+              message: setsList.isNotEmpty ? 'Save all mods in applied list to sets' : 'Click on \'Mod Sets\' button to add new set',
               height: 25,
               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
               waitDuration: const Duration(seconds: 1),
@@ -2935,7 +2960,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Icon(
                               Icons.list_alt_outlined,
                               size: 25,
-                              color: appliedModsList.isEmpty
+                              color: appliedModsList.isEmpty || setsList.isEmpty
                                   ? Theme.of(context).disabledColor
                                   : MyApp.themeNotifier.value == ThemeMode.light
                                       ? Theme.of(context).primaryColorDark
@@ -2948,7 +2973,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   dropdownDecoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(3),
-                    border: Border.all(color: Theme.of(context).cardColor),
+                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                   ),
                   buttonDecoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(3),
@@ -2984,7 +3009,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               const SizedBox(
                                 width: 5,
                               ),
-                              SizedBox(
+                              Container(
+                                padding: const EdgeInsets.only(bottom: 3),
                                 width: 187,
                                 child: Text(
                                   item,
@@ -3000,7 +3026,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           )))
                       .toList(),
                   value: setsSelectedDropDown,
-                  onChanged: appliedModsList.isEmpty
+                  onChanged: appliedModsList.isEmpty || setsList.isEmpty
                       ? null
                       : (value) {
                           setsSelectedDropDown = value.toString();
@@ -3502,6 +3528,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           isLoadingSetList.insert(0, false);
                           setsList.insert(0, ModSet(newSetTextController.text, 0, '', false, []));
                           newSetTextController.clear();
+                          setsDropDownList.clear();
+                          for (var set in setsList) {
+                            setsDropDownList.add(set.setName);
+                          }
                           setsList.map((set) => set.toJson()).toList();
                           File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
                           setState(() {});
@@ -3589,11 +3619,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                 ),
                                                 child: setsList[index].numOfItems < 2
+                                                    ? setsList[index].filesInSetList.length > 1
                                                     ? Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} Files',
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                         ))
-                                                    : Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} Files',
+                                                        : Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} File',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))
+                                                    : setsList[index].filesInSetList.length > 1
+                                                    ? Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} Files',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))
+                                                    : Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} File',
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                         ))),
@@ -3613,7 +3653,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               border: Border.all(color: Theme.of(context).highlightColor),
                                                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                             ),
-                                                            child: Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} Files Applied',
+                                                            child: setsList[index].filesInSetList.where((element) => element.isApplied).length > 1
+                                                            ? Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} Files Applied',
+                                                                style:
+                                                                    TextStyle(fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))
+                                                              : Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} File Applied',
                                                                 style:
                                                                     TextStyle(fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))),
                                                       )
@@ -3787,7 +3831,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       SizedBox(
                                         width: 40,
                                         child: Tooltip(
-                                            message: 'Hold to remove ${setsList[index].setName} from sets list',
+                                            message: 'Hold to delete ${setsList[index].setName}',
                                             height: 25,
                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                             waitDuration: const Duration(seconds: 2),
@@ -3940,7 +3984,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Flexible(
-                                                    child: Text(modFilesFromSetList[index].first.iceParent),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text('${modFilesFromSetList[index].first.categoryName} > ${modFilesFromSetList[index].first.modName}',
+                                                            style: TextStyle(fontWeight: FontWeight.w600, color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.black : Colors.white)),
+                                                        Text(modFilesFromSetList[index].first.iceParent),
+                                                      ],
+                                                    ),
                                                   ),
                                                   //if (modFilesFromSetList[index].length > 1)
                                                   Row(
@@ -4131,7 +4182,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                   child: Row(
                                                                     children: [
                                                                       Icon(
-                                                                        Icons.delete_rounded,
+                                                                        Icons.filter_list_off_outlined,
                                                                         size: 20,
                                                                         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                       )

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_new, unused_import, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -427,8 +428,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               child: MaterialButton(
                                 onPressed: (() {
                                   if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
                                     Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                   } else {
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
                                     Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                   }
                                 }),
