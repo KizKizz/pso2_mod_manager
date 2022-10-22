@@ -35,7 +35,9 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 children: [
                   Text(
                     'Error when loading data. Reload the app.',
-                    style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText1?.color,
+                        fontSize: 20),
                   ),
                 ],
               );
@@ -45,8 +47,11 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
-              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-              Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+              modSetsListGet = getSetsList();
+              iceFiles =
+                  dataDir.listSync(recursive: true).whereType<File>().toList();
+              Provider.of<StateProvider>(context, listen: false)
+                  .cateListItemCountSetNoListener(cateList.length);
               //print('${allModFiles.length} iceFiles Loaded');
 
               return const HomePage();

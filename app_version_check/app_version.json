@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "description": [
-        "Fixed blank white screen on Windows 10 (temporary)"
+        "New feature: Mod sets - Save all current applied mods to a set to apply them later, just like in-game 'Looks' feature"
     ],
     "windows_file": "",
     "linux_file": ""

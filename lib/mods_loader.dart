@@ -424,7 +424,7 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
   }
 
   for (var path in parentPathsList) {
-      actualAppliedMods.addAll(allModFiles.where((element) => element.icePath.replaceFirst(element.iceName, '') == path && element.isApplied == false).toList());
+    actualAppliedMods.addAll(allModFiles.where((element) => element.icePath.replaceFirst(element.iceName, '') == path && element.isApplied == false).toList());
   }
 
   //Applied mods list add
@@ -458,4 +458,56 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
 
 Future<List<File>> getImagesList(List<File> imgFile) async {
   return imgFile.toList();
+}
+
+Future<List<ModSet>> getSetsList() async {
+  List<ModSet> returnSetsList = [];
+  //JSON Loader
+  void convertData(var jsonResponse) {
+    for (var b in jsonResponse) {
+      ModSet set = ModSet(
+        b['setName'],
+        b['numOfItems'],
+        b['modFiles'],
+        b['isApplied'],
+        [],
+      );
+      set.filesInSetList = set.getModFiles(set.modFiles);
+      returnSetsList.add(set);
+    }
+  }
+
+  if (returnSetsList.isEmpty && File(modSetsSettingsPath).readAsStringSync().isNotEmpty) {
+    convertData(jsonDecode(File(modSetsSettingsPath).readAsStringSync()));
+  }
+
+  return returnSetsList;
+}
+
+//Mod sets
+Future<List<List<ModFile>>> getModFilesBySet(String modSetList) async {
+  List<List<ModFile>> modFilesInSetList = [];
+  List<ModFile> modFilesFromSet = [];
+
+  List<String> modSeparated = modSetList.split('|');
+
+  for (var modPath in modSeparated) {
+    if (allModFiles.indexWhere((element) => element.icePath == modPath) != -1) {
+      modFilesFromSet.add(allModFiles.firstWhere((element) => element.icePath == modPath));
+    }
+  }
+
+  List<String> modNamesList = [];
+  for (var modFile in modFilesFromSet) {
+    modNamesList.add(modFile.modName);
+  }
+  modNamesList = modNamesList.toSet().toList();
+
+  for (var name in modNamesList) {
+    List<ModFile> temp = [];
+    temp.addAll(modFilesFromSet.where((element) => element.modName == name));
+    modFilesInSetList.add(temp);
+  }
+
+  return modFilesInSetList.toList();
 }

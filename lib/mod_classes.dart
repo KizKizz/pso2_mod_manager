@@ -101,3 +101,59 @@ class ModFile extends ModCategory {
     return data;
   }
 }
+
+class ModSet {
+  ModSet(this.setName, this.numOfItems, this.modFiles, this.isApplied, this.filesInSetList);
+
+  String setName;
+  int numOfItems;
+  String modFiles;
+  bool isApplied;
+  List<ModFile> filesInSetList;
+
+  List<ModFile> getModFiles(String filesString) {
+    List<ModFile> returnList = [];
+    if (filesString.isNotEmpty) {
+      List<String> tempList = filesString.split('|');
+      for (var fileLoc in tempList) {
+        if (allModFiles.indexWhere((element) => element.icePath == fileLoc) != -1) {
+          returnList.add(allModFiles.firstWhere((element) => element.icePath == fileLoc));
+        } else {
+          removeNotFoundFiles(fileLoc);
+        }
+      }
+
+      List<String> modNamesList = [];
+      for (var modFile in returnList) {
+        modNamesList.add(modFile.modName);
+      }
+      modNamesList = modNamesList.toSet().toList();
+      numOfItems = modNamesList.length;
+    }
+
+    return returnList;
+  }
+
+  void removeNotFoundFiles(String removeItem) {
+    List<String> tempList = modFiles.split('|');
+    tempList.remove(removeItem);
+    modFiles = tempList.join('|');
+  }
+
+  fromJson(Map<String, dynamic> json) {
+    setName = json['setName'];
+    numOfItems = json['numOfItems'];
+    modFiles = json['modFiles'];
+    isApplied = json['isApplied'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['setName'] = setName;
+    data['numOfItems'] = numOfItems;
+    data['modFiles'] = modFiles;
+    data['isApplied'] = isApplied;
+
+    return data;
+  }
+}

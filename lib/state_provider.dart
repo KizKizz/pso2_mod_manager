@@ -5,6 +5,7 @@ class StateProvider with ChangeNotifier {
   bool _isMainBinFound = false;
   bool _isMainModManPathFound = false;
   bool _previewWindowVisible = false;
+  bool _setsWindowVisible = false;
   bool _addingBoxState = false;
   bool _isUpdateAvailable = false;
   int _cateListItemCount = 0;
@@ -15,6 +16,8 @@ class StateProvider with ChangeNotifier {
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
   bool get previewWindowVisible => _previewWindowVisible;
+  bool get setsWindowVisible => _setsWindowVisible;
+
   bool get addingBoxState => _addingBoxState;
   bool get isUpdateAvailable => _isUpdateAvailable;
   int get cateListItemCount => _cateListItemCount;
@@ -83,6 +86,16 @@ class StateProvider with ChangeNotifier {
 
   void previewWindowVisibleSetFalse() {
     _previewWindowVisible = false;
+    notifyListeners();
+  }
+
+  void setsWindowVisibleSetTrue() {
+    _setsWindowVisible = true;
+    notifyListeners();
+  }
+
+  void setsWindowVisibleSetFalse() {
+    _setsWindowVisible = false;
     notifyListeners();
   }
 
