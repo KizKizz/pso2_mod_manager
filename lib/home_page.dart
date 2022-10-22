@@ -2954,13 +2954,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: SizedBox(
                       width: 42,
                       child: MaterialButton(
-                        onPressed: null,
+                        onPressed: appliedModsList.isEmpty || setsDropDownList.isEmpty ? null : (() {}),
                         child: Row(
                           children: [
                             Icon(
                               Icons.list_alt_outlined,
                               size: 25,
-                              color: appliedModsList.isEmpty || setsList.isEmpty
+                              color: totalAppliedFiles < 1 || setsDropDownList.isEmpty
                                   ? Theme.of(context).disabledColor
                                   : MyApp.themeNotifier.value == ThemeMode.light
                                       ? Theme.of(context).primaryColorDark
@@ -3026,7 +3026,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           )))
                       .toList(),
                   value: setsSelectedDropDown,
-                  onChanged: appliedModsList.isEmpty || setsList.isEmpty
+                  onChanged: totalAppliedFiles < 1 || setsDropDownList.isEmpty
                       ? null
                       : (value) {
                           setsSelectedDropDown = value.toString();
@@ -3620,23 +3620,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 ),
                                                 child: setsList[index].numOfItems < 2
                                                     ? setsList[index].filesInSetList.length > 1
-                                                    ? Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} Files',
-                                                        style: const TextStyle(
-                                                          fontSize: 13,
-                                                        ))
+                                                        ? Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} Files',
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))
                                                         : Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} File',
-                                                        style: const TextStyle(
-                                                          fontSize: 13,
-                                                        ))
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))
                                                     : setsList[index].filesInSetList.length > 1
-                                                    ? Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} Files',
-                                                        style: const TextStyle(
-                                                          fontSize: 13,
-                                                        ))
-                                                    : Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} File',
-                                                        style: const TextStyle(
-                                                          fontSize: 13,
-                                                        ))),
+                                                        ? Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} Files',
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))
+                                                        : Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} File',
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))),
                                           ),
                                           if (setsList[index].filesInSetList.indexWhere((element) => element.isApplied) != -1)
                                             Padding(
@@ -3654,12 +3654,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                             ),
                                                             child: setsList[index].filesInSetList.where((element) => element.isApplied).length > 1
-                                                            ? Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} Files Applied',
-                                                                style:
-                                                                    TextStyle(fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))
-                                                              : Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} File Applied',
-                                                                style:
-                                                                    TextStyle(fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))),
+                                                                ? Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} Files Applied',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))
+                                                                : Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} File Applied',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))),
                                                       )
                                                     : const SizedBox()),
                                         ],
