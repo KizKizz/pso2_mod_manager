@@ -628,6 +628,7 @@ void modsRemover(List<ModFile> modsList) {
 Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XFile? itemIcon, String? selectedCategoryName, String? newItemName, String? newModName) async {
   final categoryName = selectedCategoryName;
   final catePath = cateList.firstWhere((element) => element.categoryName == categoryName).categoryPath;
+  String finalItemName = '';
   bool isFilesFound = false;
   for (var xFile in newItemDragDropList) {
     if (!Directory(xFile.path).existsSync()) {
@@ -655,29 +656,53 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                 String finalTailPath = fileTailPath.join(s);
                 if (newItemName != null) {
                   //Item suffix
-                  if (categoryName == 'Basewears' && !xFile.name.contains('[Ba]')) {
-                    if (newModName != null) {
-                      newPath += '$s$newItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                  if (categoryName == 'Basewears') {
+                    if (newItemName.contains('[Ba]')) {
+                      finalItemName = newItemName.replaceAll('[Ba]', '');
+                      finalItemName = finalItemName.trim();
                     } else {
-                      newPath += '$s$newItemName [Ba]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
                     }
-                  } else if (categoryName == 'Innerwears' && !xFile.name.contains('[In]')) {
                     if (newModName != null) {
-                      newPath += '$s$newItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
                     } else {
-                      newPath += '$s$newItemName [In]$s${xFile.name}$s$finalTailPath';
+                      newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
                     }
-                  } else if (categoryName == 'Outerwears' && !xFile.name.contains('[Ou]')) {
-                    if (newModName != null) {
-                      newPath += '$s$newItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                  } else if (categoryName == 'Innerwears') {
+                    if (newItemName.contains('[In]')) {
+                      finalItemName = newItemName.replaceAll('[In]', '');
+                      finalItemName = finalItemName.trim();
                     } else {
-                      newPath += '$s$newItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
                     }
-                  } else if (categoryName == 'Setwears' && !xFile.name.contains('[Se]')) {
                     if (newModName != null) {
-                      newPath += '$s$newItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
                     } else {
-                      newPath += '$s$newItemName [Se]$s${xFile.name}$s$finalTailPath';
+                      newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Outerwears') {
+                    if (newItemName.contains('[Ou]')) {
+                      finalItemName = newItemName.replaceAll('[Ou]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Setwears') {
+                    if (newItemName.contains('[Se]')) {
+                      finalItemName = newItemName.replaceAll('[Se]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
                     }
                   } else {
                     if (newModName != null) {
@@ -705,29 +730,53 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
             String newPath = catePath;
             if (newItemName != null) {
               //Item suffix
-              if (categoryName == 'Basewears' && !newItemName.contains('[Ba]')) {
-                if (newModName != null) {
-                  newPath += '$s$newItemName [Ba]$s$newModName$s${xFile.name}';
+              if (categoryName == 'Basewears') {
+                if (newItemName.contains('[Ba]')) {
+                  finalItemName = newItemName.replaceAll('[Ba]', '');
+                  finalItemName = finalItemName.trim();
                 } else {
-                  newPath += '$s$newItemName [Ba]${s}_$newItemName$s${xFile.name}';
+                      finalItemName = newItemName.trim();
+                    }
+                if (newModName != null) {
+                  newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}';
+                } else {
+                  newPath += '$s$finalItemName [Ba]${s}_$newItemName$s${xFile.name}';
                 }
-              } else if (categoryName == 'Innerwears' && !newItemName.contains('[In]')) {
-                if (newModName != null) {
-                  newPath += '$s$newItemName [In]$s$newModName$s${xFile.name}';
+              } else if (categoryName == 'Innerwears') {
+                if (newItemName.contains('[In]')) {
+                  finalItemName = newItemName.replaceAll('[In]', '');
+                  finalItemName = finalItemName.trim();
                 } else {
-                  newPath += '$s$newItemName [In]${s}_$newItemName$s${xFile.name}';
+                      finalItemName = newItemName.trim();
+                    }
+                if (newModName != null) {
+                  newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}';
+                } else {
+                  newPath += '$s$finalItemName [In]${s}_$newItemName$s${xFile.name}';
                 }
-              } else if (categoryName == 'Outerwears' && !newItemName.contains('[Ou]')) {
-                if (newModName != null) {
-                  newPath += '$s$newItemName [Ou]$s$newModName$s${xFile.name}';
+              } else if (categoryName == 'Outerwears') {
+                if (newItemName.contains('[Ou]')) {
+                  finalItemName = newItemName.replaceAll('[Ou]', '');
+                  finalItemName = finalItemName.trim();
                 } else {
-                  newPath += '$s$newItemName [Ou]${s}_$newItemName$s${xFile.name}';
+                      finalItemName = newItemName.trim();
+                    }
+                if (newModName != null) {
+                  newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}';
+                } else {
+                  newPath += '$s$finalItemName [Ou]${s}_$newItemName$s${xFile.name}';
                 }
-              } else if (categoryName == 'Setwears' && !newItemName.contains('[Se]')) {
-                if (newModName != null) {
-                  newPath += '$s$newItemName [Se]$s$newModName$s${xFile.name}';
+              } else if (categoryName == 'Setwears') {
+                if (newItemName.contains('[Se]')) {
+                  finalItemName = newItemName.replaceAll('[Se]', '');
+                  finalItemName = finalItemName.trim();
                 } else {
-                  newPath += '$s$newItemName [Se]${s}_$newItemName$s${xFile.name}';
+                      finalItemName = newItemName.trim();
+                    }
+                if (newModName != null) {
+                  newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}';
+                } else {
+                  newPath += '$s$finalItemName [Se]${s}_$newItemName$s${xFile.name}';
                 }
               } else {
                 if (newModName != null) {
@@ -754,29 +803,53 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   String finalTailPath = fileTailPath.join(s);
                   if (newItemName != null) {
                     //Item suffix
-                    if (categoryName == 'Basewears' && !newItemName.contains('[Ba]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    if (categoryName == 'Basewears') {
+                      if (newItemName.contains('[Ba]')) {
+                        finalItemName = newItemName.replaceAll('[Ba]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Ba]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Innerwears' && !newItemName.contains('[In]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Innerwears') {
+                      if (newItemName.contains('[In]')) {
+                        finalItemName = newItemName.replaceAll('[In]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [In]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Outerwears' && !newItemName.contains('[Ou]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Outerwears') {
+                      if (newItemName.contains('[Ou]')) {
+                        finalItemName = newItemName.replaceAll('[Ou]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Setwears' && !newItemName.contains('[Se]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Setwears') {
+                      if (newItemName.contains('[Se]')) {
+                        finalItemName = newItemName.replaceAll('[Se]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Se]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
                       }
                     } else {
                       if (newModName != null) {
@@ -790,29 +863,53 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   String finalTailPath = fileTailPath.join(s);
                   if (newItemName != null) {
                     //Item suffix
-                    if (categoryName == 'Basewears' && !newItemName.contains('[Ba]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    if (categoryName == 'Basewears') {
+                      if (newItemName.contains('[Ba]')) {
+                        finalItemName = newItemName.replaceAll('[Ba]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Ba]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Innerwears' && !newItemName.contains('[In]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Innerwears') {
+                      if (newItemName.contains('[In]')) {
+                        finalItemName = newItemName.replaceAll('[In]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [In]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Outerwears' && !newItemName.contains('[Ou]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Outerwears') {
+                      if (newItemName.contains('[Ou]')) {
+                        finalItemName = newItemName.replaceAll('[Ou]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
                       }
-                    } else if (categoryName == 'Setwears' && !newItemName.contains('[Se]')) {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else if (categoryName == 'Setwears') {
+                      if (newItemName.contains('[Se]')) {
+                        finalItemName = newItemName.replaceAll('[Se]', '');
+                        finalItemName = finalItemName.trim();
                       } else {
-                        newPath += '$s$newItemName [Se]$s${xFile.name}$s$finalTailPath';
+                      finalItemName = newItemName.trim();
+                    }
+                      if (newModName != null) {
+                        newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                      } else {
+                        newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
                       }
                     } else {
                       if (newModName != null) {

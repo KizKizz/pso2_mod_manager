@@ -1,8 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "description": [
-        "New feature: Mod sets - Save all current applied mods to a set to apply them later, just like in-game 'Looks' feature"
+        "Grouped Mods, Backups, Deleted Items buttons together",
+        "Fixed some bugs in item adder"
     ],
     "windows_file": "",
     "linux_file": ""
