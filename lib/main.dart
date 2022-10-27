@@ -499,34 +499,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             ),
                           ),
 
-                          //deleted items
-                          // Tooltip(
-                          //   message: 'Open Deleted Items Folder',
-                          //   height: 25,
-                          //   textStyle: TextStyle(
-                          //       fontSize: 15,
-                          //       color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: MaterialButton(
-                          //     onPressed: (() async {
-                          //       await launchUrl(
-                          //           Uri.parse('file:$deletedItemsPath'));
-                          //     }),
-                          //     child: Row(
-                          //       children: const [
-                          //         Icon(
-                          //           Icons.delete_rounded,
-                          //           size: 18,
-                          //         ),
-                          //         SizedBox(width: 2.5),
-                          //         Text('Deleted Items',
-                          //             style: TextStyle(
-                          //                 fontWeight: FontWeight.w400))
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-
                           //Checksum
                           Tooltip(
                             message: 'Open Checksum Folder',
@@ -656,62 +628,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               ),
                             ),
                           ),
-
-                          //Backup
-                          // Tooltip(
-                          //   message: 'Open Backup Folder',
-                          //   height: 25,
-                          //   textStyle: TextStyle(
-                          //       fontSize: 15,
-                          //       color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: MaterialButton(
-                          //     //visualDensity: VisualDensity.compact,
-                          //     onPressed: (() async {
-                          //       await launchUrl(
-                          //           Uri.parse('file:$backupDirPath'));
-                          //     }),
-                          //     child: Row(
-                          //       children: const [
-                          //         Icon(
-                          //           Icons.backup_table,
-                          //           size: 18,
-                          //         ),
-                          //         SizedBox(width: 2.5),
-                          //         Text('Backups',
-                          //             style: TextStyle(
-                          //                 fontWeight: FontWeight.w400))
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-
-                          //Mod
-                          // Tooltip(
-                          //   message: 'Open Mods Folder',
-                          //   height: 25,
-                          //   textStyle: TextStyle(
-                          //       fontSize: 15,
-                          //       color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: MaterialButton(
-                          //     onPressed: (() async {
-                          //       await launchUrl(Uri.parse('file:$modsDirPath'));
-                          //     }),
-                          //     child: Row(
-                          //       children: const [
-                          //         Icon(
-                          //           Icons.rule_folder_outlined,
-                          //           size: 18,
-                          //         ),
-                          //         SizedBox(width: 2.5),
-                          //         Text('Mods',
-                          //             style: TextStyle(
-                          //                 fontWeight: FontWeight.w400))
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
 
                           //Preview
                           Tooltip(
