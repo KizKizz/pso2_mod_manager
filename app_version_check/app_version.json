@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": [
-        "Grouped Mods, Backups, Deleted Items buttons together",
-        "Fixed some bugs in item adder"
+        "Fixed Win10 blank page part 2"
     ],
     "windows_file": "",
     "linux_file": ""

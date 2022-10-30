@@ -75,7 +75,7 @@ Future<void> main() async {
     //Temp fix for windows 10 white screen, remove when conflicts solved
     if (Platform.isWindows) {
       WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-        appWindow.size = initialSize + const Offset(0, 000.1);
+        appWindow.size = initialSize + const Offset(0, 1);
       });
     } else {
       appWindow.size = initialSize;

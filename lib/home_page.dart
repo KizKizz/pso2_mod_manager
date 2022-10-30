@@ -2029,7 +2029,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   _newSingleItemDragDropList,
                                                   _singleItemIcon,
                                                   selectedCategoryForSingleItem,
-                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text,
+                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text.trim(),
                                                   newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
                                               .then((_) {
                                             setState(() {
