@@ -511,3 +511,24 @@ Future<List<List<ModFile>>> getModFilesBySet(String modSetList) async {
 
   return modFilesInSetList.toList();
 }
+
+//Language Loader
+Future<List<Translation>> translationLoader() async {
+  List<Translation> langList = [];
+  void convertData(var jsonResponse) {
+    for (var b in jsonResponse) {
+      Translation translation = Translation(
+        b['langInitial'],
+        b['langFilePath'],
+        b['selected'],
+      );
+      langList.add(translation);
+    }
+  }
+
+  if (langList.isEmpty && File(langSettingsPath).readAsStringSync().isNotEmpty) {
+    convertData(jsonDecode(File(langSettingsPath).readAsStringSync()));
+  }
+
+  return langList;
+}

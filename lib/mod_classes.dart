@@ -157,3 +157,26 @@ class ModSet {
     return data;
   }
 }
+
+class Translation {
+  Translation(this.langInitial, this.langFilePath, this.selected);
+
+  String langInitial;
+  String langFilePath;
+  bool selected;
+
+  fromJson(Map<String, dynamic> json) {
+    langInitial = json['langInitial'];
+    langFilePath = json['langFilePath'];
+    selected = json['selected'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['langInitial'] = langInitial;
+    data['langFilePath'] = langFilePath;
+    data['selected'] = selected;
+
+    return data;
+  }
+}

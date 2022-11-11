@@ -891,7 +891,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       popupHeight += 24;
                                                     }
                                                     String stillApplied = stillAppliedList.join('\n');
-                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unapply these mods first:\n\n$stillApplied',
                                                         false, cateList[index], cateList[index].itemNames[i], []);
                                                   }
                                                 });
@@ -1305,7 +1305,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         context,
                                                         popupHeight,
                                                         'Delete Item',
-                                                        'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Unapply these mods first:\n\n$stillApplied',
                                                         false,
                                                         cateListSearchResult[index],
                                                         cateListSearchResult[index].itemNames[i], []);
@@ -2030,7 +2030,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   _singleItemIcon,
                                                   selectedCategoryForSingleItem,
                                                   newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text.trim(),
-                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
+                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text.trim())
                                               .then((_) {
                                             setState(() {
                                               //setstate to refresh list
@@ -2394,7 +2394,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             modFilesList[index].first.iceParent,
                                                                             modFilesList[index].first.modName, []);
                                                                       } else {
-                                                                        List<ModFile> tempList = cateList[index]
+                                                                        List<ModFile> tempList = cateList[cateList.indexWhere((element) => element.categoryName == modFilesList[index].first.categoryName)]
                                                                             .allModFiles
                                                                             .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
                                                                             .toList();
@@ -2409,7 +2409,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             context,
                                                                             popupHeight,
                                                                             'Delete Mod',
-                                                                            'Cannot delete "$modsViewAppBarName ${modFilesList[index].first.iceParent}". Unaplly these files first:\n\n$stillApplied',
+                                                                            'Cannot delete "$modsViewAppBarName ${modFilesList[index].first.iceParent}". Unapply these files first:\n\n$stillApplied',
                                                                             false,
                                                                             modFilesList[index].first.modPath,
                                                                             modFilesList[index].first.iceParent,
