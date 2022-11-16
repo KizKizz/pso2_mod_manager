@@ -9,6 +9,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +38,11 @@ String checksumDirPath = '';
 String modSettingsPath = '';
 String modSetsSettingsPath = '';
 String deletedItemsPath = '';
+String curSelectedLangPath = '';
 //String languageDirPath = '${Directory.current.path}${s}Language$s';
+TranslationText? curLangText;
 String langSettingsPath = '';
-List<Translation> langList = [];
+List<TranslationLanguage> langList = [];
 List<String> langDropDownList = [];
 String langDropDownSelected = '';
 String s = '/';
@@ -53,6 +56,7 @@ Future? filesData;
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();
+TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
 
 Future<void> main() async {
@@ -274,8 +278,45 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         langDropDownList.add(lang.langInitial);
         if (lang.selected) {
           langDropDownSelected = lang.langInitial;
+          curSelectedLangPath = lang.langFilePath;
         }
       }
+    }
+
+    if (curLangText == null) {
+      convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
+    }
+  }
+
+  void convertLangTextData(var jsonResponse) {
+    for (var b in jsonResponse) {
+      TranslationText translation = TranslationText(
+        b['pathsReselectBtnText'],
+        b['foldersBtnText'],
+        b['modsFolderBtnText'],
+        b['backupFolderBtnText'],
+        b['deletedItemsBtnText'],
+        b['checksumBtnText'],
+        b['modSetsBtnText'],
+        b['previewBtnText'],
+        b['lightModeBtnText'],
+        b['darkModeBtnText'],
+        b['pathsReselectTooltipText'],
+        b['foldersTooltipText'],
+        b['modsFolderTooltipText'],
+        b['modSetsTooltipText'],
+        b['previewTooltipText'],
+        b['lightModeTooltipText'],
+        b['darkModeTooltipText'],
+        b['languageTooltipText'],
+        b['itemsHeaderText'],
+        b['availableModsHeaderText'],
+        b['previewHeaderText'],
+        b['appliedModsHeadersText'],
+        b['setsHeaderText'],
+        b['modsInSetHeaderText'],
+      );
+      curLangText = translation;
     }
   }
 
@@ -619,81 +660,170 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             waitDuration: const Duration(seconds: 1),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5),
-                              child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2(
-                                customButton: AbsorbPointer(
-                                  absorbing: true,
-                                  child: SizedBox(
-                                    width: 34,
-                                    child: MaterialButton(
-                                      onPressed: (() {}),
-                                      child: Text(langDropDownSelected),
+                              child: InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: const Text("Add a new language"),
+                                      content: SizedBox(
+                                        height: 110,
+                                        width: 300,
+                                        child: Column(
+                                          children: [
+                                            const Text('Enter new language initial:\n(2 characters, ex: EN for English)'),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                height: 50,
+                                                width: 60,
+                                                child: TextFormField(
+                                                  inputFormatters: [UpperCaseTextFormatter()],
+                                                  controller: newLangTextController,
+                                                  maxLines: 1,
+                                                  maxLength: 2,
+                                                  style: const TextStyle(fontSize: 15),
+                                                  decoration: const InputDecoration(
+                                                    contentPadding: EdgeInsets.only(left: 10, top: 10),
+                                                    //hintText: '',
+                                                    border: OutlineInputBorder(),
+                                                    //isDense: true,
+                                                  ),
+                                                  validator: (value) {
+                                                    if (value == null || value.isEmpty) {
+                                                      return 'Language initial can\'t be empty';
+                                                    }
+                                                    if (langDropDownList.indexWhere((e) => e == value) != -1) {
+                                                      return 'Language initial already exists';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  onChanged: (text) {
+                                                    setState(() {
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text("Cancel"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
+                                            TranslationText newText = TranslationText('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+                                            if (!File(newLangPath).existsSync()) {
+                                              await File(newLangPath).create(recursive: true);
+                                            }
+                                            TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                            langList.add(newLang);
+                                            langList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
+                                            langDropDownList.add(newLangTextController.text.toUpperCase());
+                                            newLangTextController.clear();
+                                            //Json Write
+                                            [newText].map((translationText) => translationText.toJson()).toList();
+                                            File(newLangPath).writeAsStringSync(json.encode([newText]));
+                                            //Json Write
+                                            langList.map((translation) => translation.toJson()).toList();
+                                            File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                            setState(() {});
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text("Add"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: DropdownButtonHideUnderline(
+                                    child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: SizedBox(
+                                      width: 34,
+                                      child: MaterialButton(
+                                        onPressed: (() {}),
+                                        child: Text(langDropDownSelected),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                ),
-                                buttonDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                                isDense: true,
-                                dropdownElevation: 3,
-                                dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
-                                //dropdownWidth: 250,
-                                //offset: const Offset(-130, 0),
-                                iconSize: 15,
-                                itemHeight: 20,
-                                itemPadding: const EdgeInsets.symmetric(horizontal: 5),
-                                items: langDropDownList
-                                    .map((item) => DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.only(bottom: 3),
-                                              child: Text(
-                                                item,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  //fontWeight: FontWeight.bold,
-                                                  //color: Colors.white,
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                  ),
+                                  buttonDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  isDense: true,
+                                  dropdownElevation: 3,
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
+                                  //dropdownWidth: 250,
+                                  //offset: const Offset(-130, 0),
+                                  iconSize: 15,
+                                  itemHeight: 20,
+                                  itemPadding: const EdgeInsets.symmetric(horizontal: 5),
+                                  items: langDropDownList
+                                      .map((item) => DropdownMenuItem<String>(
+                                          value: item,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.only(bottom: 3),
+                                                child: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    //fontWeight: FontWeight.bold,
+                                                    //color: Colors.white,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            )
-                                          ],
-                                        )))
-                                    .toList(),
-                                value: langDropDownSelected,
-                                onChanged: (value) {
-                                  langDropDownSelected = value.toString();
-                                  for (var lang in langList) {
-                                    if (lang.langInitial == value) {
-                                      lang.selected = true;
-                                    } else {
-                                      lang.selected = false;
+                                              )
+                                            ],
+                                          )))
+                                      .toList(),
+                                  value: langDropDownSelected,
+                                  onChanged: (value) {
+                                    langDropDownSelected = value.toString();
+                                    for (var lang in langList) {
+                                      if (lang.langInitial == value) {
+                                        lang.selected = true;
+                                        curSelectedLangPath = lang.langFilePath;
+                                        convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
+                                      } else {
+                                        lang.selected = false;
+                                      }
                                     }
-                                  }
-                                  // List<String> appliedList = [];
-                                  // for (var list in appliedModsList) {
-                                  //   for (var file in list) {
-                                  //     appliedList.add(file.icePath);
-                                  //   }
-                                  // }
-                                  // final setIndex = setsList.indexWhere((element) => element.setName == value.toString());
-                                  // setsList[setIndex].modFiles = appliedList.join('|');
-                                  // setsList[setIndex].numOfItems = totalAppliedItems;
-                                  // setsList[setIndex].isApplied = true;
-                                  // setsList[setIndex].filesInSetList = setsList[setIndex].getModFiles(setsList[setIndex].modFiles);
-                                  //Json Write
-                                  langList.map((translation) => translation.toJson()).toList();
-                                  File(langSettingsPath).writeAsStringSync(json.encode(langList));
-                                  setState(() {});
-                                },
-                              )),
+                                    // List<String> appliedList = [];
+                                    // for (var list in appliedModsList) {
+                                    //   for (var file in list) {
+                                    //     appliedList.add(file.icePath);
+                                    //   }
+                                    // }
+                                    // final setIndex = setsList.indexWhere((element) => element.setName == value.toString());
+                                    // setsList[setIndex].modFiles = appliedList.join('|');
+                                    // setsList[setIndex].numOfItems = totalAppliedItems;
+                                    // setsList[setIndex].isApplied = true;
+                                    // setsList[setIndex].filesInSetList = setsList[setIndex].getModFiles(setsList[setIndex].modFiles);
+                                    //Json Write
+                                    langList.map((translation) => translation.toJson()).toList();
+                                    File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                    setState(() {});
+                                    refreshMain();
+                                  },
+                                )),
+                              ),
                             ),
                           ),
                         ],
@@ -841,5 +971,15 @@ class MenuItems {
         await launchUrl(Uri.parse('file:$deletedItemsPath'));
         break;
     }
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
   }
 }

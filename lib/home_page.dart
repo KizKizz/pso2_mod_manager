@@ -3468,7 +3468,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget setList() {
     return Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
       AppBar(
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Sets')),
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.setsHeaderText)),
         backgroundColor: Theme.of(context).canvasColor,
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -3885,7 +3885,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: modsSetAppBarName.isEmpty ? const Text('Mods In Set') : Text('Mods in $modsSetAppBarName')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: modsSetAppBarName.isEmpty ? Text(curLangText!.modsInSetHeaderText) : Text('Mods in $modsSetAppBarName')),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,

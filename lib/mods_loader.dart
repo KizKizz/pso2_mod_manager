@@ -513,11 +513,11 @@ Future<List<List<ModFile>>> getModFilesBySet(String modSetList) async {
 }
 
 //Language Loader
-Future<List<Translation>> translationLoader() async {
-  List<Translation> langList = [];
+Future<List<TranslationLanguage>> translationLoader() async {
+  List<TranslationLanguage> langList = [];
   void convertData(var jsonResponse) {
     for (var b in jsonResponse) {
-      Translation translation = Translation(
+      TranslationLanguage translation = TranslationLanguage(
         b['langInitial'],
         b['langFilePath'],
         b['selected'],
