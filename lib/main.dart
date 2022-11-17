@@ -794,7 +794,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           )))
                                       .toList(),
                                   value: langDropDownSelected,
-                                  onChanged: (value) {
+                                  onChanged: (value) async {
                                     langDropDownSelected = value.toString();
                                     for (var lang in langList) {
                                       if (lang.langInitial == value) {
@@ -805,22 +805,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                         lang.selected = false;
                                       }
                                     }
-                                    // List<String> appliedList = [];
-                                    // for (var list in appliedModsList) {
-                                    //   for (var file in list) {
-                                    //     appliedList.add(file.icePath);
-                                    //   }
-                                    // }
-                                    // final setIndex = setsList.indexWhere((element) => element.setName == value.toString());
-                                    // setsList[setIndex].modFiles = appliedList.join('|');
-                                    // setsList[setIndex].numOfItems = totalAppliedItems;
-                                    // setsList[setIndex].isApplied = true;
-                                    // setsList[setIndex].filesInSetList = setsList[setIndex].getModFiles(setsList[setIndex].modFiles);
                                     //Json Write
                                     langList.map((translation) => translation.toJson()).toList();
                                     File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
                                     setState(() {});
-                                    refreshMain();
+                                    await new Future.delayed(const Duration(seconds : 2));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
+                                    setState(() {
+                                      
+                                    });
                                   },
                                 )),
                               ),
@@ -895,17 +889,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
             context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
                 ? const DataLoadingPage()
-                : Column(
-                    children: const [
-                      Text(
-                        'Waiting for user\'s action',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      CircularProgressIndicator(),
-                    ],
+                : Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Waiting for user\'s action',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CircularProgressIndicator(),
+                      ],
+                    ),
                   ),
           ],
         ),

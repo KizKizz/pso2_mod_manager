@@ -212,7 +212,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 highlightedColor: Theme.of(context).primaryColor)),
         child: mainViews);
 
-    return Expanded(child: viewsTheme);
+    return Expanded(
+        child: context.watch<StateProvider>().languageReload
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Reloading',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CircularProgressIndicator(),
+                ],
+              )
+            : viewsTheme);
   }
 
   Widget itemsView() {
@@ -227,7 +243,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         AppBar(
           automaticallyImplyLeading: false,
-          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Items')),
+          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.itemsHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -695,60 +711,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         ),
                                       ),
-
-                                    // if (cateList[index].categoryName != 'Favorites')
-                                    // Tooltip(
-                                    //     message: 'Remove ${cateList[index].itemNames[i]}',
-                                    //     height: 25,
-                                    //     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                    //     waitDuration: const Duration(seconds: 2),
-                                    //     child: SizedBox(
-                                    //       width: 36,
-                                    //       height: 50,
-                                    //       child: MaterialButton(
-                                    //           onPressed: (() {
-                                    //             setState(() {
-                                    //               if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
-                                    //                 itemDeleteDialog(
-                                    //                         context,
-                                    //                         100,
-                                    //                         'Remove Item',
-                                    //                         'Remove "${cateList[index].itemNames[i]}" and move it to Deleted Items folder?\nThis will also remove all mods in this item',
-                                    //                         true,
-                                    //                         cateList[index],
-                                    //                         cateList[index].itemNames[i],
-                                    //                         cateList[index].allModFiles)
-                                    //                     .then((_) {
-                                    //                   setState(() {
-                                    //                     modsViewAppBarName = 'Available Mods';
-                                    //                     isModSelected = false;
-                                    //                     //setstate
-                                    //                   });
-                                    //                 });
-                                    //               } else {
-                                    //                 List<ModFile> tempList =
-                                    //                     cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
-                                    //                 List<String> stillAppliedList = [];
-                                    //                 double popupHeight = 40;
-                                    //                 for (var element in tempList) {
-                                    //                   stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                                    //                   popupHeight += 24;
-                                    //                 }
-                                    //                 String stillApplied = stillAppliedList.join('\n');
-                                    //                 itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                    //                     false, cateList[index], cateList[index].itemNames[i], []);
-                                    //               }
-                                    //             });
-                                    //           }),
-                                    //           child: Row(
-                                    //             children: const [
-                                    //               Icon(
-                                    //                 Icons.delete_forever_outlined,
-                                    //                 size: 20,
-                                    //               )
-                                    //             ],
-                                    //           )),
-                                    //     )),
                                   ],
                                 ),
                                 onTap: () {
@@ -2394,10 +2356,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             modFilesList[index].first.iceParent,
                                                                             modFilesList[index].first.modName, []);
                                                                       } else {
-                                                                        List<ModFile> tempList = cateList[cateList.indexWhere((element) => element.categoryName == modFilesList[index].first.categoryName)]
-                                                                            .allModFiles
-                                                                            .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
-                                                                            .toList();
+                                                                        List<ModFile> tempList =
+                                                                            cateList[cateList.indexWhere((element) => element.categoryName == modFilesList[index].first.categoryName)]
+                                                                                .allModFiles
+                                                                                .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
+                                                                                .toList();
                                                                         List<String> stillAppliedList = [];
                                                                         double popupHeight = 40;
                                                                         for (var element in tempList) {
