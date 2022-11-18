@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/ui_text.dart';
 
 import 'mod_classes.dart';
 
