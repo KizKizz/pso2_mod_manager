@@ -2031,7 +2031,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               padding: const EdgeInsets.only(bottom: 10),
               child: Column(
                 children: [
-                  modsViewAppBarName.isEmpty ? const Text('Available Mods') : Text(modsViewAppBarName),
+                  modsViewAppBarName.isEmpty ? Text(curLangText!.availableModsHeaderText) : Text(modsViewAppBarName),
                 ],
               )),
           backgroundColor: Theme.of(context).canvasColor,
@@ -2731,7 +2731,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         //if (context.watch<StateProvider>().previewWindowVisible)
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Preview')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.previewHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -2879,7 +2879,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Applied Mods')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.appliedModsHeadersText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,

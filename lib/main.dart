@@ -47,6 +47,7 @@ String curLanguageDirPath = '';
 List<TranslationLanguage> langList = [];
 List<String> langDropDownList = [];
 String langDropDownSelected = '';
+List<String> topBtnMenuItems = [];
 String s = '/';
 String appVersion = '';
 String? checkSumFilePath;
@@ -251,13 +252,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
       if (!File(langSettingsPath).existsSync()) {
         await File(langSettingsPath).create(recursive: true);
-        TranslationLanguage newLang = TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
-        langList.add(newLang);
+        TranslationLanguage newENLang = TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
+        await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
+        TranslationText newEN = defaultUILangLoader();
+        //Json Write
+        [newEN].map((translationText) => translationText.toJson()).toList();
+        File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
+        langList.add(newENLang);
         langDropDownList.add(newLangTextController.text.toUpperCase());
         //Json Write
         langList.map((translation) => translation.toJson()).toList();
         File(langSettingsPath).writeAsStringSync(json.encode(langList));
-
         langList = await translationLoader();
         for (var lang in langList) {
           langDropDownList.add(lang.langInitial);
@@ -316,6 +321,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     if (curLangText == null) {
       convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
     }
+
+    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
   }
 
   void getDirPath() {
@@ -334,8 +341,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         width: 1,
         child: curLangText == null
             ? SizedBox(
-              width: windowsWidth,
-              child: Column(
+                width: windowsWidth,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
@@ -349,7 +356,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                     CircularProgressIndicator(),
                   ],
                 ),
-            )
+              )
             : Column(
                 children: [
                   WindowTitleBarBox(
@@ -375,6 +382,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   )),
                             )),
                           ),
+
                           //Buttons
                           Padding(
                             padding: const EdgeInsets.only(bottom: 9),
@@ -382,7 +390,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               children: [
                                 //Path menu
                                 Tooltip(
-                                  message: 'Reselect \'pso2_bin\' Folder and Mod Manager Folder Path',
+                                  message: curLangText!.pathsReselectTooltipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -435,7 +443,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                                 //Open Folder menu
                                 Tooltip(
-                                  message: 'Open Mods, Backups, Deleted Items',
+                                  message: curLangText!.foldersTooltipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -460,16 +468,42 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           ),
                                         ),
                                         isDense: true,
-                                        items: [
-                                          ...MenuItems.openFolderItems.map(
-                                            (item) => DropdownMenuItem<MenuItem>(
-                                              value: item,
-                                              child: MenuItems.buildItem(context, item),
-                                            ),
-                                          ),
-                                        ],
-                                        onChanged: (value) {
-                                          MenuItems.onChanged(context, value as MenuItem);
+                                        items: topBtnMenuItems
+                                            .map((item) => DropdownMenuItem<String>(
+                                                value: item,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
+                                                    if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
+                                                    if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets.only(bottom: 3),
+                                                      child: Text(
+                                                        item,
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          //fontWeight: FontWeight.bold,
+                                                          //color: Colors.white,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    )
+                                                  ],
+                                                )))
+                                            .toList(),
+
+                                        onChanged: (value) async {
+                                          if (value == curLangText!.modsFolderBtnText) {
+                                            await launchUrl(Uri.parse('file:$modsDirPath'));
+                                          } else if (value == curLangText!.backupFolderBtnText) {
+                                            await launchUrl(Uri.parse('file:$backupDirPath'));
+                                          } else if (value == curLangText!.deletedItemsBtnText) {
+                                            await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                                          }
                                         },
                                         itemHeight: 35,
                                         dropdownWidth: 130,
@@ -488,7 +522,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                                 //Checksum
                                 Tooltip(
-                                  message: 'Open Checksum Folder',
+                                  message: curLangText!.checksumToolTipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -514,13 +548,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     }),
                                     child: checkSumFilePath != null
                                         ? Row(
-                                            children: const [
-                                              Icon(
+                                            children: [
+                                              const Icon(
                                                 Icons.fingerprint,
                                                 size: 18,
                                               ),
-                                              SizedBox(width: 2.5),
-                                              Text('Checksum', style: TextStyle(fontWeight: FontWeight.w400))
+                                              const SizedBox(width: 2.5),
+                                              Text(curLangText!.checksumBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                             ],
                                           )
                                         : Row(
@@ -539,7 +573,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                                 //Mod sets
                                 Tooltip(
-                                  message: 'Manage Mod Sets',
+                                  message: curLangText!.modSetsTooltipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -574,8 +608,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               size: 18,
                                             ),
                                           const SizedBox(width: 2.5),
-                                          if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) const Text('Mod Sets', style: TextStyle(fontWeight: FontWeight.w400)),
-                                          if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) const Text('Mod List', style: TextStyle(fontWeight: FontWeight.w400))
+                                          if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                            Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                          if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                            Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                         ],
                                       ),
                                     ),
@@ -584,7 +620,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                                 //Preview
                                 Tooltip(
-                                  message: 'Show/Hide Preview Window',
+                                  message: curLangText!.previewTooltipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -608,7 +644,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           size: 18,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        const Text('Preview: ', style: TextStyle(fontWeight: FontWeight.w400)),
+                                        Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
                                         if (context.watch<StateProvider>().previewWindowVisible)
                                           SizedBox(
                                               width: 23,
@@ -626,51 +662,63 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                                 //Dark theme
                                 if (MyApp.themeNotifier.value == ThemeMode.dark)
-                                  SizedBox(
-                                    width: 70,
-                                    child: MaterialButton(
-                                      onPressed: (() async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        MyApp.themeNotifier.value = ThemeMode.light;
-                                        prefs.setBool('isDarkModeOn', false);
-                                        //setState(() {});
-                                      }),
-                                      child: Row(
-                                        children: const [
-                                          Icon(
-                                            Icons.light_mode_outlined,
-                                            size: 18,
-                                          ),
-                                          SizedBox(width: 2.5),
-                                          Text('Light', style: TextStyle(fontWeight: FontWeight.w400))
-                                        ],
+                                  Tooltip(
+                                    message: curLangText!.lightModeTooltipText,
+                                    height: 25,
+                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                    waitDuration: const Duration(seconds: 1),
+                                    child: SizedBox(
+                                      width: 70,
+                                      child: MaterialButton(
+                                        onPressed: (() async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          MyApp.themeNotifier.value = ThemeMode.light;
+                                          prefs.setBool('isDarkModeOn', false);
+                                          //setState(() {});
+                                        }),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.light_mode_outlined,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(width: 2.5),
+                                            Text(curLangText!.lightModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 if (MyApp.themeNotifier.value == ThemeMode.light)
-                                  SizedBox(
-                                    width: 70,
-                                    child: MaterialButton(
-                                      onPressed: (() async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        MyApp.themeNotifier.value = ThemeMode.dark;
-                                        prefs.setBool('isDarkModeOn', true);
-                                        //setState(() {});
-                                      }),
-                                      child: Row(
-                                        children: const [
-                                          Icon(
-                                            Icons.dark_mode_outlined,
-                                            size: 18,
-                                          ),
-                                          SizedBox(width: 2.5),
-                                          Text('Dark', style: TextStyle(fontWeight: FontWeight.w400))
-                                        ],
+                                  Tooltip(
+                                    message: curLangText!.darkModeTooltipText,
+                                    height: 25,
+                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                    waitDuration: const Duration(seconds: 1),
+                                    child: SizedBox(
+                                      width: 70,
+                                      child: MaterialButton(
+                                        onPressed: (() async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          MyApp.themeNotifier.value = ThemeMode.dark;
+                                          prefs.setBool('isDarkModeOn', true);
+                                          //setState(() {});
+                                        }),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.dark_mode_outlined,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(width: 2.5),
+                                            Text(curLangText!.darkModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 Tooltip(
-                                  message: 'Select Language',
+                                  message: curLangText!.languageTooltipText,
                                   height: 25,
                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                   waitDuration: const Duration(seconds: 1),
@@ -687,7 +735,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               width: 300,
                                               child: Column(
                                                 children: [
-                                                  const Text('Enter new language initial:\n(2 characters, ex: EN for English)'),
+                                                  const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: SizedBox(
@@ -737,7 +785,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               ElevatedButton(
                                                 onPressed: () async {
                                                   String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
-                                                  TranslationText newText = TranslationText('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+                                                  TranslationText newText = TranslationText('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
                                                   if (!File(newLangPath).existsSync()) {
                                                     await File(newLangPath).create(recursive: true);
                                                   }
@@ -821,6 +869,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               lang.selected = false;
                                             }
                                           }
+
+                                          topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+
                                           //Json Write
                                           langList.map((translation) => translation.toJson()).toList();
                                           File(langSettingsPath).writeAsStringSync(json.encode(langList));
@@ -941,11 +992,6 @@ class MenuItems {
   static const _binFolder = MenuItem(text: 'pso2_bin', icon: Icons.folder);
   static const modManFolder = MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
 
-  static const List<MenuItem> openFolderItems = [modsFolder, backupFolder, deletedItemsFolder];
-  static const modsFolder = MenuItem(text: 'Mods', icon: Icons.rule_folder_outlined);
-  static const backupFolder = MenuItem(text: 'Backups', icon: Icons.backup_table);
-  static const deletedItemsFolder = MenuItem(text: 'Deleted Items', icon: Icons.delete_rounded);
-
   static Widget buildItem(context, MenuItem item) {
     return Row(
       children: [
@@ -972,15 +1018,6 @@ class MenuItems {
         break;
       case MenuItems.modManFolder:
         mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
-        break;
-      case MenuItems.modsFolder:
-        await launchUrl(Uri.parse('file:$modsDirPath'));
-        break;
-      case MenuItems.backupFolder:
-        await launchUrl(Uri.parse('file:$backupDirPath'));
-        break;
-      case MenuItems.deletedItemsFolder:
-        await launchUrl(Uri.parse('file:$deletedItemsPath'));
         break;
     }
   }

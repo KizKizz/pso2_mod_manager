@@ -533,3 +533,38 @@ Future<List<TranslationLanguage>> translationLoader() async {
 
   return langList;
 }
+
+TranslationText defaultUILangLoader() {
+  return TranslationText(
+    //Header buttons
+      'Paths Reselect',
+      'Folders',
+      'Mods',
+      'Backups',
+      'Deleted Items',
+      'Checksum',
+      'Mod Sets',
+      'Mod List',
+      'Preview:',
+      'Light',
+      'Dark',
+
+      //Header buttons tooltips
+      'Reselect path for pso2_bin, Mod Manager folder',
+      'Open Mods, Backups, Deleted Items folder',
+      'modsFolderTooltipText',
+      'Open Checksum folder',
+      'Manage Mod Sets',
+      'Show/Hide Preview window',
+      'Switch to Dark theme',
+      'Switch to Light theme',
+      'Language select',
+
+      //Main Headers
+      'Items',
+      'Available Mods',
+      'Preview',
+      'Applied Mods',
+      'Sets',
+      'Mods in Set');
+}
