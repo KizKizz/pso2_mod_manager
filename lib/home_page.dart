@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     if (value != '') {
                       setState(() {
                         modFilesList.clear();
-                        modsViewAppBarName = 'Available Mods';
+                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                         isSearching = true;
                         cateListSearchResult = searchFilterResults(cateList, value);
                         searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       setState(() {
                         isSearching = false;
                         modFilesList.clear();
-                        modsViewAppBarName = 'Available Mods';
+                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                         cateListSearchResult = [];
                       });
                     }
@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.only(left: 10, top: 10),
                       border: const OutlineInputBorder(),
-                      hintText: 'Search',
+                      hintText: curLangText!.searchLabelText,
                       suffixIcon: searchBoxTextController.text == ''
                           ? null
                           : SizedBox(
@@ -301,7 +301,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           setState(() {
                                             searchBoxTextController.clear();
                                             modFilesList.clear();
-                                            modsViewAppBarName = 'Available Mods';
+                                            modsViewAppBarName = curLangText!.availableModsHeaderText;
                                             isSearching = false;
                                             searchBoxLeftPadding = 80;
                                           });
@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )),
           actions: [
             Tooltip(
-                message: 'Refresh List',
+                message: curLangText!.refreshBtnTootipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
 
                                   isModSelected = false;
-                                  modsViewAppBarName = 'Available Mods';
+                                  modsViewAppBarName = curLangText!.availableModsHeaderText;
                                   isRefreshing = true;
                                 });
                               }
@@ -417,7 +417,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       )),
                 )),
             Tooltip(
-                message: 'New Category',
+                message: curLangText!.newCatBtnTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -576,7 +576,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             children: [
                               if (cateList[index].categoryName != 'Favorites')
                                 Tooltip(
-                                    message: 'Delete ${cateList[index].categoryName}',
+                                    message: '${curLangText!.deleteBtnTooltipText} ${cateList[index].categoryName}',
                                     height: 25,
                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                     waitDuration: const Duration(seconds: 2),
@@ -667,7 +667,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateList[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -692,7 +692,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         width: 34,
                                         height: 50,
                                         child: Tooltip(
-                                          message: 'Remove "${cateList[index].itemNames[i]}" from favorites',
+                                          message: '${curLangText!.removeBtnTooltipText}"${cateList[index].itemNames[i]}" from favorites',
                                           height: 25,
                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                           waitDuration: const Duration(seconds: 1),
@@ -783,7 +783,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateList[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -804,7 +804,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         )),
                                     Tooltip(
-                                        message: 'Delete ${cateList[index].itemNames[i]}',
+                                        message: '${curLangText!.deleteBtnTooltipText}${cateList[index].itemNames[i]}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -826,7 +826,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             cateList[index].allModFiles)
                                                         .then((_) {
                                                       setState(() async {
-                                                        modsViewAppBarName = 'Available Mods';
+                                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                                         isModSelected = false;
                                                         modSetsListGet = getSetsList();
                                                         setsList = await modSetsListGet;
@@ -963,71 +963,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       border: Border.all(color: Theme.of(context).highlightColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
-                                    child: Text('${cateListSearchResult[index].numOfItems} Items',
+                                    child: Text('${cateListSearchResult[index].numOfItems}${curLangText!.itemsLabelText}',
                                         style: const TextStyle(
                                           fontSize: 13,
                                         ))),
                               ),
                             ],
                           ),
-                          // Row(
-                          //   children: [
-                          //     if (cateListSearchResult[index].categoryName != 'Favorites')
-                          //       Tooltip(
-                          //           message: 'Remove ${cateListSearchResult[index].categoryName}',
-                          //           height: 25,
-                          //           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          //           waitDuration: const Duration(seconds: 2),
-                          //           child: SizedBox(
-                          //             width: 40,
-                          //             height: 40,
-                          //             child: MaterialButton(
-                          //                 onPressed: (() {
-                          //                   setState(() {
-                          //                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
-                          //                       categoryDeleteDialog(
-                          //                               context,
-                          //                               100,
-                          //                               'Remove Category',
-                          //                               'Remove "${cateListSearchResult[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
-                          //                               true,
-                          //                               cateListSearchResult[index].categoryPath,
-                          //                               cateListSearchResult[index].allModFiles)
-                          //                           .then((_) {
-                          //                         setState(() {
-                          //                           //setstate to refresh list
-                          //                         });
-                          //                       });
-                          //                     } else {
-                          //                       List<ModFile> tempList = cateListSearchResult[index].allModFiles.where((element) => element.isApplied == true).toList();
-                          //                       List<String> stillAppliedList = [];
-                          //                       double popupHeight = 40;
-                          //                       for (var element in tempList) {
-                          //                         stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                          //                         popupHeight += 24;
-                          //                       }
-                          //                       String stillApplied = stillAppliedList.join('\n');
-                          //                       categoryDeleteDialog(
-                          //                           context,
-                          //                           popupHeight,
-                          //                           'Remove Category',
-                          //                           'Cannot remove "${cateListSearchResult[index].categoryName}". Unaplly these mods first:\n\n$stillApplied',
-                          //                           false,
-                          //                           cateListSearchResult[index].categoryPath, []);
-                          //                     }
-                          //                   });
-                          //                 }),
-                          //                 child: Row(
-                          //                   children: [
-                          //                     Icon(
-                          //                       Icons.delete_sweep_rounded,
-                          //                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                          //                     )
-                          //                   ],
-                          //                 )),
-                          //           )),
-                          //   ],
-                          // )
                         ],
                       ),
                       children: [
@@ -1067,7 +1009,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateListSearchResult[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1092,7 +1034,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         width: 34,
                                         height: 50,
                                         child: Tooltip(
-                                          message: 'Remove "${cateListSearchResult[index].itemNames[i]}" from favorites',
+                                          message: '${curLangText!.removeBtnTooltipText}"${cateListSearchResult[index].itemNames[i]}" from favorites',
                                           height: 25,
                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                           waitDuration: const Duration(seconds: 1),
@@ -1184,7 +1126,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateListSearchResult[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1205,7 +1147,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         )),
                                     Tooltip(
-                                        message: 'Delete ${cateListSearchResult[index].itemNames[i]}',
+                                        message: '${curLangText!.deleteBtnTooltipText}${cateListSearchResult[index].itemNames[i]}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1239,7 +1181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       curCate.allModFiles.removeWhere((element) => element.modName == curItem);
                                                       curCate.numOfItems--;
                                                       setState(() {
-                                                        modsViewAppBarName = 'Available Mods';
+                                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                                         isModSelected = false;
                                                         //setstate
                                                       });
@@ -1354,17 +1296,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       //maxLength: 100,
                       style: const TextStyle(fontSize: 15),
-                      decoration: const InputDecoration(
-                        labelText: 'New Category Name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: curLangText!.newCatNameLabelText,
+                        border: const OutlineInputBorder(),
                         isDense: true,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Category name can\'t be empty';
+                          return curLangText!.newCatNameEmptyErrorText;
                         }
                         if (cateList.indexWhere((e) => e.categoryName == value) != -1) {
-                          return 'Category name already exist';
+                          return curLangText!.newCatNameDupErrorText;
                         }
                         return null;
                       },
@@ -1404,7 +1346,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: const Text('Close')),
+                              child: Text(curLangText!.closeBtnText)),
                         ),
                       ),
                       Expanded(
@@ -1414,7 +1356,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               onPressed: (() {
                                 setState(() {
                                   modFilesList.clear();
-                                  modsViewAppBarName = 'Available Mods';
+                                  modsViewAppBarName = curLangText!.availableModsHeaderText;
                                   if (categoryFormKey.currentState!.validate()) {
                                     cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
                                     cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
@@ -1432,7 +1374,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: const Text('Add Category')),
+                              child: Text(curLangText!.addCatBtnText)),
                         ),
                       ),
                     ],
@@ -1464,14 +1406,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   labelColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                   controller: _itemAdderTabcontroller,
                   onTap: (index) {},
-                  tabs: const [
+                  tabs: [
                     Tab(
                       height: 25,
-                      text: 'Single Item',
+                      text: curLangText!.singleAddBtnText,
                     ),
                     Tab(
                       height: 25,
-                      text: 'Multiple Items',
+                      text: curLangText!.multiAddBtnText,
                     ),
                   ],
                 ),
@@ -1519,9 +1461,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       if (_newSingleItemDragDropList.isEmpty)
                                         Center(
                                             child: Column(
-                                          children: const [
-                                            Text("Drop Modded .ice Files And Folder(s)"),
-                                            Text('Here To Add'),
+                                          children: [
+                                            Text(curLangText!.singleDropBoxLabelText),
                                           ],
                                         )),
                                       if (_newSingleItemDragDropList.isNotEmpty)
@@ -1547,7 +1488,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
                               child: CustomDropdownButton2(
-                                hint: 'Select a Category',
+                                hint: curLangText!.addSelectCatLabelText,
                                 dropdownDecoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
                                   color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
@@ -1611,10 +1552,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           Center(
                                               child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            children: const [
-                                              Text('Drop Item\'s'),
-                                              Text('Icon Here'),
-                                              Text('(Optional)'),
+                                            children: [
+                                              Text(curLangText!.iconDropBoxLabelText)
                                             ],
                                           )),
                                         if (_singleItemIcon != null)
@@ -1678,9 +1617,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                           //maxLength: 100,
                                           style: const TextStyle(fontSize: 15),
-                                          decoration: const InputDecoration(
-                                            labelText: 'Item Name',
-                                            border: OutlineInputBorder(),
+                                          decoration: InputDecoration(
+                                            labelText: curLangText!.addItemNamLabelText,
+                                            border: const OutlineInputBorder(),
                                             isDense: true,
                                           ),
                                           validator: (value) {
@@ -1729,9 +1668,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                         //maxLength: 100,
                                         style: const TextStyle(fontSize: 15),
-                                        decoration: const InputDecoration(
-                                          labelText: 'Mod Name (Optional)',
-                                          border: OutlineInputBorder(),
+                                        decoration: InputDecoration(
+                                          labelText: curLangText!.addModNameLabelText,
+                                          border: const OutlineInputBorder(),
                                           isDense: true,
                                         ),
                                         onChanged: (text) {
@@ -1814,7 +1753,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      if (_newItemDragDropList.isEmpty) const Center(child: Text("Drop Modded Item Folder(s) Here To Add")),
+                                      if (_newItemDragDropList.isEmpty) Center(child: Text(curLangText!.multiDropBoxLabelText)),
                                       if (_newItemDragDropList.isNotEmpty)
                                         Expanded(
                                           child: SingleChildScrollView(
@@ -1845,7 +1784,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
                                   child: CustomDropdownButton2(
                                     key: _newItemDropdownKey,
-                                    hint: 'Select a Category',
+                                    hint: curLangText!.addSelectCatLabelText,
                                     dropdownDecoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
@@ -1968,7 +1907,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         //if (newMultipleItemsFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 1) {
                                         selectedIndex.fillRange(0, selectedIndex.length, -1);
                                         modFilesList.clear();
-                                        modsViewAppBarName = 'Available Mods';
+                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                         if (_itemAdderTabcontroller.index == 1) {
                                           isItemAddBtnClicked = true;
                                           dragDropFilesAdd(context, _newItemDragDropList, selectedCategoryForMutipleItems, newItemAddController.text.isEmpty ? null : newItemAddController.text)
@@ -2009,7 +1948,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   : null,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Add')],
+                                children: [Text(curLangText!.addBtnText)],
                               )),
                         ),
                       ),
@@ -2039,7 +1978,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           toolbarHeight: 30,
           actions: [
             Tooltip(
-                message: modsViewAppBarName == '' || modsViewAppBarName == 'Available Mods' ? 'Add Mods' : 'Add Mods To $modsViewAppBarName',
+                message: modsViewAppBarName == '' || modsViewAppBarName == curLangText!.availableModsHeaderText ? 'Add Mods' : 'Add Mods To $modsViewAppBarName',
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),

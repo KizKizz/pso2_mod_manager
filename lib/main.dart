@@ -495,7 +495,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                   ],
                                                 )))
                                             .toList(),
-
                                         onChanged: (value) async {
                                           if (value == curLangText!.modsFolderBtnText) {
                                             await launchUrl(Uri.parse('file:$modsDirPath'));
@@ -785,7 +784,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               ElevatedButton(
                                                 onPressed: () async {
                                                   String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
-                                                  TranslationText newText = TranslationText('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+                                                  TranslationText? newText;
                                                   if (!File(newLangPath).existsSync()) {
                                                     await File(newLangPath).create(recursive: true);
                                                   }
@@ -795,7 +794,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                   langDropDownList.add(newLangTextController.text.toUpperCase());
                                                   newLangTextController.clear();
                                                   //Json Write
-                                                  [newText].map((translationText) => translationText.toJson()).toList();
+                                                  [newText].map((translationText) => translationText!.toJson()).toList();
                                                   File(newLangPath).writeAsStringSync(json.encode([newText]));
                                                   //Json Write
                                                   langList.map((translation) => translation.toJson()).toList();
