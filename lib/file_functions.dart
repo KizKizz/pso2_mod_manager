@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
@@ -629,100 +630,101 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
   final categoryName = selectedCategoryName;
   final catePath = cateList.firstWhere((element) => element.categoryName == categoryName).categoryPath;
   String finalItemName = '';
-  bool isFilesFound = false;
-  for (var xFile in newItemDragDropList) {
-    if (!Directory(xFile.path).existsSync()) {
-      isFilesFound = true;
-      break;
-    }
-  }
+  //bool isFilesFound = true;
+  // for (var xFile in newItemDragDropList) {
+  //   if (Directory(xFile.path).existsSync()) {
+  //     isFilesFound = true;
+  //     break;
+  //   }
+  // }
 
-  if (!isFilesFound) {
-    for (var xFile in newItemDragDropList) {
-      await Future(
-        () {
-          final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
-          if (files.isNotEmpty) {
-            for (var file in files) {
-              List<String> fileTailPath = file.path.split('${xFile.name}$s').last.split(s);
-              if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
-                fileTailPath.insert(0, xFile.name);
-              }
-              String newPath = catePath;
-              if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
-                fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
-                    fileTailPath.indexOf(fileTailPath.last));
+  // if (!isFilesFound) {
+  //   for (var xFile in newItemDragDropList) {
+  //     await Future(
+  //       () {
+  //         final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
+  //         if (files.isNotEmpty) {
+  //           for (var file in files) {
+  //             List<String> fileTailPath = file.path.split('${xFile.name}$s').last.split(s);
+  //             if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+  //               fileTailPath.insert(0, xFile.name);
+  //             }
+  //             String newPath = catePath;
+  //             if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
+  //               fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
+  //                   fileTailPath.indexOf(fileTailPath.last));
 
-                String finalTailPath = fileTailPath.join(s);
-                if (newItemName != null) {
-                  //Item suffix
-                  if (categoryName == 'Basewears') {
-                    if (newItemName.contains('[Ba]')) {
-                      finalItemName = newItemName.replaceAll('[Ba]', '');
-                      finalItemName = finalItemName.trim();
-                    } else {
-                      finalItemName = newItemName.trim();
-                    }
-                    if (newModName != null) {
-                      newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
-                    } else {
-                      newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
-                    }
-                  } else if (categoryName == 'Innerwears') {
-                    if (newItemName.contains('[In]')) {
-                      finalItemName = newItemName.replaceAll('[In]', '');
-                      finalItemName = finalItemName.trim();
-                    } else {
-                      finalItemName = newItemName.trim();
-                    }
-                    if (newModName != null) {
-                      newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
-                    } else {
-                      newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
-                    }
-                  } else if (categoryName == 'Outerwears') {
-                    if (newItemName.contains('[Ou]')) {
-                      finalItemName = newItemName.replaceAll('[Ou]', '');
-                      finalItemName = finalItemName.trim();
-                    } else {
-                      finalItemName = newItemName.trim();
-                    }
-                    if (newModName != null) {
-                      newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
-                    } else {
-                      newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
-                    }
-                  } else if (categoryName == 'Setwears') {
-                    if (newItemName.contains('[Se]')) {
-                      finalItemName = newItemName.replaceAll('[Se]', '');
-                      finalItemName = finalItemName.trim();
-                    } else {
-                      finalItemName = newItemName.trim();
-                    }
-                    if (newModName != null) {
-                      newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
-                    } else {
-                      newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
-                    }
-                  } else {
-                    if (newModName != null) {
-                      newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
-                    } else {
-                      newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
-                    }
-                  }
-                }
-              }
+  //               String finalTailPath = fileTailPath.join(s);
+  //               if (newItemName != null) {
+  //                 //Item suffix
+  //                 if (categoryName == 'Basewears') {
+  //                   if (newItemName.contains('[Ba]')) {
+  //                     finalItemName = newItemName.replaceAll('[Ba]', '');
+  //                     finalItemName = finalItemName.trim();
+  //                   } else {
+  //                     finalItemName = newItemName.trim();
+  //                   }
+  //                   if (newModName != null) {
+  //                     newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+  //                   } else {
+  //                     newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
+  //                   }
+  //                 } else if (categoryName == 'Innerwears') {
+  //                   if (newItemName.contains('[In]')) {
+  //                     finalItemName = newItemName.replaceAll('[In]', '');
+  //                     finalItemName = finalItemName.trim();
+  //                   } else {
+  //                     finalItemName = newItemName.trim();
+  //                   }
+  //                   if (newModName != null) {
+  //                     newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+  //                   } else {
+  //                     newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
+  //                   }
+  //                 } else if (categoryName == 'Outerwears') {
+  //                   if (newItemName.contains('[Ou]')) {
+  //                     finalItemName = newItemName.replaceAll('[Ou]', '');
+  //                     finalItemName = finalItemName.trim();
+  //                   } else {
+  //                     finalItemName = newItemName.trim();
+  //                   }
+  //                   if (newModName != null) {
+  //                     newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+  //                   } else {
+  //                     newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
+  //                   }
+  //                 } else if (categoryName == 'Setwears') {
+  //                   if (newItemName.contains('[Se]')) {
+  //                     finalItemName = newItemName.replaceAll('[Se]', '');
+  //                     finalItemName = finalItemName.trim();
+  //                   } else {
+  //                     finalItemName = newItemName.trim();
+  //                   }
+  //                   if (newModName != null) {
+  //                     newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+  //                   } else {
+  //                     newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
+  //                   }
+  //                 } else {
+  //                   if (newModName != null) {
+  //                     newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
+  //                   } else {
+  //                     newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //             debugPrint(newPath);
 
-              File(newPath).createSync(recursive: true);
-              File(file.path).copySync(newPath);
-            }
-          }
-        },
-      );
-      Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
-    }
-  } else {
+  //             File(newPath).createSync(recursive: true);
+  //             File(file.path).copySync(newPath);
+  //           }
+  //         }
+  //       },
+  //     );
+  //     Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+  //   }
+  // } else {
     for (var xFile in newItemDragDropList) {
       await Future(
         () {
@@ -735,8 +737,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   finalItemName = newItemName.replaceAll('[Ba]', '');
                   finalItemName = finalItemName.trim();
                 } else {
-                      finalItemName = newItemName.trim();
-                    }
+                  finalItemName = newItemName.trim();
+                }
                 if (newModName != null) {
                   newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}';
                 } else {
@@ -747,8 +749,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   finalItemName = newItemName.replaceAll('[In]', '');
                   finalItemName = finalItemName.trim();
                 } else {
-                      finalItemName = newItemName.trim();
-                    }
+                  finalItemName = newItemName.trim();
+                }
                 if (newModName != null) {
                   newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}';
                 } else {
@@ -759,8 +761,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   finalItemName = newItemName.replaceAll('[Ou]', '');
                   finalItemName = finalItemName.trim();
                 } else {
-                      finalItemName = newItemName.trim();
-                    }
+                  finalItemName = newItemName.trim();
+                }
                 if (newModName != null) {
                   newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}';
                 } else {
@@ -771,8 +773,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                   finalItemName = newItemName.replaceAll('[Se]', '');
                   finalItemName = finalItemName.trim();
                 } else {
-                      finalItemName = newItemName.trim();
-                    }
+                  finalItemName = newItemName.trim();
+                }
                 if (newModName != null) {
                   newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}';
                 } else {
@@ -808,8 +810,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Ba]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -820,8 +822,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[In]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -832,8 +834,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Ou]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -844,8 +846,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Se]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -868,8 +870,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Ba]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -880,8 +882,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[In]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -892,8 +894,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Ou]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -904,8 +906,8 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
                         finalItemName = newItemName.replaceAll('[Se]', '');
                         finalItemName = finalItemName.trim();
                       } else {
-                      finalItemName = newItemName.trim();
-                    }
+                        finalItemName = newItemName.trim();
+                      }
                       if (newModName != null) {
                         newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
                       } else {
@@ -929,7 +931,7 @@ Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XF
         },
       );
       Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
-    }
+    //}
   }
 
   String modName = '';
