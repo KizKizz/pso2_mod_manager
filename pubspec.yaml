@@ -43,7 +43,7 @@ dependencies:
   url_launcher: ^6.1.2
   intl: ^0.17.0
   window_manager: ^0.2.5
-  dart_vlc: ^0.3.0
+  dart_vlc: ^0.4.0
   font_awesome_flutter: ^10.1.0
   package_info_plus: ^1.4.2
   http: ^0.13.4
@@ -53,8 +53,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-dependency_overrides:
-  ffi: ^2.0.0
+# dependency_overrides:
+#  ffi: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -64,8 +64,6 @@ class TranslationText {
     this.inExplorerBtnTootipText,
     this.searchLabelText,
     this.newCatNameLabelText,
-    this.newCatNameEmptyErrorText,
-    this.newCatNameDupErrorText,
     this.addCatBtnText,
     this.singleAddBtnText,
     this.multiAddBtnText,
@@ -75,6 +73,8 @@ class TranslationText {
     this.addSelectCatLabelText,
     this.addItemNamLabelText,
     this.addModNameLabelText,
+    this.addModTootipText,
+    this.addModToTooltipText,
     this.favLabelText,
     this.accessoriesLabelText,
     this.basewearsLabelText,
@@ -85,9 +85,22 @@ class TranslationText {
     this.motionsLabelText,
     this.outerLabelText,
     this.setwearsLabelText,
+    this.unapplyThisModTooltipText,
+    this.applyThisModTooltipText,
+    this.modNameLabelText,
+    this.modsSetSaveTooltipText,
+    this.modsSetClickTooltipText,
+    this.unapplyModUnderTooltipText,
+    this.fromTheGameTooltipText,
+    this.newSetNameLabelText,
+    this.addNewSetTootipText,
+    this.addSetBtnText,
+    this.holdToDeleteBtnTooltipText,
 
     //Misc
     this.itemsLabelText,
+    this.itemLabelText,
+    this.fileAppliedColonLabelText,
     this.fileAppliedLabelText,
     this.closeBtnText,
     this.openBtnTooltipText,
@@ -95,6 +108,27 @@ class TranslationText {
     this.addBtnTooltipText,
     this.removeBtnTooltipText,
     this.deleteBtnTooltipText,
+    this.refreshingLabelText,
+    this.modscolonLableText,
+    this.appliedcolonLabelText,
+    this.toFavTooltipText,
+    this.fromFavTooltipText,
+    this.doneBtnText,
+    this.filesLabelText,
+    this.fileLabelText,
+    this.curFilesInSetAppliedTooltipText,
+
+    //Error messages
+    this.newCatNameEmptyErrorText,
+    this.newCatNameDupErrorText,
+    this.newItemNameEmpty,
+    this.newItemNameDuplicate,
+    this.multiItemsLeftOver,
+    this.originalFileOf,
+    this.isNotFound,
+    this.replaced,
+    this.backupFileOf,
+    this.setRemovalErrorText,
   );
 
   //Header buttons
@@ -136,8 +170,6 @@ class TranslationText {
   String inExplorerBtnTootipText;
   String searchLabelText;
   String newCatNameLabelText;
-  String newCatNameEmptyErrorText;
-  String newCatNameDupErrorText;
   String addCatBtnText;
   String singleAddBtnText;
   String multiAddBtnText;
@@ -147,6 +179,8 @@ class TranslationText {
   String addSelectCatLabelText;
   String addItemNamLabelText;
   String addModNameLabelText;
+  String addModTootipText;
+  String addModToTooltipText;
   String favLabelText;
   String accessoriesLabelText;
   String basewearsLabelText;
@@ -157,9 +191,22 @@ class TranslationText {
   String motionsLabelText;
   String outerLabelText;
   String setwearsLabelText;
+  String unapplyThisModTooltipText;
+  String applyThisModTooltipText;
+  String modNameLabelText;
+  String modsSetSaveTooltipText;
+  String modsSetClickTooltipText;
+  String unapplyModUnderTooltipText;
+  String fromTheGameTooltipText;
+  String newSetNameLabelText;
+  String addNewSetTootipText;
+  String addSetBtnText;
+  String holdToDeleteBtnTooltipText;
 
   //Misc
   String itemsLabelText;
+  String itemLabelText;
+  String fileAppliedColonLabelText;
   String fileAppliedLabelText;
   String closeBtnText;
   String openBtnTooltipText;
@@ -167,6 +214,27 @@ class TranslationText {
   String addBtnTooltipText;
   String removeBtnTooltipText;
   String deleteBtnTooltipText;
+  String refreshingLabelText;
+  String modscolonLableText;
+  String appliedcolonLabelText;
+  String toFavTooltipText;
+  String fromFavTooltipText;
+  String doneBtnText;
+  String filesLabelText;
+  String fileLabelText;
+  String curFilesInSetAppliedTooltipText;
+
+  //Error messages
+  String newCatNameEmptyErrorText;
+  String newCatNameDupErrorText;
+  String newItemNameEmpty;
+  String newItemNameDuplicate;
+  String multiItemsLeftOver;
+  String originalFileOf;
+  String isNotFound;
+  String replaced;
+  String backupFileOf;
+  String setRemovalErrorText;
 
   fromJson(Map<String, dynamic> json) {
     //Header buttons
@@ -208,8 +276,6 @@ class TranslationText {
     inExplorerBtnTootipText = json['inExplorerBtnTootipText'];
     searchLabelText = json['searchLabelText'];
     newCatNameLabelText = json['newCatNameLabelText'];
-    newCatNameEmptyErrorText = json['newCatNameEmptyErrorText'];
-    newCatNameDupErrorText = json['newCatNameDupErrorText'];
     addCatBtnText = json['addCatBtnText'];
     singleAddBtnText = json['singleAddBtnText'];
     multiAddBtnText = json['multiAddBtnText'];
@@ -219,6 +285,8 @@ class TranslationText {
     addSelectCatLabelText = json['addSelectCatLabelText'];
     addItemNamLabelText = json['addItemNamLabelText'];
     addModNameLabelText = json['addModNameLabelText'];
+    addModTootipText = json['addModTootipText'];
+    addModToTooltipText = json['addModToTooltipText'];
     favLabelText = json['favLabelText'];
     accessoriesLabelText = json['accessoriesLabelText'];
     basewearsLabelText = json['basewearsLabelText'];
@@ -229,9 +297,22 @@ class TranslationText {
     motionsLabelText = json['motionsLabelText'];
     outerLabelText = json['outerLabelText'];
     setwearsLabelText = json['setwearsLabelText'];
+    unapplyThisModTooltipText = json['unapplyThisModTooltipText'];
+    applyThisModTooltipText = json['applyThisModTooltipText'];
+    modNameLabelText = json['modNameLabelText'];
+    modsSetSaveTooltipText = json['modsSetSaveTooltipText'];
+    modsSetClickTooltipText = json['modsSetClickTooltipText'];
+    unapplyModUnderTooltipText = json['unapplyModUnderTooltipText'];
+    fromTheGameTooltipText = json['fromTheGameTooltipText'];
+    newSetNameLabelText = json['newSetNameLabelText'];
+    addNewSetTootipText = json['addNewSetTootipText'];
+    addSetBtnText = json['addSetBtnText'];
+    holdToDeleteBtnTooltipText = json['holdToDeleteBtnTooltipText'];
 
     //Misc
     itemsLabelText = json['itemsLabelText'];
+    itemLabelText = json['itemLabelText'];
+    fileAppliedColonLabelText = json['fileAppliedLabelText'];
     fileAppliedLabelText = json['fileAppliedLabelText'];
     closeBtnText = json['closeBtnText'];
     openBtnTooltipText = json['openBtnTooltipText'];
@@ -239,6 +320,27 @@ class TranslationText {
     addBtnTooltipText = json['addBtnTooltipText'];
     removeBtnTooltipText = json['removeBtnTooltipText'];
     deleteBtnTooltipText = json['deleteBtnTooltipText'];
+    refreshingLabelText = json['refreshingLabelText'];
+    modscolonLableText = json['modscolonLableText'];
+    appliedcolonLabelText = json['appliedcolonLabelText'];
+    toFavTooltipText = json['toFavTooltipText'];
+    fromFavTooltipText = json['fromFavTooltipText'];
+    doneBtnText = json['doneBtnText'];
+    filesLabelText = json['filesLabelText'];
+    fileLabelText = json['fileLabelText'];
+    curFilesInSetAppliedTooltipText = json['curFilesInSetAppliedTooltipText'];
+
+    //Error messages
+    newCatNameEmptyErrorText = json['newCatNameEmptyErrorText'];
+    newCatNameDupErrorText = json['newCatNameDupErrorText'];
+    newItemNameEmpty = json['newItemNameEmpty'];
+    newItemNameDuplicate = json['newItemNameDuplicate'];
+    multiItemsLeftOver = json['multiItemsLeftOver'];
+    originalFileOf = json['originalFileOf'];
+    isNotFound = json['isNotFound'];
+    replaced = json['replaced'];
+    backupFileOf = json['backupFileOf'];
+    setRemovalErrorText = json['setRemovalErrorText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -282,8 +384,6 @@ class TranslationText {
     data['inExplorerBtnTootipText'] = inExplorerBtnTootipText;
     data['searchLabelText'] = searchLabelText;
     data['newCatNameLabelText'] = newCatNameLabelText;
-    data['newCatNameEmptyErrorText'] = newCatNameEmptyErrorText;
-    data['newCatNameDupErrorText'] = newCatNameDupErrorText;
     data['addCatBtnText'] = addCatBtnText;
     data['singleAddBtnText'] = singleAddBtnText;
     data['multiAddBtnText'] = multiAddBtnText;
@@ -293,6 +393,8 @@ class TranslationText {
     data['addSelectCatLabelText'] = addSelectCatLabelText;
     data['addItemNamLabelText'] = addItemNamLabelText;
     data['addModNameLabelText'] = addModNameLabelText;
+    data['addModTootipText'] = addModTootipText;
+    data['addModToTooltipText'] = addModToTooltipText;
     data['favLabelText'] = favLabelText;
     data['accessoriesLabelText'] = accessoriesLabelText;
     data['basewearsLabelText'] = basewearsLabelText;
@@ -303,9 +405,22 @@ class TranslationText {
     data['motionsLabelText'] = motionsLabelText;
     data['outerLabelText'] = outerLabelText;
     data['setwearsLabelText'] = setwearsLabelText;
+    data['unapplyThisModTooltipText'] = unapplyThisModTooltipText;
+    data['applyThisModTooltipText'] = applyThisModTooltipText;
+    data['modNameLabelText'] = modNameLabelText;
+    data['modsSetSaveTooltipText'] = modsSetSaveTooltipText;
+    data['modsSetClickTooltipText'] = modsSetClickTooltipText;
+    data['unapplyModUnderTooltipText'] = unapplyModUnderTooltipText;
+    data['fromTheGameTooltipText'] = fromTheGameTooltipText;
+    data['newSetNameLabelText'] = newSetNameLabelText;
+    data['addNewSetTootipText'] = addNewSetTootipText;
+    data['addSetBtnText'] = addSetBtnText;
+    data['holdToDeleteBtnTooltipText'] = holdToDeleteBtnTooltipText;
 
     //Misc
     data['itemsLabelText'] = itemsLabelText;
+    data['itemLabelText'] = itemLabelText;
+    data['fileAppliedColonLabelText'] = fileAppliedColonLabelText;
     data['fileAppliedLabelText'] = fileAppliedLabelText;
     data['closeBtnText'] = closeBtnText;
     data['openBtnTooltipText'] = openBtnTooltipText;
@@ -313,6 +428,27 @@ class TranslationText {
     data['addBtnTooltipText'] = addBtnTooltipText;
     data['removeBtnTooltipText'] = removeBtnTooltipText;
     data['deleteBtnTooltipText'] = deleteBtnTooltipText;
+    data['refreshingLabelText'] = refreshingLabelText;
+    data['modscolonLableText'] = modscolonLableText;
+    data['appliedcolonLabelText'] = appliedcolonLabelText;
+    data['toFavTooltipText'] = toFavTooltipText;
+    data['fromFavTooltipText'] = fromFavTooltipText;
+    data['doneBtnText'] = doneBtnText;
+    data['filesLabelText'] = filesLabelText;
+    data['fileLabelText'] = fileLabelText;
+    data['curFilesInSetAppliedTooltipText'] = curFilesInSetAppliedTooltipText;
+
+    //Error messages
+    data['newCatNameEmptyErrorText'] = newCatNameEmptyErrorText;
+    data['newCatNameDupErrorText'] = newCatNameDupErrorText;
+    data['newItemNameEmpty'] = newItemNameEmpty;
+    data['newItemNameDuplicate'] = newItemNameDuplicate;
+    data['multiItemsLeftOver'] = multiItemsLeftOver;
+    data['originalFileOf'] = originalFileOf;
+    data['isNotFound'] = isNotFound;
+    data['replaced'] = replaced;
+    data['backupFileOf'] = backupFileOf;
+    data['setRemovalErrorText'] = setRemovalErrorText;
 
     return data;
   }
@@ -359,8 +495,6 @@ void convertLangTextData(var jsonResponse) {
       b['newItemBtnTooltipText'],
       b['inExplorerBtnTootipText'],
       b['searchLabelText'],
-      b['newCatNameLabelText'],
-      b['newCatNameEmptyErrorText'],
       b['newCatNameDupErrorText'],
       b['addCatBtnText'],
       b['singleAddBtnText'],
@@ -371,6 +505,8 @@ void convertLangTextData(var jsonResponse) {
       b['addSelectCatLabelText'],
       b['addItemNamLabelText'],
       b['addModNameLabelText'],
+      b['addModTootipText'],
+      b['addModToTooltipText'],
       b['favLabelText'],
       b['accessoriesLabelText'],
       b['basewearsLabelText'],
@@ -381,9 +517,22 @@ void convertLangTextData(var jsonResponse) {
       b['motionsLabelText'],
       b['outerLabelText'],
       b['setwearsLabelText'],
+      b['unapplyThisModTooltipText'],
+      b['applyThisModTooltipText'],
+      b['modNameLabelText'],
+      b['modsSetSaveTooltipText'],
+      b['modsSetClickTooltipText'],
+      b['unapplyModUnderTooltipText'],
+      b['fromTheGameTooltipText'],
+      b['newSetNameLabelText'],
+      b['addNewSetTootipText'],
+      b['addSetBtnText'],
+      b['holdToDeleteBtnTooltipText'],
 
       //Misc
       b['itemsLabelText'],
+      b['itemLabelText'],
+      b['fileAppliedColonLabelText'],
       b['fileAppliedLabelText'],
       b['closeBtnText'],
       b['openBtnTooltipText'],
@@ -391,6 +540,27 @@ void convertLangTextData(var jsonResponse) {
       b['addBtnTooltipText'],
       b['removeBtnTooltipText'],
       b['deleteBtnTooltipText'],
+      b['refreshingLabelText'],
+      b['modscolonLableText'],
+      b['appliedcolonLabelText'],
+      b['toFavTooltipText'],
+      b['fromFavTooltipText'],
+      b['doneBtnText'],
+      b['filesLabelText'],
+      b['fileLabelText'],
+      b['curFilesInSetAppliedTooltipText'],
+
+      //Error messages
+      b['newCatNameLabelText'],
+      b['newCatNameEmptyErrorText'],
+      b['newItemNameEmpty'],
+      b['newItemNameDuplicate'],
+      b['multiItemsLeftOver'],
+      b['originalFileOf'],
+      b['isNotFound'],
+      b['replaced'],
+      b['backupFileOf'],
+      b['setRemovalErrorText'],
     );
     curLangText = translation;
   }

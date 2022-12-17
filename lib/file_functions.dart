@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
