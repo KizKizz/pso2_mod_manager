@@ -601,12 +601,16 @@ TranslationText defaultUILangLoader() {
     'Mod Name',
     'Save all mods in applied list to sets',
     'Click on \'Mod Sets\' button to add new set',
-    'Unapply mods under ',
+    'Unapply all mods under ',
     ' from the game',
     'New Set Name',
     'Add New Set',
     'Add Set',
-    'Hold to delete',
+    'Hold to delete ',
+    'Hold to remove ',
+    'Hold to reapply all mods to the game',
+    'Hold to remove all applied mods from the game',
+  
 
     //Misc
     ' Items',
@@ -628,6 +632,18 @@ TranslationText defaultUILangLoader() {
     ' Files',
     ' File',
     'One or more mod files in this set currently being applied to the game',
+    'Delete Category',
+    ' and move it to Deleted Items folder?\nThis will also remove all items in this category',
+    'Cannot delete ',
+    '. Unaplly these mods first:\n\n',
+    'Delete Item',
+    ' and move it to Deleted Items folder?\nThis will also delete all mods in this item',
+    'Delete Mod',
+    ' and move it to Deleted Items folder?\nThis will also delete all files in this mod',
+    '. Unapply these files first:\n\n',
+    '. Remove from Favorites first',
+    'No Results Found',
+    ' from ',
 
     //Error messages
     'Category name can\'t be empty',

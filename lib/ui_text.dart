@@ -96,6 +96,9 @@ class TranslationText {
     this.addNewSetTootipText,
     this.addSetBtnText,
     this.holdToDeleteBtnTooltipText,
+    this.holdToRemoveBtnTooltipText,
+    this.holdToReapplyBtnTooltipText,
+    this.holdToRemoveAllBtnTooltipText,
 
     //Misc
     this.itemsLabelText,
@@ -117,6 +120,18 @@ class TranslationText {
     this.filesLabelText,
     this.fileLabelText,
     this.curFilesInSetAppliedTooltipText,
+    this.deleteCatPopupText,
+    this.deleteCatPopupMsgText,
+    this.cannotDeleteCatPopupText,
+    this.cannotDeleteCatPopupUnapplyText,
+    this.deleteItemPopupText,
+    this.deleteItemPopupMsgText,
+    this.deleteModPopupText,
+    this.deleteModPopupMsgText,
+    this.unappyFilesFirstMsgText,
+    this.removeFromFavFirstMsgText,
+    this.noSearchResultFoundText,
+    this.fromText,
 
     //Error messages
     this.newCatNameEmptyErrorText,
@@ -202,6 +217,9 @@ class TranslationText {
   String addNewSetTootipText;
   String addSetBtnText;
   String holdToDeleteBtnTooltipText;
+  String holdToRemoveBtnTooltipText;
+  String holdToReapplyBtnTooltipText;
+  String holdToRemoveAllBtnTooltipText;
 
   //Misc
   String itemsLabelText;
@@ -223,6 +241,18 @@ class TranslationText {
   String filesLabelText;
   String fileLabelText;
   String curFilesInSetAppliedTooltipText;
+  String deleteCatPopupText;
+  String deleteCatPopupMsgText;
+  String cannotDeleteCatPopupText;
+  String cannotDeleteCatPopupUnapplyText;
+  String deleteItemPopupText;
+  String deleteItemPopupMsgText;
+  String deleteModPopupText;
+  String deleteModPopupMsgText;
+  String unappyFilesFirstMsgText;
+  String removeFromFavFirstMsgText;
+  String noSearchResultFoundText;
+  String fromText;
 
   //Error messages
   String newCatNameEmptyErrorText;
@@ -308,6 +338,9 @@ class TranslationText {
     addNewSetTootipText = json['addNewSetTootipText'];
     addSetBtnText = json['addSetBtnText'];
     holdToDeleteBtnTooltipText = json['holdToDeleteBtnTooltipText'];
+    holdToRemoveBtnTooltipText = json['holdToRemoveBtnTooltipText'];
+    holdToReapplyBtnTooltipText = json['holdToReapplyBtnTooltipText'];
+    holdToRemoveAllBtnTooltipText = json['holdToRemoveAllBtnTooltipText'];
 
     //Misc
     itemsLabelText = json['itemsLabelText'];
@@ -329,6 +362,17 @@ class TranslationText {
     filesLabelText = json['filesLabelText'];
     fileLabelText = json['fileLabelText'];
     curFilesInSetAppliedTooltipText = json['curFilesInSetAppliedTooltipText'];
+    deleteCatPopupText = json['deleteCatPopupText'];
+    deleteCatPopupMsgText = json['deleteCatPopupMsgText'];
+    cannotDeleteCatPopupText = json['cannotDeleteCatPopupText'];
+    cannotDeleteCatPopupUnapplyText = json['cannotDeleteCatPopupUnapplyText'];
+    deleteItemPopupText = json['deleteItemPopupText'];
+    deleteItemPopupMsgText = json['deleteItemPopupMsgText'];
+    deleteModPopupText = json['deteleteModPopupText'];
+    deleteModPopupMsgText = json['deleteModPopupMsgText'];
+    unappyFilesFirstMsgText = json['unappyFilesFirstMsgText'];
+    noSearchResultFoundText = json['noSearchResultFoundText'];
+    fromText = json['fromText'];
 
     //Error messages
     newCatNameEmptyErrorText = json['newCatNameEmptyErrorText'];
@@ -416,6 +460,9 @@ class TranslationText {
     data['addNewSetTootipText'] = addNewSetTootipText;
     data['addSetBtnText'] = addSetBtnText;
     data['holdToDeleteBtnTooltipText'] = holdToDeleteBtnTooltipText;
+    data['holdToRemoveBtnTooltipText'] = holdToRemoveBtnTooltipText;
+    data['holdToReapplyBtnTooltipText'] = holdToReapplyBtnTooltipText;
+    data['holdToRemoveAllBtnTooltipText'] = holdToRemoveAllBtnTooltipText;
 
     //Misc
     data['itemsLabelText'] = itemsLabelText;
@@ -437,6 +484,18 @@ class TranslationText {
     data['filesLabelText'] = filesLabelText;
     data['fileLabelText'] = fileLabelText;
     data['curFilesInSetAppliedTooltipText'] = curFilesInSetAppliedTooltipText;
+    data['deleteCatPopupText'] = deleteCatPopupText;
+    data['deleteCatPopupMsgText'] = deleteCatPopupMsgText;
+    data['cannotDeleteCatPopupText'] = cannotDeleteCatPopupText;
+    data['cannotDeleteCatPopupUnapplyText'] = cannotDeleteCatPopupUnapplyText;
+    data['deleteItemPopupText'] = deleteItemPopupText;
+    data['deleteItemPopupMsgText'] = deleteItemPopupMsgText;
+    data['deleteModPopupText'] = deleteModPopupText;
+    data['deleteModPopupMsgText'] = deleteModPopupMsgText;
+    data['unappyFilesFirstMsgText'] = unappyFilesFirstMsgText;
+    data['removeFromFavFirstMsgText'] = removeFromFavFirstMsgText;
+    data['noSearchResultFoundText'] = noSearchResultFoundText;
+    data['fromText'] = fromText;
 
     //Error messages
     data['newCatNameEmptyErrorText'] = newCatNameEmptyErrorText;
@@ -528,6 +587,9 @@ void convertLangTextData(var jsonResponse) {
       b['addNewSetTootipText'],
       b['addSetBtnText'],
       b['holdToDeleteBtnTooltipText'],
+      b['holdToRemoveBtnTooltipText'],
+      b['holdToReapplyBtnTooltipText'],
+      b['holdToRemoveAllBtnTooltipText'],
 
       //Misc
       b['itemsLabelText'],
@@ -549,6 +611,18 @@ void convertLangTextData(var jsonResponse) {
       b['filesLabelText'],
       b['fileLabelText'],
       b['curFilesInSetAppliedTooltipText'],
+      b['deleteCatPopupText'],
+      b['deleteCatPopupMsgText'],
+      b['cannotDeleteCatPopupText'],
+      b['cannotDeleteCatPopupUnapplyText'],
+      b['deleteItemPopupText'],
+      b['deleteItemPopupMsgText'],
+      b['deleteModPopupText'],
+      b['deleteModPopupMsgText'],
+      b['unappyFilesFirstMsgText'],
+      b['removeFromFavFirstMsgText'],
+      b['noSearchResultFoundText'],
+      b['fromText'],
 
       //Error messages
       b['newCatNameLabelText'],
