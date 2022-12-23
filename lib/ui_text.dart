@@ -32,6 +32,7 @@ class TranslationText {
     this.backupFolderBtnText,
     this.deletedItemsBtnText,
     this.checksumBtnText,
+    this.checksumMissingBtnText,
     this.modSetsBtnText,
     this.modListBtnText,
     this.previewBtnText,
@@ -132,6 +133,19 @@ class TranslationText {
     this.removeFromFavFirstMsgText,
     this.noSearchResultFoundText,
     this.fromText,
+    this.loadingUIText,
+    this.checksumSelectPopupText,
+    this.newUpdateAvailText,
+    this.newAppVerText,
+    this.curAppVerText,
+    this.patchNoteLabelText,
+    this.updateBtnText,
+    this.dismissBtnText,
+    this.waitingUserActionText,
+    this.pso2binReselectPopupText,
+    this.modmanReselectPopupText,
+    this.curPathText,
+    this.chooseNewPathText,
 
     //Error messages
     this.newCatNameEmptyErrorText,
@@ -144,6 +158,9 @@ class TranslationText {
     this.replaced,
     this.backupFileOf,
     this.setRemovalErrorText,
+    this.pso2binNotFoundPopupText,
+    this.modmanFolderNotFoundLabelText,
+    this.modmanFolderNotFoundText,
   );
 
   //Header buttons
@@ -153,6 +170,7 @@ class TranslationText {
   String backupFolderBtnText;
   String deletedItemsBtnText;
   String checksumBtnText;
+  String checksumMissingBtnText;
   String modSetsBtnText;
   String modListBtnText;
   String previewBtnText;
@@ -253,6 +271,19 @@ class TranslationText {
   String removeFromFavFirstMsgText;
   String noSearchResultFoundText;
   String fromText;
+  String loadingUIText;
+  String checksumSelectPopupText;
+  String newUpdateAvailText;
+  String newAppVerText;
+  String curAppVerText;
+  String patchNoteLabelText;
+  String updateBtnText;
+  String dismissBtnText;
+  String waitingUserActionText;
+  String pso2binReselectPopupText;
+  String modmanReselectPopupText;
+  String curPathText;
+  String chooseNewPathText;
 
   //Error messages
   String newCatNameEmptyErrorText;
@@ -265,6 +296,9 @@ class TranslationText {
   String replaced;
   String backupFileOf;
   String setRemovalErrorText;
+  String pso2binNotFoundPopupText;
+  String modmanFolderNotFoundLabelText;
+  String modmanFolderNotFoundText;
 
   fromJson(Map<String, dynamic> json) {
     //Header buttons
@@ -274,6 +308,7 @@ class TranslationText {
     backupFolderBtnText = json['backupFolderBtnText'];
     deletedItemsBtnText = json['deletedItemsBtnText'];
     checksumBtnText = json['checksumBtnText'];
+    checksumMissingBtnText = json['checksumMissingBtnText'];
     modSetsBtnText = json['modSetsBtnText'];
     modListBtnText = json['modListBtnText'];
     previewBtnText = json['previewBtnText'];
@@ -373,6 +408,19 @@ class TranslationText {
     unappyFilesFirstMsgText = json['unappyFilesFirstMsgText'];
     noSearchResultFoundText = json['noSearchResultFoundText'];
     fromText = json['fromText'];
+    loadingUIText = json['loadingUIText'];
+    checksumSelectPopupText = json['checksumSelectPopupText'];
+    newUpdateAvailText = json['newUpdateAvailText'];
+    newAppVerText = json['newAppVerText'];
+    curAppVerText = json['curAppVerText'];
+    patchNoteLabelText = json['patchNoteLabelText'];
+    updateBtnText = json['updateBtnText'];
+    dismissBtnText = json['dismissBtnText'];
+    waitingUserActionText = json['waitingUserActionText'];
+    pso2binReselectPopupText = json['pso2binReselectPopupText'];
+    modmanReselectPopupText = json['modmanReselectPopupText'];
+    curPathText = json['curPathText'];
+    chooseNewPathText = json[chooseNewPathText];
 
     //Error messages
     newCatNameEmptyErrorText = json['newCatNameEmptyErrorText'];
@@ -385,6 +433,9 @@ class TranslationText {
     replaced = json['replaced'];
     backupFileOf = json['backupFileOf'];
     setRemovalErrorText = json['setRemovalErrorText'];
+    pso2binNotFoundPopupText = json['pso2binNotFoundPopupText'];
+    modmanFolderNotFoundLabelText = json['modmanFolderNotFoundLabelText'];
+    modmanFolderNotFoundText = json['modmanFolderNotFoundText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -396,6 +447,7 @@ class TranslationText {
     data['backupFolderBtnText'] = backupFolderBtnText;
     data['deletedItemsBtnText'] = deletedItemsBtnText;
     data['checksumBtnText'] = checksumBtnText;
+    data['checksumMissingBtnText'] = checksumMissingBtnText;
     data['modSetsBtnText'] = modSetsBtnText;
     data['modListBtnText'] = modListBtnText;
     data['previewBtnText'] = previewBtnText;
@@ -496,6 +548,19 @@ class TranslationText {
     data['removeFromFavFirstMsgText'] = removeFromFavFirstMsgText;
     data['noSearchResultFoundText'] = noSearchResultFoundText;
     data['fromText'] = fromText;
+    data['loadingUIText'] = loadingUIText;
+    data['checksumSelectPopupText'] = checksumSelectPopupText;
+    data['newUpdateAvailText'] = newUpdateAvailText;
+    data['newAppVerText'] = newAppVerText;
+    data['curAppVerText'] = curAppVerText;
+    data['patchNoteLabelText'] = patchNoteLabelText;
+    data['updateBtnText'] = updateBtnText;
+    data['dismissBtnText'] = dismissBtnText;
+    data['waitingUserActionText'] = waitingUserActionText;
+    data['pso2binReselectPopupText'] = pso2binReselectPopupText;
+    data['modmanReselectPopupText'] = modmanReselectPopupText;
+    data['curPathText'] = curPathText;
+    data['chooseNewPathText'] = chooseNewPathText;
 
     //Error messages
     data['newCatNameEmptyErrorText'] = newCatNameEmptyErrorText;
@@ -508,6 +573,9 @@ class TranslationText {
     data['replaced'] = replaced;
     data['backupFileOf'] = backupFileOf;
     data['setRemovalErrorText'] = setRemovalErrorText;
+    data['pso2binNotFoundPopupText'] = pso2binNotFoundPopupText;
+    data['modmanFolderNotFoundLabelText'] = modmanFolderNotFoundLabelText;
+    data['modmanFolderNotFoundText'] = modmanFolderNotFoundText;
 
     return data;
   }
@@ -523,6 +591,7 @@ void convertLangTextData(var jsonResponse) {
       b['backupFolderBtnText'],
       b['deletedItemsBtnText'],
       b['checksumBtnText'],
+      b['checksumMissingBtnText'],
       b['modSetsBtnText'],
       b['modListBtnText'],
       b['previewBtnText'],
@@ -623,6 +692,19 @@ void convertLangTextData(var jsonResponse) {
       b['removeFromFavFirstMsgText'],
       b['noSearchResultFoundText'],
       b['fromText'],
+      b['loadingUIText'],
+      b['checksumSelectPopupText'],
+      b['newUpdateAvailText'],
+      b['newAppVerText'],
+      b['curAppVerText'],
+      b['patchNoteLabelText'],
+      b['updateBtnText'],
+      b['dismissBtnText'],
+      b['waitingUserActionText'],
+      b['pso2binReselectPopupText'],
+      b['modmanReselectPopupText'],
+      b['curPathText'],
+      b['chooseNewPathText'],
 
       //Error messages
       b['newCatNameLabelText'],
@@ -635,6 +717,9 @@ void convertLangTextData(var jsonResponse) {
       b['replaced'],
       b['backupFileOf'],
       b['setRemovalErrorText'],
+      b['pso2binNotFoundPopupText'],
+      b['modmanFolderNotFoundLabelText'],
+      b['modmanFolderNotFoundText'],
     );
     curLangText = translation;
   }

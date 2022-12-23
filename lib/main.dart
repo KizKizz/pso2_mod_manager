@@ -127,6 +127,7 @@ class MyApp extends StatelessWidget {
           );
         });
   }
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -277,6 +278,51 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             curSelectedLangPath = '$curLanguageDirPath$s${lang.langInitial}.json';
           }
         }
+      } else {
+        List<TranslationLanguage> tempLangList = await translationLoader();
+        for (var lang in tempLangList) {
+          if (!File(lang.langFilePath).existsSync()) {
+            if (lang.selected) {
+              if (lang.langInitial != 'EN') {
+                tempLangList.singleWhere((element) => element.langInitial == 'EN').selected = true;
+              } else {
+                await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
+                TranslationText newEN = defaultUILangLoader();
+                //Json Write
+                [newEN].map((translationText) => translationText.toJson()).toList();
+                File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
+              }
+            }
+          } else {
+            if (lang.langInitial == 'EN') {
+              TranslationText newEN = defaultUILangLoader();
+              //Json Write
+              [newEN].map((translationText) => translationText.toJson()).toList();
+              File(lang.langFilePath).writeAsStringSync(json.encode([newEN]));
+            } else {
+              String curLangString = File('$curLanguageDirPath${s}EN.json').readAsStringSync();
+              curLangString = curLangString.replaceRange(0, 2, '');
+              curLangString = curLangString.replaceRange(curLangString.length - 2, null, '');
+              List<String> newTranslationItems = curLangString.split('",');
+              String tempTranslationFromFile = File(lang.langFilePath).readAsStringSync();
+              tempTranslationFromFile = tempTranslationFromFile.replaceRange(0, 2, '');
+              tempTranslationFromFile = tempTranslationFromFile.replaceRange(tempTranslationFromFile.length - 2, null, '');
+              List<String> curTranslationItems = tempTranslationFromFile.split('",');
+
+              if (newTranslationItems.length != curTranslationItems.length) {
+                for (var item in newTranslationItems) {
+                  if (curTranslationItems.indexWhere((element) => element.substring(0, element.indexOf(':')) == item.substring(0, item.indexOf(':'))) == -1) {
+                    curTranslationItems.insert(newTranslationItems.indexOf(item), item);
+                  }
+                }
+                String finalTranslation = curTranslationItems.join('",');
+                finalTranslation = finalTranslation.padLeft(finalTranslation.length + 1, '[{');
+                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
+                File(lang.langFilePath).writeAsStringSync(finalTranslation);
+              }
+            }
+          }
+        }
       }
 
       setState(() {
@@ -326,11 +372,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   }
 
   void getDirPath() {
-    binDirDialog(context, 'Error', 'pso2_bin folder not found. Select it now?\n\'Exit\' will close the app', false);
+    binDirDialog(context, 'Error', curLangText!.pso2binNotFoundPopupText, false);
   }
 
   void getMainModManDirPath() {
-    mainModManDirDialog(context, 'Mod Manager Folder Not Found', 'Select a path to store your mods?\n\'No\' will create a folder inside \'pso2_bin\'', false);
+    mainModManDirDialog(context, curLangText!.modmanFolderNotFoundLabelText, curLangText!.modmanFolderNotFoundText, false);
   }
 
   @override
@@ -347,6 +393,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Text(
+                      //curLangText!.loadingUIText,
                       'Loading UI',
                       style: TextStyle(fontSize: 20),
                     ),
@@ -529,7 +576,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     onPressed: (() async {
                                       if (checkSumFilePath == null) {
                                         checksumLocation = await FilePicker.platform.pickFiles(
-                                          dialogTitle: 'Select your checksum file',
+                                          dialogTitle: curLangText!.checksumSelectPopupText,
                                           allowMultiple: false,
                                           // type: FileType.custom,
                                           // allowedExtensions: ['\'\''],
@@ -557,14 +604,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                             ],
                                           )
                                         : Row(
-                                            children: const [
-                                              Icon(
+                                            children: [
+                                              const Icon(
                                                 Icons.fingerprint,
                                                 size: 18,
                                                 color: Colors.red,
                                               ),
-                                              SizedBox(width: 2.5),
-                                              Text('Checksum missing. Click!', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                              const SizedBox(width: 2.5),
+                                              Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                             ],
                                           ),
                                   ),
@@ -784,7 +831,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                               ElevatedButton(
                                                 onPressed: () async {
                                                   String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
-                                                  TranslationText? newText;
+                                                  TranslationText? newText = curLangText;
                                                   if (!File(newLangPath).existsSync()) {
                                                     await File(newLangPath).create(recursive: true);
                                                   }
@@ -794,7 +841,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                   langDropDownList.add(newLangTextController.text.toUpperCase());
                                                   newLangTextController.clear();
                                                   //Json Write
-                                                  [newText].map((translationText) => translationText!.toJson()).toList();
+                                                  [newText].map((translText) => translText?.toJson()).toList();
                                                   File(newLangPath).writeAsStringSync(json.encode([newText]));
                                                   //Json Write
                                                   langList.map((translation) => translation.toJson()).toList();
@@ -911,12 +958,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Row(
                             children: [
                               Text(
-                                'New Update Available!',
+                                curLangText!.newUpdateAvailText,
                                 style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 5),
-                                child: Text('New Version: $newVersion - Your Version: $appVersion'),
+                                child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
                               ),
                               TextButton(
                                   onPressed: (() {
@@ -924,7 +971,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       patchNotesDialog(context);
                                     });
                                   }),
-                                  child: const Text('Patch Notes...')),
+                                  child: Text(curLangText!.patchNoteLabelText)),
                             ],
                           ),
                           Row(
@@ -936,14 +983,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                       setState(() {});
                                     }),
-                                    child: const Text('Dismiss')),
+                                    child: Text(curLangText!.dismissBtnText)),
                               ),
                               ElevatedButton(
                                   onPressed: (() {
                                     Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                     launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                                   }),
-                                  child: const Text('Update')),
+                                  child: Text(curLangText!.updateBtnText)),
                             ],
                           )
                         ],
@@ -957,15 +1004,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
-                                'Waiting for user\'s action',
-                                style: TextStyle(fontSize: 20),
+                                curLangText!.waitingUserActionText,
+                                style: const TextStyle(fontSize: 20),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
-                              CircularProgressIndicator(),
+                              const CircularProgressIndicator(),
                             ],
                           ),
                         ),
@@ -1013,10 +1060,10 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) async {
     switch (item) {
       case MenuItems._binFolder:
-        binDirDialog(context, 'pso2_bin Path Reselect', 'Current path:\n\'$binDirPath\'\n\nChoose a new path?', true);
+        binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
       case MenuItems.modManFolder:
-        mainModManDirDialog(context, 'Mod Manager Path Reselect', 'Current path:\n\'$mainModDirPath\'\n\nChoose a new path?', true);
+        mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
     }
   }

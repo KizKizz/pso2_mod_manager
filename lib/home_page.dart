@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    curLangText!.refreshingLabelText,
+                    curLangText!.loadingUIText,
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(

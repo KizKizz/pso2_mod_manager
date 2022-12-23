@@ -543,6 +543,7 @@ TranslationText defaultUILangLoader() {
     'Backups',
     'Deleted Items',
     'Checksum',
+    'Checksum missing. Click!',
     'Mod Sets',
     'Mod List',
     'Preview:',
@@ -623,7 +624,7 @@ TranslationText defaultUILangLoader() {
     'Add ',
     'Remove ',
     'Delete ',
-    'Refeshing',
+    'Refreshing',
     'Mods:',
     'Applied:',
     ' to favorites',
@@ -644,6 +645,19 @@ TranslationText defaultUILangLoader() {
     '. Remove from Favorites first',
     'No Results Found',
     ' from ',
+    'Loading UI',
+    'Select your checksum file',
+    'New Update Available!',
+    'New Version:',
+    'Your Version:',
+    'Patch Notes...',
+    'Update',
+    'Dismiss',
+    'Waiting for user\'s action',
+    'pso2_bin Path Reselect',
+    'Mod Manager Folder Path Reselect',
+    'Current path:',
+    'Choose a new path?',
 
     //Error messages
     'Category name can\'t be empty',
@@ -656,5 +670,8 @@ TranslationText defaultUILangLoader() {
     'Replaced: ',
     'Backup file of ',
     'There are mod files currently being applied. Unapply them first!',
+    'pso2_bin folder not found. Select it now?\nSelect \'Exit\' will close the app',
+    'Mod Manager Folder not found',
+    'Select a path to store your mods?\nSelect \'No\' will create a folder inside \'pso2_bin\' folder'
   );
 }
