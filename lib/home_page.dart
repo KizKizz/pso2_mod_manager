@@ -4084,7 +4084,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       if (!isViewingFav)
                                                         Tooltip(
                                                             message:
-                                                                '${curLangText!.holdToRemoveBtnTooltipText} ${modFilesFromSetList[index].first.iceParent}${curLangText!.fromText}${setsList[setApplyingIndex].setName}',
+                                                                '${curLangText!.holdToRemoveBtnTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.fromText}"${setsList[setApplyingIndex].setName}"',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 2),

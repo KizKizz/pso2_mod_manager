@@ -578,7 +578,7 @@ TranslationText defaultUILangLoader() {
     'New Category Name',
     'Add Category',
     'Single Item',
-    'Nultiple Items',
+    'Multiple Items',
     'Drop modded .ice files and folder(s)\nhere to add',
     'Drop modded item folder(s) here to add',
     'Drop item\'s\nicon here\n(Optional)',
