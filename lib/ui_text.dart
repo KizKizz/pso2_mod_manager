@@ -91,6 +91,8 @@ class TranslationText {
     this.modNameLabelText,
     this.modsSetSaveTooltipText,
     this.modsSetClickTooltipText,
+    this.applyModUnderTooltipText,
+    this.toTheGameTooltipText,
     this.unapplyModUnderTooltipText,
     this.fromTheGameTooltipText,
     this.newSetNameLabelText,
@@ -229,6 +231,8 @@ class TranslationText {
   String modNameLabelText;
   String modsSetSaveTooltipText;
   String modsSetClickTooltipText;
+  String applyModUnderTooltipText;
+  String toTheGameTooltipText;
   String unapplyModUnderTooltipText;
   String fromTheGameTooltipText;
   String newSetNameLabelText;
@@ -367,6 +371,8 @@ class TranslationText {
     modNameLabelText = json['modNameLabelText'];
     modsSetSaveTooltipText = json['modsSetSaveTooltipText'];
     modsSetClickTooltipText = json['modsSetClickTooltipText'];
+    applyModUnderTooltipText = json['applyModUnderTooltipText'];
+    toTheGameTooltipText = json['toTheGameTooltipText'];
     unapplyModUnderTooltipText = json['unapplyModUnderTooltipText'];
     fromTheGameTooltipText = json['fromTheGameTooltipText'];
     newSetNameLabelText = json['newSetNameLabelText'];
@@ -506,6 +512,8 @@ class TranslationText {
     data['modNameLabelText'] = modNameLabelText;
     data['modsSetSaveTooltipText'] = modsSetSaveTooltipText;
     data['modsSetClickTooltipText'] = modsSetClickTooltipText;
+    data['applyModUnderTooltipText'] = applyModUnderTooltipText;
+    data['toTheGameTooltipText'] = toTheGameTooltipText;
     data['unapplyModUnderTooltipText'] = unapplyModUnderTooltipText;
     data['fromTheGameTooltipText'] = fromTheGameTooltipText;
     data['newSetNameLabelText'] = newSetNameLabelText;
@@ -650,6 +658,8 @@ void convertLangTextData(var jsonResponse) {
       b['modNameLabelText'],
       b['modsSetSaveTooltipText'],
       b['modsSetClickTooltipText'],
+      b['applyModUnderTooltipText'],
+      b['toTheGameTooltipText'],
       b['unapplyModUnderTooltipText'],
       b['fromTheGameTooltipText'],
       b['newSetNameLabelText'],

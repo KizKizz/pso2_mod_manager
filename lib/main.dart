@@ -161,12 +161,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     appVersion = packageInfo.version;
   }
 
-  void refreshMain() {
-    // Make sure to call once.
-    setState(() {});
-    // do something
-  }
-
   @override
   Future<void> onWindowResized() async {
     Size curWindowSize = await windowManager.getSize();
@@ -307,6 +301,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               tempTranslationFromFile = tempTranslationFromFile.replaceRange(0, 2, '');
               tempTranslationFromFile = tempTranslationFromFile.replaceRange(tempTranslationFromFile.length - 2, null, '');
               List<String> curTranslationItems = tempTranslationFromFile.split('",');
+              curTranslationItems.last = curTranslationItems.last.replaceRange(curTranslationItems.last.length - 1, null, '');
+              String curLastItem = curTranslationItems.last;
 
               if (newTranslationItems.length != curTranslationItems.length) {
                 for (var item in newTranslationItems) {
@@ -316,7 +312,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 }
                 String finalTranslation = curTranslationItems.join('",');
                 finalTranslation = finalTranslation.padLeft(finalTranslation.length + 1, '[{');
-                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
+                if (curLastItem == curTranslationItems.last) {
+                  finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '"}]');
+                } else {
+                  finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
+                }
                 File(lang.langFilePath).writeAsStringSync(finalTranslation);
               }
             }

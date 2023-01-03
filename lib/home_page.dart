@@ -2221,7 +2221,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Apply mods under ${modFilesList[index].first.iceParent} to the game',
+                                                            message: '${curLangText!.applyModUnderTooltipText}"${modFilesList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -3687,7 +3687,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               width: 40,
                                               height: 40,
                                               child: Tooltip(
-                                                message: 'Apply mods under ${setsList[index].setName} set to the game',
+                                                message: '${curLangText!.applyModUnderTooltipText}"${setsList[index].setName}"${curLangText!.toTheGameTooltipText}',
                                                 height: 25,
                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                 waitDuration: const Duration(seconds: 1),
@@ -4015,7 +4015,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Apply mods under ${modFilesFromSetList[index].first.iceParent} to the game',
+                                                            message: '"${curLangText!.applyModUnderTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -4278,4 +4278,3 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
-

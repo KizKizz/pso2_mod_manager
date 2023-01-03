@@ -602,6 +602,8 @@ TranslationText defaultUILangLoader() {
     'Mod Name',
     'Save all mods in applied list to sets',
     'Click on \'Mod Sets\' button to add new set',
+    'Apply all mods under ',
+    ' to the game',
     'Unapply all mods under ',
     ' from the game',
     'New Set Name',
