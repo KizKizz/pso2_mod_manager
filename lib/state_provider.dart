@@ -8,6 +8,7 @@ class StateProvider with ChangeNotifier {
   bool _setsWindowVisible = false;
   bool _addingBoxState = false;
   bool _isUpdateAvailable = false;
+  bool _languageReload = false;
   int _cateListItemCount = 0;
   String _newItemDropDisplay = '';
   String _newSingleItemDropDisplay = '';
@@ -17,13 +18,23 @@ class StateProvider with ChangeNotifier {
   bool get isMainModManPathFound => _isMainModManPathFound;
   bool get previewWindowVisible => _previewWindowVisible;
   bool get setsWindowVisible => _setsWindowVisible;
-
+  bool get languageReload => _languageReload;
   bool get addingBoxState => _addingBoxState;
   bool get isUpdateAvailable => _isUpdateAvailable;
   int get cateListItemCount => _cateListItemCount;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
+
+  void languageReloadTrue() {
+    _languageReload = true;
+    notifyListeners();
+  }
+
+  void languageReloadFalse() {
+    _languageReload = false;
+    notifyListeners();
+  }
 
   void isUpdateAvailableTrue() {
     _isUpdateAvailable = true;

@@ -3,16 +3,20 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
@@ -21,6 +25,8 @@ import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/ui_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 List<ModCategory> cateList = [];
@@ -212,7 +218,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 highlightedColor: Theme.of(context).primaryColor)),
         child: mainViews);
 
-    return Expanded(child: viewsTheme);
+    return context.watch<StateProvider>().languageReload
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                curLangText!.loadingUIText,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const CircularProgressIndicator(),
+            ],
+          )
+        : viewsTheme;
   }
 
   Widget itemsView() {
@@ -227,7 +248,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         AppBar(
           automaticallyImplyLeading: false,
-          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Items')),
+          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.itemsHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -256,7 +277,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     if (value != '') {
                       setState(() {
                         modFilesList.clear();
-                        modsViewAppBarName = 'Available Mods';
+                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                         isSearching = true;
                         cateListSearchResult = searchFilterResults(cateList, value);
                         searchListSelectedIndex = List.generate(cateListSearchResult.length, (index) => -1);
@@ -265,7 +286,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       setState(() {
                         isSearching = false;
                         modFilesList.clear();
-                        modsViewAppBarName = 'Available Mods';
+                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                         cateListSearchResult = [];
                       });
                     }
@@ -273,7 +294,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.only(left: 10, top: 10),
                       border: const OutlineInputBorder(),
-                      hintText: 'Search',
+                      hintText: curLangText!.searchLabelText,
                       suffixIcon: searchBoxTextController.text == ''
                           ? null
                           : SizedBox(
@@ -285,7 +306,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           setState(() {
                                             searchBoxTextController.clear();
                                             modFilesList.clear();
-                                            modsViewAppBarName = 'Available Mods';
+                                            modsViewAppBarName = curLangText!.availableModsHeaderText;
                                             isSearching = false;
                                             searchBoxLeftPadding = 80;
                                           });
@@ -296,7 +317,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )),
           actions: [
             Tooltip(
-                message: 'Refresh List',
+                message: curLangText!.refreshBtnTootipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -370,7 +391,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
 
                                   isModSelected = false;
-                                  modsViewAppBarName = 'Available Mods';
+                                  modsViewAppBarName = curLangText!.availableModsHeaderText;
                                   isRefreshing = true;
                                 });
                               }
@@ -401,7 +422,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       )),
                 )),
             Tooltip(
-                message: 'New Category',
+                message: curLangText!.newCatBtnTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -451,7 +472,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Tooltip(
-                    message: 'New Item',
+                    message: curLangText!.newItemBtnTooltipText,
                     height: 25,
                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                     waitDuration: const Duration(seconds: 1),
@@ -491,11 +512,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
         //Category List
         if (isRefreshing)
-          const Padding(
-            padding: EdgeInsets.only(top: 10),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
             child: Text(
-              'Refreshing List',
-              style: TextStyle(fontWeight: FontWeight.w500),
+              curLangText!.refreshBtnTootipText,
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
         if (!isSearching && !isRefreshing)
@@ -545,11 +566,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
                                     child: cateList[index].numOfItems < 2
-                                        ? Text('${cateList[index].numOfItems} Item',
+                                        ? Text('${cateList[index].numOfItems}${curLangText!.itemLabelText}',
                                             style: const TextStyle(
                                               fontSize: 13,
                                             ))
-                                        : Text('${cateList[index].numOfItems} Items',
+                                        : Text('${cateList[index].numOfItems}${curLangText!.itemsLabelText}',
                                             style: const TextStyle(
                                               fontSize: 13,
                                             ))),
@@ -560,7 +581,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             children: [
                               if (cateList[index].categoryName != 'Favorites')
                                 Tooltip(
-                                    message: 'Delete ${cateList[index].categoryName}',
+                                    message: '${curLangText!.deleteBtnTooltipText} ${cateList[index].categoryName}',
                                     height: 25,
                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                     waitDuration: const Duration(seconds: 2),
@@ -574,8 +595,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 categoryDeleteDialog(
                                                         context,
                                                         100,
-                                                        'Delete Category',
-                                                        'Delete "${cateList[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
+                                                        curLangText!.deleteCatPopupText,
+                                                        '${curLangText!.deleteBtnTooltipText}"${cateList[index].categoryName}"${curLangText!.deleteCatPopupMsgText}',
                                                         true,
                                                         cateList[index].categoryPath,
                                                         cateList[index].allModFiles)
@@ -601,8 +622,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   popupHeight += 24;
                                                 }
                                                 String stillApplied = stillAppliedList.join('\n');
-                                                categoryDeleteDialog(context, popupHeight, 'Delete Category',
-                                                    'Cannot delete "${cateList[index].categoryName}". Unaplly these mods first:\n\n$stillApplied', false, cateList[index].categoryPath, []);
+                                                categoryDeleteDialog(
+                                                    context,
+                                                    popupHeight,
+                                                    curLangText!.deleteCatPopupText,
+                                                    '${curLangText!.cannotDeleteCatPopupText}"${cateList[index].categoryName}"${curLangText!.cannotDeleteCatPopupUnapplyText}$stillApplied',
+                                                    false,
+                                                    cateList[index].categoryPath, []);
                                               }
                                             });
                                           }),
@@ -643,7 +669,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateList[index].itemNames[i]),
-                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Applied: ${cateList[index].numOfApplied[i]}'),
+                                subtitle: Text('${curLangText!.modscolonLableText} ${cateList[index].numOfMods[i]} | ${curLangText!.appliedcolonLabelText} ${cateList[index].numOfApplied[i]}'),
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
@@ -651,7 +677,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateList[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -676,7 +702,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         width: 34,
                                         height: 50,
                                         child: Tooltip(
-                                          message: 'Remove "${cateList[index].itemNames[i]}" from favorites',
+                                          message: '${curLangText!.removeBtnTooltipText}"${cateList[index].itemNames[i]}"${curLangText!.fromFavTooltipText}',
                                           height: 25,
                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                           waitDuration: const Duration(seconds: 1),
@@ -695,60 +721,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         ),
                                       ),
-
-                                    // if (cateList[index].categoryName != 'Favorites')
-                                    // Tooltip(
-                                    //     message: 'Remove ${cateList[index].itemNames[i]}',
-                                    //     height: 25,
-                                    //     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                    //     waitDuration: const Duration(seconds: 2),
-                                    //     child: SizedBox(
-                                    //       width: 36,
-                                    //       height: 50,
-                                    //       child: MaterialButton(
-                                    //           onPressed: (() {
-                                    //             setState(() {
-                                    //               if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true) == -1) {
-                                    //                 itemDeleteDialog(
-                                    //                         context,
-                                    //                         100,
-                                    //                         'Remove Item',
-                                    //                         'Remove "${cateList[index].itemNames[i]}" and move it to Deleted Items folder?\nThis will also remove all mods in this item',
-                                    //                         true,
-                                    //                         cateList[index],
-                                    //                         cateList[index].itemNames[i],
-                                    //                         cateList[index].allModFiles)
-                                    //                     .then((_) {
-                                    //                   setState(() {
-                                    //                     modsViewAppBarName = 'Available Mods';
-                                    //                     isModSelected = false;
-                                    //                     //setstate
-                                    //                   });
-                                    //                 });
-                                    //               } else {
-                                    //                 List<ModFile> tempList =
-                                    //                     cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
-                                    //                 List<String> stillAppliedList = [];
-                                    //                 double popupHeight = 40;
-                                    //                 for (var element in tempList) {
-                                    //                   stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                                    //                   popupHeight += 24;
-                                    //                 }
-                                    //                 String stillApplied = stillAppliedList.join('\n');
-                                    //                 itemDeleteDialog(context, popupHeight, 'Remove Item', 'Cannot remove "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                    //                     false, cateList[index], cateList[index].itemNames[i], []);
-                                    //               }
-                                    //             });
-                                    //           }),
-                                    //           child: Row(
-                                    //             children: const [
-                                    //               Icon(
-                                    //                 Icons.delete_forever_outlined,
-                                    //                 size: 20,
-                                    //               )
-                                    //             ],
-                                    //           )),
-                                    //     )),
                                   ],
                                 ),
                                 onTap: () {
@@ -808,7 +780,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateList[index].itemNames[i]),
-                                subtitle: Text('Mods: ${cateList[index].numOfMods[i]} | Files Applied: ${cateList[index].numOfApplied[i]}'),
+                                subtitle: Text('${curLangText!.modscolonLableText} ${cateList[index].numOfMods[i]} | ${curLangText!.fileAppliedColonLabelText} ${cateList[index].numOfApplied[i]}'),
                                 trailing: Wrap(
                                   children: [
                                     if (cateList[index].allModFiles.indexWhere((element) => element.modName == cateList[index].itemNames[i] && element.isNew == true) != -1)
@@ -821,7 +793,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateList[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateList[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -842,7 +814,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         )),
                                     Tooltip(
-                                        message: 'Delete ${cateList[index].itemNames[i]}',
+                                        message: '${curLangText!.deleteBtnTooltipText}${cateList[index].itemNames[i]}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -856,15 +828,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     itemDeleteDialog(
                                                             context,
                                                             100,
-                                                            'Delete Item',
-                                                            'Delete "${cateList[index].itemNames[i]}" and move it to \'Deleted\' Items folder?\nThis will also delete all mods in this item',
+                                                            curLangText!.deleteItemPopupText,
+                                                            '${curLangText!.deleteBtnTooltipText}"${cateList[index].itemNames[i]}"${curLangText!.deleteItemPopupMsgText}',
                                                             true,
                                                             cateList[index],
                                                             cateList[index].itemNames[i],
                                                             cateList[index].allModFiles)
                                                         .then((_) {
                                                       setState(() async {
-                                                        modsViewAppBarName = 'Available Mods';
+                                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                                         isModSelected = false;
                                                         modSetsListGet = getSetsList();
                                                         setsList = await modSetsListGet;
@@ -879,8 +851,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     });
                                                   } else if (cateList[index].allModFiles.indexWhere((element) => element.isFav && element.modName == cateList[index].itemNames[i]) != -1) {
                                                     double popupHeight = 40;
-                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Remove from Favorites first', false,
-                                                        cateList[index], cateList[index].itemNames[i], []);
+                                                    itemDeleteDialog(
+                                                        context,
+                                                        popupHeight,
+                                                        curLangText!.deleteItemPopupText,
+                                                        '${curLangText!.cannotDeleteCatPopupText}"${cateList[index].itemNames[i]}"${curLangText!.removeFromFavFirstMsgText}',
+                                                        false,
+                                                        cateList[index],
+                                                        cateList[index].itemNames[i], []);
                                                   } else {
                                                     List<ModFile> tempList =
                                                         cateList[index].allModFiles.where((element) => element.modName == cateList[index].itemNames[i] && element.isApplied == true).toList();
@@ -891,8 +869,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       popupHeight += 24;
                                                     }
                                                     String stillApplied = stillAppliedList.join('\n');
-                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateList[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
-                                                        false, cateList[index], cateList[index].itemNames[i], []);
+                                                    itemDeleteDialog(
+                                                        context,
+                                                        popupHeight,
+                                                        curLangText!.deleteItemPopupText,
+                                                        '${curLangText!.cannotDeleteCatPopupText}"${cateList[index].itemNames[i]}"${curLangText!.cannotDeleteCatPopupUnapplyText}$stillApplied',
+                                                        false,
+                                                        cateList[index],
+                                                        cateList[index].itemNames[i], []);
                                                   }
                                                 });
                                               }),
@@ -950,10 +934,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
         //Search Result Category List
         if (isSearching && cateListSearchResult.isEmpty)
-          const Expanded(
+          Expanded(
               child: Padding(
-            padding: EdgeInsets.only(top: 5.0),
-            child: Text('No Results Found'),
+            padding: const EdgeInsets.only(top: 5.0),
+            child: Text(curLangText!.noSearchResultFoundText),
           )),
         if (isSearching && cateListSearchResult.isNotEmpty)
           Expanded(
@@ -1001,71 +985,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       border: Border.all(color: Theme.of(context).highlightColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
-                                    child: Text('${cateListSearchResult[index].numOfItems} Items',
+                                    child: Text('${cateListSearchResult[index].numOfItems}${curLangText!.itemsLabelText}',
                                         style: const TextStyle(
                                           fontSize: 13,
                                         ))),
                               ),
                             ],
                           ),
-                          // Row(
-                          //   children: [
-                          //     if (cateListSearchResult[index].categoryName != 'Favorites')
-                          //       Tooltip(
-                          //           message: 'Remove ${cateListSearchResult[index].categoryName}',
-                          //           height: 25,
-                          //           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          //           waitDuration: const Duration(seconds: 2),
-                          //           child: SizedBox(
-                          //             width: 40,
-                          //             height: 40,
-                          //             child: MaterialButton(
-                          //                 onPressed: (() {
-                          //                   setState(() {
-                          //                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.isApplied == true) == -1) {
-                          //                       categoryDeleteDialog(
-                          //                               context,
-                          //                               100,
-                          //                               'Remove Category',
-                          //                               'Remove "${cateListSearchResult[index].categoryName}" and move it to Deleted Items folder?\nThis will also remove all items in this category',
-                          //                               true,
-                          //                               cateListSearchResult[index].categoryPath,
-                          //                               cateListSearchResult[index].allModFiles)
-                          //                           .then((_) {
-                          //                         setState(() {
-                          //                           //setstate to refresh list
-                          //                         });
-                          //                       });
-                          //                     } else {
-                          //                       List<ModFile> tempList = cateListSearchResult[index].allModFiles.where((element) => element.isApplied == true).toList();
-                          //                       List<String> stillAppliedList = [];
-                          //                       double popupHeight = 40;
-                          //                       for (var element in tempList) {
-                          //                         stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                          //                         popupHeight += 24;
-                          //                       }
-                          //                       String stillApplied = stillAppliedList.join('\n');
-                          //                       categoryDeleteDialog(
-                          //                           context,
-                          //                           popupHeight,
-                          //                           'Remove Category',
-                          //                           'Cannot remove "${cateListSearchResult[index].categoryName}". Unaplly these mods first:\n\n$stillApplied',
-                          //                           false,
-                          //                           cateListSearchResult[index].categoryPath, []);
-                          //                     }
-                          //                   });
-                          //                 }),
-                          //                 child: Row(
-                          //                   children: [
-                          //                     Icon(
-                          //                       Icons.delete_sweep_rounded,
-                          //                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                          //                     )
-                          //                   ],
-                          //                 )),
-                          //           )),
-                          //   ],
-                          // )
                         ],
                       ),
                       children: [
@@ -1092,7 +1018,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateListSearchResult[index].itemNames[i]),
-                                subtitle: Text('Mods: ${cateListSearchResult[index].numOfMods[i]} | Applied: ${cateListSearchResult[index].numOfApplied[i]}'),
+                                subtitle: Text(
+                                    '${curLangText!.modscolonLableText} ${cateListSearchResult[index].numOfMods[i]} | ${curLangText!.appliedcolonLabelText} ${cateListSearchResult[index].numOfApplied[i]}'),
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
@@ -1105,7 +1032,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateListSearchResult[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1130,7 +1057,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         width: 34,
                                         height: 50,
                                         child: Tooltip(
-                                          message: 'Remove "${cateListSearchResult[index].itemNames[i]}" from favorites',
+                                          message: '${curLangText!.removeBtnTooltipText}"${cateListSearchResult[index].itemNames[i]}"${curLangText!.fromFavTooltipText}',
                                           height: 25,
                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                           waitDuration: const Duration(seconds: 1),
@@ -1209,7 +1136,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           fit: BoxFit.fitWidth,
                                         )),
                                 title: Text(cateListSearchResult[index].itemNames[i]),
-                                subtitle: Text('Mods: ${cateListSearchResult[index].numOfMods[i]} | Files applied: ${cateListSearchResult[index].numOfApplied[i]}'),
+                                subtitle: Text(
+                                    '${curLangText!.modscolonLableText} ${cateListSearchResult[index].numOfMods[i]} | ${curLangText!.fileAppliedColonLabelText} ${cateListSearchResult[index].numOfApplied[i]}'),
                                 trailing: Wrap(
                                   children: [
                                     if (cateListSearchResult[index].allModFiles.indexWhere((element) => element.modName == cateListSearchResult[index].itemNames[i] && element.isNew == true) != -1)
@@ -1222,7 +1150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                     //Buttons
                                     Tooltip(
-                                        message: 'Open ${cateListSearchResult[index].itemNames[i]} in File Explorer',
+                                        message: '${curLangText!.openBtnTooltipText}${cateListSearchResult[index].itemNames[i]}${curLangText!.inExplorerBtnTootipText}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1243,7 +1171,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               )),
                                         )),
                                     Tooltip(
-                                        message: 'Delete ${cateListSearchResult[index].itemNames[i]}',
+                                        message: '${curLangText!.deleteBtnTooltipText}${cateListSearchResult[index].itemNames[i]}',
                                         height: 25,
                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                         waitDuration: const Duration(seconds: 2),
@@ -1262,8 +1190,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     itemDeleteDialog(
                                                             context,
                                                             100,
-                                                            'Delete Item',
-                                                            'Delete "${cateListSearchResult[index].itemNames[i]}" and move it to \'Deleted\' Items folder?\nThis will also delete all mods in this item',
+                                                            curLangText!.deleteItemPopupText,
+                                                            '${curLangText!.deleteBtnTooltipText}"${cateListSearchResult[index].itemNames[i]}"${curLangText!.deleteItemPopupMsgText}',
                                                             true,
                                                             cateListSearchResult[index],
                                                             cateListSearchResult[index].itemNames[i],
@@ -1277,7 +1205,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       curCate.allModFiles.removeWhere((element) => element.modName == curItem);
                                                       curCate.numOfItems--;
                                                       setState(() {
-                                                        modsViewAppBarName = 'Available Mods';
+                                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                                         isModSelected = false;
                                                         //setstate
                                                       });
@@ -1287,8 +1215,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           .indexWhere((element) => element.isFav && element.modName == cateListSearchResult[index].itemNames[i]) !=
                                                       -1) {
                                                     double popupHeight = 40;
-                                                    itemDeleteDialog(context, popupHeight, 'Delete Item', 'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Remove from Favorites first',
-                                                        false, cateListSearchResult[index], cateListSearchResult[index].itemNames[i], []);
+                                                    itemDeleteDialog(
+                                                        context,
+                                                        popupHeight,
+                                                        curLangText!.deleteItemPopupText,
+                                                        '${curLangText!.cannotDeleteCatPopupText}"${cateListSearchResult[index].itemNames[i]}"${curLangText!.removeFromFavFirstMsgText}',
+                                                        false,
+                                                        cateListSearchResult[index],
+                                                        cateListSearchResult[index].itemNames[i], []);
                                                   } else {
                                                     List<ModFile> tempList = cateListSearchResult[index]
                                                         .allModFiles
@@ -1304,8 +1238,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     itemDeleteDialog(
                                                         context,
                                                         popupHeight,
-                                                        'Delete Item',
-                                                        'Cannot delete "${cateListSearchResult[index].itemNames[i]}". Unaplly these mods first:\n\n$stillApplied',
+                                                        curLangText!.deleteItemPopupText,
+                                                        '${curLangText!.cannotDeleteCatPopupText}"${cateListSearchResult[index].itemNames[i]}"${curLangText!.unappyFilesFirstMsgText}$stillApplied',
                                                         false,
                                                         cateListSearchResult[index],
                                                         cateListSearchResult[index].itemNames[i], []);
@@ -1392,17 +1326,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       //maxLength: 100,
                       style: const TextStyle(fontSize: 15),
-                      decoration: const InputDecoration(
-                        labelText: 'New Category Name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: curLangText!.newCatNameLabelText,
+                        border: const OutlineInputBorder(),
                         isDense: true,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Category name can\'t be empty';
+                          return curLangText!.newCatNameEmptyErrorText;
                         }
                         if (cateList.indexWhere((e) => e.categoryName == value) != -1) {
-                          return 'Category name already exist';
+                          return curLangText!.newCatNameDupErrorText;
                         }
                         return null;
                       },
@@ -1442,7 +1376,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: const Text('Close')),
+                              child: Text(curLangText!.closeBtnText)),
                         ),
                       ),
                       Expanded(
@@ -1452,7 +1386,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               onPressed: (() {
                                 setState(() {
                                   modFilesList.clear();
-                                  modsViewAppBarName = 'Available Mods';
+                                  modsViewAppBarName = curLangText!.availableModsHeaderText;
                                   if (categoryFormKey.currentState!.validate()) {
                                     cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
                                     cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
@@ -1470,7 +1404,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   }
                                 });
                               }),
-                              child: const Text('Add Category')),
+                              child: Text(curLangText!.addCatBtnText)),
                         ),
                       ),
                     ],
@@ -1502,14 +1436,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   labelColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                   controller: _itemAdderTabcontroller,
                   onTap: (index) {},
-                  tabs: const [
+                  tabs: [
                     Tab(
                       height: 25,
-                      text: 'Single Item',
+                      text: curLangText!.singleAddBtnText,
                     ),
                     Tab(
                       height: 25,
-                      text: 'Multiple Items',
+                      text: curLangText!.multiAddBtnText,
                     ),
                   ],
                 ),
@@ -1557,9 +1491,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       if (_newSingleItemDragDropList.isEmpty)
                                         Center(
                                             child: Column(
-                                          children: const [
-                                            Text("Drop Modded .ice Files And Folder(s)"),
-                                            Text('Here To Add'),
+                                          children: [
+                                            Text(curLangText!.singleDropBoxLabelText),
                                           ],
                                         )),
                                       if (_newSingleItemDragDropList.isNotEmpty)
@@ -1585,7 +1518,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
                               child: CustomDropdownButton2(
-                                hint: 'Select a Category',
+                                hint: curLangText!.addSelectCatLabelText,
                                 dropdownDecoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
                                   color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
@@ -1649,11 +1582,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           Center(
                                               child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            children: const [
-                                              Text('Drop Item\'s'),
-                                              Text('Icon Here'),
-                                              Text('(Optional)'),
-                                            ],
+                                            children: [Text(curLangText!.iconDropBoxLabelText)],
                                           )),
                                         if (_singleItemIcon != null)
                                           Expanded(
@@ -1716,15 +1645,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                           //maxLength: 100,
                                           style: const TextStyle(fontSize: 15),
-                                          decoration: const InputDecoration(
-                                            labelText: 'Item Name',
-                                            border: OutlineInputBorder(),
+                                          decoration: InputDecoration(
+                                            labelText: curLangText!.addItemNamLabelText,
+                                            border: const OutlineInputBorder(),
                                             isDense: true,
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
                                               isErrorInSingleItemName = true;
-                                              return 'Name can\'t be empty';
+                                              return curLangText!.newItemNameEmpty;
                                             }
                                             if (selectedCategoryForSingleItem == 'Basewears' ||
                                                 selectedCategoryForSingleItem == 'Setwears' ||
@@ -1735,14 +1664,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       e.itemNames.indexWhere((element) => element.toLowerCase().substring(0, element.length - 4).trim() == value.toLowerCase()) != -1) !=
                                                   -1) {
                                                 isErrorInSingleItemName = true;
-                                                return 'The name already exists';
+                                                return curLangText!.newItemNameDuplicate;
                                               }
                                             } else {
                                               if (cateList.indexWhere((e) =>
                                                       e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
                                                   -1) {
                                                 isErrorInSingleItemName = true;
-                                                return 'The name already exists';
+                                                return curLangText!.newItemNameDuplicate;
                                               }
                                             }
                                             return null;
@@ -1767,9 +1696,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                         //maxLength: 100,
                                         style: const TextStyle(fontSize: 15),
-                                        decoration: const InputDecoration(
-                                          labelText: 'Mod Name (Optional)',
-                                          border: OutlineInputBorder(),
+                                        decoration: InputDecoration(
+                                          labelText: curLangText!.addModNameLabelText,
+                                          border: const OutlineInputBorder(),
                                           isDense: true,
                                         ),
                                         onChanged: (text) {
@@ -1819,9 +1748,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              const Text(
-                                                'The file(s) bellow won\'t be added. Use the \'Single Item\' Tab or \'Add Mod\' instead.',
-                                                style: TextStyle(fontWeight: FontWeight.w600),
+                                              Text(
+                                                curLangText!.multiItemsLeftOver,
+                                                style: const TextStyle(fontWeight: FontWeight.w600),
                                               ),
                                               for (int i = 0; i < leftoverFiles.length; i++) Text(leftoverFiles[i]),
                                             ],
@@ -1852,7 +1781,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      if (_newItemDragDropList.isEmpty) const Center(child: Text("Drop Modded Item Folder(s) Here To Add")),
+                                      if (_newItemDragDropList.isEmpty) Center(child: Text(curLangText!.multiDropBoxLabelText)),
                                       if (_newItemDragDropList.isNotEmpty)
                                         Expanded(
                                           child: SingleChildScrollView(
@@ -1883,7 +1812,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
                                   child: CustomDropdownButton2(
                                     key: _newItemDropdownKey,
-                                    hint: 'Select a Category',
+                                    hint: curLangText!.addSelectCatLabelText,
                                     dropdownDecoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
@@ -1991,7 +1920,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       }
                                     });
                                   }),
-                            child: const Text('Close'),
+                            child: Text(curLangText!.closeBtnText),
                           ),
                         ),
                       ),
@@ -2006,7 +1935,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         //if (newMultipleItemsFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 1) {
                                         selectedIndex.fillRange(0, selectedIndex.length, -1);
                                         modFilesList.clear();
-                                        modsViewAppBarName = 'Available Mods';
+                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
                                         if (_itemAdderTabcontroller.index == 1) {
                                           isItemAddBtnClicked = true;
                                           dragDropFilesAdd(context, _newItemDragDropList, selectedCategoryForMutipleItems, newItemAddController.text.isEmpty ? null : newItemAddController.text)
@@ -2030,7 +1959,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   _singleItemIcon,
                                                   selectedCategoryForSingleItem,
                                                   newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text.trim(),
-                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text)
+                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text.trim())
                                               .then((_) {
                                             setState(() {
                                               //setstate to refresh list
@@ -2047,7 +1976,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   : null,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [Text('Add')],
+                                children: [Text(curLangText!.addBtnText)],
                               )),
                         ),
                       ),
@@ -2069,7 +1998,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               padding: const EdgeInsets.only(bottom: 10),
               child: Column(
                 children: [
-                  modsViewAppBarName.isEmpty ? const Text('Available Mods') : Text(modsViewAppBarName),
+                  modsViewAppBarName.isEmpty ? Text(curLangText!.availableModsHeaderText) : Text(modsViewAppBarName),
                 ],
               )),
           backgroundColor: Theme.of(context).canvasColor,
@@ -2077,7 +2006,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           toolbarHeight: 30,
           actions: [
             Tooltip(
-                message: modsViewAppBarName == '' || modsViewAppBarName == 'Available Mods' ? 'Add Mods' : 'Add Mods To $modsViewAppBarName',
+                message:
+                    modsViewAppBarName == '' || modsViewAppBarName == curLangText!.availableModsHeaderText ? curLangText!.addModTootipText : '${curLangText!.addModToTooltipText} $modsViewAppBarName',
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -2172,7 +2102,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 for (var vid in modFilesList[index].first.previewVids!) {
                                                   medias.add(Media.file(vid));
                                                 }
-                                                previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                                previewPlayer.open(Playlist(medias: medias), autoStart: true);
                                               } else {
                                                 previewPlayer.bufferingProgressController.done;
                                                 previewPlayer.play();
@@ -2222,8 +2152,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         height: 40,
                                                         child: Tooltip(
                                                           message: modFilesList[index].first.isFav
-                                                              ? 'Remove "$modsViewAppBarName ${modFilesList[index].first.iceParent}" to favorites'
-                                                              : 'Add "$modsViewAppBarName ${modFilesList[index].first.iceParent}" to favorites',
+                                                              ? '${curLangText!.removeBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.toFavTooltipText}'
+                                                              : '${curLangText!.addBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.toFavTooltipText}',
                                                           height: 25,
                                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                           waitDuration: const Duration(seconds: 1),
@@ -2266,7 +2196,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Unapply all mods under "$modsViewAppBarName ${modFilesList[index].first.iceParent}" from the game',
+                                                            message:
+                                                                '${curLangText!.unapplyModUnderTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.fromTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -2289,7 +2220,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Apply mods under ${modFilesList[index].first.iceParent} to the game',
+                                                            message: '${curLangText!.applyModUnderTooltipText}"${modFilesList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -2312,7 +2243,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                                 children: [
                                                                                   for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                     Text(
-                                                                                        'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                        '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                                 ],
                                                                               ),
                                                                             )));
@@ -2329,7 +2260,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                                 children: [
                                                                                   for (int i = 0; i < modAppliedDup.length; i++)
                                                                                     Text(
-                                                                                        'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                        '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                                 ],
                                                                               ),
                                                                             )));
@@ -2348,7 +2279,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ),
                                                       if (!isViewingFav)
                                                         Tooltip(
-                                                            message: 'Delete $modsViewAppBarName ${modFilesList[index].first.iceParent}',
+                                                            message: '${curLangText!.deleteBtnTooltipText}$modsViewAppBarName ${modFilesList[index].first.iceParent}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 2),
@@ -2362,8 +2293,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                         modDeleteDialog(
                                                                                 context,
                                                                                 100,
-                                                                                'Delete Mods',
-                                                                                'Delete "$modsViewAppBarName ${modFilesList[index].first.iceParent}" and move it to \'Deleted Items\' folder?\nThis will also delete all files in this mod',
+                                                                                curLangText!.deleteModPopupText,
+                                                                                '${curLangText!.deleteBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.deleteModPopupMsgText}',
                                                                                 true,
                                                                                 modFilesList[index].first.modPath,
                                                                                 modFilesList[index].first.iceParent,
@@ -2387,17 +2318,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                         modDeleteDialog(
                                                                             context,
                                                                             popupHeight,
-                                                                            'Delete Mod',
-                                                                            'Cannot delete "$modsViewAppBarName ${modFilesList[index].first.iceParent}". Remove from Favorites first',
+                                                                            curLangText!.deleteModPopupText,
+                                                                            '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.removeFromFavFirstMsgText}',
                                                                             false,
                                                                             modFilesList[index].first.modPath,
                                                                             modFilesList[index].first.iceParent,
                                                                             modFilesList[index].first.modName, []);
                                                                       } else {
-                                                                        List<ModFile> tempList = cateList[index]
-                                                                            .allModFiles
-                                                                            .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
-                                                                            .toList();
+                                                                        List<ModFile> tempList =
+                                                                            cateList[cateList.indexWhere((element) => element.categoryName == modFilesList[index].first.categoryName)]
+                                                                                .allModFiles
+                                                                                .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
+                                                                                .toList();
                                                                         List<String> stillAppliedList = [];
                                                                         double popupHeight = 40;
                                                                         for (var element in tempList) {
@@ -2408,8 +2340,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                         modDeleteDialog(
                                                                             context,
                                                                             popupHeight,
-                                                                            'Delete Mod',
-                                                                            'Cannot delete "$modsViewAppBarName ${modFilesList[index].first.iceParent}". Unaplly these files first:\n\n$stillApplied',
+                                                                            curLangText!.deleteModPopupText,
+                                                                            '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.unappyFilesFirstMsgText}$stillApplied',
                                                                             false,
                                                                             modFilesList[index].first.modPath,
                                                                             modFilesList[index].first.iceParent,
@@ -2467,7 +2399,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       height: 40,
                                                       child: modFilesList[index][i].isApplied
                                                           ? Tooltip(
-                                                              message: 'Unapply this mod from the game',
+                                                              message: curLangText!.unapplyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),
@@ -2487,7 +2419,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < backupFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.backupFileOf}"${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -2497,7 +2429,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                 child: const Icon(Icons.replay),
                                                               ))
                                                           : Tooltip(
-                                                              message: 'Apply this mod to the game',
+                                                              message: curLangText!.applyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),
@@ -2517,7 +2449,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -2534,7 +2466,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < modAppliedDup.length; i++)
                                                                                   Text(
-                                                                                      'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                      '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -2613,7 +2545,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (_newModToItemDragDropList.isEmpty) const Center(child: Text("Drop Modded .ice Files And Folder(s) Here To Add")),
+                            if (_newModToItemDragDropList.isEmpty) Center(child: Text(curLangText!.singleDropBoxLabelText)),
                             if (_newModToItemDragDropList.isNotEmpty)
                               Expanded(
                                 child: SingleChildScrollView(
@@ -2646,17 +2578,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             //maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             //maxLength: 100,
                             style: const TextStyle(fontSize: 15),
-                            decoration: const InputDecoration(
-                              labelText: 'Mod Name',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: curLangText!.modNameLabelText,
+                              border: const OutlineInputBorder(),
                               isDense: true,
                             ),
                             validator: (value) {
                               if (!isModAddFolderOnly && (value == null || value.isEmpty)) {
-                                return 'Mod name can\'t be empty';
+                                return curLangText!.newItemNameEmpty;
                               }
                               if (modFilesList.indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
-                                return 'Mod name already exists';
+                                return curLangText!.newItemNameDuplicate;
                               }
                               return null;
                             },
@@ -2705,7 +2637,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         }
                                       });
                                     }),
-                              child: const Text('Close')),
+                              child: Text(curLangText!.closeBtnText)),
                         ),
                       ),
                       Expanded(
@@ -2750,7 +2682,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       });
                                     })
                                   : null,
-                              child: const Text('Add')),
+                              child: Text(curLangText!.addBtnText)),
                         ),
                       ),
                     ],
@@ -2768,7 +2700,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         //if (context.watch<StateProvider>().previewWindowVisible)
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Preview')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.previewHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -2916,7 +2848,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Applied Mods')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.appliedModsHeadersText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -2931,17 +2863,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                     ),
                     child: totalAppliedItems < 2
-                        ? Text('$totalAppliedItems Item | $totalAppliedFiles Files Applied',
+                        ? Text('$totalAppliedItems${curLangText!.itemLabelText} | $totalAppliedFiles ${curLangText!.fileAppliedLabelText}',
                             style: const TextStyle(
                               fontSize: 13,
                             ))
-                        : Text('$totalAppliedItems Items | $totalAppliedFiles Files Applied',
+                        : Text('$totalAppliedItems${curLangText!.itemsLabelText} | $totalAppliedFiles ${curLangText!.fileAppliedLabelText}',
                             style: const TextStyle(
                               fontSize: 13,
                             ))),
               ),
             Tooltip(
-              message: setsList.isNotEmpty ? 'Save all mods in applied list to sets' : 'Click on \'Mod Sets\' button to add new set',
+              message: setsList.isNotEmpty ? curLangText!.modsSetSaveTooltipText : curLangText!.modsSetClickTooltipText,
               height: 25,
               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
               waitDuration: const Duration(seconds: 1),
@@ -2998,11 +2930,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                   child: setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems < 2
-                                      ? Text('${setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems} Item',
+                                      ? Text('${setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems}${curLangText!.itemLabelText}',
                                           style: const TextStyle(
                                             fontSize: 13,
                                           ))
-                                      : Text('${setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems} Items',
+                                      : Text('${setsList[setsList.indexWhere((element) => element.setName == item)].numOfItems}${curLangText!.itemsLabelText}',
                                           style: const TextStyle(
                                             fontSize: 13,
                                           ))),
@@ -3053,7 +2985,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               width: 40,
               height: 40,
               child: Tooltip(
-                message: 'Hold to reapply all mods to the game',
+                message: curLangText!.holdToRemoveAllBtnTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -3079,13 +3011,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               children: [
                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                   Text(
-                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                               ],
                                             ),
                                           )));
                                     }
                                     originalFilesMissingList.clear();
-                                    const Text('Done');
+                                    Text(curLangText!.doneBtnText);
                                   }
                                 });
                               });
@@ -3114,7 +3046,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               width: 40,
               height: 40,
               child: Tooltip(
-                message: 'Hold to unapply all applied mods from the game',
+                message: curLangText!.holdToRemoveAllBtnTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -3204,7 +3136,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               for (var vid in appliedModsList[index].first.previewVids!) {
                                                 medias.add(Media.file(vid));
                                               }
-                                              previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                              previewPlayer.open(Playlist(medias: medias), autoStart: true);
                                             } else {
                                               previewPlayer.bufferingProgressController.done;
                                               previewPlayer.play();
@@ -3291,7 +3223,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -3308,7 +3240,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < modAppliedDup.length; i++)
                                                                                   Text(
-                                                                                      'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                      '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -3330,7 +3262,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         width: 40,
                                                         height: 40,
                                                         child: Tooltip(
-                                                          message: 'Unapply mods under "$modsViewAppBarName ${appliedModsList[index].first.iceParent}" from the game',
+                                                          message:
+                                                              '${curLangText!.unapplyModUnderTooltipText}"$modsViewAppBarName ${appliedModsList[index].first.iceParent}"${curLangText!.fromTheGameTooltipText}',
                                                           height: 25,
                                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                           waitDuration: const Duration(seconds: 2),
@@ -3389,7 +3322,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       height: 40,
                                                       child: appliedModsList[index][i].isApplied
                                                           ? Tooltip(
-                                                              message: 'Unapply this mod from the game',
+                                                              message: curLangText!.unapplyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),
@@ -3411,7 +3344,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < backupFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.backupFileOf}"${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -3421,7 +3354,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                 child: const Icon(Icons.replay),
                                                               ))
                                                           : Tooltip(
-                                                              message: 'Apply this mod to the game',
+                                                              message: curLangText!.applyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 1),
@@ -3441,7 +3374,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -3468,7 +3401,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget setList() {
     return Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
       AppBar(
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: const Text('Sets')),
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.setsHeaderText)),
         backgroundColor: Theme.of(context).canvasColor,
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -3495,10 +3428,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Set name can\'t be empty';
+                      return curLangText!.newItemNameEmpty;
                     }
                     if (cateList.indexWhere((e) => e.categoryName == value) != -1) {
-                      return 'Set name already exist';
+                      return curLangText!.newItemNameDuplicate;
                     }
                     return null;
                   },
@@ -3517,7 +3450,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             width: 95,
             height: 40,
             child: Tooltip(
-              message: 'Add New Set',
+              message: curLangText!.addNewSetTootipText,
               height: 25,
               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
               waitDuration: const Duration(seconds: 1),
@@ -3539,11 +3472,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       })
                     : null,
                 child: Row(
-                  children: const [
-                    Icon(
+                  children: [
+                    const Icon(
                       Icons.add_to_queue,
                     ),
-                    Text(' Add Set'),
+                    Text(curLangText!.addSetBtnText),
                   ],
                 ),
               ),
@@ -3620,20 +3553,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 ),
                                                 child: setsList[index].numOfItems < 2
                                                     ? setsList[index].filesInSetList.length > 1
-                                                        ? Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} Files',
+                                                        ? Text('${setsList[index].numOfItems}${curLangText!.itemsLabelText} | ${setsList[index].filesInSetList.length}${curLangText!.filesLabelText}',
                                                             style: const TextStyle(
                                                               fontSize: 13,
                                                             ))
-                                                        : Text('${setsList[index].numOfItems} Item | ${setsList[index].filesInSetList.length} File',
+                                                        : Text('${setsList[index].numOfItems}${curLangText!.itemLabelText} | ${setsList[index].filesInSetList.length}${curLangText!.fileLabelText}',
                                                             style: const TextStyle(
                                                               fontSize: 13,
                                                             ))
                                                     : setsList[index].filesInSetList.length > 1
-                                                        ? Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} Files',
+                                                        ? Text('${setsList[index].numOfItems}${curLangText!.itemsLabelText} | ${setsList[index].filesInSetList.length}${curLangText!.filesLabelText}',
                                                             style: const TextStyle(
                                                               fontSize: 13,
                                                             ))
-                                                        : Text('${setsList[index].numOfItems} Items | ${setsList[index].filesInSetList.length} File',
+                                                        : Text('${setsList[index].numOfItems}${curLangText!.itemsLabelText} | ${setsList[index].filesInSetList.length}${curLangText!.fileLabelText}',
                                                             style: const TextStyle(
                                                               fontSize: 13,
                                                             ))),
@@ -3643,7 +3576,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2),
                                                 child: setsList[index].filesInSetList.indexWhere((element) => element.isApplied) != -1
                                                     ? Tooltip(
-                                                        message: 'One or more mod files in this set currently being applied to the game',
+                                                        message: curLangText!.curFilesInSetAppliedTooltipText,
                                                         height: 25,
                                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                         waitDuration: const Duration(milliseconds: 500),
@@ -3654,10 +3587,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                             ),
                                                             child: setsList[index].filesInSetList.where((element) => element.isApplied).length > 1
-                                                                ? Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} Files Applied',
+                                                                ? Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} ${curLangText!.fileAppliedLabelText}',
                                                                     style: TextStyle(
                                                                         fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))
-                                                                : Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} File Applied',
+                                                                : Text('${setsList[index].filesInSetList.where((element) => element.isApplied).length} ${curLangText!.fileAppliedLabelText}',
                                                                     style: TextStyle(
                                                                         fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber))),
                                                       )
@@ -3700,7 +3633,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               width: 40,
                                               height: 40,
                                               child: Tooltip(
-                                                message: 'Unapply mods under ${setsList[index].setName} set from the game',
+                                                message: '${curLangText!.unapplyModUnderTooltipText}${setsList[index].setName}${curLangText!.fromTheGameTooltipText}',
                                                 height: 25,
                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                 waitDuration: const Duration(seconds: 1),
@@ -3753,7 +3686,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               width: 40,
                                               height: 40,
                                               child: Tooltip(
-                                                message: 'Apply mods under ${setsList[index].setName} set to the game',
+                                                message: '${curLangText!.applyModUnderTooltipText}"${setsList[index].setName}"${curLangText!.toTheGameTooltipText}',
                                                 height: 25,
                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                 waitDuration: const Duration(seconds: 1),
@@ -3789,7 +3722,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       children: [
                                                                         for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                           Text(
-                                                                              'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                              '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                       ],
                                                                     ),
                                                                   )));
@@ -3806,7 +3739,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       children: [
                                                                         for (int i = 0; i < modAppliedDup.length; i++)
                                                                           Text(
-                                                                              'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                              '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                       ],
                                                                     ),
                                                                   )));
@@ -3831,7 +3764,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       SizedBox(
                                         width: 40,
                                         child: Tooltip(
-                                            message: 'Hold to delete ${setsList[index].setName}',
+                                            message: '${curLangText!.holdToDeleteBtnTooltipText} ${setsList[index].setName}',
                                             height: 25,
                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                             waitDuration: const Duration(seconds: 2),
@@ -3842,12 +3775,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   onPressed: (() {}),
                                                   onLongPress: (() {
                                                     if (setsList[index].filesInSetList.indexWhere((element) => element.isApplied) != -1) {
-                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          duration: Duration(seconds: 3),
+                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                          duration: const Duration(seconds: 3),
                                                           //backgroundColor: Theme.of(context).focusColor,
                                                           content: SizedBox(
                                                             height: 20,
-                                                            child: Text('There are mod files currently being applied. Unapply them first!'),
+                                                            child: Text(curLangText!.setRemovalErrorText),
                                                           )));
                                                     } else {
                                                       setsDropDownList.removeAt(index);
@@ -3885,7 +3818,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         AppBar(
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: modsSetAppBarName.isEmpty ? const Text('Mods In Set') : Text('Mods in $modsSetAppBarName')),
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: modsSetAppBarName.isEmpty ? Text(curLangText!.modsInSetHeaderText) : Text(modsSetAppBarName)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -3945,7 +3878,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 for (var vid in modFilesFromSetList[index].first.previewVids!) {
                                                   medias.add(Media.file(vid));
                                                 }
-                                                previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                                //previewPlayer.open(Playlist(medias: medias, playlistMode: PlaylistMode.single), autoStart: true);
+                                                previewPlayer.open(Playlist(medias: medias), autoStart: true);
                                               } else {
                                                 previewPlayer.bufferingProgressController.done;
                                                 previewPlayer.play();
@@ -4002,8 +3936,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         height: 40,
                                                         child: Tooltip(
                                                           message: modFilesFromSetList[index].first.isFav
-                                                              ? 'Remove "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" from favorites'
-                                                              : 'Add "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" to favorites',
+                                                              ? '${curLangText!.removeBtnTooltipText}"$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}"${curLangText!.fromFavTooltipText}'
+                                                              : '${curLangText!.addBtnTooltipText}"$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}"${curLangText!.toFavTooltipText}',
                                                           height: 25,
                                                           textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                           waitDuration: const Duration(seconds: 1),
@@ -4046,7 +3980,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Unapply all mods under "$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}" from the game',
+                                                            message:
+                                                                '${curLangText!.unapplyModUnderTooltipText}"$modsViewAppBarName ${modFilesFromSetList[index].first.iceParent}"${curLangText!.fromTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -4079,7 +4014,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Apply mods under ${modFilesFromSetList[index].first.iceParent} to the game',
+                                                            message: '"${curLangText!.applyModUnderTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
@@ -4111,7 +4046,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                                 children: [
                                                                                   for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                     Text(
-                                                                                        'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                        '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                                 ],
                                                                               ),
                                                                             )));
@@ -4128,7 +4063,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                                 children: [
                                                                                   for (int i = 0; i < modAppliedDup.length; i++)
                                                                                     Text(
-                                                                                        'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                        '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                                 ],
                                                                               ),
                                                                             )));
@@ -4147,7 +4082,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ),
                                                       if (!isViewingFav)
                                                         Tooltip(
-                                                            message: 'Hold to remove ${modFilesFromSetList[index].first.iceParent} from ${setsList[setApplyingIndex].setName} set',
+                                                            message:
+                                                                '${curLangText!.holdToRemoveBtnTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.fromText}"${setsList[setApplyingIndex].setName}"',
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 2),
@@ -4159,12 +4095,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                   onLongPress: (() {
                                                                     setState(() {
                                                                       if (modFilesFromSetList[index].indexWhere((element) => element.isApplied) != -1) {
-                                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                                            duration: Duration(seconds: 3),
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                            duration: const Duration(seconds: 3),
                                                                             //backgroundColor: Theme.of(context).focusColor,
                                                                             content: SizedBox(
                                                                               height: 20,
-                                                                              child: Text('There are mod files currently being applied. Unapply them first!'),
+                                                                              child: Text(curLangText!.setRemovalErrorText),
                                                                             )));
                                                                       } else {
                                                                         List<String> tempModList = setsList[setApplyingIndex].modFiles.split('|');
@@ -4229,7 +4165,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       height: 40,
                                                       child: modFilesFromSetList[index][i].isApplied
                                                           ? Tooltip(
-                                                              message: 'Unapply this mod from the game',
+                                                              message: curLangText!.unapplyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),
@@ -4258,7 +4194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < backupFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Backup file of "${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.originalFileOf}"${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -4268,7 +4204,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                 child: const Icon(Icons.replay),
                                                               ))
                                                           : Tooltip(
-                                                              message: 'Apply this mod to the game',
+                                                              message: curLangText!.applyThisModTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),
@@ -4299,7 +4235,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < originalFilesMissingList.length; i++)
                                                                                   Text(
-                                                                                      'Original file of "${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}" is not found'),
+                                                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
                                                                               ],
                                                                             ),
                                                                           )));
@@ -4316,7 +4252,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               children: [
                                                                                 for (int i = 0; i < modAppliedDup.length; i++)
                                                                                   Text(
-                                                                                      'Replaced: ${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                      '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
                                                                               ],
                                                                             ),
                                                                           )));

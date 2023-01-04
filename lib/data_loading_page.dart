@@ -26,7 +26,20 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  'Loading Data',
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CircularProgressIndicator(),
+              ],
+            );
           } else {
             if (snapshot.hasError) {
               return Column(
@@ -34,25 +47,33 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Error when loading data. Reload the app.',
-                    style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyText1?.color,
-                        fontSize: 20),
+                    'Error when loading data. Restart the app.',
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
                   ),
                 ],
               );
             } else if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Loading Data',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CircularProgressIndicator(),
+                ],
+              );
             } else {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
               modSetsListGet = getSetsList();
-              iceFiles =
-                  dataDir.listSync(recursive: true).whereType<File>().toList();
-              Provider.of<StateProvider>(context, listen: false)
-                  .cateListItemCountSetNoListener(cateList.length);
-              //print('${allModFiles.length} iceFiles Loaded');
+              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+              Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
 
               return const HomePage();
             }
