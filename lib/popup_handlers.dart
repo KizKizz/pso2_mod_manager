@@ -120,7 +120,6 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                   child: const Text('No'),
                   onPressed: () async {
                     if (!isReselect) {
-                      Navigator.of(context).pop();
                       mainModManDirPath = binDirPath;
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString('mainModManDirPath', mainModManDirPath);
@@ -180,6 +179,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         }
                       }
                       context.read<StateProvider>().mainModManPathFoundTrue();
+                      Navigator.of(context).pop();
                     } else {
                       Navigator.of(context).pop();
                     }

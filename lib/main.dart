@@ -17,9 +17,11 @@ import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
+import 'package:pso2_mod_manager/lang_loading_page.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
+import 'package:pso2_mod_manager/paths_loading_page.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
@@ -152,7 +154,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getAppVer();
     ApplicationConfig().checkForUpdates(context);
     languagePackCheck();
-    mainPathsCheck();
+    miscCheck();
+    //mainPathsCheck();
     //miscCheck();
     //dirPathCheck();
     super.initState();
@@ -274,780 +277,769 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     }
   }
 
-  void mainPathsCheck() async {
-    final prefs = await SharedPreferences.getInstance();
-    //prefs.clear();
-    binDirPath = prefs.getString('binDirPath') ?? '';
-    mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
-    if (binDirPath.isEmpty || mainModManDirPath.isEmpty) {
-      await getUILanguage();
-    }
+  // void mainPathsCheck() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   //prefs.clear();
+  //   binDirPath = prefs.getString('binDirPath') ?? '';
+  //   mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
 
-    if (mainModManDirPath.isEmpty) {
-      await getMainModManDirPath();
-    }
+  //   if (binDirPath.isEmpty || mainModManDirPath.isEmpty) {
+  //     await getUILanguage();
+  //   }
 
-    if (binDirPath.isEmpty) {
-      await getDirPath();
-    }
-  }
+  //   if (mainModManDirPath.isEmpty) {
+  //     await getMainModManDirPath();
+  //   }
 
-  Future<void> dirPathCheck() async {
-    final prefs = await SharedPreferences.getInstance();
-    //prefs.clear();
-    binDirPath = prefs.getString('binDirPath') ?? '';
-    mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
+  //   if (binDirPath.isEmpty) {
+  //     await getDirPath();
+  //   }
+  // }
 
-    if (mainModManDirPath.isNotEmpty) {
-      //Fill in paths
-      mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
-      modsDirPath = '$mainModDirPath${s}Mods';
-      backupDirPath = '$mainModDirPath${s}Backups';
-      checksumDirPath = '$mainModDirPath${s}Checksum';
-      modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
-      modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
-      deletedItemsPath = '$mainModDirPath${s}Deleted Items';
-      //Check if exist, create dirs
-      if (!Directory(mainModDirPath).existsSync()) {
-        await Directory(mainModDirPath).create(recursive: true);
-      }
-      if (!Directory(modsDirPath).existsSync()) {
-        await Directory(modsDirPath).create(recursive: true);
-        await Directory('$modsDirPath${s}Accessories').create(recursive: true);
-        await Directory('$modsDirPath${s}Basewears').create(recursive: true);
-        await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
-        await Directory('$modsDirPath${s}Emotes').create(recursive: true);
-        await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
-        await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
-        await Directory('$modsDirPath${s}Misc').create(recursive: true);
-        await Directory('$modsDirPath${s}Motions').create(recursive: true);
-        await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
-        await Directory('$modsDirPath${s}Setwears').create(recursive: true);
-      }
-      if (!Directory(backupDirPath).existsSync()) {
-        await Directory(backupDirPath).create(recursive: true);
-      }
-      if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
-        await Directory('$backupDirPath${s}win32_na').create(recursive: true);
-      }
-      if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
-        await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
-      }
-      if (!Directory(checksumDirPath).existsSync()) {
-        await Directory(checksumDirPath).create(recursive: true);
-      }
-      if (!File(deletedItemsPath).existsSync()) {
-        await Directory(deletedItemsPath).create(recursive: true);
-      }
-      if (!File(modSettingsPath).existsSync()) {
-        await File(modSettingsPath).create(recursive: true);
-      }
-      if (!File(modSetsSettingsPath).existsSync()) {
-        await File(modSetsSettingsPath).create(recursive: true);
-      }
+  // Future<void> dirPathCheck() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   //prefs.clear();
+  //   binDirPath = prefs.getString('binDirPath') ?? '';
+  //   mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
 
-      setState(() {
-        context.read<StateProvider>().mainModManPathFoundTrue();
-      });
+  //   if (mainModManDirPath.isNotEmpty && Directory(mainModManDirPath).existsSync()) {
+  //     //Fill in paths
+  //     mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
+  //     modsDirPath = '$mainModDirPath${s}Mods';
+  //     backupDirPath = '$mainModDirPath${s}Backups';
+  //     checksumDirPath = '$mainModDirPath${s}Checksum';
+  //     modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+  //     modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
+  //     deletedItemsPath = '$mainModDirPath${s}Deleted Items';
+  //     //Check if exist, create dirs
+  //     if (!Directory(mainModDirPath).existsSync()) {
+  //       await Directory(mainModDirPath).create(recursive: true);
+  //     }
+  //     if (!Directory(modsDirPath).existsSync()) {
+  //       await Directory(modsDirPath).create(recursive: true);
+  //       await Directory('$modsDirPath${s}Accessories').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Basewears').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Emotes').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Misc').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Motions').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
+  //       await Directory('$modsDirPath${s}Setwears').create(recursive: true);
+  //     }
+  //     if (!Directory(backupDirPath).existsSync()) {
+  //       await Directory(backupDirPath).create(recursive: true);
+  //     }
+  //     if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
+  //       await Directory('$backupDirPath${s}win32_na').create(recursive: true);
+  //     }
+  //     if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
+  //       await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
+  //     }
+  //     if (!Directory(checksumDirPath).existsSync()) {
+  //       await Directory(checksumDirPath).create(recursive: true);
+  //     }
+  //     if (!File(deletedItemsPath).existsSync()) {
+  //       await Directory(deletedItemsPath).create(recursive: true);
+  //     }
+  //     if (!File(modSettingsPath).existsSync()) {
+  //       await File(modSettingsPath).create(recursive: true);
+  //     }
+  //     if (!File(modSetsSettingsPath).existsSync()) {
+  //       await File(modSetsSettingsPath).create(recursive: true);
+  //     }
 
-      //Checksum check
-      if (checkSumFilePath == null) {
-        final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
-        for (var file in filesInCSFolder) {
-          if (p.extension(file.path) == '') {
-            checkSumFilePath = file.path;
-          }
-        }
-      }
-    }
-    if (binDirPath.isNotEmpty) {
-      setState(() {
-        context.read<StateProvider>().mainBinFoundTrue();
-      });
-    }
-  }
+  //     setState(() {
+  //       context.read<StateProvider>().mainModManPathFoundTrue();
+  //     });
 
-  Future<void> getUILanguage() async {
-    if (langList.isEmpty) {
-      langList = await translationLoader();
-      for (var lang in langList) {
-        langDropDownList.add(lang.langInitial);
-        if (lang.langFilePath != '$curLanguageDirPath$s${lang.langInitial}.json') {
-          lang.langFilePath = '$curLanguageDirPath$s${lang.langInitial}.json';
-          //Json Write
-          langList.map((translation) => translation.toJson()).toList();
-          File(langSettingsPath).writeAsStringSync(json.encode(langList));
-        }
-        if (lang.selected) {
-          langDropDownSelected = lang.langInitial;
-          curSelectedLangPath = '$curLanguageDirPath$s${lang.langInitial}.json';
-        }
-      }
-    }
+  //     //Checksum check
+  //     if (checkSumFilePath == null) {
+  //       final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
+  //       for (var file in filesInCSFolder) {
+  //         if (p.extension(file.path) == '') {
+  //           checkSumFilePath = file.path;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   if (binDirPath.isNotEmpty && Directory(binDirPath).existsSync()) {
+  //     setState(() {
+  //       context.read<StateProvider>().mainBinFoundTrue();
+  //     });
+  //   }
+  // }
 
-    if (curLangText == null) {
-      convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
-    }
+  // Future<void> getDirPath() async {
+  //   binDirDialog(context, 'Error', curLangText!.pso2binNotFoundPopupText, false);
+  // }
 
-    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
-  }
-
-  Future<void> getDirPath() async {
-    binDirDialog(context, 'Error', curLangText!.pso2binNotFoundPopupText, false);
-  }
-
-  Future<void> getMainModManDirPath() async {
-    mainModManDirDialog(context, curLangText!.modmanFolderNotFoundLabelText, curLangText!.modmanFolderNotFoundText, false);
-  }
+  // Future<void> getMainModManDirPath() async {
+  //   mainModManDirDialog(context, curLangText!.modmanFolderNotFoundLabelText, curLangText!.modmanFolderNotFoundText, false);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await miscCheck();
-      if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty) {
-        await dirPathCheck();
-      }
-      await Future.delayed(const Duration(seconds: 1));
-      if (curLangText == null) {
-        await getUILanguage();
-      }
-    });
+    // miscCheck();
+    // if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty) {
+    //   dirPathCheck();
+    // }
 
+    // if (curLangText == null) {
+    //  //getUILanguage();
+    // }
+
+    // WidgetsBinding.instance.addTimingsCallback((_) async {
+    //   await miscCheck();
+    //   if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty && await Directory(binDirPath).exists() && await Directory(mainModManDirPath).exists()) {
+    //     debugPrint(Directory(mainModManDirPath).exists().toString());
+    //     await dirPathCheck();
+    //   }
+    //   await Future.delayed(const Duration(milliseconds: 500));
+    //   if (curLangText == null) {
+    //     await getUILanguage();
+    //   }
+    // });
     return Scaffold(
-      body: WindowBorder(
-        color: Colors.transparent,
-        width: 0,
-        child: Column(
-          children: [
-            WindowTitleBarBox(
-              child: Container(
-                color: Theme.of(context).canvasColor,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: MoveWindow(
-                          child: Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Tooltip(
-                            message: 'Version: $appVersion | Made by キス★',
+      body: Column(
+        children: [
+          WindowTitleBarBox(
+            child: Container(
+              color: Theme.of(context).canvasColor,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MoveWindow(
+                        child: Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Tooltip(
+                          message: 'Version: $appVersion | Made by キス★',
+                          height: 25,
+                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          waitDuration: const Duration(seconds: 2),
+                          child: const Text(
+                            'PSO2NGS Mod Manager',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15
+                            ),
+                          )),
+                    )),
+                  ),
+
+                  //Buttons
+                  if (curLangText != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 9),
+                      child: Row(
+                        children: [
+                          //Path menu
+                          Tooltip(
+                            message: curLangText!.pathsReselectTooltipText,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 2),
-                            child: Text(
-                              'PSO2NGS Mod Manager',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: checkSumFilePath == null ? 13 : 15,
-                              ),
-                            )),
-                      )),
-                    ),
-
-                    //Buttons
-                    if (curLangText != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 9),
-                        child: Row(
-                          children: [
-                            //Path menu
-                            Tooltip(
-                              message: curLangText!.pathsReselectTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2(
-                                    customButton: AbsorbPointer(
-                                      absorbing: true,
-                                      child: MaterialButton(
-                                        onPressed: (() {}),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.folder_open_outlined,
-                                              size: 18,
-                                            ),
-                                            const SizedBox(width: 2.5),
-                                            Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                          ],
-                                        ),
+                            waitDuration: const Duration(seconds: 1),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: MaterialButton(
+                                      onPressed: (() {}),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.folder_open_outlined,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                        ],
                                       ),
                                     ),
-                                    isDense: true,
-                                    items: [
-                                      ...MenuItems.pathMenuItems.map(
-                                        (item) => DropdownMenuItem<MenuItem>(
+                                  ),
+                                  isDense: true,
+                                  items: [
+                                    ...MenuItems.pathMenuItems.map(
+                                      (item) => DropdownMenuItem<MenuItem>(
+                                        value: item,
+                                        child: MenuItems.buildItem(context, item),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    MenuItems.onChanged(context, value as MenuItem);
+                                  },
+                                  itemHeight: 35,
+                                  dropdownWidth: 130,
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                  ),
+                                  dropdownElevation: 8,
+                                  offset: const Offset(0, -3),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Open Folder menu
+                          Tooltip(
+                            message: curLangText!.foldersTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: MaterialButton(
+                                      onPressed: (() {}),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.folder_copy_outlined,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  isDense: true,
+                                  items: topBtnMenuItems
+                                      .map((item) => DropdownMenuItem<String>(
                                           value: item,
-                                          child: MenuItems.buildItem(context, item),
-                                        ),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      MenuItems.onChanged(context, value as MenuItem);
-                                    },
-                                    itemHeight: 35,
-                                    dropdownWidth: 130,
-                                    itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                    dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                                    dropdownDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                    ),
-                                    dropdownElevation: 8,
-                                    offset: const Offset(0, -3),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Open Folder menu
-                            Tooltip(
-                              message: curLangText!.foldersTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2(
-                                    customButton: AbsorbPointer(
-                                      absorbing: true,
-                                      child: MaterialButton(
-                                        onPressed: (() {}),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.folder_copy_outlined,
-                                              size: 18,
-                                            ),
-                                            const SizedBox(width: 2.5),
-                                            Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    isDense: true,
-                                    items: topBtnMenuItems
-                                        .map((item) => DropdownMenuItem<String>(
-                                            value: item,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
-                                                if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
-                                                if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets.only(bottom: 3),
-                                                  child: Text(
-                                                    item,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      //fontWeight: FontWeight.bold,
-                                                      //color: Colors.white,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
+                                              if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
+                                              if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.only(bottom: 3),
+                                                child: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    //fontWeight: FontWeight.bold,
+                                                    //color: Colors.white,
                                                   ),
-                                                )
-                                              ],
-                                            )))
-                                        .toList(),
-                                    onChanged: (value) async {
-                                      if (value == curLangText!.modsFolderBtnText) {
-                                        await launchUrl(Uri.parse('file:$modsDirPath'));
-                                      } else if (value == curLangText!.backupFolderBtnText) {
-                                        await launchUrl(Uri.parse('file:$backupDirPath'));
-                                      } else if (value == curLangText!.deletedItemsBtnText) {
-                                        await launchUrl(Uri.parse('file:$deletedItemsPath'));
-                                      }
-                                    },
-                                    itemHeight: 35,
-                                    dropdownWidth: 130,
-                                    itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                    dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                                    dropdownDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                    ),
-                                    dropdownElevation: 8,
-                                    offset: const Offset(0, -3),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              )
+                                            ],
+                                          )))
+                                      .toList(),
+                                  onChanged: (value) async {
+                                    if (value == curLangText!.modsFolderBtnText) {
+                                      await launchUrl(Uri.parse('file:$modsDirPath'));
+                                    } else if (value == curLangText!.backupFolderBtnText) {
+                                      await launchUrl(Uri.parse('file:$backupDirPath'));
+                                    } else if (value == curLangText!.deletedItemsBtnText) {
+                                      await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                                    }
+                                  },
+                                  itemHeight: 35,
+                                  dropdownWidth: 130,
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                   ),
+                                  dropdownElevation: 8,
+                                  offset: const Offset(0, -3),
                                 ),
                               ),
                             ),
+                          ),
 
-                            //Checksum
-                            Tooltip(
-                              message: curLangText!.checksumToolTipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: MaterialButton(
-                                onPressed: (() async {
-                                  if (checkSumFilePath == null) {
-                                    checksumLocation = await FilePicker.platform.pickFiles(
-                                      dialogTitle: curLangText!.checksumSelectPopupText,
-                                      allowMultiple: false,
-                                      // type: FileType.custom,
-                                      // allowedExtensions: ['\'\''],
-                                      lockParentWindow: true,
-                                    );
-                                    if (checksumLocation != null) {
-                                      String? checksumPath = checksumLocation!.paths.first;
-                                      File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
-                                      checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
-                                      setState(() {});
-                                    }
-                                  } else {
-                                    await launchUrl(Uri.parse('file:$checksumDirPath'));
+                          //Checksum
+                          Tooltip(
+                            message: curLangText!.checksumToolTipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                if (checkSumFilePath == null) {
+                                  checksumLocation = await FilePicker.platform.pickFiles(
+                                    dialogTitle: curLangText!.checksumSelectPopupText,
+                                    allowMultiple: false,
+                                    // type: FileType.custom,
+                                    // allowedExtensions: ['\'\''],
+                                    lockParentWindow: true,
+                                  );
+                                  if (checksumLocation != null) {
+                                    String? checksumPath = checksumLocation!.paths.first;
+                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
+                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    setState(() {});
                                   }
-                                }),
-                                child: checkSumFilePath != null
-                                    ? Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.fingerprint,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.checksumBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                        ],
-                                      )
-                                    : Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.fingerprint,
-                                            size: 18,
-                                            color: Colors.red,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                        ],
-                                      ),
-                              ),
-                            ),
-
-                            //Mod sets
-                            Tooltip(
-                              message: curLangText!.modSetsTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: SizedBox(
-                                width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() {
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                      modFilesFromSetList.clear();
-                                      modFilesList.clear();
-                                      modsSetAppBarName = '';
-                                      modsViewAppBarName = '';
-                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                    } else {
-                                      modFilesFromSetList.clear();
-                                      modFilesList.clear();
-                                      modsSetAppBarName = '';
-                                      modsViewAppBarName = '';
-                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                    }
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                } else {
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                }
+                              }),
+                              child: checkSumFilePath != null
+                                  ? Row(
+                                      children: [
                                         const Icon(
-                                          Icons.list_alt_outlined,
+                                          Icons.fingerprint,
                                           size: 18,
                                         ),
-                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                        const SizedBox(width: 2.5),
+                                        Text(curLangText!.checksumBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
                                         const Icon(
-                                          Icons.view_list_outlined,
+                                          Icons.fingerprint,
                                           size: 18,
+                                          color: Colors.red,
                                         ),
-                                      const SizedBox(width: 2.5),
-                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                        const SizedBox(width: 2.5),
+                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                      ],
+                                    ),
                             ),
+                          ),
 
-                            //Preview
-                            Tooltip(
-                              message: curLangText!.previewTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
+                          //Mod sets
+                          Tooltip(
+                            message: curLangText!.modSetsTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: SizedBox(
+                              width: 99,
                               child: MaterialButton(
-                                //visualDensity: VisualDensity.compact,
-                                onPressed: (() async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
-                                    Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
-                                    prefs.setBool('previewWindowVisible', false);
-                                    previewPlayer.stop();
+                                onPressed: (() {
+                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                   } else {
-                                    Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
-                                    prefs.setBool('previewWindowVisible', true);
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                   }
                                 }),
                                 child: Row(
                                   children: [
-                                    const Icon(
-                                      Icons.preview_outlined,
-                                      size: 18,
-                                    ),
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.list_alt_outlined,
+                                        size: 18,
+                                      ),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.view_list_outlined,
+                                        size: 18,
+                                      ),
                                     const SizedBox(width: 2.5),
-                                    Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
-                                    if (context.watch<StateProvider>().previewWindowVisible)
-                                      SizedBox(
-                                          width: 23,
-                                          child: Text('ON',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 13,
-                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
-                                    if (context.watch<StateProvider>().previewWindowVisible == false)
-                                      const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
                             ),
+                          ),
 
-                            //Dark theme
-                            if (MyApp.themeNotifier.value == ThemeMode.dark)
-                              Tooltip(
-                                message: curLangText!.lightModeTooltipText,
-                                height: 25,
-                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                waitDuration: const Duration(seconds: 1),
-                                child: SizedBox(
-                                  width: 70,
-                                  child: MaterialButton(
-                                    onPressed: (() async {
-                                      MyApp.themeNotifier.value = ThemeMode.light;
-                                      final prefs = await SharedPreferences.getInstance();
+                          //Preview
+                          Tooltip(
+                            message: curLangText!.previewTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              //visualDensity: VisualDensity.compact,
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                  prefs.setBool('previewWindowVisible', false);
+                                  previewPlayer.stop();
+                                } else {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  prefs.setBool('previewWindowVisible', true);
+                                }
+                              }),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.preview_outlined,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 2.5),
+                                  Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                  if (context.watch<StateProvider>().previewWindowVisible)
+                                    SizedBox(
+                                        width: 23,
+                                        child: Text('ON',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
+                                  if (context.watch<StateProvider>().previewWindowVisible == false)
+                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                ],
+                              ),
+                            ),
+                          ),
 
-                                      prefs.setBool('isDarkModeOn', false);
-                                      //setState(() {});
-                                    }),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.light_mode_outlined,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text(curLangText!.lightModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (MyApp.themeNotifier.value == ThemeMode.light)
-                              Tooltip(
-                                message: curLangText!.darkModeTooltipText,
-                                height: 25,
-                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                waitDuration: const Duration(seconds: 1),
-                                child: SizedBox(
-                                  width: 70,
-                                  child: MaterialButton(
-                                    onPressed: (() async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      MyApp.themeNotifier.value = ThemeMode.dark;
-                                      prefs.setBool('isDarkModeOn', true);
-                                      //setState(() {});
-                                    }),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.dark_mode_outlined,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text(curLangText!.darkModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                          //Dark theme
+                          if (MyApp.themeNotifier.value == ThemeMode.dark)
                             Tooltip(
-                              message: curLangText!.languageTooltipText,
+                              message: curLangText!.lightModeTooltipText,
                               height: 25,
                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                               waitDuration: const Duration(seconds: 1),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: InkWell(
-                                  onLongPress: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: const Text("Add a new language"),
-                                        content: SizedBox(
-                                          height: 110,
-                                          width: 300,
-                                          child: Column(
-                                            children: [
-                                              const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: SizedBox(
-                                                  height: 50,
-                                                  width: 60,
-                                                  child: TextFormField(
-                                                    inputFormatters: [UpperCaseTextFormatter()],
-                                                    controller: newLangTextController,
-                                                    maxLines: 1,
-                                                    maxLength: 2,
-                                                    style: const TextStyle(fontSize: 15),
-                                                    decoration: const InputDecoration(
-                                                      contentPadding: EdgeInsets.only(left: 10, top: 10),
-                                                      //hintText: '',
-                                                      border: OutlineInputBorder(),
-                                                      //isDense: true,
-                                                    ),
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Language initial can\'t be empty';
-                                                      }
-                                                      if (langDropDownList.indexWhere((e) => e == value) != -1) {
-                                                        return 'Language initial already exists';
-                                                      }
-                                                      return null;
-                                                    },
-                                                    onChanged: (text) {
-                                                      setState(() {
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      });
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(ctx).pop();
-                                            },
-                                            child: const Text("Cancel"),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
-                                              TranslationText? newText = curLangText;
-                                              if (!File(newLangPath).existsSync()) {
-                                                await File(newLangPath).create(recursive: true);
-                                              }
-                                              TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
-                                              langList.add(newLang);
-                                              langList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
-                                              langDropDownList.add(newLangTextController.text.toUpperCase());
-                                              newLangTextController.clear();
-                                              //Json Write
-                                              [newText].map((translText) => translText?.toJson()).toList();
-                                              File(newLangPath).writeAsStringSync(json.encode([newText]));
-                                              //Json Write
-                                              langList.map((translation) => translation.toJson()).toList();
-                                              File(langSettingsPath).writeAsStringSync(json.encode(langList));
-                                              setState(() {});
-                                              Navigator.of(ctx).pop();
-                                            },
-                                            child: const Text("Add"),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: DropdownButtonHideUnderline(
-                                      child: DropdownButton2(
-                                    customButton: AbsorbPointer(
-                                      absorbing: true,
-                                      child: SizedBox(
-                                        width: 34,
-                                        child: MaterialButton(
-                                          onPressed: (() {}),
-                                          child: Text(langDropDownSelected),
-                                        ),
-                                      ),
-                                    ),
-                                    dropdownDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                    ),
-                                    buttonDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                    isDense: true,
-                                    dropdownElevation: 3,
-                                    dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
-                                    //dropdownWidth: 250,
-                                    //offset: const Offset(-130, 0),
-                                    iconSize: 15,
-                                    itemHeight: 20,
-                                    itemPadding: const EdgeInsets.symmetric(horizontal: 5),
-                                    items: langDropDownList
-                                        .map((item) => DropdownMenuItem<String>(
-                                            value: item,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.only(bottom: 3),
-                                                  child: Text(
-                                                    item,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      //fontWeight: FontWeight.bold,
-                                                      //color: Colors.white,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                )
-                                              ],
-                                            )))
-                                        .toList(),
-                                    value: langDropDownSelected,
-                                    onChanged: (value) async {
-                                      langDropDownSelected = value.toString();
-                                      for (var lang in langList) {
-                                        if (lang.langInitial == value) {
-                                          lang.selected = true;
-                                          curSelectedLangPath = lang.langFilePath;
-                                          convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
-                                        } else {
-                                          lang.selected = false;
-                                        }
-                                      }
+                              child: SizedBox(
+                                width: 70,
+                                child: MaterialButton(
+                                  onPressed: (() async {
+                                    MyApp.themeNotifier.value = ThemeMode.light;
+                                    final prefs = await SharedPreferences.getInstance();
 
-                                      topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
-
-                                      //Json Write
-                                      langList.map((translation) => translation.toJson()).toList();
-                                      File(langSettingsPath).writeAsStringSync(json.encode(langList));
-                                      Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
-                                      setState(() {});
-                                      await Future.delayed(const Duration(seconds: 2));
-                                      Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
-                                      setState(() {});
-                                    },
-                                  )),
+                                    prefs.setBool('isDarkModeOn', false);
+                                    //setState(() {});
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.light_mode_outlined,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.lightModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          if (MyApp.themeNotifier.value == ThemeMode.light)
+                            Tooltip(
+                              message: curLangText!.darkModeTooltipText,
+                              height: 25,
+                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                              waitDuration: const Duration(seconds: 1),
+                              child: SizedBox(
+                                width: 70,
+                                child: MaterialButton(
+                                  onPressed: (() async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    MyApp.themeNotifier.value = ThemeMode.dark;
+                                    prefs.setBool('isDarkModeOn', true);
+                                    //setState(() {});
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.dark_mode_outlined,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.darkModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          Tooltip(
+                            message: curLangText!.languageTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: InkWell(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: const Text("Add a new language"),
+                                      content: SizedBox(
+                                        height: 110,
+                                        width: 300,
+                                        child: Column(
+                                          children: [
+                                            const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                height: 50,
+                                                width: 60,
+                                                child: TextFormField(
+                                                  inputFormatters: [UpperCaseTextFormatter()],
+                                                  controller: newLangTextController,
+                                                  maxLines: 1,
+                                                  maxLength: 2,
+                                                  style: const TextStyle(fontSize: 15),
+                                                  decoration: const InputDecoration(
+                                                    contentPadding: EdgeInsets.only(left: 10, top: 10),
+                                                    //hintText: '',
+                                                    border: OutlineInputBorder(),
+                                                    //isDense: true,
+                                                  ),
+                                                  validator: (value) {
+                                                    if (value == null || value.isEmpty) {
+                                                      return 'Language initial can\'t be empty';
+                                                    }
+                                                    if (langDropDownList.indexWhere((e) => e == value) != -1) {
+                                                      return 'Language initial already exists';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  onChanged: (text) {
+                                                    setState(() {
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text("Cancel"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
+                                            TranslationText? newText = curLangText;
+                                            if (!File(newLangPath).existsSync()) {
+                                              await File(newLangPath).create(recursive: true);
+                                            }
+                                            TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                            langList.add(newLang);
+                                            langList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
+                                            langDropDownList.add(newLangTextController.text.toUpperCase());
+                                            newLangTextController.clear();
+                                            //Json Write
+                                            [newText].map((translText) => translText?.toJson()).toList();
+                                            File(newLangPath).writeAsStringSync(json.encode([newText]));
+                                            //Json Write
+                                            langList.map((translation) => translation.toJson()).toList();
+                                            File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                            setState(() {});
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text("Add"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: DropdownButtonHideUnderline(
+                                    child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: SizedBox(
+                                      width: 34,
+                                      child: MaterialButton(
+                                        onPressed: (() {}),
+                                        child: Text(langDropDownSelected),
+                                      ),
+                                    ),
+                                  ),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                  ),
+                                  buttonDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  isDense: true,
+                                  dropdownElevation: 3,
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
+                                  //dropdownWidth: 250,
+                                  //offset: const Offset(-130, 0),
+                                  iconSize: 15,
+                                  itemHeight: 20,
+                                  itemPadding: const EdgeInsets.symmetric(horizontal: 5),
+                                  items: langDropDownList
+                                      .map((item) => DropdownMenuItem<String>(
+                                          value: item,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.only(bottom: 3),
+                                                child: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    //fontWeight: FontWeight.bold,
+                                                    //color: Colors.white,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              )
+                                            ],
+                                          )))
+                                      .toList(),
+                                  value: langDropDownSelected,
+                                  onChanged: (value) async {
+                                    langDropDownSelected = value.toString();
+                                    for (var lang in langList) {
+                                      if (lang.langInitial == value) {
+                                        lang.selected = true;
+                                        curSelectedLangPath = lang.langFilePath;
+                                        convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
+                                      } else {
+                                        lang.selected = false;
+                                      }
+                                    }
+
+                                    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+
+                                    //Json Write
+                                    langList.map((translation) => translation.toJson()).toList();
+                                    File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
+                                    setState(() {});
+                                    await Future.delayed(const Duration(seconds: 2));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
+                                    setState(() {});
+                                  },
+                                )),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    const WindowButtons(),
-                  ],
-                ),
+                    ),
+                  const WindowButtons(),
+                ],
               ),
             ),
+          ),
 
-            //New version banner
-            if (context.watch<StateProvider>().isUpdateAvailable)
-              ScaffoldMessenger(
-                  child: MaterialBanner(
-                backgroundColor: Theme.of(context).canvasColor,
-                elevation: 0,
-                padding: const EdgeInsets.all(0),
-                leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-                leading: Icon(
-                  Icons.new_releases,
-                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
-                ),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          curLangText!.newUpdateAvailText,
-                          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
-                        ),
-                        TextButton(
-                            onPressed: (() {
-                              setState(() {
-                                patchNotesDialog(context);
-                              });
-                            }),
-                            child: Text(curLangText!.patchNoteLabelText)),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: ElevatedButton(
-                              onPressed: (() {
-                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                                setState(() {});
-                              }),
-                              child: Text(curLangText!.dismissBtnText)),
-                        ),
-                        ElevatedButton(
+          //New version banner
+          if (context.watch<StateProvider>().isUpdateAvailable)
+            ScaffoldMessenger(
+                child: MaterialBanner(
+              backgroundColor: Theme.of(context).canvasColor,
+              elevation: 0,
+              padding: const EdgeInsets.all(0),
+              leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+              leading: Icon(
+                Icons.new_releases,
+                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        curLangText!.newUpdateAvailText,
+                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
+                      ),
+                      TextButton(
+                          onPressed: (() {
+                            setState(() {
+                              patchNotesDialog(context);
+                            });
+                          }),
+                          child: Text(curLangText!.patchNoteLabelText)),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: ElevatedButton(
                             onPressed: (() {
                               Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                              setState(() {});
                             }),
-                            child: Text(curLangText!.updateBtnText)),
-                      ],
-                    )
-                  ],
-                ),
-                actions: const [SizedBox()],
-              )),
-
-            curLangText == null
-                ? Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Loading UI',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CircularProgressIndicator(),
-                      ],
-                    ),
-                  )
-                : context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
-                    ? const DataLoadingPage()
-                    : Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              curLangText!.waitingUserActionText,
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const CircularProgressIndicator(),
-                          ],
-                        ),
+                            child: Text(curLangText!.dismissBtnText)),
                       ),
-          ],
-        ),
+                      ElevatedButton(
+                          onPressed: (() {
+                            Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                            launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                          }),
+                          child: Text(curLangText!.updateBtnText)),
+                    ],
+                  )
+                ],
+              ),
+              actions: const [SizedBox()],
+            )),
+
+            Expanded(
+              child: curLangText == null
+              ? const LangLoadingPage()
+              : const PathsLoadingPage()
+            )
+            
+
+          //Switching Page
+          //const LangLoadingPage()
+          // ? Expanded(
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       children: const [
+          //         Text(
+          //           'Loading UI',
+          //           style: TextStyle(fontSize: 20),
+          //         ),
+          //         SizedBox(
+          //           height: 20,
+          //         ),
+          //         CircularProgressIndicator(),
+          //       ],
+          //     ),
+          //   )
+          // : context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
+          //     ? const DataLoadingPage()
+          //     : Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           crossAxisAlignment: CrossAxisAlignment.center,
+          //           children: [
+          //             Text(
+          //               curLangText!.waitingUserActionText,
+          //               style: const TextStyle(fontSize: 20),
+          //             ),
+          //             const SizedBox(
+          //               height: 20,
+          //             ),
+          //             const CircularProgressIndicator(),
+          //           ],
+          //         ),
+          //       ),
+        ],
       ),
     );
   }

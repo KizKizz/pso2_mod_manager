@@ -218,23 +218,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 highlightedColor: Theme.of(context).primaryColor)),
         child: mainViews);
 
-    return Expanded(
-        child: context.watch<StateProvider>().languageReload
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    curLangText!.loadingUIText,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const CircularProgressIndicator(),
-                ],
-              )
-            : viewsTheme);
+    return context.watch<StateProvider>().languageReload
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                curLangText!.loadingUIText,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const CircularProgressIndicator(),
+            ],
+          )
+        : viewsTheme;
   }
 
   Widget itemsView() {

@@ -26,8 +26,34 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Expanded(
-              child: Column(
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  'Loading Data',
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CircularProgressIndicator(),
+              ],
+            );
+          } else {
+            if (snapshot.hasError) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error when loading data. Restart the app.',
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                  ),
+                ],
+              );
+            } else if (!snapshot.hasData) {
+              return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
@@ -40,38 +66,6 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                   ),
                   CircularProgressIndicator(),
                 ],
-              ),
-            );
-          } else {
-            if (snapshot.hasError) {
-              return Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Error when loading data. Restart the app.',
-                      style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
-                    ),
-                  ],
-                ),
-              );
-            } else if (!snapshot.hasData) {
-              return Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Text(
-                      'Loading Data',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CircularProgressIndicator(),
-                  ],
-                ),
               );
             } else {
               allModFiles = snapshot.data;
