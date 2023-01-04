@@ -1,8 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.5.3",
+    "version": "1.5.4",
     "description": [
-        "Fixed Win10 blank page part 2"
+        "Added multilanguage support",
+        "(Add your own language by click and hold on the 'language switch' button, then edit the corresponding .json file in the 'Language' folder)",
+        "Removed temporary win10 blank app fixes since dependencies upgraded (Let me know if it still happens)",
+        "Some bug fixes and other optimization"
     ],
     "windows_file": "",
     "linux_file": ""
