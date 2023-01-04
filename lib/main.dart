@@ -151,8 +151,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     windowManager.addListener(this);
     getAppVer();
     ApplicationConfig().checkForUpdates(context);
-    // miscCheck();
-    // dirPathCheck();
+    languagePackCheck();
+    mainPathsCheck();
+    //miscCheck();
+    //dirPathCheck();
     super.initState();
   }
 
@@ -187,15 +189,116 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     });
   }
 
+  Future<void> languagePackCheck() async {
+    curLanguageDirPath = '${Directory.current.path}${s}Language';
+    langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
+
+    if (!File(langSettingsPath).existsSync()) {
+      await File(langSettingsPath).create(recursive: true);
+      TranslationLanguage newENLang = TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
+      await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
+      TranslationText newEN = defaultUILangLoader();
+      //Json Write
+      [newEN].map((translationText) => translationText.toJson()).toList();
+      File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
+      langList.add(newENLang);
+      langDropDownList.add(newLangTextController.text.toUpperCase());
+      //Json Write
+      langList.map((translation) => translation.toJson()).toList();
+      File(langSettingsPath).writeAsStringSync(json.encode(langList));
+      langList = await translationLoader();
+      for (var lang in langList) {
+        langDropDownList.add(lang.langInitial);
+        if (lang.langFilePath != '$curLanguageDirPath$s${lang.langInitial}.json') {
+          lang.langFilePath = '$curLanguageDirPath$s${lang.langInitial}.json';
+          //Json Write
+          langList.map((translation) => translation.toJson()).toList();
+          File(langSettingsPath).writeAsStringSync(json.encode(langList));
+        }
+        if (lang.selected) {
+          langDropDownSelected = lang.langInitial;
+          curSelectedLangPath = '$curLanguageDirPath$s${lang.langInitial}.json';
+        }
+      }
+    } else {
+      List<TranslationLanguage> tempLangList = await translationLoader();
+      for (var lang in tempLangList) {
+        if (!File(lang.langFilePath).existsSync()) {
+          if (lang.selected) {
+            if (lang.langInitial != 'EN') {
+              tempLangList.singleWhere((element) => element.langInitial == 'EN').selected = true;
+            } else {
+              await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
+              TranslationText newEN = defaultUILangLoader();
+              //Json Write
+              [newEN].map((translationText) => translationText.toJson()).toList();
+              File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
+            }
+          }
+        } else {
+          if (lang.langInitial == 'EN') {
+            TranslationText newEN = defaultUILangLoader();
+            //Json Write
+            [newEN].map((translationText) => translationText.toJson()).toList();
+            File(lang.langFilePath).writeAsStringSync(json.encode([newEN]));
+          } else {
+            String curLangString = File('$curLanguageDirPath${s}EN.json').readAsStringSync();
+            curLangString = curLangString.replaceRange(0, 2, '');
+            curLangString = curLangString.replaceRange(curLangString.length - 2, null, '');
+            List<String> newTranslationItems = curLangString.split('",');
+            String tempTranslationFromFile = File(lang.langFilePath).readAsStringSync();
+            tempTranslationFromFile = tempTranslationFromFile.replaceRange(0, 2, '');
+            tempTranslationFromFile = tempTranslationFromFile.replaceRange(tempTranslationFromFile.length - 2, null, '');
+            List<String> curTranslationItems = tempTranslationFromFile.split('",');
+            curTranslationItems.last = curTranslationItems.last.replaceRange(curTranslationItems.last.length - 1, null, '');
+            String curLastItem = curTranslationItems.last;
+
+            if (newTranslationItems.length != curTranslationItems.length) {
+              for (var item in newTranslationItems) {
+                if (curTranslationItems.indexWhere((element) => element.substring(0, element.indexOf(':')) == item.substring(0, item.indexOf(':'))) == -1) {
+                  curTranslationItems.insert(newTranslationItems.indexOf(item), item);
+                }
+              }
+              String finalTranslation = curTranslationItems.join('",');
+              finalTranslation = finalTranslation.padLeft(finalTranslation.length + 1, '[{');
+              if (curLastItem == curTranslationItems.last) {
+                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '"}]');
+              } else {
+                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
+              }
+              File(lang.langFilePath).writeAsStringSync(finalTranslation);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  void mainPathsCheck() async {
+    final prefs = await SharedPreferences.getInstance();
+    //prefs.clear();
+    binDirPath = prefs.getString('binDirPath') ?? '';
+    mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
+    if (binDirPath.isEmpty || mainModManDirPath.isEmpty) {
+      await getUILanguage();
+    }
+
+    if (mainModManDirPath.isEmpty) {
+      await getMainModManDirPath();
+    }
+
+    if (binDirPath.isEmpty) {
+      await getDirPath();
+    }
+  }
+
   Future<void> dirPathCheck() async {
     final prefs = await SharedPreferences.getInstance();
     //prefs.clear();
     binDirPath = prefs.getString('binDirPath') ?? '';
     mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
 
-    if (mainModManDirPath.isEmpty) {
-      getMainModManDirPath();
-    } else {
+    if (mainModManDirPath.isNotEmpty) {
       //Fill in paths
       mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
       modsDirPath = '$mainModDirPath${s}Mods';
@@ -203,8 +306,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       checksumDirPath = '$mainModDirPath${s}Checksum';
       modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
       modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
-      curLanguageDirPath = '${Directory.current.path}${s}Language';
-      langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
       deletedItemsPath = '$mainModDirPath${s}Deleted Items';
       //Check if exist, create dirs
       if (!Directory(mainModDirPath).existsSync()) {
@@ -244,85 +345,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       if (!File(modSetsSettingsPath).existsSync()) {
         await File(modSetsSettingsPath).create(recursive: true);
       }
-      if (!File(langSettingsPath).existsSync()) {
-        await File(langSettingsPath).create(recursive: true);
-        TranslationLanguage newENLang = TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
-        await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
-        TranslationText newEN = defaultUILangLoader();
-        //Json Write
-        [newEN].map((translationText) => translationText.toJson()).toList();
-        File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
-        langList.add(newENLang);
-        langDropDownList.add(newLangTextController.text.toUpperCase());
-        //Json Write
-        langList.map((translation) => translation.toJson()).toList();
-        File(langSettingsPath).writeAsStringSync(json.encode(langList));
-        langList = await translationLoader();
-        for (var lang in langList) {
-          langDropDownList.add(lang.langInitial);
-          if (lang.langFilePath != '$curLanguageDirPath$s${lang.langInitial}.json') {
-            lang.langFilePath = '$curLanguageDirPath$s${lang.langInitial}.json';
-            //Json Write
-            langList.map((translation) => translation.toJson()).toList();
-            File(langSettingsPath).writeAsStringSync(json.encode(langList));
-          }
-          if (lang.selected) {
-            langDropDownSelected = lang.langInitial;
-            curSelectedLangPath = '$curLanguageDirPath$s${lang.langInitial}.json';
-          }
-        }
-      } else {
-        List<TranslationLanguage> tempLangList = await translationLoader();
-        for (var lang in tempLangList) {
-          if (!File(lang.langFilePath).existsSync()) {
-            if (lang.selected) {
-              if (lang.langInitial != 'EN') {
-                tempLangList.singleWhere((element) => element.langInitial == 'EN').selected = true;
-              } else {
-                await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
-                TranslationText newEN = defaultUILangLoader();
-                //Json Write
-                [newEN].map((translationText) => translationText.toJson()).toList();
-                File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
-              }
-            }
-          } else {
-            if (lang.langInitial == 'EN') {
-              TranslationText newEN = defaultUILangLoader();
-              //Json Write
-              [newEN].map((translationText) => translationText.toJson()).toList();
-              File(lang.langFilePath).writeAsStringSync(json.encode([newEN]));
-            } else {
-              String curLangString = File('$curLanguageDirPath${s}EN.json').readAsStringSync();
-              curLangString = curLangString.replaceRange(0, 2, '');
-              curLangString = curLangString.replaceRange(curLangString.length - 2, null, '');
-              List<String> newTranslationItems = curLangString.split('",');
-              String tempTranslationFromFile = File(lang.langFilePath).readAsStringSync();
-              tempTranslationFromFile = tempTranslationFromFile.replaceRange(0, 2, '');
-              tempTranslationFromFile = tempTranslationFromFile.replaceRange(tempTranslationFromFile.length - 2, null, '');
-              List<String> curTranslationItems = tempTranslationFromFile.split('",');
-              curTranslationItems.last = curTranslationItems.last.replaceRange(curTranslationItems.last.length - 1, null, '');
-              String curLastItem = curTranslationItems.last;
-
-              if (newTranslationItems.length != curTranslationItems.length) {
-                for (var item in newTranslationItems) {
-                  if (curTranslationItems.indexWhere((element) => element.substring(0, element.indexOf(':')) == item.substring(0, item.indexOf(':'))) == -1) {
-                    curTranslationItems.insert(newTranslationItems.indexOf(item), item);
-                  }
-                }
-                String finalTranslation = curTranslationItems.join('",');
-                finalTranslation = finalTranslation.padLeft(finalTranslation.length + 1, '[{');
-                if (curLastItem == curTranslationItems.last) {
-                  finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '"}]');
-                } else {
-                  finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
-                }
-                File(lang.langFilePath).writeAsStringSync(finalTranslation);
-              }
-            }
-          }
-        }
-      }
 
       setState(() {
         context.read<StateProvider>().mainModManPathFoundTrue();
@@ -338,18 +360,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         }
       }
     }
-    if (binDirPath.isEmpty) {
-      getDirPath();
-    } else {
+    if (binDirPath.isNotEmpty) {
       setState(() {
         context.read<StateProvider>().mainBinFoundTrue();
       });
     }
-
-    //getUILanguage();
   }
 
-  void getUILanguage() async {
+  Future<void> getUILanguage() async {
     if (langList.isEmpty) {
       langList = await translationLoader();
       for (var lang in langList) {
@@ -374,11 +392,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
   }
 
-  void getDirPath() {
+  Future<void> getDirPath() async {
     binDirDialog(context, 'Error', curLangText!.pso2binNotFoundPopupText, false);
   }
 
-  void getMainModManDirPath() {
+  Future<void> getMainModManDirPath() async {
     mainModManDirDialog(context, curLangText!.modmanFolderNotFoundLabelText, curLangText!.modmanFolderNotFoundText, false);
   }
 
@@ -386,9 +404,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await miscCheck();
-      await dirPathCheck();
+      if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty) {
+        await dirPathCheck();
+      }
       await Future.delayed(const Duration(seconds: 1));
-      getUILanguage();
+      if (curLangText == null) {
+        await getUILanguage();
+      }
     });
 
     return Scaffold(

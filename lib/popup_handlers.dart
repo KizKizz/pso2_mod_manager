@@ -111,7 +111,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
             ),
             contentPadding: const EdgeInsets.only(left: 16, right: 16),
             content: Container(
-                //width: 300,
+                width: isReselect ? null : 350,
                 height: 90,
                 constraints: const BoxConstraints(minWidth: 300),
                 child: Text(popupMessage)),
@@ -336,6 +336,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             await File(langSettingsPath).create(recursive: true);
                           }
                           context.read<StateProvider>().mainBinFoundTrue();
+                          Navigator.of(context).pop();
 
                           allModFiles = await modsLoader();
                           cateList = categories(allModFiles);
@@ -345,7 +346,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           context.read<StateProvider>().cateListItemCountSet(cateList.length);
                           //Provider.of<StateProvider>(context, listen: false).cateListItemCountSet(cateList.length);
                           setState(() {});
-                          Navigator.of(context).pop();
+                          
                         }
                       }
                     }
