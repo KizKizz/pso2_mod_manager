@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
+import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/lang_loading_page.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
@@ -420,14 +421,83 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           waitDuration: const Duration(seconds: 2),
                           child: const Text(
                             'PSO2NGS Mod Manager',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
                           )),
                     )),
                   ),
-
+                  //Debug Button
+                  Tooltip(
+                    message: 'Test Button',
+                    height: 25,
+                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                    waitDuration: const Duration(seconds: 1),
+                    child: SizedBox(
+                      width: 70,
+                      child: MaterialButton(
+                        onPressed: (() async {
+                          showDialog(
+                              context: context,
+                              builder: ((context) => AlertDialog(
+                                  title: const Text('Testing Windows'),
+                                  content: SizedBox(
+                                    width: windowsWidth - 50,
+                                    height: windowsHeight - 50,
+                                    child: FutureBuilder(
+                                        future: populateSheetsList(ngsRefSheetsDirPath),
+                                        builder: ((
+                                          BuildContext context,
+                                          AsyncSnapshot snapshot,
+                                        ) {
+                                          if (snapshot.connectionState == ConnectionState.done) {
+                                            //debugPrint(snapshot.data.toString());
+                                            ngsRefSheetsList = snapshot.data;
+                                          }
+                                          return snapshot.connectionState == ConnectionState.done
+                                              ? Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: SingleChildScrollView(
+                                                    child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      itemCount: ngsRefSheetsList.length,
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        return SizedBox(
+                                                          //width: 500,
+                                                          height: 500,
+                                                          child:
+                                                          
+                                                           SingleChildScrollView(
+                                                             child: Column(
+                                                                  children: [
+                                                                    for (int x = 0; x < ngsRefSheetsList[index].length; x++)
+                                                                    Column(children: [
+                                                                      for (int y = 0; y < ngsRefSheetsList[index][x].length; y++)
+                                                                      Text(ngsRefSheetsList[index][x][y].toString())
+                                                                    ],)
+                                                                  ],
+                                                                ),
+                                                           )
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                )
+                                              : const CircularProgressIndicator();
+                                        })),
+                                  ))));
+                        }),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.tab,
+                              size: 18,
+                            ),
+                            SizedBox(width: 2.5),
+                            Text('Test', style: TextStyle(fontWeight: FontWeight.w400))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   //Buttons
                   if (curLangText != null)
                     Padding(
@@ -996,12 +1066,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               actions: const [SizedBox()],
             )),
 
-            Expanded(
-              child: curLangText == null
-              ? const LangLoadingPage()
-              : const PathsLoadingPage()
-            )
-            
+          Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
 
           //Switching Page
           //const LangLoadingPage()
