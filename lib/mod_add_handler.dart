@@ -16,8 +16,13 @@ List<XFile> modsToAddList = [];
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
-List<String> _basewearCsv = ['GenderlessNGSBasewear.csv', 'FemaleNGSBasewear.csv', 'MaleNGSBasewear.csv', 'FemaleBasewear.csv', 'MaleBasewear.csv'];
-
+List<String> _basewearCsv = [
+  'GenderlessNGSBasewear.csv',
+  'FemaleNGSBasewear.csv',
+  'MaleNGSBasewear.csv',
+  'FemaleBasewear.csv',
+  'MaleBasewear.csv'
+];
 
 void modAddHandler(context) {
   showDialog(
@@ -28,18 +33,22 @@ void modAddHandler(context) {
           return AlertDialog(
               title: const Text('Adding mods'),
               titlePadding: const EdgeInsets.all(5),
-              contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+              contentPadding:
+                  const EdgeInsets.only(left: 5, right: 5, bottom: 5),
               content: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+                  child: LayoutBuilder(builder:
+                      (BuildContext context, BoxConstraints constraints) {
                     return FutureBuilder(
                       future: popSheetsList(refSheetsDirPath),
                       builder: ((
                         BuildContext context,
                         AsyncSnapshot snapshot,
                       ) {
-                        if (snapshot.connectionState == ConnectionState.waiting && ngsRefSheetsList.isEmpty) {
+                        if (snapshot.connectionState ==
+                                ConnectionState.waiting &&
+                            ngsRefSheetsList.isEmpty) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,7 +75,10 @@ void modAddHandler(context) {
                                   //enable: true,
                                   onDragDone: (detail) async {
                                     for (var element in detail.files) {
-                                      if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
+                                      if (_newModDragDropList.indexWhere(
+                                              (file) =>
+                                                  file.path == element.path) ==
+                                          -1) {
                                         _newModDragDropList.add(element);
                                       }
                                     }
@@ -87,41 +99,69 @@ void modAddHandler(context) {
                                   child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(color: Theme.of(context).hintColor),
-                                        color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
+                                        border: Border.all(
+                                            color: Theme.of(context).hintColor),
+                                        color: _newModDragging
+                                            ? Colors.blue.withOpacity(0.4)
+                                            : Colors.black26,
                                       ),
                                       height: constraints.maxHeight - 33,
                                       width: constraints.maxWidth * 0.3,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          if (_newModDragDropList.isEmpty) const Center(child: Text('Drag and drop files here')),
+                                          if (_newModDragDropList.isEmpty)
+                                            const Center(
+                                                child: Text(
+                                                    'Drag and drop files here')),
                                           if (_newModDragDropList.isNotEmpty)
                                             Expanded(
                                               child: Padding(
-                                                padding: const EdgeInsets.only(right: 5),
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
                                                 child: SizedBox(
                                                     width: constraints.maxWidth,
-                                                    height: constraints.maxHeight,
+                                                    height:
+                                                        constraints.maxHeight,
                                                     child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 0),
                                                       child: ListView.builder(
-                                                          itemCount: _newModDragDropList.length,
-                                                          itemBuilder: (BuildContext context, int index) {
+                                                          itemCount:
+                                                              _newModDragDropList
+                                                                  .length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
                                                             return ListTile(
                                                               dense: true,
                                                               // leading: const Icon(
                                                               //     Icons.list),
-                                                              trailing: SizedBox(
+                                                              trailing:
+                                                                  SizedBox(
                                                                 width: 40,
                                                                 child: Tooltip(
-                                                                  message: 'Remove',
-                                                                  waitDuration: const Duration(seconds: 2),
-                                                                  child: MaterialButton(
-                                                                    child: const Icon(Icons.remove_circle),
-                                                                    onPressed: () {
-                                                                      _newModDragDropList.removeAt(index);
+                                                                  message:
+                                                                      'Remove',
+                                                                  waitDuration:
+                                                                      const Duration(
+                                                                          seconds:
+                                                                              2),
+                                                                  child:
+                                                                      MaterialButton(
+                                                                    child: const Icon(
+                                                                        Icons
+                                                                            .remove_circle),
+                                                                    onPressed:
+                                                                        () {
+                                                                      _newModDragDropList
+                                                                          .removeAt(
+                                                                              index);
                                                                       setState(
                                                                         () {},
                                                                       );
@@ -129,10 +169,18 @@ void modAddHandler(context) {
                                                                   ),
                                                                 ),
                                                               ),
-                                                              title: Text(_newModDragDropList[index].name),
+                                                              title: Text(
+                                                                  _newModDragDropList[
+                                                                          index]
+                                                                      .name),
                                                               subtitle: Text(
-                                                                _newModDragDropList[index].path,
-                                                                style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                                                _newModDragDropList[
+                                                                        index]
+                                                                    .path,
+                                                                style: const TextStyle(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis),
                                                               ),
                                                             );
                                                           }),
@@ -147,18 +195,21 @@ void modAddHandler(context) {
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Expanded(
                                           child: ElevatedButton(
-                                              onPressed: _newModDragDropList.isNotEmpty
-                                                  ? (() {
-                                                      _newModDragDropList.clear();
-                                                      setState(
-                                                        () {},
-                                                      );
-                                                    })
-                                                  : null,
+                                              onPressed:
+                                                  _newModDragDropList.isNotEmpty
+                                                      ? (() {
+                                                          _newModDragDropList
+                                                              .clear();
+                                                          setState(
+                                                            () {},
+                                                          );
+                                                        })
+                                                      : null,
                                               child: const Text('Clear All')),
                                         ),
                                         const SizedBox(
@@ -166,24 +217,41 @@ void modAddHandler(context) {
                                         ),
                                         Expanded(
                                           child: ElevatedButton(
-                                              onPressed: _newModDragDropList.isNotEmpty
-                                              ? (() async {
-                                                for (var files in _newModDragDropList) {
-                                                  if (p.extension(files.path) == '.zip') {
-                                                    await unzipPack(files.path, files.name);
-                                                    modsToAddList.addAll(await sortFile(files.name));
-                                                  } else {
-                                                    modsToAddList.add(XFile(files.path));
-                                                  }
-                                                }
+                                              onPressed: _newModDragDropList
+                                                      .isNotEmpty
+                                                  ? (() async {
+                                                      for (var files
+                                                          in _newModDragDropList) {
+                                                        if (p.extension(
+                                                                files.path) ==
+                                                            '.zip') {
+                                                          await unzipPack(
+                                                              files.path,
+                                                              files.name);
+                                                          modsToAddList.addAll(
+                                                              await sortFile(
+                                                                  files.name));
+                                                        } else {
+                                                          modsToAddList.add(
+                                                              XFile(
+                                                                  files.path));
+                                                        }
+                                                      }
 
-                                                //clear lists
-                                                _newModDragDropList.clear();
-                                                setState(
-                                                  () {},
-                                                );
-                                              })
-                                              : null,
+                                                      //clear lists
+                                                      _newModDragDropList
+                                                          .clear();
+                                                      for (var item
+                                                          in modsToAddList) {
+                                                        //print(item.name);
+                                                        print(
+                                                            '${item.name} | ${findItemInCsv(item)}');
+                                                      }
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    })
+                                                  : null,
                                               child: const Text('Process')),
                                         ),
                                       ],
@@ -197,19 +265,19 @@ void modAddHandler(context) {
                               thickness: 2,
                               indent: 5,
                               endIndent: 5,
-                              color: Theme.of(context).textTheme.bodySmall!.color,
+                              color:
+                                  Theme.of(context).textTheme.bodySmall!.color,
                             ),
                             Container(
                               width: constraints.maxWidth * 0.4,
                               height: constraints.maxHeight,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(3),
-                                border: Border.all(color: Theme.of(context).hintColor),
+                                border: Border.all(
+                                    color: Theme.of(context).hintColor),
                                 //color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
                               ),
-                              child: Column(
-
-                              ),
+                              child: Column(),
                             )
                           ],
                         );
@@ -247,7 +315,8 @@ Future<void> unzipPack(String filePath, String fileName) async {
 Future<List<XFile>> sortFile(String fileName) async {
   List<XFile> filesList = [];
   String tempDirPath = '${Directory.current.path}${s}temp$s';
-  for (var file in Directory('$tempDirPath$fileName$s').listSync(recursive: true)) {
+  for (var file
+      in Directory('$tempDirPath$fileName$s').listSync(recursive: true)) {
     if (p.extension(file.path) == '') {
       XFile newFile = XFile(file.path);
       filesList.add(newFile);
@@ -257,14 +326,14 @@ Future<List<XFile>> sortFile(String fileName) async {
   return filesList;
 }
 
-// List<String> findItemInCsv(XFile inputFile) {
-//   for (var file in ngsRefSheetsList) {
-//     for (var line in file) {
-//       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
-//         var tempList = [];
-        
-//       }
-//     }
-//   }
-//   return
-// }
+List<String> findItemInCsv(XFile inputFile) {
+  for (var file in ngsRefSheetsList) {
+    for (var line in file) {
+      if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
+        var lineSplit = line.split(',');
+        return ([file.first, lineSplit[0], lineSplit[1], lineSplit[2], line]);
+      }
+    }
+  }
+  return [];
+}
