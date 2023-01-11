@@ -456,97 +456,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           )),
                     )),
                   ),
-                  //Debug Button
-                  Tooltip(
-                    message: 'Test Button',
-                    height: 25,
-                    textStyle: TextStyle(
-                        fontSize: 15, color: Theme.of(context).canvasColor),
-                    waitDuration: const Duration(seconds: 1),
-                    child: SizedBox(
-                      width: 70,
-                      child: MaterialButton(
-                        onPressed: (() async {
-                          showDialog(
-                              context: context,
-                              builder: ((context) => AlertDialog(
-                                  title: const Text('Testing Windows'),
-                                  content: SizedBox(
-                                    width: windowsWidth - 50,
-                                    height: windowsHeight - 50,
-                                    child: FutureBuilder(
-                                        future: populateSheetsList(
-                                            ngsRefSheetsDirPath),
-                                        builder: ((
-                                          BuildContext context,
-                                          AsyncSnapshot snapshot,
-                                        ) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                            //debugPrint(snapshot.data.toString());
-                                            ngsRefSheetsList = snapshot.data;
-                                          }
-                                          return snapshot.connectionState ==
-                                                  ConnectionState.done
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: SingleChildScrollView(
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      itemCount:
-                                                          ngsRefSheetsList
-                                                              .length,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return SizedBox(
-                                                            //width: 500,
-                                                            height: 500,
-                                                            child:
-                                                                SingleChildScrollView(
-                                                              child: Column(
-                                                                children: [
-                                                                  for (int x =
-                                                                          0;
-                                                                      x <
-                                                                          ngsRefSheetsList[index]
-                                                                              .length;
-                                                                      x++)
-                                                                    Column(
-                                                                      children: [
-                                                                        for (int y =
-                                                                                0;
-                                                                            y < ngsRefSheetsList[index][x].length;
-                                                                            y++)
-                                                                          Text(ngsRefSheetsList[index][x][y].toString())
-                                                                      ],
-                                                                    )
-                                                                ],
-                                                              ),
-                                                            ));
-                                                      },
-                                                    ),
-                                                  ),
-                                                )
-                                              : const CircularProgressIndicator();
-                                        })),
-                                  ))));
-                        }),
-                        child: Row(
-                          children: const [
-                            Icon(
-                              Icons.tab,
-                              size: 18,
-                            ),
-                            SizedBox(width: 2.5),
-                            Text('Test',
-                                style: TextStyle(fontWeight: FontWeight.w400))
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  
                   //Buttons
                   if (curLangText != null)
                     Padding(
@@ -568,14 +478,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   modAddHandler(context);
                                 }),
                                 child: Row(
-                                  children: [
-                                    const Icon(
+                                  children: const [
+                                    Icon(
                                       Icons.light_mode_outlined,
                                       size: 18,
                                     ),
-                                    const SizedBox(width: 2.5),
+                                    SizedBox(width: 2.5),
                                     Text('Add Mods',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontWeight: FontWeight.w400))
                                   ],
                                 ),

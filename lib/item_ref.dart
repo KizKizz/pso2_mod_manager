@@ -3,37 +3,25 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:csv/csv.dart';
+import 'package:cross_file/cross_file.dart';
 
 import 'main.dart';
 import 'package:path/path.dart' as p;
 
 String refSheetsDirPath = '${Directory.current.path}${s}ItemRefSheets$s';
 String ngsRefSheetsDirPath = '${refSheetsDirPath}Player${s}NGS$s';
-Future<List<List<List<dynamic>>>> ngsRefSheetsListData = populateSheetsList(ngsRefSheetsDirPath);
-var ngsRefSheetsList = [];
+List<List<String>> ngsRefSheetsList = [];
 
-Future<List<List<List<dynamic>>>> populateSheetsList(String dirPath) async {
-  List<FileSystemEntity> csvFiles = Directory(dirPath).listSync(recursive: true).toList();
-  List<List<List<dynamic>>> sheetsList = [];
-  for (var file in csvFiles) {
-    //debugPrint(file.path);
-    if (p.extension(file.path) == '.csv') {
-      sheetsList.add([
-        ['${file.path}\n']
-      ]);
-      sheetsList.add(await getDataFromCSV(file.path));
+Future<List<List<String>>> popSheetsList(String csvDirPath) async {
+  List<FileSystemEntity> dirList = Directory(csvDirPath).listSync(recursive: true).toList();
+  List<List<String>> csvList = [];
+  for (var files in dirList) {
+    if (p.extension(files.path) == '.csv') {
+      csvList.add([]);
+      csvList.last.add(XFile(files.path).name);
+      await File(files.path).openRead().transform(utf8.decoder).transform(const LineSplitter()).forEach((line) => csvList.last.add(line));
     }
   }
-  return sheetsList;
-}
 
-Future<List<List<dynamic>>> getDataFromCSV(String filePath) async {
-  final csvFile = File(filePath).openRead();
-  return await csvFile
-      .transform(utf8.decoder)
-      .transform(
-        const CsvToListConverter(),
-      )
-      .toList();
+  return csvList;
 }
