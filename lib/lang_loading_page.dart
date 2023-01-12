@@ -34,6 +34,7 @@ class _LangLoadingPageState extends State<LangLoadingPage> {
         if (lang.selected) {
           langDropDownSelected = lang.langInitial;
           curSelectedLangPath = '$curLanguageDirPath$s${lang.langInitial}.json';
+          curActiveLang = lang.langInitial;
         }
       }
     }

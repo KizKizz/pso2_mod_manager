@@ -4,25 +4,24 @@ import 'package:cross_file/cross_file.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
+import 'package:collection/collection.dart';
+
 
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/scroll_controller.dart';
 
 bool _newModDragging = false;
 final List<XFile> _newModDragDropList = [];
 List<XFile> modsToAddList = [];
+Future? sortedModsListLoad;
+List<List<String>> sortedModsList = [];
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
-List<String> _basewearCsv = [
-  'GenderlessNGSBasewear.csv',
-  'FemaleNGSBasewear.csv',
-  'MaleNGSBasewear.csv',
-  'FemaleBasewear.csv',
-  'MaleBasewear.csv'
-];
+List<String> _basewearCsv = ['GenderlessNGSBasewear.csv', 'FemaleNGSBasewear.csv', 'MaleNGSBasewear.csv', 'FemaleBasewear.csv', 'MaleBasewear.csv'];
 
 void modAddHandler(context) {
   showDialog(
@@ -33,22 +32,18 @@ void modAddHandler(context) {
           return AlertDialog(
               title: const Text('Adding mods'),
               titlePadding: const EdgeInsets.all(5),
-              contentPadding:
-                  const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+              contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
               content: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  child: LayoutBuilder(builder:
-                      (BuildContext context, BoxConstraints constraints) {
+                  child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                     return FutureBuilder(
                       future: popSheetsList(refSheetsDirPath),
                       builder: ((
                         BuildContext context,
                         AsyncSnapshot snapshot,
                       ) {
-                        if (snapshot.connectionState ==
-                                ConnectionState.waiting &&
-                            ngsRefSheetsList.isEmpty) {
+                        if (snapshot.connectionState == ConnectionState.waiting && ngsRefSheetsList.isEmpty) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,10 +70,7 @@ void modAddHandler(context) {
                                   //enable: true,
                                   onDragDone: (detail) async {
                                     for (var element in detail.files) {
-                                      if (_newModDragDropList.indexWhere(
-                                              (file) =>
-                                                  file.path == element.path) ==
-                                          -1) {
+                                      if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
                                         _newModDragDropList.add(element);
                                       }
                                     }
@@ -99,69 +91,41 @@ void modAddHandler(context) {
                                   child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(
-                                            color: Theme.of(context).hintColor),
-                                        color: _newModDragging
-                                            ? Colors.blue.withOpacity(0.4)
-                                            : Colors.black26,
+                                        border: Border.all(color: Theme.of(context).hintColor),
+                                        color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
                                       ),
                                       height: constraints.maxHeight - 33,
                                       width: constraints.maxWidth * 0.3,
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          if (_newModDragDropList.isEmpty)
-                                            const Center(
-                                                child: Text(
-                                                    'Drag and drop files here')),
+                                          if (_newModDragDropList.isEmpty) const Center(child: Text('Drag and drop files here')),
                                           if (_newModDragDropList.isNotEmpty)
                                             Expanded(
                                               child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 5),
+                                                padding: const EdgeInsets.only(right: 5),
                                                 child: SizedBox(
                                                     width: constraints.maxWidth,
-                                                    height:
-                                                        constraints.maxHeight,
+                                                    height: constraints.maxHeight,
                                                     child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 0),
+                                                      padding: const EdgeInsets.symmetric(horizontal: 0),
                                                       child: ListView.builder(
-                                                          itemCount:
-                                                              _newModDragDropList
-                                                                  .length,
-                                                          itemBuilder:
-                                                              (BuildContext
-                                                                      context,
-                                                                  int index) {
+                                                          itemCount: _newModDragDropList.length,
+                                                          itemBuilder: (BuildContext context, int index) {
                                                             return ListTile(
                                                               dense: true,
                                                               // leading: const Icon(
                                                               //     Icons.list),
-                                                              trailing:
-                                                                  SizedBox(
+                                                              trailing: SizedBox(
                                                                 width: 40,
                                                                 child: Tooltip(
-                                                                  message:
-                                                                      'Remove',
-                                                                  waitDuration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              2),
-                                                                  child:
-                                                                      MaterialButton(
-                                                                    child: const Icon(
-                                                                        Icons
-                                                                            .remove_circle),
-                                                                    onPressed:
-                                                                        () {
-                                                                      _newModDragDropList
-                                                                          .removeAt(
-                                                                              index);
+                                                                  message: 'Remove',
+                                                                  waitDuration: const Duration(seconds: 2),
+                                                                  child: MaterialButton(
+                                                                    child: const Icon(Icons.remove_circle),
+                                                                    onPressed: () {
+                                                                      _newModDragDropList.removeAt(index);
                                                                       setState(
                                                                         () {},
                                                                       );
@@ -169,18 +133,12 @@ void modAddHandler(context) {
                                                                   ),
                                                                 ),
                                                               ),
-                                                              title: Text(
-                                                                  _newModDragDropList[
-                                                                          index]
-                                                                      .name),
+                                                              title: Text(_newModDragDropList[index].name),
                                                               subtitle: Text(
-                                                                _newModDragDropList[
-                                                                        index]
-                                                                    .path,
-                                                                style: const TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis),
+                                                                _newModDragDropList[index].path,
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                                softWrap: false,
                                                               ),
                                                             );
                                                           }),
@@ -195,21 +153,18 @@ void modAddHandler(context) {
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Expanded(
                                           child: ElevatedButton(
-                                              onPressed:
-                                                  _newModDragDropList.isNotEmpty
-                                                      ? (() {
-                                                          _newModDragDropList
-                                                              .clear();
-                                                          setState(
-                                                            () {},
-                                                          );
-                                                        })
-                                                      : null,
+                                              onPressed: _newModDragDropList.isNotEmpty
+                                                  ? (() {
+                                                      _newModDragDropList.clear();
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    })
+                                                  : null,
                                               child: const Text('Clear All')),
                                         ),
                                         const SizedBox(
@@ -217,36 +172,20 @@ void modAddHandler(context) {
                                         ),
                                         Expanded(
                                           child: ElevatedButton(
-                                              onPressed: _newModDragDropList
-                                                      .isNotEmpty
+                                              onPressed: _newModDragDropList.isNotEmpty
                                                   ? (() async {
-                                                      for (var files
-                                                          in _newModDragDropList) {
-                                                        if (p.extension(
-                                                                files.path) ==
-                                                            '.zip') {
-                                                          await unzipPack(
-                                                              files.path,
-                                                              files.name);
-                                                          modsToAddList.addAll(
-                                                              await sortFile(
-                                                                  files.name));
+                                                      for (var files in _newModDragDropList) {
+                                                        if (p.extension(files.path) == '.zip') {
+                                                          await unzipPack(files.path, files.name);
+                                                          modsToAddList.addAll(await sortFile(files.name));
                                                         } else {
-                                                          modsToAddList.add(
-                                                              XFile(
-                                                                  files.path));
+                                                          modsToAddList.add(XFile(files.path));
                                                         }
                                                       }
 
                                                       //clear lists
-                                                      _newModDragDropList
-                                                          .clear();
-                                                      for (var item
-                                                          in modsToAddList) {
-                                                        //print(item.name);
-                                                        print(
-                                                            '${item.name} | ${findItemInCsv(item)}');
-                                                      }
+                                                      _newModDragDropList.clear();
+                                                      sortedModsListLoad = fetchItemName(modsToAddList);
                                                       setState(
                                                         () {},
                                                       );
@@ -265,20 +204,93 @@ void modAddHandler(context) {
                               thickness: 2,
                               indent: 5,
                               endIndent: 5,
-                              color:
-                                  Theme.of(context).textTheme.bodySmall!.color,
+                              color: Theme.of(context).textTheme.bodySmall!.color,
                             ),
                             Container(
-                              width: constraints.maxWidth * 0.4,
-                              height: constraints.maxHeight,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                border: Border.all(
-                                    color: Theme.of(context).hintColor),
-                                //color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                              ),
-                              child: Column(),
-                            )
+                                width: constraints.maxWidth * 0.4,
+                                height: constraints.maxHeight,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor),
+                                  //color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
+                                ),
+                                child: FutureBuilder(
+                                    future: sortedModsListLoad,
+                                    builder: (
+                                      BuildContext context,
+                                      AsyncSnapshot snapshot,
+                                    ) {
+                                      if (snapshot.connectionState == ConnectionState.none) {
+                                        return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'Waiting for data',
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            CircularProgressIndicator(),
+                                          ],
+                                        );
+                                      } else {
+                                        if (snapshot.hasError) {
+                                          return Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Error when loading data. Restart the app.',
+                                                style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                                              ),
+                                            ],
+                                          );
+                                        } else if (!snapshot.hasData) {
+                                          return Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: const [
+                                              Text(
+                                                'Loading Data',
+                                                style: TextStyle(fontSize: 20),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CircularProgressIndicator(),
+                                            ],
+                                          );
+                                        } else {
+                                          sortedModsList = snapshot.data;
+                                          for (var line in sortedModsList) {
+                                            if (_basewearCsv.indexWhere((element) => element == line.first) != -1) {
+                                              line.first = 'Basewears';
+                                            }
+                                          }
+                                          // if (isLoading.isEmpty) {
+                                          //   isLoading = List.generate(modFilesList.length, (index) => false);
+                                          // }
+                                          //print(snapshot.data);
+                                          return SingleChildScrollView(
+                                              controller: AdjustableScrollController(80),
+                                              child: ListView.builder(
+                                                  //key: Key('builder ${modNameCatSelected.toString()}'),
+                                                  shrinkWrap: true,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  itemCount: sortedModsList.length,
+                                                  itemBuilder: (context, index) {
+                                                    return ExpansionTile(
+                                                      title: curActiveLang == 'JP'
+                                                      ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}')
+                                                      : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}'),
+                                                      children: [ExpansionTile(title: Text(modsToAddList[index].name))],
+                                                    );
+                                                  }));
+                                        }
+                                      }
+                                    }))
                           ],
                         );
                       }),
@@ -315,8 +327,7 @@ Future<void> unzipPack(String filePath, String fileName) async {
 Future<List<XFile>> sortFile(String fileName) async {
   List<XFile> filesList = [];
   String tempDirPath = '${Directory.current.path}${s}temp$s';
-  for (var file
-      in Directory('$tempDirPath$fileName$s').listSync(recursive: true)) {
+  for (var file in Directory('$tempDirPath$fileName$s').listSync(recursive: true)) {
     if (p.extension(file.path) == '') {
       XFile newFile = XFile(file.path);
       filesList.add(newFile);
@@ -326,7 +337,23 @@ Future<List<XFile>> sortFile(String fileName) async {
   return filesList;
 }
 
-List<String> findItemInCsv(XFile inputFile) {
+Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
+  Function deepEq = const DeepCollectionEquality().equals;
+  List<List<String>> fileList = [];
+  for (var inputFile in inputFiles) {
+    if (fileList.isEmpty) {
+      fileList.add(await findItemInCsv(inputFile));
+    } else {
+      var list = await findItemInCsv(inputFile);
+      if (fileList.indexWhere((element) => deepEq(element, list)) == -1) {
+        fileList.add(list);
+      }
+    }
+  }
+  return fileList;
+}
+
+Future<List<String>> findItemInCsv(XFile inputFile) async {
   for (var file in ngsRefSheetsList) {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
@@ -335,5 +362,6 @@ List<String> findItemInCsv(XFile inputFile) {
       }
     }
   }
+
   return [];
 }

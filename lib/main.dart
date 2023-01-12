@@ -49,6 +49,7 @@ TranslationText? curLangText;
 String langSettingsPath = '';
 String curLanguageDirPath = '';
 List<TranslationLanguage> langList = [];
+String curActiveLang = '';
 List<String> langDropDownList = [];
 String langDropDownSelected = '';
 List<String> topBtnMenuItems = [];
@@ -110,8 +111,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  static final ValueNotifier<ThemeMode> themeNotifier =
-      ValueNotifier(ThemeMode.light);
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   // This widget is the root of your application.
   @override
@@ -188,30 +188,25 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       //previewWindows Check
       _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
       if (_previewWindowVisible) {
-        Provider.of<StateProvider>(context, listen: false)
-            .previewWindowVisibleSetTrue();
+        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
       } else {
-        Provider.of<StateProvider>(context, listen: false)
-            .previewWindowVisibleSetFalse();
+        Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
       }
     });
   }
 
   Future<void> languagePackCheck() async {
     curLanguageDirPath = '${Directory.current.path}${s}Language';
-    langSettingsPath =
-        '${Directory.current.path}${s}Language${s}LanguageSettings.json';
+    langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
 
     if (!File(langSettingsPath).existsSync()) {
       await File(langSettingsPath).create(recursive: true);
-      TranslationLanguage newENLang =
-          TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
+      TranslationLanguage newENLang = TranslationLanguage('EN', '$curLanguageDirPath${s}EN.json', true);
       await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
       TranslationText newEN = defaultUILangLoader();
       //Json Write
       [newEN].map((translationText) => translationText.toJson()).toList();
-      File('$curLanguageDirPath${s}EN.json')
-          .writeAsStringSync(json.encode([newEN]));
+      File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
       langList.add(newENLang);
       langDropDownList.add(newLangTextController.text.toUpperCase());
       //Json Write
@@ -220,8 +215,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       langList = await translationLoader();
       for (var lang in langList) {
         langDropDownList.add(lang.langInitial);
-        if (lang.langFilePath !=
-            '$curLanguageDirPath$s${lang.langInitial}.json') {
+        if (lang.langFilePath != '$curLanguageDirPath$s${lang.langInitial}.json') {
           lang.langFilePath = '$curLanguageDirPath$s${lang.langInitial}.json';
           //Json Write
           langList.map((translation) => translation.toJson()).toList();
@@ -238,19 +232,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         if (!File(lang.langFilePath).existsSync()) {
           if (lang.selected) {
             if (lang.langInitial != 'EN') {
-              tempLangList
-                  .singleWhere((element) => element.langInitial == 'EN')
-                  .selected = true;
+              tempLangList.singleWhere((element) => element.langInitial == 'EN').selected = true;
             } else {
-              await File('$curLanguageDirPath${s}EN.json')
-                  .create(recursive: true);
+              await File('$curLanguageDirPath${s}EN.json').create(recursive: true);
               TranslationText newEN = defaultUILangLoader();
               //Json Write
-              [newEN]
-                  .map((translationText) => translationText.toJson())
-                  .toList();
-              File('$curLanguageDirPath${s}EN.json')
-                  .writeAsStringSync(json.encode([newEN]));
+              [newEN].map((translationText) => translationText.toJson()).toList();
+              File('$curLanguageDirPath${s}EN.json').writeAsStringSync(json.encode([newEN]));
             }
           }
         } else {
@@ -260,43 +248,29 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             [newEN].map((translationText) => translationText.toJson()).toList();
             File(lang.langFilePath).writeAsStringSync(json.encode([newEN]));
           } else {
-            String curLangString =
-                File('$curLanguageDirPath${s}EN.json').readAsStringSync();
+            String curLangString = File('$curLanguageDirPath${s}EN.json').readAsStringSync();
             curLangString = curLangString.replaceRange(0, 2, '');
-            curLangString =
-                curLangString.replaceRange(curLangString.length - 2, null, '');
+            curLangString = curLangString.replaceRange(curLangString.length - 2, null, '');
             List<String> newTranslationItems = curLangString.split('",');
-            String tempTranslationFromFile =
-                File(lang.langFilePath).readAsStringSync();
-            tempTranslationFromFile =
-                tempTranslationFromFile.replaceRange(0, 2, '');
-            tempTranslationFromFile = tempTranslationFromFile.replaceRange(
-                tempTranslationFromFile.length - 2, null, '');
-            List<String> curTranslationItems =
-                tempTranslationFromFile.split('",');
-            curTranslationItems.last = curTranslationItems.last
-                .replaceRange(curTranslationItems.last.length - 1, null, '');
+            String tempTranslationFromFile = File(lang.langFilePath).readAsStringSync();
+            tempTranslationFromFile = tempTranslationFromFile.replaceRange(0, 2, '');
+            tempTranslationFromFile = tempTranslationFromFile.replaceRange(tempTranslationFromFile.length - 2, null, '');
+            List<String> curTranslationItems = tempTranslationFromFile.split('",');
+            curTranslationItems.last = curTranslationItems.last.replaceRange(curTranslationItems.last.length - 1, null, '');
             String curLastItem = curTranslationItems.last;
 
             if (newTranslationItems.length != curTranslationItems.length) {
               for (var item in newTranslationItems) {
-                if (curTranslationItems.indexWhere((element) =>
-                        element.substring(0, element.indexOf(':')) ==
-                        item.substring(0, item.indexOf(':'))) ==
-                    -1) {
-                  curTranslationItems.insert(
-                      newTranslationItems.indexOf(item), item);
+                if (curTranslationItems.indexWhere((element) => element.substring(0, element.indexOf(':')) == item.substring(0, item.indexOf(':'))) == -1) {
+                  curTranslationItems.insert(newTranslationItems.indexOf(item), item);
                 }
               }
               String finalTranslation = curTranslationItems.join('",');
-              finalTranslation =
-                  finalTranslation.padLeft(finalTranslation.length + 1, '[{');
+              finalTranslation = finalTranslation.padLeft(finalTranslation.length + 1, '[{');
               if (curLastItem == curTranslationItems.last) {
-                finalTranslation = finalTranslation.padRight(
-                    finalTranslation.length + 1, '"}]');
+                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '"}]');
               } else {
-                finalTranslation = finalTranslation.padRight(
-                    finalTranslation.length + 1, '}]');
+                finalTranslation = finalTranslation.padRight(finalTranslation.length + 1, '}]');
               }
               File(lang.langFilePath).writeAsStringSync(finalTranslation);
             }
@@ -445,18 +419,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       child: Tooltip(
                           message: 'Version: $appVersion | Made by キス★',
                           height: 25,
-                          textStyle: TextStyle(
-                              fontSize: 15,
-                              color: Theme.of(context).canvasColor),
+                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                           waitDuration: const Duration(seconds: 2),
                           child: const Text(
                             'PSO2NGS Mod Manager',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 15),
+                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
                           )),
                     )),
                   ),
-                  
+
                   //Buttons
                   if (curLangText != null)
                     Padding(
@@ -467,9 +438,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: 'Add Mods',
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: SizedBox(
                               width: 105,
@@ -484,9 +453,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       size: 18,
                                     ),
                                     SizedBox(width: 2.5),
-                                    Text('Add Mods',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w400))
+                                    Text('Add Mods', style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -496,9 +463,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.pathsReselectTooltipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
@@ -515,10 +480,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                             size: 18,
                                           ),
                                           const SizedBox(width: 2.5),
-                                          Text(
-                                              curLangText!.pathsReselectBtnText,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w400))
+                                          Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                         ],
                                       ),
                                     ),
@@ -528,27 +490,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     ...MenuItems.pathMenuItems.map(
                                       (item) => DropdownMenuItem<MenuItem>(
                                         value: item,
-                                        child:
-                                            MenuItems.buildItem(context, item),
+                                        child: MenuItems.buildItem(context, item),
                                       ),
                                     ),
                                   ],
                                   onChanged: (value) {
-                                    MenuItems.onChanged(
-                                        context, value as MenuItem);
+                                    MenuItems.onChanged(context, value as MenuItem);
                                   },
                                   itemHeight: 35,
                                   dropdownWidth: 130,
-                                  itemPadding:
-                                      const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding:
-                                      const EdgeInsets.symmetric(vertical: 5),
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value ==
-                                            ThemeMode.light
-                                        ? Theme.of(context).cardColor
-                                        : Theme.of(context).primaryColor,
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                   ),
                                   dropdownElevation: 8,
                                   offset: const Offset(0, -3),
@@ -561,9 +516,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.foldersTooltipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
@@ -580,9 +533,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                             size: 18,
                                           ),
                                           const SizedBox(width: 2.5),
-                                          Text(curLangText!.foldersBtnText,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w400))
+                                          Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                         ],
                                       ),
                                     ),
@@ -592,32 +543,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       .map((item) => DropdownMenuItem<String>(
                                           value: item,
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              if (item ==
-                                                      curLangText!
-                                                          .modsFolderBtnText &&
-                                                  item.isNotEmpty)
-                                                const Icon(
-                                                    Icons.rule_folder_outlined),
-                                              if (item ==
-                                                      curLangText!
-                                                          .backupFolderBtnText &&
-                                                  item.isNotEmpty)
-                                                const Icon(Icons.backup_table),
-                                              if (item ==
-                                                      curLangText!
-                                                          .deletedItemsBtnText &&
-                                                  item.isNotEmpty)
-                                                const Icon(
-                                                    Icons.delete_rounded),
+                                              if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
+                                              if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
+                                              if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
                                               const SizedBox(
                                                 width: 5,
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 3),
+                                                padding: const EdgeInsets.only(bottom: 3),
                                                 child: Text(
                                                   item,
                                                   style: const TextStyle(
@@ -625,40 +560,28 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                     //fontWeight: FontWeight.bold,
                                                     //color: Colors.white,
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               )
                                             ],
                                           )))
                                       .toList(),
                                   onChanged: (value) async {
-                                    if (value ==
-                                        curLangText!.modsFolderBtnText) {
-                                      await launchUrl(
-                                          Uri.parse('file:$modsDirPath'));
-                                    } else if (value ==
-                                        curLangText!.backupFolderBtnText) {
-                                      await launchUrl(
-                                          Uri.parse('file:$backupDirPath'));
-                                    } else if (value ==
-                                        curLangText!.deletedItemsBtnText) {
-                                      await launchUrl(
-                                          Uri.parse('file:$deletedItemsPath'));
+                                    if (value == curLangText!.modsFolderBtnText) {
+                                      await launchUrl(Uri.parse('file:$modsDirPath'));
+                                    } else if (value == curLangText!.backupFolderBtnText) {
+                                      await launchUrl(Uri.parse('file:$backupDirPath'));
+                                    } else if (value == curLangText!.deletedItemsBtnText) {
+                                      await launchUrl(Uri.parse('file:$deletedItemsPath'));
                                     }
                                   },
                                   itemHeight: 35,
                                   dropdownWidth: 130,
-                                  itemPadding:
-                                      const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding:
-                                      const EdgeInsets.symmetric(vertical: 5),
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value ==
-                                            ThemeMode.light
-                                        ? Theme.of(context).cardColor
-                                        : Theme.of(context).primaryColor,
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                   ),
                                   dropdownElevation: 8,
                                   offset: const Offset(0, -3),
@@ -671,34 +594,26 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.checksumToolTipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onPressed: (() async {
                                 if (checkSumFilePath == null) {
-                                  checksumLocation =
-                                      await FilePicker.platform.pickFiles(
-                                    dialogTitle:
-                                        curLangText!.checksumSelectPopupText,
+                                  checksumLocation = await FilePicker.platform.pickFiles(
+                                    dialogTitle: curLangText!.checksumSelectPopupText,
                                     allowMultiple: false,
                                     // type: FileType.custom,
                                     // allowedExtensions: ['\'\''],
                                     lockParentWindow: true,
                                   );
                                   if (checksumLocation != null) {
-                                    String? checksumPath =
-                                        checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync(
-                                        '$checksumDirPath$s${checksumPath.split(s).last}');
-                                    checkSumFilePath =
-                                        '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    String? checksumPath = checksumLocation!.paths.first;
+                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
+                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
                                     setState(() {});
                                   }
                                 } else {
-                                  await launchUrl(
-                                      Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
                               child: checkSumFilePath != null
@@ -709,9 +624,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           size: 18,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text(curLangText!.checksumBtnText,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400))
+                                        Text(curLangText!.checksumBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                       ],
                                     )
                                   : Row(
@@ -722,11 +635,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text(
-                                            curLangText!.checksumMissingBtnText,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.red))
+                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -736,63 +645,41 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.modSetsTooltipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: SizedBox(
                               width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
-                                  if (Provider.of<StateProvider>(context,
-                                          listen: false)
-                                      .setsWindowVisible) {
+                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                     modFilesFromSetList.clear();
                                     modFilesList.clear();
                                     modsSetAppBarName = '';
                                     modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisibleSetFalse();
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                   } else {
                                     modFilesFromSetList.clear();
                                     modFilesList.clear();
                                     modsSetAppBarName = '';
                                     modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisibleSetTrue();
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                   }
                                 }),
                                 child: Row(
                                   children: [
-                                    if (!Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisible)
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
                                       const Icon(
                                         Icons.list_alt_outlined,
                                         size: 18,
                                       ),
-                                    if (Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisible)
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
                                       const Icon(
                                         Icons.view_list_outlined,
                                         size: 18,
                                       ),
                                     const SizedBox(width: 2.5),
-                                    if (!Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisible)
-                                      Text(curLangText!.modSetsBtnText,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400)),
-                                    if (Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .setsWindowVisible)
-                                      Text(curLangText!.modListBtnText,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400))
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -803,27 +690,18 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.previewTooltipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context,
-                                        listen: false)
-                                    .previewWindowVisible) {
-                                  Provider.of<StateProvider>(context,
-                                          listen: false)
-                                      .previewWindowVisibleSetFalse();
+                                final prefs = await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
                                   prefs.setBool('previewWindowVisible', false);
                                   previewPlayer.stop();
                                 } else {
-                                  Provider.of<StateProvider>(context,
-                                          listen: false)
-                                      .previewWindowVisibleSetTrue();
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
                                   prefs.setBool('previewWindowVisible', true);
                                 }
                               }),
@@ -834,38 +712,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     size: 18,
                                   ),
                                   const SizedBox(width: 2.5),
-                                  Text('${curLangText!.previewBtnText} ',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                  if (context
-                                      .watch<StateProvider>()
-                                      .previewWindowVisible)
+                                  Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                  if (context.watch<StateProvider>().previewWindowVisible)
                                     SizedBox(
                                         width: 23,
                                         child: Text('ON',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 13,
-                                                color:
-                                                    MyApp.themeNotifier.value ==
-                                                            ThemeMode.light
-                                                        ? Theme.of(context)
-                                                            .primaryColorDark
-                                                        : Theme.of(context)
-                                                            .iconTheme
-                                                            .color))),
-                                  if (context
-                                          .watch<StateProvider>()
-                                          .previewWindowVisible ==
-                                      false)
-                                    const SizedBox(
-                                        width: 23,
-                                        child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Text('OFF',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 13))))
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
+                                  if (context.watch<StateProvider>().previewWindowVisible == false)
+                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
                                 ],
                               ),
                             ),
@@ -876,17 +733,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             Tooltip(
                               message: curLangText!.lightModeTooltipText,
                               height: 25,
-                              textStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: Theme.of(context).canvasColor),
+                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                               waitDuration: const Duration(seconds: 1),
                               child: SizedBox(
                                 width: 70,
                                 child: MaterialButton(
                                   onPressed: (() async {
                                     MyApp.themeNotifier.value = ThemeMode.light;
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
+                                    final prefs = await SharedPreferences.getInstance();
 
                                     prefs.setBool('isDarkModeOn', false);
                                     //setState(() {});
@@ -898,9 +752,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                         size: 18,
                                       ),
                                       const SizedBox(width: 2.5),
-                                      Text(curLangText!.lightModeBtnText,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400))
+                                      Text(curLangText!.lightModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                     ],
                                   ),
                                 ),
@@ -910,16 +762,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             Tooltip(
                               message: curLangText!.darkModeTooltipText,
                               height: 25,
-                              textStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: Theme.of(context).canvasColor),
+                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                               waitDuration: const Duration(seconds: 1),
                               child: SizedBox(
                                 width: 70,
                                 child: MaterialButton(
                                   onPressed: (() async {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
+                                    final prefs = await SharedPreferences.getInstance();
                                     MyApp.themeNotifier.value = ThemeMode.dark;
                                     prefs.setBool('isDarkModeOn', true);
                                     //setState(() {});
@@ -931,9 +780,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                         size: 18,
                                       ),
                                       const SizedBox(width: 2.5),
-                                      Text(curLangText!.darkModeBtnText,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400))
+                                      Text(curLangText!.darkModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                     ],
                                   ),
                                 ),
@@ -942,9 +789,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           Tooltip(
                             message: curLangText!.languageTooltipText,
                             height: 25,
-                            textStyle: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).canvasColor),
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5),
@@ -959,43 +804,29 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                         width: 300,
                                         child: Column(
                                           children: [
-                                            const Text(
-                                                'Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
+                                            const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: SizedBox(
                                                 height: 50,
                                                 width: 60,
                                                 child: TextFormField(
-                                                  inputFormatters: [
-                                                    UpperCaseTextFormatter()
-                                                  ],
-                                                  controller:
-                                                      newLangTextController,
+                                                  inputFormatters: [UpperCaseTextFormatter()],
+                                                  controller: newLangTextController,
                                                   maxLines: 1,
                                                   maxLength: 2,
-                                                  style: const TextStyle(
-                                                      fontSize: 15),
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    contentPadding:
-                                                        EdgeInsets.only(
-                                                            left: 10, top: 10),
+                                                  style: const TextStyle(fontSize: 15),
+                                                  decoration: const InputDecoration(
+                                                    contentPadding: EdgeInsets.only(left: 10, top: 10),
                                                     //hintText: '',
-                                                    border:
-                                                        OutlineInputBorder(),
+                                                    border: OutlineInputBorder(),
                                                     //isDense: true,
                                                   ),
                                                   validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
+                                                    if (value == null || value.isEmpty) {
                                                       return 'Language initial can\'t be empty';
                                                     }
-                                                    if (langDropDownList
-                                                            .indexWhere((e) =>
-                                                                e == value) !=
-                                                        -1) {
+                                                    if (langDropDownList.indexWhere((e) => e == value) != -1) {
                                                       return 'Language initial already exists';
                                                     }
                                                     return null;
@@ -1022,44 +853,22 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                         ),
                                         ElevatedButton(
                                           onPressed: () async {
-                                            String newLangPath =
-                                                '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
-                                            TranslationText? newText =
-                                                curLangText;
-                                            if (!File(newLangPath)
-                                                .existsSync()) {
-                                              await File(newLangPath)
-                                                  .create(recursive: true);
+                                            String newLangPath = '${Directory.current.path}${s}Language$s${newLangTextController.text.toUpperCase()}.json';
+                                            TranslationText? newText = curLangText;
+                                            if (!File(newLangPath).existsSync()) {
+                                              await File(newLangPath).create(recursive: true);
                                             }
-                                            TranslationLanguage newLang =
-                                                TranslationLanguage(
-                                                    newLangTextController.text
-                                                        .toUpperCase(),
-                                                    newLangPath,
-                                                    false);
+                                            TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
                                             langList.add(newLang);
-                                            langList.sort(((a, b) => a
-                                                .langInitial
-                                                .compareTo(b.langInitial)));
-                                            langDropDownList.add(
-                                                newLangTextController.text
-                                                    .toUpperCase());
+                                            langList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
+                                            langDropDownList.add(newLangTextController.text.toUpperCase());
                                             newLangTextController.clear();
                                             //Json Write
-                                            [newText]
-                                                .map((translText) =>
-                                                    translText?.toJson())
-                                                .toList();
-                                            File(newLangPath).writeAsStringSync(
-                                                json.encode([newText]));
+                                            [newText].map((translText) => translText?.toJson()).toList();
+                                            File(newLangPath).writeAsStringSync(json.encode([newText]));
                                             //Json Write
-                                            langList
-                                                .map((translation) =>
-                                                    translation.toJson())
-                                                .toList();
-                                            File(langSettingsPath)
-                                                .writeAsStringSync(
-                                                    json.encode(langList));
+                                            langList.map((translation) => translation.toJson()).toList();
+                                            File(langSettingsPath).writeAsStringSync(json.encode(langList));
                                             setState(() {});
                                             Navigator.of(ctx).pop();
                                           },
@@ -1083,34 +892,27 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   ),
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value ==
-                                            ThemeMode.light
-                                        ? Theme.of(context).cardColor
-                                        : Theme.of(context).primaryColor,
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                   ),
                                   buttonDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                   isDense: true,
                                   dropdownElevation: 3,
-                                  dropdownPadding:
-                                      const EdgeInsets.symmetric(vertical: 2),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
                                   //dropdownWidth: 250,
                                   //offset: const Offset(-130, 0),
                                   iconSize: 15,
                                   itemHeight: 20,
-                                  itemPadding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  itemPadding: const EdgeInsets.symmetric(horizontal: 5),
                                   items: langDropDownList
                                       .map((item) => DropdownMenuItem<String>(
                                           value: item,
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Container(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 3),
+                                                padding: const EdgeInsets.only(bottom: 3),
                                                 child: Text(
                                                   item,
                                                   style: const TextStyle(
@@ -1118,8 +920,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                                     //fontWeight: FontWeight.bold,
                                                     //color: Colors.white,
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               )
                                             ],
@@ -1132,36 +933,22 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       if (lang.langInitial == value) {
                                         lang.selected = true;
                                         curSelectedLangPath = lang.langFilePath;
-                                        convertLangTextData(jsonDecode(
-                                            File(curSelectedLangPath)
-                                                .readAsStringSync()));
+                                        curActiveLang = lang.langInitial;
+                                        convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
                                       } else {
                                         lang.selected = false;
                                       }
                                     }
 
-                                    topBtnMenuItems = [
-                                      curLangText!.modsFolderBtnText,
-                                      curLangText!.backupFolderBtnText,
-                                      curLangText!.deletedItemsBtnText
-                                    ];
+                                    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
 
                                     //Json Write
-                                    langList
-                                        .map((translation) =>
-                                            translation.toJson())
-                                        .toList();
-                                    File(langSettingsPath).writeAsStringSync(
-                                        json.encode(langList));
-                                    Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .languageReloadTrue();
+                                    langList.map((translation) => translation.toJson()).toList();
+                                    File(langSettingsPath).writeAsStringSync(json.encode(langList));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
                                     setState(() {});
-                                    await Future.delayed(
-                                        const Duration(seconds: 2));
-                                    Provider.of<StateProvider>(context,
-                                            listen: false)
-                                        .languageReloadFalse();
+                                    await Future.delayed(const Duration(seconds: 2));
+                                    Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
                                     setState(() {});
                                   },
                                 )),
@@ -1187,9 +974,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               leadingPadding: const EdgeInsets.only(left: 15, right: 5),
               leading: Icon(
                 Icons.new_releases,
-                color: MyApp.themeNotifier.value == ThemeMode.light
-                    ? Theme.of(context).primaryColorDark
-                    : Colors.amberAccent,
+                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
               ),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1198,16 +983,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                     children: [
                       Text(
                         curLangText!.newUpdateAvailText,
-                        style: TextStyle(
-                            color: MyApp.themeNotifier.value == ThemeMode.light
-                                ? Theme.of(context).primaryColorDark
-                                : Colors.amberAccent,
-                            fontWeight: FontWeight.w500),
+                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 5),
-                        child: Text(
-                            '${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
+                        child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
                       ),
                       TextButton(
                           onPressed: (() {
@@ -1224,18 +1004,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                         padding: const EdgeInsets.only(right: 5),
                         child: ElevatedButton(
                             onPressed: (() {
-                              Provider.of<StateProvider>(context, listen: false)
-                                  .isUpdateAvailableFalse();
+                              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                               setState(() {});
                             }),
                             child: Text(curLangText!.dismissBtnText)),
                       ),
                       ElevatedButton(
                           onPressed: (() {
-                            Provider.of<StateProvider>(context, listen: false)
-                                .isUpdateAvailableFalse();
-                            launchUrl(Uri.parse(
-                                'https://github.com/KizKizz/pso2_mod_manager/releases'));
+                            Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                            launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                           }),
                           child: Text(curLangText!.updateBtnText)),
                     ],
@@ -1245,10 +1022,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               actions: const [SizedBox()],
             )),
 
-          Expanded(
-              child: curLangText == null
-                  ? const LangLoadingPage()
-                  : const PathsLoadingPage())
+          Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
 
           //Switching Page
           //const LangLoadingPage()
@@ -1294,8 +1068,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
@@ -1316,17 +1089,14 @@ class MenuItem {
 class MenuItems {
   static const List<MenuItem> pathMenuItems = [_binFolder, modManFolder];
   static const _binFolder = MenuItem(text: 'pso2_bin', icon: Icons.folder);
-  static const modManFolder =
-      MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
+  static const modManFolder = MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
 
   static Widget buildItem(context, MenuItem item) {
     return Row(
       children: [
         Icon(
           item.icon,
-          color: MyApp.themeNotifier.value == ThemeMode.light
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).iconTheme.color,
+          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
           size: 20,
         ),
         const SizedBox(
@@ -1334,12 +1104,7 @@ class MenuItems {
         ),
         Text(
           item.text,
-          style: TextStyle(
-              color: MyApp.themeNotifier.value == ThemeMode.light
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).iconTheme.color,
-              fontSize: 14,
-              fontWeight: FontWeight.w400),
+          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
         ),
       ],
     );
@@ -1348,18 +1113,10 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) async {
     switch (item) {
       case MenuItems._binFolder:
-        binDirDialog(
-            context,
-            curLangText!.pso2binReselectPopupText,
-            '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}',
-            true);
+        binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
       case MenuItems.modManFolder:
-        mainModManDirDialog(
-            context,
-            curLangText!.modmanReselectPopupText,
-            '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}',
-            true);
+        mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
     }
   }
