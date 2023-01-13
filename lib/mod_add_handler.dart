@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:collection/collection.dart';
 
-
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/item_ref.dart';
@@ -21,6 +20,7 @@ List<List<String>> sortedModsList = [];
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
+List<String> _emoteCsv = ['LobbyActionsNGS_HandPoses.csv', 'LobbyActions.csv'];
 List<String> _basewearCsv = ['GenderlessNGSBasewear.csv', 'FemaleNGSBasewear.csv', 'MaleNGSBasewear.csv', 'FemaleBasewear.csv', 'MaleBasewear.csv'];
 
 void modAddHandler(context) {
@@ -264,15 +264,6 @@ void modAddHandler(context) {
                                           );
                                         } else {
                                           sortedModsList = snapshot.data;
-                                          for (var line in sortedModsList) {
-                                            if (_basewearCsv.indexWhere((element) => element == line.first) != -1) {
-                                              line.first = 'Basewears';
-                                            }
-                                          }
-                                          // if (isLoading.isEmpty) {
-                                          //   isLoading = List.generate(modFilesList.length, (index) => false);
-                                          // }
-                                          //print(snapshot.data);
                                           return SingleChildScrollView(
                                               controller: AdjustableScrollController(80),
                                               child: ListView.builder(
@@ -281,11 +272,35 @@ void modAddHandler(context) {
                                                   physics: const NeverScrollableScrollPhysics(),
                                                   itemCount: sortedModsList.length,
                                                   itemBuilder: (context, index) {
-                                                    return ExpansionTile(
-                                                      title: curActiveLang == 'JP'
-                                                      ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}')
-                                                      : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}'),
-                                                      children: [ExpansionTile(title: Text(modsToAddList[index].name))],
+                                                    return Card(
+                                                      margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                          side: BorderSide(
+                                                              width: 1, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
+                                                      child: ExpansionTile(
+                                                        initiallyExpanded: true,
+                                                        title: curActiveLang == 'JP'
+                                                            ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}')
+                                                            : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}'),
+                                                        textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                        iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                        collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                        children: [
+                                                          ExpansionTile(
+                                                            initiallyExpanded: true,
+                                                            title: Text(sortedModsList[index][3]),
+                                                            children: [
+                                                              for (int i = 0; i < modsToAddList.length; i++)
+                                                                if (sortedModsList[index].last.contains(modsToAddList[i].name) && modsToAddList[i].path.contains(sortedModsList[index][3]))
+                                                                  ListTile(
+                                                                    title: Text(modsToAddList[i].name),
+                                                                    dense: true,
+                                                                  )
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
                                                     );
                                                   }));
                                         }
@@ -354,11 +369,33 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
 }
 
 Future<List<String>> findItemInCsv(XFile inputFile) async {
+  List<String> pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
   for (var file in ngsRefSheetsList) {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
         var lineSplit = line.split(',');
-        return ([file.first, lineSplit[0], lineSplit[1], lineSplit[2], line]);
+        var filePathSplit = inputFile.path.split(s);
+        var newFilePath = '';
+        for (var element in pathsToRemove) {
+          int index = filePathSplit.indexOf(element);
+          if (index != -1) {
+            filePathSplit.removeRange(index, filePathSplit.length);
+            newFilePath = filePathSplit.join(s);
+            print(newFilePath);
+            break;
+          }
+        }
+        if (newFilePath.isEmpty) {
+          filePathSplit.removeAt(filePathSplit.length - 1);
+          newFilePath = filePathSplit.join(s);
+        }
+        if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Emotes', lineSplit[1], lineSplit[2], newFilePath.split(s).last.split('.').first, newFilePath, line]);
+        } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
+          return (['Basewears', lineSplit[0], lineSplit[1], newFilePath.split(s).last.split('.').first, newFilePath, line]);
+        } else {
+          return ([file.first, lineSplit[0], lineSplit[1], newFilePath.split(s).last.split('.').first, newFilePath, line]);
+        }
       }
     }
   }
