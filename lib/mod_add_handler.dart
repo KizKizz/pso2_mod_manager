@@ -13,11 +13,13 @@ import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
 
+List<String> _pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 bool _newModDragging = false;
 final List<XFile> _newModDragDropList = [];
 List<XFile> modsToAddList = [];
 Future? sortedModsListLoad;
 List<List<String>> sortedModsList = [];
+String tempDirPath = '${Directory.current.path}${s}temp';
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
@@ -175,15 +177,24 @@ void modAddHandler(context) {
                                           child: ElevatedButton(
                                               onPressed: _newModDragDropList.isNotEmpty
                                                   ? (() async {
-                                                      for (var files in _newModDragDropList) {
-                                                        if (p.extension(files.path) == '.zip') {
-                                                          await unzipPack(files.path, files.name.split('.').first);
-                                                          modsToAddList.addAll(await sortFile(files.name.split('.').first));
+                                                      for (var file in _newModDragDropList) {
+                                                        if (p.extension(file.path) == '.zip') {
+                                                          await unzipPack(file.path, file.name.split('.').first);
+                                                          modsToAddList.addAll(await sortFile(file.name.split('.').first));
+                                                          // } else if (Directory(file.path).existsSync()) {
+                                                          //   List<XFile> filesInFolder = [];
+                                                          //   for (var file in Directory(file.path).listSync(recursive: true)) {
+                                                          //     if (File(file.path).existsSync()) {
+                                                          //       filesInFolder.add(XFile(file.path));
+                                                          //     }
+                                                          //   }
+                                                          //  modsToAddList.addAll(filesInFolder);
                                                         } else {
-                                                          modsToAddList.add(XFile(files.path));
+                                                          modsToAddList.add(XFile(file.path));
                                                         }
                                                       }
 
+                                                      //Test
                                                       for (var element in modsToAddList) {
                                                         print(element.path);
                                                       }
@@ -287,8 +298,14 @@ void modAddHandler(context) {
                                                       child: ExpansionTile(
                                                         initiallyExpanded: true,
                                                         title: curActiveLang == 'JP'
-                                                            ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}', style: const TextStyle(fontWeight: FontWeight.w500,))
-                                                            : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}', style: const TextStyle(fontWeight: FontWeight.w500,)),
+                                                            ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
+                                                                style: const TextStyle(
+                                                                  fontWeight: FontWeight.w500,
+                                                                ))
+                                                            : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
+                                                                style: const TextStyle(
+                                                                  fontWeight: FontWeight.w500,
+                                                                )),
                                                         textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                         iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                         collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -297,8 +314,8 @@ void modAddHandler(context) {
                                                             ExpansionTile(
                                                               initiallyExpanded: false,
                                                               textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                        iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                        collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                               title: Text(sortedModsList[index][3].split('|')[ex]),
                                                               children: [
                                                                 for (int i = 0; i < modsToAddList.length; i++)
@@ -352,8 +369,7 @@ Future<void> unzipPack(String filePath, String fileName) async {
 
 Future<List<XFile>> sortFile(String fileName) async {
   List<XFile> filesList = [];
-  String tempDirPath = '${Directory.current.path}${s}temp$s';
-  for (var file in Directory('$tempDirPath$fileName$s').listSync(recursive: true)) {
+  for (var file in Directory('$tempDirPath$s$fileName$s').listSync(recursive: true)) {
     if (p.extension(file.path) == '' && !Directory(file.path).existsSync()) {
       XFile newFile = XFile(file.path);
       filesList.add(newFile);
@@ -364,76 +380,126 @@ Future<List<XFile>> sortFile(String fileName) async {
 }
 
 Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
-  Function deepEq = const DeepCollectionEquality().equals;
-  List<List<String>> fileList = [];
-  List<XFile> extraFiles = [];
-
+  //getting main dirs
+  List<String> mainDirPaths = [];
   for (var inputFile in inputFiles) {
-    if (p.extension(inputFile.path) != '') {
-      extraFiles.add(inputFile);
-    } else {
-      if (fileList.isEmpty) {
-        fileList.add(await findItemInCsv(inputFile));
+    if (!File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
+      if (mainDirPaths.isEmpty) {
+        mainDirPaths.add(inputFile.path);
       } else {
-        List<String> curFilePath = inputFile.path.split(s);
-        curFilePath.removeRange(inputFile.path.split(s).length - 1, inputFile.path.split(s).length);
-        String curSubFolder = curFilePath.removeLast();
-        String curDirPath = curFilePath.join(s);
-        bool foundInList = false;
-        for (var line in fileList) {
-          if (line[4] == curDirPath) {
-            foundInList = true;
-            if (line[3].split('|').indexWhere((element) => element == curSubFolder) == -1) {
-              line[3] += '|$curSubFolder';
-            }
-            if (line.last.split('|').indexWhere((element) => element == inputFile.path) == -1) {
-              line.last += '|${inputFile.path}';
-            }
-            break;
-          }
-          //print(line);
-        }
-        if (!foundInList) {
-          var list = await findItemInCsv(inputFile);
-          if (fileList.indexWhere((element) => deepEq(element, list)) == -1) {
-            fileList.add(list);
-          }
-        }
-      }
-    }
-    if (extraFiles.isNotEmpty) {
-      for (var extraFile in extraFiles) {
-        List<String> curFilePath = extraFile.path.split(s);
-        curFilePath.removeRange(extraFile.path.split(s).length - 1, extraFile.path.split(s).length);
-        String curSubFolder = curFilePath.removeLast();
-        String curDirPath = curFilePath.join(s);
-        for (var line in fileList) {
-          if (line[4] == curDirPath) {
-            if (line[3].split('|').indexWhere((element) => element == curSubFolder) == -1) {
-              line[3] += '|$curSubFolder';
-            }
-            if (line.last.split('|').indexWhere((element) => element == inputFile.path) == -1) {
-              line.last += '|${extraFile.path}';
-            }
-            break;
-          }
-          //print(line);
+        if (mainDirPaths.indexWhere((element) => inputFile.path.contains(element)) != -1) {
+          mainDirPaths.add(inputFile.path);
         }
       }
     }
   }
-  return fileList;
+
+  //copy files to temp with new folder structures
+  for (var inputFile in inputFiles) {
+    if (File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
+      String subDirName = '';
+      if (_pathsToRemove.indexWhere((element) => inputFile.path.split(s).contains(element)) != -1) {
+        subDirName = inputFile.path.split(s)[inputFile.path.split(s).indexOf(_pathsToRemove[_pathsToRemove.indexWhere((element) => inputFile.path.split(s).contains(element))]) - 1];
+      } else {
+        subDirName = inputFile.path.split(s)[inputFile.path.split(s).indexOf(inputFile.name) - 1];
+      }
+      if (subDirName.isNotEmpty) {
+
+      }
+    }
+
+  print(mainDirPaths);
+
+  return [];
 }
 
+// Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
+//   Function deepEq = const DeepCollectionEquality().equals;
+//   List<List<String>> fileList = [];
+//   List<XFile> extraFiles = [];
+
+//   for (var inputFile in inputFiles) {
+//     if (p.extension(inputFile.path) != '') {
+//       extraFiles.add(inputFile);
+//     } else {
+//       if (fileList.isEmpty) {
+//         fileList.add(await findItemInCsv(inputFile));
+//       } else {
+//         List<String> curFilePath = inputFile.path.split(s);
+//         curFilePath.removeRange(inputFile.path.split(s).length - 1, inputFile.path.split(s).length);
+//         String curSubFolder = curFilePath.removeLast();
+//         for (var element in _pathsToRemove) {
+//           int index = curFilePath.indexOf(element);
+//           if (index != -1) {
+//             curFilePath.removeRange(index, curFilePath.length);
+//             //newFilePath = filePathSplit.join(s);
+//             //print(newFilePath);
+//             break;
+//           }
+//         }
+//         String curDirPath = curFilePath.join(s);
+//         bool foundInList = false;
+//         for (var line in fileList) {
+//           List<String> line4 = line[4].split(s);
+//           for (var element in _pathsToRemove) {
+//             int index = line4.indexOf(element);
+//             if (index != -1) {
+//               line4.removeRange(index, line4.length);
+//               break;
+//             }
+//           }
+//           if (line4.join(s) == curDirPath) {
+//             foundInList = true;
+//             if (line[3].split('|').indexWhere((element) => element == curSubFolder) == -1) {
+//               line[3] += '|$curSubFolder';
+//             }
+//             if (line.last.split('|').indexWhere((element) => element == inputFile.path) == -1) {
+//               line.last += '|${inputFile.path}';
+//             }
+//             break;
+//           }
+//           print(line);
+//         }
+//         if (!foundInList) {
+//           var list = await findItemInCsv(inputFile);
+//           if (fileList.indexWhere((element) => deepEq(element, list)) == -1) {
+//             fileList.add(list);
+//           }
+//         }
+//       }
+//     }
+//     if (extraFiles.isNotEmpty) {
+//       for (var extraFile in extraFiles) {
+//         List<String> curFilePath = extraFile.path.split(s);
+//         curFilePath.removeRange(extraFile.path.split(s).length - 1, extraFile.path.split(s).length);
+//         String curSubFolder = curFilePath.removeLast();
+//         String curDirPath = curFilePath.join(s);
+//         for (var line in fileList) {
+//           if (line[4] == curDirPath) {
+//             if (line[3].split('|').indexWhere((element) => element == curSubFolder) == -1) {
+//               line[3] += '|$curSubFolder';
+//             }
+//             if (line.last.split('|').indexWhere((element) => element == inputFile.path) == -1) {
+//               line.last += '|${extraFile.path}';
+//             }
+//             break;
+//           }
+//           //print(line);
+//         }
+//       }
+//     }
+//   }
+//   return fileList;
+// }
+
 Future<List<String>> findItemInCsv(XFile inputFile) async {
-  List<String> pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
   for (var file in ngsRefSheetsList) {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
         var lineSplit = line.split(',');
         var filePathSplit = inputFile.path.split(s);
         var newFilePath = '';
-        for (var element in pathsToRemove) {
+        for (var element in _pathsToRemove) {
           int index = filePathSplit.indexOf(element);
           if (index != -1) {
             filePathSplit.removeRange(index, filePathSplit.length);
