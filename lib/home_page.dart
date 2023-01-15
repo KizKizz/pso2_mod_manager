@@ -60,6 +60,7 @@ int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
 String modsViewAppBarName = '';
 String modsSetAppBarName = '';
+List<String> defaultCatesList = ['Favorites', 'Accessories', 'Basewears', 'Body Paints', 'Emotes', 'Face Paints', 'Innerwears', 'Misc', 'Motions', 'Outerwears', 'Setwears'];
 
 //New Cate
 bool addCategoryVisible = false;
@@ -579,7 +580,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                           Row(
                             children: [
-                              if (cateList[index].categoryName != 'Favorites')
+                              if (!defaultCatesList.contains(cateList[index].categoryName))
                                 Tooltip(
                                     message: '${curLangText!.deleteBtnTooltipText} ${cateList[index].categoryName}',
                                     height: 25,
@@ -2664,7 +2665,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             } else {
                                               isModAddFolderOnly = true;
                                               dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath,
-                                                      _newModToItemIndex, newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
+                                                      newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
                                                   .then((_) {
                                                 setState(() {
                                                   //setstate to refresh list

@@ -1313,7 +1313,7 @@ Future<void> dragDropFilesAdd(context, List<XFile> newItemDragDropList, String? 
 }
 
 // New Mod Adders
-Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String curCate, String curItemName, String itemPath, int index, String? newItemName) async {
+Future<void> dragDropModsAdd(context, List<XFile> newModDragDropList, String curCate, String curItemName, String itemPath, String? newItemName) async {
   for (var xFile in newModDragDropList) {
     await Future(
       () {

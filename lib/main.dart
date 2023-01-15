@@ -443,13 +443,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             child: SizedBox(
                               width: 105,
                               child: MaterialButton(
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
                                 onPressed: (() {
                                   modAddHandler(context);
                                 }),
                                 child: Row(
                                   children: const [
                                     Icon(
-                                      Icons.light_mode_outlined,
+                                      Icons.add_circle_outline,
                                       size: 18,
                                     ),
                                     SizedBox(width: 2.5),
@@ -459,55 +460,146 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               ),
                             ),
                           ),
-                          //Path menu
+
+                          //Mod sets
                           Tooltip(
-                            message: curLangText!.pathsReselectTooltipText,
+                            message: curLangText!.modSetsTooltipText,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  customButton: AbsorbPointer(
-                                    absorbing: true,
-                                    child: MaterialButton(
-                                      onPressed: (() {}),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.folder_open_outlined,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                        ],
+                            child: SizedBox(
+                              width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                  } else {
+                                    modFilesFromSetList.clear();
+                                    modFilesList.clear();
+                                    modsSetAppBarName = '';
+                                    modsViewAppBarName = '';
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                  }
+                                }),
+                                child: Row(
+                                  children: [
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.list_alt_outlined,
+                                        size: 18,
                                       ),
-                                    ),
-                                  ),
-                                  isDense: true,
-                                  items: [
-                                    ...MenuItems.pathMenuItems.map(
-                                      (item) => DropdownMenuItem<MenuItem>(
-                                        value: item,
-                                        child: MenuItems.buildItem(context, item),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.view_list_outlined,
+                                        size: 18,
                                       ),
-                                    ),
+                                    const SizedBox(width: 2.5),
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
-                                  onChanged: (value) {
-                                    MenuItems.onChanged(context, value as MenuItem);
-                                  },
-                                  itemHeight: 35,
-                                  dropdownWidth: 130,
-                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                  ),
-                                  dropdownElevation: 8,
-                                  offset: const Offset(0, -3),
                                 ),
+                              ),
+                            ),
+                          ),
+
+                          //Checksum
+                          Tooltip(
+                            message: curLangText!.checksumToolTipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              onPressed: (() async {
+                                if (checkSumFilePath == null) {
+                                  checksumLocation = await FilePicker.platform.pickFiles(
+                                    dialogTitle: curLangText!.checksumSelectPopupText,
+                                    allowMultiple: false,
+                                    // type: FileType.custom,
+                                    // allowedExtensions: ['\'\''],
+                                    lockParentWindow: true,
+                                  );
+                                  if (checksumLocation != null) {
+                                    String? checksumPath = checksumLocation!.paths.first;
+                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
+                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    setState(() {});
+                                  }
+                                } else {
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                }
+                              }),
+                              child: checkSumFilePath != null
+                                  ? Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.fingerprint,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 2.5),
+                                        Text('${curLangText!.checksumBtnText}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                        Text('OK',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.fingerprint,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ),
+                                        const SizedBox(width: 2.5),
+                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                      ],
+                                    ),
+                            ),
+                          ),
+
+                          //Preview
+                          Tooltip(
+                            message: curLangText!.previewTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: MaterialButton(
+                              //visualDensity: VisualDensity.compact,
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                  prefs.setBool('previewWindowVisible', false);
+                                  previewPlayer.stop();
+                                } else {
+                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  prefs.setBool('previewWindowVisible', true);
+                                }
+                              }),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.preview_outlined,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 2.5),
+                                  Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                  if (context.watch<StateProvider>().previewWindowVisible)
+                                    SizedBox(
+                                        width: 23,
+                                        child: Text('ON',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
+                                  if (context.watch<StateProvider>().previewWindowVisible == false)
+                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                ],
                               ),
                             ),
                           ),
@@ -589,141 +681,56 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               ),
                             ),
                           ),
-
-                          //Checksum
+                          
+                          //Path menu
                           Tooltip(
-                            message: curLangText!.checksumToolTipText,
+                            message: curLangText!.pathsReselectTooltipText,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
-                            child: MaterialButton(
-                              onPressed: (() async {
-                                if (checkSumFilePath == null) {
-                                  checksumLocation = await FilePicker.platform.pickFiles(
-                                    dialogTitle: curLangText!.checksumSelectPopupText,
-                                    allowMultiple: false,
-                                    // type: FileType.custom,
-                                    // allowedExtensions: ['\'\''],
-                                    lockParentWindow: true,
-                                  );
-                                  if (checksumLocation != null) {
-                                    String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
-                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
-                                    setState(() {});
-                                  }
-                                } else {
-                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
-                                }
-                              }),
-                              child: checkSumFilePath != null
-                                  ? Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.fingerprint,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text(curLangText!.checksumBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.fingerprint,
-                                          size: 18,
-                                          color: Colors.red,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                      ],
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  customButton: AbsorbPointer(
+                                    absorbing: true,
+                                    child: MaterialButton(
+                                      onPressed: (() {}),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.folder_open_outlined,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                        ],
+                                      ),
                                     ),
-                            ),
-                          ),
-
-                          //Mod sets
-                          Tooltip(
-                            message: curLangText!.modSetsTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: SizedBox(
-                              width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                    modFilesFromSetList.clear();
-                                    modFilesList.clear();
-                                    modsSetAppBarName = '';
-                                    modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                  } else {
-                                    modFilesFromSetList.clear();
-                                    modFilesList.clear();
-                                    modsSetAppBarName = '';
-                                    modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                  }
-                                }),
-                                child: Row(
-                                  children: [
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.list_alt_outlined,
-                                        size: 18,
-                                      ),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.view_list_outlined,
-                                        size: 18,
-                                      ),
-                                    const SizedBox(width: 2.5),
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //Preview
-                          Tooltip(
-                            message: curLangText!.previewTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: MaterialButton(
-                              //visualDensity: VisualDensity.compact,
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
-                                  prefs.setBool('previewWindowVisible', false);
-                                  previewPlayer.stop();
-                                } else {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
-                                  prefs.setBool('previewWindowVisible', true);
-                                }
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.preview_outlined,
-                                    size: 18,
                                   ),
-                                  const SizedBox(width: 2.5),
-                                  Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
-                                  if (context.watch<StateProvider>().previewWindowVisible)
-                                    SizedBox(
-                                        width: 23,
-                                        child: Text('ON',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 13,
-                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
-                                  if (context.watch<StateProvider>().previewWindowVisible == false)
-                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
-                                ],
+                                  isDense: true,
+                                  items: [
+                                    ...MenuItems.pathMenuItems.map(
+                                      (item) => DropdownMenuItem<MenuItem>(
+                                        value: item,
+                                        child: MenuItems.buildItem(context, item),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    MenuItems.onChanged(context, value as MenuItem);
+                                  },
+                                  itemHeight: 35,
+                                  dropdownWidth: 130,
+                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                  ),
+                                  dropdownElevation: 8,
+                                  offset: const Offset(0, -3),
+                                ),
                               ),
                             ),
                           ),
@@ -786,6 +793,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                 ),
                               ),
                             ),
+
+                          //Language select
                           Tooltip(
                             message: curLangText!.languageTooltipText,
                             height: 25,
@@ -940,7 +949,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       }
                                     }
 
-                                    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+                                    topBtnMenuItems = [curLangText!.checksumBtnText, curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
 
                                     //Json Write
                                     langList.map((translation) => translation.toJson()).toList();
