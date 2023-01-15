@@ -540,7 +540,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           size: 18,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text('${curLangText!.checksumBtnText}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                        Text('${curLangText!.checksumBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
                                         Text('OK',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,

@@ -542,7 +542,7 @@ TranslationText defaultUILangLoader() {
     'Mods',
     'Backups',
     'Deleted Items',
-    'Checksum',
+    'Checksum:',
     'Checksum missing. Click!',
     'Mod Sets',
     'Mod List',
