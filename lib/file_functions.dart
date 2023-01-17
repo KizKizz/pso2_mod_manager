@@ -1587,7 +1587,7 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
     }
   }
 
-  tempFavCate.itemNames.sort();
+  //tempFavCate.itemNames.sort();
   allModFiles.map((mod) => mod.toJson()).toList();
   File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
 

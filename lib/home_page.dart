@@ -653,7 +653,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Ink(
                               color: selectedIndex[index] == i ? Theme.of(context).highlightColor : Colors.transparent,
                               child: ListTile(
-                                leading: cateList[index].imageIcons[i].first.path.split('/').last != 'placeholdersquare.png'
+                                leading: cateList[index].imageIcons[i].first.path.split(s).last != 'placeholdersquare.png'
                                     ? SizedBox(
                                         width: 50,
                                         height: 50,

@@ -22,6 +22,10 @@ List<XFile> modsToAddList = [];
 Future? sortedModsListLoad;
 List<List<String>> sortedModsList = [];
 String tempDirPath = '${Directory.current.path}${s}temp';
+TextEditingController renameTextBoxController = TextEditingController();
+List<bool> _mainFolderRenameIndex = [];
+List<List<bool>> _subFoldersRenameIndex = [];
+bool _isNameEditing = false;
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
@@ -122,7 +126,12 @@ void modAddHandler(context) {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          if (_newModDragDropList.isEmpty) const Center(child: Text('Drag and drop files here')),
+                                          if (_newModDragDropList.isEmpty)
+                                            const Center(
+                                                child: Text(
+                                              'Drag and drop folders, zip files\nand .ice files here',
+                                              textAlign: TextAlign.center,
+                                            )),
                                           if (_newModDragDropList.isNotEmpty)
                                             Expanded(
                                               child: Padding(
@@ -219,10 +228,11 @@ void modAddHandler(context) {
                                                       // }
 
                                                       //clear lists
-                                                      _newModDragDropList.clear();
                                                       sortedModsListLoad = fetchItemName(modsToAddList);
                                                       setState(
-                                                        () {},
+                                                        () {
+                                                          _newModDragDropList.clear();
+                                                        },
                                                       );
                                                     })
                                                   : null,
@@ -244,169 +254,383 @@ void modAddHandler(context) {
                             Expanded(
                               child: Column(
                                 children: [
-                                  SizedBox(
-                                    height: _exitConfirmDialog ? constraints.maxHeight - 93 : constraints.maxHeight - 33,
-                                    child: FutureBuilder(
-                                        future: sortedModsListLoad,
-                                        builder: (
-                                          BuildContext context,
-                                          AsyncSnapshot snapshot,
-                                        ) {
-                                          if (snapshot.connectionState == ConnectionState.none) {
-                                            return Center(
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: const [
-                                                  Text(
-                                                    'Waiting for data',
-                                                    style: TextStyle(fontSize: 20),
+                                  Stack(
+                                    alignment: AlignmentDirectional.bottomStart,
+                                    children: [
+                                      SizedBox(
+                                        height: constraints.maxHeight - 33,
+                                        child: FutureBuilder(
+                                            future: sortedModsListLoad,
+                                            builder: (
+                                              BuildContext context,
+                                              AsyncSnapshot snapshot,
+                                            ) {
+                                              if (snapshot.connectionState == ConnectionState.none || modsToAddList.isEmpty) {
+                                                return Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: const [
+                                                      Text(
+                                                        'Waiting for data',
+                                                        style: TextStyle(fontSize: 20),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      CircularProgressIndicator(),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  CircularProgressIndicator(),
-                                                ],
-                                              ),
-                                            );
-                                          } else {
-                                            if (snapshot.hasError) {
-                                              return Center(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      'Error when loading data. Restart the app.',
-                                                      style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                                                );
+                                              } else {
+                                                if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'Error when loading data. Restart the app.',
+                                                          style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              );
-                                            } else if (!snapshot.hasData) {
-                                              return Center(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: const [
-                                                    Text(
-                                                      'Loading Data',
-                                                      style: TextStyle(fontSize: 20),
+                                                  );
+                                                } else if (!snapshot.hasData) {
+                                                  return Center(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: const [
+                                                        Text(
+                                                          'Loading Data',
+                                                          style: TextStyle(fontSize: 20),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        CircularProgressIndicator(),
+                                                      ],
                                                     ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    CircularProgressIndicator(),
-                                                  ],
-                                                ),
-                                              );
-                                            } else {
-                                              sortedModsList = snapshot.data;
-                                              //print(sortedModsList.length);
-                                              return SingleChildScrollView(
-                                                  controller: AdjustableScrollController(80),
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      itemCount: sortedModsList.length,
-                                                      itemBuilder: (context, index) {
-                                                        return Card(
-                                                          margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                              side: BorderSide(
-                                                                  width: 1,
-                                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
-                                                          child: ExpansionTile(
-                                                            initiallyExpanded: true,
-                                                            title: curActiveLang == 'JP'
-                                                                ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
-                                                                    style: const TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                    ))
-                                                                : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
-                                                                    style: const TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                    )),
-                                                            textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            childrenPadding: const EdgeInsets.only(left: 10),
-                                                            children: [
-                                                              for (int ex = 0; ex < sortedModsList[index][3].split('|').length; ex++)
-                                                                ExpansionTile(
-                                                                  initiallyExpanded: true,
-                                                                  textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                  title: Text(sortedModsList[index][3].split('|')[ex],
-                                                                      style: const TextStyle(
-                                                                        fontWeight: FontWeight.w500,
-                                                                      )),
-                                                                  children: [
-                                                                    //if has subfolders
-                                                                    for (int s = 0; s < sortedModsList[index][4].split('|').length; s++)
-                                                                      if (sortedModsList[index][4].split('|')[s] != '')
-                                                                        ExpansionTile(
-                                                                          initiallyExpanded: false,
-                                                                          textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                          iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                          collapsedTextColor:
-                                                                              MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                          title: Text(sortedModsList[index][4].split('|')[s]),
-                                                                          children: [
+                                                  );
+                                                } else {
+                                                  sortedModsList = snapshot.data;
+                                                  if (_mainFolderRenameIndex.isEmpty) {
+                                                    _mainFolderRenameIndex = List.generate(sortedModsList.length, (index) => false);
+                                                    _subFoldersRenameIndex = List.generate(sortedModsList.length, (index) => []);
+                                                    for (int i = 0; i < _subFoldersRenameIndex.length; i++) {
+                                                      _subFoldersRenameIndex[i] = List.generate(sortedModsList[i][4].split('|').length, (index) => false);
+                                                    }
+                                                  }
+                                                  //print(sortedModsList.length);
+                                                  return SingleChildScrollView(
+                                                      controller: AdjustableScrollController(80),
+                                                      child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          itemCount: sortedModsList.length,
+                                                          itemBuilder: (context, index) {
+                                                            return Card(
+                                                              margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                  side: BorderSide(
+                                                                      width: 1,
+                                                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
+                                                              child: ExpansionTile(
+                                                                initiallyExpanded: true,
+                                                                title: curActiveLang == 'JP'
+                                                                    ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
+                                                                        style: const TextStyle(
+                                                                          fontWeight: FontWeight.w600,
+                                                                        ))
+                                                                    : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
+                                                                        style: const TextStyle(
+                                                                          fontWeight: FontWeight.w600,
+                                                                        )),
+                                                                textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                childrenPadding: const EdgeInsets.only(left: 10),
+                                                                children: [
+                                                                  for (int ex = 0; ex < sortedModsList[index][3].split('|').length; ex++)
+                                                                    ExpansionTile(
+                                                                      initiallyExpanded: true,
+                                                                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      collapsedTextColor:
+                                                                          MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      //Edit Name
+                                                                      title: _mainFolderRenameIndex[index]
+                                                                          ? Row(
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: SizedBox(
+                                                                                    //width: constraints.maxWidth * 0.4,
+                                                                                    height: 40,
+                                                                                    child: TextFormField(
+                                                                                      autofocus: true,
+                                                                                      controller: renameTextBoxController,
+                                                                                      maxLines: 1,
+                                                                                      decoration: InputDecoration(
+                                                                                        contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                        border: const OutlineInputBorder(),
+                                                                                        hintText: sortedModsList[index][3].split('|')[ex],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                const SizedBox(
+                                                                                  width: 5,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 40,
+                                                                                  child: MaterialButton(
+                                                                                    onPressed: () {
+                                                                                      if (renameTextBoxController.text.isNotEmpty) {
+                                                                                        String oldMainDirName = sortedModsList[index][3].split('|')[ex];
+                                                                                        // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
+                                                                                        //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
+                                                                                        List<FileSystemEntity> curFilesInMainDir = Directory('$tempDirPath$s$oldMainDirName').listSync(recursive: true);
+                                                                                        for (var element in curFilesInMainDir) {
+                                                                                          //print(curFilesInMainDir);
+                                                                                          String newMainPath = element.path
+                                                                                              .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                          if (!File(element.path).existsSync()) {
+                                                                                            Directory(newMainPath).createSync(recursive: true);
+                                                                                          }
+                                                                                          if (sortedModsList[index][4].isEmpty) {
+                                                                                            Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
+                                                                                          }
+                                                                                        }
+                                                                                        for (var element in curFilesInMainDir) {
+                                                                                          String newMainPath = element.path
+                                                                                              .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                          if (File(element.path).existsSync()) {
+                                                                                            File(element.path).copySync(newMainPath);
+                                                                                          }
+                                                                                        }
+
+                                                                                        //Itemlist
+                                                                                        List<String> mainDirsString = sortedModsList[index][3].split('|');
+                                                                                        mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                        sortedModsList[index][3] = mainDirsString.join('|');
+
+                                                                                        List<String> mainDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                        for (var element in mainDirsInItemString) {
+                                                                                          List<String> split = element.split((':'));
+                                                                                          if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                                                                            split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                            mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
+                                                                                          }
+                                                                                        }
+                                                                                        sortedModsList[index][5] = mainDirsInItemString.join('|');
+
+                                                                                        //print(sortedModsList);
+                                                                                      }
+                                                                                      _mainFolderRenameIndex[index] = false;
+                                                                                      renameTextBoxController.clear();
+                                                                                      _isNameEditing = false;
+
+                                                                                      setState(
+                                                                                        () {},
+                                                                                      );
+                                                                                    },
+                                                                                    child: const Icon(Icons.check),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
+                                                                          : Row(
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: Text(sortedModsList[index][3].split('|')[ex],
+                                                                                      style: const TextStyle(
+                                                                                        fontWeight: FontWeight.w500,
+                                                                                      )),
+                                                                                ),
+                                                                                const SizedBox(
+                                                                                  width: 5,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 40,
+                                                                                  child: MaterialButton(
+                                                                                    onPressed: !_isNameEditing
+                                                                                        ? () {
+                                                                                            _isNameEditing = true;
+                                                                                            _mainFolderRenameIndex[index] = true;
+                                                                                            setState(
+                                                                                              () {},
+                                                                                            );
+                                                                                          }
+                                                                                        : null,
+                                                                                    child: const Icon(Icons.edit),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                      children: [
+                                                                        //if has subfolders
+                                                                        for (int sub = 0; sub < sortedModsList[index][4].split('|').length; sub++)
+                                                                          if (sortedModsList[index][4].split('|')[sub] != '')
+                                                                            ExpansionTile(
+                                                                              initiallyExpanded: false,
+                                                                              textColor:
+                                                                                  MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                              iconColor:
+                                                                                  MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                              collapsedTextColor:
+                                                                                  MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                              //Edit Sub Name
+                                                                              title: _subFoldersRenameIndex[index][sub]
+                                                                                  ? Row(
+                                                                                      children: [
+                                                                                        Expanded(
+                                                                                          child: SizedBox(
+                                                                                            height: 40,
+                                                                                            child: TextFormField(
+                                                                                              autofocus: true,
+                                                                                              controller: renameTextBoxController,
+                                                                                              maxLines: 1,
+                                                                                              decoration: InputDecoration(
+                                                                                                contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                border: const OutlineInputBorder(),
+                                                                                                hintText: sortedModsList[index][4].split('|')[sub],
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 5,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: 40,
+                                                                                          child: MaterialButton(
+                                                                                            onPressed: () {
+                                                                                              if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                String oldSubDirName = sortedModsList[index][4].split('|')[sub];
+                                                                                                Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                    '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                // List<FileSystemEntity> curFilesInMainDir =
+                                                                                                //     Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[s]}').listSync(recursive: true);
+                                                                                                // for (var element in curFilesInMainDir) {
+                                                                                                //   if (File(element.path).existsSync()) {
+                                                                                                //     Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
+                                                                                                //     File(element.path)
+                                                                                                //         .copySync('$tempDirPath$s${renameTextBoxController.text}$s${XFile(element.path).name}');
+                                                                                                //   }
+                                                                                                // }
+                                                                                                List<String> subDirsString = sortedModsList[index][4].split('|');
+                                                                                                subDirsString[subDirsString.indexOf(oldSubDirName)] = renameTextBoxController.text;
+                                                                                                sortedModsList[index][4] = subDirsString.join('|');
+
+                                                                                                List<String> subDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                                for (var element in subDirsInItemString) {
+                                                                                                  List<String> split = element.split((':'));
+                                                                                                  if (split.indexWhere((element) => element == oldSubDirName) != -1) {
+                                                                                                    split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
+                                                                                                    subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
+                                                                                                  }
+                                                                                                }
+                                                                                                sortedModsList[index][5] = subDirsInItemString.join('|');
+                                                                                              }
+
+                                                                                              //Clear
+                                                                                              _subFoldersRenameIndex[index][sub] = false;
+                                                                                              renameTextBoxController.clear();
+                                                                                              _isNameEditing = false;
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            },
+                                                                                            child: const Icon(Icons.check),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    )
+                                                                                  : Row(
+                                                                                      children: [
+                                                                                        Expanded(
+                                                                                          child: Text(sortedModsList[index][4].split('|')[sub],
+                                                                                              style: const TextStyle(
+                                                                                                fontWeight: FontWeight.w500,
+                                                                                              )),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 5,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: 40,
+                                                                                          child: MaterialButton(
+                                                                                            onPressed: !_isNameEditing
+                                                                                                ? () {
+                                                                                                    _subFoldersRenameIndex[index][sub] = true;
+                                                                                                    _isNameEditing = true;
+                                                                                                    setState(
+                                                                                                      () {},
+                                                                                                    );
+                                                                                                  }
+                                                                                                : null,
+                                                                                            child: const Icon(Icons.edit),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                              children: [
+                                                                                for (int i = 0; i < sortedModsList[index][5].split('|').length; i++)
+                                                                                  if (sortedModsList[index][5].split('|')[i].split(':')[0] == sortedModsList[index][3].split('|')[ex] &&
+                                                                                      sortedModsList[index][5].split('|')[i].split(':')[1] == sortedModsList[index][4].split('|')[sub])
+                                                                                    ListTile(
+                                                                                      title: Text(sortedModsList[index][5].split('|')[i].split(':').last),
+                                                                                    )
+                                                                              ],
+                                                                            ),
+                                                                        //if has no subfolders
+                                                                        for (int u = 0; u < sortedModsList[index][4].split('|').length; u++)
+                                                                          if (sortedModsList[index][4].split('|')[u] == '')
                                                                             for (int i = 0; i < sortedModsList[index][5].split('|').length; i++)
                                                                               if (sortedModsList[index][5].split('|')[i].split(':')[0] == sortedModsList[index][3].split('|')[ex] &&
-                                                                                  sortedModsList[index][5].split('|')[i].split(':')[1] == sortedModsList[index][4].split('|')[s])
+                                                                                  sortedModsList[index][5].split('|')[i].split(':')[1] == '')
                                                                                 ListTile(
                                                                                   title: Text(sortedModsList[index][5].split('|')[i].split(':').last),
                                                                                 )
-                                                                          ],
-                                                                        ),
-                                                                    //if has no subfolders
-                                                                    for (int s = 0; s < sortedModsList[index][4].split('|').length; s++)
-                                                                      if (sortedModsList[index][4].split('|')[s] == '')
-                                                                        for (int i = 0; i < sortedModsList[index][5].split('|').length; i++)
-                                                                          if (sortedModsList[index][5].split('|')[i].split(':')[0] == sortedModsList[index][3].split('|')[ex] &&
-                                                                              sortedModsList[index][5].split('|')[i].split(':')[1] == '')
-                                                                            ListTile(
-                                                                              title: Text(sortedModsList[index][5].split('|')[i].split(':').last),
-                                                                            )
-                                                                  ],
-                                                                )
-                                                            ],
-                                                          ),
-                                                        );
-                                                      }));
-                                            }
-                                          }
-                                        }),
+                                                                      ],
+                                                                    )
+                                                                ],
+                                                              ),
+                                                            );
+                                                          }));
+                                                }
+                                              }
+                                            }),
+                                      ),
+                                      if (_exitConfirmDialog)
+                                        Container(
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(3),
+                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              const Center(child: Text('There are still mods in the list waiting to be added')),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              ElevatedButton(
+                                                child: const Text('Return'),
+                                                onPressed: () {
+                                                  _exitConfirmDialog = false;
+                                                  setState(
+                                                    () {},
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                  if (_exitConfirmDialog)
-                                    Container(
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          const Center(child: Text('There are still mods in the list waiting to be added')),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          ElevatedButton(
-                                            child: const Text('Return'),
-                                            onPressed: () {
-                                              _exitConfirmDialog = false;
-                                              setState(
-                                                () {},
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                   SizedBox(
                                     //width: constraints.maxWidth * 0.45,
                                     child: Padding(
@@ -421,6 +645,7 @@ void modAddHandler(context) {
                                                         Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                           element.deleteSync(recursive: true);
                                                         });
+                                                        _mainFolderRenameIndex.clear();
                                                         _exitConfirmDialog = false;
                                                         sortedModsList.clear();
                                                         _newModDragDropList.clear();
@@ -442,6 +667,7 @@ void modAddHandler(context) {
                                                     Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                       element.deleteSync(recursive: true);
                                                     });
+                                                    _mainFolderRenameIndex.clear();
                                                     _exitConfirmDialog = false;
                                                     ngsRefSheetsList.clear();
                                                     sortedModsList.clear();
@@ -455,6 +681,7 @@ void modAddHandler(context) {
                                                     _exitConfirmDialog = true;
                                                   } else {
                                                     //clear lists
+                                                    _mainFolderRenameIndex.clear();
                                                     ngsRefSheetsList.clear();
                                                     sortedModsList.clear();
                                                     _newModDragDropList.clear();
@@ -472,7 +699,7 @@ void modAddHandler(context) {
                                           ),
                                           Expanded(
                                             child: ElevatedButton(
-                                                onPressed: sortedModsList.isNotEmpty
+                                                onPressed: sortedModsList.isNotEmpty && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1
                                                     ? (() async {
                                                         List<FileSystemEntity> sortedDirs = Directory(tempDirPath).listSync(recursive: false);
                                                         for (var mainDir in sortedDirs) {
@@ -480,32 +707,34 @@ void modAddHandler(context) {
                                                           String itemName = '';
                                                           String mainDirName = mainDir.path.split(s).last;
                                                           for (var sortedList in sortedModsList) {
-                                                            if (sortedList[3] == mainDirName) {
+                                                            if (sortedList[3].split('|').indexWhere((element) => element == mainDirName) != -1) {
                                                               cateName = sortedList[0];
                                                               if (curActiveLang == 'JP') {
                                                                 itemName = sortedList[1];
                                                               } else {
                                                                 itemName = sortedList[2];
                                                               }
-                                                              break;
-                                                            }
-                                                          }
+                                                              //}
+                                                              //}
 
-                                                          if (Directory(mainDir.path).existsSync()) {
-                                                            List<XFile> subDirsToAdd = [];
-                                                            Directory(mainDir.path).listSync().forEach(
-                                                                  (element) => subDirsToAdd.add(XFile(element.path)),
-                                                                );
-                                                            if (!Directory('$modsDirPath$s$cateName$s$itemName').existsSync()) {
-                                                              dragDropSingleFilesAdd(context, subDirsToAdd, null, cateName, itemName, mainDirName)
-                                                                  .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
-                                                            } else {
-                                                              dragDropModsAdd(context, subDirsToAdd, cateName, itemName, '$modsDirPath$s$cateName$s$itemName', mainDirName)
-                                                                  .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
+                                                              if (Directory(mainDir.path).existsSync()) {
+                                                                List<XFile> subDirsToAdd = [];
+                                                                Directory(mainDir.path).listSync().forEach(
+                                                                      (element) => subDirsToAdd.add(XFile(element.path)),
+                                                                    );
+                                                                if (!Directory('$modsDirPath$s$cateName$s$itemName').existsSync()) {
+                                                                  dragDropSingleFilesAdd(context, subDirsToAdd, null, cateName, itemName, mainDirName)
+                                                                      .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
+                                                                } else {
+                                                                  dragDropModsAdd(context, subDirsToAdd, cateName, itemName, '$modsDirPath$s$cateName$s$itemName', mainDirName)
+                                                                      .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
+                                                                }
+                                                              }
                                                             }
                                                           }
                                                         }
                                                         //clear lists and delete temp
+                                                        _mainFolderRenameIndex.clear();
                                                         _exitConfirmDialog = false;
                                                         sortedModsList.clear();
                                                         _newModDragDropList.clear();
@@ -573,24 +802,18 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   List<List<String>> filesList = [];
   //getting main dirs
   List<String> mainDirPaths = [];
-  for (var inputFile in inputFiles) {
-    if (!File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
-      if (mainDirPaths.isEmpty) {
-        mainDirPaths.add(inputFile.path);
-      } else {
-        if (mainDirPaths.indexWhere((element) => inputFile.path.contains(element)) == -1) {
-          mainDirPaths.add(inputFile.path);
-        }
-      }
-    }
+  for (var file in _newModDragDropList) {
+    mainDirPaths.add(file.path);
   }
 
   //copy files to temp with new folder structures
   List<List<String>> extraFiles = [];
+  int unknownModsCounter = 1;
   for (var inputFile in inputFiles) {
     if (File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
       for (var mainPath in mainDirPaths) {
-        if (inputFile.path.contains(mainPath)) {
+        //Paths have main path and continue with /
+        if (inputFile.path.contains('$mainPath$s')) {
           String mainDirName = mainPath.split(s).last;
           List<String> curPathSplit = inputFile.path.split(s);
           String subDirName = '';
@@ -615,9 +838,14 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
           int indexInFilesList = -1;
           if (p.extension(inputFile.path) == '') {
             List<String> itemInfo = await findItemInCsv(inputFile);
-            if (filesList.indexWhere((element) => element[1].contains(itemInfo[1])) != -1 && filesList.indexWhere((element) => element[2].contains(itemInfo[2])) != -1) {
-              indexInFilesList = filesList.indexWhere((element) => element[1].contains(itemInfo[1]));
-              itemInfo = filesList[indexInFilesList];
+            if (itemInfo.isNotEmpty) {
+              if (filesList.indexWhere((element) => element[1].contains(itemInfo[1])) != -1 && filesList.indexWhere((element) => element[2].contains(itemInfo[2])) != -1) {
+                indexInFilesList = filesList.indexWhere((element) => element[1].contains(itemInfo[1]));
+                itemInfo = filesList[indexInFilesList];
+              }
+            } else {
+              itemInfo = ['Misc', '不明な項目 $unknownModsCounter', 'Unknown Item $unknownModsCounter'];
+              unknownModsCounter++;
             }
 
             if (itemInfo.length < 4) {
@@ -657,7 +885,6 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
       }
     }
   }
-
   for (var extraFile in extraFiles) {
     for (var file in filesList) {
       if (file[3].split('|').contains(extraFile[3]) && file[4].split('|').contains(extraFile[4])) {

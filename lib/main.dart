@@ -445,6 +445,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               child: MaterialButton(
                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
                                 onPressed: (() {
+                                  Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
                                   modAddHandler(context);
                                 }),
                                 child: Row(
@@ -681,7 +684,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                               ),
                             ),
                           ),
-                          
+
                           //Path menu
                           Tooltip(
                             message: curLangText!.pathsReselectTooltipText,
