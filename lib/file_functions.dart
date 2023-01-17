@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:intl/intl.dart';
+import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -624,312 +625,257 @@ void modsRemover(List<ModFile> modsList) {
   File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
 }
 
+//Auto Files adder
+Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIcon) async {
+  for (var sortedLine in sortedList) {
+    //Get mods info
+    String category = sortedLine[0];
+    String itemNameJP = sortedLine[1];
+    String itemNameEN = sortedLine[2];
+    List<String> mainNames = sortedLine[3].split('|');
+    List<String> subNames = sortedLine[4].split('|');
+    List<String> fileInfos = sortedLine[5].split('|');
+
+    //Create folders inside Mods folder
+    if (subNames.isNotEmpty) {
+      for (var field in fileInfos) {
+        String curMainName = field.split(':')[0];
+        String curSubName = field.split(':')[1];
+        String curFile = field.split(':')[2];
+        if (curActiveLang == 'JP') {
+          
+          if (subNames.isEmpty) {
+            Directory('$modsDirPath$s$category$s$itemNameJP$s$curMainName').createSync(recursive: true);
+            File('$tempDirPath$s$curMainName$s$curFile').copySync('$modsDirPath$s$category$s$itemNameJP$s$curMainName$s$curFile');
+          } else {
+            Directory('$modsDirPath$s$category$s$itemNameJP$s$curMainName$s$curSubName').createSync(recursive: true);
+            File('$tempDirPath$s$curMainName$s$curSubName$s$curFile').copySync('$modsDirPath$s$category$s$itemNameJP$s$curMainName$s$curSubName$s$curFile');
+          }
+        } else {
+          if (subNames.isEmpty) {
+            Directory('$modsDirPath$s$category$s$itemNameEN$s$curMainName').createSync(recursive: true);
+            File('$tempDirPath$s$curMainName$s$curFile').copySync('$modsDirPath$s$category$s$itemNameJP$s$curMainName$s$curFile');
+          } else {
+            Directory('$modsDirPath$s$category$s$itemNameEN$s$curMainName$s$curSubName').createSync(recursive: true);
+            File('$tempDirPath$s$curMainName$s$curSubName$s$curFile').copySync('$modsDirPath$s$category$s$itemNameEN$s$curMainName$s$curSubName$s$curFile');
+          }
+        }
+      }
+    }
+  }
+}
+
 // New File Adders
 Future<void> dragDropSingleFilesAdd(context, List<XFile> newItemDragDropList, XFile? itemIcon, String? selectedCategoryName, String? newItemName, String? newModName) async {
   final categoryName = selectedCategoryName;
   final catePath = cateList.firstWhere((element) => element.categoryName == categoryName).categoryPath;
   String finalItemName = '';
-  //bool isFilesFound = true;
-  // for (var xFile in newItemDragDropList) {
-  //   if (Directory(xFile.path).existsSync()) {
-  //     isFilesFound = true;
-  //     break;
-  //   }
-  // }
-
-  // if (!isFilesFound) {
-  //   for (var xFile in newItemDragDropList) {
-  //     await Future(
-  //       () {
-  //         final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
-  //         if (files.isNotEmpty) {
-  //           for (var file in files) {
-  //             List<String> fileTailPath = file.path.split('${xFile.name}$s').last.split(s);
-  //             if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
-  //               fileTailPath.insert(0, xFile.name);
-  //             }
-  //             String newPath = catePath;
-  //             if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
-  //               fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
-  //                   fileTailPath.indexOf(fileTailPath.last));
-
-  //               String finalTailPath = fileTailPath.join(s);
-  //               if (newItemName != null) {
-  //                 //Item suffix
-  //                 if (categoryName == 'Basewears') {
-  //                   if (newItemName.contains('[Ba]')) {
-  //                     finalItemName = newItemName.replaceAll('[Ba]', '');
-  //                     finalItemName = finalItemName.trim();
-  //                   } else {
-  //                     finalItemName = newItemName.trim();
-  //                   }
-  //                   if (newModName != null) {
-  //                     newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
-  //                   } else {
-  //                     newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
-  //                   }
-  //                 } else if (categoryName == 'Innerwears') {
-  //                   if (newItemName.contains('[In]')) {
-  //                     finalItemName = newItemName.replaceAll('[In]', '');
-  //                     finalItemName = finalItemName.trim();
-  //                   } else {
-  //                     finalItemName = newItemName.trim();
-  //                   }
-  //                   if (newModName != null) {
-  //                     newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
-  //                   } else {
-  //                     newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
-  //                   }
-  //                 } else if (categoryName == 'Outerwears') {
-  //                   if (newItemName.contains('[Ou]')) {
-  //                     finalItemName = newItemName.replaceAll('[Ou]', '');
-  //                     finalItemName = finalItemName.trim();
-  //                   } else {
-  //                     finalItemName = newItemName.trim();
-  //                   }
-  //                   if (newModName != null) {
-  //                     newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
-  //                   } else {
-  //                     newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
-  //                   }
-  //                 } else if (categoryName == 'Setwears') {
-  //                   if (newItemName.contains('[Se]')) {
-  //                     finalItemName = newItemName.replaceAll('[Se]', '');
-  //                     finalItemName = finalItemName.trim();
-  //                   } else {
-  //                     finalItemName = newItemName.trim();
-  //                   }
-  //                   if (newModName != null) {
-  //                     newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
-  //                   } else {
-  //                     newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
-  //                   }
-  //                 } else {
-  //                   if (newModName != null) {
-  //                     newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
-  //                   } else {
-  //                     newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //             debugPrint(newPath);
-
-  //             File(newPath).createSync(recursive: true);
-  //             File(file.path).copySync(newPath);
-  //           }
-  //         }
-  //       },
-  //     );
-  //     Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
-  //   }
-  // } else {
-    for (var xFile in newItemDragDropList) {
-      await Future(
-        () {
-          if (!Directory(xFile.path).existsSync()) {
-            String newPath = catePath;
-            if (newItemName != null) {
-              //Item suffix
-              if (categoryName == 'Basewears') {
-                if (newItemName.contains('[Ba]')) {
-                  finalItemName = newItemName.replaceAll('[Ba]', '');
-                  finalItemName = finalItemName.trim();
-                } else {
-                  finalItemName = newItemName.trim();
-                }
-                if (newModName != null) {
-                  newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}';
-                } else {
-                  newPath += '$s$finalItemName [Ba]${s}_$newItemName$s${xFile.name}';
-                }
-              } else if (categoryName == 'Innerwears') {
-                if (newItemName.contains('[In]')) {
-                  finalItemName = newItemName.replaceAll('[In]', '');
-                  finalItemName = finalItemName.trim();
-                } else {
-                  finalItemName = newItemName.trim();
-                }
-                if (newModName != null) {
-                  newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}';
-                } else {
-                  newPath += '$s$finalItemName [In]${s}_$newItemName$s${xFile.name}';
-                }
-              } else if (categoryName == 'Outerwears') {
-                if (newItemName.contains('[Ou]')) {
-                  finalItemName = newItemName.replaceAll('[Ou]', '');
-                  finalItemName = finalItemName.trim();
-                } else {
-                  finalItemName = newItemName.trim();
-                }
-                if (newModName != null) {
-                  newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}';
-                } else {
-                  newPath += '$s$finalItemName [Ou]${s}_$newItemName$s${xFile.name}';
-                }
-              } else if (categoryName == 'Setwears') {
-                if (newItemName.contains('[Se]')) {
-                  finalItemName = newItemName.replaceAll('[Se]', '');
-                  finalItemName = finalItemName.trim();
-                } else {
-                  finalItemName = newItemName.trim();
-                }
-                if (newModName != null) {
-                  newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}';
-                } else {
-                  newPath += '$s$finalItemName [Se]${s}_$newItemName$s${xFile.name}';
-                }
+  for (var xFile in newItemDragDropList) {
+    await Future(
+      () {
+        if (!Directory(xFile.path).existsSync()) {
+          String newPath = catePath;
+          if (newItemName != null) {
+            //Item suffix
+            if (categoryName == 'Basewears') {
+              if (newItemName.contains('[Ba]')) {
+                finalItemName = newItemName.replaceAll('[Ba]', '');
+                finalItemName = finalItemName.trim();
               } else {
-                if (newModName != null) {
-                  newPath += '$s$newItemName$s$newModName$s${xFile.name}';
-                } else {
-                  newPath += '$s$newItemName${s}_$newItemName$s${xFile.name}';
-                }
+                finalItemName = newItemName.trim();
               }
-            }
-            File(newPath).createSync(recursive: true);
-            File(xFile.path).copySync(newPath);
-          } else {
-            final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
-            if (files.isNotEmpty) {
-              for (var file in files) {
-                List<String> fileTailPath = file.path.split('${xFile.name}$s').last.split(s);
-                if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
-                  fileTailPath.insert(0, xFile.name);
-                }
-                String newPath = catePath;
-                if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
-                  fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
-                      fileTailPath.indexOf(fileTailPath.last));
-                  String finalTailPath = fileTailPath.join(s);
-                  if (newItemName != null) {
-                    //Item suffix
-                    if (categoryName == 'Basewears') {
-                      if (newItemName.contains('[Ba]')) {
-                        finalItemName = newItemName.replaceAll('[Ba]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Innerwears') {
-                      if (newItemName.contains('[In]')) {
-                        finalItemName = newItemName.replaceAll('[In]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Outerwears') {
-                      if (newItemName.contains('[Ou]')) {
-                        finalItemName = newItemName.replaceAll('[Ou]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Setwears') {
-                      if (newItemName.contains('[Se]')) {
-                        finalItemName = newItemName.replaceAll('[Se]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
-                      }
-                    }
-                  }
-                } else {
-                  String finalTailPath = fileTailPath.join(s);
-                  if (newItemName != null) {
-                    //Item suffix
-                    if (categoryName == 'Basewears') {
-                      if (newItemName.contains('[Ba]')) {
-                        finalItemName = newItemName.replaceAll('[Ba]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Innerwears') {
-                      if (newItemName.contains('[In]')) {
-                        finalItemName = newItemName.replaceAll('[In]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Outerwears') {
-                      if (newItemName.contains('[Ou]')) {
-                        finalItemName = newItemName.replaceAll('[Ou]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else if (categoryName == 'Setwears') {
-                      if (newItemName.contains('[Se]')) {
-                        finalItemName = newItemName.replaceAll('[Se]', '');
-                        finalItemName = finalItemName.trim();
-                      } else {
-                        finalItemName = newItemName.trim();
-                      }
-                      if (newModName != null) {
-                        newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
-                      }
-                    } else {
-                      if (newModName != null) {
-                        newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
-                      } else {
-                        newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
-                      }
-                    }
-                  }
-                }
-
-                File(newPath).createSync(recursive: true);
-                File(file.path).copySync(newPath);
+              if (newModName != null) {
+                newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}';
+              } else {
+                newPath += '$s$finalItemName [Ba]${s}_$newItemName$s${xFile.name}';
+              }
+            } else if (categoryName == 'Innerwears') {
+              if (newItemName.contains('[In]')) {
+                finalItemName = newItemName.replaceAll('[In]', '');
+                finalItemName = finalItemName.trim();
+              } else {
+                finalItemName = newItemName.trim();
+              }
+              if (newModName != null) {
+                newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}';
+              } else {
+                newPath += '$s$finalItemName [In]${s}_$newItemName$s${xFile.name}';
+              }
+            } else if (categoryName == 'Outerwears') {
+              if (newItemName.contains('[Ou]')) {
+                finalItemName = newItemName.replaceAll('[Ou]', '');
+                finalItemName = finalItemName.trim();
+              } else {
+                finalItemName = newItemName.trim();
+              }
+              if (newModName != null) {
+                newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}';
+              } else {
+                newPath += '$s$finalItemName [Ou]${s}_$newItemName$s${xFile.name}';
+              }
+            } else if (categoryName == 'Setwears') {
+              if (newItemName.contains('[Se]')) {
+                finalItemName = newItemName.replaceAll('[Se]', '');
+                finalItemName = finalItemName.trim();
+              } else {
+                finalItemName = newItemName.trim();
+              }
+              if (newModName != null) {
+                newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}';
+              } else {
+                newPath += '$s$finalItemName [Se]${s}_$newItemName$s${xFile.name}';
+              }
+            } else {
+              if (newModName != null) {
+                newPath += '$s$newItemName$s$newModName$s${xFile.name}';
+              } else {
+                newPath += '$s$newItemName${s}_$newItemName$s${xFile.name}';
               }
             }
           }
-        },
-      );
-      Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+          File(newPath).createSync(recursive: true);
+          File(xFile.path).copySync(newPath);
+        } else {
+          final files = Directory(xFile.path).listSync(recursive: true).whereType<File>();
+          if (files.isNotEmpty) {
+            for (var file in files) {
+              List<String> fileTailPath = file.path.split('${xFile.name}$s').last.split(s);
+              if (xFile.name.contains('win32') || xFile.name.contains('win32_na') || xFile.name.contains('win32reboot') || xFile.name.contains('win32reboot_na')) {
+                fileTailPath.insert(0, xFile.name);
+              }
+              String newPath = catePath;
+              if (fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')) != -1) {
+                fileTailPath.removeRange(fileTailPath.indexWhere((e) => e.contains('win32') || e.contains('win32_na') || e.contains('win32reboot') || e.contains('win32reboot_na')),
+                    fileTailPath.indexOf(fileTailPath.last));
+                String finalTailPath = fileTailPath.join(s);
+                if (newItemName != null) {
+                  //Item suffix
+                  if (categoryName == 'Basewears') {
+                    if (newItemName.contains('[Ba]')) {
+                      finalItemName = newItemName.replaceAll('[Ba]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Innerwears') {
+                    if (newItemName.contains('[In]')) {
+                      finalItemName = newItemName.replaceAll('[In]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Outerwears') {
+                    if (newItemName.contains('[Ou]')) {
+                      finalItemName = newItemName.replaceAll('[Ou]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Setwears') {
+                    if (newItemName.contains('[Se]')) {
+                      finalItemName = newItemName.replaceAll('[Se]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else {
+                    if (newModName != null) {
+                      newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
+                    }
+                  }
+                }
+              } else {
+                String finalTailPath = fileTailPath.join(s);
+                if (newItemName != null) {
+                  //Item suffix
+                  if (categoryName == 'Basewears') {
+                    if (newItemName.contains('[Ba]')) {
+                      finalItemName = newItemName.replaceAll('[Ba]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Ba]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Ba]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Innerwears') {
+                    if (newItemName.contains('[In]')) {
+                      finalItemName = newItemName.replaceAll('[In]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [In]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [In]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Outerwears') {
+                    if (newItemName.contains('[Ou]')) {
+                      finalItemName = newItemName.replaceAll('[Ou]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Ou]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Ou]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else if (categoryName == 'Setwears') {
+                    if (newItemName.contains('[Se]')) {
+                      finalItemName = newItemName.replaceAll('[Se]', '');
+                      finalItemName = finalItemName.trim();
+                    } else {
+                      finalItemName = newItemName.trim();
+                    }
+                    if (newModName != null) {
+                      newPath += '$s$finalItemName [Se]$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$finalItemName [Se]$s${xFile.name}$s$finalTailPath';
+                    }
+                  } else {
+                    if (newModName != null) {
+                      newPath += '$s$newItemName$s$newModName$s${xFile.name}$s$finalTailPath';
+                    } else {
+                      newPath += '$s$newItemName$s${xFile.name}$s$finalTailPath';
+                    }
+                  }
+                }
+              }
+
+              File(newPath).createSync(recursive: true);
+              File(file.path).copySync(newPath);
+            }
+          }
+        }
+      },
+    );
+    Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
     //}
   }
 

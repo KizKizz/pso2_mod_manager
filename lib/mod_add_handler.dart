@@ -701,44 +701,76 @@ void modAddHandler(context) {
                                             child: ElevatedButton(
                                                 onPressed: sortedModsList.isNotEmpty && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1
                                                     ? (() async {
-                                                        List<FileSystemEntity> sortedDirs = Directory(tempDirPath).listSync(recursive: false);
-                                                        for (var mainDir in sortedDirs) {
-                                                          String cateName = '';
-                                                          String itemName = '';
-                                                          String mainDirName = mainDir.path.split(s).last;
-                                                          for (var sortedList in sortedModsList) {
-                                                            if (sortedList[3].split('|').indexWhere((element) => element == mainDirName) != -1) {
-                                                              cateName = sortedList[0];
-                                                              if (curActiveLang == 'JP') {
-                                                                itemName = sortedList[1];
-                                                              } else {
-                                                                itemName = sortedList[2];
-                                                              }
-                                                              //}
-                                                              //}
+                                                        // List<FileSystemEntity> sortedDirs = Directory(tempDirPath).listSync(recursive: false);
+                                                        // for (var mainDir in sortedDirs) {
+                                                        //   String cateName = '';
+                                                        //   String itemName = '';
+                                                        //   String mainDirName = mainDir.path.split(s).last;
+                                                        //   for (var sortedList in sortedModsList) {
+                                                        //     if (sortedList[3].split('|').indexWhere((element) => element == mainDirName) != -1) {
+                                                        //       cateName = sortedList[0];
+                                                        //       if (curActiveLang == 'JP') {
+                                                        //         itemName = sortedList[1];
+                                                        //       } else {
+                                                        //         itemName = sortedList[2];
+                                                        //       }
+                                                        //       //}
+                                                        //       //}
 
-                                                              if (Directory(mainDir.path).existsSync()) {
-                                                                List<XFile> subDirsToAdd = [];
-                                                                Directory(mainDir.path).listSync().forEach(
-                                                                      (element) => subDirsToAdd.add(XFile(element.path)),
-                                                                    );
-                                                                if (!Directory('$modsDirPath$s$cateName$s$itemName').existsSync()) {
-                                                                  dragDropSingleFilesAdd(context, subDirsToAdd, null, cateName, itemName, mainDirName)
-                                                                      .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
-                                                                } else {
-                                                                  dragDropModsAdd(context, subDirsToAdd, cateName, itemName, '$modsDirPath$s$cateName$s$itemName', mainDirName)
-                                                                      .then((_) => Directory(mainDir.path).deleteSync(recursive: true));
-                                                                }
-                                                              }
-                                                            }
-                                                          }
-                                                        }
+                                                        //       if (Directory(mainDir.path).existsSync()) {
+                                                        //         List<XFile> subDirsToAdd = [];
+                                                        //         // Directory(mainDir.path).listSync().forEach(
+                                                        //         //       (element) => subDirsToAdd.add(XFile(element.path)),
+                                                        //         //     );
+                                                        //         // for (var element in subDirsToAdd) {
+                                                        //         //   print(element.path);
+                                                        //         // }
+                                                        //         if (sortedList[4].isNotEmpty) {
+                                                        //           for (var element in Directory(mainDir.path).listSync(recursive: true)) {
+                                                        //             // if (!File(element.path).existsSync()) {
+                                                        //             //   if (sortedList[4].split('|').indexWhere((name) => name == element.path.split(s).last) != -1) {
+                                                        //             //     subDirsToAdd.add(XFile(element.path));
+                                                        //             //   }
+                                                        //             // }
+                                                        //             print(element);
+                                                        //             if (File(element.path).existsSync()) {
+                                                        //               if (sortedList[5].split('|').indexWhere((name) => name.contains(element.path.split(s).last)) != -1) {
+                                                        //               subDirsToAdd.add(XFile(element.path));
+                                                        //               }
+                                                        //             }
+                                                        //           }
+                                                        //         } else {
+                                                        //           for (var file in Directory(mainDir.path).listSync()) {
+                                                        //             subDirsToAdd.add(XFile(file.path));
+                                                        //           }
+                                                        //         }
+                                                        //         print(sortedList);
+                                                        //         for (var element in subDirsToAdd) {
+                                                        //           print(element);
+                                                        //         }
+
+                                                        //         if (sortedList.isNotEmpty) {
+                                                        //           if (!Directory('$modsDirPath$s$cateName$s$itemName').existsSync()) {
+                                                        //             dragDropSingleFilesAdd(context, subDirsToAdd, null, cateName, itemName, mainDirName);
+                                                        //           } else {
+                                                        //             dragDropModsAdd(context, subDirsToAdd, cateName, itemName, '$modsDirPath$s$cateName$s$itemName', mainDirName);
+                                                        //           }
+                                                        //         }
+                                                        //       }
+                                                        //     }
+                                                        //   }
+                                                        // }
+
+                                                        modFilesAdder(context, sortedModsList, XFile(''));
                                                         //clear lists and delete temp
                                                         _mainFolderRenameIndex.clear();
                                                         _exitConfirmDialog = false;
                                                         sortedModsList.clear();
                                                         _newModDragDropList.clear();
                                                         modsToAddList.clear();
+                                                        // Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                                        //   element.deleteSync(recursive: true);
+                                                        // });
                                                         setState(
                                                           () {},
                                                         );
@@ -906,7 +938,13 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
         if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_')]);
         } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
-          return (['Basewears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          if (lineSplit[0].contains('[Ba]') || lineSplit[1].contains('[Ba]')) {
+            return (['Basewears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          } else if (lineSplit[0].contains('[Se]') || lineSplit[1].contains('[Se]')) {
+            return (['Setwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          } else {
+            return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          }
         } else {
           return ([file.first, lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         }
