@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/scroll_controller.dart';
 List<String> _pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 bool _newModDragging = false;
 bool _exitConfirmDialog = false;
+List<String> _duplicateModNames = [];
 final List<XFile> _newModDragDropList = [];
 List<XFile> modsToAddList = [];
 Future? sortedModsListLoad;
@@ -377,6 +378,57 @@ void modAddHandler(context) {
                                                                                         border: const OutlineInputBorder(),
                                                                                         hintText: sortedModsList[index][3].split('|')[ex],
                                                                                       ),
+                                                                                      onEditingComplete: () {
+                                                                                        if (renameTextBoxController.text.isNotEmpty) {
+                                                                                          String oldMainDirName = sortedModsList[index][3].split('|')[ex];
+                                                                                          // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
+                                                                                          //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
+                                                                                          List<FileSystemEntity> curFilesInMainDir =
+                                                                                              Directory('$tempDirPath$s$oldMainDirName').listSync(recursive: true);
+                                                                                          for (var element in curFilesInMainDir) {
+                                                                                            //print(curFilesInMainDir);
+                                                                                            String newMainPath = element.path
+                                                                                                .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                            if (!File(element.path).existsSync()) {
+                                                                                              Directory(newMainPath).createSync(recursive: true);
+                                                                                            }
+                                                                                            if (sortedModsList[index][4].isEmpty) {
+                                                                                              Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
+                                                                                            }
+                                                                                          }
+                                                                                          for (var element in curFilesInMainDir) {
+                                                                                            String newMainPath = element.path
+                                                                                                .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                            if (File(element.path).existsSync()) {
+                                                                                              File(element.path).copySync(newMainPath);
+                                                                                            }
+                                                                                          }
+
+                                                                                          //Itemlist
+                                                                                          List<String> mainDirsString = sortedModsList[index][3].split('|');
+                                                                                          mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                          sortedModsList[index][3] = mainDirsString.join('|');
+
+                                                                                          List<String> mainDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                          for (var element in mainDirsInItemString) {
+                                                                                            List<String> split = element.split((':'));
+                                                                                            if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                                                                              split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                              mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
+                                                                                            }
+                                                                                          }
+                                                                                          sortedModsList[index][5] = mainDirsInItemString.join('|');
+
+                                                                                          //print(sortedModsList);
+                                                                                        }
+                                                                                        _mainFolderRenameIndex[index] = false;
+                                                                                        renameTextBoxController.clear();
+                                                                                        _isNameEditing = false;
+
+                                                                                        setState(
+                                                                                          () {},
+                                                                                        );
+                                                                                      },
                                                                                     ),
                                                                                   ),
                                                                                 ),
@@ -497,6 +549,58 @@ void modAddHandler(context) {
                                                                                                 border: const OutlineInputBorder(),
                                                                                                 hintText: sortedModsList[index][4].split('|')[sub],
                                                                                               ),
+                                                                                              onEditingComplete: (() {
+                                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                  String oldSubDirName = sortedModsList[index][4].split('|')[sub];
+                                                                                                  // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                  //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                  List<FileSystemEntity> curFilesInSubDir =
+                                                                                                      Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName')
+                                                                                                          .listSync(recursive: true);
+                                                                                                  for (var element in curFilesInSubDir) {
+                                                                                                    //print(curFilesInMainDir);
+                                                                                                    String newMainPath = element.path.replaceFirst(
+                                                                                                        '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                        '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                    if (!File(element.path).existsSync()) {
+                                                                                                      Directory(newMainPath).createSync(recursive: true);
+                                                                                                    } else {
+                                                                                                      Directory(File(newMainPath).parent.path).createSync(recursive: true);
+                                                                                                    }
+                                                                                                  }
+                                                                                                  for (var element in curFilesInSubDir) {
+                                                                                                    String newMainPath = element.path.replaceFirst(
+                                                                                                        '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                        '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                    if (File(element.path).existsSync()) {
+                                                                                                      File(element.path).copySync(newMainPath);
+                                                                                                    }
+                                                                                                  }
+
+                                                                                                  //List
+                                                                                                  List<String> subDirsString = sortedModsList[index][4].split('|');
+                                                                                                  subDirsString[subDirsString.indexOf(oldSubDirName)] = renameTextBoxController.text;
+                                                                                                  sortedModsList[index][4] = subDirsString.join('|');
+
+                                                                                                  List<String> subDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                                  for (var element in subDirsInItemString) {
+                                                                                                    List<String> split = element.split((':'));
+                                                                                                    if (split.indexWhere((element) => element == oldSubDirName) != -1) {
+                                                                                                      split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
+                                                                                                      subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
+                                                                                                    }
+                                                                                                  }
+                                                                                                  sortedModsList[index][5] = subDirsInItemString.join('|');
+                                                                                                }
+
+                                                                                                //Clear
+                                                                                                _subFoldersRenameIndex[index][sub] = false;
+                                                                                                renameTextBoxController.clear();
+                                                                                                _isNameEditing = false;
+                                                                                                setState(
+                                                                                                  () {},
+                                                                                                );
+                                                                                              }),
                                                                                             ),
                                                                                           ),
                                                                                         ),
@@ -509,17 +613,30 @@ void modAddHandler(context) {
                                                                                             onPressed: () {
                                                                                               if (renameTextBoxController.text.isNotEmpty) {
                                                                                                 String oldSubDirName = sortedModsList[index][4].split('|')[sub];
-                                                                                                Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                    '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
-                                                                                                // List<FileSystemEntity> curFilesInMainDir =
-                                                                                                //     Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[s]}').listSync(recursive: true);
-                                                                                                // for (var element in curFilesInMainDir) {
-                                                                                                //   if (File(element.path).existsSync()) {
-                                                                                                //     Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
-                                                                                                //     File(element.path)
-                                                                                                //         .copySync('$tempDirPath$s${renameTextBoxController.text}$s${XFile(element.path).name}');
-                                                                                                //   }
-                                                                                                // }
+                                                                                                // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                List<FileSystemEntity> curFilesInSubDir =
+                                                                                                    Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName')
+                                                                                                        .listSync(recursive: true);
+                                                                                                for (var element in curFilesInSubDir) {
+                                                                                                  //print(curFilesInMainDir);
+                                                                                                  String newMainPath = element.path.replaceFirst(
+                                                                                                      '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                      '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                  if (!File(element.path).existsSync()) {
+                                                                                                    Directory(newMainPath).createSync(recursive: true);
+                                                                                                  }
+                                                                                                }
+                                                                                                for (var element in curFilesInSubDir) {
+                                                                                                  String newMainPath = element.path.replaceFirst(
+                                                                                                      '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                      '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                  if (File(element.path).existsSync()) {
+                                                                                                    File(element.path).copySync(newMainPath);
+                                                                                                  }
+                                                                                                }
+
+                                                                                                //List
                                                                                                 List<String> subDirsString = sortedModsList[index][4].split('|');
                                                                                                 subDirsString[subDirsString.indexOf(oldSubDirName)] = renameTextBoxController.text;
                                                                                                 sortedModsList[index][4] = subDirsString.join('|');
@@ -606,14 +723,26 @@ void modAddHandler(context) {
                                       ),
                                       if (_exitConfirmDialog)
                                         Container(
-                                          height: 60,
+                                          //height: 60,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(3),
                                             color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                           ),
                                           child: Column(
                                             children: [
-                                              const Center(child: Text('There are still mods in the list waiting to be added')),
+                                              Padding(
+                                                padding: const EdgeInsets.all(5.0),
+                                                child: Center(
+                                                    child: _duplicateModNames.isNotEmpty
+                                                        ? Text(
+                                                            'Rename $_duplicateModNames before adding',
+                                                            textAlign: TextAlign.center,
+                                                          )
+                                                        : const Text(
+                                                            'There are still mods in the list waiting to be added',
+                                                            textAlign: TextAlign.center,
+                                                          )),
+                                              ),
                                               const SizedBox(
                                                 height: 5,
                                               ),
@@ -621,6 +750,7 @@ void modAddHandler(context) {
                                                 child: const Text('Return'),
                                                 onPressed: () {
                                                   _exitConfirmDialog = false;
+                                                  _duplicateModNames.clear();
                                                   setState(
                                                     () {},
                                                   );
@@ -647,6 +777,7 @@ void modAddHandler(context) {
                                                         });
                                                         _mainFolderRenameIndex.clear();
                                                         _exitConfirmDialog = false;
+                                                        _duplicateModNames.clear();
                                                         sortedModsList.clear();
                                                         _newModDragDropList.clear();
                                                         modsToAddList.clear();
@@ -669,6 +800,7 @@ void modAddHandler(context) {
                                                     });
                                                     _mainFolderRenameIndex.clear();
                                                     _exitConfirmDialog = false;
+                                                    _duplicateModNames.clear();
                                                     ngsRefSheetsList.clear();
                                                     sortedModsList.clear();
                                                     _newModDragDropList.clear();
@@ -701,76 +833,54 @@ void modAddHandler(context) {
                                             child: ElevatedButton(
                                                 onPressed: sortedModsList.isNotEmpty && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1
                                                     ? (() async {
-                                                        // List<FileSystemEntity> sortedDirs = Directory(tempDirPath).listSync(recursive: false);
-                                                        // for (var mainDir in sortedDirs) {
-                                                        //   String cateName = '';
-                                                        //   String itemName = '';
-                                                        //   String mainDirName = mainDir.path.split(s).last;
-                                                        //   for (var sortedList in sortedModsList) {
-                                                        //     if (sortedList[3].split('|').indexWhere((element) => element == mainDirName) != -1) {
-                                                        //       cateName = sortedList[0];
-                                                        //       if (curActiveLang == 'JP') {
-                                                        //         itemName = sortedList[1];
-                                                        //       } else {
-                                                        //         itemName = sortedList[2];
-                                                        //       }
-                                                        //       //}
-                                                        //       //}
+                                                        //Check for dub mods
+                                                        _duplicateModNames.clear();
+                                                        for (var sortedLine in sortedModsList) {
+                                                          String category = sortedLine[0];
+                                                          String itemName = '';
+                                                          if (curActiveLang == 'JP') {
+                                                            itemName = sortedLine[1];
+                                                          } else {
+                                                            itemName = sortedLine[2];
+                                                          }
+                                                          List<String> mainNames = sortedLine[3].split('|');
 
-                                                        //       if (Directory(mainDir.path).existsSync()) {
-                                                        //         List<XFile> subDirsToAdd = [];
-                                                        //         // Directory(mainDir.path).listSync().forEach(
-                                                        //         //       (element) => subDirsToAdd.add(XFile(element.path)),
-                                                        //         //     );
-                                                        //         // for (var element in subDirsToAdd) {
-                                                        //         //   print(element.path);
-                                                        //         // }
-                                                        //         if (sortedList[4].isNotEmpty) {
-                                                        //           for (var element in Directory(mainDir.path).listSync(recursive: true)) {
-                                                        //             // if (!File(element.path).existsSync()) {
-                                                        //             //   if (sortedList[4].split('|').indexWhere((name) => name == element.path.split(s).last) != -1) {
-                                                        //             //     subDirsToAdd.add(XFile(element.path));
-                                                        //             //   }
-                                                        //             // }
-                                                        //             print(element);
-                                                        //             if (File(element.path).existsSync()) {
-                                                        //               if (sortedList[5].split('|').indexWhere((name) => name.contains(element.path.split(s).last)) != -1) {
-                                                        //               subDirsToAdd.add(XFile(element.path));
-                                                        //               }
-                                                        //             }
-                                                        //           }
-                                                        //         } else {
-                                                        //           for (var file in Directory(mainDir.path).listSync()) {
-                                                        //             subDirsToAdd.add(XFile(file.path));
-                                                        //           }
-                                                        //         }
-                                                        //         print(sortedList);
-                                                        //         for (var element in subDirsToAdd) {
-                                                        //           print(element);
-                                                        //         }
-
-                                                        //         if (sortedList.isNotEmpty) {
-                                                        //           if (!Directory('$modsDirPath$s$cateName$s$itemName').existsSync()) {
-                                                        //             dragDropSingleFilesAdd(context, subDirsToAdd, null, cateName, itemName, mainDirName);
-                                                        //           } else {
-                                                        //             dragDropModsAdd(context, subDirsToAdd, cateName, itemName, '$modsDirPath$s$cateName$s$itemName', mainDirName);
-                                                        //           }
-                                                        //         }
-                                                        //       }
-                                                        //     }
-                                                        //   }
-                                                        // }
-
-                                                        modFilesAdder(context, sortedModsList, XFile(''));
-                                                        //clear lists and delete temp
-                                                        _mainFolderRenameIndex.clear();
-                                                        _exitConfirmDialog = false;
-                                                        sortedModsList.clear();
-                                                        _newModDragDropList.clear();
-                                                        modsToAddList.clear();
-                                                        // Directory(tempDirPath).listSync(recursive: false).forEach((element) {
-                                                        //   element.deleteSync(recursive: true);
-                                                        // });
+                                                          if (Directory('$modsDirPath$s$category$s$itemName').existsSync()) {
+                                                            if (Directory('$modsDirPath$s$category$s$itemName')
+                                                                    .listSync(recursive: false)
+                                                                    .indexWhere((element) => mainNames.contains(element.path.split(s).last)) !=
+                                                                -1) {
+                                                              for (var mainName in mainNames) {
+                                                                if (Directory('$modsDirPath$s$category$s$itemName')
+                                                                        .listSync(recursive: false)
+                                                                        .indexWhere((element) => element.path.split(s).last == mainName) !=
+                                                                    -1) {
+                                                                  _duplicateModNames.add(' "$mainName" in $itemName ');
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                        //Add mods
+                                                        if (_duplicateModNames.isEmpty) {
+                                                          modFilesAdder(context, sortedModsList, XFile('')).then((_) {
+                                                            //clear lists and delete temp
+                                                            _mainFolderRenameIndex.clear();
+                                                            _exitConfirmDialog = false;
+                                                            _duplicateModNames.clear();
+                                                            sortedModsList.clear();
+                                                            _newModDragDropList.clear();
+                                                            modsToAddList.clear();
+                                                            Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          });
+                                                        } else {
+                                                          _exitConfirmDialog = true;
+                                                        }
                                                         setState(
                                                           () {},
                                                         );
