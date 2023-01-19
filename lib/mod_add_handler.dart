@@ -1099,7 +1099,7 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
         } else if (_castArmCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Cast Arm Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_castLegCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Cast Legs Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return (['Cast Leg Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_eyeCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Eyes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_costumeCsv.indexWhere((element) => file.first == element) != -1) {

@@ -631,7 +631,7 @@ void convertLangTextData(var jsonResponse) {
       b['newItemBtnTooltipText'],
       b['inExplorerBtnTootipText'],
       b['searchLabelText'],
-      b['newCatNameDupErrorText'],
+      b['newCatNameLabelText'],
       b['addCatBtnText'],
       b['singleAddBtnText'],
       b['multiAddBtnText'],
@@ -717,8 +717,8 @@ void convertLangTextData(var jsonResponse) {
       b['chooseNewPathText'],
 
       //Error messages
-      b['newCatNameLabelText'],
       b['newCatNameEmptyErrorText'],
+      b['newCatNameDupErrorText'],
       b['newItemNameEmpty'],
       b['newItemNameDuplicate'],
       b['multiItemsLeftOver'],

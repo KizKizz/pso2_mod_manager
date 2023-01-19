@@ -662,7 +662,7 @@ TranslationText defaultUILangLoader() {
     'Choose a new path?',
 
     //Error messages
-    'Category name can\'t be empty',
+    'Category name can\'t be empty', 
     'Category name already exist',
     'Name can\'t be empty',
     'The name already exists',

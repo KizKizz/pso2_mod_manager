@@ -110,11 +110,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
               child: Text(popupTitle, style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
             contentPadding: const EdgeInsets.only(left: 16, right: 16),
-            content: Container(
-                width: isReselect ? null : 350,
-                height: 90,
-                constraints: const BoxConstraints(minWidth: 300),
-                child: Text(popupMessage)),
+            content: Container(width: isReselect ? null : 350, height: 90, constraints: const BoxConstraints(minWidth: 300), child: Text(popupMessage)),
             actions: <Widget>[
               ElevatedButton(
                   child: const Text('No'),
@@ -149,6 +145,18 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         await Directory('$modsDirPath${s}Motions').create(recursive: true);
                         await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
                         await Directory('$modsDirPath${s}Setwears').create(recursive: true);
+                        await Directory('$modsDirPath${s}Mags').create(recursive: true);
+                        await Directory('$modsDirPath${s}Stickers').create(recursive: true);
+                        await Directory('$modsDirPath${s}Hairs').create(recursive: true);
+                        await Directory('$modsDirPath${s}Cast Body Parts').create(recursive: true);
+                        await Directory('$modsDirPath${s}Cast Arm Parts').create(recursive: true);
+                        await Directory('$modsDirPath${s}Cast Leg Parts').create(recursive: true);
+                        await Directory('$modsDirPath${s}Eyes').create(recursive: true);
+                        await Directory('$modsDirPath${s}Costumes').create(recursive: true);
+                      } else {
+                        for (var cateName in defaultCatesList) {
+                          Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                        }
                       }
                       if (!Directory(backupDirPath).existsSync()) {
                         await Directory(backupDirPath).create(recursive: true);
@@ -230,6 +238,18 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           await Directory('$modsDirPath${s}Motions').create(recursive: true);
                           await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
                           await Directory('$modsDirPath${s}Setwears').create(recursive: true);
+                          await Directory('$modsDirPath${s}Mags').create(recursive: true);
+                          await Directory('$modsDirPath${s}Stickers').create(recursive: true);
+                          await Directory('$modsDirPath${s}Hairs').create(recursive: true);
+                          await Directory('$modsDirPath${s}Cast Body Parts').create(recursive: true);
+                          await Directory('$modsDirPath${s}Cast Arm Parts').create(recursive: true);
+                          await Directory('$modsDirPath${s}Cast Leg Parts').create(recursive: true);
+                          await Directory('$modsDirPath${s}Eyes').create(recursive: true);
+                          await Directory('$modsDirPath${s}Costumes').create(recursive: true);
+                        } else {
+                          for (var cateName in defaultCatesList) {
+                            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                          }
                         }
                         if (!Directory(backupDirPath).existsSync()) {
                           await Directory(backupDirPath).create(recursive: true);
@@ -310,6 +330,18 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             await Directory('$modsDirPath${s}Motions').create(recursive: true);
                             await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
                             await Directory('$modsDirPath${s}Setwears').create(recursive: true);
+                            await Directory('$modsDirPath${s}Mags').create(recursive: true);
+                            await Directory('$modsDirPath${s}Stickers').create(recursive: true);
+                            await Directory('$modsDirPath${s}Hairs').create(recursive: true);
+                            await Directory('$modsDirPath${s}Cast Body Parts').create(recursive: true);
+                            await Directory('$modsDirPath${s}Cast Arm Parts').create(recursive: true);
+                            await Directory('$modsDirPath${s}Cast Leg Parts').create(recursive: true);
+                            await Directory('$modsDirPath${s}Eyes').create(recursive: true);
+                            await Directory('$modsDirPath${s}Costumes').create(recursive: true);
+                          } else {
+                            for (var cateName in defaultCatesList) {
+                              Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                            }
                           }
                           if (!Directory(backupDirPath).existsSync()) {
                             await Directory(backupDirPath).create(recursive: true);
@@ -346,7 +378,6 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           context.read<StateProvider>().cateListItemCountSet(cateList.length);
                           //Provider.of<StateProvider>(context, listen: false).cateListItemCountSet(cateList.length);
                           setState(() {});
-                          
                         }
                       }
                     }

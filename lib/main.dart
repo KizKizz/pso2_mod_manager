@@ -69,6 +69,7 @@ TextEditingController newSetTextController = TextEditingController();
 TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
 List<String> localRefSheetsList = [];
+bool _checksumDownloading = false;
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -157,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       s = '\\';
     }
     windowManager.addListener(this);
+    getSortType();
     getAppVer();
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
@@ -177,6 +179,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> getRefSheetsVersion() async {
     final prefs = await SharedPreferences.getInstance();
     refSheetsVersion = (prefs.getInt('refSheetsVersion') ?? 0);
+  }
+
+  Future<void> getSortType() async {
+    final prefs = await SharedPreferences.getInstance();
+    selectedSortType = (prefs.getString('selectedSortType') ?? 'Sort by name');
   }
 
   @override
@@ -399,12 +406,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Checksum
                           Tooltip(
-                            message: curLangText!.checksumToolTipText,
+                            message: checkSumFilePath != null ? curLangText!.checksumToolTipText : 'Click to download checksum file. Hold to manually select',
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
-                              onPressed: (() async {
+                              onLongPress: () async {
                                 if (checkSumFilePath == null) {
                                   checksumLocation = await FilePicker.platform.pickFiles(
                                     dialogTitle: curLangText!.checksumSelectPopupText,
@@ -420,7 +427,23 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     setState(() {});
                                   }
                                 } else {
-                                  //await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                }
+                              },
+                              onPressed: (() async {
+                                if (checkSumFilePath == null) {
+                                  _checksumDownloading = true;
+                                  setState(() {});
+                                  await Dio()
+                                      .download(
+                                          'https://github.com/KizKizz/pso2_mod_manager/raw/main/checksum/d4455ebc2bef618f29106da7692ebc1a', '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a')
+                                      .then((value) {
+                                    _checksumDownloading = false;
+                                    checkSumFilePath = '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a';
+                                    setState(() {});
+                                  });
+                                } else {
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
                               child: checkSumFilePath != null
@@ -447,7 +470,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        if (!_checksumDownloading) Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                        if (_checksumDownloading) const Text('Downloading checksum..', style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -924,52 +948,52 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
           //New Ref sheets
           if (context.watch<StateProvider>().refSheetsUpdateAvailable)
-          ScaffoldMessenger(
-              child: MaterialBanner(
-            backgroundColor: Theme.of(context).canvasColor,
-            elevation: 0,
-            padding: const EdgeInsets.all(0),
-            leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-            leading: Icon(
-              Icons.newspaper,
-              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
-            ),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (context.watch<StateProvider>().refSheetsCount < 1)
-                  Text(
-                    'New update for item references available',
-                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                  ),
-                if (context.watch<StateProvider>().refSheetsCount > 0)
-                  Text(
-                    'Downloading: ${context.watch<StateProvider>().refSheetsCount} files of ${localRefSheetsList.length}',
-                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                  ),
-                ElevatedButton(
-                    onPressed: (() {
-                      //Indexing files
+            ScaffoldMessenger(
+                child: MaterialBanner(
+              backgroundColor: Theme.of(context).canvasColor,
+              elevation: 0,
+              padding: const EdgeInsets.all(0),
+              leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+              leading: Icon(
+                Icons.newspaper,
+                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+              ),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (context.watch<StateProvider>().refSheetsCount < 1)
+                    Text(
+                      'New update for item references available',
+                      style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                    ),
+                  if (context.watch<StateProvider>().refSheetsCount > 0)
+                    Text(
+                      'Downloading: ${context.watch<StateProvider>().refSheetsCount} files of ${localRefSheetsList.length}',
+                      style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                    ),
+                  ElevatedButton(
+                      onPressed: (() {
+                        //Indexing files
 
-                      for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
-                        localRefSheetsList.add(file.path);
-                      }
+                        for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                          localRefSheetsList.add(file.path);
+                        }
 
-                      downloadNewRefSheets(context, localRefSheetsList).then((_) async {
-                        //final prefs = await SharedPreferences.getInstance();
-                        //prefs.setInt('refSheetsVersion', refSheetsNewVersion);
-                        //print('complete');
-                        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
-                        Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
-                      });
+                        downloadNewRefSheets(context, localRefSheetsList).then((_) async {
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                          //print('complete');
+                          Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+                          Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+                        });
 
-                      setState(() {});
-                    }),
-                    child: const Text('Download Update')),
-              ],
-            ),
-            actions: const [SizedBox()],
-          )),
+                        setState(() {});
+                      }),
+                      child: const Text('Download Update')),
+                ],
+              ),
+              actions: const [SizedBox()],
+            )),
 
           Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
