@@ -639,7 +639,7 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
     } else {
       itemName = sortedLine[2];
     }
-    List<String> mainNames = sortedLine[3].split('|');
+    //List<String> mainNames = sortedLine[3].split('|');
     List<String> subNames = sortedLine[4].split('|');
     List<String> fileInfos = sortedLine[5].split('|');
     String newItemPath = '$modsDirPath$s$category$s$itemName';

@@ -5,7 +5,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 // ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
+//import 'package:collection/collection.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -32,6 +32,27 @@ bool _isNameEditing = false;
 List<String> _accessoriesCsv = ['Accessories.csv'];
 List<String> _emoteCsv = ['LobbyActionsNGS_HandPoses.csv', 'LobbyActions.csv'];
 List<String> _basewearCsv = ['GenderlessNGSBasewear.csv', 'FemaleNGSBasewear.csv', 'MaleNGSBasewear.csv', 'FemaleBasewear.csv', 'MaleBasewear.csv'];
+List<String> _magsCsv = ['Mags.csv', 'MagsNGS.csv'];
+List<String> _stickersCsv = ['Stickers.csv'];
+List<String> _innerwearCsv = ['FemaleNGSInnerwear.csv', 'MaleNGSInnerwear.csv', 'MaleInnerwear.csv', 'FemaleInnerwear.csv'];
+List<String> _outerwearCsv = ['FemaleNGSOuters.csv', 'MaleNGSOuters.csv', 'FemaleOuters.csv', 'MaleOuters.csv'];
+List<String> _bodyPaintCsv = ['FemaleNGSBodyPaint.csv', 'MaleNGSBodyPaint.csv', 'FemaleBodyPaint.csv', 'MaleBodyPaint.csv'];
+List<String> _facePaintCsv = ['FacePaintNGS.csv', 'FacePaint.csv'];
+List<String> _hairCsv = ['CasealHair.csv', 'FemaleHair.csv', 'MaleHair.csv', 'AllHairNGS.csv'];
+List<String> _castBodyCsv = ['CastBodies.csv', 'CasealBodies.csv', 'CastNGSBodies.csv', 'CasealNGSBodies.csv'];
+List<String> _castArmCsv = ['CastArms.csv', 'CastArms.csv', 'CasealArmsNGS.csv', 'CastArmsNGS.csv'];
+List<String> _castLegCsv = ['CasealLegs.csv', 'CastLegs.csv', 'CastLegsNGS.csv', 'CasealLegsNGS.csv'];
+List<String> _eyeCsv = ['EyesNGS.csv', 'EyelashesNGS.csv', 'EyebrowsNGS.csv', 'Eyes.csv', 'Eyelashes.csv', 'Eyebrows.csv'];
+List<String> _costumeCsv = ['FemaleCostumes.csv', 'MaleCostumes.csv'];
+List<String> _motionCsv = [
+  'SubstituteMotionGlide.csv',
+  'SubstituteMotionJump.csv',
+  'SubstituteMotionLanding.csv',
+  'SubstituteMotionPhotonDash.csv',
+  'SubstituteMotionRun.csv',
+  'SubstituteMotionStandby.csv',
+  'SubstituteMotionSwim.csv'
+];
 
 void modAddHandler(context) {
   showDialog(
@@ -53,7 +74,7 @@ void modAddHandler(context) {
                         BuildContext context,
                         AsyncSnapshot snapshot,
                       ) {
-                        if (snapshot.connectionState == ConnectionState.waiting && ngsRefSheetsList.isEmpty) {
+                        if (snapshot.connectionState == ConnectionState.waiting && itemRefSheetsList.isEmpty) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,7 +91,7 @@ void modAddHandler(context) {
                           );
                         }
                         if (snapshot.connectionState == ConnectionState.done) {
-                          ngsRefSheetsList = snapshot.data;
+                          itemRefSheetsList = snapshot.data;
                         }
                         return Row(
                           children: [
@@ -669,9 +690,10 @@ void modAddHandler(context) {
                                                                                       children: [
                                                                                         Expanded(
                                                                                           child: Text(sortedModsList[index][4].split('|')[sub],
-                                                                                              style: const TextStyle(
-                                                                                                fontWeight: FontWeight.w500,
-                                                                                              )),
+                                                                                              // style: const TextStyle(
+                                                                                              //   fontWeight: FontWeight.w500,
+                                                                                              // )
+                                                                                              ),
                                                                                         ),
                                                                                         const SizedBox(
                                                                                           width: 5,
@@ -801,7 +823,7 @@ void modAddHandler(context) {
                                                     _mainFolderRenameIndex.clear();
                                                     _exitConfirmDialog = false;
                                                     _duplicateModNames.clear();
-                                                    ngsRefSheetsList.clear();
+                                                    itemRefSheetsList.clear();
                                                     sortedModsList.clear();
                                                     _newModDragDropList.clear();
                                                     modsToAddList.clear();
@@ -814,7 +836,7 @@ void modAddHandler(context) {
                                                   } else {
                                                     //clear lists
                                                     _mainFolderRenameIndex.clear();
-                                                    ngsRefSheetsList.clear();
+                                                  itemRefSheetsList.clear();
                                                     sortedModsList.clear();
                                                     _newModDragDropList.clear();
                                                     modsToAddList.clear();
@@ -950,7 +972,7 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
 
   //copy files to temp with new folder structures
   List<List<String>> extraFiles = [];
-  int unknownModsCounter = 1;
+  //int unknownModsCounter = 1;
   for (var inputFile in inputFiles) {
     if (File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
       for (var mainPath in mainDirPaths) {
@@ -986,8 +1008,9 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
                 itemInfo = filesList[indexInFilesList];
               }
             } else {
-              itemInfo = ['Misc', '不明な項目 $unknownModsCounter', 'Unknown Item $unknownModsCounter'];
-              unknownModsCounter++;
+              itemInfo = ['Misc', '不明な項目', 'Unknown Items'];
+              // itemInfo = ['Misc', '不明な項目 $unknownModsCounter', 'Unknown Item $unknownModsCounter'];
+              // unknownModsCounter++;
             }
 
             if (itemInfo.length < 4) {
@@ -1040,11 +1063,11 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
 }
 
 Future<List<String>> findItemInCsv(XFile inputFile) async {
-  for (var file in ngsRefSheetsList) {
+  for (var file in itemRefSheetsList) {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
         var lineSplit = line.split(',');
-        //[0 Category, 1 JP name, 2 EN name, 3 Parent Folder, 4 path, 5 new path, 6 sheets, 7 files]
+        //[0 Category, 1 JP name, 2 EN name]
         if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_')]);
         } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
@@ -1055,6 +1078,34 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
           } else {
             return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
           }
+        } else if (_accessoriesCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Accessories', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_innerwearCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Innerwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_outerwearCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Outerwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_bodyPaintCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Body Paints', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_magsCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Mags', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_stickersCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Stickers', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_facePaintCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Face Paints', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_hairCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Hairs', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_castBodyCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Cast Body Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_castArmCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Cast Arm Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_castLegCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Cast Legs Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_eyeCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Eyes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_costumeCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Costumes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+        } else if (_motionCsv.indexWhere((element) => file.first == element) != -1) {
+          return (['Motions', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else {
           return ([file.first, lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         }

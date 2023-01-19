@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,7 @@ String langDropDownSelected = '';
 List<String> topBtnMenuItems = [];
 String s = '/';
 String appVersion = '';
+int refSheetsVersion = -1;
 String? checkSumFilePath;
 FilePickerResult? checksumLocation;
 bool _previewWindowVisible = true;
@@ -66,6 +68,7 @@ var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();
 TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
+List<String> localRefSheetsList = [];
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -155,7 +158,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     }
     windowManager.addListener(this);
     getAppVer();
+    getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
+    ApplicationConfig().checkRefSheetsForUpdates(context);
     languagePackCheck();
     miscCheck();
     //mainPathsCheck();
@@ -167,6 +172,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> getAppVer() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
+  }
+
+  Future<void> getRefSheetsVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    refSheetsVersion = (prefs.getInt('refSheetsVersion') ?? 0);
   }
 
   @override
@@ -280,130 +290,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     }
   }
 
-  // void mainPathsCheck() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   //prefs.clear();
-  //   binDirPath = prefs.getString('binDirPath') ?? '';
-  //   mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
-
-  //   if (binDirPath.isEmpty || mainModManDirPath.isEmpty) {
-  //     await getUILanguage();
-  //   }
-
-  //   if (mainModManDirPath.isEmpty) {
-  //     await getMainModManDirPath();
-  //   }
-
-  //   if (binDirPath.isEmpty) {
-  //     await getDirPath();
-  //   }
-  // }
-
-  // Future<void> dirPathCheck() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   //prefs.clear();
-  //   binDirPath = prefs.getString('binDirPath') ?? '';
-  //   mainModManDirPath = prefs.getString('mainModManDirPath') ?? '';
-
-  //   if (mainModManDirPath.isNotEmpty && Directory(mainModManDirPath).existsSync()) {
-  //     //Fill in paths
-  //     mainModDirPath = '$mainModManDirPath${s}PSO2 Mod Manager';
-  //     modsDirPath = '$mainModDirPath${s}Mods';
-  //     backupDirPath = '$mainModDirPath${s}Backups';
-  //     checksumDirPath = '$mainModDirPath${s}Checksum';
-  //     modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
-  //     modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
-  //     deletedItemsPath = '$mainModDirPath${s}Deleted Items';
-  //     //Check if exist, create dirs
-  //     if (!Directory(mainModDirPath).existsSync()) {
-  //       await Directory(mainModDirPath).create(recursive: true);
-  //     }
-  //     if (!Directory(modsDirPath).existsSync()) {
-  //       await Directory(modsDirPath).create(recursive: true);
-  //       await Directory('$modsDirPath${s}Accessories').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Basewears').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Body Paints').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Emotes').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Face Paints').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Innerwears').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Misc').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Motions').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
-  //       await Directory('$modsDirPath${s}Setwears').create(recursive: true);
-  //     }
-  //     if (!Directory(backupDirPath).existsSync()) {
-  //       await Directory(backupDirPath).create(recursive: true);
-  //     }
-  //     if (!Directory('$backupDirPath${s}win32_na').existsSync()) {
-  //       await Directory('$backupDirPath${s}win32_na').create(recursive: true);
-  //     }
-  //     if (!Directory('$backupDirPath${s}win32reboot_na').existsSync()) {
-  //       await Directory('$backupDirPath${s}win32reboot_na').create(recursive: true);
-  //     }
-  //     if (!Directory(checksumDirPath).existsSync()) {
-  //       await Directory(checksumDirPath).create(recursive: true);
-  //     }
-  //     if (!File(deletedItemsPath).existsSync()) {
-  //       await Directory(deletedItemsPath).create(recursive: true);
-  //     }
-  //     if (!File(modSettingsPath).existsSync()) {
-  //       await File(modSettingsPath).create(recursive: true);
-  //     }
-  //     if (!File(modSetsSettingsPath).existsSync()) {
-  //       await File(modSetsSettingsPath).create(recursive: true);
-  //     }
-
-  //     setState(() {
-  //       context.read<StateProvider>().mainModManPathFoundTrue();
-  //     });
-
-  //     //Checksum check
-  //     if (checkSumFilePath == null) {
-  //       final filesInCSFolder = Directory(checksumDirPath).listSync().whereType<File>();
-  //       for (var file in filesInCSFolder) {
-  //         if (p.extension(file.path) == '') {
-  //           checkSumFilePath = file.path;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   if (binDirPath.isNotEmpty && Directory(binDirPath).existsSync()) {
-  //     setState(() {
-  //       context.read<StateProvider>().mainBinFoundTrue();
-  //     });
-  //   }
-  // }
-
-  // Future<void> getDirPath() async {
-  //   binDirDialog(context, 'Error', curLangText!.pso2binNotFoundPopupText, false);
-  // }
-
-  // Future<void> getMainModManDirPath() async {
-  //   mainModManDirDialog(context, curLangText!.modmanFolderNotFoundLabelText, curLangText!.modmanFolderNotFoundText, false);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // miscCheck();
-    // if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty) {
-    //   dirPathCheck();
-    // }
-
-    // if (curLangText == null) {
-    //  //getUILanguage();
-    // }
-
-    // WidgetsBinding.instance.addTimingsCallback((_) async {
-    //   await miscCheck();
-    //   if (binDirPath.isNotEmpty && mainModManDirPath.isNotEmpty && await Directory(binDirPath).exists() && await Directory(mainModManDirPath).exists()) {
-    //     debugPrint(Directory(mainModManDirPath).exists().toString());
-    //     await dirPathCheck();
-    //   }
-    //   await Future.delayed(const Duration(milliseconds: 500));
-    //   if (curLangText == null) {
-    //     await getUILanguage();
-    //   }
-    // });
     return Scaffold(
       body: Column(
         children: [
@@ -532,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     setState(() {});
                                   }
                                 } else {
-                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  //await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
                               child: checkSumFilePath != null
@@ -1034,44 +922,56 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
               actions: const [SizedBox()],
             )),
 
-          Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
+          //New Ref sheets
+          if (context.watch<StateProvider>().refSheetsUpdateAvailable)
+          ScaffoldMessenger(
+              child: MaterialBanner(
+            backgroundColor: Theme.of(context).canvasColor,
+            elevation: 0,
+            padding: const EdgeInsets.all(0),
+            leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+            leading: Icon(
+              Icons.newspaper,
+              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+            ),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (context.watch<StateProvider>().refSheetsCount < 1)
+                  Text(
+                    'New update for item references available',
+                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                  ),
+                if (context.watch<StateProvider>().refSheetsCount > 0)
+                  Text(
+                    'Downloading: ${context.watch<StateProvider>().refSheetsCount} files of ${localRefSheetsList.length}',
+                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                  ),
+                ElevatedButton(
+                    onPressed: (() {
+                      //Indexing files
 
-          //Switching Page
-          //const LangLoadingPage()
-          // ? Expanded(
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: const [
-          //         Text(
-          //           'Loading UI',
-          //           style: TextStyle(fontSize: 20),
-          //         ),
-          //         SizedBox(
-          //           height: 20,
-          //         ),
-          //         CircularProgressIndicator(),
-          //       ],
-          //     ),
-          //   )
-          // : context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
-          //     ? const DataLoadingPage()
-          //     : Expanded(
-          //         child: Column(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           crossAxisAlignment: CrossAxisAlignment.center,
-          //           children: [
-          //             Text(
-          //               curLangText!.waitingUserActionText,
-          //               style: const TextStyle(fontSize: 20),
-          //             ),
-          //             const SizedBox(
-          //               height: 20,
-          //             ),
-          //             const CircularProgressIndicator(),
-          //           ],
-          //         ),
-          //       ),
+                      for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                        localRefSheetsList.add(file.path);
+                      }
+
+                      downloadNewRefSheets(context, localRefSheetsList).then((_) async {
+                        //final prefs = await SharedPreferences.getInstance();
+                        //prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                        //print('complete');
+                        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+                        Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+                      });
+
+                      setState(() {});
+                    }),
+                    child: const Text('Download Update')),
+              ],
+            ),
+            actions: const [SizedBox()],
+          )),
+
+          Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
       ),
     );
