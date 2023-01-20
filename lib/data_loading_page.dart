@@ -72,11 +72,12 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               // Sort cate list
-              if (selectedSortType == 'Sort by item amount') {
+              if (selectedSortType == 1) {
                 cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
                 ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                 cateList.insert(0, favCate);
-              } else if (selectedSortType == 'Sort by name') {
+                selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+              } else if (selectedSortType == 0) {
                 cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
                 ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                 cateList.insert(0, favCate);

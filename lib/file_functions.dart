@@ -695,14 +695,19 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
         String vidName = element.split(':')[2];
         vidFiles.add(File('$newDirPath$s$vidName'));
       }
+      //Get parent for list and icepath
       String iceFileParents = '';
+      String iceFileParentPath = newItemPath;
       if (curIceSubName.isEmpty) {
         iceFileParents = curIceMainName;
+        iceFileParentPath += '$s$curIceMainName';
       } else {
         iceFileParents = '$curIceMainName > $curIceSubName';
+        iceFileParentPath += '$s$curIceMainName$s$curIceSubName';
       }
+
       ModFile curModFile =
-          ModFile('', '$modsDirPath$s$category$s$itemName', itemName, '$newItemPath$s$curFile', curFile, iceFileParents, '', '', getImagesList(imgFiles), false, true, true, false, vidFiles);
+          ModFile('', '$modsDirPath$s$category$s$itemName', itemName, '$iceFileParentPath$s$curFile', curFile, iceFileParents, '', '', getImagesList(imgFiles), false, true, true, false, vidFiles);
       curModFile.categoryName = category;
       curModFile.categoryPath = '$modsDirPath$s$category';
       newModFiles.add(curModFile);
@@ -741,16 +746,17 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
       }
     } else {
       for (var cate in cateList) {
-      if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
-        int index = 0;
-        if (cate.itemNames.length > 1) {
-          index = cate.itemNames.indexOf(itemName.toString());
+        if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
+          int index = 0;
+          if (cate.itemNames.length > 1) {
+            index = cate.itemNames.indexOf(itemName.toString());
+          }
+          cate.allModFiles.addAll(newModFiles);
+          cate.numOfMods[index] += subNames.length;
         }
-        cate.allModFiles.addAll(newModFiles);
-        cate.numOfMods[index] += subNames.length;
       }
     }
-    }
+    Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
   }
 }
 

@@ -50,8 +50,9 @@ List<bool> isLoading = [];
 List<bool> isLoadingSetList = [];
 List<bool> isLoadingModSetList = [];
 List<bool> isLoadingAppliedList = [];
-List<String> sortTypeList = ['Sort by name', 'Sort by item amount'];
-String selectedSortType = '';
+List<String> sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
+int selectedSortType = 0;
+String selectedSortTypeString = '';
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
@@ -265,6 +266,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (category.categoryName != 'Favorites') {
         dropdownCategories.add(category.categoryName);
       }
+    }
+
+    if (selectedSortType == 0) {
+      selectedSortTypeString = curLangText!.sortCateByNameText;
+    } else {
+      selectedSortTypeString = curLangText!.sortCateByNumItemsText;
     }
 
     return Column(
@@ -495,7 +502,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: Tooltip(
-                message: 'Sort Items',
+                message: curLangText!.sortCategoryTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -510,10 +517,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         child: MaterialButton(
                           onPressed: (() {}),
                           padding: const EdgeInsets.only(right: 3),
-                          child: Center(child: Icon(Icons.sort_sharp,
-                          color: MyApp.themeNotifier.value == ThemeMode.light
-                                    ? Theme.of(context).primaryColorDark
-                                    : Theme.of(context).iconTheme.color,)),
+                          child: Center(
+                              child: Icon(
+                            Icons.sort_sharp,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+                          )),
                         ),
                       ),
                     ),
@@ -553,19 +561,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ],
                             )))
                         .toList(),
-                    value: selectedSortType,
                     onChanged: (value) async {
-                      selectedSortType = value.toString();
                       final prefs = await SharedPreferences.getInstance();
-                      prefs.setString('selectedSortType', value.toString());
-                      if (value.toString() == 'Sort by item amount') {
+                      if (value == curLangText!.sortCateByNumItemsText) {
+                        prefs.setInt('selectedSortType', 1);
                         cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
                         ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                         cateList.insert(0, favCate);
-                      } else if (value.toString() == 'Sort by name') {
+                        selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+                      } else if (value == curLangText!.sortCateByNameText) {
+                        prefs.setInt('selectedSortType', 0);
                         cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
                         ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                         cateList.insert(0, favCate);
+                        selectedSortTypeString = curLangText!.sortCateByNameText;
                       }
                       // ignore: use_build_context_synchronously
                       Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
@@ -1495,11 +1504,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 modsViewAppBarName = curLangText!.availableModsHeaderText;
                                 if (categoryFormKey.currentState!.validate()) {
                                   cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
-                                  if (selectedSortType == 'Sort by item amount') {
+                                  if (selectedSortType == 1) {
                                     cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
                                     ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                                     cateList.insert(0, favCate);
-                                  } else if (selectedSortType == 'Sort by name') {
+                                  } else if (selectedSortType == 0) {
                                     cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
                                     ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                                     cateList.insert(0, favCate);

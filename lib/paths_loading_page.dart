@@ -50,8 +50,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       if (!Directory(binDirPath).existsSync()) {
         await getDirPath();
         dirPathCheck();
-      }
-      else {
+      } else {
         context.read<StateProvider>().mainBinFoundTrue();
       }
     }
