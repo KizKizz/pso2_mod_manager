@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
+import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -49,8 +50,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       if (!Directory(binDirPath).existsSync()) {
         await getDirPath();
         dirPathCheck();
-      }
-      else {
+      } else {
         context.read<StateProvider>().mainBinFoundTrue();
       }
     }
@@ -99,6 +99,18 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         await Directory('$modsDirPath${s}Motions').create(recursive: true);
         await Directory('$modsDirPath${s}Outerwears').create(recursive: true);
         await Directory('$modsDirPath${s}Setwears').create(recursive: true);
+        await Directory('$modsDirPath${s}Mags').create(recursive: true);
+        await Directory('$modsDirPath${s}Stickers').create(recursive: true);
+        await Directory('$modsDirPath${s}Hairs').create(recursive: true);
+        await Directory('$modsDirPath${s}Cast Body Parts').create(recursive: true);
+        await Directory('$modsDirPath${s}Cast Arm Parts').create(recursive: true);
+        await Directory('$modsDirPath${s}Cast Leg Parts').create(recursive: true);
+        await Directory('$modsDirPath${s}Eyes').create(recursive: true);
+        await Directory('$modsDirPath${s}Costumes').create(recursive: true);
+      } else {
+        for (var cateName in defaultCatesList) {
+          Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+        }
       }
       if (!Directory(backupDirPath).existsSync()) {
         await Directory(backupDirPath).create(recursive: true);

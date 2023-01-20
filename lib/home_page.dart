@@ -50,6 +50,9 @@ List<bool> isLoading = [];
 List<bool> isLoadingSetList = [];
 List<bool> isLoadingModSetList = [];
 List<bool> isLoadingAppliedList = [];
+List<String> sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
+int selectedSortType = 0;
+String selectedSortTypeString = '';
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
@@ -60,7 +63,27 @@ int totalAppliedFiles = 0;
 TextEditingController searchBoxTextController = TextEditingController();
 String modsViewAppBarName = '';
 String modsSetAppBarName = '';
-List<String> defaultCatesList = ['Favorites', 'Accessories', 'Basewears', 'Body Paints', 'Emotes', 'Face Paints', 'Innerwears', 'Misc', 'Motions', 'Outerwears', 'Setwears'];
+List<String> defaultCatesList = [
+  'Favorites',
+  'Accessories',
+  'Basewears',
+  'Body Paints',
+  'Emotes',
+  'Face Paints',
+  'Innerwears',
+  'Misc',
+  'Motions',
+  'Outerwears',
+  'Setwears',
+  'Mags',
+  'Stickers',
+  'Hairs',
+  'Cast Body Parts',
+  'Cast Arm Parts',
+  'Cast Leg Parts',
+  'Eyes',
+  'Costumes'
+];
 
 //New Cate
 bool addCategoryVisible = false;
@@ -243,6 +266,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (category.categoryName != 'Favorites') {
         dropdownCategories.add(category.categoryName);
       }
+    }
+
+    if (selectedSortType == 0) {
+      selectedSortTypeString = curLangText!.sortCateByNameText;
+    } else {
+      selectedSortTypeString = curLangText!.sortCateByNumItemsText;
     }
 
     return Column(
@@ -471,43 +500,129 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       )),
                 )),
             Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Tooltip(
-                    message: curLangText!.newItemBtnTooltipText,
-                    height: 25,
-                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                    waitDuration: const Duration(seconds: 1),
-                    child: SizedBox(
-                      width: 40,
-                      height: 30,
-                      child: MaterialButton(
-                          onPressed: addItemVisible
-                              ? null
-                              : (() {
-                                  setState(() {
-                                    switch (itemAdderAniController.status) {
-                                      case AnimationStatus.dismissed:
-                                        Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
-                                        addItemVisible = true;
-                                        itemAdderAniController.forward();
-                                        break;
-                                      default:
-                                    }
-                                  });
-                                }),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add_box_outlined,
-                                color: addItemVisible
-                                    ? Theme.of(context).disabledColor
-                                    : MyApp.themeNotifier.value == ThemeMode.light
-                                        ? Theme.of(context).primaryColorDark
-                                        : Theme.of(context).iconTheme.color,
-                              )
-                            ],
+              padding: const EdgeInsets.only(right: 10),
+              child: Tooltip(
+                message: curLangText!.sortCategoryTooltipText,
+                height: 25,
+                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                waitDuration: const Duration(seconds: 1),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                    customButton: AbsorbPointer(
+                      absorbing: true,
+                      child: SizedBox(
+                        width: 34,
+                        child: MaterialButton(
+                          onPressed: (() {}),
+                          padding: const EdgeInsets.only(right: 3),
+                          child: Center(
+                              child: Icon(
+                            Icons.sort_sharp,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
                           )),
-                    ))),
+                        ),
+                      ),
+                    ),
+                    dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                    ),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    //isDense: true,
+                    dropdownElevation: 3,
+                    dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
+                    dropdownWidth: 160,
+                    offset: const Offset(-120, 0),
+                    iconSize: 15,
+                    itemHeight: 30,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 5),
+                    items: sortTypeList
+                        .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Row(
+                              //mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 3),
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                        //fontSize: 14,
+                                        //fontWeight: FontWeight.bold,
+                                        //color: Colors.white,
+                                        ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              ],
+                            )))
+                        .toList(),
+                    onChanged: (value) async {
+                      final prefs = await SharedPreferences.getInstance();
+                      if (value == curLangText!.sortCateByNumItemsText) {
+                        prefs.setInt('selectedSortType', 1);
+                        cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+                        ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                        cateList.insert(0, favCate);
+                        selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+                      } else if (value == curLangText!.sortCateByNameText) {
+                        prefs.setInt('selectedSortType', 0);
+                        cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+                        ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                        cateList.insert(0, favCate);
+                        selectedSortTypeString = curLangText!.sortCateByNameText;
+                      }
+                      // ignore: use_build_context_synchronously
+                      Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+                      setState(() {});
+                    },
+                  )),
+                ),
+              ),
+            )
+            // New Item button
+            // Padding(
+            //     padding: const EdgeInsets.only(right: 10),
+            //     child: Tooltip(
+            //         message: curLangText!.newItemBtnTooltipText,
+            //         height: 25,
+            //         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+            //         waitDuration: const Duration(seconds: 1),
+            //         child: SizedBox(
+            //           width: 40,
+            //           height: 30,
+            //           child: MaterialButton(
+            //               onPressed: addItemVisible
+            //                   ? null
+            //                   : (() {
+            //                       setState(() {
+            //                         switch (itemAdderAniController.status) {
+            //                           case AnimationStatus.dismissed:
+            //                             Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
+            //                             addItemVisible = true;
+            //                             itemAdderAniController.forward();
+            //                             break;
+            //                           default:
+            //                         }
+            //                       });
+            //                     }),
+            //               child: Row(
+            //                 children: [
+            //                   Icon(
+            //                     Icons.add_box_outlined,
+            //                     color: addItemVisible
+            //                         ? Theme.of(context).disabledColor
+            //                         : MyApp.themeNotifier.value == ThemeMode.light
+            //                             ? Theme.of(context).primaryColorDark
+            //                             : Theme.of(context).iconTheme.color,
+            //                   )
+            //                 ],
+            //               )),
+            //         ))),
           ],
         ),
 
@@ -1385,25 +1500,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           padding: const EdgeInsets.only(left: 5),
                           child: ElevatedButton(
                               onPressed: (() {
-                                setState(() {
-                                  modFilesList.clear();
-                                  modsViewAppBarName = curLangText!.availableModsHeaderText;
-                                  if (categoryFormKey.currentState!.validate()) {
-                                    cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
+                                modFilesList.clear();
+                                modsViewAppBarName = curLangText!.availableModsHeaderText;
+                                if (categoryFormKey.currentState!.validate()) {
+                                  cateList.add(ModCategory(categoryAddController.text, '$modsDirPath\\${categoryAddController.text}', [], [], 0, [], [], []));
+                                  if (selectedSortType == 1) {
+                                    cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+                                    ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                                    cateList.insert(0, favCate);
+                                  } else if (selectedSortType == 0) {
                                     cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
-                                    Directory('$modsDirPath\\${categoryAddController.text}').create(recursive: true);
-                                    selectedIndex = List.generate(cateList.length, (index) => -1);
-
-                                    for (var modList in modFilesList) {
-                                      modList.map((mod) => mod.toJson()).toList();
-                                      File(modSettingsPath).writeAsStringSync(json.encode(modList));
-                                    }
-
-                                    categoryAddController.clear();
-                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                    //addCategoryVisible = false;
+                                    ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                                    cateList.insert(0, favCate);
                                   }
-                                });
+                                  // cateList.sort(
+                                  //   (a, b) {
+                                  //     if (b.categoryName != 'Favorites' || a.categoryName != 'Favorites') {
+                                  //       return b.numOfItems.compareTo(a.numOfItems);
+                                  //     } else {
+                                  //       return 0;
+                                  //     }
+                                  //   },
+                                  // );
+                                  Directory('$modsDirPath\\${categoryAddController.text}').create(recursive: true);
+                                  selectedIndex = List.generate(cateList.length, (index) => -1);
+
+                                  for (var modList in modFilesList) {
+                                    modList.map((mod) => mod.toJson()).toList();
+                                    File(modSettingsPath).writeAsStringSync(json.encode(modList));
+                                  }
+                                  Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
+                                  categoryAddController.clear();
+                                  Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
+                                  //addCategoryVisible = false;
+                                }
+
+                                //     Future.delayed(const Duration(milliseconds: 100), () async {
+                                //   //allModFiles = await modsLoader();
+                                //   //cateList = categories(allModFiles);
+                                //   //appliedModsListGet = getAppliedModsList();
+                                //   //iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+                                //   // ignore: use_build_context_synchronously
+
+                                //   //isRefreshing = false;
+                                // }).whenComplete(() {
+                                //   //isRefreshing = false;
+                                //   setState(() {});
+                                // });
+                                setState(() {});
                               }),
                               child: Text(curLangText!.addCatBtnText)),
                         ),
@@ -2005,46 +2149,47 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
-          actions: [
-            Tooltip(
-                message:
-                    modsViewAppBarName == '' || modsViewAppBarName == curLangText!.availableModsHeaderText ? curLangText!.addModTootipText : '${curLangText!.addModToTooltipText} $modsViewAppBarName',
-                height: 25,
-                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                waitDuration: const Duration(seconds: 1),
-                child: SizedBox(
-                  width: 40,
-                  height: 30,
-                  child: MaterialButton(
-                      onPressed: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
-                          ? null
-                          : (() {
-                              setState(() {
-                                //addModToItemVisible = true;
-                                switch (modAdderAniController.status) {
-                                  case AnimationStatus.dismissed:
-                                    addModToItemVisible = true;
-                                    modAdderAniController.forward();
-                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
-                                    break;
-                                  default:
-                                }
-                              });
-                            }),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add_box_outlined,
-                            color: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
-                                ? Theme.of(context).disabledColor
-                                : MyApp.themeNotifier.value == ThemeMode.light
-                                    ? Theme.of(context).primaryColorDark
-                                    : Theme.of(context).iconTheme.color,
-                          )
-                        ],
-                      )),
-                )),
-          ],
+          // actions: [
+          //  //Add mod to item button
+          //   Tooltip(
+          //       message:
+          //           modsViewAppBarName == '' || modsViewAppBarName == curLangText!.availableModsHeaderText ? curLangText!.addModTootipText : '${curLangText!.addModToTooltipText} $modsViewAppBarName',
+          //       height: 25,
+          //       textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+          //       waitDuration: const Duration(seconds: 1),
+          //       child: SizedBox(
+          //         width: 40,
+          //         height: 30,
+          //         child: MaterialButton(
+          //             onPressed: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
+          //                 ? null
+          //                 : (() {
+          //                     setState(() {
+          //                       //addModToItemVisible = true;
+          //                       switch (modAdderAniController.status) {
+          //                         case AnimationStatus.dismissed:
+          //                           addModToItemVisible = true;
+          //                           modAdderAniController.forward();
+          //                           Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
+          //                           break;
+          //                         default:
+          //                       }
+          //                     });
+          //                   }),
+          //             child: Row(
+          //               children: [
+          //                 Icon(
+          //                   Icons.add_box_outlined,
+          //                   color: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
+          //                       ? Theme.of(context).disabledColor
+          //                       : MyApp.themeNotifier.value == ThemeMode.light
+          //                           ? Theme.of(context).primaryColorDark
+          //                           : Theme.of(context).iconTheme.color,
+          //                 )
+          //               ],
+          //             )),
+          //       )),
+          // ],
         ),
 
         //Mod view

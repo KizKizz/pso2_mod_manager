@@ -69,6 +69,7 @@ TextEditingController newSetTextController = TextEditingController();
 TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
 List<String> localRefSheetsList = [];
+bool _checksumDownloading = false;
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -157,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       s = '\\';
     }
     windowManager.addListener(this);
+    getSortType();
     getAppVer();
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
@@ -177,6 +179,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> getRefSheetsVersion() async {
     final prefs = await SharedPreferences.getInstance();
     refSheetsVersion = (prefs.getInt('refSheetsVersion') ?? 0);
+  }
+
+  Future<void> getSortType() async {
+    final prefs = await SharedPreferences.getInstance();
+    // 0 => sort by name, 1 => sort by item amount
+    selectedSortType = (prefs.getInt('selectedSortType') ?? 0);
   }
 
   @override
@@ -303,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   Expanded(
                     child: MoveWindow(
                         child: Container(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 10, top: 2.5),
                       child: Tooltip(
                           message: 'Version: $appVersion | Made by キス★',
                           height: 25,
@@ -324,12 +332,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                         children: [
                           //Add Items/Mods
                           Tooltip(
-                            message: 'Add Mods',
+                            message: curLangText!.addModsTooltip,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: SizedBox(
-                              width: 105,
+                              width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
                                 onPressed: (() {
@@ -339,13 +347,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   modAddHandler(context);
                                 }),
                                 child: Row(
-                                  children: const [
-                                    Icon(
+                                  children: [
+                                    const Icon(
                                       Icons.add_circle_outline,
                                       size: 18,
                                     ),
-                                    SizedBox(width: 2.5),
-                                    Text('Add Mods', style: TextStyle(fontWeight: FontWeight.w400))
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.addModsBtnLabel, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -399,12 +407,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Checksum
                           Tooltip(
-                            message: curLangText!.checksumToolTipText,
+                            message: checkSumFilePath != null ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
-                              onPressed: (() async {
+                              onLongPress: () async {
                                 if (checkSumFilePath == null) {
                                   checksumLocation = await FilePicker.platform.pickFiles(
                                     dialogTitle: curLangText!.checksumSelectPopupText,
@@ -420,7 +428,23 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     setState(() {});
                                   }
                                 } else {
-                                  //await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                }
+                              },
+                              onPressed: (() async {
+                                if (checkSumFilePath == null) {
+                                  _checksumDownloading = true;
+                                  setState(() {});
+                                  await Dio()
+                                      .download(
+                                          'https://github.com/KizKizz/pso2_mod_manager/raw/main/checksum/d4455ebc2bef618f29106da7692ebc1a', '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a')
+                                      .then((value) {
+                                    _checksumDownloading = false;
+                                    checkSumFilePath = '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a';
+                                    setState(() {});
+                                  });
+                                } else {
+                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
                               child: checkSumFilePath != null
@@ -447,7 +471,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        if (!_checksumDownloading) Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                        if (_checksumDownloading) Text(curLangText!.checksumDownloadingBtnLabel, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -840,7 +865,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                       }
                                     }
 
-                                    topBtnMenuItems = [curLangText!.checksumBtnText, curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+                                    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+                                    sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
 
                                     //Json Write
                                     langList.map((translation) => translation.toJson()).toList();
@@ -867,109 +893,131 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           //New version banner
           if (context.watch<StateProvider>().isUpdateAvailable)
             ScaffoldMessenger(
-                child: MaterialBanner(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).hintColor
+                ),
+            ),
+                    child: MaterialBanner(
               backgroundColor: Theme.of(context).canvasColor,
               elevation: 0,
               padding: const EdgeInsets.all(0),
               leadingPadding: const EdgeInsets.only(left: 15, right: 5),
               leading: Icon(
-                Icons.new_releases,
-                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                    Icons.new_releases,
+                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
               ),
               content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        curLangText!.newUpdateAvailText,
-                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                      Row(
+                        children: [
+                          Text(
+                            curLangText!.newUpdateAvailText,
+                            style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
+                          ),
+                          TextButton(
+                              onPressed: (() {
+                                setState(() {
+                                  patchNotesDialog(context);
+                                });
+                              }),
+                              child: Text(curLangText!.patchNoteLabelText)),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
-                      ),
-                      TextButton(
-                          onPressed: (() {
-                            setState(() {
-                              patchNotesDialog(context);
-                            });
-                          }),
-                          child: Text(curLangText!.patchNoteLabelText)),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: ElevatedButton(
+                                onPressed: (() {
+                                  Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                  setState(() {});
+                                }),
+                                child: Text(curLangText!.dismissBtnText)),
+                          ),
+                          ElevatedButton(
+                              onPressed: (() {
+                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                              }),
+                              child: Text(curLangText!.updateBtnText)),
+                        ],
+                      )
                     ],
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: ElevatedButton(
-                            onPressed: (() {
-                              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                              setState(() {});
-                            }),
-                            child: Text(curLangText!.dismissBtnText)),
-                      ),
-                      ElevatedButton(
-                          onPressed: (() {
-                            Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                            launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
-                          }),
-                          child: Text(curLangText!.updateBtnText)),
-                    ],
-                  )
-                ],
               ),
               actions: const [SizedBox()],
-            )),
+            ),
+                  ),
+                )),
 
           //New Ref sheets
           if (context.watch<StateProvider>().refSheetsUpdateAvailable)
           ScaffoldMessenger(
-              child: MaterialBanner(
-            backgroundColor: Theme.of(context).canvasColor,
-            elevation: 0,
-            padding: const EdgeInsets.all(0),
-            leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-            leading: Icon(
-              Icons.newspaper,
-              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).hintColor
+                ),
             ),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (context.watch<StateProvider>().refSheetsCount < 1)
-                  Text(
-                    'New update for item references available',
-                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                  ),
-                if (context.watch<StateProvider>().refSheetsCount > 0)
-                  Text(
-                    'Downloading: ${context.watch<StateProvider>().refSheetsCount} files of ${localRefSheetsList.length}',
-                    style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                  ),
-                ElevatedButton(
-                    onPressed: (() {
-                      //Indexing files
+            child: MaterialBanner(
+                backgroundColor: Theme.of(context).canvasColor,
+                elevation: 0,
+                padding: const EdgeInsets.all(0),
+                leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+                leading: Icon(
+                  Icons.newspaper,
+                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                ),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (context.watch<StateProvider>().refSheetsCount < 1)
+                      Text(
+                        curLangText!.itemRefUpdateAvailableText,
+                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                      ),
+                    if (context.watch<StateProvider>().refSheetsCount > 0)
+                      Text(
+                        '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} ${localRefSheetsList.length}',
+                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                      ),
+                    ElevatedButton(
+                        onPressed: context.watch<StateProvider>().refSheetsCount < 1 
+                        ? (() {
+                          //Indexing files
 
-                      for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
-                        localRefSheetsList.add(file.path);
-                      }
+                          for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                            localRefSheetsList.add(file.path);
+                          }
 
-                      downloadNewRefSheets(context, localRefSheetsList).then((_) async {
-                        //final prefs = await SharedPreferences.getInstance();
-                        //prefs.setInt('refSheetsVersion', refSheetsNewVersion);
-                        //print('complete');
-                        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
-                        Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
-                      });
+                          downloadNewRefSheets(context, localRefSheetsList).then((_) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                            //print('complete');
+                            Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+                            Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+                          });
 
-                      setState(() {});
-                    }),
-                    child: const Text('Download Update')),
-              ],
+                          setState(() {});
+                        })
+                        : null,
+                        child: Text(curLangText!.downloadUpdateBtnLabel)),
+                  ],
+                ),
+                actions: const [SizedBox()],
             ),
-            actions: const [SizedBox()],
-          )),
+          ),
+              )),
 
           Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],

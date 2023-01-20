@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
@@ -70,6 +71,17 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
             } else {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
+              // Sort cate list
+              if (selectedSortType == 1) {
+                cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+                ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                cateList.insert(0, favCate);
+                selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+              } else if (selectedSortType == 0) {
+                cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+                ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+                cateList.insert(0, favCate);
+              }
               appliedModsListGet = getAppliedModsList();
               modSetsListGet = getSetsList();
               iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();

@@ -163,6 +163,33 @@ class TranslationText {
     this.pso2binNotFoundPopupText,
     this.modmanFolderNotFoundLabelText,
     this.modmanFolderNotFoundText,
+
+    //version 160
+    this.addModsBtnLabel,
+    this.addModsTooltip,
+    this.checksumDownloadingBtnLabel,
+    this.itemRefUpdateAvailableText,
+    this.downloadingText,
+    this.filesOfText,
+    this.downloadUpdateBtnLabel,
+    this.sortCategoryTooltipText,
+    this.sortCateByNameText,
+    this.sortCateByNumItemsText,
+    this.preparingLabelText,
+    this.dragNdropBoxLabelText,
+    this.removeBtnLabel,
+    this.clearAllBtnLabel,
+    this.progressBtnLabel,
+    this.waitingForDataLabelText,
+    this.errorLoadingRestartApp,
+    this.editTooltipText,
+    this.renameSpaceLabelText,
+    this.spaceBeforeAddingLabelText,
+    this.errorModsInToBeAddedListLabelText,
+    this.returnBtnLabel,
+    this.addAllBtnLabelText,
+    this.errorFilesNotSupportedText,
+    this.checksumHoldBtnTooltip,
   );
 
   //Header buttons
@@ -304,6 +331,33 @@ class TranslationText {
   String modmanFolderNotFoundLabelText;
   String modmanFolderNotFoundText;
 
+  //version 160
+  String addModsBtnLabel;
+  String addModsTooltip;
+  String checksumDownloadingBtnLabel;
+  String itemRefUpdateAvailableText;
+  String downloadingText;
+  String filesOfText;
+  String downloadUpdateBtnLabel;
+  String sortCategoryTooltipText;
+  String sortCateByNameText;
+  String sortCateByNumItemsText;
+  String preparingLabelText;
+  String dragNdropBoxLabelText;
+  String removeBtnLabel;
+  String clearAllBtnLabel;
+  String progressBtnLabel;
+  String waitingForDataLabelText;
+  String errorLoadingRestartApp;
+  String editTooltipText;
+  String renameSpaceLabelText;
+  String spaceBeforeAddingLabelText;
+  String errorModsInToBeAddedListLabelText;
+  String returnBtnLabel;
+  String addAllBtnLabelText;
+  String errorFilesNotSupportedText;
+  String checksumHoldBtnTooltip;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -442,6 +496,33 @@ class TranslationText {
     pso2binNotFoundPopupText = json['pso2binNotFoundPopupText'];
     modmanFolderNotFoundLabelText = json['modmanFolderNotFoundLabelText'];
     modmanFolderNotFoundText = json['modmanFolderNotFoundText'];
+
+    //version 160
+    addModsBtnLabel = json['addModsBtnLabel'];
+    addModsTooltip = json['addModsTooltip'];
+    checksumDownloadingBtnLabel = json['checksumDownloadingBtnLabel'];
+    itemRefUpdateAvailableText = json['itemRefUpdateAvailableText'];
+    downloadingText = json['downloadingText'];
+    filesOfText = json['filesOfText'];
+    downloadUpdateBtnLabel = json['downloadUpdateBtnLabel'];
+    sortCategoryTooltipText = json['sortCategoryTooltipText'];
+    sortCateByNameText = json['sortCateByNameText'];
+    sortCateByNumItemsText = json['sortCateByNumItemsText'];
+    preparingLabelText = json['preparingLabelText'];
+    dragNdropBoxLabelText = json['dragNdropBoxLabelText'];
+    removeBtnLabel = json['removeBtnLabel'];
+    clearAllBtnLabel = json['clearAllBtnLabel'];
+    progressBtnLabel = json['progressBtnLabel'];
+    waitingForDataLabelText = json['waitingForDataLabelText'];
+    errorLoadingRestartApp = json['errorLoadingRestartApp'];
+    editTooltipText = json['editTooltipText'];
+    renameSpaceLabelText = json['renameSpaceLabelText'];
+    spaceBeforeAddingLabelText = json['spaceBeforeAddingLabelText'];
+    errorModsInToBeAddedListLabelText = json['errorModsInToBeAddedListLabelText'];
+    returnBtnLabel = json['returnBtnLabel'];
+    addAllBtnLabelText = json['addAllBtnLabelText'];
+    errorFilesNotSupportedText = json['errorFilesNotSupportedText'];
+    checksumHoldBtnTooltip = json['checksumHoldBtnTooltip'];
   }
 
   Map<String, dynamic> toJson() {
@@ -585,6 +666,33 @@ class TranslationText {
     data['modmanFolderNotFoundLabelText'] = modmanFolderNotFoundLabelText;
     data['modmanFolderNotFoundText'] = modmanFolderNotFoundText;
 
+    //version 160
+    data['addModsBtnLabel'] = addModsBtnLabel;
+    data['addModsTooltip'] = addModsTooltip;
+    data['checksumDownloadingBtnLabel'] = checksumDownloadingBtnLabel;
+    data['itemRefUpdateAvailableText'] = itemRefUpdateAvailableText;
+    data['downloadingText'] = downloadingText;
+    data['filesOfText'] = filesOfText;
+    data['downloadUpdateBtnLabel'] = downloadUpdateBtnLabel;
+    data['sortCategoryTooltipText'] = sortCategoryTooltipText;
+    data['sortCateByNameText'] = sortCateByNameText;
+    data['sortCateByNumItemsText'] = sortCateByNumItemsText;
+    data['preparingLabelText'] = preparingLabelText;
+    data['dragNdropBoxLabelText'] = dragNdropBoxLabelText;
+    data['removeBtnLabel'] = removeBtnLabel;
+    data['clearAllBtnLabel'] = clearAllBtnLabel;
+    data['progressBtnLabel'] = progressBtnLabel;
+    data['waitingForDataLabelText'] = waitingForDataLabelText;
+    data['errorLoadingRestartApp'] = errorLoadingRestartApp;
+    data['editTooltipText'] = editTooltipText;
+    data['renameSpaceLabelText'] = renameSpaceLabelText;
+    data['spaceBeforeAddingLabelText'] = spaceBeforeAddingLabelText;
+    data['errorModsInToBeAddedListLabelText'] = errorModsInToBeAddedListLabelText;
+    data['returnBtnLabel'] = returnBtnLabel;
+    data['addAllBtnLabelText'] = addAllBtnLabelText;
+    data['errorFilesNotSupportedText'] = errorFilesNotSupportedText;
+    data['checksumHoldBtnTooltip'] = checksumHoldBtnTooltip;
+
     return data;
   }
 }
@@ -631,7 +739,7 @@ void convertLangTextData(var jsonResponse) {
       b['newItemBtnTooltipText'],
       b['inExplorerBtnTootipText'],
       b['searchLabelText'],
-      b['newCatNameDupErrorText'],
+      b['newCatNameLabelText'],
       b['addCatBtnText'],
       b['singleAddBtnText'],
       b['multiAddBtnText'],
@@ -717,8 +825,8 @@ void convertLangTextData(var jsonResponse) {
       b['chooseNewPathText'],
 
       //Error messages
-      b['newCatNameLabelText'],
       b['newCatNameEmptyErrorText'],
+      b['newCatNameDupErrorText'],
       b['newItemNameEmpty'],
       b['newItemNameDuplicate'],
       b['multiItemsLeftOver'],
@@ -730,7 +838,204 @@ void convertLangTextData(var jsonResponse) {
       b['pso2binNotFoundPopupText'],
       b['modmanFolderNotFoundLabelText'],
       b['modmanFolderNotFoundText'],
+
+      //version 160
+      b['addModsBtnLabel'],
+      b['addModsTooltip'],
+      b['checksumDownloadingBtnLabel'],
+      b['itemRefUpdateAvailableText'],
+      b['downloadingText'],
+      b['filesOfText'],
+      b['downloadUpdateBtnLabel'],
+      b['sortCategoryTooltipText'],
+      b['sortCateByNameText'],
+      b['sortCateByNumItemsText'],
+      b['preparingLabelText'],
+      b['dragNdropBoxLabelText'],
+      b['removeBtnLabel'],
+      b['clearAllBtnLabel'],
+      b['progressBtnLabel'],
+      b['waitingForDataLabelText'],
+      b['errorLoadingRestartApp'],
+      b['editTooltipText'],
+      b['renameSpaceLabelText'],
+      b['spaceBeforeAddingLabelText'],
+      b['errorModsInToBeAddedListLabelText'],
+      b['returnBtnLabel'],
+      b['addAllBtnLabelText'],
+      b['errorFilesNotSupportedText'],
+      b['checksumHoldBtnTooltip'],
     );
     curLangText = translation;
   }
+}
+
+TranslationText defaultUILangLoader() {
+  return TranslationText(
+    //Header buttons
+    'Paths Reselect',
+    'Folders',
+    'Mods',
+    'Backups',
+    'Deleted Items',
+    'Checksum:',
+    'Checksum missing. Click!',
+    'Mod Sets',
+    'Mod List',
+    'Preview:',
+    'Light',
+    'Dark',
+
+    //Header buttons tooltips
+    'Reselect path for pso2_bin, Mod Manager folder',
+    'Open Mods, Backups, Deleted Items folder',
+    'modsFolderTooltipText',
+    'Open Checksum folder',
+    'Manage Mod Sets',
+    'Show/Hide Preview window',
+    'Switch to Dark theme',
+    'Switch to Light theme',
+    'Language select',
+
+    //Main Headers
+    'Items',
+    'Available Mods',
+    'Preview',
+    'Applied Mods',
+    'Sets',
+    'Mods in Set',
+
+    //Mod Items
+    'Refresh Mod List',
+    'Add New Category',
+    'Add New Item',
+    ' in File Explorer',
+    'Search for mods',
+    'New Category Name',
+    'Add Category',
+    'Single Item',
+    'Multiple Items',
+    'Drop modded .ice files and folder(s)\nhere to add',
+    'Drop modded item folder(s) here to add',
+    'Drop item\'s\nicon here\n(Optional)',
+    'Select a Category',
+    'Item Name',
+    'Mod Name (Optional)',
+    'Add Mods',
+    'Add mods to',
+    'Favorite',
+    'Accessories',
+    'Basewears',
+    'Body Paints',
+    'Emotes',
+    'Innerwears',
+    'Misc',
+    'Motions',
+    'Outerwears',
+    'Setwears',
+    'Unapply this mod from the game',
+    'Apply this mod to the game',
+    'Mod Name',
+    'Save all mods in applied list to sets',
+    'Click on \'Mod Sets\' button to add new set',
+    'Apply all mods under ',
+    ' to the game',
+    'Unapply all mods under ',
+    ' from the game',
+    'New Set Name',
+    'Add New Set',
+    'Add Set',
+    'Hold to delete ',
+    'Hold to remove ',
+    'Hold to reapply all mods to the game',
+    'Hold to remove all applied mods from the game',
+
+    //Misc
+    ' Items',
+    ' Item',
+    'Files applied:',
+    'Files applied',
+    'Close',
+    'Open ',
+    'Add',
+    'Add ',
+    'Remove ',
+    'Delete ',
+    'Refreshing',
+    'Mods:',
+    'Applied:',
+    ' to favorites',
+    ' from favorites',
+    'Done',
+    ' Files',
+    ' File',
+    'One or more mod files in this set currently being applied to the game',
+    'Delete Category',
+    ' and move it to Deleted Items folder?\nThis will also remove all items in this category',
+    'Cannot delete ',
+    '. Unaplly these mods first:\n\n',
+    'Delete Item',
+    ' and move it to Deleted Items folder?\nThis will also delete all mods in this item',
+    'Delete Mod',
+    ' and move it to Deleted Items folder?\nThis will also delete all files in this mod',
+    '. Unapply these files first:\n\n',
+    '. Remove from Favorites first',
+    'No Results Found',
+    ' from ',
+    'Loading UI',
+    'Select your checksum file',
+    'New Update Available!',
+    'New Version:',
+    'Your Version:',
+    'Patch Notes...',
+    'Update',
+    'Dismiss',
+    'Waiting for user\'s action',
+    'pso2_bin Path Reselect',
+    'Mod Manager Folder Path Reselect',
+    'Current path:',
+    'Choose a new path?',
+
+    //Error messages
+    'Category name can\'t be empty',
+    'Category name already exist',
+    'Name can\'t be empty',
+    'The name already exists',
+    'The file(s) bellow won\'t be added. Use the \'Single Item\' Tab or \'Add Mod\' instead.',
+    'Original file of ',
+    ' is not found!',
+    'Replaced: ',
+    'Backup file of ',
+    'There are mod files currently being applied. Unapply them first!',
+    'pso2_bin folder not found. Select it now?\nSelect \'Exit\' will close the app',
+    'Mod Manager Folder not found',
+    'Select a path to store your mods?\nSelect \'No\' will create a folder inside \'pso2_bin\' folder',
+
+    //version 160
+    'Add Mods',
+    'Add new mods to Mod Manager',
+    'Downloading checksum..',
+    'New update for item reference available',
+    'Downloading',
+    'of',
+    'Download Update',
+    'Sort Categories',
+    'Sort by name',
+    'Sort by item amount',
+    'Preparing',
+    'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+    'Remove',
+    'Clear All',
+    'Process',
+    'Waiting for data',
+    'Error when loading data. Please restart the app.',
+    'Edit',
+    'Rename ',
+    ' before adding',
+    'There are still mods in the list waiting to be added',
+    'Return',
+    'Add All',
+    'currently not supported. Open the archive file then drag the content in here instead',
+    'Click to download checksum file. Hold to manually select',
+  );
 }

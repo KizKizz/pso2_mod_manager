@@ -24,9 +24,11 @@ Future? sortedModsListLoad;
 List<List<String>> sortedModsList = [];
 String tempDirPath = '${Directory.current.path}${s}temp';
 TextEditingController renameTextBoxController = TextEditingController();
+List<bool> _itemNameRenameIndex = [];
 List<bool> _mainFolderRenameIndex = [];
 List<List<bool>> _subFoldersRenameIndex = [];
 bool _isNameEditing = false;
+List<String> _nonSupportedFileNames = [];
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
@@ -65,7 +67,7 @@ void modAddHandler(context) {
               // titlePadding: const EdgeInsets.all(5),
               contentPadding: const EdgeInsets.all(5),
               content: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.6,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height,
                   child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                     return FutureBuilder(
@@ -78,15 +80,15 @@ void modAddHandler(context) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
-                                'Preparing',
-                                style: TextStyle(fontSize: 20),
+                                curLangText!.preparingLabelText,
+                                style: const TextStyle(fontSize: 20),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
-                              CircularProgressIndicator(),
+                              const CircularProgressIndicator(),
                             ],
                           );
                         }
@@ -114,92 +116,137 @@ void modAddHandler(context) {
                             ),
                             Column(
                               children: [
-                                DropTarget(
-                                  //enable: true,
-                                  onDragDone: (detail) async {
-                                    for (var element in detail.files) {
-                                      if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
-                                        _newModDragDropList.add(element);
-                                      }
-                                    }
-                                    setState(
-                                      () {},
-                                    );
-                                  },
-                                  onDragEntered: (detail) {
-                                    setState(() {
-                                      _newModDragging = true;
-                                    });
-                                  },
-                                  onDragExited: (detail) {
-                                    setState(() {
-                                      _newModDragging = false;
-                                    });
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        border: Border.all(color: Theme.of(context).hintColor),
-                                        color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
-                                      ),
-                                      height: constraints.maxHeight - 33,
-                                      width: constraints.maxWidth * 0.45,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          if (_newModDragDropList.isEmpty)
-                                            const Center(
-                                                child: Text(
-                                              'Drag and drop folders, zip files\nand .ice files here',
-                                              textAlign: TextAlign.center,
-                                            )),
-                                          if (_newModDragDropList.isNotEmpty)
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(right: 5),
-                                                child: SizedBox(
-                                                    width: constraints.maxWidth,
-                                                    height: constraints.maxHeight,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                                                      child: ListView.builder(
-                                                          itemCount: _newModDragDropList.length,
-                                                          itemBuilder: (BuildContext context, int index) {
-                                                            return ListTile(
-                                                              //dense: true,
-                                                              // leading: const Icon(
-                                                              //     Icons.list),
-                                                              trailing: SizedBox(
-                                                                width: 40,
-                                                                child: Tooltip(
-                                                                  message: 'Remove',
-                                                                  waitDuration: const Duration(seconds: 2),
-                                                                  child: MaterialButton(
-                                                                    child: const Icon(Icons.remove_circle),
-                                                                    onPressed: () {
-                                                                      _newModDragDropList.removeAt(index);
-                                                                      setState(
-                                                                        () {},
-                                                                      );
-                                                                    },
+                                Stack(
+                                  alignment: AlignmentDirectional.bottomStart,
+                                  children: [
+                                    DropTarget(
+                                      //enable: true,
+                                      onDragDone: (detail) async {
+                                        for (var element in detail.files) {
+                                          if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
+                                            if (_nonSupportedFileNames.indexWhere((e) => e == element.name) == -1) {
+                                              _nonSupportedFileNames.add(element.name);
+                                            }
+                                          } else if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
+                                            _newModDragDropList.add(element);
+                                          }
+                                        }
+                                        setState(
+                                          () {},
+                                        );
+                                      },
+                                      onDragEntered: (detail) {
+                                        setState(() {
+                                          _newModDragging = true;
+                                        });
+                                      },
+                                      onDragExited: (detail) {
+                                        setState(() {
+                                          _newModDragging = false;
+                                        });
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(3),
+                                            border: Border.all(color: Theme.of(context).hintColor),
+                                            color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
+                                          ),
+                                          height: constraints.maxHeight - 33,
+                                          width: constraints.maxWidth * 0.45,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              if (_newModDragDropList.isEmpty)
+                                                Center(
+                                                    child: Text(
+                                                  curLangText!.dragNdropBoxLabelText,
+                                                  textAlign: TextAlign.center,
+                                                )),
+                                              if (_newModDragDropList.isNotEmpty)
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(right: 5),
+                                                    child: SizedBox(
+                                                        width: constraints.maxWidth,
+                                                        height: constraints.maxHeight,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                                                          child: ListView.builder(
+                                                              itemCount: _newModDragDropList.length,
+                                                              itemBuilder: (BuildContext context, int index) {
+                                                                return ListTile(
+                                                                  //dense: true,
+                                                                  // leading: const Icon(
+                                                                  //     Icons.list),
+                                                                  trailing: SizedBox(
+                                                                    width: 40,
+                                                                    child: Tooltip(
+                                                                      message: curLangText!.removeBtnLabel,
+                                                                      waitDuration: const Duration(seconds: 2),
+                                                                      child: MaterialButton(
+                                                                        child: const Icon(Icons.remove_circle),
+                                                                        onPressed: () {
+                                                                          _newModDragDropList.removeAt(index);
+                                                                          setState(
+                                                                            () {},
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                              ),
-                                                              title: Text(_newModDragDropList[index].name),
-                                                              subtitle: Text(
-                                                                _newModDragDropList[index].path,
-                                                                maxLines: 1,
-                                                                overflow: TextOverflow.ellipsis,
-                                                                softWrap: false,
-                                                              ),
-                                                            );
-                                                          }),
-                                                    )),
+                                                                  title: Text(_newModDragDropList[index].name),
+                                                                  subtitle: Text(
+                                                                    _newModDragDropList[index].path,
+                                                                    maxLines: 1,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    softWrap: false,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                        )),
+                                                  ),
+                                                )
+                                            ],
+                                          )),
+                                    ),
+                                    if (_nonSupportedFileNames.isNotEmpty)
+                                      Container(
+                                        width: constraints.maxWidth * 0.45,
+                                        //height: 60,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(5.0),
+                                              child: Center(
+                                                  child: Text(
+                                                '$_nonSupportedFileNames ${curLangText!.errorFilesNotSupportedText}',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 5),
+                                              child: ElevatedButton(
+                                                child: Text(curLangText!.closeBtnText),
+                                                onPressed: () {
+                                                  _nonSupportedFileNames.clear();
+                                                  setState(
+                                                    () {},
+                                                  );
+                                                },
                                               ),
-                                            )
-                                        ],
-                                      )),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
                                 SizedBox(
                                   width: constraints.maxWidth * 0.45,
@@ -218,7 +265,7 @@ void modAddHandler(context) {
                                                       );
                                                     })
                                                   : null,
-                                              child: const Text('Clear All')),
+                                              child: Text(curLangText!.clearAllBtnLabel)),
                                         ),
                                         const SizedBox(
                                           width: 5,
@@ -258,7 +305,7 @@ void modAddHandler(context) {
                                                       );
                                                     })
                                                   : null,
-                                              child: const Text('Process')),
+                                              child: Text(curLangText!.progressBtnLabel)),
                                         ),
                                       ],
                                     ),
@@ -292,15 +339,15 @@ void modAddHandler(context) {
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: const [
+                                                    children: [
                                                       Text(
-                                                        'Waiting for data',
-                                                        style: TextStyle(fontSize: 20),
+                                                        curLangText!.waitingForDataLabelText,
+                                                        style: const TextStyle(fontSize: 20),
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 20,
                                                       ),
-                                                      CircularProgressIndicator(),
+                                                      const CircularProgressIndicator(),
                                                     ],
                                                   ),
                                                 );
@@ -312,7 +359,7 @@ void modAddHandler(context) {
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
                                                         Text(
-                                                          'Error when loading data. Restart the app.',
+                                                          curLangText!.errorLoadingRestartApp,
                                                           style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
                                                         ),
                                                       ],
@@ -338,6 +385,7 @@ void modAddHandler(context) {
                                                 } else {
                                                   sortedModsList = snapshot.data;
                                                   if (_mainFolderRenameIndex.isEmpty) {
+                                                    _itemNameRenameIndex = List.generate(sortedModsList.length, (index) => false);
                                                     _mainFolderRenameIndex = List.generate(sortedModsList.length, (index) => false);
                                                     _subFoldersRenameIndex = List.generate(sortedModsList.length, (index) => []);
                                                     for (int i = 0; i < _subFoldersRenameIndex.length; i++) {
@@ -361,15 +409,131 @@ void modAddHandler(context) {
                                                                       color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
                                                               child: ExpansionTile(
                                                                 initiallyExpanded: true,
-                                                                title: curActiveLang == 'JP'
-                                                                    ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
-                                                                        style: const TextStyle(
-                                                                          fontWeight: FontWeight.w600,
-                                                                        ))
-                                                                    : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
-                                                                        style: const TextStyle(
-                                                                          fontWeight: FontWeight.w600,
-                                                                        )),
+                                                                //Edit Item's name
+                                                                title: _itemNameRenameIndex[index]
+                                                                    ? Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: SizedBox(
+                                                                              //width: constraints.maxWidth * 0.4,
+                                                                              height: 40,
+                                                                              child: TextFormField(
+                                                                                autofocus: true,
+                                                                                controller: renameTextBoxController,
+                                                                                maxLines: 1,
+                                                                                decoration: InputDecoration(
+                                                                                  contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                  border: const OutlineInputBorder(),
+                                                                                  hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
+                                                                                ),
+                                                                                onEditingComplete: () {
+                                                                                  if (renameTextBoxController.text.isNotEmpty) {
+                                                                                    String newItemName = renameTextBoxController.text.trim();
+                                                                                    if (sortedModsList[index][0] == 'Basewears') {
+                                                                                      newItemName += ' [Ba]';
+                                                                                    } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                      newItemName += ' [In]';
+                                                                                    } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                      newItemName += ' [Ou]';
+                                                                                    } else {
+                                                                                      newItemName = renameTextBoxController.text;
+                                                                                    }
+                                                                                    if (curActiveLang == 'JP') {
+                                                                                      sortedModsList[index][1] = newItemName;
+                                                                                    } else {
+                                                                                      sortedModsList[index][2] = newItemName;
+                                                                                    }
+
+                                                                                    //print(sortedModsList);
+                                                                                  }
+                                                                                  _itemNameRenameIndex[index] = false;
+                                                                                  renameTextBoxController.clear();
+                                                                                  _isNameEditing = false;
+
+                                                                                  setState(
+                                                                                    () {},
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width: 5,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: 40,
+                                                                            child: MaterialButton(
+                                                                              onPressed: () {
+                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                  String newItemName = renameTextBoxController.text.trim();
+                                                                                  if (sortedModsList[index][0] == 'Basewears') {
+                                                                                    newItemName += ' [Ba]';
+                                                                                  } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                    newItemName += ' [In]';
+                                                                                  } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                    newItemName += ' [Ou]';
+                                                                                  } else {
+                                                                                    newItemName = renameTextBoxController.text;
+                                                                                  }
+                                                                                  if (curActiveLang == 'JP') {
+                                                                                    sortedModsList[index][1] = newItemName;
+                                                                                  } else {
+                                                                                    sortedModsList[index][2] = newItemName;
+                                                                                  }
+
+                                                                                  //print(sortedModsList);
+                                                                                }
+                                                                                _itemNameRenameIndex[index] = false;
+                                                                                renameTextBoxController.clear();
+                                                                                _isNameEditing = false;
+
+                                                                                setState(
+                                                                                  () {},
+                                                                                );
+                                                                              },
+                                                                              child: const Icon(Icons.check),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    : Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: curActiveLang == 'JP'
+                                                                                ? Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
+                                                                                    style: const TextStyle(
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                    ))
+                                                                                : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
+                                                                                    style: const TextStyle(
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                    )),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width: 5,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: 40,
+                                                                            child: Tooltip(
+                                                                              message: curLangText!.editTooltipText,
+                                                                              waitDuration: const Duration(seconds: 1),
+                                                                              child: MaterialButton(
+                                                                                onPressed: !_isNameEditing
+                                                                                    ? () {
+                                                                                        _isNameEditing = true;
+                                                                                        _itemNameRenameIndex[index] = true;
+                                                                                        setState(
+                                                                                          () {},
+                                                                                        );
+                                                                                      }
+                                                                                    : null,
+                                                                                child: const Icon(Icons.edit),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+
                                                                 textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                 iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                 collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -527,17 +691,21 @@ void modAddHandler(context) {
                                                                                 ),
                                                                                 SizedBox(
                                                                                   width: 40,
-                                                                                  child: MaterialButton(
-                                                                                    onPressed: !_isNameEditing
-                                                                                        ? () {
-                                                                                            _isNameEditing = true;
-                                                                                            _mainFolderRenameIndex[index] = true;
-                                                                                            setState(
-                                                                                              () {},
-                                                                                            );
-                                                                                          }
-                                                                                        : null,
-                                                                                    child: const Icon(Icons.edit),
+                                                                                  child: Tooltip(
+                                                                                    waitDuration: const Duration(seconds: 1),
+                                                                                    message: curLangText!.editTooltipText,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: !_isNameEditing
+                                                                                          ? () {
+                                                                                              _isNameEditing = true;
+                                                                                              _mainFolderRenameIndex[index] = true;
+                                                                                              setState(
+                                                                                                () {},
+                                                                                              );
+                                                                                            }
+                                                                                          : null,
+                                                                                      child: const Icon(Icons.edit),
+                                                                                    ),
                                                                                   ),
                                                                                 ),
                                                                               ],
@@ -689,28 +857,33 @@ void modAddHandler(context) {
                                                                                   : Row(
                                                                                       children: [
                                                                                         Expanded(
-                                                                                          child: Text(sortedModsList[index][4].split('|')[sub],
-                                                                                              // style: const TextStyle(
-                                                                                              //   fontWeight: FontWeight.w500,
-                                                                                              // )
-                                                                                              ),
+                                                                                          child: Text(
+                                                                                            sortedModsList[index][4].split('|')[sub],
+                                                                                            // style: const TextStyle(
+                                                                                            //   fontWeight: FontWeight.w500,
+                                                                                            // )
+                                                                                          ),
                                                                                         ),
                                                                                         const SizedBox(
                                                                                           width: 5,
                                                                                         ),
                                                                                         SizedBox(
                                                                                           width: 40,
-                                                                                          child: MaterialButton(
-                                                                                            onPressed: !_isNameEditing
-                                                                                                ? () {
-                                                                                                    _subFoldersRenameIndex[index][sub] = true;
-                                                                                                    _isNameEditing = true;
-                                                                                                    setState(
-                                                                                                      () {},
-                                                                                                    );
-                                                                                                  }
-                                                                                                : null,
-                                                                                            child: const Icon(Icons.edit),
+                                                                                          child: Tooltip(
+                                                                                            message: curLangText!.editTooltipText,
+                                                                                            waitDuration: const Duration(seconds: 1),
+                                                                                            child: MaterialButton(
+                                                                                              onPressed: !_isNameEditing
+                                                                                                  ? () {
+                                                                                                      _subFoldersRenameIndex[index][sub] = true;
+                                                                                                      _isNameEditing = true;
+                                                                                                      setState(
+                                                                                                        () {},
+                                                                                                      );
+                                                                                                    }
+                                                                                                  : null,
+                                                                                              child: const Icon(Icons.edit),
+                                                                                            ),
                                                                                           ),
                                                                                         ),
                                                                                       ],
@@ -757,26 +930,29 @@ void modAddHandler(context) {
                                                 child: Center(
                                                     child: _duplicateModNames.isNotEmpty
                                                         ? Text(
-                                                            'Rename $_duplicateModNames before adding',
+                                                            '${curLangText!.renameSpaceLabelText} $_duplicateModNames ${curLangText!.spaceBeforeAddingLabelText}',
                                                             textAlign: TextAlign.center,
                                                           )
-                                                        : const Text(
-                                                            'There are still mods in the list waiting to be added',
+                                                        : Text(
+                                                            curLangText!.errorModsInToBeAddedListLabelText,
                                                             textAlign: TextAlign.center,
                                                           )),
                                               ),
                                               const SizedBox(
                                                 height: 5,
                                               ),
-                                              ElevatedButton(
-                                                child: const Text('Return'),
-                                                onPressed: () {
-                                                  _exitConfirmDialog = false;
-                                                  _duplicateModNames.clear();
-                                                  setState(
-                                                    () {},
-                                                  );
-                                                },
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 5),
+                                                child: ElevatedButton(
+                                                  child: Text(curLangText!.returnBtnLabel),
+                                                  onPressed: () {
+                                                    _exitConfirmDialog = false;
+                                                    _duplicateModNames.clear();
+                                                    setState(
+                                                      () {},
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -797,6 +973,9 @@ void modAddHandler(context) {
                                                         Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                           element.deleteSync(recursive: true);
                                                         });
+                                                        Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                                          element.deleteSync(recursive: true);
+                                                        });
                                                         _mainFolderRenameIndex.clear();
                                                         _exitConfirmDialog = false;
                                                         _duplicateModNames.clear();
@@ -808,7 +987,7 @@ void modAddHandler(context) {
                                                         );
                                                       })
                                                     : null,
-                                                child: const Text('Clear All')),
+                                                child: Text(curLangText!.clearAllBtnLabel)),
                                           ),
                                           const SizedBox(
                                             width: 5,
@@ -820,6 +999,10 @@ void modAddHandler(context) {
                                                     Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                       element.deleteSync(recursive: true);
                                                     });
+                                                    Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                                      element.deleteSync(recursive: true);
+                                                    });
+                                                    
                                                     _mainFolderRenameIndex.clear();
                                                     _exitConfirmDialog = false;
                                                     _duplicateModNames.clear();
@@ -836,7 +1019,7 @@ void modAddHandler(context) {
                                                   } else {
                                                     //clear lists
                                                     _mainFolderRenameIndex.clear();
-                                                  itemRefSheetsList.clear();
+                                                    itemRefSheetsList.clear();
                                                     sortedModsList.clear();
                                                     _newModDragDropList.clear();
                                                     modsToAddList.clear();
@@ -846,7 +1029,7 @@ void modAddHandler(context) {
                                                     () {},
                                                   );
                                                 }),
-                                                child: const Text('Close')),
+                                                child: Text(curLangText!.closeBtnText)),
                                           ),
                                           const SizedBox(
                                             width: 5,
@@ -896,6 +1079,9 @@ void modAddHandler(context) {
                                                             Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                               element.deleteSync(recursive: true);
                                                             });
+                                                            Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
                                                             setState(
                                                               () {},
                                                             );
@@ -908,7 +1094,7 @@ void modAddHandler(context) {
                                                         );
                                                       })
                                                     : null,
-                                                child: const Text('Add All')),
+                                                child: Text(curLangText!.addAllBtnLabelText)),
                                           ),
                                         ],
                                       ),
@@ -967,7 +1153,13 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   //getting main dirs
   List<String> mainDirPaths = [];
   for (var file in _newModDragDropList) {
-    mainDirPaths.add(file.path);
+    if (p.extension(file.path) == '.zip') {
+      final ext = file.name.substring(file.name.lastIndexOf('.'));
+      String nameAfterExtract = file.name.replaceAll(ext, '');
+      mainDirPaths.add('${Directory.current.path}${s}unpack$s$nameAfterExtract');
+    } else {
+      mainDirPaths.add(file.path);
+    }
   }
 
   //copy files to temp with new folder structures
@@ -1058,7 +1250,7 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
     }
   }
 
-  //print(filesList);
+  //rint(filesList);
   return filesList;
 }
 
@@ -1099,7 +1291,7 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
         } else if (_castArmCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Cast Arm Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_castLegCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Cast Legs Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return (['Cast Leg Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_eyeCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Eyes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
         } else if (_costumeCsv.indexWhere((element) => file.first == element) != -1) {
