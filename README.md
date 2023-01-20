@@ -41,7 +41,7 @@ and more..
    ![Screenshot 2022-06-26 143014](https://user-images.githubusercontent.com/101075148/175836232-f62b8484-c4a5-4815-a7b0-66d54b8f6332.png)
    ![Screenshot 2022-06-26 143139-crop](https://user-images.githubusercontent.com/101075148/175836300-1d3462b6-57e1-4418-b2ab-12bf66f7bcd8.png)
 
-- Locate checksum file
+- Click to auto download checksum, or hold to manually select 
 
    ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836423-3b2b0ed6-b6b1-401c-9b71-2c7cb911db82.png)
  
@@ -57,39 +57,9 @@ Only if you want to add more, the app already creates default categories after t
 
 Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
 
-![Screenshot 2022-10-03 220844](https://user-images.githubusercontent.com/101075148/193739194-abb5080e-f08a-4c9f-bc71-0a0efeabd90a.png)
+[add mods.webm](https://user-images.githubusercontent.com/101075148/213642075-ccc1af8f-70e7-4e11-9cd3-73254db96259.webm)
 
-**Note:** Only extracted files and folders, open zipped files then drag and drop to add
-
-- Add item button
-
-  ![Screenshot 2022-10-03 211433](https://user-images.githubusercontent.com/101075148/193734145-34e7c51e-f007-4706-a8e1-10589e912cc9.png)
-
-- Single item
-
-   ![Screenshot 2022-10-03 211545](https://user-images.githubusercontent.com/101075148/193733863-79ecd18a-bdab-4145-a591-0d6dae40ae91.png)
-   ![Screenshot 2022-10-03 212212](https://user-images.githubusercontent.com/101075148/193733886-ee36c433-0f13-4e12-8984-cf621ab67718.png)
-
-- Multiple items
-
-   ![Screenshot 2022-10-03 213441](https://user-images.githubusercontent.com/101075148/193735353-9bc82b6e-c922-421e-857a-4fdb4a887a8a.png)
-   ![Screenshot 2022-10-03 213543](https://user-images.githubusercontent.com/101075148/193735364-4a7f2c5f-acb0-4774-a79a-992b829d123c.png)
-
-   
-
-**Adding Mod(s) to existing item:**
-
-**Note:** Only extracted files and folders, open zipped files then drag and drop to add
-
-- Add Mods to existing item button
-
-    ![Screenshot 2022-10-03 214111](https://user-images.githubusercontent.com/101075148/193736351-4fc2d5ee-c2d6-40c3-95af-f58c47008dd5.png)
-
-- Add New Mods to existing item
-
-    ![Screenshot 2022-10-03 214202](https://user-images.githubusercontent.com/101075148/193736518-2fbd42a2-e222-4a00-ae52-ae1a5038e68e.png)
-    ![Screenshot 2022-10-03 214405](https://user-images.githubusercontent.com/101075148/193736526-90233d52-5963-40a2-8054-220c5c40905c.png)
-
+**Note:** Supporting .zip files, folders, .ice files, drag and drop to add
 
 **Applying - unapplying mod(s):**
 
