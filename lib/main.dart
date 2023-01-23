@@ -344,6 +344,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                     element.deleteSync(recursive: true);
                                   });
+                                  Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
                                   modAddHandler(context);
                                 }),
                                 child: Row(

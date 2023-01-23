@@ -276,8 +276,14 @@ void modAddHandler(context) {
                                                   ? (() async {
                                                       for (var file in _newModDragDropList) {
                                                         if (p.extension(file.path) == '.zip') {
-                                                          await unzipPack(file.path, file.name.split('.').first);
-                                                          modsToAddList.addAll(await sortFile(file.name.split('.').first));
+                                                          await extractFileToDisk(file.path, 'unpack$s${file.name.replaceAll('.zip', '')}', asyncWrite: true).then((_) => setState(
+                                                                () {
+                                                                  for (var file in Directory('${Directory.current.path}${s}unpack').listSync(recursive: true)) {
+                                                                    modsToAddList.add(XFile(file.path));
+                                                                  }
+                                                                },
+                                                              ));
+                                                          //modsToAddList.addAll(await sortFile(file.name.split('.').first));
                                                         } else if (Directory(file.path).existsSync()) {
                                                           List<XFile> filesInFolder = [XFile(file.path)];
                                                           for (var file in Directory(file.path).listSync(recursive: true)) {
@@ -291,17 +297,11 @@ void modAddHandler(context) {
                                                         }
                                                       }
 
-                                                      //Test
-                                                      // for (var element in modsToAddList) {
-                                                      //   print(element.path);
-                                                      // }
-
                                                       //clear lists
                                                       sortedModsListLoad = fetchItemName(modsToAddList);
+                                                      _newModDragDropList.clear();
                                                       setState(
-                                                        () {
-                                                          _newModDragDropList.clear();
-                                                        },
+                                                        () {},
                                                       );
                                                     })
                                                   : null,
@@ -1002,7 +1002,7 @@ void modAddHandler(context) {
                                                     Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
                                                       element.deleteSync(recursive: true);
                                                     });
-                                                    
+
                                                     _mainFolderRenameIndex.clear();
                                                     _exitConfirmDialog = false;
                                                     _duplicateModNames.clear();
@@ -1112,41 +1112,42 @@ void modAddHandler(context) {
       });
 }
 
-Future<void> unzipPack(String filePath, String fileName) async {
-  // Use an InputFileStream to access the zip file without storing it in memory.
-  final inputStream = InputFileStream(filePath);
-  // Decode the zip from the InputFileStream. The archive will have the contents of the
-  // zip, without having stored the data in memory.
-  final archive = ZipDecoder().decodeBuffer(inputStream);
-  // For all of the entries in the archive
-  for (var file in archive.files) {
-    // If it's a file and not a directory
-    if (file.isFile) {
-      // Write the file content to a directory called 'out'.
-      // In practice, you should make sure file.name doesn't include '..' paths
-      // that would put it outside of the extraction directory.
-      // An OutputFileStream will write the data to disk.
-      final outputStream = OutputFileStream('unpack$s$fileName$s${file.name}');
-      // The writeContent method will decompress the file content directly to disk without
-      // storing the decompressed data in memory.
-      file.writeContent(outputStream);
-      // Make sure to close the output stream so the File is closed.
-      outputStream.close();
-    }
-  }
-}
+// Future<void> unzipPack(String filePath, String fileName) async {
+//   // Use an InputFileStream to access the zip file without storing it in memory.
+//   final inputStream = InputFileStream(filePath);
+//   // Decode the zip from the InputFileStream. The archive will have the contents of the
+//   // zip, without having stored the data in memory.
+//   final archive = ZipDecoder().decodeBuffer(inputStream);
+//   // For all of the entries in the archive
+//   for (var file in archive.files) {
+//     // If it's a file and not a directory
+//     if (file.isFile) {
+//       // Write the file content to a directory called 'out'.
+//       // In practice, you should make sure file.name doesn't include '..' paths
+//       // that would put it outside of the extraction directory.
+//       // An OutputFileStream will write the data to disk.
+//       final outputStream = OutputFileStream('unpack$s$fileName$s${file.name}');
+//       // The writeContent method will decompress the file content directly to disk without
+//       // storing the decompressed data in memory.
+//       file.writeContent(outputStream);
+//       // Make sure to close the output stream so the File is closed.
+//       outputStream.close();
+//     }
+//   }
+//   inputStream.close();
+// }
 
-Future<List<XFile>> sortFile(String fileName) async {
-  List<XFile> filesList = [];
-  for (var file in Directory('${Directory.current.path}${s}unpack').listSync(recursive: true)) {
-    if (p.extension(file.path) == '' && !Directory(file.path).existsSync()) {
-      XFile newFile = XFile(file.path);
-      filesList.add(newFile);
-    }
-  }
+// Future<List<XFile>> sortFile(String fileName) async {
+//   List<XFile> filesList = [];
+//   for (var file in Directory('${Directory.current.path}${s}unpack').listSync(recursive: true)) {
+//     if (p.extension(file.path) == '' && !Directory(file.path).existsSync()) {
+//       XFile newFile = XFile(file.path);
+//       filesList.add(newFile);
+//     }
+//   }
 
-  return filesList;
-}
+//   return filesList;
+// }
 
 Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   List<List<String>> filesList = [];
@@ -1157,6 +1158,8 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
       final ext = file.name.substring(file.name.lastIndexOf('.'));
       String nameAfterExtract = file.name.replaceAll(ext, '');
       mainDirPaths.add('${Directory.current.path}${s}unpack$s$nameAfterExtract');
+    } else if (_pathsToRemove.indexWhere((element) => element == file.name) != -1) {
+      mainDirPaths.add(file.path.replaceFirst('$s${file.name}', ''));
     } else {
       mainDirPaths.add(file.path);
     }
