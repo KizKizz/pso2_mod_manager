@@ -48,7 +48,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Error when loading data. Restart the app.',
+                    curLangText!.errorLoadingRestartApp,
                     style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
                   ),
                 ],
