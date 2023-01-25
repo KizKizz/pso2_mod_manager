@@ -404,7 +404,6 @@ Future<List<List<List<ModFile>>>> getModFilesByCategory(List<ModFile> allModFile
     }
     if (mainParents.indexWhere((element) => element.split(' > ').first == modFile.iceParent.split(' > ').first) == -1) {
       mainParents.add(modFile.iceParent.split(' > ').first);
-      print(mainParents);
     }
   }
 

@@ -1112,43 +1112,6 @@ void modAddHandler(context) {
       });
 }
 
-// Future<void> unzipPack(String filePath, String fileName) async {
-//   // Use an InputFileStream to access the zip file without storing it in memory.
-//   final inputStream = InputFileStream(filePath);
-//   // Decode the zip from the InputFileStream. The archive will have the contents of the
-//   // zip, without having stored the data in memory.
-//   final archive = ZipDecoder().decodeBuffer(inputStream);
-//   // For all of the entries in the archive
-//   for (var file in archive.files) {
-//     // If it's a file and not a directory
-//     if (file.isFile) {
-//       // Write the file content to a directory called 'out'.
-//       // In practice, you should make sure file.name doesn't include '..' paths
-//       // that would put it outside of the extraction directory.
-//       // An OutputFileStream will write the data to disk.
-//       final outputStream = OutputFileStream('unpack$s$fileName$s${file.name}');
-//       // The writeContent method will decompress the file content directly to disk without
-//       // storing the decompressed data in memory.
-//       file.writeContent(outputStream);
-//       // Make sure to close the output stream so the File is closed.
-//       outputStream.close();
-//     }
-//   }
-//   inputStream.close();
-// }
-
-// Future<List<XFile>> sortFile(String fileName) async {
-//   List<XFile> filesList = [];
-//   for (var file in Directory('${Directory.current.path}${s}unpack').listSync(recursive: true)) {
-//     if (p.extension(file.path) == '' && !Directory(file.path).existsSync()) {
-//       XFile newFile = XFile(file.path);
-//       filesList.add(newFile);
-//     }
-//   }
-
-//   return filesList;
-// }
-
 Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   List<List<String>> filesList = [];
   //getting main dirs

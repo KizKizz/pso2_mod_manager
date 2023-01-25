@@ -117,7 +117,7 @@ TextEditingController newModToItemAddController = TextEditingController();
 bool _newModToItemDragging = false;
 //final List<XFile> _newModToItemDragDropList = [XFile('E:\\PSO2_ModTest\\7 Bite o Donut Test\\Red ball gag - Copy')];
 final List<XFile> _newModToItemDragDropList = [];
-int _newModToItemIndex = 0;
+//int _newModToItemIndex = 0;
 bool isModAddBtnClicked = false;
 
 //Media Player controls
@@ -869,7 +869,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     selectedIndex[index] = i;
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateList[index].itemNames[i];
-                                    _newModToItemIndex = index;
+                                    //_newModToItemIndex = index;
                                     isModSelected = true;
                                     isLoading.clear();
                                   });
@@ -1038,7 +1038,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     selectedIndex[index] = i;
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateList[index].itemNames[i];
-                                    _newModToItemIndex = index;
+                                    //_newModToItemIndex = index;
                                     isModSelected = true;
                                     isLoading.clear();
                                   });
@@ -1229,7 +1229,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     searchListSelectedIndex[index] = i;
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateListSearchResult[index].itemNames[i];
-                                    _newModToItemIndex = index;
+                                    //_newModToItemIndex = index;
                                     isModSelected = true;
                                     isLoading.clear();
                                   });
@@ -1409,7 +1409,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     curClickedCategory = '';
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateListSearchResult[index].itemNames[i];
-                                    _newModToItemIndex = index;
+                                    //_newModToItemIndex = index;
                                     isModSelected = true;
                                     isLoading.clear();
                                   });
@@ -3838,7 +3838,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             selectedIndex[index] = index;
                                             modNameCatSelected = -1;
                                             //modsViewAppBarName = cateList[index].itemNames[i];
-                                            _newModToItemIndex = index;
+                                            //_newModToItemIndex = index;
                                             isSetSelected = true;
                                             isLoadingModSetList.clear();
                                           });

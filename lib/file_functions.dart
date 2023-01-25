@@ -1616,9 +1616,9 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
       element.isFav = false;
       tempFavCate.allModFiles.remove(element);
     }
-    if (isViewingFav) {
-      modFilesList.remove(paramModFileList);
-    }
+    // if (isViewingFav) {
+    //   modFilesList.remove(paramModFileList);
+    // }
     if (tempFavCate.allModFiles.indexWhere((element) => element.modName == paramModFileList.first.modName) == -1) {
       tempFavCate.imageIcons.removeAt(tempFavCate.itemNames.indexOf(paramModFileList.first.modName));
       tempFavCate.numOfMods.removeAt(tempFavCate.itemNames.indexOf(paramModFileList.first.modName));
