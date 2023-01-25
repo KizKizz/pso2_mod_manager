@@ -37,7 +37,7 @@ Future? futureImagesGet;
 Future? appliedModsListGet;
 Future? modSetsListGet;
 List<File> modPreviewImgList = [];
-List<List<ModFile>> modFilesList = [];
+List<List<List<ModFile>>> modFilesList = [];
 List<List<ModFile>> modFilesFromSetList = [];
 List<List<ModFile>> appliedModsList = [];
 List<ModFile> modAppliedDup = [];
@@ -46,7 +46,7 @@ List<ModFile> backupFilesMissingList = [];
 List<ModSet> setsList = [];
 List<String> setsDropDownList = [];
 String? setsSelectedDropDown;
-List<bool> isLoading = [];
+List<List<bool>> isLoading = [];
 List<bool> isLoadingSetList = [];
 List<bool> isLoadingModSetList = [];
 List<bool> isLoadingAppliedList = [];
@@ -108,6 +108,7 @@ final List<XFile> _newItemDragDropList = [];
 final List<XFile> _newSingleItemDragDropList = [];
 XFile? _singleItemIcon;
 bool isItemAddBtnClicked = false;
+String curClickedCategory = '';
 
 //NewItem Exist Item
 bool addModToItemVisible = false;
@@ -824,9 +825,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           waitDuration: const Duration(seconds: 1),
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
-                                                for (var element in modListToRemoveFav) {
-                                                  cateList[index] = addOrRemoveFav(cateList, element, cateList[index], false);
+                                                List<List<List<ModFile>>> modListToRemoveFav = await getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
+                                                for (var mainParent in modListToRemoveFav) {
+                                                  for (var element in mainParent) {
+                                                    cateList[index] = addOrRemoveFav(cateList, element, cateList[index], false);
+                                                  }
                                                 }
                                                 setState(() {});
                                               }),
@@ -861,6 +864,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     isViewingFav = true;
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
+                                    curClickedCategory = cateList[index].categoryName;
                                     selectedIndex = List.filled(cateList.length, -1);
                                     selectedIndex[index] = i;
                                     modNameCatSelected = -1;
@@ -1030,6 +1034,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     isPreviewImgsOn = false;
                                     modFilesListGet = getModFilesByCategory(cateList[index].allModFiles, cateList[index].itemNames[i]);
                                     selectedIndex = List.filled(cateList.length, -1);
+                                    curClickedCategory = cateList[index].categoryName;
                                     selectedIndex[index] = i;
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateList[index].itemNames[i];
@@ -1179,9 +1184,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           waitDuration: const Duration(seconds: 1),
                                           child: MaterialButton(
                                               onPressed: (() async {
-                                                List<List<ModFile>> modListToRemoveFav = await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
-                                                for (var element in modListToRemoveFav) {
-                                                  cateListSearchResult[index] = addOrRemoveFav(cateListSearchResult, element, cateListSearchResult[index], false);
+                                                List<List<List<ModFile>>> modListToRemoveFav =
+                                                    await getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
+                                                for (var mainParent in modListToRemoveFav) {
+                                                  for (var element in mainParent) {
+                                                    cateListSearchResult[index] = addOrRemoveFav(cateListSearchResult, element, cateListSearchResult[index], false);
+                                                  }
                                                 }
                                                 setState(() {});
                                               }),
@@ -1398,6 +1406,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     modFilesListGet = getModFilesByCategory(cateListSearchResult[index].allModFiles, cateListSearchResult[index].itemNames[i]);
                                     searchListSelectedIndex = List.filled(cateListSearchResult.length, -1);
                                     searchListSelectedIndex[index] = i;
+                                    curClickedCategory = '';
                                     modNameCatSelected = -1;
                                     modsViewAppBarName = cateListSearchResult[index].itemNames[i];
                                     _newModToItemIndex = index;
@@ -1525,9 +1534,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   Directory('$modsDirPath\\${categoryAddController.text}').create(recursive: true);
                                   selectedIndex = List.generate(cateList.length, (index) => -1);
 
-                                  for (var modList in modFilesList) {
-                                    modList.map((mod) => mod.toJson()).toList();
-                                    File(modSettingsPath).writeAsStringSync(json.encode(modList));
+                                  for (var parentList in modFilesList) {
+                                    for (var modList in parentList) {
+                                      modList.map((mod) => mod.toJson()).toList();
+                                      File(modSettingsPath).writeAsStringSync(json.encode(modList));
+                                    }
                                   }
                                   Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
                                   categoryAddController.clear();
@@ -2209,7 +2220,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       } else {
                         modFilesList = snapshot.data;
                         if (isLoading.isEmpty) {
-                          isLoading = List.generate(modFilesList.length, (index) => false);
+                          isLoading = List.generate(modFilesList.length, (index) => []);
+                          for (var item in modFilesList) {
+                            isLoading[modFilesList.indexOf(item)] = List.generate(item.length, (index) => false);
+                          }
                         }
                         //print(snapshot.data);
                         return SingleChildScrollView(
@@ -2220,415 +2234,480 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: modFilesList.length,
                                 itemBuilder: (context, index) {
-                                  return InkWell(
-                                      onTap: () {},
-                                      onHover: (value) {
-                                        if (value) {
-                                          setState(() {
-                                            if (modFilesList[index].first.images != null) {
-                                              isPreviewImgsOn = true;
-                                              futureImagesGet = modFilesList[index].first.images;
-                                            }
-                                            //print(modFilesList[index].first.previewVids!.length);
-                                            if (modFilesList[index].first.previewVids!.isNotEmpty) {
-                                              previewZoomState = false;
-                                              isPreviewVidOn = true;
-                                              isPreviewImgsOn = false;
-                                              previewPlayer.setVolume(0.0);
-                                              bool itemFound = false;
-                                              for (var vid in modFilesList[index].first.previewVids!) {
-                                                if (medias.contains(Media.file(vid))) {
-                                                  itemFound = true;
+                                  return Card(
+                                    margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                        side: BorderSide(
+                                            width: 1,
+                                            color: modFilesList[index].first.indexWhere((e) => e.isNew == true) != -1
+                                                ? MyApp.themeNotifier.value == ThemeMode.light
+                                                    ? Theme.of(context).primaryColorDark
+                                                    : Colors.amber
+                                                : Theme.of(context).primaryColorLight)),
+                                    child: ExpansionTile(
+                                      initiallyExpanded: false,
+                                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                      backgroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).highlightColor : Theme.of(context).primaryColor,
+                                      title: Row(
+                                        children: [
+                                          Flexible(
+                                            fit: FlexFit.loose,
+                                            child: Text(
+                                              modFilesList[index].first.first.iceParent.split(' > ').first,
+                                              style: const TextStyle(fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                            child: Container(
+                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(color: Theme.of(context).highlightColor),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                ),
+                                                child: modFilesList[index].length < 2
+                                                    ? Text('${modFilesList[index].length} ${curLangText!.modLabelText}',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))
+                                                    : Text('${modFilesList[index].length} ${curLangText!.modsLabelText}',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))),
+                                          ),
+                                        ],
+                                      ),
+                                      children: [
+                                        for (int subParentIndex = 0; subParentIndex < modFilesList[index].length; subParentIndex++)
+                                          InkWell(
+                                              onTap: () {},
+                                              onHover: (value) {
+                                                if (value) {
+                                                  setState(() {
+                                                    if (modFilesList[index][subParentIndex].first.images != null) {
+                                                      isPreviewImgsOn = true;
+                                                      futureImagesGet = modFilesList[index][subParentIndex].first.images;
+                                                    }
+                                                    //print(modFilesList[index].first.previewVids!.length);
+                                                    if (modFilesList[index][subParentIndex].first.previewVids!.isNotEmpty) {
+                                                      previewZoomState = false;
+                                                      isPreviewVidOn = true;
+                                                      isPreviewImgsOn = false;
+                                                      previewPlayer.setVolume(0.0);
+                                                      bool itemFound = false;
+                                                      for (var vid in modFilesList[index][subParentIndex].first.previewVids!) {
+                                                        if (medias.contains(Media.file(vid))) {
+                                                          itemFound = true;
+                                                        } else {
+                                                          medias.clear();
+                                                        }
+                                                      }
+
+                                                      if (medias.isEmpty || !itemFound) {
+                                                        for (var vid in modFilesList[index][subParentIndex].first.previewVids!) {
+                                                          medias.add(Media.file(vid));
+                                                        }
+                                                        previewPlayer.open(Playlist(medias: medias), autoStart: true);
+                                                      } else {
+                                                        previewPlayer.bufferingProgressController.done;
+                                                        previewPlayer.play();
+                                                      }
+                                                    }
+                                                  });
                                                 } else {
-                                                  medias.clear();
+                                                  setState(() {
+                                                    isPreviewImgsOn = false;
+                                                    isPreviewVidOn = false;
+                                                    previewZoomState = true;
+                                                    previewPlayer.pause();
+                                                    currentImg = 0;
+                                                  });
                                                 }
-                                              }
+                                              },
+                                              child: GestureDetector(
+                                                onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
+                                                child: Card(
+                                                    margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                        side: BorderSide(
+                                                            width: 1,
+                                                            color: modFilesList[index][subParentIndex].indexWhere((e) => e.isNew == true) != -1
+                                                                ? MyApp.themeNotifier.value == ThemeMode.light
+                                                                    ? Theme.of(context).primaryColorDark
+                                                                    : Colors.amber
+                                                                : Theme.of(context).primaryColorLight)),
+                                                    child: ExpansionTile(
+                                                      initiallyExpanded: modViewExpandAll,
+                                                      textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                      iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                      collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Flexible(
+                                                            child: Text(modFilesList[index][subParentIndex]
+                                                                .first
+                                                                .iceParent
+                                                                .replaceFirst('${modFilesList[index].first.first.iceParent.split(' > ').first} > ', '')),
+                                                          ),
+                                                          //if (modFilesList[index].length > 1)
+                                                          Row(
+                                                            children: [
+                                                              //Buttons
+                                                              SizedBox(
+                                                                width: 40,
+                                                                height: 40,
+                                                                child: Tooltip(
+                                                                  message: modFilesList[index][subParentIndex].first.isFav
+                                                                      ? '${curLangText!.removeBtnTooltipText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.toFavTooltipText}'
+                                                                      : '${curLangText!.addBtnTooltipText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.toFavTooltipText}',
+                                                                  height: 25,
+                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                  waitDuration: const Duration(seconds: 1),
+                                                                  child: MaterialButton(
+                                                                    onPressed: (() {
+                                                                      var favCate = cateList.firstWhere((element) => element.categoryName == 'Favorites');
+                                                                      if (modFilesList[index][subParentIndex].first.isFav) {
+                                                                        favCate = addOrRemoveFav(cateList, modFilesList[index][subParentIndex], favCate, false);
+                                                                      } else {
+                                                                        favCate = addOrRemoveFav(cateList, modFilesList[index][subParentIndex], favCate, true);
+                                                                      }
+                                                                      setState(() {});
+                                                                      if (curClickedCategory == 'Favorites') {
+                                                                        modFilesList[index].remove(modFilesList[index][subParentIndex]);
+                                                                        if (modFilesList[index].isEmpty) {
+                                                                          modFilesList.remove(modFilesList[index]);
+                                                                          modsViewAppBarName = curLangText!.availableModsHeaderText;
+                                                                        }
+                                                                      }
 
-                                              if (medias.isEmpty || !itemFound) {
-                                                for (var vid in modFilesList[index].first.previewVids!) {
-                                                  medias.add(Media.file(vid));
-                                                }
-                                                previewPlayer.open(Playlist(medias: medias), autoStart: true);
-                                              } else {
-                                                previewPlayer.bufferingProgressController.done;
-                                                previewPlayer.play();
-                                              }
-                                            }
-                                          });
-                                        } else {
-                                          setState(() {
-                                            isPreviewImgsOn = false;
-                                            isPreviewVidOn = false;
-                                            previewZoomState = true;
-                                            previewPlayer.pause();
-                                            currentImg = 0;
-                                          });
-                                        }
-                                      },
-                                      child: GestureDetector(
-                                        onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
-                                        child: Card(
-                                            margin: const EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 2),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                side: BorderSide(
-                                                    width: 1,
-                                                    color: modFilesList[index].indexWhere((e) => e.isNew == true) != -1
-                                                        ? MyApp.themeNotifier.value == ThemeMode.light
-                                                            ? Theme.of(context).primaryColorDark
-                                                            : Colors.amber
-                                                        : Theme.of(context).primaryColor)),
-                                            child: ExpansionTile(
-                                              initiallyExpanded: modViewExpandAll,
-                                              textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                              iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                              collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                              title: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(modFilesList[index].first.iceParent),
-                                                  ),
-                                                  //if (modFilesList[index].length > 1)
-                                                  Row(
-                                                    children: [
-                                                      //Buttons
-                                                      SizedBox(
-                                                        width: 40,
-                                                        height: 40,
-                                                        child: Tooltip(
-                                                          message: modFilesList[index].first.isFav
-                                                              ? '${curLangText!.removeBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.toFavTooltipText}'
-                                                              : '${curLangText!.addBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.toFavTooltipText}',
-                                                          height: 25,
-                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                          waitDuration: const Duration(seconds: 1),
-                                                          child: MaterialButton(
-                                                            onPressed: (() {
-                                                              setState(() {
-                                                                var favCate = cateList.singleWhere((element) => element.categoryName == 'Favorites');
-                                                                if (modFilesList[index].first.isFav) {
-                                                                  favCate = addOrRemoveFav(cateList, modFilesList[index], favCate, false);
-                                                                } else {
-                                                                  favCate = addOrRemoveFav(cateList, modFilesList[index], favCate, true);
-                                                                }
-                                                              });
-                                                            }),
-                                                            child: modFilesList[index].first.isFav
-                                                                ? FaIcon(
-                                                                    FontAwesomeIcons.heartCircleMinus,
-                                                                    size: 19,
-                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
-                                                                  )
-                                                                : FaIcon(
-                                                                    FontAwesomeIcons.heartCirclePlus,
-                                                                    size: 19,
-                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
+                                                                    }),
+                                                                    child: modFilesList[index][subParentIndex].first.isFav
+                                                                        ? FaIcon(
+                                                                            FontAwesomeIcons.heartCircleMinus,
+                                                                            size: 19,
+                                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).hintColor : Theme.of(context).hintColor,
+                                                                          )
+                                                                        : FaIcon(
+                                                                            FontAwesomeIcons.heartCirclePlus,
+                                                                            size: 19,
+                                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                          ),
                                                                   ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      //loading && add
-                                                      if (isLoading[index])
-                                                        const SizedBox(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: CircularProgressIndicator(),
-                                                        ),
-
-                                                      //if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
-                                                      if (modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
-                                                        SizedBox(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: Tooltip(
-                                                            message:
-                                                                '${curLangText!.unapplyModUnderTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.fromTheGameTooltipText}',
-                                                            height: 25,
-                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                            waitDuration: const Duration(seconds: 1),
-                                                            child: MaterialButton(
-                                                              onPressed: (() {
-                                                                setState(() {
-                                                                  modsRemover(modFilesList[index].where((element) => element.isApplied).toList());
-                                                                });
-                                                              }),
-                                                              child: Icon(
-                                                                Icons.playlist_remove,
-                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      //if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoading[index])
-                                                      if (modFilesList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoading[index])
-                                                        SizedBox(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: Tooltip(
-                                                            message: '${curLangText!.applyModUnderTooltipText}"${modFilesList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
-                                                            height: 25,
-                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                            waitDuration: const Duration(seconds: 1),
-                                                            child: MaterialButton(
-                                                              onPressed: (() {
-                                                                setState(() {
-                                                                  isLoading[index] = true;
-                                                                  modsToDataAdder(modFilesList[index].where((element) => element.isApplied == false).toList()).then((_) {
-                                                                    setState(() {
-                                                                      isLoading[index] = false;
-                                                                      //Messages
-                                                                      if (originalFilesMissingList.isNotEmpty) {
-                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                            duration: const Duration(seconds: 2),
-                                                                            //backgroundColor: Theme.of(context).focusColor,
-                                                                            content: SizedBox(
-                                                                              height: originalFilesMissingList.length * 20,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  for (int i = 0; i < originalFilesMissingList.length; i++)
-                                                                                    Text(
-                                                                                        '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
-                                                                                ],
-                                                                              ),
-                                                                            )));
-                                                                      }
+                                                              //loading && add
+                                                              if (isLoading[index][subParentIndex])
+                                                                const SizedBox(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child: CircularProgressIndicator(),
+                                                                ),
 
-                                                                      if (modAppliedDup.isNotEmpty) {
-                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                            duration: Duration(seconds: modAppliedDup.length),
-                                                                            //backgroundColor: Theme.of(context).focusColor,
-                                                                            content: SizedBox(
-                                                                              height: modAppliedDup.length * 20,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  for (int i = 0; i < modAppliedDup.length; i++)
-                                                                                    Text(
-                                                                                        '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
-                                                                                ],
-                                                                              ),
-                                                                            )));
-                                                                        modAppliedDup.clear();
-                                                                      }
-                                                                    });
-                                                                  });
-                                                                });
-                                                              }),
-                                                              child: Icon(
-                                                                Icons.playlist_add,
-                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      if (!isViewingFav)
-                                                        Tooltip(
-                                                            message: '${curLangText!.deleteBtnTooltipText}$modsViewAppBarName ${modFilesList[index].first.iceParent}',
-                                                            height: 25,
-                                                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                            waitDuration: const Duration(seconds: 2),
-                                                            child: SizedBox(
-                                                              width: 36,
-                                                              height: 40,
-                                                              child: MaterialButton(
-                                                                  onPressed: (() {
-                                                                    setState(() {
-                                                                      if (modFilesList[index].indexWhere((element) => element.isApplied == true) == -1) {
-                                                                        modDeleteDialog(
-                                                                                context,
-                                                                                100,
-                                                                                curLangText!.deleteModPopupText,
-                                                                                '${curLangText!.deleteBtnTooltipText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.deleteModPopupMsgText}',
-                                                                                true,
-                                                                                modFilesList[index].first.modPath,
-                                                                                modFilesList[index].first.iceParent,
-                                                                                modFilesList[index].first.modName,
-                                                                                modFilesList[index])
-                                                                            .then((_) async {
-                                                                          modSetsListGet = getSetsList();
-                                                                          setsList = await modSetsListGet;
-                                                                          setsDropDownList.clear();
-                                                                          for (var set in setsList) {
-                                                                            setsDropDownList.add(set.setName);
-                                                                          }
-                                                                          setsList.map((set) => set.toJson()).toList();
-                                                                          File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
-                                                                          setState(() {
-                                                                            //setstate to refresh list
+                                                              //if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index])
+                                                              if (modFilesList[index][subParentIndex].indexWhere((element) => element.isApplied == true) != -1 && !isLoading[index][subParentIndex])
+                                                                SizedBox(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child: Tooltip(
+                                                                    message:
+                                                                        '${curLangText!.unapplyModUnderTooltipText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.fromTheGameTooltipText}',
+                                                                    height: 25,
+                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                    waitDuration: const Duration(seconds: 1),
+                                                                    child: MaterialButton(
+                                                                      onPressed: (() {
+                                                                        setState(() {
+                                                                          modsRemover(modFilesList[index][subParentIndex].where((element) => element.isApplied).toList());
+                                                                        });
+                                                                      }),
+                                                                      child: Icon(
+                                                                        Icons.playlist_remove,
+                                                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              //if (modFilesList[index].length > 1 && modFilesList[index].indexWhere((element) => element.isApplied == false) != -1 && !isLoading[index])
+                                                              if (modFilesList[index][subParentIndex].indexWhere((element) => element.isApplied == false) != -1 && !isLoading[index][subParentIndex])
+                                                                SizedBox(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child: Tooltip(
+                                                                    message:
+                                                                        '${curLangText!.applyModUnderTooltipText}"${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.toTheGameTooltipText}',
+                                                                    height: 25,
+                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                    waitDuration: const Duration(seconds: 1),
+                                                                    child: MaterialButton(
+                                                                      onPressed: (() {
+                                                                        setState(() {
+                                                                          isLoading[index][subParentIndex] = true;
+                                                                          modsToDataAdder(modFilesList[index][subParentIndex].where((element) => element.isApplied == false).toList()).then((_) {
+                                                                            setState(() {
+                                                                              isLoading[index][subParentIndex] = false;
+                                                                              //Messages
+                                                                              if (originalFilesMissingList.isNotEmpty) {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                    duration: const Duration(seconds: 2),
+                                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                                    content: SizedBox(
+                                                                                      height: originalFilesMissingList.length * 20,
+                                                                                      child: Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                                            Text(
+                                                                                                '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
+                                                                                        ],
+                                                                                      ),
+                                                                                    )));
+                                                                              }
+
+                                                                              if (modAppliedDup.isNotEmpty) {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                    duration: Duration(seconds: modAppliedDup.length),
+                                                                                    //backgroundColor: Theme.of(context).focusColor,
+                                                                                    content: SizedBox(
+                                                                                      height: modAppliedDup.length * 20,
+                                                                                      child: Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          for (int i = 0; i < modAppliedDup.length; i++)
+                                                                                            Text(
+                                                                                                '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                        ],
+                                                                                      ),
+                                                                                    )));
+                                                                                modAppliedDup.clear();
+                                                                              }
+                                                                            });
                                                                           });
                                                                         });
-                                                                      } else if (modFilesList[index].first.isFav) {
-                                                                        double popupHeight = 40;
-                                                                        modDeleteDialog(
-                                                                            context,
-                                                                            popupHeight,
-                                                                            curLangText!.deleteModPopupText,
-                                                                            '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.removeFromFavFirstMsgText}',
-                                                                            false,
-                                                                            modFilesList[index].first.modPath,
-                                                                            modFilesList[index].first.iceParent,
-                                                                            modFilesList[index].first.modName, []);
-                                                                      } else {
-                                                                        List<ModFile> tempList =
-                                                                            cateList[cateList.indexWhere((element) => element.categoryName == modFilesList[index].first.categoryName)]
-                                                                                .allModFiles
-                                                                                .where((element) => element.modName == modFilesList[index].first.modName && element.isApplied == true)
-                                                                                .toList();
-                                                                        List<String> stillAppliedList = [];
-                                                                        double popupHeight = 40;
-                                                                        for (var element in tempList) {
-                                                                          stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
-                                                                          popupHeight += 24;
-                                                                        }
-                                                                        String stillApplied = stillAppliedList.join('\n');
-                                                                        modDeleteDialog(
-                                                                            context,
-                                                                            popupHeight,
-                                                                            curLangText!.deleteModPopupText,
-                                                                            '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index].first.iceParent}"${curLangText!.unappyFilesFirstMsgText}$stillApplied',
-                                                                            false,
-                                                                            modFilesList[index].first.modPath,
-                                                                            modFilesList[index].first.iceParent,
-                                                                            modFilesList[index].first.modName, []);
-                                                                      }
-                                                                    });
-                                                                  }),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons.delete_rounded,
-                                                                        size: 20,
+                                                                      }),
+                                                                      child: Icon(
+                                                                        Icons.playlist_add,
                                                                         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                                      )
-                                                                    ],
-                                                                  )),
-                                                            )),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                              children: [
-                                                for (int i = 0; i < modFilesList[index].length; i++)
-                                                  InkWell(
-                                                      // onHover: (value) {
-                                                      //   if (value &&
-                                                      //       modPreviewImgList.indexWhere((e) =>
-                                                      //               e.path.contains(
-                                                      //                   modFilesList[
-                                                      //                           index]
-                                                      //                       .first
-                                                      //                       .iceParent)) ==
-                                                      //           -1) {
-                                                      //     setState(() {
-                                                      //       isPreviewImgsOn = true;
-                                                      //       futureImagesGet =
-                                                      //           modFilesList[index]
-                                                      //                   [i]
-                                                      //               .images;
-                                                      //     });
-                                                      //   }
-                                                      // },
-                                                      child: ListTile(
-                                                    leading: modFilesList[index][i].isNew == true
-                                                        ? Icon(
-                                                            Icons.new_releases,
-                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              if (!isViewingFav)
+                                                                Tooltip(
+                                                                    message: '${curLangText!.deleteBtnTooltipText}$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}',
+                                                                    height: 25,
+                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                    waitDuration: const Duration(seconds: 2),
+                                                                    child: SizedBox(
+                                                                      width: 36,
+                                                                      height: 40,
+                                                                      child: MaterialButton(
+                                                                          onPressed: (() {
+                                                                            setState(() {
+                                                                              if (modFilesList[index][subParentIndex].indexWhere((element) => element.isApplied == true) == -1) {
+                                                                                modDeleteDialog(
+                                                                                        context,
+                                                                                        100,
+                                                                                        curLangText!.deleteModPopupText,
+                                                                                        '${curLangText!.deleteBtnTooltipText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.deleteModPopupMsgText}',
+                                                                                        true,
+                                                                                        modFilesList[index][subParentIndex].first.modPath,
+                                                                                        modFilesList[index][subParentIndex].first.iceParent,
+                                                                                        modFilesList[index][subParentIndex].first.modName,
+                                                                                        modFilesList[index][subParentIndex])
+                                                                                    .then((_) async {
+                                                                                  modSetsListGet = getSetsList();
+                                                                                  setsList = await modSetsListGet;
+                                                                                  setsDropDownList.clear();
+                                                                                  for (var set in setsList) {
+                                                                                    setsDropDownList.add(set.setName);
+                                                                                  }
+                                                                                  setsList.map((set) => set.toJson()).toList();
+                                                                                  File(modSetsSettingsPath).writeAsStringSync(json.encode(setsList));
+                                                                                  setState(() {
+                                                                                    //setstate to refresh list
+                                                                                  });
+                                                                                });
+                                                                              } else if (modFilesList[index][subParentIndex].first.isFav) {
+                                                                                double popupHeight = 40;
+                                                                                modDeleteDialog(
+                                                                                    context,
+                                                                                    popupHeight,
+                                                                                    curLangText!.deleteModPopupText,
+                                                                                    '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.removeFromFavFirstMsgText}',
+                                                                                    false,
+                                                                                    modFilesList[index][subParentIndex].first.modPath,
+                                                                                    modFilesList[index][subParentIndex].first.iceParent,
+                                                                                    modFilesList[index][subParentIndex].first.modName, []);
+                                                                              } else {
+                                                                                List<ModFile> tempList = cateList[cateList
+                                                                                        .indexWhere((element) => element.categoryName == modFilesList[index][subParentIndex].first.categoryName)]
+                                                                                    .allModFiles
+                                                                                    .where(
+                                                                                        (element) => element.modName == modFilesList[index][subParentIndex].first.modName && element.isApplied == true)
+                                                                                    .toList();
+                                                                                List<String> stillAppliedList = [];
+                                                                                double popupHeight = 40;
+                                                                                for (var element in tempList) {
+                                                                                  stillAppliedList.add('${element.modName}${element.iceParent} > ${element.iceName}');
+                                                                                  popupHeight += 24;
+                                                                                }
+                                                                                String stillApplied = stillAppliedList.join('\n');
+                                                                                modDeleteDialog(
+                                                                                    context,
+                                                                                    popupHeight,
+                                                                                    curLangText!.deleteModPopupText,
+                                                                                    '${curLangText!.cannotDeleteCatPopupText}"$modsViewAppBarName ${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.unappyFilesFirstMsgText}$stillApplied',
+                                                                                    false,
+                                                                                    modFilesList[index][subParentIndex].first.modPath,
+                                                                                    modFilesList[index][subParentIndex].first.iceParent,
+                                                                                    modFilesList[index][subParentIndex].first.modName, []);
+                                                                              }
+                                                                            });
+                                                                          }),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.delete_rounded,
+                                                                                size: 20,
+                                                                                color:
+                                                                                    MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                              )
+                                                                            ],
+                                                                          )),
+                                                                    )),
+                                                            ],
                                                           )
-                                                        : null,
-                                                    title: Text(modFilesList[index][i].iceName),
-                                                    //subtitle: Text(modFilesList[index][i].icePath),
-                                                    minLeadingWidth: 10,
-                                                    trailing: SizedBox(
-                                                      width: 40,
-                                                      height: 40,
-                                                      child: modFilesList[index][i].isApplied
-                                                          ? Tooltip(
-                                                              message: curLangText!.unapplyThisModTooltipText,
-                                                              height: 25,
-                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                              waitDuration: const Duration(seconds: 2),
-                                                              child: MaterialButton(
-                                                                onPressed: (() {
-                                                                  setState(() {
-                                                                    modsRemover([modFilesList[index][i]]);
-                                                                    //appliedModsList.remove(modFilesList[index]);
-                                                                    if (backupFilesMissingList.isNotEmpty) {
-                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                          duration: const Duration(seconds: 2),
-                                                                          //backgroundColor: Theme.of(context).focusColor,
-                                                                          content: SizedBox(
-                                                                            height: backupFilesMissingList.length * 20,
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                for (int i = 0; i < backupFilesMissingList.length; i++)
-                                                                                  Text(
-                                                                                      '${curLangText!.backupFileOf}"${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
-                                                                              ],
-                                                                            ),
-                                                                          )));
-                                                                    }
-                                                                  });
-                                                                }),
-                                                                child: const Icon(Icons.replay),
-                                                              ))
-                                                          : Tooltip(
-                                                              message: curLangText!.applyThisModTooltipText,
-                                                              height: 25,
-                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                              waitDuration: const Duration(seconds: 2),
-                                                              child: MaterialButton(
-                                                                onPressed: (() {
-                                                                  setState(() {
-                                                                    modsToDataAdder([modFilesList[index][i]]);
-                                                                    //appliedModsList.add(modFilesList[index]);
-                                                                    if (originalFilesMissingList.isNotEmpty) {
-                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                          duration: const Duration(seconds: 2),
-                                                                          //backgroundColor: Theme.of(context).focusColor,
-                                                                          content: SizedBox(
-                                                                            height: originalFilesMissingList.length * 20,
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                for (int i = 0; i < originalFilesMissingList.length; i++)
-                                                                                  Text(
-                                                                                      '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
-                                                                              ],
-                                                                            ),
-                                                                          )));
-                                                                    }
+                                                        ],
+                                                      ),
+                                                      children: [
+                                                        for (int i = 0; i < modFilesList[index][subParentIndex].length; i++)
+                                                          InkWell(
+                                                              // onHover: (value) {
+                                                              //   if (value &&
+                                                              //       modPreviewImgList.indexWhere((e) =>
+                                                              //               e.path.contains(
+                                                              //                   modFilesList[
+                                                              //                           index]
+                                                              //                       .first
+                                                              //                       .iceParent)) ==
+                                                              //           -1) {
+                                                              //     setState(() {
+                                                              //       isPreviewImgsOn = true;
+                                                              //       futureImagesGet =
+                                                              //           modFilesList[index]
+                                                              //                   [i]
+                                                              //               .images;
+                                                              //     });
+                                                              //   }
+                                                              // },
+                                                              child: ListTile(
+                                                            leading: modFilesList[index][subParentIndex][i].isNew == true
+                                                                ? Icon(
+                                                                    Icons.new_releases,
+                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber,
+                                                                  )
+                                                                : null,
+                                                            title: Text(modFilesList[index][subParentIndex][i].iceName),
+                                                            //subtitle: Text(modFilesList[index][i].icePath),
+                                                            minLeadingWidth: 10,
+                                                            trailing: SizedBox(
+                                                              width: 40,
+                                                              height: 40,
+                                                              child: modFilesList[index][subParentIndex][i].isApplied
+                                                                  ? Tooltip(
+                                                                      message: curLangText!.unapplyThisModTooltipText,
+                                                                      height: 25,
+                                                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                      waitDuration: const Duration(seconds: 2),
+                                                                      child: MaterialButton(
+                                                                        onPressed: (() {
+                                                                          setState(() {
+                                                                            modsRemover([modFilesList[index][subParentIndex][i]]);
+                                                                            //appliedModsList.remove(modFilesList[index]);
+                                                                            if (backupFilesMissingList.isNotEmpty) {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  duration: const Duration(seconds: 2),
+                                                                                  //backgroundColor: Theme.of(context).focusColor,
+                                                                                  content: SizedBox(
+                                                                                    height: backupFilesMissingList.length * 20,
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        for (int i = 0; i < backupFilesMissingList.length; i++)
+                                                                                          Text(
+                                                                                              '${curLangText!.backupFileOf}"${backupFilesMissingList[i].modName} ${backupFilesMissingList[i].iceParent} > ${backupFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
+                                                                                      ],
+                                                                                    ),
+                                                                                  )));
+                                                                            }
+                                                                          });
+                                                                        }),
+                                                                        child: const Icon(Icons.replay),
+                                                                      ))
+                                                                  : Tooltip(
+                                                                      message: curLangText!.applyThisModTooltipText,
+                                                                      height: 25,
+                                                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                      waitDuration: const Duration(seconds: 2),
+                                                                      child: MaterialButton(
+                                                                        onPressed: (() {
+                                                                          setState(() {
+                                                                            modsToDataAdder([modFilesList[index][subParentIndex][i]]);
+                                                                            //appliedModsList.add(modFilesList[index]);
+                                                                            if (originalFilesMissingList.isNotEmpty) {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  duration: const Duration(seconds: 2),
+                                                                                  //backgroundColor: Theme.of(context).focusColor,
+                                                                                  content: SizedBox(
+                                                                                    height: originalFilesMissingList.length * 20,
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        for (int i = 0; i < originalFilesMissingList.length; i++)
+                                                                                          Text(
+                                                                                              '${curLangText!.originalFileOf}"${originalFilesMissingList[i].modName} ${originalFilesMissingList[i].iceParent} > ${originalFilesMissingList[i].iceName}"${curLangText!.isNotFound}'),
+                                                                                      ],
+                                                                                    ),
+                                                                                  )));
+                                                                            }
 
-                                                                    if (modAppliedDup.isNotEmpty) {
-                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                          duration: Duration(seconds: modAppliedDup.length),
-                                                                          //backgroundColor: Theme.of(context).focusColor,
-                                                                          content: SizedBox(
-                                                                            height: modAppliedDup.length * 20,
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                for (int i = 0; i < modAppliedDup.length; i++)
-                                                                                  Text(
-                                                                                      '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
-                                                                              ],
-                                                                            ),
-                                                                          )));
-                                                                    }
+                                                                            if (modAppliedDup.isNotEmpty) {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  duration: Duration(seconds: modAppliedDup.length),
+                                                                                  //backgroundColor: Theme.of(context).focusColor,
+                                                                                  content: SizedBox(
+                                                                                    height: modAppliedDup.length * 20,
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        for (int i = 0; i < modAppliedDup.length; i++)
+                                                                                          Text(
+                                                                                              '${curLangText!.replaced}${modAppliedDup[i].categoryName} > ${modAppliedDup[i].modName} ${modAppliedDup[i].iceParent} > ${modAppliedDup[i].iceName}'),
+                                                                                      ],
+                                                                                    ),
+                                                                                  )));
+                                                                            }
 
-                                                                    modAppliedDup.clear();
-                                                                  });
-                                                                }),
-                                                                child: const Icon(Icons.add_to_drive),
-                                                              ),
+                                                                            modAppliedDup.clear();
+                                                                          });
+                                                                        }),
+                                                                        child: const Icon(Icons.add_to_drive),
+                                                                      ),
+                                                                    ),
                                                             ),
-                                                    ),
-                                                  ))
-                                              ],
-                                            )),
-                                      ));
+                                                          ))
+                                                      ],
+                                                    )),
+                                              )),
+                                      ],
+                                    ),
+                                  );
                                 }));
                       }
                     }
@@ -2733,9 +2812,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               if (!isModAddFolderOnly && (value == null || value.isEmpty)) {
                                 return curLangText!.newItemNameEmpty;
                               }
-                              if (modFilesList.indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
-                                return curLangText!.newItemNameDuplicate;
-                              }
+                              // if (modFilesList..indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
+                              //   return curLangText!.newItemNameDuplicate;
+                              // }
                               return null;
                             },
                             onChanged: (text) {
@@ -2794,34 +2873,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ? (() {
                                       setState(() {
                                         if (newModToItemFormKey.currentState!.validate()) {
-                                          if (modFilesList.isNotEmpty) {
-                                            isModAddBtnClicked = true;
-                                            if (isModAddFolderOnly) {
-                                              dragDropModsAddFoldersOnly(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex, null).then((_) {
-                                                setState(() {
-                                                  //setstate to refresh list
-                                                  _newModToItemDragDropList.clear();
-                                                  newModToItemAddController.clear();
-                                                  isModAddBtnClicked = false;
-                                                  isPreviewImgsOn = false;
-                                                  Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                                });
-                                              });
-                                            } else {
-                                              isModAddFolderOnly = true;
-                                              dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath,
-                                                      newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
-                                                  .then((_) {
-                                                setState(() {
-                                                  //setstate to refresh list
-                                                  _newModToItemDragDropList.clear();
-                                                  newModToItemAddController.clear();
-                                                  isModAddBtnClicked = false;
-                                                  isPreviewImgsOn = false;
-                                                });
-                                              });
-                                            }
-                                          }
+                                          // if (modFilesList.isNotEmpty) {
+                                          //   isModAddBtnClicked = true;
+                                          //   if (isModAddFolderOnly) {
+                                          //     dragDropModsAddFoldersOnly(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex, null).then((_) {
+                                          //       setState(() {
+                                          //         //setstate to refresh list
+                                          //         _newModToItemDragDropList.clear();
+                                          //         newModToItemAddController.clear();
+                                          //         isModAddBtnClicked = false;
+                                          //         isPreviewImgsOn = false;
+                                          //         Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
+                                          //       });
+                                          //     });
+                                          //   } else {
+                                          //     isModAddFolderOnly = true;
+                                          //     dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath,
+                                          //             newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
+                                          //         .then((_) {
+                                          //       setState(() {
+                                          //         //setstate to refresh list
+                                          //         _newModToItemDragDropList.clear();
+                                          //         newModToItemAddController.clear();
+                                          //         isModAddBtnClicked = false;
+                                          //         isPreviewImgsOn = false;
+                                          //       });
+                                          //     });
+                                          //   }
+                                          // }
 
                                           //addItemVisible = false;
                                         }
@@ -3303,7 +3382,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       onSecondaryTap: () => modPreviewImgList.isNotEmpty && previewZoomState ? pictureDialog(context, previewImageSliders) : null,
                                       child: Card(
                                           margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
-                                          shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColorLight)),
                                           child: ExpansionTile(
                                             initiallyExpanded: false,
                                             textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -3671,7 +3751,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               height: 60,
                               child: Card(
                                 margin: const EdgeInsets.only(left: 3, right: 4, top: 2, bottom: 2),
-                                shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColor)),
+                                shape: RoundedRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(5.0)), side: BorderSide(width: 1, color: Theme.of(context).primaryColorLight)),
                                 child: ListTile(
                                   minVerticalPadding: 0,
                                   title: Column(
@@ -4054,7 +4134,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                         ? MyApp.themeNotifier.value == ThemeMode.light
                                                             ? Theme.of(context).primaryColorDark
                                                             : Colors.amber
-                                                        : Theme.of(context).primaryColor)),
+                                                        : Theme.of(context).primaryColorLight)),
                                             child: ExpansionTile(
                                               initiallyExpanded: modViewExpandAll,
                                               textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
@@ -4089,14 +4169,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           waitDuration: const Duration(seconds: 1),
                                                           child: MaterialButton(
                                                             onPressed: (() {
-                                                              setState(() {
-                                                                var favCate = cateList.singleWhere((element) => element.categoryName == 'Favorites');
-                                                                if (modFilesFromSetList[index].first.isFav) {
-                                                                  favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, false);
-                                                                } else {
-                                                                  favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, true);
-                                                                }
-                                                              });
+                                                              var favCate = cateList.firstWhere((element) => element.categoryName == 'Favorites');
+                                                              if (modFilesFromSetList[index].first.isFav) {
+                                                                favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, false);
+                                                              } else {
+                                                                favCate = addOrRemoveFav(cateList, modFilesFromSetList[index], favCate, true);
+                                                              }
+                                                              setState(() {});
+                                                              Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
                                                             }),
                                                             child: modFilesFromSetList[index].first.isFav
                                                                 ? FaIcon(

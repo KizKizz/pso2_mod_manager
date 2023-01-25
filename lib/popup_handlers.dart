@@ -638,7 +638,9 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                         ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
                         final curModIndex = curCate.itemNames.indexOf(curModName);
                         curCate.numOfMods[curModIndex]--;
-                        modFilesList.removeAt(modFilesList.indexOf(modsList));
+                        for (var element in modFilesList) {
+                          element.removeAt(element.indexOf(modsList));
+                        }
                         for (var element in modsList) {
                           curCate.allModFiles.remove(element);
                           allModFiles.remove(element);
