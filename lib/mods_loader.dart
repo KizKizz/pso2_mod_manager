@@ -250,8 +250,16 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
     final emptyCateDirs = dir.listSync(recursive: false);
     if (emptyCateDirs.isEmpty) {
       categories.add(ModCategory(dir.path.split(s).last, dir.path, [], [], 0, [], [], []));
-      categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
     }
+  }
+
+  //sort cate list
+  if (selectedSortType == 1) {
+    categories.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+    selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+  } else if (selectedSortType == 0) {
+    categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+    selectedSortTypeString = curLangText!.sortCateByNameText;
   }
 
   //Fav
@@ -299,6 +307,8 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   }
   tempFavCate.itemNames.sort();
   categories.insert(0, tempFavCate);
+
+  
 
   return categories;
 }
@@ -386,8 +396,8 @@ List<ModCategory> searchFilterResults(List<ModCategory> paramCateList, String se
 }
 
 //Mod List
-Future<List<List<ModFile>>> getModFilesByCategory(List<ModFile> allModFiles, String modName) async {
-  List<List<ModFile>> modFilesList = [];
+Future<List<List<List<ModFile>>>> getModFilesByCategory(List<ModFile> allModFiles, String modName) async {
+  List<List<List<ModFile>>> modFilesList = [];
 
   List<ModFile> sameMods = [];
   for (var modFile in allModFiles) {
@@ -396,16 +406,26 @@ Future<List<List<ModFile>>> getModFilesByCategory(List<ModFile> allModFiles, Str
     }
   }
 
+  List<String> mainParents = [];
   List<String> parents = [];
   for (var modFile in sameMods) {
     if (parents.indexWhere((element) => element == modFile.iceParent) == -1) {
       parents.add(modFile.iceParent);
     }
+    if (mainParents.indexWhere((element) => element.split(' > ').first == modFile.iceParent.split(' > ').first) == -1) {
+      mainParents.add(modFile.iceParent.split(' > ').first);
+    }
   }
 
+  List<List<ModFile>> sameParentList = [];
   for (var parent in parents) {
     List<ModFile> sameParent = sameMods.where((element) => element.iceParent == parent).toList();
-    modFilesList.add(sameParent);
+    sameParentList.add(sameParent);
+  }
+
+  for (var mainParent in mainParents) {
+    List<List<ModFile>> sameMainParent = sameParentList.where((element) => element.first.iceParent.split(' > ').first == mainParent).toList();
+    modFilesList.add(sameMainParent);
   }
 
   return modFilesList.toList();
@@ -533,4 +553,3 @@ Future<List<TranslationLanguage>> translationLoader() async {
 
   return langList;
 }
-

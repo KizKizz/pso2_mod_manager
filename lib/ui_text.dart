@@ -190,6 +190,11 @@ class TranslationText {
     this.addAllBtnLabelText,
     this.errorFilesNotSupportedText,
     this.checksumHoldBtnTooltip,
+
+    //version 161
+    this.modsLabelText,
+    this.modLabelText,
+    this.modAddedSuccessfullyText,
   );
 
   //Header buttons
@@ -358,6 +363,11 @@ class TranslationText {
   String errorFilesNotSupportedText;
   String checksumHoldBtnTooltip;
 
+  //version 161
+  String modsLabelText;
+  String modLabelText;
+  String modAddedSuccessfullyText;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -523,6 +533,11 @@ class TranslationText {
     addAllBtnLabelText = json['addAllBtnLabelText'];
     errorFilesNotSupportedText = json['errorFilesNotSupportedText'];
     checksumHoldBtnTooltip = json['checksumHoldBtnTooltip'];
+
+    //version 161
+    modsLabelText = json['modsLabelText'];
+    modLabelText = json['modLabelText'];
+    modAddedSuccessfullyText = json['modAddedSuccessfullyText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -692,6 +707,11 @@ class TranslationText {
     data['addAllBtnLabelText'] = addAllBtnLabelText;
     data['errorFilesNotSupportedText'] = errorFilesNotSupportedText;
     data['checksumHoldBtnTooltip'] = checksumHoldBtnTooltip;
+
+    //version 161
+    data['modsLabelText'] = modsLabelText;
+    data['modLabelText'] = modLabelText;
+    data['modAddedSuccessfullyText'] = modAddedSuccessfullyText;
 
     return data;
   }
@@ -865,6 +885,11 @@ void convertLangTextData(var jsonResponse) {
       b['addAllBtnLabelText'],
       b['errorFilesNotSupportedText'],
       b['checksumHoldBtnTooltip'],
+
+      //version 161
+      b['modsLabelText'],
+      b['modLabelText'],
+      b['modAddedSuccessfullyText'],
     );
     curLangText = translation;
   }
@@ -1037,5 +1062,10 @@ TranslationText defaultUILangLoader() {
     'Add All',
     'currently not supported. Open the archive file then drag the content in here instead',
     'Click to download checksum file. Hold to manually select',
+
+    //version 161
+    'Mods',
+    'Mod',
+    'Mods added successfully'
   );
 }

@@ -155,8 +155,17 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                       } else {
                         for (var cateName in defaultCatesList) {
-                          Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                          if (cateName != 'Favorites') {
+                            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                          }
                         }
+                      }
+                      if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
+                        await Directory('${Directory.current.path}${s}temp').create(recursive: true);
+                      }
+
+                      if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
+                        await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
                       }
                       if (!Directory(backupDirPath).existsSync()) {
                         await Directory(backupDirPath).create(recursive: true);
@@ -248,9 +257,19 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                         } else {
                           for (var cateName in defaultCatesList) {
-                            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                            if (cateName != 'Favorites') {
+                              Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                            }
                           }
                         }
+                        if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
+                          await Directory('${Directory.current.path}${s}temp').create(recursive: true);
+                        }
+
+                        if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
+                          await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
+                        }
+
                         if (!Directory(backupDirPath).existsSync()) {
                           await Directory(backupDirPath).create(recursive: true);
                         }
@@ -340,8 +359,17 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                           } else {
                             for (var cateName in defaultCatesList) {
-                              Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                              if (cateName != 'Favorites') {
+                                Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+                              }
                             }
+                          }
+                          if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
+                            await Directory('${Directory.current.path}${s}temp').create(recursive: true);
+                          }
+
+                          if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
+                            await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
                           }
                           if (!Directory(backupDirPath).existsSync()) {
                             await Directory(backupDirPath).create(recursive: true);
@@ -638,7 +666,9 @@ Future modDeleteDialog(context, double height, String popupTitle, String popupMe
                         ModCategory curCate = cateList.firstWhere((cate) => cate.allModFiles.indexWhere((file) => file.modPath == curModPath) != -1);
                         final curModIndex = curCate.itemNames.indexOf(curModName);
                         curCate.numOfMods[curModIndex]--;
-                        modFilesList.removeAt(modFilesList.indexOf(modsList));
+                        for (var element in modFilesList) {
+                          element.removeAt(element.indexOf(modsList));
+                        }
                         for (var element in modsList) {
                           curCate.allModFiles.remove(element);
                           allModFiles.remove(element);

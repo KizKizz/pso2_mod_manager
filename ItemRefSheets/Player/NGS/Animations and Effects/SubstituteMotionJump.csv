@@ -1,4 +1,4 @@
-Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
+﻿Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
 Substitute Motions are in win32reboot, unlike most NGS player files
 The first two characters of each filename are the folder name
 

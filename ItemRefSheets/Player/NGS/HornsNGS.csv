@@ -1,22 +1,23 @@
-デュオホーン,Dual Horns,100000,2fe1886f69e9907a7433645a43291f57,25c9459bb5a35f012fa1229660c79402
-ユニホーン,Uni Horn,100010,f6c46c0b0035180b71254196a1251f45,ae2445685b09556e59ddfcb3b4ac5f2f
-グラデホーン,Gradated Horns,100020,0abfa6e64722a40d87ab1b20e639adae,59fa957c0a3a38ab84a1f87690e1262b
-グラデホーン/2,Gradated Horns/2,100021,6efb89cf76f51f080891e0d7df6fdbf7,28920df84dabcbf3bad9ba3782eaef34
-ヨーマホーン,Cursed Horns,100030,c3322daab683631b786774d5f015ff28,26c051fbe3c5f7d5aeb38c671f7392aa
-ツイストホーン,Twisting Horn,100040,a6da3c2e1b3766c2a2081f38c54e3c6f,f72777f3376a5bc02b99c4bdf8cea28d
-ツイストホーン/2,Twisting Horn/2,100041,6ccc76a3a604334e7522fc49183520d5,194b64ecd3eb65c5f2c8844f9e0a2678
-スタウトホーン,Stout Horn,100050,e4489c03a1a87790b84298139fc37ae2,a891e210ad100cdb24be92391e136bb2
-トラガラユニホーン,Tiger Uni Horn,100060,1e4d232f2b61fa15b326a76bb7ffd199,00e1fd03a87d8c251cfc994c95487d39
-トラガラデュオホーン,Tiger Dual Horns,100070,ddb084793d12d3b8b746666cbef79519,1e33102863c691d04389f98cf3e6851a
-ファンシーホーン,Fancy Horn,100080,7a89221e802e71892afdfb8c90c7320d,c2f42c15622bc6235fa690b35f0681e9
-ファンシーホーン/2,Fancy Horn/2,100081,5cb8d0390cb3942a83baf54d62176951,f43f785642a48e03f52651d594422375
-ナーワルホーン,Narwhal Horn,100090,d93912e9b175a22455d540b8eb15e836,20e136b92bbbeb960ef00e58aaa2f197
-ナーワルホーン/2,Narwhal Horn/2,100091,eb1ba9cd776d45ad8993b758f20f93e8,25c657a6803751e5bfbca1b54ebf065f
-ジャギーホーン,Jagged Horns,100100,aafaa4fc3a34134f137aea91f629135c,a1327711091ad082ca9bdc85138abc0d
-サニィホーン,Sunny Horns,100110,2cf94802a918c32533b0796a43ef2b9b,e2e8c2f19c6bcbdbe9707ede0c574a9e
-ムーニィホーン,Moony Horns,100120,fbab32a5cf240d1810abe2c9cce62341,efd19b45a2ffc817a615056206d24d99
-シャープマシーネホーン,Sharp Machine Horns,100130,4eb7b7b4d473de8821f7bf02ed2ba325,3624f74303ae2f8c4791e0807d8c3a4b
-バフォロホーン,Buphalo Horns,100140,43f469f74c2b61693bd06886668b4a41,e33453345e84e9ab3b6bd937875f9aa0
-グレオーンホーン,Gleon Horns,100150,cd3693662083a3433b48a1aefc1ea082,203751f849a3ec1ee91773b9df199224
-バックワードホーン,Back-Curving Horns,100160,ca8d9d4aba17c3764d34e46c213c4474,4f5d6c585a909583e35bd62bdb86c2c1
-￥角：クリスタル一本角,,100170,740ffceea23ad5d05c2e0b88b6f8da9d, (Not found),e917ee4ee09748d92087b14d303e2bbb, (Not found)
+﻿Japanese Name,English Name,Id,Adjusted Id,Icon,Normal Quality,High Quality,Normal Quality RP,High Quality RP,Linked Inner,HQ Linked Inner,Sounds,Cast Sounds,Material Anim,Material Anim Ex,Hand Textures,HQ Hand Textures
+デュオホーン,Dual Horns,100000,0,25c9459bb5a35f012fa1229660c79402,2fe1886f69e9907a7433645a43291f57,,,,,,,,,,,
+ユニホーン,Uni Horn,100010,0,ae2445685b09556e59ddfcb3b4ac5f2f,f6c46c0b0035180b71254196a1251f45,,,,,,,,,,,
+グラデホーン,Gradated Horns,100020,0,59fa957c0a3a38ab84a1f87690e1262b,0abfa6e64722a40d87ab1b20e639adae,,,,,,,,,,,
+グラデホーン/2,Gradated Horns/2,100021,0,28920df84dabcbf3bad9ba3782eaef34,6efb89cf76f51f080891e0d7df6fdbf7,,,,,,,,,,,
+ヨーマホーン,Cursed Horns,100030,0,26c051fbe3c5f7d5aeb38c671f7392aa,c3322daab683631b786774d5f015ff28,,,,,,,,,,,
+ツイストホーン,Twisting Horn,100040,0,f72777f3376a5bc02b99c4bdf8cea28d,a6da3c2e1b3766c2a2081f38c54e3c6f,,,,,,,,,,,
+ツイストホーン/2,Twisting Horn/2,100041,0,194b64ecd3eb65c5f2c8844f9e0a2678,6ccc76a3a604334e7522fc49183520d5,,,,,,,,,,,
+スタウトホーン,Stout Horn,100050,0,a891e210ad100cdb24be92391e136bb2,e4489c03a1a87790b84298139fc37ae2,,,,,,,,,,,
+トラガラユニホーン,Tiger Uni Horn,100060,0,00e1fd03a87d8c251cfc994c95487d39,1e4d232f2b61fa15b326a76bb7ffd199,,,,,,,,,,,
+トラガラデュオホーン,Tiger Dual Horns,100070,0,1e33102863c691d04389f98cf3e6851a,ddb084793d12d3b8b746666cbef79519,,,,,,,,,,,
+ファンシーホーン,Fancy Horn,100080,0,c2f42c15622bc6235fa690b35f0681e9,7a89221e802e71892afdfb8c90c7320d,,,,,,,,,,,
+ファンシーホーン/2,Fancy Horn/2,100081,0,f43f785642a48e03f52651d594422375,5cb8d0390cb3942a83baf54d62176951,,,,,,,,,,,
+ナーワルホーン,Narwhal Horn,100090,0,20e136b92bbbeb960ef00e58aaa2f197,d93912e9b175a22455d540b8eb15e836,,,,,,,,,,,
+ナーワルホーン/2,Narwhal Horn/2,100091,0,25c657a6803751e5bfbca1b54ebf065f,eb1ba9cd776d45ad8993b758f20f93e8,,,,,,,,,,,
+ジャギーホーン,Jagged Horns,100100,0,a1327711091ad082ca9bdc85138abc0d,aafaa4fc3a34134f137aea91f629135c,,,,,,,,,,,
+サニィホーン,Sunny Horns,100110,0,e2e8c2f19c6bcbdbe9707ede0c574a9e,2cf94802a918c32533b0796a43ef2b9b,,,,,,,,,,,
+ムーニィホーン,Moony Horns,100120,0,efd19b45a2ffc817a615056206d24d99,fbab32a5cf240d1810abe2c9cce62341,,,,,,,,,,,
+シャープマシーネホーン,Sharp Machine Horns,100130,0,3624f74303ae2f8c4791e0807d8c3a4b,4eb7b7b4d473de8821f7bf02ed2ba325,,,,,,,,,,,
+バフォロホーン,Buphalo Horns,100140,0,e33453345e84e9ab3b6bd937875f9aa0,43f469f74c2b61693bd06886668b4a41,,,,,,,,,,,
+グレオーンホーン,Gleon Horn,100150,0,203751f849a3ec1ee91773b9df199224,cd3693662083a3433b48a1aefc1ea082,,,,,,,,,,,
+バックワードホーン,Back-Curving Horns,100160,0,4f5d6c585a909583e35bd62bdb86c2c1,ca8d9d4aba17c3764d34e46c213c4474,,,,,,,,,,,
+クリスタルホーン,Crystal Horn,100170,0,e917ee4ee09748d92087b14d303e2bbb,740ffceea23ad5d05c2e0b88b6f8da9d,,,,,,,,,,,
