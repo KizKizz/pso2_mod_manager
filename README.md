@@ -73,24 +73,8 @@ Mods can also be added by copying your mod folders into each category folder in 
    ![Screenshot 2022-10-03 215149](https://user-images.githubusercontent.com/101075148/193738266-d3ccbabf-452a-4a1e-8e5d-2c9bee0e7846.png)
    
 **Mod Sets:**
-- Add a set:
 
-![Screenshot 2022-10-22 020339](https://user-images.githubusercontent.com/101075148/197331327-c4d7e3f1-82fe-494d-accd-11f707729c64.png)
-- New sets will appear in Sets list
-
-![Screenshot 2022-10-22 020455](https://user-images.githubusercontent.com/101075148/197331331-5edcaf54-7cef-4a6a-9b72-239eceeaba92.png)
-- Adding applied mods to set:
-
-![Screenshot 2022-10-22 020525](https://user-images.githubusercontent.com/101075148/197331340-9d144bba-ad3d-48fa-9ece-240a1eac8dd6.png)
-- Added mods will appear both in sets selection and Sets list
-
-![Screenshot 2022-10-22 020558](https://user-images.githubusercontent.com/101075148/197331343-0c5af343-be13-4a7a-b143-264ca6087b4d.png)
-![Screenshot 2022-10-22 020627](https://user-images.githubusercontent.com/101075148/197331347-061bdc08-c0f4-4c04-ade2-37045c2905e6.png)
-- Apply/Unapply mods in sets:
-
-![Screenshot 2022-10-22 021506](https://user-images.githubusercontent.com/101075148/197331609-59e1fec8-a9e7-412f-9d3f-44fe4b936ca5.png)
-
-   
+[modset.webm](https://user-images.githubusercontent.com/101075148/214807248-aebc667d-0d5b-41a8-a28f-acd7cc74d8df.webm)   
    
 **Preview:**
 
