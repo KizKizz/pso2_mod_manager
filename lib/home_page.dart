@@ -3673,7 +3673,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             )),
         actions: [
           SizedBox(
-            width: 95,
+            width: 96,
             height: 40,
             child: Tooltip(
               message: curLangText!.addNewSetTootipText,
@@ -3702,6 +3702,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const Icon(
                       Icons.add_to_queue,
                     ),
+                    const SizedBox(width: 5,),
                     Text(curLangText!.addSetBtnText),
                   ],
                 ),

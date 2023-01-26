@@ -250,8 +250,16 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
     final emptyCateDirs = dir.listSync(recursive: false);
     if (emptyCateDirs.isEmpty) {
       categories.add(ModCategory(dir.path.split(s).last, dir.path, [], [], 0, [], [], []));
-      categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
     }
+  }
+
+  //sort cate list
+  if (selectedSortType == 1) {
+    categories.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+    selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+  } else if (selectedSortType == 0) {
+    categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+    selectedSortTypeString = curLangText!.sortCateByNameText;
   }
 
   //Fav
@@ -299,6 +307,8 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   }
   tempFavCate.itemNames.sort();
   categories.insert(0, tempFavCate);
+
+  
 
   return categories;
 }

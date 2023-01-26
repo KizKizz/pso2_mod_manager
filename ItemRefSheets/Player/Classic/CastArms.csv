@@ -1,190 +1,191 @@
-なし,None,0,089d40ce0b20d11903c28fd35f117d4e, (Not found),b9aae61662085bb242d14d5a55f41707, (Not found)
-[Unnamed 40000],,40000,d595b728512f3e4350453410e2fcd0aa, (Not found),65071959e3d1dfd0a5d24a83a4cac835, (Not found)
-ディスタ・アーム,Dista Arms,40001,3dead2b61121aaba88d659b1599768a5,8e2b8047cd680cdd69d9eb799c9a1898
-ロニア・アーム,Ronia Arms,40002,fae2d16f9cb6e8d623277d47ada90267,be5cabd953e2418c05b635df8a50ec9f
-ファウマ・アーム,Fauma Arms,40003,81cb27c99f79e80f62b057c58bc98268,5ad8055bc39853e22e69ade313ed14e8
-ジョーカ・アーム,Joker Arms,40004,b7c6b54c195aea1b2a6ba4759d623eec,5bc5a2677ded2548638584afc9c54d32
-マギウス・アーム,Magius Arms,40005,eda73bf1722a803bf9f07f108b6ddf90,4febbf9180f3eacb7d432fcc6cda06ed
-シェリフ・アーム,Sheriff Arms,40006,bf2c85a0b44212b4c8ae9d6c53511ec8,1ae4004b74c9b7ed8b92d83deb13e5a5
-コロッサス・アーム,Colossus Arms,40007,68db4cfffa6e479a4c0c8dd4863520a3,77558406969ce660d2bb878ab823f761
-バルドル・アーム,Baldur Arms,40008,b14464aec02415da8bb425e2b5172938,c0d41534a5eddc84c5be32c7e5fc61c4
-アングリフ・アーム,Angriff Arms,40009,e9ff30cd4f6bef84107767cc3404af58,546581a0725e2017f24b2e124ec164ff
-メルダー・アーム,Melder Arms,40010,58f75af0d61104d5ab7398016416d1c8,0348d5e6aba42ab467532f438a49f974
-ディスタ・アームＣＶ,Dista Arms CV,40020,6ac191580652805a1eece916d93ea9eb,7faae49cb157d4130effcdfe2d86533b
-[Unnamed 40022],,40022,f5b2083db363aedbd50a1147e63598be,ef386b24707c07b13a5f428ceebd7277, (Not found)
-ディスタ・アームＧＶ,Dista Arms GV,40023,3388f09036d417a25e9ed3f29566ef58,e1aa9b962d290abdc2465039022ebcef
-ロニア・アームＣＶ,Ronia Arms CV,40030,bf0efada32fba732fc9b06ff63e59185,4bfb4f9e3200d0a55b9b9fa9f6c097e7
-[Unnamed 40031],,40031,e03ed5ab85a4dd829c5772f36ac93bad,3fff224cd716e64fa54d63a4a8d3304e, (Not found)
-[Unnamed 40032],,40032,481d0b0ed5b06610101030c467c76551,c37a479a0fe33dee6c5753feda1939d2, (Not found)
-レギア・アーム,Regia Arms,40033,e9d7b517b704959fb78d94d39c83a65e,8c25d9854eeb09898a81e6cfbd2cdccd
-レギア・アームＣＶ,Regia Arms CV,40034,1d04b4da5d5f5cb288c4603b9a227008,117c69db7ea0afd2dedd54fa8bab5c44
-ロニア・アームＧＶ,Ronia Arms GV,40035,948f82b8925a1e41e249935e4ff59980,0c4537cc394503af59574a2a8e1b947e
-ファウマ・アームＣＶ,Fauma Arms CV,40040,54377ae6c1e8438643ad11d9a14d4f23,0213b46893e6b5530f00082eaa54d6a3
-[Unnamed 40042],,40042,1933e6a14b35ac260a9681a6e5b227f5,48d1c2902264779aa59c7be1f8297ab0, (Not found)
-ファウマ・アームＧＶ,Fauma Arms GV,40043,7c6d919f73ba68047d5c07b36ab6ebef,ae3fbdf79e24d368998ce7141b57afde
-ジョーカ・アームＣＶ,Joker Arms CV,40050,976ced821a2a5686b659fa263c82cab9,aca1a1f7a3e5db945f3322b40e121911
-ジョーカ・アームＧＶ,Joker Arms GV,40053,c58d9e288586d56cb65d93b19dc5b46d,cf241f324988ae9b55a2d3cf6bd397bd
-マギウス・アームＣＶ,Magius Arms CV,40060,6b604b0d76705f503b52adedaca68be7,4999cc1dd70f0965a36a2c1b677d5446
-マギウス・アームＧＶ,Magius Arms GV,40062,4bbc05f516d5ed4ddeb5a291eb33fdf4,ae42dffdbb9295b8c991652b00b47ca6
-シェリフ・アームＣＶ,Sheriff Arms CV,40070,8f01a8a02e2a16508d3373fc94ad27fe,08f4285996a75a3e79123bbd89590f6d
-[Unnamed 40071],,40071,659d685df469acea82161c796c69fa9b,6fc3c6f5714fcd4af3a60669ba5cb6b5, (Not found)
-コロッサス・アームＣＶ,Colossus Arms CV,40080,7a11a1992d3faff57b8c682f71f0fe9a,3783f2af3fa31b9661fc0720be157767
-[Unnamed 40081],,40081,8c7bb4f85d9a0769e82f99c5f9841145,984e121682a5114ff0299dd16363d910, (Not found)
-コロッサス・アームＧＶ,Colossus Arms GV,40083,11e70d17a111ab12cee056b128ea4bff,aec1f25d8a67c6d078587fb8e3748173
-バルドル・アームＣＶ,Baldur Arms CV,40090,466ec952d93ec0cdca7312824415a600,6afb034e6dcbb1385feb5cb88b7888d6
-バルドル・アームＧＶ,Baldur Arms GV,40093,3e0d6b2de571363610f1c9cf28218ad5,a33ac1c527a786d8d17163cde2a0a0fc
-アングリフ・アームＣＶ,Angriff Arms CV,40100,bc1e7fa03de0e0dd045f6475e6fd0c61,09430dc425b35e74089b9d782ea2eec3
-[Unnamed 40101],,40101,4062c8c4260f164ca740bdc8072ba437,dffbe8409224b2a0b3ee7b0332c2de99, (Not found)
-[Unnamed 40102],,40102,62836ac88d03fbfd5da4dd6c1d9c0db9,bf309e5d8de51349c3d07d5dfa4778cc, (Not found)
-アングリフ・アームＧＶ,Angriff Arms GV,40104,d3bd5848047306a3382423019499e72a,0db0229638a0ca3f96a0cf45be3625bc
-メルダー・アームＣＶ,Melder Arms CV,40110,f68397a3614f48e35df0094c8928de6d,5ba07e452f77305a534016f729360cfc
-フィルフ・アーム,Fylph Arms,40120,af66e394f6c007aa020246118bc78129,0395c063f93c1541e82c57aa7b06ce57
-フィルフ・アームＣＶ,Fylph Arms CV,40121,39007013e9542f004d80f7b540b59eaf,4baeeae82eeae24470be50ea1b1071cf
-フィルフ・アームＧＶ,Fylph Arms GV,40123,f0b543d18c8cfc3c23ce456e30bdc365,97e83975cd3f2e7b8b40f74a753f6a2a
-ゴウボイド・アーム,Gohvoid Arms,40130,84f3ecf4bc64fab9795d996783a9ba50,1a11d9be26eb93d5cc637e6596a4853d
-ゴウボイド・アームＣＶ,Gohvoid Arms CV,40131,3d8a49bb14d596fa45829f513cda4814,5db9af9e5953c504e01c219fadc38526
-ゴウボイド・アームＧＶ,Gohvoid Arms GV,40133,a133421dabfc154a1c37aad268864393,a668c87ad69ca4a11a2556e55367398b
-アラオ・アーム,Arao Arms,40140,04c63554f53a0cdada0239f062ccbef9,eb80c1b2f433668df449af1f89b42870
-アラオ・アームＣＶ,Arao Arms CV,40141,a1e1ebf254bab56cd7a052cae4ba2ac8,247bc482a1bddbebb21064b9669115da
-アラオ・アームＧＶ,Arao Arms GV,40143,2fffda3ac0cc1c7637dc9761582474a4,851c0a34310383e2e8065842b9fa0ffb
-ベルガ・アーム,Belga Arms,40150,1ef310ec39e8452fe9048d17dd0d4925,c68b0093035bf80c5e39fbc6b410eae3
-ベルガ・アームＣＶ,Belga Arms CV,40151,fe14cd21772bd84eb7ddb7218af33c3a,ffb64efc55ff2e62d918e27627b1cfe9
-Ｏフレーム・アーム,O-Frame Arms,40160,165104d7a1efc9419d92b23564fd9119,4f204a57a18df433ec125a8dbd123a63
-Ｏフレーム・アームＣＶ,O-Frame Arms CV,40161,1f893e5083d84d09446eaca4d364e8c8,b9d8c66f946aac0869465f18c7da52d0
-Ｏフレーム・アームＧＶ,O-Frame Arms GV,40163,964e5c64ba66d6fe36cb69b3113d033b,5762675c5af3739c087c0b2c71b711cf
-ヒュリオン・アーム,Furion Arms,40170,37516a968d594e2024ba77439862eeac,08bcebe5e90d202fe1cb4a6204c568f7
-ヒュリオン・アームＣＶ,Furion Arms CV,40171,c41fd23ada29cdc95357e83324864758,9ac2b2427362829c1a17164eabbc5e64
-ヒュリオン・アームＧＶ,Furion Arms GV,40173,2c3569e0c860b7c1adbe3304d0665d1f,bf47c0453cd556f6af3af08860ecd1eb
-ディヴァリースＦ・アーム,Divaliese Frame Arms,40180,e38da9dcbe40d1a3b3c6571e314cc466,7d41c135bc9fc02a02b79c6c8d1b3516
-ディヴァリースＦ・アームＣＶ,Divaliese Frame Arms CV,40181,288ac2bf1bc592d4775a647fb8b1c079,02bad523ebf7a2683ff8886b0b503693
-ドレーク・アーム,Drake Arms,40190,80fd28310a3520b8ea2aea0ed56732c0,70ccb282d1be8e605972eb7f29011e92
-ドレーク・アームＣＶ,Drake Arms CV,40191,90f8012123cb86054fde93f061f91698,a5851ed21044dabf46811c35036f962e
-ドレーク・アームＧＶ,Drake Arms GV,40193,3e2a922e95c87c560271a0fdb20aa0a3,1ec7b67678fec7d0882c59ae0194e0b2
-ジャスティスＡ・アーム,Justice Armor Arms,40200,b339839e4f10415b35f41c0e1edc4021,f5a1edef64cd2e0541426209e49f2c7d
-ジャスティスＡ・アームＣＶ,Justice Armor Arms CV,40201,c21a9f802defeb15ca0d3b9467ad2a6a,6dad56cf724f8ebd67c06ba6722f00ce
-ディバインＫ・アーム,Divine Kaiser Arms,40210,ef8f508099bd23ec2d881265913bd974,6405693c5a51471c579d3f1a5ac6abd7
-ディバインＫ・アームＣＶ,Divine Kaiser Arms CV,40211,cb32de1db6f855775245184d7e3e589f,9f1f2b6d7315db406f4764443bc9d216
-エヴァレット・アーム,Everett Arms,40230,f726a4eae64a9d4fa8661450c0c18791,4b8add030a8885a66466dd572e792c0d
-エヴァレット・アームＣＶ,Everett Arms CV,40231,b0d13387ee82509b0a1093b8626ac128,c06edbdcb73b8018de0e9f037152957f
-エヴァレット・アームＧＶ,Everett Arms GV,40233,a844022f13e9d70f7d76aad4e88dbdef,4acaa9dfb7833f6a8ada83ec28f1cb52
-ベイバレル・アーム,Beybarrel Arms,40240,16c1aea73b3615d1b710eee6052526a3,91589a1c3672a1f469e971aba24860f2
-ベイバレル・アームＣＶ,Beybarrel Arms CV,40241,7b9818ac087a37122ee28dcbb118f1bb,2d79e54c56a221490a71772471a336d5
-グアルディ・アーム,Guardie Arms,40250,d3c627960aa780f445dc46a8a6bb9693,8209bf5a8d0cd47c22f9d13cf92aec6b
-グアルディ・アームＣＶ,Guardie Arms CV,40251,4c4870dfda4ea322422c6006e54fc678,f8e68b38cf519474f2b1bd9ee3ae98e0
-ライザーＦ・アーム,Riser Frame Arms,40260,2480b4b0114a9088e654abc0f647542f,53363e068e31b38dccdf04d2688cad62
-ライザーＦ・アームＣＶ,Riser Frame Arms CV,40261,9c9b4261c0f4b0391646949b92c508bb,781b845713e71721971bbfa753e997d6
-ライザーＦ・アームＧＶ,Riser Frame Arms GV,40263,405df71c6d5e40d71e5af84121f7cfc0,833f98dc69cab736b6440910a3e725ce
-ネメジスト・アーム,Nemethyst Arms,40270,e1d48606c1b73c6de3deb563ca3bb217,72e4daee5c8e42102bc2d8cab53442b4
-ネメジスト・アームＣＶ,Nemethyst Arms CV,40271,6db1472da83d6e301a8b0b8ae102d046,6a5e118a9d3a29d4020507874e620dfc
-ネメジスト・アームＧＶ,Nemethyst Arms GV,40273,0720e226e13bd88af6eca1ccea2a99a3,5a01c67a7de675713e23bfe25292d13e
-グルマイカ・アーム,Gurmica Arms,40280,342e6e5ff05f1e2de226dd82c9277933,90e63683db7dff6e1aab220900bb1ae0
-グルマイカ・アームＣＶ,Gurmica Arms CV,40281,d29838dbdabb2e0e9f00134d2089592b,9cd42f7b090e9a881e538e4f2d4dcfad
-グラニーダ・アーム,Granida Arms,40290,ee92f512bc39a115acfe6bcacdd4db6f,5c23917db10ed95f61572412c86e9b0f
-グラニーダ・アームＣＶ,Granida Arms CV,40291,be228b2591cdc947a07a5393ac846cc6,c3d35cec0c0de778f98a990f34a459c4
-グラニーダ・アームＧＶ,Granida Arms GV,40293,8613e0940250bfeeecabc09b0cb64689,e10d526b3729b23a93a5378cae83517a
-サイハジン・アーム,Cyhadine Arms,40300,cf82503f6547f7d670e3b2934e68ec21,0dfd657e5f5b4adfdf8e9732e9381eb1
-サイハジン・アームＣＶ,Cyhadine Arms CV,40301,6528ca0ac0129438ee44a47204f5dbd5,548ce587a44f13b2c73f63213bd392af
-サイハジン・アームＧＶ,Cyhadine Arms GV,40303,10f0bbcb2268aae6dc018abdc5e4346e,9172c01d82929425f03b9622e4347df2
-レクトアギル・アーム,Rectagil Arms,40310,3894fa23881cd92a75e7b5723b210e1a,9fe1f16bfdd3420d5cf004894141d29b
-レクトアギル・アームＣＶ,Rectagil Arms CV,40311,451e3b3466eea2a8d734cc6a36d9f2a3,2d5658ebd5258a4abbc466ef8a733593
-レクトアギル・アームＧＶ,Rectagil Arms GV,40313,24799893d6afc4e4a86aad91c7c546c3,db0b4fe004e3679237ade836bd8887ad
-フリーヴァ・アーム,Freeva Arms,40320,4b9aac80e827fc48e097fd28fe8b12f8,902009899c1b02fd5b0855665482e91d
-フリーヴァ・アームＣＶ,Freeva Arms CV,40321,7057daf4904d832d405b8eda4f8f2e3f,c23fcd7a2978d21defd1433befdb1a0a
-フリーヴァ・アームＧＶ,Freeva Arms GV,40323,a021396ecefe5cc4f2a824be607908af,39b33ded7e1e1b0f0170d681d9c82424
-ギャレオス・アーム,Galeos Arms,40330,f2f30213406a78c03f132fed2d62aaf4,5f02f1e3e18132b430fe83f37f03fa9c
-ギャレオス・アームＣＶ,Galeos Arms CV,40331,9ce11ba52fb2d9bba68008d4d410e3df,ac9b93fee0324e4a68c4b9fec0495fe6
-キオウガイ・アーム,Ancient Plate Arms,40340,e6bf5fd8f0bbf4c5ba49c995167be882,02a3104ebf04b0d5ee6981113a3d7121
-キオウガイ・アームＣＶ,Ancient Plate Arms CV,40341,70cbc145a664ab607d4c4295016ac27d,f1611964a6080b75cbf0be546447d693
-キオウガイ・アームＧＶ,Ancient Plate Arms GV,40343,5683478aa3e569acb49c1ae11e400123,76e5f52db4cd5cb06b2e384efe4f8def
-コンガラ・アーム,Kongara Arms,40350,8227586d403257c0ca010ff319182dfe,1aa0e493fadc538eb541bf8c2400c68d
-[Unnamed 40352],,40352,7aab74b6b12fecff60ebc0eb944c882f,a13b74ca9e55cab0474457c9fec67de8, (Not found)
-セイタカ・アーム,Seitaka Arms,40360,8fd3e49f619b4ca4d09e6e7d02dd6916,467ea9707fcdec8c67c27379db360b14
-[Unnamed 40362],,40362,4988db830dbf9d97b2eb1b881c9d6dd7,99f5fc50c731eddf93dc45c8cb6c35d8, (Not found)
-バンテスタ・アーム,Vanthesta Arms,40370,51f7299a0403ff2e620189cbf98716d4,c97dbe5a6af0c9e3908ecb773e641d20
-バンテスタ・アームＣＶ,Vanthesta Arms CV,40371,0459b52e6bdc0e59602ec4429911d2f3,c34cf61591a9703823a0bd3a258b7a88
-バンテスタ・アームＧＶ,Vanthesta Arms GV,40373,d625e0b65de68423d20fafd03fdc1eba,ece8390d79442a06f8d6f1949023942b
-ヴァリエス・アーム,Valiesse Arms,40380,a88145f4f639d44211170ca14746802b,2828aa6d2e3b370ee9a2ca18e40f2b72
-ヴァリエス・アームＣＶ,Valiesse Arms CV,40381,5557ab418bf88bd48c43eb46abb0eb55,bc063059ffd23d0507172c4334883f5f
-ヴァリエス・アームＧＶ,Valiesse Arms GV,40383,d0376020662b8f119c653be2f4732ab1,12b0e9f709d7e70eecdc2f51d1c7c39e
-センガミ・アーム,Untold Divinity Arms,40390,5c3f444eecf6b1d1fadd97aaa6a7e523,27f323a62c7f1e95a45af172738b38a9
-センガミ・アームＣＶ,Untold Divinity Arms CV,40391,bcf8591dc134aa4e9c5b9335c1272003,b2b632729242c411aba5872cdefbb922
-センガミ・アームＧＶ,Untold Divinity Arms GV,40393,b2ca80697acdc8e6d42ac740b3d29021,90b17f61c87836a80b2994fc77c7e08f
-ラシオス・アーム,Rassios Arms,40400,ab112308805e02a8d2ff5fbf7f8c4418,bc0c70dbc76d672d0ea7e0249d4806ba
-ラシオス・アームＣＶ,Rassios Arms CV,40401,71ac70df4425f0faadcbad229e100540,d7890eea30c7e27c918887eadf1b31ac
-ラシオス・アームＧＶ,Rassios Arms GV,40403,7d8c9613da1c5dba9a465c9e789cdf31,3e7e5d2bdb145a3f3b6e1e816b031388
-アコーディ・アーム,Accordie Arms,40410,5d4941027a03922f9bb519568716603d,0edb6416effae22d8f18659f16db1c2e
-アコーディ・アームＣＶ,Accordie Arms CV,40411,856769a967a8f2c719dd017a6b14fd30,893c5119ea12ac907d9bd33d8525a7d5
-アコーディ・アームＧＶ,Accordie Arms GV,40413,d366fe540ddff9282918c17a0b735cd8,2919c6a5c561dc8051ed410d86a1a97d
-アルベリカ・アーム,Alberica Arms,40420,6a4f883f7b1857f0e434b817354d8d35,7cbd4ab87013957dffea79a556617d22
-アルベリカ・アームＣＶ,Alberica Arms CV,40421,a0b5c377ca59c0257f94bc0987081dfa,3a62fa12eea600068225172617c4825f
-ギガンテ・アーム,Gigante Arms,40430,60ba1a925cacbbef027d9438dc8b00e2,10b53a398b62b8d89c9ecc4ea7636d12
-ギガンテ・アームＣＶ,Gigante Arms CV,40431,193f50cff6bdfe83118ccf80bef244ba,aef4fef80207dd1e7dd212d5cd5a39c0
-ギガンテ・アームＧＶ,Gigante Arms GV,40433,e5671f5014b37c787d884bc9109d6e26,9eca926a297b506ce7ad2097f40cfeff
-ヴォグルス・アーム,Vogulus Arms,40440,e2365bea579c101082a9e55676decb28,47c44654a007142dfb0798934cb1f5ed
-ヴォグルス・アームＣＶ,Vogulus Arms CV,40441,fb307268bb493b9e01512af2bd406b17,225f07c939e4de72d8ebf56d7818108f
-ガルファ・アーム,Galpha Arms,40450,38b132ddc9d5689566e7a84855ba5269,abe9204351d93d3fd896072046fdc97d
-ガルファ・アームＣＶ,Galpha Arms CV,40451,90c8cd431e043f1a2cb662601964a6a9,eb4e05044ab3f21adece58aea5277098
-ドラクレス・アーム,Dracules Arms,40460,e16a3396871195938a635197e5083270,f758673f219e7057ac226e7650d8d106
-ドラクレス・アームＣＶ,Dracules Arms CV,40461,996e2225d7506a9a9c881bd280ad6bcb,c418b6bf6acff4faa863d5cd4f3e48f1
-グロード・アーム,Glaude Arms,40470,e319dc07048977cea433da35c4599869,0069482c87cd9dbcef9f70298b63f99e
-グロード・アームＣＶ,Glaude Arms CV,40471,d4aa572e36d63b4689f06dd4806680d5,f36c9b0e8691603f755b303d455bb90f
-ディグゥ・アーム,Dighu Arms,40480,7adf9817f83cd1f5e38a275ac44dd8d9,42ccfe422ce6f3c1e9d57f8481e222ec
-ディグゥ・アームＣＶ,Dighu Arms CV,40481,855809848b78ce659ef218dde0f9ea63,680b652332249b8870ad008821da25cc
-ローロック・アーム,Rowlock Arms,40490,619af67af6a90d23adbdf089a0c85a8f,707a11c532d879590775bef97d708e4d
-ローロック・アームＣＶ,Rowlock Arms CV,40491,716ac6bcf8910aeb4d3171d8e667246f,faa92dc535cf221912d646a6e52e9d4c
-ローロック・アームＧＶ,Rowlock Arms GV,40493,9692d8953807a4c88a485de08efc68c4,f44f21cc6f8f1231917386b2647fc8e9
-ゴルンレオ・アーム,Howling Leo Arms,40500,99d524c5798be58ed4be6929251d8666,7609984a12f524510f3a2d5254aad21b
-ゴルンレオ・アームＣＶ,Howling Leo Arms CV,40501,7358dc4557b87f185cc5cd7b05578c68,ecd8be0c8129f6b76b39a9b1d8273ae7
-ヴォーダム・アーム,Voudam Arms,40510,7bd308850cc26668523b5177ac5d5908,ec92a6c8fb370168bfa256ebef413f4a
-ヴォーダム・アームＣＶ,Voudam Arms CV,40511,c4e1c0ee0b062baf341ae90cd3b71662,6c63f92ae0fc858999b7cfd5dda186b9
-ダルモルス・アーム,Dalmorus Arms,40520,ee835af5d9ace6ae77595fcdc7a5dbc4,ed6a99cf774c07809bb1bc611b9d8fb4
-ダルモルス・アームＣＶ,Dalmorus Arms CV,40521,f1def55af442ca88fed8b54eb53087b2,db582b960bb7d36425be0ff2ceaf10b1
-,Dalmorus Arms GV,40523,f117651b6f5395acd31c8e8bfd3632ce, (Not found),475486c6baa9f93b7a2d97b0d8a01d02, (Not found)
-スティレット・アーム,STYLET Arms,40530,9d67d6b5eab76e229d7300de9fb4e63b,7fb646f3446ce3a151639d0a8c58cb3f
-シュバル・アーム,Cheval Arms,40540,61ff645aa3a2f5f9b9acbfe85fa4700a,7410877f5202dc6e0c15aa3aea19f267
-シュバル・アームＣＶ,Cheval Arms CV,40541,6e3ede51ac5a6f565b38e0939e5bf2af,3a0f38f4d1024ff1b27cd8395fd6cce8
-,Cheval Arms GV,40543,34a97832dd99fb8dc9b75adf1ae052d5, (Not found),0605fd7b8feb4498b45825efd1dd094f, (Not found)
-トレイオン・アーム,Treyon Arms,40560,e9483200836d0e76d72128bc5fe8d531,2e2f9364d8b0c90990184b0c9b3fb7b2
-トレイオン・アームＣＶ,Treyon Arms CV,40561,d941946dbc3638224efc253879d729cb,22c6d33a37b838fcf51cc187428f45a9
-,Treyon Arms GV,40563,56e8e9332ba5c23084c8307c90898ca5, (Not found),e71abf3285e2e50e1849bc1abb17ba71, (Not found)
-ハイロウ・アーム,Hylow Arms,40570,97c25016778f2a5e1d544417a195cdee,61ac2c1db6c31e6b64598a7a3b60d5e0
-ハイロウ・アームＣＶ,Hylow Arms CV,40571,754db6dfbd88d0efae71d78d43ce562f,768e45d7f36dd6810db0749e7d00d29c
-ハヴィック・アーム,Havoc Arms,40590,2248bc8cfd09f33fb537229b7878db28,c5b50f58f3685220687315d076c61f83
-ハヴィック・アームＣＶ,Havoc Arms CV,40591,96980b745473a88574ff1650afa45b0c,2d3e15f663612b012eaaf6bc83d761cf
-,Havoc Arms GV,40593,480f675ed553565e1f328ecebab5816a, (Not found),edddc0cc09de762f370e6a62a0884ed4, (Not found)
-アグリ・アーム,Agri Arms,40600,d4dabebb6d571a4df0500dbbf13c3d1b,105deaa5158e18fa9d7d5d380c29b262
-,Agri Arms CV,40601,7fe9721e11591e40a4123fc96ee0c083, (Not found),3a454d536d6d0f8a7549936c7b7b65a7, (Not found)
-,Agri Arms GV,40603,08fcf61474652a7556b79ea2af9bc92a, (Not found),2e57097f17acc5293173fd3590c8172f, (Not found)
-メイガス・アーム,Magus Arms,40610,69529fadd7d2da47de06792c1a0bc73c,1610d9e12e0ccf1407a2fbda508e76fa
-メイガス・アームＣＶ,Magus Arms CV,40611,37a801075896ded1353181ef6ba0e8a7,426e0fc23581be17232a1c98c6cb4033
-,Magus Arms GV,40613,faed84a2e28b5c14729fa5f373c07192, (Not found),88ee16aebb52c93e43915183d63ad18c, (Not found)
-ハーゼン・アーム,Harzen Arms,40620,9abb858bbbfeef3b194815540a5920cf,59834b932a3d9960a91a314cfcecb597
-ハーゼン・アームＣＶ,Harzen Arms CV,40621,ede508c092e2d263f677d7683f7c4ca2,1386d6aa5cfc9a4853002f12a0754406
-クリスト・アーム,Kryst Arms,40630,b1f3186fed97cd7803f0ff649f0e93cf,17fd0310f1aa95515ad078be32faa209
-クリスト・アームＣＶ,Kryst Arms CV,40631,6488141e3d0f3a1bcf678229f4f4e362,33e79858dfa1bd11def2201bf0658e2d
-輝星・空式・アーム,KISEI Type-KU Arms,40640,5fcc94f3634acbb628979e2dd70e5fa7,42f62888441335f00646b5e65bc055c6
-ティタンガム・アーム,Titangum Arms,40650,0d3e8f9e6a3d6477350b22ab9c96480a,ff28e267116da66a95e70310d0fe75e0
-ティタンガム・アームＣＶ,Titangum Arms CV,40651,a01b1e386f3e8ded66b7fa0e1cd0df38,8911cc93214486e7ebb7141de9324470
-,Titangum Arms GV,40653,203368eb7247fddb523c913438dc138d, (Not found),1fe9786842fed1ca33638bca5228cdd1, (Not found)
-轟雷・アーム,GOU-RAI Arms,40660,1aad7dcce2a7da0366230d76e53c42e7,9ee91a6e10054df5fb033cca1d4aacf8
-バーゼラルド・アーム,BASELARD Arms,40670,934bb457250519ed1df80868ac863f2e,194946929c9e08d66ce23344fcf121f5
-[Unnamed 40689],,40689,bf9b4c674d6bb382ec628309982ce86b,66ffe8a19fb50da921546f88623de2a0, (Not found)
-,Zelfikar Arms,40690,766cd8d523d20758695c23d89098f22c, (Not found),7935623ca37800e13e10afe3fd223823, (Not found)
-,Zelfikar Arms CV,40691,c7b9c895afdda7a7867d9e679d97e6c7, (Not found),f3d6e1dcb48fe154ae4fb3cc9bf992d1, (Not found)
-,Zelfikar Arms GV,40693,2488145b02b2c040f11feacc45c49b04, (Not found),25bc1598b41957b435a303e36512fc95, (Not found)
-デモードス・アーム,Demodus Arms,40700,3618d91eb2cb3d640efbf39b980f528e,d4cc3cf0dbe196e7e1458c4992e48409
-デモードス・アームＣＶ,Demodus Arms CV,40701,077d0629b8476714d66c876aff2fbc9a,b6944f230333aed4cd7895264b2b9737
-ＰＳＺオギ・アーム,PSZ Ogi Arms,40710,a54c0cafc1dfca171e56f2d0350f0ed6,5522c5b55b8985eb9e219d783f7b193b
-クリミナル・アーム,Criminal Arms,40720,7ba29727d11cc42df3b7e99368397390,12baa5b9391cf0f0b4c31f3603c4277b
-クリミナル・アームＣＶ,Criminal Arms CV,40721,79e0cc9a5ed259fcc98b8aa5f3ff0098,15c419e4fc5e70a273f6cc59f67e0b14
-クリミナル・アームＧＶ,Criminal Arms GV,40723,4acd261affc34a67c947157efb35606f,31ff7343c50d5d14e2cfb494d1349725
-不知火・アーム,Shiranui Arms,40730,9e1cf58f82cc147282757c933a497696,390b134407685733f72df1889265bf41
-武御雷・アーム,Takemikazuchi Arms,40740,66f14bb89ab3eaebf98285be8a6782b7,7895fadc26c8c95d68f022b67eebe729
-ライナー・アーム,Liner Arms,40750,31f84b553ceeaca92f9b68d0aa433da1,2dbeec3fd645cd3f6cf2c41663762db0
-ライナー・アームＣＶ,Liner Arms CV,40751,6e0ccc09d8702908180d8143d6a32950,b8f37cd4a13bf4c7deee360c86703638
-エグザギア・アーム,Exagia Arms,40760,e55577afc147fdd4a7280a9fdaee61ca,ed1aece3d5345e410d77ef323c800725
-エグザギア・アームＣＶ,Exagia Arms CV,40761,063e7bfc158681a36bca27f78c0babf2,50fc145a378678dc14d2acbc917b117f
-マグナレギア・アーム,Magna Regia Arms,40770,dbdcafba9aec8f76fe47965a826c2059,7008bb4142afcb3e663ea0bda5a2e061
-ヴァローナ・アーム,Varona Arms,40780,20267518a265a7806e9ad832c8be9b83,399e665a22f710400019e48d024faadb
-ビオール・アーム,Bior Arms,40790,ab15007df062344509e6cb66decb0b22,cffa4125c2c702a7ff90c04fc7bf94d5
-[Unnamed 41000],,41000,51a14936853a8d8af297e1ddb278ad99,640fee01ab2c7cfd169dbec51490af12, (Not found)
+﻿Japanese Name,English Name,Id,Adjusted Id,Icon,Normal Quality,High Quality,Normal Quality RP,High Quality RP,Linked Inner,HQ Linked Inner,Sounds,Cast Sounds,Material Anim,Material Anim Ex,Hand Textures,HQ Hand Textures
+なし,None,0,0,,,,,,,,,,,,,
+,,40000,40000,,,,,,,,,,,,,
+ディスタ・アーム,Dista Arms,40001,40001,8e2b8047cd680cdd69d9eb799c9a1898,3dead2b61121aaba88d659b1599768a5,,,,,,,,,,,
+ロニア・アーム,Ronia Arms,40002,40002,be5cabd953e2418c05b635df8a50ec9f,fae2d16f9cb6e8d623277d47ada90267,,,,,,,,,,,
+ファウマ・アーム,Fauma Arms,40003,40003,5ad8055bc39853e22e69ade313ed14e8,81cb27c99f79e80f62b057c58bc98268,,,,,,,,,,,
+ジョーカ・アーム,Joker Arms,40004,40004,5bc5a2677ded2548638584afc9c54d32,b7c6b54c195aea1b2a6ba4759d623eec,,,,,,,,,,,
+マギウス・アーム,Magius Arms,40005,40005,4febbf9180f3eacb7d432fcc6cda06ed,eda73bf1722a803bf9f07f108b6ddf90,,,,,,,,,,,
+シェリフ・アーム,Sheriff Arms,40006,40006,1ae4004b74c9b7ed8b92d83deb13e5a5,bf2c85a0b44212b4c8ae9d6c53511ec8,,,,,,,,,,,
+コロッサス・アーム,Colossus Arms,40007,40007,77558406969ce660d2bb878ab823f761,68db4cfffa6e479a4c0c8dd4863520a3,,,,,,,,,,,
+バルドル・アーム,Baldur Arms,40008,40008,c0d41534a5eddc84c5be32c7e5fc61c4,b14464aec02415da8bb425e2b5172938,,,,,,,,,,,
+アングリフ・アーム,Angriff Arms,40009,40009,546581a0725e2017f24b2e124ec164ff,e9ff30cd4f6bef84107767cc3404af58,,,,,,,,,,,
+メルダー・アーム,Melder Arms,40010,40010,0348d5e6aba42ab467532f438a49f974,58f75af0d61104d5ab7398016416d1c8,,,,,,,,,,,
+ディスタ・アームＣＶ,Dista Arms CV,40020,40020,7faae49cb157d4130effcdfe2d86533b,6ac191580652805a1eece916d93ea9eb,,,,,,,,,,,
+,,40022,40022,,f5b2083db363aedbd50a1147e63598be,,,,,,,,,,,
+ディスタ・アームＧＶ,Dista Arms GV,40023,40023,e1aa9b962d290abdc2465039022ebcef,3388f09036d417a25e9ed3f29566ef58,,,,,,,,,,,
+ロニア・アームＣＶ,Ronia Arms CV,40030,40030,4bfb4f9e3200d0a55b9b9fa9f6c097e7,bf0efada32fba732fc9b06ff63e59185,,,,,,,,,,,
+,,40031,40031,,e03ed5ab85a4dd829c5772f36ac93bad,,,,,,,,,,,
+,,40032,40032,,481d0b0ed5b06610101030c467c76551,,,,,,,,,,,
+レギア・アーム,Regia Arms,40033,40033,8c25d9854eeb09898a81e6cfbd2cdccd,e9d7b517b704959fb78d94d39c83a65e,,,,,,,,,,,
+レギア・アームＣＶ,Regia Arms CV,40034,40034,117c69db7ea0afd2dedd54fa8bab5c44,1d04b4da5d5f5cb288c4603b9a227008,,,,,,,,,,,
+ロニア・アームＧＶ,Ronia Arms GV,40035,40035,0c4537cc394503af59574a2a8e1b947e,948f82b8925a1e41e249935e4ff59980,,,,,,,,,,,
+ファウマ・アームＣＶ,Fauma Arms CV,40040,40040,0213b46893e6b5530f00082eaa54d6a3,54377ae6c1e8438643ad11d9a14d4f23,,,,,,,,,,,
+,,40042,40042,,1933e6a14b35ac260a9681a6e5b227f5,,,,,,,,,,,
+ファウマ・アームＧＶ,Fauma Arms GV,40043,40043,ae3fbdf79e24d368998ce7141b57afde,7c6d919f73ba68047d5c07b36ab6ebef,,,,,,,,,,,
+ジョーカ・アームＣＶ,Joker Arms CV,40050,40050,aca1a1f7a3e5db945f3322b40e121911,976ced821a2a5686b659fa263c82cab9,,,,,,,,,,,
+ジョーカ・アームＧＶ,Joker Arms GV,40053,40053,cf241f324988ae9b55a2d3cf6bd397bd,c58d9e288586d56cb65d93b19dc5b46d,,,,,,,,,,,
+マギウス・アームＣＶ,Magius Arms CV,40060,40060,4999cc1dd70f0965a36a2c1b677d5446,6b604b0d76705f503b52adedaca68be7,,,,,,,,,,,
+マギウス・アームＧＶ,Magius Arms GV,40062,40062,ae42dffdbb9295b8c991652b00b47ca6,4bbc05f516d5ed4ddeb5a291eb33fdf4,,,,,,,,,,,
+シェリフ・アームＣＶ,Sheriff Arms CV,40070,40070,08f4285996a75a3e79123bbd89590f6d,8f01a8a02e2a16508d3373fc94ad27fe,,,,,,,,,,,
+,,40071,40071,,659d685df469acea82161c796c69fa9b,,,,,,,,,,,
+コロッサス・アームＣＶ,Colossus Arms CV,40080,40080,3783f2af3fa31b9661fc0720be157767,7a11a1992d3faff57b8c682f71f0fe9a,,,,,,,,,,,
+,,40081,40081,,8c7bb4f85d9a0769e82f99c5f9841145,,,,,,,,,,,
+コロッサス・アームＧＶ,Colossus Arms GV,40083,40083,aec1f25d8a67c6d078587fb8e3748173,11e70d17a111ab12cee056b128ea4bff,,,,,,,,,,,
+バルドル・アームＣＶ,Baldur Arms CV,40090,40090,6afb034e6dcbb1385feb5cb88b7888d6,466ec952d93ec0cdca7312824415a600,,,,,,,,,,,
+バルドル・アームＧＶ,Baldur Arms GV,40093,40093,a33ac1c527a786d8d17163cde2a0a0fc,3e0d6b2de571363610f1c9cf28218ad5,,,,,,,,,,,
+アングリフ・アームＣＶ,Angriff Arms CV,40100,40100,09430dc425b35e74089b9d782ea2eec3,bc1e7fa03de0e0dd045f6475e6fd0c61,,,,,,,,,,,
+,,40101,40101,,4062c8c4260f164ca740bdc8072ba437,,,,,,,,,,,
+,,40102,40102,,62836ac88d03fbfd5da4dd6c1d9c0db9,,,,,,,,,,,
+アングリフ・アームＧＶ,Angriff Arms GV,40104,40104,0db0229638a0ca3f96a0cf45be3625bc,d3bd5848047306a3382423019499e72a,,,,,,,,,,,
+メルダー・アームＣＶ,Melder Arms CV,40110,40110,5ba07e452f77305a534016f729360cfc,f68397a3614f48e35df0094c8928de6d,,,,,,,,,,,
+フィルフ・アーム,Fylph Arms,40120,40120,0395c063f93c1541e82c57aa7b06ce57,af66e394f6c007aa020246118bc78129,,,,,,,,,,,
+フィルフ・アームＣＶ,Fylph Arms CV,40121,40121,4baeeae82eeae24470be50ea1b1071cf,39007013e9542f004d80f7b540b59eaf,,,,,,,,,,,
+フィルフ・アームＧＶ,Fylph Arms GV,40123,40123,97e83975cd3f2e7b8b40f74a753f6a2a,f0b543d18c8cfc3c23ce456e30bdc365,,,,,,,,,,,
+ゴウボイド・アーム,Gohvoid Arms,40130,40130,1a11d9be26eb93d5cc637e6596a4853d,84f3ecf4bc64fab9795d996783a9ba50,,,,,,,,,,,
+ゴウボイド・アームＣＶ,Gohvoid Arms CV,40131,40131,5db9af9e5953c504e01c219fadc38526,3d8a49bb14d596fa45829f513cda4814,,,,,,,,,,,
+ゴウボイド・アームＧＶ,Gohvoid Arms GV,40133,40133,a668c87ad69ca4a11a2556e55367398b,a133421dabfc154a1c37aad268864393,,,,,,,,,,,
+アラオ・アーム,Arao Arms,40140,40140,eb80c1b2f433668df449af1f89b42870,04c63554f53a0cdada0239f062ccbef9,,,,,,,,,,,
+アラオ・アームＣＶ,Arao Arms CV,40141,40141,247bc482a1bddbebb21064b9669115da,a1e1ebf254bab56cd7a052cae4ba2ac8,,,,,,,,,,,
+アラオ・アームＧＶ,Arao Arms GV,40143,40143,851c0a34310383e2e8065842b9fa0ffb,2fffda3ac0cc1c7637dc9761582474a4,,,,,,,,,,,
+ベルガ・アーム,Belga Arms,40150,40150,c68b0093035bf80c5e39fbc6b410eae3,1ef310ec39e8452fe9048d17dd0d4925,,,,,,,,,,,
+ベルガ・アームＣＶ,Belga Arms CV,40151,40151,ffb64efc55ff2e62d918e27627b1cfe9,fe14cd21772bd84eb7ddb7218af33c3a,,,,,,,,,,,
+Ｏフレーム・アーム,O-Frame Arms,40160,40160,4f204a57a18df433ec125a8dbd123a63,165104d7a1efc9419d92b23564fd9119,,,,,,,,,,,
+Ｏフレーム・アームＣＶ,O-Frame Arms CV,40161,40161,b9d8c66f946aac0869465f18c7da52d0,1f893e5083d84d09446eaca4d364e8c8,,,,,,,,,,,
+Ｏフレーム・アームＧＶ,O-Frame Arms GV,40163,40163,5762675c5af3739c087c0b2c71b711cf,964e5c64ba66d6fe36cb69b3113d033b,,,,,,,,,,,
+ヒュリオン・アーム,Furion Arms,40170,40170,08bcebe5e90d202fe1cb4a6204c568f7,37516a968d594e2024ba77439862eeac,,,,,,,,,,,
+ヒュリオン・アームＣＶ,Furion Arms CV,40171,40171,9ac2b2427362829c1a17164eabbc5e64,c41fd23ada29cdc95357e83324864758,,,,,,,,,,,
+ヒュリオン・アームＧＶ,Furion Arms GV,40173,40173,bf47c0453cd556f6af3af08860ecd1eb,2c3569e0c860b7c1adbe3304d0665d1f,,,,,,,,,,,
+ディヴァリースＦ・アーム,Divaliese Frame Arms,40180,40180,7d41c135bc9fc02a02b79c6c8d1b3516,e38da9dcbe40d1a3b3c6571e314cc466,,,,,,,,,,,
+ディヴァリースＦ・アームＣＶ,Divaliese Frame Arms CV,40181,40181,02bad523ebf7a2683ff8886b0b503693,288ac2bf1bc592d4775a647fb8b1c079,,,,,,,,,,,
+ドレーク・アーム,Drake Arms,40190,40190,70ccb282d1be8e605972eb7f29011e92,80fd28310a3520b8ea2aea0ed56732c0,,,,,,,,,,,
+ドレーク・アームＣＶ,Drake Arms CV,40191,40191,a5851ed21044dabf46811c35036f962e,90f8012123cb86054fde93f061f91698,,,,,,,,,,,
+ドレーク・アームＧＶ,Drake Arms GV,40193,40193,1ec7b67678fec7d0882c59ae0194e0b2,3e2a922e95c87c560271a0fdb20aa0a3,,,,,,,,,,,
+ジャスティスＡ・アーム,Justice Armor Arms,40200,40200,f5a1edef64cd2e0541426209e49f2c7d,b339839e4f10415b35f41c0e1edc4021,,,,,,,,,,,
+ジャスティスＡ・アームＣＶ,Justice Armor Arms CV,40201,40201,6dad56cf724f8ebd67c06ba6722f00ce,c21a9f802defeb15ca0d3b9467ad2a6a,,,,,,,,,,,
+ディバインＫ・アーム,Divine Kaiser Arms,40210,40210,6405693c5a51471c579d3f1a5ac6abd7,ef8f508099bd23ec2d881265913bd974,,,,,,,,,,,
+ディバインＫ・アームＣＶ,Divine Kaiser Arms CV,40211,40211,9f1f2b6d7315db406f4764443bc9d216,cb32de1db6f855775245184d7e3e589f,,,,,,,,,,,
+エヴァレット・アーム,Everett Arms,40230,40230,4b8add030a8885a66466dd572e792c0d,f726a4eae64a9d4fa8661450c0c18791,,,,,,,,,,,
+エヴァレット・アームＣＶ,Everett Arms CV,40231,40231,c06edbdcb73b8018de0e9f037152957f,b0d13387ee82509b0a1093b8626ac128,,,,,,,,,,,
+エヴァレット・アームＧＶ,Everett Arms GV,40233,40233,4acaa9dfb7833f6a8ada83ec28f1cb52,a844022f13e9d70f7d76aad4e88dbdef,,,,,,,,,,,
+ベイバレル・アーム,Beybarrel Arms,40240,40240,91589a1c3672a1f469e971aba24860f2,16c1aea73b3615d1b710eee6052526a3,,,,,,,,,,,
+ベイバレル・アームＣＶ,Beybarrel Arms CV,40241,40241,2d79e54c56a221490a71772471a336d5,7b9818ac087a37122ee28dcbb118f1bb,,,,,,,,,,,
+グアルディ・アーム,Guardie Arms,40250,40250,8209bf5a8d0cd47c22f9d13cf92aec6b,d3c627960aa780f445dc46a8a6bb9693,,,,,,,,,,,
+グアルディ・アームＣＶ,Guardie Arms CV,40251,40251,f8e68b38cf519474f2b1bd9ee3ae98e0,4c4870dfda4ea322422c6006e54fc678,,,,,,,,,,,
+ライザーＦ・アーム,Riser Frame Arms,40260,40260,53363e068e31b38dccdf04d2688cad62,2480b4b0114a9088e654abc0f647542f,,,,,,,,,,,
+ライザーＦ・アームＣＶ,Riser Frame Arms CV,40261,40261,781b845713e71721971bbfa753e997d6,9c9b4261c0f4b0391646949b92c508bb,,,,,,,,,,,
+ライザーＦ・アームＧＶ,Riser Frame Arms GV,40263,40263,833f98dc69cab736b6440910a3e725ce,405df71c6d5e40d71e5af84121f7cfc0,,,,,,,,,,,
+ネメジスト・アーム,Nemethyst Arms,40270,40270,72e4daee5c8e42102bc2d8cab53442b4,e1d48606c1b73c6de3deb563ca3bb217,,,,,,,,,,,
+ネメジスト・アームＣＶ,Nemethyst Arms CV,40271,40271,6a5e118a9d3a29d4020507874e620dfc,6db1472da83d6e301a8b0b8ae102d046,,,,,,,,,,,
+ネメジスト・アームＧＶ,Nemethyst Arms GV,40273,40273,5a01c67a7de675713e23bfe25292d13e,0720e226e13bd88af6eca1ccea2a99a3,,,,,,,,,,,
+グルマイカ・アーム,Gurmica Arms,40280,40280,90e63683db7dff6e1aab220900bb1ae0,342e6e5ff05f1e2de226dd82c9277933,,,,,,,,,,,
+グルマイカ・アームＣＶ,Gurmica Arms CV,40281,40281,9cd42f7b090e9a881e538e4f2d4dcfad,d29838dbdabb2e0e9f00134d2089592b,,,,,,,,,,,
+グラニーダ・アーム,Granida Arms,40290,40290,5c23917db10ed95f61572412c86e9b0f,ee92f512bc39a115acfe6bcacdd4db6f,,,,,,,,,,,
+グラニーダ・アームＣＶ,Granida Arms CV,40291,40291,c3d35cec0c0de778f98a990f34a459c4,be228b2591cdc947a07a5393ac846cc6,,,,,,,,,,,
+グラニーダ・アームＧＶ,Granida Arms GV,40293,40293,e10d526b3729b23a93a5378cae83517a,8613e0940250bfeeecabc09b0cb64689,,,,,,,,,,,
+サイハジン・アーム,Cyhadine Arms,40300,40300,0dfd657e5f5b4adfdf8e9732e9381eb1,cf82503f6547f7d670e3b2934e68ec21,,,,,,,,,,,
+サイハジン・アームＣＶ,Cyhadine Arms CV,40301,40301,548ce587a44f13b2c73f63213bd392af,6528ca0ac0129438ee44a47204f5dbd5,,,,,,,,,,,
+サイハジン・アームＧＶ,Cyhadine Arms GV,40303,40303,9172c01d82929425f03b9622e4347df2,10f0bbcb2268aae6dc018abdc5e4346e,,,,,,,,,,,
+レクトアギル・アーム,Rectagil Arms,40310,40310,9fe1f16bfdd3420d5cf004894141d29b,3894fa23881cd92a75e7b5723b210e1a,,,,,,,,,,,
+レクトアギル・アームＣＶ,Rectagil Arms CV,40311,40311,2d5658ebd5258a4abbc466ef8a733593,451e3b3466eea2a8d734cc6a36d9f2a3,,,,,,,,,,,
+レクトアギル・アームＧＶ,Rectagil Arms GV,40313,40313,db0b4fe004e3679237ade836bd8887ad,24799893d6afc4e4a86aad91c7c546c3,,,,,,,,,,,
+フリーヴァ・アーム,Freeva Arms,40320,40320,902009899c1b02fd5b0855665482e91d,4b9aac80e827fc48e097fd28fe8b12f8,,,,,,,,,,,
+フリーヴァ・アームＣＶ,Freeva Arms CV,40321,40321,c23fcd7a2978d21defd1433befdb1a0a,7057daf4904d832d405b8eda4f8f2e3f,,,,,,,,,,,
+フリーヴァ・アームＧＶ,Freeva Arms GV,40323,40323,39b33ded7e1e1b0f0170d681d9c82424,a021396ecefe5cc4f2a824be607908af,,,,,,,,,,,
+ギャレオス・アーム,Galeos Arms,40330,40330,5f02f1e3e18132b430fe83f37f03fa9c,f2f30213406a78c03f132fed2d62aaf4,,,,,,,,,,,
+ギャレオス・アームＣＶ,Galeos Arms CV,40331,40331,ac9b93fee0324e4a68c4b9fec0495fe6,9ce11ba52fb2d9bba68008d4d410e3df,,,,,,,,,,,
+キオウガイ・アーム,Ancient Plate Arms,40340,40340,02a3104ebf04b0d5ee6981113a3d7121,e6bf5fd8f0bbf4c5ba49c995167be882,,,,,,,,,,,
+キオウガイ・アームＣＶ,Ancient Plate Arms CV,40341,40341,f1611964a6080b75cbf0be546447d693,70cbc145a664ab607d4c4295016ac27d,,,,,,,,,,,
+キオウガイ・アームＧＶ,Ancient Plate Arms GV,40343,40343,76e5f52db4cd5cb06b2e384efe4f8def,5683478aa3e569acb49c1ae11e400123,,,,,,,,,,,
+コンガラ・アーム,Kongara Arms,40350,40350,1aa0e493fadc538eb541bf8c2400c68d,8227586d403257c0ca010ff319182dfe,,,,,,,,,,,
+,,40352,40352,,7aab74b6b12fecff60ebc0eb944c882f,,,,,,,,,,,
+セイタカ・アーム,Seitaka Arms,40360,40360,467ea9707fcdec8c67c27379db360b14,8fd3e49f619b4ca4d09e6e7d02dd6916,,,,,,,,,,,
+,,40362,40362,,4988db830dbf9d97b2eb1b881c9d6dd7,,,,,,,,,,,
+バンテスタ・アーム,Vanthesta Arms,40370,40370,c97dbe5a6af0c9e3908ecb773e641d20,51f7299a0403ff2e620189cbf98716d4,,,,,,,,,,,
+バンテスタ・アームＣＶ,Vanthesta Arms CV,40371,40371,c34cf61591a9703823a0bd3a258b7a88,0459b52e6bdc0e59602ec4429911d2f3,,,,,,,,,,,
+バンテスタ・アームＧＶ,Vanthesta Arms GV,40373,40373,ece8390d79442a06f8d6f1949023942b,d625e0b65de68423d20fafd03fdc1eba,,,,,,,,,,,
+ヴァリエス・アーム,Valiesse Arms,40380,40380,2828aa6d2e3b370ee9a2ca18e40f2b72,a88145f4f639d44211170ca14746802b,,,,,,,,,,,
+ヴァリエス・アームＣＶ,Valiesse Arms CV,40381,40381,bc063059ffd23d0507172c4334883f5f,5557ab418bf88bd48c43eb46abb0eb55,,,,,,,,,,,
+ヴァリエス・アームＧＶ,Valiesse Arms GV,40383,40383,12b0e9f709d7e70eecdc2f51d1c7c39e,d0376020662b8f119c653be2f4732ab1,,,,,,,,,,,
+センガミ・アーム,Untold Divinity Arms,40390,40390,27f323a62c7f1e95a45af172738b38a9,5c3f444eecf6b1d1fadd97aaa6a7e523,,,,,,,,,,,
+センガミ・アームＣＶ,Untold Divinity Arms CV,40391,40391,b2b632729242c411aba5872cdefbb922,bcf8591dc134aa4e9c5b9335c1272003,,,,,,,,,,,
+センガミ・アームＧＶ,Untold Divinity Arms GV,40393,40393,90b17f61c87836a80b2994fc77c7e08f,b2ca80697acdc8e6d42ac740b3d29021,,,,,,,,,,,
+ラシオス・アーム,Rassios Arms,40400,40400,bc0c70dbc76d672d0ea7e0249d4806ba,ab112308805e02a8d2ff5fbf7f8c4418,,,,,,,,,,,
+ラシオス・アームＣＶ,Rassios Arms CV,40401,40401,d7890eea30c7e27c918887eadf1b31ac,71ac70df4425f0faadcbad229e100540,,,,,,,,,,,
+ラシオス・アームＧＶ,Rassios Arms GV,40403,40403,3e7e5d2bdb145a3f3b6e1e816b031388,7d8c9613da1c5dba9a465c9e789cdf31,,,,,,,,,,,
+アコーディ・アーム,Accordie Arms,40410,40410,0edb6416effae22d8f18659f16db1c2e,5d4941027a03922f9bb519568716603d,,,,,,,,,,,
+アコーディ・アームＣＶ,Accordie Arms CV,40411,40411,893c5119ea12ac907d9bd33d8525a7d5,856769a967a8f2c719dd017a6b14fd30,,,,,,,,,,,
+アコーディ・アームＧＶ,Accordie Arms GV,40413,40413,2919c6a5c561dc8051ed410d86a1a97d,d366fe540ddff9282918c17a0b735cd8,,,,,,,,,,,
+アルベリカ・アーム,Alberica Arms,40420,40420,7cbd4ab87013957dffea79a556617d22,6a4f883f7b1857f0e434b817354d8d35,,,,,,,,,,,
+アルベリカ・アームＣＶ,Alberica Arms CV,40421,40421,3a62fa12eea600068225172617c4825f,a0b5c377ca59c0257f94bc0987081dfa,,,,,,,,,,,
+ギガンテ・アーム,Gigante Arms,40430,40430,10b53a398b62b8d89c9ecc4ea7636d12,60ba1a925cacbbef027d9438dc8b00e2,,,,,,,,,,,
+ギガンテ・アームＣＶ,Gigante Arms CV,40431,40431,aef4fef80207dd1e7dd212d5cd5a39c0,193f50cff6bdfe83118ccf80bef244ba,,,,,,,,,,,
+ギガンテ・アームＧＶ,Gigante Arms GV,40433,40433,9eca926a297b506ce7ad2097f40cfeff,e5671f5014b37c787d884bc9109d6e26,,,,,,,,,,,
+ヴォグルス・アーム,Vogulus Arms,40440,40440,47c44654a007142dfb0798934cb1f5ed,e2365bea579c101082a9e55676decb28,,,,,,,,,,,
+ヴォグルス・アームＣＶ,Vogulus Arms CV,40441,40441,225f07c939e4de72d8ebf56d7818108f,fb307268bb493b9e01512af2bd406b17,,,,,,,,,,,
+ガルファ・アーム,Galpha Arms,40450,40450,abe9204351d93d3fd896072046fdc97d,38b132ddc9d5689566e7a84855ba5269,,,,,,,,,,,
+ガルファ・アームＣＶ,Galpha Arms CV,40451,40451,eb4e05044ab3f21adece58aea5277098,90c8cd431e043f1a2cb662601964a6a9,,,,,,,,,,,
+ドラクレス・アーム,Dracules Arms,40460,40460,f758673f219e7057ac226e7650d8d106,e16a3396871195938a635197e5083270,,,,,,,,,,,
+ドラクレス・アームＣＶ,Dracules Arms CV,40461,40461,c418b6bf6acff4faa863d5cd4f3e48f1,996e2225d7506a9a9c881bd280ad6bcb,,,,,,,,,,,
+グロード・アーム,Glaude Arms,40470,40470,0069482c87cd9dbcef9f70298b63f99e,e319dc07048977cea433da35c4599869,,,,,,,,,,,
+グロード・アームＣＶ,Glaude Arms CV,40471,40471,f36c9b0e8691603f755b303d455bb90f,d4aa572e36d63b4689f06dd4806680d5,,,,,,,,,,,
+ディグゥ・アーム,Dighu Arms,40480,40480,42ccfe422ce6f3c1e9d57f8481e222ec,7adf9817f83cd1f5e38a275ac44dd8d9,,,,,,,,,,,
+ディグゥ・アームＣＶ,Dighu Arms CV,40481,40481,680b652332249b8870ad008821da25cc,855809848b78ce659ef218dde0f9ea63,,,,,,,,,,,
+ローロック・アーム,Rowlock Arms,40490,40490,707a11c532d879590775bef97d708e4d,619af67af6a90d23adbdf089a0c85a8f,,,,,,,,,,,
+ローロック・アームＣＶ,Rowlock Arms CV,40491,40491,faa92dc535cf221912d646a6e52e9d4c,716ac6bcf8910aeb4d3171d8e667246f,,,,,,,,,,,
+ローロック・アームＧＶ,Rowlock Arms GV,40493,40493,f44f21cc6f8f1231917386b2647fc8e9,9692d8953807a4c88a485de08efc68c4,,,,,,,,,,,
+ゴルンレオ・アーム,Howling Leo Arms,40500,40500,7609984a12f524510f3a2d5254aad21b,99d524c5798be58ed4be6929251d8666,,,,,,,,,,,
+ゴルンレオ・アームＣＶ,Howling Leo Arms CV,40501,40501,ecd8be0c8129f6b76b39a9b1d8273ae7,7358dc4557b87f185cc5cd7b05578c68,,,,,,,,,,,
+ヴォーダム・アーム,Voudam Arms,40510,40510,ec92a6c8fb370168bfa256ebef413f4a,7bd308850cc26668523b5177ac5d5908,,,,,,,,,,,
+ヴォーダム・アームＣＶ,Voudam Arms CV,40511,40511,6c63f92ae0fc858999b7cfd5dda186b9,c4e1c0ee0b062baf341ae90cd3b71662,,,,,,,,,,,
+ダルモルス・アーム,Dalmorus Arms,40520,40520,ed6a99cf774c07809bb1bc611b9d8fb4,ee835af5d9ace6ae77595fcdc7a5dbc4,,,,,,,,,,,
+ダルモルス・アームＣＶ,Dalmorus Arms CV,40521,40521,db582b960bb7d36425be0ff2ceaf10b1,f1def55af442ca88fed8b54eb53087b2,,,,,,,,,,,
+Dalmorus Arms GV,,40523,40523,,,,,,,,,,,,,
+スティレット・アーム,STYLET Arms,40530,40530,7fb646f3446ce3a151639d0a8c58cb3f,9d67d6b5eab76e229d7300de9fb4e63b,,,,,,,,,,,
+シュバル・アーム,Cheval Arms,40540,40540,7410877f5202dc6e0c15aa3aea19f267,61ff645aa3a2f5f9b9acbfe85fa4700a,,,,,,,,,,,
+シュバル・アームＣＶ,Cheval Arms CV,40541,40541,3a0f38f4d1024ff1b27cd8395fd6cce8,6e3ede51ac5a6f565b38e0939e5bf2af,,,,,,,,,,,
+Cheval Arms GV,,40543,40543,,,,,,,,,,,,,
+トレイオン・アーム,Treyon Arms,40560,40560,2e2f9364d8b0c90990184b0c9b3fb7b2,e9483200836d0e76d72128bc5fe8d531,,,,,,,,,,,
+トレイオン・アームＣＶ,Treyon Arms CV,40561,40561,22c6d33a37b838fcf51cc187428f45a9,d941946dbc3638224efc253879d729cb,,,,,,,,,,,
+Treyon Arms GV,,40563,40563,,,,,,,,,,,,,
+ハイロウ・アーム,Hylow Arms,40570,40570,61ac2c1db6c31e6b64598a7a3b60d5e0,97c25016778f2a5e1d544417a195cdee,,,,,,,,,,,
+ハイロウ・アームＣＶ,Hylow Arms CV,40571,40571,768e45d7f36dd6810db0749e7d00d29c,754db6dfbd88d0efae71d78d43ce562f,,,,,,,,,,,
+ハヴィック・アーム,Havoc Arms,40590,40590,c5b50f58f3685220687315d076c61f83,2248bc8cfd09f33fb537229b7878db28,,,,,,,,,,,
+ハヴィック・アームＣＶ,Havoc Arms CV,40591,40591,2d3e15f663612b012eaaf6bc83d761cf,96980b745473a88574ff1650afa45b0c,,,,,,,,,,,
+Havoc Arms GV,,40593,40593,,,,,,,,,,,,,
+アグリ・アーム,Agri Arms,40600,40600,105deaa5158e18fa9d7d5d380c29b262,d4dabebb6d571a4df0500dbbf13c3d1b,,,,,,,,,,,
+Agri Arms CV,,40601,40601,,,,,,,,,,,,,
+Agri Arms GV,,40603,40603,,,,,,,,,,,,,
+メイガス・アーム,Magus Arms,40610,40610,1610d9e12e0ccf1407a2fbda508e76fa,69529fadd7d2da47de06792c1a0bc73c,,,,,,,,,,,
+メイガス・アームＣＶ,Magus Arms CV,40611,40611,426e0fc23581be17232a1c98c6cb4033,37a801075896ded1353181ef6ba0e8a7,,,,,,,,,,,
+Magus Arms GV,,40613,40613,,,,,,,,,,,,,
+ハーゼン・アーム,Harzen Arms,40620,40620,59834b932a3d9960a91a314cfcecb597,9abb858bbbfeef3b194815540a5920cf,,,,,,,,,,,
+ハーゼン・アームＣＶ,Harzen Arms CV,40621,40621,1386d6aa5cfc9a4853002f12a0754406,ede508c092e2d263f677d7683f7c4ca2,,,,,,,,,,,
+クリスト・アーム,Kryst Arms,40630,40630,17fd0310f1aa95515ad078be32faa209,b1f3186fed97cd7803f0ff649f0e93cf,,,,,,,,,,,
+クリスト・アームＣＶ,Kryst Arms CV,40631,40631,33e79858dfa1bd11def2201bf0658e2d,6488141e3d0f3a1bcf678229f4f4e362,,,,,,,,,,,
+輝星・空式・アーム,KISEI Type-KU Arms,40640,40640,42f62888441335f00646b5e65bc055c6,5fcc94f3634acbb628979e2dd70e5fa7,,,,,,,,,,,
+ティタンガム・アーム,Titangum Arms,40650,40650,ff28e267116da66a95e70310d0fe75e0,0d3e8f9e6a3d6477350b22ab9c96480a,,,,,,,,,,,
+ティタンガム・アームＣＶ,Titangum Arms CV,40651,40651,8911cc93214486e7ebb7141de9324470,a01b1e386f3e8ded66b7fa0e1cd0df38,,,,,,,,,,,
+Titangum Arms GV,,40653,40653,,,,,,,,,,,,,
+轟雷・アーム,GOU-RAI Arms,40660,40660,9ee91a6e10054df5fb033cca1d4aacf8,1aad7dcce2a7da0366230d76e53c42e7,,,,,,,,,,,
+バーゼラルド・アーム,BASELARD Arms,40670,40670,194946929c9e08d66ce23344fcf121f5,934bb457250519ed1df80868ac863f2e,,,,,,,,,,,
+,,40689,40689,,bf9b4c674d6bb382ec628309982ce86b,,,,,,,,,,,
+Zelfikar Arms,,40690,40690,,,,,,,,,,,,,
+Zelfikar Arms CV,,40691,40691,,,,,,,,,,,,,
+Zelfikar Arms GV,,40693,40693,,,,,,,,,,,,,
+デモードス・アーム,Demodus Arms,40700,40700,d4cc3cf0dbe196e7e1458c4992e48409,3618d91eb2cb3d640efbf39b980f528e,,,,,,,,,,,
+デモードス・アームＣＶ,Demodus Arms CV,40701,40701,b6944f230333aed4cd7895264b2b9737,077d0629b8476714d66c876aff2fbc9a,,,,,,,,,,,
+ＰＳＺオギ・アーム,PSZ Ogi Arms,40710,40710,5522c5b55b8985eb9e219d783f7b193b,a54c0cafc1dfca171e56f2d0350f0ed6,,,,,,,,,,,
+クリミナル・アーム,Criminal Arms,40720,40720,12baa5b9391cf0f0b4c31f3603c4277b,7ba29727d11cc42df3b7e99368397390,,,,,,,,,,,
+クリミナル・アームＣＶ,Criminal Arms CV,40721,40721,15c419e4fc5e70a273f6cc59f67e0b14,79e0cc9a5ed259fcc98b8aa5f3ff0098,,,,,,,,,,,
+クリミナル・アームＧＶ,Criminal Arms GV,40723,40723,31ff7343c50d5d14e2cfb494d1349725,4acd261affc34a67c947157efb35606f,,,,,,,,,,,
+不知火・アーム,Shiranui Arms,40730,40730,390b134407685733f72df1889265bf41,9e1cf58f82cc147282757c933a497696,,,,,,,,,,,
+武御雷・アーム,Takemikazuchi Arms,40740,40740,7895fadc26c8c95d68f022b67eebe729,66f14bb89ab3eaebf98285be8a6782b7,,,,,,,,,,,
+ライナー・アーム,Liner Arms,40750,40750,2dbeec3fd645cd3f6cf2c41663762db0,31f84b553ceeaca92f9b68d0aa433da1,,,,,,,,,,,
+ライナー・アームＣＶ,Liner Arms CV,40751,40751,b8f37cd4a13bf4c7deee360c86703638,6e0ccc09d8702908180d8143d6a32950,,,,,,,,,,,
+エグザギア・アーム,Exagia Arms,40760,40760,ed1aece3d5345e410d77ef323c800725,e55577afc147fdd4a7280a9fdaee61ca,,,,,,,,,,,
+エグザギア・アームＣＶ,Exagia Arms CV,40761,40761,50fc145a378678dc14d2acbc917b117f,063e7bfc158681a36bca27f78c0babf2,,,,,,,,,,,
+マグナレギア・アーム,Magna Regia Arms,40770,40770,7008bb4142afcb3e663ea0bda5a2e061,dbdcafba9aec8f76fe47965a826c2059,,,,,,,,,,,
+ヴァローナ・アーム,Varona Arms,40780,40780,399e665a22f710400019e48d024faadb,20267518a265a7806e9ad832c8be9b83,,,,,,,,,,,
+ビオール・アーム,Bior Arms,40790,40790,cffa4125c2c702a7ff90c04fc7bf94d5,ab15007df062344509e6cb66decb0b22,,,,,,,,,,,
+,,41000,41000,,51a14936853a8d8af297e1ddb278ad99,,,,,,,,,,,

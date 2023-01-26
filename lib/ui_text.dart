@@ -194,6 +194,7 @@ class TranslationText {
     //version 161
     this.modsLabelText,
     this.modLabelText,
+    this.modAddedSuccessfullyText,
   );
 
   //Header buttons
@@ -365,6 +366,7 @@ class TranslationText {
   //version 161
   String modsLabelText;
   String modLabelText;
+  String modAddedSuccessfullyText;
 
   fromJson(Map<String, dynamic> json) {
     //Header buttons
@@ -535,6 +537,7 @@ class TranslationText {
     //version 161
     modsLabelText = json['modsLabelText'];
     modLabelText = json['modLabelText'];
+    modAddedSuccessfullyText = json['modAddedSuccessfullyText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -708,6 +711,7 @@ class TranslationText {
     //version 161
     data['modsLabelText'] = modsLabelText;
     data['modLabelText'] = modLabelText;
+    data['modAddedSuccessfullyText'] = modAddedSuccessfullyText;
 
     return data;
   }
@@ -885,6 +889,7 @@ void convertLangTextData(var jsonResponse) {
       //version 161
       b['modsLabelText'],
       b['modLabelText'],
+      b['modAddedSuccessfullyText'],
     );
     curLangText = translation;
   }
@@ -1061,5 +1066,6 @@ TranslationText defaultUILangLoader() {
     //version 161
     'Mods',
     'Mod',
+    'Mods added successfully'
   );
 }
