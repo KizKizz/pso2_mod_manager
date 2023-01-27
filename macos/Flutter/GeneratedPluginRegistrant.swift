@@ -8,9 +8,9 @@ import Foundation
 import bitsdojo_window_macos
 import desktop_drop
 import package_info_plus_macos
-import path_provider_foundation
+import path_provider_macos
 import screen_retriever
-import shared_preferences_foundation
+import shared_preferences_macos
 import url_launcher_macos
 import window_manager
 
