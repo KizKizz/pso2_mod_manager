@@ -9,6 +9,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -897,23 +898,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           if (context.watch<StateProvider>().isUpdateAvailable)
             ScaffoldMessenger(
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).hintColor
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor),
                 ),
-            ),
-                    child: MaterialBanner(
-              backgroundColor: Theme.of(context).canvasColor,
-              elevation: 0,
-              padding: const EdgeInsets.all(0),
-              leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-              leading: Icon(
+                child: MaterialBanner(
+                  backgroundColor: Theme.of(context).canvasColor,
+                  elevation: 0,
+                  padding: const EdgeInsets.all(0),
+                  leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+                  leading: Icon(
                     Icons.new_releases,
                     color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
-              ),
-              content: Row(
+                  ),
+                  content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
@@ -955,72 +954,70 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                         ],
                       )
                     ],
-              ),
-              actions: const [SizedBox()],
-            ),
                   ),
-                )),
+                  actions: const [SizedBox()],
+                ),
+              ),
+            )),
 
           //New Ref sheets
           if (context.watch<StateProvider>().refSheetsUpdateAvailable)
-          ScaffoldMessenger(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 3),
-                child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).hintColor
+            ScaffoldMessenger(
+                child: Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor),
                 ),
-            ),
-            child: MaterialBanner(
-                backgroundColor: Theme.of(context).canvasColor,
-                elevation: 0,
-                padding: const EdgeInsets.all(0),
-                leadingPadding: const EdgeInsets.only(left: 15, right: 5),
-                leading: Icon(
-                  Icons.newspaper,
-                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                child: MaterialBanner(
+                  backgroundColor: Theme.of(context).canvasColor,
+                  elevation: 0,
+                  padding: const EdgeInsets.all(0),
+                  leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+                  leading: Icon(
+                    Icons.newspaper,
+                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (context.watch<StateProvider>().refSheetsCount < 1)
+                        Text(
+                          curLangText!.itemRefUpdateAvailableText,
+                          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                        ),
+                      if (context.watch<StateProvider>().refSheetsCount > 0)
+                        Text(
+                          '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} ${localRefSheetsList.length}',
+                          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                        ),
+                      ElevatedButton(
+                          onPressed: context.watch<StateProvider>().refSheetsCount < 1
+                              ? (() {
+                                  //Indexing files
+
+                                  for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                                    localRefSheetsList.add(file.path);
+                                  }
+
+                                  downloadNewRefSheets(context, localRefSheetsList).then((_) async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                                    //print('complete');
+                                    Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+                                    Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+                                  });
+
+                                  setState(() {});
+                                })
+                              : null,
+                          child: Text(curLangText!.downloadUpdateBtnLabel)),
+                    ],
+                  ),
+                  actions: const [SizedBox()],
                 ),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (context.watch<StateProvider>().refSheetsCount < 1)
-                      Text(
-                        curLangText!.itemRefUpdateAvailableText,
-                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                      ),
-                    if (context.watch<StateProvider>().refSheetsCount > 0)
-                      Text(
-                        '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} ${localRefSheetsList.length}',
-                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
-                      ),
-                    ElevatedButton(
-                        onPressed: context.watch<StateProvider>().refSheetsCount < 1 
-                        ? (() {
-                          //Indexing files
-
-                          for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
-                            localRefSheetsList.add(file.path);
-                          }
-
-                          downloadNewRefSheets(context, localRefSheetsList).then((_) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            prefs.setInt('refSheetsVersion', refSheetsNewVersion);
-                            //print('complete');
-                            Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
-                            Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
-                          });
-
-                          setState(() {});
-                        })
-                        : null,
-                        child: Text(curLangText!.downloadUpdateBtnLabel)),
-                  ],
-                ),
-                actions: const [SizedBox()],
-            ),
-          ),
-              )),
+              ),
+            )),
 
           Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
