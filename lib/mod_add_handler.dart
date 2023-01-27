@@ -375,7 +375,7 @@ void modAddHandler(context) {
                                                           children: [
                                                             Text(
                                                               curLangText!.errorLoadingRestartApp,
-                                                              style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color, fontSize: 20),
+                                                              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                             ),
                                                           ],
                                                         ),
