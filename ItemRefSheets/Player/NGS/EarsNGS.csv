@@ -1,35 +1,34 @@
-﻿Japanese Name,English Name,Id,Adjusted Id,Icon,Normal Quality,High Quality,Normal Quality RP,High Quality RP,Linked Inner,HQ Linked Inner,Sounds,Cast Sounds,Material Anim,Material Anim Ex,Hand Textures,HQ Hand Textures
-ヒュマーノイヤー,Human Ears,100000,0,65b2b4ff4fc79323fd95ef5fea91a32b,ecb68eec86bec9fe8ed53a94bd12b6b9,,,,,,,,,,,
-ニュマーノイヤー,Newman Ears,100010,0,271d43c44393a1d1c83b4f488fb08558,ebbe0924685d08e6bdda93ac57bec523,,,,,,,,,,,
-ロンガニュマーノイヤー,Long Newman Ears,100020,0,8c5084a27053102b503bd7847f94817a,f0cfb2f1772a28dd7c446ee9f1e2ae81,,,,,,,,,,,
-ロンガニュマーノイヤー/B,Long Newman Ears/B,100021,0,c2b6efe5fbd4df42ec5226662a5db43e,5685437113077ad82e40159796833564,,,,,,,,,,,
-キャスティノインカム,CAST Headset,100030,0,81cf42b43340c0ebf6e6a20e09fcdaa6,77405c70bd9f9002d261884eef5101a4,,,,,,,,,,,
-ロンガジャラットイヤー,Jangler Ears,100040,0,f6e45003549926239b67b9d33924a16d,2decc97df9cf6d048051edcaa48b23cf,,,,,,,,,,,
-ネレスノイヤー,Nereus Ears,100050,0,594b701955153da88a8e9aa67b14303a,3cdf291587172d1381c87c6bba632a09,,,,,,,,,,,
-スヴェーライヤー,Svela Ears,100060,0,f628f3de73b3933e840dcd9923fdc50c,43330e734b1dd5f5cfe4b0ec26a506a3,,,,,,,,,,,
-ラウンドイヤー,Round Ears,100070,0,b4685a0f4494f3f1db414c38b145a44e,5077b5c4f59bb9ded6acb16ef8fcf3c9,,,,,,,,,,,
-ピアッシングイヤー,Pierced Ears,100090,0,631b30454441764fd7cb5d2941399d42,d874cc71b2b138727940576c04db8980,,,,,,,,,,,
-ピピストイヤー,Pipistrello Ears,100100,0,0c6e8b39fffa2675ab5ce7184bc2e0e9,0c901366311ebe6d9b9fc1617355070a,,,,,,,,,,,
-ピピストイヤー/2,Pipistrello Ears/2,100101,0,4f4eac5938e8ee49dbb1aaebddf3d029,2a977c8644293de83bcf5b50799c3f2d,,,,,,,,,,,
-ゲツエイインカム,Moonlight Headset,100110,0,5890d08d0a8b8b2df4c95a67deb670fc,df6b14e1ebadc32fab98bb2fc51268f0,,,,,,,,,,,
-スリムヒュマーノイヤー,Slim Human Ears,100120,0,aa35a65a89de42e18b4149503ce10904,64a87ebcd9b733907a1a48c0de7c0231,,,,,,,,,,,
-エルフィンイヤー,Elven Ears,100130,0,85c963c2b3e05f85d679326a4407586a,4d202206de6eee9c139734ffdd5e4404,,,,,,,,,,,
-ケモーネイヤー,Kemone Ears,100140,0,6370e4831f75573c156d620fb04b8624,63e28072e25652fb29b6cec9c2a7b6d9,,,,,,,,,,,
-ケモーネイヤー/B,Kemone Ears/B,100141,0,daabfb599ab70810a6f8fc193dc457c9,82cc0b8ca899db65fd9f5a95fdf1ad56,,,,,,,,,,,
-ロンガキャスティノイヤー,Long CAST Ears,100150,0,70dbe9b45a14ead4bc6ca845e8c1b5ef,dbc9a899ab8fd5040c17731b04cb4d2c,,,,,,,,,,,
-ノイズキャンセルイヤー,Noise Cancelling Earbuds,100160,0,3a2a006c9e6acf068d618ed89b1a0095,f28be2c10edac31e7237abe7b724d8cc,,,,,,,,,,,
-ノイズキャンセルイヤー/B,Noise Cancelling Earbuds/B,100161,0,b2667634aabba874c5c7b5e3c9b3eb83,166d3dcd89b5a298ad48d1bc1ee2150e,,,,,,,,,,,
-ブラッシングイヤー,Blushing Ears,100170,0,e0967895706fad87c56badc421687417,568bf68e6a3430b450ce4dfbecf089d7,,,,,,,,,,,
-マシーネキトゥンイヤー,Machine Kitten Ears,100180,0,1d98e615748359f98f7d08a5ad5f1a57,9a2a6c704aff21465e0af9e7ef4f6bbc,,,,,,,,,,,
-マシーネキトゥンイヤー/B,Machine Kitten Ears/B,100181,0,a81033a2d15cb3771a3aea2d86f889fe,d2a61a76c512fb3773b4212b73ba00b3,,,,,,,,,,,
-ファルーテイヤー,Falte Ears,100190,0,724506cf16d7dc673f3436b540c09183,1521ea667f66bc4b25c5baf45e25004d,,,,,,,,,,,
-ウルフェンイヤー/B,Wolf Ears/B,100200,0,caf40b601fd235e45b3aa83596b271c4,faf92ce6fe60ceddb567769266d2e429,,,,,,,,,,,
-ウルフェンイヤー,Wolf Ears,100201,0,a77607cbbbb7003bb918cbed23d66bf7,bd42ca4f3315cf7b55b5334002bb2baa,,,,,,,,,,,
-フロリアーネイヤー,Florial Ears,100210,0,6aeb2dbdfdc7c4fd557693fa2e03c06d,7de6fedf3fd2e585d134ee109a04b5c5,,,,,,,,,,,
-マシーネラパンナイヤー,Machine Lapin Ears,100220,0,3e8a4b2fb1ae0a25875bc6afc3d84e84,e416ca74001dc18f084dff17497556bd,,,,,,,,,,,
-マシーネラパンナイヤー/B,Machine Lapin Ears/B,100221,0,9e4e5e403441630c75a62a9b0bc5eeb2,0554cb00daf0d15722f82aafe74922ae,,,,,,,,,,,
-バードウィングイヤー,Bird Wing Ears,100230,0,00d92c8c8ef7c93dd9d33eb50580e9c9,f5edfc3edf3d158f857e96173cb0855d,,,,,,,,,,,
-,,299900,0,,,,,,,,,,,,,
-,,299901,0,,,,,,,,,,,,,
-,,299902,0,,,,,,,,,,,,,
-,,299903,0,,,,,,,,,,,,,
+ヒュマーノイヤー,Human Ears,100000,ecb68eec86bec9fe8ed53a94bd12b6b9,65b2b4ff4fc79323fd95ef5fea91a32b
+ニュマーノイヤー,Newman Ears,100010,ebbe0924685d08e6bdda93ac57bec523,271d43c44393a1d1c83b4f488fb08558
+ロンガニュマーノイヤー,Long Newman Ears,100020,f0cfb2f1772a28dd7c446ee9f1e2ae81,8c5084a27053102b503bd7847f94817a
+ロンガニュマーノイヤー/B,Long Newman Ears/B,100021,5685437113077ad82e40159796833564,c2b6efe5fbd4df42ec5226662a5db43e
+キャスティノインカム,CAST Headset,100030,77405c70bd9f9002d261884eef5101a4,81cf42b43340c0ebf6e6a20e09fcdaa6
+ロンガジャラットイヤー,Jangler Ears,100040,2decc97df9cf6d048051edcaa48b23cf,f6e45003549926239b67b9d33924a16d
+ネレスノイヤー,Nereus Ears,100050,3cdf291587172d1381c87c6bba632a09,594b701955153da88a8e9aa67b14303a
+スヴェーライヤー,Svela Ears,100060,43330e734b1dd5f5cfe4b0ec26a506a3,f628f3de73b3933e840dcd9923fdc50c
+ラウンドイヤー,Round Ears,100070,5077b5c4f59bb9ded6acb16ef8fcf3c9,b4685a0f4494f3f1db414c38b145a44e
+ピアッシングイヤー,Pierced Ears,100090,d874cc71b2b138727940576c04db8980,631b30454441764fd7cb5d2941399d42
+ピピストイヤー,Pipistrello Ears,100100,0c901366311ebe6d9b9fc1617355070a,0c6e8b39fffa2675ab5ce7184bc2e0e9
+ピピストイヤー/2,Pipistrello Ears/2,100101,2a977c8644293de83bcf5b50799c3f2d,4f4eac5938e8ee49dbb1aaebddf3d029
+ゲツエイインカム,Moonlight Headset,100110,df6b14e1ebadc32fab98bb2fc51268f0,5890d08d0a8b8b2df4c95a67deb670fc
+スリムヒュマーノイヤー,Slim Human Ears,100120,64a87ebcd9b733907a1a48c0de7c0231,aa35a65a89de42e18b4149503ce10904
+エルフィンイヤー,Elven Ears,100130,4d202206de6eee9c139734ffdd5e4404,85c963c2b3e05f85d679326a4407586a
+ケモーネイヤー,Kemone Ears,100140,63e28072e25652fb29b6cec9c2a7b6d9,6370e4831f75573c156d620fb04b8624
+ケモーネイヤー/B,Kemone Ears/B,100141,82cc0b8ca899db65fd9f5a95fdf1ad56,daabfb599ab70810a6f8fc193dc457c9
+ロンガキャスティノイヤー,Long CAST Ears,100150,dbc9a899ab8fd5040c17731b04cb4d2c,70dbe9b45a14ead4bc6ca845e8c1b5ef
+ノイズキャンセルイヤー,Noise Cancelling Earbuds,100160,f28be2c10edac31e7237abe7b724d8cc,3a2a006c9e6acf068d618ed89b1a0095
+ノイズキャンセルイヤー/B,Noise Cancelling Earbuds/B,100161,166d3dcd89b5a298ad48d1bc1ee2150e,b2667634aabba874c5c7b5e3c9b3eb83
+ブラッシングイヤー,Blushing Ears,100170,568bf68e6a3430b450ce4dfbecf089d7,e0967895706fad87c56badc421687417
+マシーネキトゥンイヤー,Machine Kitten Ears,100180,9a2a6c704aff21465e0af9e7ef4f6bbc,1d98e615748359f98f7d08a5ad5f1a57
+マシーネキトゥンイヤー/B,Machine Kitten Ears/B,100181,d2a61a76c512fb3773b4212b73ba00b3,a81033a2d15cb3771a3aea2d86f889fe
+ファルーテイヤー,Falte Ears,100190,1521ea667f66bc4b25c5baf45e25004d,724506cf16d7dc673f3436b540c09183
+ウルフェンイヤー/B,Wolf Ears/B,100200,faf92ce6fe60ceddb567769266d2e429,caf40b601fd235e45b3aa83596b271c4
+ウルフェンイヤー,Wolf Ears,100201,bd42ca4f3315cf7b55b5334002bb2baa,a77607cbbbb7003bb918cbed23d66bf7
+フロリアーネイヤー,Florial Ears,100210,7de6fedf3fd2e585d134ee109a04b5c5,6aeb2dbdfdc7c4fd557693fa2e03c06d
+マシーネラパンナイヤー,Machine Lapin Ears,100220,e416ca74001dc18f084dff17497556bd,3e8a4b2fb1ae0a25875bc6afc3d84e84
+マシーネラパンナイヤー/B,Machine Lapin Ears/B,100221,0554cb00daf0d15722f82aafe74922ae,9e4e5e403441630c75a62a9b0bc5eeb2
+￥耳：大振り羽耳,,100230,f5edfc3edf3d158f857e96173cb0855d, (Not found),00d92c8c8ef7c93dd9d33eb50580e9c9, (Not found)
+[Unnamed 299900],,299900,2313f5c2ca2d2c69590feac5a550b18e, (Not found),199d2cda631d77390fed5f833efcf422, (Not found)
+[Unnamed 299901],,299901,669f84941d939834028e577c71eacea4, (Not found),c3653185317601e4ef0cf16a2895d0ce, (Not found)
+[Unnamed 299902],,299902,1201d48bd06862b39df691f93a17a148, (Not found),cc7a60ba1ff5ddeed16f325e8275df29, (Not found)
+[Unnamed 299903],,299903,6b26e73cd6220aad62b19504c2930680, (Not found),c1b372f823b082c45623fc96661544c6, (Not found)

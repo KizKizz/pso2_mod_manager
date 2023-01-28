@@ -1,108 +1,77 @@
-﻿Japanese Name,English Name,Id,Adjusted Id,Icon,Normal Quality,High Quality,Normal Quality RP,High Quality RP,Linked Inner,HQ Linked Inner,Sounds,Cast Sounds,Material Anim,Material Anim Ex,Hand Textures,HQ Hand Textures
-キリットアイ,Neat Eyes,100000,0,e4f992c4596ce097fd13ac9ebf598cce,796f6891566faf4983d6b57b533187b2,,,,,,,,,,,
-パワフルアイ,Powerful Eyes,100010,0,f3570807c3d1275d0159fac2b9f18af2,2f5595169d620bdba9ce5825cb720659,,,,,,,,,,,
-ブライトアイ,Clear Eyes,100020,0,b4f5b8e6d56a7dcbaa8442652f056c54,3edc77828e4bcffe20f54a5a0ea67acf,,,,,,,,,,,
-レプタイルアイ,Reptilian Eyes,100030,0,0dec5ea099ff02e8ac5ae3f68327847f,2bff3e64c123ba7f9366435d4c738e3d,,,,,,,,,,,
-グラントアイ,Fierce Eyes,100040,0,70285e855939cf83302cd0294826b252,8e08f2684944c31d497ffdf9c8044de2,,,,,,,,,,,
-イラスティカアイ/C,Illustratica Eyes/C,100050,0,ac3b7a7c2a8ae4b6a3dd6c97e0223dd4,8101d7f4b215a844ba44d0d9ed1ee32e,,,,,,,,,,,
-,,100060,0,ddc940bbecce82d78dfb49a45394a4f3,d9ac2bf5cef39786854fa48f26c728d7,,,,,,,,,,,
-ピッカリアイ,Picari Eyes,100070,0,0446b0000fd8ebcf40cc64c5ad272861,2195b15fd223058b72b0aeb3960f43bf,,,,,,,,,,,
-ヒュマーノアイ,Human Eyes,100080,0,f334e7650ad6980e8c64cc4199541e5a,cac8003705f979d77d3db90808b57812,,,,,,,,,,,
-ヒュマーノアイ/B,Human Eyes/B,100090,0,e9578d0ba85ed0aa9ebf58e65508e708,64937797331ff3117498ad3b9c44ff4a,,,,,,,,,,,
-ヒュマーノアイ/C,Human Eyes/C,100100,0,70f89becd6cbd34cbdfcf644a4b88706,2c828bf6d83e8208944f994b2770fb2d,,,,,,,,,,,
-キャスティノアイ,CAST Eyes,100110,0,e3775ed6c9d4954fababc7e709aee9cb,a1a6ec19992e44ffe781aa3b825af4a7,,,,,,,,,,,
-キャスティノアイ/B,CAST Eyes/B,100120,0,1610ee2471bcd8e84884f91395137724,c1739b602ef216e81a52b40c04a8c196,,,,,,,,,,,
-デュマーノアイ,Deuman Eyes,100130,0,2cc4b976e83e7897a6161768c959bfc6,1bea2cf0a49b3d725835632181758025,,,,,,,,,,,
-アニマティカアイ,Animatica Eyes,100140,0,f134ee933a732e7a9d201e8b800832bb,466d2f9a9156e18701f8c8db0fec32e8,,,,,,,,,,,
-カートゥンアイ,Cartoon Eyes,100150,0,40ea6c84fa13a546474815dab790339e,a58d8b74339738148d6f9c7dff2cec09,,,,,,,,,,,
-アニマティカアイ/B,Animatica Eyes/B,100160,0,dc29c85d15fc37d4c2cafe92b783cdcd,98ee7485fa72c1b3482595d5249198dd,,,,,,,,,,,
-バンデシニーアイ,Bandessinee Eyes,100170,0,49472f4a6bc4744a9446090e88b1a00b,59936e3263d0f8abb5d2aff04195ad8f,,,,,,,,,,,
-アニマティカアイ/C,Animatica Eyes/C,100180,0,5e8e8a38db0d3cd3bbfd398224a92f95,3663f8614d5acfbb755b4563a34787ae,,,,,,,,,,,
-イラスティカアイ,Illustratica Eyes,100190,0,b2df36332c4605e009bc2d7fb19d88c4,f616ec9813ea6b44e1ec4c3c6f4e8edc,,,,,,,,,,,
-イラスティカアイ/B,Illustratica Eyes/B,100200,0,e8c9e875be7fa9cac00b141f250eb442,6e5cd3402431927f6186ebdaabe720dc,,,,,,,,,,,
-ルシオーラアイ,Lucciola Eyes,100210,0,cfe6d92a67617cb3d50f8e7952871285,dee96159833912aaccb3d51e2ad09b8e,,,,,,,,,,,
-クッキリクローノアイ,Sharp Raven Eyes,100220,0,53a196f18db48454dd7b270713fe3ddb,b633f17068f10d4207a7ac1ba9bc5c86,,,,,,,,,,,
-アイノサクネアイ,Ainblum Eyes,100230,0,8a6bc4aa12f53070051d03b57a758caf,15955744921b9aed845445a83d084d81,,,,,,,,,,,
-￥[NPC]セントラルリーダー瞳,,100240,0,,ef562b4bbe7f04c7b13b1b7af5ba8bdd,,,,,,,,,,,
-,,100250,0,,b9b80e31c6537d4c2bdecea8daa3a319,,,,,,,,,,,
-,,100260,0,,46148b77922326715ddfc1dc206c78e2,,,,,,,,,,,
-,,100270,0,,,,,,,,,,,,,
-,,100280,0,,,,,,,,,,,,,
-,,100290,0,,d22c11965839e98ec71109ccf931df7e,,,,,,,,,,,
-バンデシニーアイ/B,Bandessinee Eyes/B,100300,0,b8027ca95760a2c7a2a3b717f14ce273,a781c05a8c081aa09f7e883d7ffa53ee,,,,,,,,,,,
-カートゥンアイ/B,Cartoon Eyes/B,100310,0,2dc090130648ffbcfb394c6c2bfb3164,b1449dcc878fec6b134fa07205775acf,,,,,,,,,,,
-イラスティカアイ/D,Illustratica Eyes/D,100320,0,5d8d38d0ac5c5c290e8bdbb21afeaca3,8898935174e157e0f0859dc7dde902be,,,,,,,,,,,
-ルシオーラアイ/B,Lucciola Eyes/B,100330,0,c274a4fa9084bdc97518ba4af01d5eff,eb408aa8a81d4ae90b282432ad40a8d2,,,,,,,,,,,
-ジットリアイ,Bleary Eyes,100340,0,a635ced0588fe8d75042cdf318919c0b,0a96cdb9238699e9df6aae99e3190d1d,,,,,,,,,,,
-,,100350,0,,e415a01159d161da50763a4cf7a80126,,,,,,,,,,,
-バンデシニーアイ/C,Bandessinee Eyes/C,100360,0,b543eac4fe5efb2c757b385ac74e4912,6ffe877d158fcbfffcb45d530746005d,,,,,,,,,,,
-イラスティカアイ/E,Illustratica Eyes/E,100370,0,25d3e91002d70037b490bf41defe85fa,55356bfe7392d0d025fed2f832f67b94,,,,,,,,,,,
-ウォータリーアイ,Watery Eyes,100380,0,11236cda2d7b2cfa53b371b580d9c4f6,f46e90b2851406593dde81a954bcdc89,,,,,,,,,,,
-カートゥンアイ/C,Cartoon Eyes/C,100390,0,bbabb2ab75888606d1ecacdac1926d11,6d998b98dc89916b5e7adc8696902fb4,,,,,,,,,,,
-イラスティカアイ/F,Illustratica Eyes/F,100400,0,2e2c6fd5ab1e54c55364991611fb1338,827d0e760d1393ac41a38b459efba4b6,,,,,,,,,,,
-,,100410,0,,a40bd151a47d6ae86e9b7f3e86a37350,,,,,,,,,,,
-,,100420,0,,ebb5f65a47f9934451e3848f7d4f88aa,,,,,,,,,,,
-パッチリアイ,Bright Eyes,100440,0,10e8b3e27b3a01c5f292334160bd0b29,8882ea9beb0a1541d7f15ccb2989369b,,,,,,,,,,,
-￥100440の白目明るい版,,100450,0,,2ab1caf4484b5b4bdf87ba818b41efcf,,,,,,,,,,,
-ヤミオチアイ,Darkfall Eyes,100460,0,fffbb2b85b92209449629e3e9e91cdb4,6b2492f0af83850059fd189a513376a3,,,,,,,,,,,
-,,100470,0,,1c9bbb5e8d1d2e68ee516068b9191b06,,,,,,,,,,,
-シャイニーアイ,Shiny Eyes,100480,0,64c8d96e735178bfb95e09747684ce82,fba0e2612b9c0788254254fdc6eda7d4,,,,,,,,,,,
-ドッキリアイ,Smitten Eyes,100490,0,7ff2f25e7e8755241b5f169130ef1518,bc68afc45915fceecc1d9024a2179ff8,,,,,,,,,,,
-シャイニーハートアイ,Shiny Heart Eyes,100500,0,03c2ee086478ae9d85edf555a4ecaa2e,6cd30e43a56e607e9b6febca4fb8914f,,,,,,,,,,,
-ダークライトアイ,Dark Glowing Eyes,100510,0,37d9a8bae4fde7f7b7daa50d2e80eaa1,b4e0b89d25b3212961e3f6c33df02431,,,,,,,,,,,
-ダークブラッドアイ,Dark Blood Eyes,100520,0,b3e4536405da8b3833d545f71c83e066,f8a3eb2df6ec171dad94a45ef9168c13,,,,,,,,,,,
-デモニカアイ,Demonica Eyes,100530,0,116f3ce1c0a014363d3049748f86bf98,a37dfb083cd81a3d12ab412a73c9b2c6,,,,,,,,,,,
-ピンクハートアイ,Pink Heart Eyes,100540,0,fbdb73a59179136ff8fbc7c81768de15,afcf3054cfaf87bbc05909164243f951,,,,,,,,,,,
-サンレスアイ,Sunless Eyes,100550,0,3b38e92411f52f854dfd1b3edcdca7a3,4905ef43e9405d3f56e005b13f9ab22c,,,,,,,,,,,
-キトゥンアイ,Kitten Eyes,100560,0,e9ef058cf1121d171c7a86b8db429afb,f7ecba606251d3cdbecd54e5960db240,,,,,,,,,,,
-ダイヤモンドカットアイ,Diamond Cut Eyes,100570,0,01f06576acfe28a43ddd03c59975a7b4,3e054a945411ac44c2ce615149a671de,,,,,,,,,,,
-シンクローナアイ,Synchronous Eyes,100580,0,fb5709f25c408c607053300912e911ea,2ba12df12bff5816fef36cd7b0c4c7ff,,,,,,,,,,,
-グラデートアイ,Gradated Eyes,100590,0,1056f9b2e25b811371452ff0bf97be59,ac281391382ddb5c26fda86f2df7323e,,,,,,,,,,,
-グラスボールアイ,Glass Ball Eyes,100600,0,80b74bfc8db6953607c29181acab4a68,5b8352f502922c941ca540a4ddd5184a,,,,,,,,,,,
-スクエアライトアイ,Lattice Highlight Eyes,100610,0,b7d50785e2d3121e8a3a8cb0434ecfb3,e5ca50d013d7a438a4dbad3a10d09e2a,,,,,,,,,,,
-ルシオーラアイ/C,Lucciola Eyes/C,100620,0,909a013347052f60e49ee27253340155,50d5196436d5a3624642116b3231894d,,,,,,,,,,,
-シャイニークッキリアイ,Shiny Sharp Eyes,100630,0,112c7a6597b46ab5da3f54aca48a37e5,358477b1cae95c6f5cd04588b0ed8900,,,,,,,,,,,
-リップルアイ,Ripple Eyes,100640,0,0183219ebf84073f4a7345ab3c939bd7,d2c631ad01e2907a507f53f1d42f469f,,,,,,,,,,,
-N-スターダストアイ,N-Stardust Eyes,100650,0,9aea96311e4db49603d6518d386b5365,a6c0a45ec36ac7a7897c908153a8d4ec,,,,,,,,,,,
-キラボシアイ,Twinkly Star Eyes,100660,0,52a1534bf31c096563da4e787a27c3c7,f4da7d49b2c649d8c34d23ade5bd4fd9,,,,,,,,,,,
-ミルキーウェイアイ,Milky Way Eyes,100670,0,ee5eb200c2eac5bf52a7e22ede207d91,fefad7c8a81d393dff4ab1caca3cf322,,,,,,,,,,,
-,,100680,0,,,,,,,,,,,,,
-,,100690,0,,,,,,,,,,,,,
-ハートルシオーラアイ,Heart Lucciola Eyes,100700,0,61a5a8174734b39de34563df85e59d71,6935b8e8a73de2211ee2965dfb44227c,,,,,,,,,,,
-シャイニーライトアイ,Shining Light Eyes,100710,0,228aa515c97c11c9f3883aec0569e72b,6f0d070a8bb056689f119f7f7509d30d,,,,,,,,,,,
-レッドサークルアイ,Red Circle Eyes,100720,0,3850249ceba6d61a22011a5ae8336671,62dd9dba4517cb7059d80ae1fb1108a5,,,,,,,,,,,
-ディープダークアイ,Deep Dark Eyes,100730,0,4db777af8a17a840a0185c5f5804e69f,f9a0233fb3e8c4591fc64d4a773834a4,,,,,,,,,,,
-クレセントムーンアイ,Crescent Moon Eyes,100740,0,386720acf5c4d3cd453f8023cc65b420,bf9d0905b64b57b041358c94ae050359,,,,,,,,,,,
-ビビッドライトアイ,Vivid Light Eyes,100750,0,e7e11a7d284acf9fa3258c048f2f1985,3585deca542b4aab30c1d1dbe7c5a010,,,,,,,,,,,
-レッドピューポルアイ,Red Pupil Eyes,100760,0,1194e458c54ece6b36374c0bf0d6d322,d8613702d516a3987329dc6eb41dd808,,,,,,,,,,,
-ヤミオチアイ/B,Darkfall Eyes/B,100770,0,b842fd61de73831a1b57ce96b7b0217f,b767010244fe381a97d1e553c1ece88e,,,,,,,,,,,
-ウルルンアイ,Shimmering Eyes,100780,0,b77b25a4ea9af35c100d62af428f2e92,7853abd03f087d3dd423001948b4f485,,,,,,,,,,,
-,,100790,0,,,,,,,,,,,,,
-,,100800,0,,,,,,,,,,,,,
-コスモティカアイ,Cosmotica Eyes,100810,0,14572082e7905c4d157a0093c5d5fac0,de15c5a61ed817eccb163aaad3aa4e7d,,,,,,,,,,,
-スキトールアイ,Transparent Eyes,100820,0,a6924bc4278ba6f302d9c5a19e2efe00,9c379b03c51ee75ae64f2c508264ad2c,,,,,,,,,,,
-カヌルーイアイ,Kanrui Eyes,100830,0,86006f88e980e0555c725dbca4222065,75d8b8717e074b8ce11c5918ea79cf3f,,,,,,,,,,,
-ポポロンアイ,Popolon Eyes,100840,0,4256ed3f9715af043f312fdc7239ea21,a6cd1d7c0f49068539816ddda8acd366,,,,,,,,,,,
-ルシオーラアイ/D,Lucciola Eyes/D,100860,0,262979b43e2d8de5a93a86f04932a893,8441880b9ed3f4615d36f338a256820b,,,,,,,,,,,
-イラスティカアイ/G,Illustratica Eyes/G,100870,0,2414a026399311c88e41cfc6ef3256de,d190e7b9bcde096bd9f834e0af6f2c95,,,,,,,,,,,
-スターライトアイ,Starlight Eyes,100880,0,939c79a68c2b39e828ff8ab39dade214,5e48732d198df96f9e638d0c9a00a00c,,,,,,,,,,,
-プレシャスストーンアイ,Precious Stone Eyes,100890,0,e21783582c0c90f586e84e48c6ce00d4,19456fbbf7ddf134a852cae3e0a946ce,,,,,,,,,,,
-ルミナスエックスアイ,Luminous X Eyes,100900,0,ef3ca0892d9aca6537c44794fc57c198,ffe19673bab7f0a5c892e1f8576f2820,,,,,,,,,,,
-ダークホロウアイ,Dark Socket Eyes,100910,0,4c0c393c25a0703c5b798e33f42ef47f,d105b06c5468574f9555c8dac1df5d81,,,,,,,,,,,
-コンセントリックサークルアイ,Concentric Circles Eyes,100920,0,169c18fae822b9e06149ca938e5fa2e4,2527a850692ad5d89db32cde914243e0,,,,,,,,,,,
-デモニカアイ/B,Demonica Eyes/B,100930,0,43e302e840c6530b6d90eecf6904bb88,1c251d08ed3c4c534f724ff97ca0a761,,,,,,,,,,,
-ポップピューポアイ,Pop Pupil Eyes,100940,0,f3caa9dd973d70bcfad6cd8e0fb90209,e3eb297c0dc82390952356f5f916aed1,,,,,,,,,,,
-N-オービットアイ,N-Orbit Eyes,100950,0,4230ac3e7a580fa1aa7f0d34a2ea09c1,82f81f2f1fc677ba3ba7871139932724,,,,,,,,,,,
-フレームハートアイ,Heart Outline Eyes,100960,0,d6c410f52e4d9c3cccc82ec55a0280b5,508d16faa28944235a24c1098c4ee8c5,,,,,,,,,,,
-シングルカラーアイ,Solid Colored Eyes,100970,0,4a6619bfb61b407aa6f9129ed6eb7c30,abd533a2dbbd9ce6ad067eacf8c49b84,,,,,,,,,,,
-グラデキャットアイ,Gradient Cat Eyes,100980,0,a0bfacda878bbec4dad8f089021cf883,02434281344e0a412f10c08571e83347,,,,,,,,,,,
-ボーゼンアイ,Dazed Eyes,100990,0,d1b7a1727f4c3e6ba876227a322ef834,3a8d39d98ef86c2aff407dfea78b5a17,,,,,,,,,,,
-メニーサークルアイ,Lots of Circles Eyes,101000,0,805b404f658c0054d7a9f64bbd1f3a31,51fce0a60de1d3f0d9bcdef54fdb9f23,,,,,,,,,,,
-クリアリーアイ,Lucid Eyes,101010,0,9e00bc98b8c73fabec9a4b86ed5738ce,086bf593dfb90379fb2e91381754d83a,,,,,,,,,,,
-グロースターアイ,Glow Star Eyes,101020,0,b87ab5338b7d05318531f90cf6b03a70,b3a5ad73eaa38ff3fe38e701f3f6d820,,,,,,,,,,,
-,,199900,0,,5466e4015286c7350f13c531f4a73458,,,,,,,,,,,
-,,199901,0,,,,,,,,,,,,,
-,,199902,0,,,,,,,,,,,,,
-,,199903,0,,,,,,,,,,,,,
-,,199904,0,,,,,,,,,,,,,
-,,299900,0,,,,,,,,,,,,,
+キリットアイ,Neat Eyes,100000,796f6891566faf4983d6b57b533187b2,e4f992c4596ce097fd13ac9ebf598cce
+パワフルアイ,Powerful Eyes,100010,2f5595169d620bdba9ce5825cb720659,f3570807c3d1275d0159fac2b9f18af2
+ブライトアイ,Clear Eyes,100020,3edc77828e4bcffe20f54a5a0ea67acf,b4f5b8e6d56a7dcbaa8442652f056c54
+レプタイルアイ,Reptilian Eyes,100030,2bff3e64c123ba7f9366435d4c738e3d,0dec5ea099ff02e8ac5ae3f68327847f
+グラントアイ,Fierce Eyes,100040,8e08f2684944c31d497ffdf9c8044de2,70285e855939cf83302cd0294826b252
+イラスティカアイ/C,Illustratica Eyes/C,100050,8101d7f4b215a844ba44d0d9ed1ee32e,ac3b7a7c2a8ae4b6a3dd6c97e0223dd4
+ピッカリアイ,Picari Eyes,100070,2195b15fd223058b72b0aeb3960f43bf,0446b0000fd8ebcf40cc64c5ad272861
+ヒュマーノアイ,Human Eyes,100080,cac8003705f979d77d3db90808b57812,f334e7650ad6980e8c64cc4199541e5a
+ヒュマーノアイ/B,Human Eyes/B,100090,64937797331ff3117498ad3b9c44ff4a,e9578d0ba85ed0aa9ebf58e65508e708
+ヒュマーノアイ/C,Human Eyes/C,100100,2c828bf6d83e8208944f994b2770fb2d,70f89becd6cbd34cbdfcf644a4b88706
+キャスティノアイ,CAST Eyes,100110,a1a6ec19992e44ffe781aa3b825af4a7,e3775ed6c9d4954fababc7e709aee9cb
+キャスティノアイ/B,CAST Eyes/B,100120,c1739b602ef216e81a52b40c04a8c196,1610ee2471bcd8e84884f91395137724
+デュマーノアイ,Deuman Eyes,100130,1bea2cf0a49b3d725835632181758025,2cc4b976e83e7897a6161768c959bfc6
+アニマティカアイ,Animatica Eyes,100140,466d2f9a9156e18701f8c8db0fec32e8,f134ee933a732e7a9d201e8b800832bb
+カートゥンアイ,Cartoon Eyes,100150,a58d8b74339738148d6f9c7dff2cec09,40ea6c84fa13a546474815dab790339e
+アニマティカアイ/B,Animatica Eyes/B,100160,98ee7485fa72c1b3482595d5249198dd,dc29c85d15fc37d4c2cafe92b783cdcd
+バンデシニーアイ,Bandessinee Eyes,100170,59936e3263d0f8abb5d2aff04195ad8f,49472f4a6bc4744a9446090e88b1a00b
+アニマティカアイ/C,Animatica Eyes/C,100180,3663f8614d5acfbb755b4563a34787ae,5e8e8a38db0d3cd3bbfd398224a92f95
+イラスティカアイ,Illustratica Eyes,100190,f616ec9813ea6b44e1ec4c3c6f4e8edc,b2df36332c4605e009bc2d7fb19d88c4
+イラスティカアイ/B,Illustratica Eyes/B,100200,6e5cd3402431927f6186ebdaabe720dc,e8c9e875be7fa9cac00b141f250eb442
+ルシオーラアイ,Lucciola Eyes,100210,dee96159833912aaccb3d51e2ad09b8e,cfe6d92a67617cb3d50f8e7952871285
+クッキリクローノアイ,Sharp Raven Eyes,100220,b633f17068f10d4207a7ac1ba9bc5c86,53a196f18db48454dd7b270713fe3ddb
+アイノサクネアイ,Ainblum Eyes,100230,15955744921b9aed845445a83d084d81,8a6bc4aa12f53070051d03b57a758caf
+￥[NPC]セントラルリーダー瞳,,100240,ef562b4bbe7f04c7b13b1b7af5ba8bdd,2ab3da6f4b628d412fdc29eb6b0e3c7d, (Not found)
+バンデシニーアイ/B,Bandessinee Eyes/B,100300,a781c05a8c081aa09f7e883d7ffa53ee,b8027ca95760a2c7a2a3b717f14ce273
+カートゥンアイ/B,Cartoon Eyes/B,100310,b1449dcc878fec6b134fa07205775acf,2dc090130648ffbcfb394c6c2bfb3164
+イラスティカアイ/D,Illustratica Eyes/D,100320,8898935174e157e0f0859dc7dde902be,5d8d38d0ac5c5c290e8bdbb21afeaca3
+ルシオーラアイ/B,Lucciola Eyes/B,100330,eb408aa8a81d4ae90b282432ad40a8d2,c274a4fa9084bdc97518ba4af01d5eff
+ジットリアイ,Bleary Eyes,100340,0a96cdb9238699e9df6aae99e3190d1d,a635ced0588fe8d75042cdf318919c0b
+バンデシニーアイ/C,Bandessinee Eyes/C,100360,6ffe877d158fcbfffcb45d530746005d,b543eac4fe5efb2c757b385ac74e4912
+イラスティカアイ/E,Illustratica Eyes/E,100370,55356bfe7392d0d025fed2f832f67b94,25d3e91002d70037b490bf41defe85fa
+ウォータリーアイ,Watery Eyes,100380,f46e90b2851406593dde81a954bcdc89,11236cda2d7b2cfa53b371b580d9c4f6
+カートゥンアイ/C,Cartoon Eyes/C,100390,6d998b98dc89916b5e7adc8696902fb4,bbabb2ab75888606d1ecacdac1926d11
+イラスティカアイ/F,Illustratica Eyes/F,100400,827d0e760d1393ac41a38b459efba4b6,2e2c6fd5ab1e54c55364991611fb1338
+パッチリアイ,Bright Eyes,100440,8882ea9beb0a1541d7f15ccb2989369b,10e8b3e27b3a01c5f292334160bd0b29
+￥100440の白目明るい版,,100450,2ab1caf4484b5b4bdf87ba818b41efcf,4d56067b19c6d105148a55ff64982fbf, (Not found)
+ヤミオチアイ,Darkfall Eyes,100460,6b2492f0af83850059fd189a513376a3,fffbb2b85b92209449629e3e9e91cdb4
+シャイニーアイ,Shiny Eyes,100480,fba0e2612b9c0788254254fdc6eda7d4,64c8d96e735178bfb95e09747684ce82
+ドッキリアイ,Smitten Eyes,100490,bc68afc45915fceecc1d9024a2179ff8,7ff2f25e7e8755241b5f169130ef1518
+シャイニーハートアイ,Shiny Heart Eyes,100500,6cd30e43a56e607e9b6febca4fb8914f,03c2ee086478ae9d85edf555a4ecaa2e
+ダークライトアイ,Dark Glowing Eyes,100510,b4e0b89d25b3212961e3f6c33df02431,37d9a8bae4fde7f7b7daa50d2e80eaa1
+ダークブラッドアイ,Dark Blood Eyes,100520,f8a3eb2df6ec171dad94a45ef9168c13,b3e4536405da8b3833d545f71c83e066
+デモニカアイ,Demonica Eyes,100530,a37dfb083cd81a3d12ab412a73c9b2c6,116f3ce1c0a014363d3049748f86bf98
+ピンクハートアイ,Pink Heart Eyes,100540,afcf3054cfaf87bbc05909164243f951,fbdb73a59179136ff8fbc7c81768de15
+サンレスアイ,Sunless Eyes,100550,4905ef43e9405d3f56e005b13f9ab22c,3b38e92411f52f854dfd1b3edcdca7a3
+キトゥンアイ,Kitten Eyes,100560,f7ecba606251d3cdbecd54e5960db240,e9ef058cf1121d171c7a86b8db429afb
+ダイヤモンドカットアイ,Diamond Cut Eyes,100570,3e054a945411ac44c2ce615149a671de,01f06576acfe28a43ddd03c59975a7b4
+シンクローナアイ,Synchronous Eyes,100580,2ba12df12bff5816fef36cd7b0c4c7ff,fb5709f25c408c607053300912e911ea
+グラデートアイ,Gradated Eyes,100590,ac281391382ddb5c26fda86f2df7323e,1056f9b2e25b811371452ff0bf97be59
+グラスボールアイ,Glass Ball Eyes,100600,5b8352f502922c941ca540a4ddd5184a,80b74bfc8db6953607c29181acab4a68
+スクエアライトアイ,Lattice Highlight Eyes,100610,e5ca50d013d7a438a4dbad3a10d09e2a,b7d50785e2d3121e8a3a8cb0434ecfb3
+ルシオーラアイ/C,Lucciola Eyes/C,100620,50d5196436d5a3624642116b3231894d,909a013347052f60e49ee27253340155
+シャイニークッキリアイ,Shiny Sharp Eyes,100630,358477b1cae95c6f5cd04588b0ed8900,112c7a6597b46ab5da3f54aca48a37e5
+リップルアイ,Ripple Eyes,100640,d2c631ad01e2907a507f53f1d42f469f,0183219ebf84073f4a7345ab3c939bd7
+N-スターダストアイ,N-Stardust Eyes,100650,a6c0a45ec36ac7a7897c908153a8d4ec,9aea96311e4db49603d6518d386b5365
+キラボシアイ,Twinkly Star Eyes,100660,f4da7d49b2c649d8c34d23ade5bd4fd9,52a1534bf31c096563da4e787a27c3c7
+ミルキーウェイアイ,Milky Way Eyes,100670,fefad7c8a81d393dff4ab1caca3cf322,ee5eb200c2eac5bf52a7e22ede207d91
+ハートルシオーラアイ,Heart Lucciola Eyes,100700,6935b8e8a73de2211ee2965dfb44227c,61a5a8174734b39de34563df85e59d71
+シャイニーライトアイ,Shining Light Eyes,100710,6f0d070a8bb056689f119f7f7509d30d,228aa515c97c11c9f3883aec0569e72b
+レッドサークルアイ,Red Circle Eyes,100720,62dd9dba4517cb7059d80ae1fb1108a5,3850249ceba6d61a22011a5ae8336671
+ディープダークアイ,Deep Dark Eyes,100730,f9a0233fb3e8c4591fc64d4a773834a4,4db777af8a17a840a0185c5f5804e69f
+クレセントムーンアイ,Crescent Moon Eyes,100740,bf9d0905b64b57b041358c94ae050359,386720acf5c4d3cd453f8023cc65b420
+ビビッドライトアイ,Vivid Light Eyes,100750,3585deca542b4aab30c1d1dbe7c5a010,e7e11a7d284acf9fa3258c048f2f1985
+レッドピューポルアイ,Red Pupil Eyes,100760,d8613702d516a3987329dc6eb41dd808,1194e458c54ece6b36374c0bf0d6d322
+ヤミオチアイ/B,Darkfall Eyes/B,100770,b767010244fe381a97d1e553c1ece88e,b842fd61de73831a1b57ce96b7b0217f
+ウルルンアイ,Shimmering Eyes,100780,7853abd03f087d3dd423001948b4f485,b77b25a4ea9af35c100d62af428f2e92
+コスモティカアイ,Cosmotica Eyes,100810,de15c5a61ed817eccb163aaad3aa4e7d,14572082e7905c4d157a0093c5d5fac0
+スキトールアイ,Transparent Eyes,100820,9c379b03c51ee75ae64f2c508264ad2c,a6924bc4278ba6f302d9c5a19e2efe00
+カヌルーイアイ,Kanrui Eyes,100830,75d8b8717e074b8ce11c5918ea79cf3f,86006f88e980e0555c725dbca4222065
+ポポロンアイ,Popolon Eyes,100840,a6cd1d7c0f49068539816ddda8acd366,4256ed3f9715af043f312fdc7239ea21
+ルシオーラアイ/D,Lucciola Eyes/D,100860,8441880b9ed3f4615d36f338a256820b,262979b43e2d8de5a93a86f04932a893
+イラスティカアイ/G,Illustratica Eyes/G,100870,d190e7b9bcde096bd9f834e0af6f2c95,2414a026399311c88e41cfc6ef3256de
+スターライトアイ,Starlight Eyes,100880,5e48732d198df96f9e638d0c9a00a00c,939c79a68c2b39e828ff8ab39dade214
+プレシャスストーンアイ,Precious Stone Eyes,100890,19456fbbf7ddf134a852cae3e0a946ce,e21783582c0c90f586e84e48c6ce00d4
+ルミナスエックスアイ,Luminous X Eyes,100900,ffe19673bab7f0a5c892e1f8576f2820,ef3ca0892d9aca6537c44794fc57c198
+ダークホロウアイ,Dark Socket Eyes,100910,d105b06c5468574f9555c8dac1df5d81,4c0c393c25a0703c5b798e33f42ef47f
+ポップピューポアイ,Pop Pupil Eyes,100940,e3eb297c0dc82390952356f5f916aed1,f3caa9dd973d70bcfad6cd8e0fb90209

@@ -1,12 +1,13 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.1",
+    "version": "1.6.0",
     "description": [
-        "Fixed some major bugs and improved the new mod adder, should be more responsive with .zip files",
-        "Ability to select category if the mod adder unable to identify the item for the mod",
-        "Grouped mods in Available Mods list for a cleaner look",
-        "Fixed double favorites bug for some users",
-        "Some more minor bug fixes and other optimization"
+        "Added new mods adding feature with auto sort by item name using item reference sheets (item's icon will be added later)",
+        "Reference sheets will also be auto updated if there are changes to them (needed for the new adder to work correctly)",
+        "Added sort categories feature, can be sorted by name, or item count",
+        "Checksum will be auto downloaded when user clicked on checksum missing button",
+        "Removed old item adders",
+        "Some bug fixes and other optimization"
     ],
     "windows_file": "",
     "linux_file": ""
