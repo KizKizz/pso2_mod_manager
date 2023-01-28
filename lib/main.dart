@@ -62,7 +62,7 @@ FilePickerResult? checksumLocation;
 bool _previewWindowVisible = true;
 double windowsWidth = 1280.0;
 double windowsHeight = 720.0;
-Future? filesData;
+//Future? filesData;
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();

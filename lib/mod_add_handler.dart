@@ -26,6 +26,7 @@ List<XFile> modsToAddList = [];
 Future? sortedModsListLoad;
 List<List<String>> sortedModsList = [];
 String tempDirPath = '${Directory.current.path}${s}temp';
+String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
 TextEditingController renameTextBoxController = TextEditingController();
 List<bool> _itemNameRenameIndex = [];
 List<bool> _mainFolderRenameIndex = [];
@@ -459,6 +460,18 @@ void modAddHandler(context) {
                                                                           color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
                                                                   child: ExpansionTile(
                                                                     initiallyExpanded: true,
+                                                                    leading: Padding(
+                                                                      padding: const EdgeInsets.symmetric(vertical: 2),
+                                                                      child: Container(
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(3),
+                                                                          border: Border.all(color: Theme.of(context).hintColor),
+                                                                        ),
+                                                                        child: Image.asset('assets/img/placeholdersquare.png'),
+                                                                      ),
+                                                                    ),
                                                                     //Edit Item's name
                                                                     title: _itemNameRenameIndex[index]
                                                                         ? Row(
@@ -582,24 +595,24 @@ void modAddHandler(context) {
                                                                                 ),
                                                                               Expanded(
                                                                                 child: curActiveLang == 'JP'
-                                                                                    ? sortedModsList[index][0] == 'Misc' 
-                                                                                      ? Text(' > ${sortedModsList[index][1]}',
-                                                                                        style: const TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                        ))
-                                                                                      : Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
-                                                                                        style: const TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                        ))
-                                                                                    : sortedModsList[index][0] == 'Misc' 
-                                                                                      ? Text(' > ${sortedModsList[index][2]}',
-                                                                                        style: const TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                        ))
+                                                                                    ? sortedModsList[index][0] == 'Misc'
+                                                                                        ? Text(' > ${sortedModsList[index][1]}',
+                                                                                            style: const TextStyle(
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                            ))
+                                                                                        : Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
+                                                                                            style: const TextStyle(
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                            ))
+                                                                                    : sortedModsList[index][0] == 'Misc'
+                                                                                        ? Text(' > ${sortedModsList[index][2]}',
+                                                                                            style: const TextStyle(
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                            ))
                                                                                         : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
-                                                                                        style: const TextStyle(
-                                                                                          fontWeight: FontWeight.w600,
-                                                                                        )),
+                                                                                            style: const TextStyle(
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                            )),
                                                                               ),
                                                                               const SizedBox(
                                                                                 width: 5,
@@ -1357,14 +1370,14 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
         var lineSplit = line.split(',');
-        //[0 Category, 1 JP name, 2 EN name]
+        //[0 Category, 1 JP name, 2 EN name, 3 icon]
         if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
           return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_')]);
         } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
           if (lineSplit[0].contains('[Ba]') || lineSplit[1].contains('[Ba]')) {
             return (['Basewears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
           } else if (lineSplit[0].contains('[Se]') || lineSplit[1].contains('[Se]')) {
-            return (['Setwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+            return ([await getIconPath(lineSplit[4]), lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
           } else {
             return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
           }
@@ -1404,4 +1417,10 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
   }
 
   return [];
+}
+
+Future<String> getIconPath(String iceName) async {
+  XFile iconFile = XFile(iceFiles.firstWhere((element) => element.path.split(s).last == iceName).path);
+  await Process.run(zamboniExePath, [iconFile.path]);
+  return iceName;
 }
