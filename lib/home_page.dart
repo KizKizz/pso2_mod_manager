@@ -53,6 +53,7 @@ List<bool> isLoadingAppliedList = [];
 List<String> sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
 int selectedSortType = 0;
 String selectedSortTypeString = '';
+List<String> dropdownCategories = [];
 bool isModAddFolderOnly = true;
 bool isViewingFav = false;
 bool isSearching = false;
@@ -91,34 +92,7 @@ final categoryFormKey = GlobalKey<FormState>();
 TextEditingController categoryAddController = TextEditingController();
 
 //NewItem
-bool addItemVisible = false;
-final newMultipleItemsFormKey = GlobalKey<FormState>();
-final newSingleItemFormKey = GlobalKey<FormState>();
-TextEditingController newItemAddController = TextEditingController();
-TextEditingController newSingleItemAddController = TextEditingController();
-TextEditingController newSingleItemModNameController = TextEditingController();
-List<String> dropdownCategories = [];
-String? selectedCategoryForMutipleItems;
-String? selectedCategoryForSingleItem;
-final _newItemDropdownKey = GlobalKey<FormState>();
-bool _dragging = false;
-bool _draggingItemIcon = false;
-//final List<XFile> _newItemDragDropList = [XFile('E:\\PSO2_ModTest\\7 Bite o Donut Test')];
-final List<XFile> _newItemDragDropList = [];
-final List<XFile> _newSingleItemDragDropList = [];
-XFile? _singleItemIcon;
-bool isItemAddBtnClicked = false;
 String curClickedCategory = '';
-
-//NewItem Exist Item
-bool addModToItemVisible = false;
-final newModToItemFormKey = GlobalKey<FormState>();
-TextEditingController newModToItemAddController = TextEditingController();
-bool _newModToItemDragging = false;
-//final List<XFile> _newModToItemDragDropList = [XFile('E:\\PSO2_ModTest\\7 Bite o Donut Test\\Red ball gag - Copy')];
-final List<XFile> _newModToItemDragDropList = [];
-//int _newModToItemIndex = 0;
-bool isModAddBtnClicked = false;
 
 //Media Player controls
 Player previewPlayer = Player(id: 69, commandlineArguments: ['--no-video-title-show']);
@@ -158,50 +132,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //Slide up
   late AnimationController cateAdderAniController;
   late Animation<Offset> cateAdderAniOffset;
-  late AnimationController itemAdderAniController;
-  late Animation<Offset> itemAdderAniOffset;
-  late AnimationController modAdderAniController;
-  late Animation<Offset> modAdderAniOffset;
-
-  late TabController _itemAdderTabcontroller;
 
   @override
   void initState() {
     super.initState();
-    _itemAdderTabcontroller = TabController(length: 2, vsync: this);
-    _itemAdderTabcontroller.addListener(() {
-      setState(() {
-        if (_itemAdderTabcontroller.index == 0) {
-          _newItemDragDropList.clear();
-          newItemAddController.clear();
-          selectedCategoryForMutipleItems = null;
-          //isErrorInSingleItemName = false;
-          context.read<StateProvider>().itemsDropAddClear();
-        } else {
-          _newSingleItemDragDropList.clear();
-          _singleItemIcon = null;
-          newSingleItemAddController.clear();
-          newSingleItemModNameController.clear();
-          selectedCategoryForSingleItem = null;
-          isErrorInSingleItemName = false;
-          context.read<StateProvider>().singleItemDropAddClear();
-        }
-      });
-    });
     cateAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     cateAdderAniOffset = Tween<Offset>(begin: const Offset(0.0, 1.1), end: const Offset(0.0, 0.0)).animate(cateAdderAniController);
-    itemAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
-    itemAdderAniOffset = Tween<Offset>(begin: const Offset(0.0, 1.1), end: const Offset(0.0, 0.0)).animate(itemAdderAniController);
-    modAdderAniController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
-    modAdderAniOffset = Tween<Offset>(begin: const Offset(0.0, 1.1), end: const Offset(0.0, 0.0)).animate(modAdderAniController);
   }
 
   @override
   void dispose() {
     cateAdderAniController.dispose();
-    itemAdderAniController.dispose();
-    modAdderAniController.dispose();
-    _itemAdderTabcontroller.dispose();
     previewPlayer.dispose();
     _viewsController.dispose();
     _verticalViewsController.dispose();
@@ -262,13 +203,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget itemsView() {
-    dropdownCategories.clear();
+     dropdownCategories.clear();
     for (var category in cateList) {
       if (category.categoryName != 'Favorites') {
         dropdownCategories.add(category.categoryName);
       }
     }
-
     if (selectedSortType == 0) {
       selectedSortTypeString = curLangText!.sortCateByNameText;
     } else {
@@ -374,49 +314,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         });
                                         break;
 
-                                      default:
-                                    }
-                                  }
-
-                                  if (addItemVisible) {
-                                    _newItemDragDropList.clear();
-                                    _newSingleItemDragDropList.clear();
-                                    _singleItemIcon = null;
-                                    newItemAddController.clear();
-                                    newSingleItemAddController.clear();
-                                    newSingleItemModNameController.clear();
-                                    selectedCategoryForMutipleItems = null;
-                                    selectedCategoryForSingleItem = null;
-                                    isErrorInSingleItemName = false;
-                                    context.read<StateProvider>().singleItemDropAddClear();
-                                    context.read<StateProvider>().itemsDropAddClear();
-                                    Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                    //addItemVisible = false;
-                                    switch (itemAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        itemAdderAniController.reverse().whenComplete(() {
-                                          addItemVisible = false;
-                                          setState(() {});
-                                        });
-                                        break;
-                                      default:
-                                    }
-                                  }
-
-                                  if (addModToItemVisible) {
-                                    _newModToItemDragDropList.clear();
-                                    newModToItemAddController.clear();
-                                    isModAddFolderOnly = true;
-                                    context.read<StateProvider>().modsDropAddClear();
-                                    //addModToItemVisible = false;
-                                    switch (modAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        modAdderAniController.reverse().whenComplete(() {
-                                          addModToItemVisible = false;
-                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          setState(() {});
-                                        });
-                                        break;
                                       default:
                                     }
                                   }
@@ -585,45 +482,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
             )
-            // New Item button
-            // Padding(
-            //     padding: const EdgeInsets.only(right: 10),
-            //     child: Tooltip(
-            //         message: curLangText!.newItemBtnTooltipText,
-            //         height: 25,
-            //         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-            //         waitDuration: const Duration(seconds: 1),
-            //         child: SizedBox(
-            //           width: 40,
-            //           height: 30,
-            //           child: MaterialButton(
-            //               onPressed: addItemVisible
-            //                   ? null
-            //                   : (() {
-            //                       setState(() {
-            //                         switch (itemAdderAniController.status) {
-            //                           case AnimationStatus.dismissed:
-            //                             Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
-            //                             addItemVisible = true;
-            //                             itemAdderAniController.forward();
-            //                             break;
-            //                           default:
-            //                         }
-            //                       });
-            //                     }),
-            //               child: Row(
-            //                 children: [
-            //                   Icon(
-            //                     Icons.add_box_outlined,
-            //                     color: addItemVisible
-            //                         ? Theme.of(context).disabledColor
-            //                         : MyApp.themeNotifier.value == ThemeMode.light
-            //                             ? Theme.of(context).primaryColorDark
-            //                             : Theme.of(context).iconTheme.color,
-            //                   )
-            //                 ],
-            //               )),
-            //         ))),
           ],
         ),
 
@@ -844,22 +702,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
-                                    //close add mods window
-                                    _newModToItemDragDropList.clear();
-                                    newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
                                     context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
-                                    switch (modAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        modAdderAniController.reverse().whenComplete(() {
-                                          addModToItemVisible = false;
-                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          setState(() {});
-                                        });
-                                        break;
-                                      default:
-                                    }
                                     //main func
                                     isViewingFav = true;
                                     isPreviewImgsOn = false;
@@ -1014,21 +859,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 onTap: () {
                                   setState(() {
                                     //close add mods window
-                                    _newModToItemDragDropList.clear();
-                                    newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
                                     context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
-                                    switch (modAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        modAdderAniController.reverse().whenComplete(() {
-                                          addModToItemVisible = false;
-                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          setState(() {});
-                                        });
-                                        break;
-                                      default:
-                                    }
                                     //main func
                                     isViewingFav = false;
                                     isPreviewImgsOn = false;
@@ -1205,21 +1038,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 onTap: () {
                                   setState(() {
                                     //add mod window reset
-                                    _newModToItemDragDropList.clear();
-                                    newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
                                     context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
-                                    switch (modAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        modAdderAniController.reverse().whenComplete(() {
-                                          addModToItemVisible = false;
-                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          setState(() {});
-                                        });
-                                        break;
-                                      default:
-                                    }
 
                                     //main func
                                     isViewingFav = true;
@@ -1383,22 +1204,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 onTap: () {
                                   setState(() {
-                                    //close add mods window
-                                    _newModToItemDragDropList.clear();
-                                    newModToItemAddController.clear();
                                     isModAddFolderOnly = true;
                                     context.read<StateProvider>().modsDropAddClear();
                                     //addModToItemVisible = false;
-                                    switch (modAdderAniController.status) {
-                                      case AnimationStatus.completed:
-                                        modAdderAniController.reverse().whenComplete(() {
-                                          addModToItemVisible = false;
-                                          Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          setState(() {});
-                                        });
-                                        break;
-                                      default:
-                                    }
 
                                     //main func
                                     isViewingFav = false;
@@ -1522,15 +1330,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
                                     cateList.insert(0, favCate);
                                   }
-                                  // cateList.sort(
-                                  //   (a, b) {
-                                  //     if (b.categoryName != 'Favorites' || a.categoryName != 'Favorites') {
-                                  //       return b.numOfItems.compareTo(a.numOfItems);
-                                  //     } else {
-                                  //       return 0;
-                                  //     }
-                                  //   },
-                                  // );
+
                                   Directory('$modsDirPath\\${categoryAddController.text}').create(recursive: true);
                                   selectedIndex = List.generate(cateList.length, (index) => -1);
 
@@ -1546,594 +1346,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   //addCategoryVisible = false;
                                 }
 
-                                //     Future.delayed(const Duration(milliseconds: 100), () async {
-                                //   //allModFiles = await modsLoader();
-                                //   //cateList = categories(allModFiles);
-                                //   //appliedModsListGet = getAppliedModsList();
-                                //   //iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
-                                //   // ignore: use_build_context_synchronously
-
-                                //   //isRefreshing = false;
-                                // }).whenComplete(() {
-                                //   //isRefreshing = false;
-                                //   setState(() {});
-                                // });
                                 setState(() {});
                               }),
                               child: Text(curLangText!.addCatBtnText)),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ]),
-            ),
-          ),
-
-        //Add Item Panel
-        if (addItemVisible)
-          SlideTransition(
-            position: itemAdderAniOffset,
-            child: Container(
-              //height: 100,
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor.withOpacity(0.3),
-                    spreadRadius: -1,
-                    blurRadius: 3,
-                    offset: const Offset(0, -4), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                TabBar(
-                  labelColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                  controller: _itemAdderTabcontroller,
-                  onTap: (index) {},
-                  tabs: [
-                    Tab(
-                      height: 25,
-                      text: curLangText!.singleAddBtnText,
-                    ),
-                    Tab(
-                      height: 25,
-                      text: curLangText!.multiAddBtnText,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: !isErrorInSingleItemName ? 270 : 300,
-                  child: TabBarView(
-                    controller: _itemAdderTabcontroller,
-                    children: [
-                      // Single Item adder tab
-                      Column(
-                        children: [
-                          //Drop Zone,
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-                            child: DropTarget(
-                              //enable: true,
-                              onDragDone: (detail) {
-                                setState(() {
-                                  detail.files.sort(((a, b) => a.name.compareTo(b.name)));
-                                  _newSingleItemDragDropList.addAll(detail.files);
-                                  context.read<StateProvider>().singleItemsDropAdd(detail.files);
-                                });
-                              },
-                              onDragEntered: (detail) {
-                                setState(() {
-                                  _dragging = true;
-                                });
-                              },
-                              onDragExited: (detail) {
-                                setState(() {
-                                  _dragging = false;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    border: Border.all(color: Theme.of(context).hintColor),
-                                    color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                                  ),
-                                  height: 110,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (_newSingleItemDragDropList.isEmpty)
-                                        Center(
-                                            child: Column(
-                                          children: [
-                                            Text(curLangText!.singleDropBoxLabelText),
-                                          ],
-                                        )),
-                                      if (_newSingleItemDragDropList.isNotEmpty)
-                                        Expanded(
-                                          child: SingleChildScrollView(
-                                            controller: ScrollController(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(right: 10),
-                                              child: SizedBox(
-                                                  width: double.infinity,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                    child: Text(context.watch<StateProvider>().newSingleItemDropDisplay),
-                                                  )),
-                                            ),
-                                          ),
-                                        )
-                                    ],
-                                  )),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-                              child: CustomDropdownButton2(
-                                hint: curLangText!.addSelectCatLabelText,
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                ),
-                                buttonDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  border: Border.all(color: Theme.of(context).hintColor),
-                                ),
-                                buttonWidth: double.infinity,
-                                buttonHeight: 37.5,
-                                itemHeight: 40,
-                                dropdownElevation: 3,
-                                icon: const Icon(Icons.arrow_drop_down),
-                                iconSize: 30,
-                                //dropdownWidth: 361,
-                                dropdownHeight: double.maxFinite,
-                                dropdownItems: dropdownCategories,
-                                value: selectedCategoryForSingleItem,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedCategoryForSingleItem = value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          Row(children: [
-                            //Item icon Drop Zone,
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-                              child: DropTarget(
-                                //enable: true,
-                                onDragDone: (detail) {
-                                  setState(() {
-                                    _singleItemIcon = detail.files.last;
-                                  });
-                                },
-                                onDragEntered: (detail) {
-                                  setState(() {
-                                    _draggingItemIcon = true;
-                                  });
-                                },
-                                onDragExited: (detail) {
-                                  setState(() {
-                                    _draggingItemIcon = false;
-                                  });
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(color: Theme.of(context).hintColor),
-                                      color: _draggingItemIcon ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                                    ),
-                                    height: 85,
-                                    width: 85,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        if (_singleItemIcon == null)
-                                          Center(
-                                              child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [Text(curLangText!.iconDropBoxLabelText)],
-                                          )),
-                                        if (_singleItemIcon != null)
-                                          Expanded(
-                                            child: SizedBox(
-                                                width: double.infinity,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 1),
-                                                  child: Center(
-                                                    child: Image.file(
-                                                      File(_singleItemIcon!.path),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ),
-                                                )),
-                                          )
-                                      ],
-                                    )),
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
-                                  //   child: CustomDropdownButton2(
-                                  //     hint: 'Select a Category',
-                                  //     dropdownDecoration: BoxDecoration(
-                                  //       borderRadius: BorderRadius.circular(3),
-                                  //       border: Border.all(color: Theme.of(context).cardColor),
-                                  //     ),
-                                  //     buttonDecoration: BoxDecoration(
-                                  //       borderRadius: BorderRadius.circular(3),
-                                  //       border: Border.all(color: Theme.of(context).hintColor),
-                                  //     ),
-                                  //     buttonWidth: double.infinity,
-                                  //     buttonHeight: 37.5,
-                                  //     itemHeight: 40,
-                                  //     dropdownElevation: 3,
-                                  //     icon: const Icon(Icons.arrow_drop_down),
-                                  //     iconSize: 30,
-                                  //     //dropdownWidth: 361,
-                                  //     dropdownHeight: double.maxFinite,
-                                  //     dropdownItems: dropdownCategories,
-                                  //     value: selectedCategoryForSingleItem,
-                                  //     onChanged: (value) {
-                                  //       setState(() {
-                                  //         selectedCategoryForSingleItem = value;
-                                  //       });
-                                  //     },
-                                  //   ),
-                                  // ),
-                                  Form(
-                                    key: newSingleItemFormKey,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
-                                      child: SizedBox(
-                                        height: isErrorInSingleItemName ? 62.5 : 37.5,
-                                        child: TextFormField(
-                                          controller: newSingleItemAddController,
-                                          //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                          //maxLength: 100,
-                                          style: const TextStyle(fontSize: 15),
-                                          decoration: InputDecoration(
-                                            labelText: curLangText!.addItemNamLabelText,
-                                            border: const OutlineInputBorder(),
-                                            isDense: true,
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              isErrorInSingleItemName = true;
-                                              return curLangText!.newItemNameEmpty;
-                                            }
-                                            if (selectedCategoryForSingleItem == 'Basewears' ||
-                                                selectedCategoryForSingleItem == 'Setwears' ||
-                                                selectedCategoryForSingleItem == 'Outerwears' ||
-                                                selectedCategoryForSingleItem == 'Innerwears') {
-                                              if (cateList.indexWhere((e) =>
-                                                      e.categoryName == selectedCategoryForSingleItem &&
-                                                      e.itemNames.indexWhere((element) => element.toLowerCase().substring(0, element.length - 4).trim() == value.toLowerCase()) != -1) !=
-                                                  -1) {
-                                                isErrorInSingleItemName = true;
-                                                return curLangText!.newItemNameDuplicate;
-                                              }
-                                            } else {
-                                              if (cateList.indexWhere((e) =>
-                                                      e.categoryName == selectedCategoryForSingleItem && e.itemNames.indexWhere((element) => element.toLowerCase() == value.toLowerCase()) != -1) !=
-                                                  -1) {
-                                                isErrorInSingleItemName = true;
-                                                return curLangText!.newItemNameDuplicate;
-                                              }
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (text) {
-                                            setState(() {
-                                              setState(
-                                                () {},
-                                              );
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 10),
-                                    child: SizedBox(
-                                      height: isErrorInSingleItemName ? 62.5 : 37.5,
-                                      child: TextFormField(
-                                        controller: newSingleItemModNameController,
-                                        //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                        //maxLength: 100,
-                                        style: const TextStyle(fontSize: 15),
-                                        decoration: InputDecoration(
-                                          labelText: curLangText!.addModNameLabelText,
-                                          border: const OutlineInputBorder(),
-                                          isDense: true,
-                                        ),
-                                        onChanged: (text) {
-                                          setState(() {
-                                            setState(
-                                              () {},
-                                            );
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]),
-                        ],
-                      ),
-
-                      //Multiple Item Adding Tab
-                      Column(
-                        children: [
-                          //Drop Zone,
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-                            child: DropTarget(
-                              //enable: true,
-                              onDragDone: (detail) {
-                                setState(() {
-                                  var leftoverFiles = [];
-                                  detail.files.sort(((a, b) => a.name.compareTo(b.name)));
-                                  for (var file in detail.files) {
-                                    if (Directory(file.path).existsSync()) {
-                                      _newItemDragDropList.add(file);
-                                      context.read<StateProvider>().itemsDropAdd([file]);
-                                    } else {
-                                      leftoverFiles.add(file.name);
-                                    }
-                                  }
-
-                                  if (leftoverFiles.isNotEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        duration: Duration(seconds: leftoverFiles.length),
-                                        //backgroundColor: Theme.of(context).focusColor,
-                                        content: SizedBox(
-                                          height: 20 + (leftoverFiles.length * 20),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                curLangText!.multiItemsLeftOver,
-                                                style: const TextStyle(fontWeight: FontWeight.w600),
-                                              ),
-                                              for (int i = 0; i < leftoverFiles.length; i++) Text(leftoverFiles[i]),
-                                            ],
-                                          ),
-                                        )));
-                                  }
-                                  leftoverFiles.clear();
-                                });
-                              },
-                              onDragEntered: (detail) {
-                                setState(() {
-                                  _dragging = true;
-                                });
-                              },
-                              onDragExited: (detail) {
-                                setState(() {
-                                  _dragging = false;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    border: Border.all(color: Theme.of(context).hintColor),
-                                    color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                                  ),
-                                  height: 205,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (_newItemDragDropList.isEmpty) Center(child: Text(curLangText!.multiDropBoxLabelText)),
-                                      if (_newItemDragDropList.isNotEmpty)
-                                        Expanded(
-                                          child: SingleChildScrollView(
-                                            controller: ScrollController(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(right: 10),
-                                              child: SizedBox(
-                                                  width: double.infinity,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 5),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                      child: Text(context.watch<StateProvider>().newItemDropDisplay),
-                                                    ),
-                                                  )),
-                                            ),
-                                          ),
-                                        )
-                                    ],
-                                  )),
-                            ),
-                          ),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-                                  child: CustomDropdownButton2(
-                                    key: _newItemDropdownKey,
-                                    hint: curLangText!.addSelectCatLabelText,
-                                    dropdownDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                    ),
-                                    buttonDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      border: Border.all(color: Theme.of(context).hintColor),
-                                    ),
-                                    //buttonWidth: 300,
-                                    buttonHeight: 43,
-                                    itemHeight: 40,
-                                    dropdownElevation: 3,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 30,
-                                    //dropdownWidth: 361,
-                                    dropdownHeight: double.maxFinite,
-                                    dropdownItems: dropdownCategories,
-                                    value: selectedCategoryForMutipleItems,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedCategoryForMutipleItems = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              // Expanded(
-                              //   child: Form(
-                              //     key: newMultipleItemsFormKey,
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.only(top: 10, bottom: 0, left: 5, right: 10),
-                              //       child: TextFormField(
-                              //         controller: newItemAddController,
-                              //         //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                              //         //maxLength: 100,
-                              //         style: const TextStyle(fontSize: 15),
-                              //         decoration: const InputDecoration(
-                              //           labelText: 'Change Item Name\n(optional, single item)',
-                              //           border: OutlineInputBorder(),
-                              //           isDense: true,
-                              //         ),
-                              //         validator: (value) {
-                              //           // if (value == null || value.isEmpty) {
-                              //           //   return 'Category name can\'t be empty';
-                              //           // }
-                              //           if (cateList.indexWhere((e) => e.categoryName == selectedCategoryForMutipleItems && e.itemNames.indexWhere((element) => element == value) != -1) != -1) {
-                              //             return 'The name already exist';
-                              //           }
-                              //           return null;
-                              //         },
-                              //         onChanged: (text) {
-                              //           setState(() {
-                              //             setState(
-                              //               () {},
-                              //             );
-                              //           });
-                              //         },
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                //Buttons
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: ElevatedButton(
-                            onPressed: isItemAddBtnClicked
-                                ? null
-                                : (() {
-                                    setState(() {
-                                      _newItemDragDropList.clear();
-                                      _newSingleItemDragDropList.clear();
-                                      _singleItemIcon = null;
-                                      newItemAddController.clear();
-                                      newSingleItemAddController.clear();
-                                      newSingleItemModNameController.clear();
-                                      selectedCategoryForMutipleItems = null;
-                                      selectedCategoryForSingleItem = null;
-                                      isErrorInSingleItemName = false;
-                                      context.read<StateProvider>().singleItemDropAddClear();
-                                      context.read<StateProvider>().itemsDropAddClear();
-                                      Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                      //addItemVisible = false;
-                                      switch (itemAdderAniController.status) {
-                                        case AnimationStatus.completed:
-                                          itemAdderAniController.reverse().whenComplete(() {
-                                            addItemVisible = false;
-                                            setState(() {});
-                                          });
-                                          break;
-                                        default:
-                                      }
-                                    });
-                                  }),
-                            child: Text(curLangText!.closeBtnText),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: ElevatedButton(
-                              onPressed: (selectedCategoryForMutipleItems != null && _newItemDragDropList.isNotEmpty && !isItemAddBtnClicked) ||
-                                      (selectedCategoryForSingleItem != null && _newSingleItemDragDropList.isNotEmpty && !isItemAddBtnClicked)
-                                  ? (() {
-                                      setState(() {
-                                        //if (newMultipleItemsFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 1) {
-                                        selectedIndex.fillRange(0, selectedIndex.length, -1);
-                                        modFilesList.clear();
-                                        modsViewAppBarName = curLangText!.availableModsHeaderText;
-                                        if (_itemAdderTabcontroller.index == 1) {
-                                          isItemAddBtnClicked = true;
-                                          dragDropFilesAdd(context, _newItemDragDropList, selectedCategoryForMutipleItems, newItemAddController.text.isEmpty ? null : newItemAddController.text)
-                                              .then((_) {
-                                            setState(() {
-                                              //setstate to refresh list
-                                              _newItemDragDropList.clear();
-                                              _singleItemIcon = null;
-                                              newItemAddController.clear();
-                                              isItemAddBtnClicked = false;
-                                            });
-                                          });
-                                          //selectedCategoryForMutipleItems = null;
-                                          //addItemVisible = false;
-                                        } else if (newSingleItemFormKey.currentState!.validate() && _itemAdderTabcontroller.index == 0) {
-                                          isErrorInSingleItemName = false;
-                                          isItemAddBtnClicked = true;
-                                          dragDropSingleFilesAdd(
-                                                  context,
-                                                  _newSingleItemDragDropList,
-                                                  _singleItemIcon,
-                                                  selectedCategoryForSingleItem,
-                                                  newSingleItemAddController.text.isEmpty ? null : newSingleItemAddController.text.trim(),
-                                                  newSingleItemModNameController.text.isEmpty ? null : newSingleItemModNameController.text.trim())
-                                              .then((_) {
-                                            setState(() {
-                                              //setstate to refresh list
-                                              _newSingleItemDragDropList.clear();
-                                              newSingleItemAddController.clear();
-                                              newSingleItemModNameController.clear();
-                                              isItemAddBtnClicked = false;
-                                              _singleItemIcon = null;
-                                            });
-                                          });
-                                        }
-                                      });
-                                    })
-                                  : null,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [Text(curLangText!.addBtnText)],
-                              )),
                         ),
                       ),
                     ],
@@ -2713,210 +1928,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     }
                   })),
 
-        //Add Mod to Existing Item
-        if (addModToItemVisible)
-          SlideTransition(
-            position: modAdderAniOffset,
-            child: Container(
-              //height: 100,
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor.withOpacity(0.3),
-                    spreadRadius: -1,
-                    blurRadius: 3,
-                    offset: const Offset(0, -4), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                //Drop Zone
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
-                  child: DropTarget(
-                    //enable: true,
-                    onDragDone: (detail) {
-                      setState(() {
-                        detail.files.sort(((a, b) => a.name.compareTo(b.name)));
-                        _newModToItemDragDropList.addAll(detail.files);
-                        context.read<StateProvider>().modsDropAdd(detail.files);
-                        for (var element in detail.files) {
-                          if (!Directory(element.path).existsSync()) {
-                            isModAddFolderOnly = false;
-                            break;
-                          }
-                        }
-                      });
-                    },
-                    onDragEntered: (detail) {
-                      setState(() {
-                        _newModToItemDragging = true;
-                      });
-                    },
-                    onDragExited: (detail) {
-                      setState(() {
-                        _newModToItemDragging = false;
-                      });
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(color: Theme.of(context).hintColor),
-                          color: _newModToItemDragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
-                        ),
-                        height: 150,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (_newModToItemDragDropList.isEmpty) Center(child: Text(curLangText!.singleDropBoxLabelText)),
-                            if (_newModToItemDragDropList.isNotEmpty)
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: SizedBox(
-                                        width: double.infinity,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                                          child: Text(context.watch<StateProvider>().newModDropDisplay),
-                                        )),
-                                  ),
-                                ),
-                              )
-                          ],
-                        )),
-                  ),
-                ),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: Form(
-                        key: newModToItemFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                          child: TextFormField(
-                            enabled: !isModAddFolderOnly,
-                            controller: newModToItemAddController,
-                            //maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                            //maxLength: 100,
-                            style: const TextStyle(fontSize: 15),
-                            decoration: InputDecoration(
-                              labelText: curLangText!.modNameLabelText,
-                              border: const OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            validator: (value) {
-                              if (!isModAddFolderOnly && (value == null || value.isEmpty)) {
-                                return curLangText!.newItemNameEmpty;
-                              }
-                              // if (modFilesList..indexWhere((e) => e.indexWhere((element) => element.iceParent.split(' > ').last == value) != -1) != -1) {
-                              //   return curLangText!.newItemNameDuplicate;
-                              // }
-                              return null;
-                            },
-                            onChanged: (text) {
-                              setState(() {
-                                setState(
-                                  () {},
-                                );
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                //Buttons
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: ElevatedButton(
-                              onPressed: isModAddBtnClicked
-                                  ? null
-                                  : (() {
-                                      setState(() {
-                                        _newModToItemDragDropList.clear();
-                                        newModToItemAddController.clear();
-                                        isModAddFolderOnly = true;
-                                        context.read<StateProvider>().modsDropAddClear();
-                                        //addModToItemVisible = false;
-                                        switch (modAdderAniController.status) {
-                                          case AnimationStatus.completed:
-                                            modAdderAniController.reverse().whenComplete(() {
-                                              addModToItemVisible = false;
-                                              Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                              setState(() {});
-                                            });
-                                            break;
-                                          default:
-                                        }
-                                      });
-                                    }),
-                              child: Text(curLangText!.closeBtnText)),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: ElevatedButton(
-                              onPressed: _newModToItemDragDropList.isNotEmpty && !isModAddBtnClicked
-                                  ? (() {
-                                      setState(() {
-                                        if (newModToItemFormKey.currentState!.validate()) {
-                                          // if (modFilesList.isNotEmpty) {
-                                          //   isModAddBtnClicked = true;
-                                          //   if (isModAddFolderOnly) {
-                                          //     dragDropModsAddFoldersOnly(context, _newModToItemDragDropList, modsViewAppBarName, modFilesList.first.first.modPath, _newModToItemIndex, null).then((_) {
-                                          //       setState(() {
-                                          //         //setstate to refresh list
-                                          //         _newModToItemDragDropList.clear();
-                                          //         newModToItemAddController.clear();
-                                          //         isModAddBtnClicked = false;
-                                          //         isPreviewImgsOn = false;
-                                          //         Provider.of<StateProvider>(context, listen: false).addingBoxStateFalse();
-                                          //       });
-                                          //     });
-                                          //   } else {
-                                          //     isModAddFolderOnly = true;
-                                          //     dragDropModsAdd(context, _newModToItemDragDropList, modFilesList.first.first.categoryName, modsViewAppBarName, modFilesList.first.first.modPath,
-                                          //             newModToItemAddController.text.isEmpty ? null : newModToItemAddController.text)
-                                          //         .then((_) {
-                                          //       setState(() {
-                                          //         //setstate to refresh list
-                                          //         _newModToItemDragDropList.clear();
-                                          //         newModToItemAddController.clear();
-                                          //         isModAddBtnClicked = false;
-                                          //         isPreviewImgsOn = false;
-                                          //       });
-                                          //     });
-                                          //   }
-                                          // }
-
-                                          //addItemVisible = false;
-                                        }
-                                      });
-                                    })
-                                  : null,
-                              child: Text(curLangText!.addBtnText)),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ]),
-            ),
-          ),
-      ],
+        ],
     );
   }
 
@@ -3673,7 +2685,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             )),
         actions: [
           SizedBox(
-            width: 95,
+            width: 96,
             height: 40,
             child: Tooltip(
               message: curLangText!.addNewSetTootipText,
@@ -3701,6 +2713,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     const Icon(
                       Icons.add_to_queue,
+                    ),
+                    const SizedBox(
+                      width: 5,
                     ),
                     Text(curLangText!.addSetBtnText),
                   ],
