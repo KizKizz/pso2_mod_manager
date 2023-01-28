@@ -1375,47 +1375,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
-          // actions: [
-          //  //Add mod to item button
-          //   Tooltip(
-          //       message:
-          //           modsViewAppBarName == '' || modsViewAppBarName == curLangText!.availableModsHeaderText ? curLangText!.addModTootipText : '${curLangText!.addModToTooltipText} $modsViewAppBarName',
-          //       height: 25,
-          //       textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-          //       waitDuration: const Duration(seconds: 1),
-          //       child: SizedBox(
-          //         width: 40,
-          //         height: 30,
-          //         child: MaterialButton(
-          //             onPressed: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
-          //                 ? null
-          //                 : (() {
-          //                     setState(() {
-          //                       //addModToItemVisible = true;
-          //                       switch (modAdderAniController.status) {
-          //                         case AnimationStatus.dismissed:
-          //                           addModToItemVisible = true;
-          //                           modAdderAniController.forward();
-          //                           Provider.of<StateProvider>(context, listen: false).addingBoxStateTrue();
-          //                           break;
-          //                         default:
-          //                       }
-          //                     });
-          //                   }),
-          //             child: Row(
-          //               children: [
-          //                 Icon(
-          //                   Icons.add_box_outlined,
-          //                   color: addModToItemVisible || modsViewAppBarName.isEmpty || !isModSelected
-          //                       ? Theme.of(context).disabledColor
-          //                       : MyApp.themeNotifier.value == ThemeMode.light
-          //                           ? Theme.of(context).primaryColorDark
-          //                           : Theme.of(context).iconTheme.color,
-          //                 )
-          //               ],
-          //             )),
-          //       )),
-          // ],
         ),
 
         //Mod view
