@@ -155,17 +155,8 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                       } else {
                         for (var cateName in defaultCatesList) {
-                          if (cateName != 'Favorites') {
-                            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
-                          }
+                          Directory('$modsDirPath$s$cateName').createSync(recursive: true);
                         }
-                      }
-                      if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
-                        await Directory('${Directory.current.path}${s}temp').create(recursive: true);
-                      }
-
-                      if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
-                        await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
                       }
                       if (!Directory(backupDirPath).existsSync()) {
                         await Directory(backupDirPath).create(recursive: true);
@@ -257,19 +248,9 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                         } else {
                           for (var cateName in defaultCatesList) {
-                            if (cateName != 'Favorites') {
-                              Directory('$modsDirPath$s$cateName').createSync(recursive: true);
-                            }
+                            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
                           }
                         }
-                        if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
-                          await Directory('${Directory.current.path}${s}temp').create(recursive: true);
-                        }
-
-                        if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
-                          await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
-                        }
-
                         if (!Directory(backupDirPath).existsSync()) {
                           await Directory(backupDirPath).create(recursive: true);
                         }
@@ -359,17 +340,8 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                             await Directory('$modsDirPath${s}Costumes').create(recursive: true);
                           } else {
                             for (var cateName in defaultCatesList) {
-                              if (cateName != 'Favorites') {
-                                Directory('$modsDirPath$s$cateName').createSync(recursive: true);
-                              }
+                              Directory('$modsDirPath$s$cateName').createSync(recursive: true);
                             }
-                          }
-                          if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
-                            await Directory('${Directory.current.path}${s}temp').create(recursive: true);
-                          }
-
-                          if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
-                            await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
                           }
                           if (!Directory(backupDirPath).existsSync()) {
                             await Directory(backupDirPath).create(recursive: true);

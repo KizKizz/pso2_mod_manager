@@ -1,4 +1,4 @@
-﻿Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
+Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
 Substitute Motions are in win32reboot, unlike most NGS player files
 The first two characters of each filename are the folder name
 
@@ -17,7 +17,7 @@ The first two characters of each filename are the folder name
 スキップ,Long Leap,012,54\d4ac7a3dd69b50cf8862e4f1c9f4ff,b3\44a0fb0b68fb55e9b4bb61865e7645,a5\898755c1d3a0eaa5b697e4aada7442,77\4278b17dfa1222dcb7921c43179d2d
 ニンジャ,Ninja,013,00\29920eea543c6487a01e5351dbffb8,5d\0a63ca4105608b0ea189344c7d0aae,c1\cc8aaafd7e54941c8f1418f0d6cfad,cb\ce4d31c731b11f28bb813828a4907d
 うきうき,Playful,014,14\e5a4af12e5938d7f047f539a29598d,e1\2d55f45b8aa7bde686d0d6b6c2e702,d0\5b098b8a0fdfad76deede8c6811078,3e\93e860ea59e715f2d1384d1771807b
-ジョギング,Jogging,015,d2\313eb9ce815a2c4a7e880f2db5828f,60\751e3942d348d156ea6626baf61b7b,2a\70180b5828391fd24c671a759a08fb,80\0cef8f6e8b0be8c717bb5b011a7c00
+[Unnamed 15],015,d2\313eb9ce815a2c4a7e880f2db5828f,60\751e3942d348d156ea6626baf61b7b,2a\70180b5828391fd24c671a759a08fb,80\0cef8f6e8b0be8c717bb5b011a7c00
 軽やか,Lightweight,016,c7\e3484269ced8094b26e13d9260bcb7,55\64300c3912a6d35c061d3933ea87cd,bb\ffa673ab31008324f2d834a96b4c9e,e5\94d3f8474dd8f2cc10f68a7114f697
 傘をさす,Umbrella,017,c3\cfd8840ccfc38105c8bdb424ce92c5,de\06ca4baccd7215441545fffc8d8a66,f5\4a4fc589f65810dac6e7d59a0f0c2b,30\4c15ffdce7aa4cb7fc6560fc4f4c7f
 腕組み浮遊,Floating with Arms Crossed,018,35\8e7da6b931a83821667cedc9e6f298,4c\8e4f8b4df6beaacbb7731b4318ec7b,2b\4391f3d7152e699ed31f4dfaa0d3df,02\3c27dcfa683202dc146e78025a3f62
