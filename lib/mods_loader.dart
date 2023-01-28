@@ -3,15 +3,19 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 
 import 'mod_classes.dart';
+
+List<String> _itemIconInfoFromCsV = [];
 
 Future<List<ModFile>> modsLoader() async {
   final allFiles = Directory(modsDirPath).listSync(recursive: true).whereType<File>();
@@ -86,7 +90,7 @@ Future<List<ModFile>> modsLoader() async {
     }
 
     if (imgFiles.isEmpty || vidFiles.isEmpty) {
-      List<String> filePathSplit = iceFile.path.split('$modPath\\').last.split(s);
+      List<String> filePathSplit = iceFile.path.split('$modPath$s').last.split(s);
       if (filePathSplit.isNotEmpty) {
         filePathSplit.insert(0, modName);
         String fileName = filePathSplit.removeLast();
@@ -155,6 +159,18 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
       for (var file in filesGet) {
         if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
           imgFilesGet.add(file);
+        } else {
+          // getItemIconInfoFromCsv(XFile(modFile.icePath));
+
+          // if (_itemIconInfoFromCsV.isNotEmpty) {
+          //   XFile iconImage = XFile(_itemIconInfoFromCsV[3]);
+          //   final copiedIconFile = File(_itemIconInfoFromCsV[3]).copySync('${modFile.modPath}$s${iconImage.name}');
+          //   imgFiles.add(copiedIconFile);
+          //   _itemIconInfoFromCsV.clear();
+          //   Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+          //     element.deleteSync(recursive: true);
+          //   });
+          // }
         }
       }
 
@@ -307,8 +323,6 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   }
   tempFavCate.itemNames.sort();
   categories.insert(0, tempFavCate);
-
-  
 
   return categories;
 }
@@ -479,6 +493,10 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
 
 Future<List<File>> getImagesList(List<File> imgFile) async {
   return imgFile.toList();
+}
+
+void getItemIconInfoFromCsv(XFile iceFile) async {
+  _itemIconInfoFromCsV = await findItemInCsv(iceFile);
 }
 
 Future<List<ModSet>> getSetsList() async {

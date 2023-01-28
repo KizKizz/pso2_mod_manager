@@ -33,6 +33,7 @@ List<bool> _mainFolderRenameIndex = [];
 List<List<bool>> _subFoldersRenameIndex = [];
 bool _isNameEditing = false;
 bool _isAddedSuccess = false;
+bool _processTrigger = false;
 List<String> _nonSupportedFileNames = [];
 //List<List<String>> _dropdownCategories = [];
 List<String> _dropdownCategories = [];
@@ -406,7 +407,7 @@ void modAddHandler(context) {
                                                         _mainFolderRenameIndex = List.generate(sortedModsList.length, (index) => false);
                                                         _subFoldersRenameIndex = List.generate(sortedModsList.length, (index) => []);
                                                         for (int i = 0; i < _subFoldersRenameIndex.length; i++) {
-                                                          _subFoldersRenameIndex[i] = List.generate(sortedModsList[i][4].split('|').length, (index) => false);
+                                                          _subFoldersRenameIndex[i] = List.generate(sortedModsList[i][5].split('|').length, (index) => false);
                                                         }
                                                       } else if (_mainFolderRenameIndex.isNotEmpty && _mainFolderRenameIndex.length < sortedModsList.length) {
                                                         _mainFolderRenameIndex.clear();
@@ -414,7 +415,7 @@ void modAddHandler(context) {
                                                         _mainFolderRenameIndex = List.generate(sortedModsList.length, (index) => false);
                                                         _subFoldersRenameIndex = List.generate(sortedModsList.length, (index) => []);
                                                         for (int i = 0; i < _subFoldersRenameIndex.length; i++) {
-                                                          _subFoldersRenameIndex[i] = List.generate(sortedModsList[i][4].split('|').length, (index) => false);
+                                                          _subFoldersRenameIndex[i] = List.generate(sortedModsList[i][5].split('|').length, (index) => false);
                                                         }
                                                       }
                                                       //get catelist
@@ -463,13 +464,15 @@ void modAddHandler(context) {
                                                                     leading: Padding(
                                                                       padding: const EdgeInsets.symmetric(vertical: 2),
                                                                       child: Container(
-                                                                        width: 50,
+                                                                        width: 44,
                                                                         height: 50,
                                                                         decoration: BoxDecoration(
                                                                           borderRadius: BorderRadius.circular(3),
                                                                           border: Border.all(color: Theme.of(context).hintColor),
                                                                         ),
-                                                                        child: Image.asset('assets/img/placeholdersquare.png'),
+                                                                        child: sortedModsList[index][3].isEmpty
+                                                                            ? Image.asset('assets/img/placeholdersquare.png')
+                                                                            : Image.file(File(sortedModsList[index][3])),
                                                                       ),
                                                                     ),
                                                                     //Edit Item's name
@@ -645,9 +648,10 @@ void modAddHandler(context) {
                                                                         MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                     childrenPadding: const EdgeInsets.only(left: 10),
                                                                     children: [
-                                                                      for (int ex = 0; ex < sortedModsList[index][3].split('|').length; ex++)
+                                                                      for (int ex = 0; ex < sortedModsList[index][4].split('|').length; ex++)
                                                                         ExpansionTile(
                                                                           initiallyExpanded: true,
+                                                                          childrenPadding: const EdgeInsets.only(left: 5),
                                                                           textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                           iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                           collapsedTextColor:
@@ -667,7 +671,7 @@ void modAddHandler(context) {
                                                                                           decoration: InputDecoration(
                                                                                             contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                             border: const OutlineInputBorder(),
-                                                                                            hintText: sortedModsList[index][3].split('|')[ex],
+                                                                                            hintText: sortedModsList[index][4].split('|')[ex],
                                                                                           ),
                                                                                           onEditingComplete: () {
                                                                                             if (renameTextBoxController.text.isNotEmpty) {
@@ -683,7 +687,7 @@ void modAddHandler(context) {
                                                                                                 if (!File(element.path).existsSync()) {
                                                                                                   Directory(newMainPath).createSync(recursive: true);
                                                                                                 }
-                                                                                                if (sortedModsList[index][4].isEmpty) {
+                                                                                                if (sortedModsList[index][5].isEmpty) {
                                                                                                   Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
                                                                                                 }
                                                                                               }
@@ -696,11 +700,11 @@ void modAddHandler(context) {
                                                                                               }
 
                                                                                               //Itemlist
-                                                                                              List<String> mainDirsString = sortedModsList[index][3].split('|');
+                                                                                              List<String> mainDirsString = sortedModsList[index][4].split('|');
                                                                                               mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                              sortedModsList[index][3] = mainDirsString.join('|');
+                                                                                              sortedModsList[index][4] = mainDirsString.join('|');
 
-                                                                                              List<String> mainDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                              List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
                                                                                               for (var element in mainDirsInItemString) {
                                                                                                 List<String> split = element.split((':'));
                                                                                                 if (split.indexWhere((element) => element == oldMainDirName) != -1) {
@@ -708,7 +712,7 @@ void modAddHandler(context) {
                                                                                                   mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
                                                                                                 }
                                                                                               }
-                                                                                              sortedModsList[index][5] = mainDirsInItemString.join('|');
+                                                                                              sortedModsList[index][6] = mainDirsInItemString.join('|');
 
                                                                                               //print(sortedModsList);
                                                                                             }
@@ -731,7 +735,7 @@ void modAddHandler(context) {
                                                                                       child: MaterialButton(
                                                                                         onPressed: () {
                                                                                           if (renameTextBoxController.text.isNotEmpty) {
-                                                                                            String oldMainDirName = sortedModsList[index][3].split('|')[ex];
+                                                                                            String oldMainDirName = sortedModsList[index][4].split('|')[ex];
                                                                                             // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
                                                                                             //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
                                                                                             List<FileSystemEntity> curFilesInMainDir =
@@ -743,7 +747,7 @@ void modAddHandler(context) {
                                                                                               if (!File(element.path).existsSync()) {
                                                                                                 Directory(newMainPath).createSync(recursive: true);
                                                                                               }
-                                                                                              if (sortedModsList[index][4].isEmpty) {
+                                                                                              if (sortedModsList[index][5].isEmpty) {
                                                                                                 Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
                                                                                               }
                                                                                             }
@@ -756,11 +760,11 @@ void modAddHandler(context) {
                                                                                             }
 
                                                                                             //Itemlist
-                                                                                            List<String> mainDirsString = sortedModsList[index][3].split('|');
+                                                                                            List<String> mainDirsString = sortedModsList[index][4].split('|');
                                                                                             mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                            sortedModsList[index][3] = mainDirsString.join('|');
+                                                                                            sortedModsList[index][4] = mainDirsString.join('|');
 
-                                                                                            List<String> mainDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                            List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
                                                                                             for (var element in mainDirsInItemString) {
                                                                                               List<String> split = element.split((':'));
                                                                                               if (split.indexWhere((element) => element == oldMainDirName) != -1) {
@@ -768,7 +772,7 @@ void modAddHandler(context) {
                                                                                                 mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
                                                                                               }
                                                                                             }
-                                                                                            sortedModsList[index][5] = mainDirsInItemString.join('|');
+                                                                                            sortedModsList[index][6] = mainDirsInItemString.join('|');
 
                                                                                             //print(sortedModsList);
                                                                                           }
@@ -788,7 +792,7 @@ void modAddHandler(context) {
                                                                               : Row(
                                                                                   children: [
                                                                                     Expanded(
-                                                                                      child: Text(sortedModsList[index][3].split('|')[ex],
+                                                                                      child: Text(sortedModsList[index][4].split('|')[ex],
                                                                                           style: const TextStyle(
                                                                                             fontWeight: FontWeight.w500,
                                                                                           )),
@@ -819,10 +823,11 @@ void modAddHandler(context) {
                                                                                 ),
                                                                           children: [
                                                                             //if has subfolders
-                                                                            for (int sub = 0; sub < sortedModsList[index][4].split('|').length; sub++)
-                                                                              if (sortedModsList[index][4].split('|')[sub] != '')
+                                                                            for (int sub = 0; sub < sortedModsList[index][5].split('|').length; sub++)
+                                                                              if (sortedModsList[index][5].split('|')[sub] != '')
                                                                                 ExpansionTile(
                                                                                   initiallyExpanded: false,
+                                                                                  childrenPadding: const EdgeInsets.only(left: 10),
                                                                                   textColor:
                                                                                       MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                                   iconColor:
@@ -843,21 +848,21 @@ void modAddHandler(context) {
                                                                                                   decoration: InputDecoration(
                                                                                                     contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                     border: const OutlineInputBorder(),
-                                                                                                    hintText: sortedModsList[index][4].split('|')[sub],
+                                                                                                    hintText: sortedModsList[index][5].split('|')[sub],
                                                                                                   ),
                                                                                                   onEditingComplete: (() {
                                                                                                     if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                      String oldSubDirName = sortedModsList[index][4].split('|')[sub];
+                                                                                                      String oldSubDirName = sortedModsList[index][5].split('|')[sub];
                                                                                                       // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
                                                                                                       //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
                                                                                                       List<FileSystemEntity> curFilesInSubDir =
-                                                                                                          Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName')
+                                                                                                          Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
                                                                                                               .listSync(recursive: true);
                                                                                                       for (var element in curFilesInSubDir) {
                                                                                                         //print(curFilesInMainDir);
                                                                                                         String newMainPath = element.path.replaceFirst(
-                                                                                                            '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                            '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                         if (!File(element.path).existsSync()) {
                                                                                                           Directory(newMainPath).createSync(recursive: true);
                                                                                                         } else {
@@ -866,19 +871,19 @@ void modAddHandler(context) {
                                                                                                       }
                                                                                                       for (var element in curFilesInSubDir) {
                                                                                                         String newMainPath = element.path.replaceFirst(
-                                                                                                            '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                            '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                         if (File(element.path).existsSync()) {
                                                                                                           File(element.path).copySync(newMainPath);
                                                                                                         }
                                                                                                       }
 
                                                                                                       //List
-                                                                                                      List<String> subDirsString = sortedModsList[index][4].split('|');
+                                                                                                      List<String> subDirsString = sortedModsList[index][5].split('|');
                                                                                                       subDirsString[subDirsString.indexOf(oldSubDirName)] = renameTextBoxController.text;
-                                                                                                      sortedModsList[index][4] = subDirsString.join('|');
+                                                                                                      sortedModsList[index][5] = subDirsString.join('|');
 
-                                                                                                      List<String> subDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                                      List<String> subDirsInItemString = sortedModsList[index][6].split('|');
                                                                                                       for (var element in subDirsInItemString) {
                                                                                                         List<String> split = element.split((':'));
                                                                                                         if (split.indexWhere((element) => element == oldSubDirName) != -1) {
@@ -886,7 +891,7 @@ void modAddHandler(context) {
                                                                                                           subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
                                                                                                         }
                                                                                                       }
-                                                                                                      sortedModsList[index][5] = subDirsInItemString.join('|');
+                                                                                                      sortedModsList[index][6] = subDirsInItemString.join('|');
                                                                                                     }
 
                                                                                                     //Clear
@@ -908,36 +913,36 @@ void modAddHandler(context) {
                                                                                               child: MaterialButton(
                                                                                                 onPressed: () {
                                                                                                   if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                    String oldSubDirName = sortedModsList[index][4].split('|')[sub];
+                                                                                                    String oldSubDirName = sortedModsList[index][5].split('|')[sub];
                                                                                                     // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
                                                                                                     //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
                                                                                                     List<FileSystemEntity> curFilesInSubDir =
-                                                                                                        Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName')
+                                                                                                        Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
                                                                                                             .listSync(recursive: true);
                                                                                                     for (var element in curFilesInSubDir) {
                                                                                                       //print(curFilesInMainDir);
                                                                                                       String newMainPath = element.path.replaceFirst(
-                                                                                                          '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                          '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                       if (!File(element.path).existsSync()) {
                                                                                                         Directory(newMainPath).createSync(recursive: true);
                                                                                                       }
                                                                                                     }
                                                                                                     for (var element in curFilesInSubDir) {
                                                                                                       String newMainPath = element.path.replaceFirst(
-                                                                                                          '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                          '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                       if (File(element.path).existsSync()) {
                                                                                                         File(element.path).copySync(newMainPath);
                                                                                                       }
                                                                                                     }
 
                                                                                                     //List
-                                                                                                    List<String> subDirsString = sortedModsList[index][4].split('|');
+                                                                                                    List<String> subDirsString = sortedModsList[index][5].split('|');
                                                                                                     subDirsString[subDirsString.indexOf(oldSubDirName)] = renameTextBoxController.text;
-                                                                                                    sortedModsList[index][4] = subDirsString.join('|');
+                                                                                                    sortedModsList[index][5] = subDirsString.join('|');
 
-                                                                                                    List<String> subDirsInItemString = sortedModsList[index][5].split('|');
+                                                                                                    List<String> subDirsInItemString = sortedModsList[index][6].split('|');
                                                                                                     for (var element in subDirsInItemString) {
                                                                                                       List<String> split = element.split((':'));
                                                                                                       if (split.indexWhere((element) => element == oldSubDirName) != -1) {
@@ -945,7 +950,7 @@ void modAddHandler(context) {
                                                                                                         subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
                                                                                                       }
                                                                                                     }
-                                                                                                    sortedModsList[index][5] = subDirsInItemString.join('|');
+                                                                                                    sortedModsList[index][6] = subDirsInItemString.join('|');
                                                                                                   }
 
                                                                                                   //Clear
@@ -965,7 +970,7 @@ void modAddHandler(context) {
                                                                                           children: [
                                                                                             Expanded(
                                                                                               child: Text(
-                                                                                                sortedModsList[index][4].split('|')[sub],
+                                                                                                sortedModsList[index][5].split('|')[sub],
                                                                                                 // style: const TextStyle(
                                                                                                 //   fontWeight: FontWeight.w500,
                                                                                                 // )
@@ -996,22 +1001,25 @@ void modAddHandler(context) {
                                                                                           ],
                                                                                         ),
                                                                                   children: [
-                                                                                    for (int i = 0; i < sortedModsList[index][5].split('|').length; i++)
-                                                                                      if (sortedModsList[index][5].split('|')[i].split(':')[0] == sortedModsList[index][3].split('|')[ex] &&
-                                                                                          sortedModsList[index][5].split('|')[i].split(':')[1] == sortedModsList[index][4].split('|')[sub])
+                                                                                    for (int i = 0; i < sortedModsList[index][6].split('|').length; i++)
+                                                                                      if (sortedModsList[index][6].split('|')[i].split(':')[0] == sortedModsList[index][4].split('|')[ex] &&
+                                                                                          sortedModsList[index][6].split('|')[i].split(':')[1] == sortedModsList[index][5].split('|')[sub])
                                                                                         ListTile(
-                                                                                          title: Text(sortedModsList[index][5].split('|')[i].split(':').last),
+                                                                                          title: Text(sortedModsList[index][6].split('|')[i].split(':').last),
                                                                                         )
                                                                                   ],
                                                                                 ),
                                                                             //if has no subfolders
-                                                                            for (int u = 0; u < sortedModsList[index][4].split('|').length; u++)
-                                                                              if (sortedModsList[index][4].split('|')[u] == '')
-                                                                                for (int i = 0; i < sortedModsList[index][5].split('|').length; i++)
-                                                                                  if (sortedModsList[index][5].split('|')[i].split(':')[0] == sortedModsList[index][3].split('|')[ex] &&
-                                                                                      sortedModsList[index][5].split('|')[i].split(':')[1] == '')
+                                                                            for (int u = 0; u < sortedModsList[index][5].split('|').length; u++)
+                                                                              if (sortedModsList[index][5].split('|')[u] == '')
+                                                                                for (int i = 0; i < sortedModsList[index][6].split('|').length; i++)
+                                                                                  if (sortedModsList[index][6].split('|')[i].split(':')[0] == sortedModsList[index][4].split('|')[ex] &&
+                                                                                      sortedModsList[index][6].split('|')[i].split(':')[1] == '')
                                                                                     ListTile(
-                                                                                      title: Text(sortedModsList[index][5].split('|')[i].split(':').last),
+                                                                                      title: Padding(
+                                                                                        padding: const EdgeInsets.only(left: 10),
+                                                                                        child: Text(sortedModsList[index][6].split('|')[i].split(':').last),
+                                                                                      ),
                                                                                     )
                                                                           ],
                                                                         )
@@ -1095,7 +1103,7 @@ void modAddHandler(context) {
                                           children: [
                                             Expanded(
                                               child: ElevatedButton(
-                                                  onPressed: sortedModsList.isNotEmpty
+                                                  onPressed: sortedModsList.isNotEmpty || _processTrigger
                                                       ? (() {
                                                           Directory(tempDirPath).listSync(recursive: false).forEach((element) {
                                                             element.deleteSync(recursive: true);
@@ -1107,6 +1115,7 @@ void modAddHandler(context) {
                                                           _newModMainFolderList.clear();
                                                           _selectedCategories.clear();
                                                           _exitConfirmDialog = false;
+                                                          _processTrigger = false;
                                                           _duplicateModNames.clear();
                                                           sortedModsList.clear();
                                                           _newModDragDropList.clear();
@@ -1135,32 +1144,37 @@ void modAddHandler(context) {
                                                       _mainFolderRenameIndex.clear();
                                                       _newModMainFolderList.clear();
                                                       _selectedCategories.clear();
+                                                      _processTrigger = false;
                                                       _exitConfirmDialog = false;
                                                       _duplicateModNames.clear();
                                                       itemRefSheetsList.clear();
                                                       sortedModsList.clear();
                                                       _newModDragDropList.clear();
                                                       modsToAddList.clear();
-                                                      Navigator.of(context).pop();
                                                       setState(
                                                         () {},
                                                       );
+                                                      Navigator.of(context).pop();
                                                     } else if (sortedModsList.isNotEmpty || modsToAddList.isNotEmpty || _newModDragDropList.isNotEmpty) {
                                                       _exitConfirmDialog = true;
+                                                      setState(
+                                                        () {},
+                                                      );
                                                     } else {
                                                       //clear lists
                                                       _mainFolderRenameIndex.clear();
                                                       _newModMainFolderList.clear();
+                                                      _processTrigger = false;
                                                       _selectedCategories.clear();
                                                       itemRefSheetsList.clear();
                                                       sortedModsList.clear();
                                                       _newModDragDropList.clear();
                                                       modsToAddList.clear();
+                                                      setState(
+                                                        () {},
+                                                      );
                                                       Navigator.of(context).pop();
                                                     }
-                                                    setState(
-                                                      () {},
-                                                    );
                                                   }),
                                                   child: Text(curLangText!.closeBtnText)),
                                             ),
@@ -1169,7 +1183,8 @@ void modAddHandler(context) {
                                             ),
                                             Expanded(
                                               child: ElevatedButton(
-                                                  onPressed: sortedModsList.isNotEmpty && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1
+                                                  onPressed: sortedModsList.isNotEmpty && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1 ||
+                                                          _processTrigger && _mainFolderRenameIndex.indexWhere((element) => element == true) == -1
                                                       ? (() async {
                                                           //Check for dub mods
                                                           _duplicateModNames.clear();
@@ -1181,7 +1196,7 @@ void modAddHandler(context) {
                                                             } else {
                                                               itemName = sortedLine[2];
                                                             }
-                                                            List<String> mainNames = sortedLine[3].split('|');
+                                                            List<String> mainNames = sortedLine[4].split('|');
 
                                                             if (Directory('$modsDirPath$s$category$s$itemName').existsSync()) {
                                                               if (Directory('$modsDirPath$s$category$s$itemName')
@@ -1211,6 +1226,7 @@ void modAddHandler(context) {
                                                               _newModMainFolderList.clear();
                                                               _selectedCategories.clear();
                                                               _exitConfirmDialog = false;
+                                                              _processTrigger = false;
                                                               _duplicateModNames.clear();
                                                               sortedModsList.clear();
                                                               _newModDragDropList.clear();
@@ -1312,30 +1328,30 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
                 itemInfo = filesList[indexInFilesList];
               }
             } else {
-              itemInfo = ['Misc', '不明な項目', 'Unknown Items'];
+              itemInfo = ['Misc', '不明な項目', 'Unknown Items', ''];
               // itemInfo = ['Misc', '不明な項目 $unknownModsCounter', 'Unknown Item $unknownModsCounter'];
               // unknownModsCounter++;
             }
 
-            if (itemInfo.length < 4) {
+            if (itemInfo.length < 5) {
               itemInfo.add(mainDirName);
             } else {
-              if (!itemInfo[3].split('|').contains(mainDirName)) {
-                itemInfo[3] += '|$mainDirName';
-              }
-            }
-            if (itemInfo.length < 5) {
-              itemInfo.add(subDirName);
-            } else {
-              if (!itemInfo[4].split('|').contains(subDirName)) {
-                itemInfo[4] += '|$subDirName';
+              if (!itemInfo[4].split('|').contains(mainDirName)) {
+                itemInfo[4] += '|$mainDirName';
               }
             }
             if (itemInfo.length < 6) {
+              itemInfo.add(subDirName);
+            } else {
+              if (!itemInfo[5].split('|').contains(subDirName)) {
+                itemInfo[5] += '|$subDirName';
+              }
+            }
+            if (itemInfo.length < 7) {
               itemInfo.add('$mainDirName:$subDirName:${inputFile.name}');
             } else {
-              if (!itemInfo[5].split('|').contains('$mainDirName:$subDirName:${inputFile.name}')) {
-                itemInfo[5] += '|$mainDirName:$subDirName:${inputFile.name}';
+              if (!itemInfo[6].split('|').contains('$mainDirName:$subDirName:${inputFile.name}')) {
+                itemInfo[6] += '|$mainDirName:$subDirName:${inputFile.name}';
               }
             }
 
@@ -1346,7 +1362,7 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
               filesList.add(itemInfo);
             }
           } else {
-            extraFiles.add(['', '', '', mainDirName, subDirName, '$mainDirName:$subDirName:${inputFile.name}']);
+            extraFiles.add(['', '', '', '', mainDirName, subDirName, '$mainDirName:$subDirName:${inputFile.name}']);
           }
 
           //print('Sub: $subDirName');
@@ -1356,8 +1372,8 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   }
   for (var extraFile in extraFiles) {
     for (var file in filesList) {
-      if (file[3].split('|').contains(extraFile[3]) && file[4].split('|').contains(extraFile[4])) {
-        file[5] += '|${extraFile[5]}';
+      if (file[4].split('|').contains(extraFile[4]) && file[5].split('|').contains(extraFile[5])) {
+        file[6] += '|${extraFile[6]}';
       }
     }
   }
@@ -1372,45 +1388,120 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
         var lineSplit = line.split(',');
         //[0 Category, 1 JP name, 2 EN name, 3 icon]
         if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_')]);
+          return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_'), '']);
         } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
           if (lineSplit[0].contains('[Ba]') || lineSplit[1].contains('[Ba]')) {
-            return (['Basewears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+            return ([
+              'Basewears',
+              lineSplit[0].replaceAll('/', '_'),
+              lineSplit[1].replaceAll('/', '_'),
+              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+            ]);
           } else if (lineSplit[0].contains('[Se]') || lineSplit[1].contains('[Se]')) {
-            return ([await getIconPath(lineSplit[4]), lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+            return ([
+              'Setwears',
+              lineSplit[0].replaceAll('/', '_'),
+              lineSplit[1].replaceAll('/', '_'),
+              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+            ]);
           } else {
-            return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+            return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
           }
         } else if (_accessoriesCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Accessories', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Accessories',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[3], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_innerwearCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Innerwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Innerwears',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_outerwearCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Outerwears', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Outerwears',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_bodyPaintCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Body Paints', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Body Paints',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_magsCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Mags', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Mags',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[3], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_stickersCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Stickers', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Stickers',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_facePaintCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Face Paints', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Face Paints',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_hairCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Hairs', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Hairs',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_castBodyCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Cast Body Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Cast Body Parts',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_castArmCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Cast Arm Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Cast Arm Parts',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_castLegCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Cast Leg Parts', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Cast Leg Parts',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_eyeCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Eyes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Eyes',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_costumeCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Costumes', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([
+            'Costumes',
+            lineSplit[0].replaceAll('/', '_'),
+            lineSplit[1].replaceAll('/', '_'),
+            await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
+          ]);
         } else if (_motionCsv.indexWhere((element) => file.first == element) != -1) {
-          return (['Motions', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return (['Motions', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
         } else {
-          return ([file.first, lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_')]);
+          return ([file.first, lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
         }
       }
     }
@@ -1419,8 +1510,45 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
   return [];
 }
 
-Future<String> getIconPath(String iceName) async {
-  XFile iconFile = XFile(iceFiles.firstWhere((element) => element.path.split(s).last == iceName).path);
-  await Process.run(zamboniExePath, [iconFile.path]);
-  return iceName;
+Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN) async {
+  if (iceFiles.indexWhere((element) => element.path.split(s).last == iceName) != -1) {
+    XFile iconFile = XFile(iceFiles.firstWhere((element) => element.path.split(s).last == iceName).path);
+
+    String itemName = '';
+    if (curActiveLang == 'JP') {
+      itemName = itemNameJP.replaceAll('/', '_');
+      itemName = itemName.replaceAll(':', '_');
+    } else {
+      itemName = itemNameEN.replaceAll('/', '_');
+      itemName = itemName.replaceAll(':', '_');
+    }
+
+    XFile ddsIcon = XFile('');
+    await Process.run(zamboniExePath, [iconFile.path]).then((value) {
+      if (Directory('${Directory.current.path}$s${iceName}_ext').existsSync()) {
+        final files = Directory('${Directory.current.path}$s${iceName}_ext').listSync(recursive: true).whereType<File>();
+        ddsIcon = XFile(files.firstWhere((element) => p.extension(element.path) == '.dds').path);
+        if (ddsIcon.path.isNotEmpty) {
+          final iconNewName = File(ddsIcon.path).renameSync(ddsIcon.path.replaceFirst(ddsIcon.name, '$itemName.dds'));
+          ddsIcon = XFile(iconNewName.path);
+        }
+      }
+    });
+
+    if (ddsIcon.path.isNotEmpty) {
+      await Process.run('${Directory.current.path}${s}ddstopngtool${s}DDStronk.exe', [ddsIcon.path]).then((value) {
+        _processTrigger = true;
+      });
+      final newPath = File(XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).path)
+          .copySync('$tempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
+      if (newPath.existsSync()) {
+        //Directory('${Directory.current.path}$s${iceName}_ext').deleteSync(recursive: true);
+      }
+      return newPath.path;
+    }
+  }
+
+  _processTrigger = true;
+
+  return '';
 }

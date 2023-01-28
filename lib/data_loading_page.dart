@@ -69,6 +69,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 ],
               );
             } else {
+              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               // Sort cate list
@@ -84,7 +85,7 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               }
               appliedModsListGet = getAppliedModsList();
               modSetsListGet = getSetsList();
-              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+              
               Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
 
               return const HomePage();

@@ -1,4 +1,4 @@
-Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
+﻿Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
 Substitute Motions are in win32reboot, unlike most NGS player files
 The first two characters of each filename are the folder name
 
@@ -47,7 +47,7 @@ The first two characters of each filename are the folder name
 印を結ぶ,Hand Gesture,047,68\cb37bf9f39e217d7ebf3d47ee3c147,4d\1dfa9b3de09c4643e6280430c610c4,0c\21a49ce4a578e926174ba320120104,18\fc059f5cdc9f9433686f2fd200b7eb
 [Unnamed 48],048,c1\f7d5b0c507a17a0957debbe3c46e30,80\245ba6fb2c4a70ee4cc4c12cdaf6cb,32\2656b4bc20da16f5ab7a2614a4ed41,e0\7aafb20d7da4694218f5fe987899e4
 片足バランス,Balance on One Leg,049,d7\54332b50b10834f6bce4e565e7fead,ab\b93ac6c41b8cae6321afcc39fcdfc1,37\f3009660fbf01f37fafd8822d22010,93\d406372cc87f7f0df4a5fb9c60b2ce
-[Unnamed 50],050,4f\000f325d307ab85bba3ccabdaae3f8,8a\22b308d931a346e44cdd21bb9fecf4,8f\f7bbb079f32c84ffe6cbca7ea9c893,dd\2e5c86aa56c9072e76d0bb238319cf
+眠い,Sleepy,050,4f\000f325d307ab85bba3ccabdaae3f8,8a\22b308d931a346e44cdd21bb9fecf4,8f\f7bbb079f32c84ffe6cbca7ea9c893,dd\2e5c86aa56c9072e76d0bb238319cf
 ラッピーぬいぐるみ,Rappy Plush,051,83\7fbbe3b9eb9021ccc4c429d5e5e218,a7\6355659406a2ee3fae786a88dff565,1d\25d493fc9e042fc4dab593b74e1efb,f3\626f57c8cbd4ea4f49a68035b75712
 みたらしポーズ,Mitarashi Pose,052,c8\8629e000a8aa62d402c34978e93892,4a\ab81d5f9d79bb962491a082f570576,1e\4c08438603e579a6b865d4d92154ce,c6\24e63e78f365ac6c44688064840cda
 §イチカ§ポーズ,§ Ichika § Pose,053,a3\848d022fcc388278cecdc6be79fb6a,b9\4df004d3bc62e7ea316fd82732f8ac,8e\46577478cb159aac2c2221b46e1cf9,2b\f108e0751ee70f18df1fd5db153cff
@@ -82,3 +82,9 @@ The first two characters of each filename are the folder name
 プロペラエンジン,Propeller Engine,082,40\26f00354c449973262d8b15b1d8773,9e\f7c23032e799d132c6c6c18854cec8,4a\57628bdcec79dcdfce88538d3deab1,2b\b8fdf7526ef8171a5bae90daf3ebb6
 情報確認/B,Checking Things Out/B,083,c7\87fe1093f6deb39ca19b33d874ff2b,5b\8abff057b232bd9628e6f90549ffff,31\2a2ca28e002fe8483dfc6ba48a13f5,1c\1a431d5c06e5f9c9ea19386f621d78
 構図決め,Finger Frame,084,bb\23ae8b3d7c2506c857875a7780bc5c,e9\5d9ba1967957e6e508cd46c584fe75,d0\1d71562279a6bbce9483b37d6d738a,5d\26cc4bc2cc9856a31a45fa1d183572
+フレドラン,Fredran,086,96\10aa58225c270983f0f6bc1432fc1e,f4\a04f79467eba603109cf67ff036ca3,80\bced42d2073c09fa26e6cc07ee5739,eb\57fa5cae88bb9c024c428e020ca917
+ヴォルファー,Wulfen,087,4b\0021928ea1982cafb4969bf38e76eb,41\fa4935788bd4a10199554c23424d97,4c\2266f1ff5e6e2b5b50a008f9ca605f,ab\f3da455f869c68214c15bd6bef3b9b
+マルメロ,Marmelo,088,be\e88cab24bf95250287e8957e9aa3c2,2e\a89c5cc11a7b98a72ac008e23f0d4c,95\4d3a3ff4cd6845b9f032abf23de15f,21\38ff6b1933c628625ad76e7d694f56
+ふわふわティータイム,Floating Tea Time,089,5a\f51de598589b5e738fb6a9186a3cd0,c0\b7b121f03543ec0420c00327c8df90,80\b3e111b353cf0da8c4b3d2174f263c,73\5da31d33bfa973f953d3633f977349
+[Unnamed 90],090,15\e11aa7726d78407ef7157ebd502fda,57\f60ecb40a925447397cfa5f2c07080,69\346acf3a79408a0a98d8363dab2413,d6\9789684809ad3942f1024b3475c04d
+ラッピーぬいぐるみ/B,Rappy Plush/B,091,cc\fe87b3d2667589ec30dd2649d150b6,ef\dc5512aed8cb09d5acf860de71070d,d1\515656fee898e0c73e7d74f4a427b3,a8\240fc740a7e66fb604238e5541141c
