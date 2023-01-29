@@ -1,4 +1,4 @@
-Files are layed out as: PSO2File NGSfile NGSCastFile NGSCasealFile NGSFigFile
+﻿Files are layed out as: PSO2File NGSfile NGSCastFile NGSCasealFile NGSFigFile
 There may also be a VFX ice and reboot VFX ice, which will be appended last when applicable
 NGS Lobby Actions are in win32reboot, unlike most NGS player files
 The first two characters of each filename are the folder name
@@ -2963,8 +2963,8 @@ scroll2,巻物２,Scroll 2,3b38ac2f4e02bafe38757ff2e6b6d492, 845bba937fed0b0c838
 ,巻物２,Scroll 2,5df7e246874ed979107b1467fe58160f, d22e803598cb06d804eae2fd91348dba, 5fde0d01e4d1bb826db5ce0c4b51e246, 558758c830209f90afe611b0776d46b9, 9567aec38cc192aa246ded37480c38b1, b85022001f4a9200de27fe213374bf4b, Female
 ,巻物２,Scroll 2,5d96c13d96b45215937a3a52b47d34d2, fed48ddf99ca0268ebed450a6c4cb358, 295124aaeda0c4217df33728d030c701, c1cae1bbdd49d669783569968e75547e, ddccf81f8ed141fdd5c5e24e3716f915, b85022001f4a9200de27fe213374bf4b, Female
 ,巻物２,Scroll 2,9e91e4fed0a73c9768a76261d28f45f2, 6f05728410c9764aa4e2d93b499dc4a6, a03ec692bb0da0f7ccafb636e2d80669, 21860673f7cfbee839676fa875654aca, ce44143ac073404e2c3295dee482cc1f, b85022001f4a9200de27fe213374bf4b, Female
-warmingup2+,ボクシング＋,Boxing +,2a13648b2a7ec4ca75b4085e0485236a, 2e526f2721d4cc4ad277d0ec6f9f0c0c, c9fde89a5c29b1ec5018d9a8207a6150, 6fe01b92c902208906638aea3474f010, eb95da1caea01574ce8339a024f6013f, Male, (Not found)
-,ボクシング＋,Boxing +,5849f7caddd064c3059a94f6762a4920, 8641b1628b5a7b1ed834738ee9edaf92, e696e23e6d46efe082a94a764b76e74f, a63bc857801c63e3795e72e8b87f09b3, 2af8e2d328f5435267d32cb1b0bdc51f, Female, (Not found)
+warmingup2+,ボクシング＋,Boxing +,2a13648b2a7ec4ca75b4085e0485236a, Male, (Not found)
+,ボクシング＋,Boxing +,5849f7caddd064c3059a94f6762a4920, Female, (Not found)
 hiding,隠れる,Sneaky,d65e2cf595699f19d4496dcac4c8a7b4, e88de64262859c2a5c1b4b22c66dc9d5, 9658e10c111890d5af4243b73305c4fd, 8a39860db6d821a58ac802ad203cecc3, 25c0521011418564e66b5fe84975096d, 520fbd03a36f3e104d88942b4460b37b, Male
 ,隠れる,Sneaky,f8f78df50079c8346f411bc5ea21db23, 17ad5d789bfb6a329c6e2d4bbca46fe0, 4cdfff57cc61069070298ec6e6807aa4, 7817edd46dd5c047db2d1994b5c72461, 180e60ba075f0b64d4b87945c1c8daec, 520fbd03a36f3e104d88942b4460b37b, Male
 ,隠れる,Sneaky,53a1ed90362cdf470c6b770985ca2015, cdcf8213a8c2052fb08f595b30169ad0, a3412bed5012a352c5f50677d0dee7c7, a72a506915edea34487304c0f11d93b8, f8251468f13d58b66dde717dcd9dd2f3, 231a25ad48f9e7f5f4c1411f9843e2f3, Female
@@ -3036,10 +3036,10 @@ startafire,火起こし,Starting a Fire,ed1e3cd9ccf1cb256f73a14b63b72f52, 2955fc
 ,火起こし,Starting a Fire,c81cb6b67f23484f2c62e7d8eb3b0523, c2616d42f051fadf13fd80e7561338ef, 4ea2ac5d5bdc4a99dcce654499af919b, c734bb380102d2160499291e9ead50b9, 967a548bcee05b8cb26a03ebef8ea31c, a629d7ca4eee7bf1b30bb08d7c133270, Female
 VoPerformance13,Ｖｏパフォーマンス１３,Vocal Performance 13,0c37a7d2fec9bcdb2a50eefcf5eed729, a06558cd1bb0f02d3e15751130ed10fe, d25ce2302f1b9b081299db4597a69949, 6f0f40250d2867554d93ea991d94e9e7, a4d876b2120cd5df8e261b085bf4ffa9, 09b003d137dbf9ce3c775971478e68ff, Male
 ,Ｖｏパフォーマンス１３,Vocal Performance 13,fa7838ac8acb779652cd52331731327e, bcc251742111e59041c941dea9b0346c, 4b6c60c4f36030a34f568f74e4088c59, 2c54f52e2e8a0f0c6bab963e121b0a42, 112324dd76b8c7b5ce69b7bf495107fe, Female
-rescueplay,救急ごっこ,Playing Possum,146f4feb863760f12f6b45a885329b4e, c19aa56f5add93b0c68d571ea657b188, 4d70a7ca03e7cde484b486618d89570a, 8dab37cd5c011719ebb1ac94855a5f49, 5b00bef465518485997cc961c7ecac8e, Male
-,救急ごっこ,Playing Possum,2f7fd93c825014bdb8b3d7606dfb12b2, 41e5f85e7d2799efa04a6b14e265428f, 6acce8bfdca40f78a3173d0cd69b95c8, 2e87f5c726213609e7ab3fcea8911b29, b278fb87f0ec3f2be3c8a3d138184cae, Male
-,救急ごっこ,Playing Possum,88a48ffe946de39ca7b736b2bb45bd81, c956d24fc670090eb72ae525ff79774a, 7544e53ec945264ee5d0e654afaace5a, cbeed973432f7b2a97d72e9711ce49ec, 5baf4f8618d78535e37c7be25c9a7512, Female
-,救急ごっこ,Playing Possum,9684dcfea644d8b39a49c8a963e07d87, 3f2059d44a2778f3d9af83cfb23780c4, 4132e3508c5fd365bd87d22a8074a1e6, a3bfcd1f2a71e55d1de2975ba8e95235, 4b00fc30c7457c097d108642e1301aff, Female
+rescueplay,救急ごっこ,Playing Possum,146f4feb863760f12f6b45a885329b4e, Male, (Not found)
+,救急ごっこ,Playing Possum,2f7fd93c825014bdb8b3d7606dfb12b2, Male, (Not found)
+,救急ごっこ,Playing Possum,88a48ffe946de39ca7b736b2bb45bd81, Female, (Not found)
+,救急ごっこ,Playing Possum,9684dcfea644d8b39a49c8a963e07d87, Female, (Not found)
 bartender,バーテンダー,Bartending,7899ed816b7b7f5296e7418afe21f913, 7296ef5f42a5a2409b7c10261119c527, 860d554328063a3b4f5a261f408012df, c2e4e749b083097373db171e68313930, 33ec915a00b4c52454a5b6ea73c88a77, d3fb1697e9838ae0a0700fae6c232c80, Male
 ,バーテンダー,Bartending,82b4ca071562bb1392e9dc9e08de703b, 2a7c4db94e4f8a0bf5af397d449151e5, 786425acecbc796d1044a4ea8f6a29f2, ba267bf796f2188e202ed9112321fb57, d1a6b97b10c690b425b0e9d58539501c, af818a9f16efa50df35c89c60da529b2, Female
 throughblinds,ブラインド越し,Peering through Blinds,ec154c880049f51a4401ff20a65be2d7, d06a93144ec544ba63efe88d31bc7d15, 241124e3fc52e8386fb6ae5c7dce75ba, 14fa37a9342760fcce23e41bc5f72783, 0610dac3652b9912b370f30d18a1b875, 153855fd3ee3c7a150624c216bb8fb85, Male

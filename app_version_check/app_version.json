@@ -1,12 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.0",
+    "version": "1.6.2",
     "description": [
-        "Added new mods adding feature with auto sort by item name using item reference sheets (item's icon will be added later)",
-        "Reference sheets will also be auto updated if there are changes to them (needed for the new adder to work correctly)",
-        "Added sort categories feature, can be sorted by name, or item count",
-        "Checksum will be auto downloaded when user clicked on checksum missing button",
-        "Removed old item adders",
+        "Added auto fetch item icons to item adder",
+        "Item icons will also auto fetch in Item List upon opening the app (Might take some time upon first time)",
         "Some bug fixes and other optimization"
     ],
     "windows_file": "",

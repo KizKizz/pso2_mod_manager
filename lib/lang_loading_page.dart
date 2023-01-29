@@ -50,12 +50,6 @@ class _LangLoadingPageState extends State<LangLoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addTimingsCallback((_) async {
-    //   await Future.delayed(const Duration(milliseconds: 500));
-    //   if (curLangText == null) {
-    //     await getUILanguage();
-    //   }
-    // });
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

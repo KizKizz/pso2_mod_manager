@@ -2,16 +2,21 @@
 
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/home_page.dart';
+import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+
+List<String> _cateToIgnoreScan = ['Emotes', 'Motions'];
 
 class PathsLoadingPage extends StatefulWidget {
   const PathsLoadingPage({Key? key}) : super(key: key);
@@ -24,8 +29,36 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
   @override
   void initState() {
     mainPathsCheck();
+    itemIconHandler();
 
     super.initState();
+  }
+
+  void itemIconHandler() async {
+    itemRefSheetsList = await popSheetsList(refSheetsDirPath);
+    for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
+      if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
+        for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
+          final filesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>();
+          final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
+          if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
+            final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
+            List<String> infoString = await findItemInCsv(XFile(iceFile.path));
+            if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
+              await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+            }
+            //print(infoString);
+          }
+        }
+      }
+    }
+    Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+      element.deleteSync(recursive: true);
+    });
+    setState(() {
+      itemRefSheetsList.clear();
+      context.read<StateProvider>().listDataCheckTrue();
+    });
   }
 
   void mainPathsCheck() async {
@@ -109,9 +142,24 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         await Directory('$modsDirPath${s}Costumes').create(recursive: true);
       } else {
         for (var cateName in defaultCatesList) {
-          Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+          if (cateName != 'Favorites') {
+            Directory('$modsDirPath$s$cateName').createSync(recursive: true);
+          }
         }
       }
+      //check if fav is a real dir
+      if (Directory('$modsDirPath${s}Favorites').existsSync()) {
+        Directory('$modsDirPath${s}Favorites').deleteSync();
+      }
+
+      if (!Directory('${Directory.current.path}${s}temp').existsSync()) {
+        await Directory('${Directory.current.path}${s}temp').create(recursive: true);
+      }
+
+      if (!Directory('${Directory.current.path}${s}unpack').existsSync()) {
+        await Directory('${Directory.current.path}${s}unpack').create(recursive: true);
+      }
+
       if (!Directory(backupDirPath).existsSync()) {
         await Directory(backupDirPath).create(recursive: true);
       }
@@ -149,6 +197,9 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       }
     }
     if (binDirPath.isNotEmpty) {
+      dataDir = Directory('$binDirPath${s}data');
+      iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+
       setState(() {
         context.read<StateProvider>().mainBinFoundTrue();
       });
@@ -158,7 +209,26 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
-        ? const DataLoadingPage()
+        ? context.watch<StateProvider>().listDataCheck
+            ? const DataLoadingPage()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    curLangText!.preparingItemsText,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    curLangText!.mayTakeSomeTimeText,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const CircularProgressIndicator(),
+                ],
+              )
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

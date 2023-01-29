@@ -3,12 +3,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 
 import 'mod_classes.dart';
@@ -86,7 +88,7 @@ Future<List<ModFile>> modsLoader() async {
     }
 
     if (imgFiles.isEmpty || vidFiles.isEmpty) {
-      List<String> filePathSplit = iceFile.path.split('$modPath\\').last.split(s);
+      List<String> filePathSplit = iceFile.path.split('$modPath$s').last.split(s);
       if (filePathSplit.isNotEmpty) {
         filePathSplit.insert(0, modName);
         String fileName = filePathSplit.removeLast();
@@ -250,8 +252,16 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
     final emptyCateDirs = dir.listSync(recursive: false);
     if (emptyCateDirs.isEmpty) {
       categories.add(ModCategory(dir.path.split(s).last, dir.path, [], [], 0, [], [], []));
-      categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
     }
+  }
+
+  //sort cate list
+  if (selectedSortType == 1) {
+    categories.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+    selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+  } else if (selectedSortType == 0) {
+    categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+    selectedSortTypeString = curLangText!.sortCateByNameText;
   }
 
   //Fav

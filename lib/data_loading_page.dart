@@ -1,13 +1,13 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+// ignore: depend_on_referenced_packages
+
+
 
 class DataLoadingPage extends StatefulWidget {
   const DataLoadingPage({Key? key}) : super(key: key);
@@ -18,6 +18,7 @@ class DataLoadingPage extends StatefulWidget {
 }
 
 class _DataLoadingPageState extends State<DataLoadingPage> {
+  
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -72,19 +73,19 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               // Sort cate list
-              if (selectedSortType == 1) {
-                cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
-                ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
-                cateList.insert(0, favCate);
-                selectedSortTypeString = curLangText!.sortCateByNumItemsText;
-              } else if (selectedSortType == 0) {
-                cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
-                ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
-                cateList.insert(0, favCate);
-              }
+              // if (selectedSortType == 1) {
+              //   cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+              //   ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+              //   cateList.insert(0, favCate);
+              //   selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+              // } else if (selectedSortType == 0) {
+              //   cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+              //   ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+              //   cateList.insert(0, favCate);
+              // }
               appliedModsListGet = getAppliedModsList();
               modSetsListGet = getSetsList();
-              iceFiles = dataDir.listSync(recursive: true).whereType<File>().toList();
+
               Provider.of<StateProvider>(context, listen: false).cateListItemCountSetNoListener(cateList.length);
 
               return const HomePage();

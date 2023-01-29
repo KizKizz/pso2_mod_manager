@@ -1,4 +1,4 @@
-Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
+﻿Files are layed out as: NGSHumanfile NGSCastFile NGSCasealFile NGSFigFile
 Substitute Motions are in win32reboot, unlike most NGS player files
 The first two characters of each filename are the folder name
 
@@ -22,4 +22,6 @@ The first two characters of each filename are the folder name
 フローズン/B,Frozen/B,018,3b\de47c469265e27f9539125509c9646,74\655e65e6cab46627b7a52734373f1d,cc\0aaec12d1cb662979cd57157a01e0b,4a\2290e44eac77586b561b1ffa33145b
 [Unnamed 19],019,11\2992d1b84c4490d07554b090604732,f2\e37eb5ff31abdedb97dacd60f74997,70\e8dcf36377898bfbbc22b1bcdaa122,13\f3cc04d3803611f45448773b0291f6
 魔法陣,Sigil,020,66\da05d6d84c8ec8eb581a8abd2b5836,78\d938fed76bbd785948fe105752bd2d,e1\29009c8f183ff940caf0beabea0415,ae\11a199a29e0661cd1168c76c6580fc
-[Unnamed 21],021,9c\dc376b0d7679916cdfbb3136fe4330,76\bcb4fc7eb23e96f7ebdd53cf6463cf,be\c9d49499d8d20147af91b1c4549af6,c6\8a9879a0e0e78ecc7b878ef0a70d8f
+失敗,Nailed It,021,9c\dc376b0d7679916cdfbb3136fe4330,76\bcb4fc7eb23e96f7ebdd53cf6463cf,be\c9d49499d8d20147af91b1c4549af6,c6\8a9879a0e0e78ecc7b878ef0a70d8f
+あわわ,Oops!,022,5a\86c476c172f4b0b76bac04d1c092db,26\dee5e0594f11bc7be0ad00e449d897,49\25634c0de2dd36150e3339264cd232,0b\4894016e06e5ab7f48874969a87e91
+花びら,Flower Petals,023,b6\78d43563d84e3934d4132ed561cf2a,28\92006e6a54396db9c82c0aa594cc3b,4d\33470dbfa0adee5a16890864c88485,aa\40d8e1b86db1c0f9212fb603db53cf
