@@ -742,186 +742,214 @@ void modAddHandler(context) {
                                                                           color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
                                                                   child: ExpansionTile(
                                                                     initiallyExpanded: true,
-                                                                    leading: Padding(
-                                                                      padding: const EdgeInsets.symmetric(vertical: 2),
-                                                                      child: Container(
-                                                                        width: 44,
-                                                                        height: 50,
-                                                                        decoration: BoxDecoration(
-                                                                          borderRadius: BorderRadius.circular(3),
-                                                                          border: Border.all(color: Theme.of(context).hintColor),
-                                                                        ),
-                                                                        child: sortedModsList[index][3].isEmpty
-                                                                            ? Image.asset('assets/img/placeholdersquare.png')
-                                                                            : Image.file(File(sortedModsList[index][3])),
-                                                                      ),
-                                                                    ),
                                                                     //Edit Item's name
-                                                                    title: _itemNameRenameIndex[index]
-                                                                        ? Row(
+                                                                    title: Row(
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                                          child: Container(
+                                                                            width: 80,
+                                                                            height: 80,
+                                                                            decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(3),
+                                                                              border: Border.all(color: Theme.of(context).hintColor),
+                                                                            ),
+                                                                            child: sortedModsList[index][3].isEmpty
+                                                                                ? Image.asset(
+                                                                                    'assets/img/placeholdersquare.png',
+                                                                                    fit: BoxFit.fitWidth,
+                                                                                  )
+                                                                                : Image.file(
+                                                                                    File(sortedModsList[index][3]),
+                                                                                    fit: BoxFit.fitWidth,
+                                                                                  ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
-                                                                              Expanded(
-                                                                                child: SizedBox(
-                                                                                  //width: constraints.maxWidth * 0.4,
+                                                                              SizedBox(
                                                                                   height: 40,
-                                                                                  child: TextFormField(
-                                                                                    autofocus: true,
-                                                                                    controller: renameTextBoxController,
-                                                                                    maxLines: 1,
-                                                                                    decoration: InputDecoration(
-                                                                                      contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                      border: const OutlineInputBorder(),
-                                                                                      hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
-                                                                                    ),
-                                                                                    onEditingComplete: () {
-                                                                                      if (renameTextBoxController.text.isNotEmpty) {
-                                                                                        String newItemName = renameTextBoxController.text.trim();
-                                                                                        if (sortedModsList[index][0] == 'Basewears') {
-                                                                                          newItemName += ' [Ba]';
-                                                                                        } else if (sortedModsList[index][0] == 'Innerwears') {
-                                                                                          newItemName += ' [In]';
-                                                                                        } else if (sortedModsList[index][0] == 'Outerwears') {
-                                                                                          newItemName += ' [Ou]';
-                                                                                        } else {
-                                                                                          newItemName = renameTextBoxController.text;
-                                                                                        }
-                                                                                        if (curActiveLang == 'JP') {
-                                                                                          sortedModsList[index][1] = newItemName;
-                                                                                        } else {
-                                                                                          sortedModsList[index][2] = newItemName;
-                                                                                        }
-
-                                                                                        //print(sortedModsList);
-                                                                                      }
-                                                                                      _itemNameRenameIndex[index] = false;
-                                                                                      renameTextBoxController.clear();
-                                                                                      _isNameEditing = false;
-
-                                                                                      setState(
-                                                                                        () {},
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              const SizedBox(
-                                                                                width: 5,
-                                                                              ),
+                                                                                  child: sortedModsList[index][0] == 'Misc'
+                                                                                      ? CustomDropdownButton2(
+                                                                                          hint: curLangText!.addSelectCatLabelText,
+                                                                                          dropdownDecoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(3),
+                                                                                            color: MyApp.themeNotifier.value == ThemeMode.light
+                                                                                                ? Theme.of(context).cardColor
+                                                                                                : Theme.of(context).primaryColor,
+                                                                                          ),
+                                                                                          buttonDecoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(3),
+                                                                                            border: Border.all(color: Theme.of(context).hintColor),
+                                                                                          ),
+                                                                                          buttonWidth: 150,
+                                                                                          buttonHeight: 35,
+                                                                                          itemHeight: 40,
+                                                                                          dropdownElevation: 3,
+                                                                                          icon: const Icon(Icons.arrow_drop_down),
+                                                                                          iconSize: 30,
+                                                                                          //dropdownWidth: 361,
+                                                                                          dropdownHeight: constraints.maxHeight * 0.5,
+                                                                                          dropdownItems: _dropdownCategories,
+                                                                                          value: _selectedCategories[index],
+                                                                                          onChanged: (value) {
+                                                                                            setState(() {
+                                                                                              _selectedCategories[index] = value.toString();
+                                                                                              sortedModsList[index][0] = value.toString();
+                                                                                            });
+                                                                                          },
+                                                                                        )
+                                                                                      : SizedBox(
+                                                                                          width: 150,
+                                                                                          height: 35,
+                                                                                          child: Padding(
+                                                                                            padding: const EdgeInsets.only(top: 10),
+                                                                                            child: Text(sortedModsList[index].first,
+                                                                                                style: const TextStyle(
+                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                )),
+                                                                                          ),
+                                                                                        )),
                                                                               SizedBox(
-                                                                                width: 40,
-                                                                                child: MaterialButton(
-                                                                                  onPressed: () {
-                                                                                    if (renameTextBoxController.text.isNotEmpty) {
-                                                                                      String newItemName = renameTextBoxController.text.trim();
-                                                                                      if (sortedModsList[index][0] == 'Basewears') {
-                                                                                        newItemName += ' [Ba]';
-                                                                                      } else if (sortedModsList[index][0] == 'Innerwears') {
-                                                                                        newItemName += ' [In]';
-                                                                                      } else if (sortedModsList[index][0] == 'Outerwears') {
-                                                                                        newItemName += ' [Ou]';
-                                                                                      } else {
-                                                                                        newItemName = renameTextBoxController.text;
-                                                                                      }
-                                                                                      if (curActiveLang == 'JP') {
-                                                                                        sortedModsList[index][1] = newItemName;
-                                                                                      } else {
-                                                                                        sortedModsList[index][2] = newItemName;
-                                                                                      }
+                                                                                height: 40,
+                                                                                child: _itemNameRenameIndex[index]
+                                                                                    ? Row(
+                                                                                        children: [
+                                                                                          Expanded(
+                                                                                            child: SizedBox(
+                                                                                              //width: constraints.maxWidth * 0.4,
+                                                                                              height: 40,
+                                                                                              child: TextFormField(
+                                                                                                autofocus: true,
+                                                                                                controller: renameTextBoxController,
+                                                                                                maxLines: 1,
+                                                                                                decoration: InputDecoration(
+                                                                                                  contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                  border: const OutlineInputBorder(),
+                                                                                                  hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
+                                                                                                ),
+                                                                                                onEditingComplete: () {
+                                                                                                  if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                    String newItemName = renameTextBoxController.text.trim();
+                                                                                                    if (sortedModsList[index][0] == 'Basewears') {
+                                                                                                      newItemName += ' [Ba]';
+                                                                                                    } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                                      newItemName += ' [In]';
+                                                                                                    } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                                      newItemName += ' [Ou]';
+                                                                                                    } else {
+                                                                                                      newItemName = renameTextBoxController.text;
+                                                                                                    }
+                                                                                                    if (curActiveLang == 'JP') {
+                                                                                                      sortedModsList[index][1] = newItemName;
+                                                                                                    } else {
+                                                                                                      sortedModsList[index][2] = newItemName;
+                                                                                                    }
 
-                                                                                      //print(sortedModsList);
-                                                                                    }
-                                                                                    _itemNameRenameIndex[index] = false;
-                                                                                    renameTextBoxController.clear();
-                                                                                    _isNameEditing = false;
+                                                                                                    //print(sortedModsList);
+                                                                                                  }
+                                                                                                  _itemNameRenameIndex[index] = false;
+                                                                                                  renameTextBoxController.clear();
+                                                                                                  _isNameEditing = false;
 
-                                                                                    setState(
-                                                                                      () {},
-                                                                                    );
-                                                                                  },
-                                                                                  child: const Icon(Icons.check),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          )
-                                                                        : Row(
-                                                                            children: [
-                                                                              if (sortedModsList[index][0] == 'Misc')
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.only(right: 5),
-                                                                                  child: CustomDropdownButton2(
-                                                                                    hint: curLangText!.addSelectCatLabelText,
-                                                                                    dropdownDecoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(3),
-                                                                                      color:
-                                                                                          MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                                                                    ),
-                                                                                    buttonDecoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(3),
-                                                                                      border: Border.all(color: Theme.of(context).hintColor),
-                                                                                    ),
-                                                                                    buttonWidth: 150,
-                                                                                    buttonHeight: 43,
-                                                                                    itemHeight: 40,
-                                                                                    dropdownElevation: 3,
-                                                                                    icon: const Icon(Icons.arrow_drop_down),
-                                                                                    iconSize: 30,
-                                                                                    //dropdownWidth: 361,
-                                                                                    dropdownHeight: constraints.maxHeight * 0.5,
-                                                                                    dropdownItems: _dropdownCategories,
-                                                                                    value: _selectedCategories[index],
-                                                                                    onChanged: (value) {
-                                                                                      setState(() {
-                                                                                        _selectedCategories[index] = value.toString();
-                                                                                        sortedModsList[index][0] = value.toString();
-                                                                                      });
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                              Expanded(
-                                                                                child: curActiveLang == 'JP'
-                                                                                    ? sortedModsList[index][0] == 'Misc'
-                                                                                        ? Text(' > ${sortedModsList[index][1]}',
-                                                                                            style: const TextStyle(
-                                                                                              fontWeight: FontWeight.w600,
-                                                                                            ))
-                                                                                        : Text('${sortedModsList[index].first} > ${sortedModsList[index][1]}',
-                                                                                            style: const TextStyle(
-                                                                                              fontWeight: FontWeight.w600,
-                                                                                            ))
-                                                                                    : sortedModsList[index][0] == 'Misc'
-                                                                                        ? Text(' > ${sortedModsList[index][2]}',
-                                                                                            style: const TextStyle(
-                                                                                              fontWeight: FontWeight.w600,
-                                                                                            ))
-                                                                                        : Text('${sortedModsList[index].first} > ${sortedModsList[index][2]}',
-                                                                                            style: const TextStyle(
-                                                                                              fontWeight: FontWeight.w600,
-                                                                                            )),
-                                                                              ),
-                                                                              const SizedBox(
-                                                                                width: 5,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 40,
-                                                                                child: Tooltip(
-                                                                                  message: curLangText!.editTooltipText,
-                                                                                  waitDuration: const Duration(seconds: 1),
-                                                                                  child: MaterialButton(
-                                                                                    onPressed: !_isNameEditing
-                                                                                        ? () {
-                                                                                            _isNameEditing = true;
-                                                                                            _itemNameRenameIndex[index] = true;
-                                                                                            setState(
-                                                                                              () {},
-                                                                                            );
-                                                                                          }
-                                                                                        : null,
-                                                                                    child: const Icon(Icons.edit),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
+                                                                                                  setState(
+                                                                                                    () {},
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          const SizedBox(
+                                                                                            width: 5,
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            width: 40,
+                                                                                            child: MaterialButton(
+                                                                                              onPressed: () {
+                                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                  String newItemName = renameTextBoxController.text.trim();
+                                                                                                  if (sortedModsList[index][0] == 'Basewears') {
+                                                                                                    newItemName += ' [Ba]';
+                                                                                                  } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                                    newItemName += ' [In]';
+                                                                                                  } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                                    newItemName += ' [Ou]';
+                                                                                                  } else {
+                                                                                                    newItemName = renameTextBoxController.text;
+                                                                                                  }
+                                                                                                  if (curActiveLang == 'JP') {
+                                                                                                    sortedModsList[index][1] = newItemName;
+                                                                                                  } else {
+                                                                                                    sortedModsList[index][2] = newItemName;
+                                                                                                  }
+
+                                                                                                  //print(sortedModsList);
+                                                                                                }
+                                                                                                _itemNameRenameIndex[index] = false;
+                                                                                                renameTextBoxController.clear();
+                                                                                                _isNameEditing = false;
+
+                                                                                                setState(
+                                                                                                  () {},
+                                                                                                );
+                                                                                              },
+                                                                                              child: const Icon(Icons.check),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      )
+                                                                                    : Row(
+                                                                                        children: [
+                                                                                          Expanded(
+                                                                                            child: curActiveLang == 'JP'
+                                                                                                ? Padding(
+                                                                                                    padding: const EdgeInsets.only(bottom: 3),
+                                                                                                    child: Text(sortedModsList[index][1],
+                                                                                                        style: const TextStyle(
+                                                                                                          fontWeight: FontWeight.w600,
+                                                                                                        )),
+                                                                                                  )
+                                                                                                : Padding(
+                                                                                                    padding: const EdgeInsets.only(bottom: 3),
+                                                                                                    child: Text(sortedModsList[index][2],
+                                                                                                        style: const TextStyle(
+                                                                                                          fontWeight: FontWeight.w600,
+                                                                                                        )),
+                                                                                                  ),
+                                                                                          ),
+                                                                                          const SizedBox(
+                                                                                            width: 5,
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            width: 40,
+                                                                                            child: Tooltip(
+                                                                                              message: curLangText!.editTooltipText,
+                                                                                              waitDuration: const Duration(seconds: 1),
+                                                                                              child: MaterialButton(
+                                                                                                onPressed: !_isNameEditing
+                                                                                                    ? () {
+                                                                                                        _isNameEditing = true;
+                                                                                                        _itemNameRenameIndex[index] = true;
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      }
+                                                                                                    : null,
+                                                                                                child: const Icon(Icons.edit),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                              )
                                                                             ],
                                                                           ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
 
                                                                     textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                     iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,

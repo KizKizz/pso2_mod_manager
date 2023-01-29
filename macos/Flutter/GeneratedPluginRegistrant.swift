@@ -7,7 +7,7 @@ import Foundation
 
 import bitsdojo_window_macos
 import desktop_drop
-import package_info_plus_macos
+import package_info_plus
 import path_provider_foundation
 import screen_retriever
 import shared_preferences_foundation

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.6.0
+version: 1.6.2
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -36,14 +36,14 @@ dependencies:
   carousel_slider: ^4.1.1
   provider: ^6.0.3
   dropdown_button2: ^1.5.2
-  desktop_drop: ^0.3.3
+  desktop_drop: ^0.4.0
   cross_file: ^0.3.3+1
   url_launcher: ^6.1.2
-  intl: ^0.17.0
-  window_manager: ^0.2.5
+  intl: ^0.18.0
+  window_manager: ^0.3.0
   dart_vlc: ^0.4.0
   font_awesome_flutter: ^10.1.0
-  package_info_plus: ^1.4.2
+  package_info_plus: ^3.0.2
   http: ^0.13.4
   path_provider: ^2.0.11
   archive: ^3.3.5
@@ -78,7 +78,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/img/placeholdersquare.png
+      - assets/img/placeholdersquare.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
