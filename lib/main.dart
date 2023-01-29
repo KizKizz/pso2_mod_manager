@@ -1,23 +1,20 @@
-// ignore_for_file: unnecessary_new, unused_import, use_build_context_synchronously
+
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:cross_file/cross_file.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:multi_split_view/multi_split_view.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
-import 'package:pso2_mod_manager/data_loading_page.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/lang_loading_page.dart';
@@ -26,7 +23,6 @@ import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/paths_loading_page.dart';
-import 'package:pso2_mod_manager/scroll_controller.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,6 +69,8 @@ TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
 List<String> localRefSheetsList = [];
 bool _checksumDownloading = false;
+String tempDirPath = '${Directory.current.path}${s}temp';
+String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -99,7 +97,7 @@ Future<void> main() async {
     //Temp fix for windows 10 white screen, remove when conflicts solved
     // if (Platform.isWindows) {
     //   WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-    //     appWindow.size = initialSize + const Offset(0, 1);
+    //     appWindow.size = initialSize + const Offset(0, 5);
     //   });
     // } else {
     //   appWindow.size = initialSize;

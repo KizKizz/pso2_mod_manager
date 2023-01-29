@@ -142,7 +142,7 @@ Future<List<ModFile>> modsLoader() async {
 
 //Category List
 List<ModCategory> categories(List<ModFile> allModFiles) {
-  File defaultCategoryItemIcon = File('assets/img/placeholdersquare.png');
+  File defaultCategoryItemIcon = File('./assets/img/placeholdersquare.png');
   List<ModCategory> categories = [];
 
   //Get categories
@@ -157,18 +157,6 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
       for (var file in filesGet) {
         if (p.extension(file.path) == '.jpg' || p.extension(file.path) == '.png') {
           imgFilesGet.add(file);
-        } else {
-          // getItemIconInfoFromCsv(XFile(modFile.icePath));
-
-          // if (_itemIconInfoFromCsV.isNotEmpty) {
-          //   XFile iconImage = XFile(_itemIconInfoFromCsV[3]);
-          //   final copiedIconFile = File(_itemIconInfoFromCsV[3]).copySync('${modFile.modPath}$s${iconImage.name}');
-          //   imgFiles.add(copiedIconFile);
-          //   _itemIconInfoFromCsV.clear();
-          //   Directory(tempDirPath).listSync(recursive: false).forEach((element) {
-          //     element.deleteSync(recursive: true);
-          //   });
-          // }
         }
       }
 

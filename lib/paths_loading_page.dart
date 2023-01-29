@@ -5,11 +5,11 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,11 +52,11 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         }
       }
     }
-    itemRefSheetsList.clear();
     Directory(tempDirPath).listSync(recursive: false).forEach((element) {
       element.deleteSync(recursive: true);
     });
     setState(() {
+      itemRefSheetsList.clear();
       context.read<StateProvider>().listDataCheckTrue();
     });
   }
@@ -210,21 +210,25 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
   Widget build(BuildContext context) {
     return context.watch<StateProvider>().isMainBinFound && context.watch<StateProvider>().isMainModManPathFound
         ? context.watch<StateProvider>().listDataCheck
-          ? const DataLoadingPage()
-          : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Text(
-                'Loading Items',
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              CircularProgressIndicator(),
-            ],
-          )
+            ? const DataLoadingPage()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    curLangText!.preparingItemsText,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    curLangText!.mayTakeSomeTimeText,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const CircularProgressIndicator(),
+                ],
+              )
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

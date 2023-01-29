@@ -11,6 +11,7 @@ class StateProvider with ChangeNotifier {
   bool _languageReload = false;
   bool _refSheetsUpdateAvailable = false;
   bool _listDataCheck = false;
+  bool _modAdderReload = false;
   int _cateListItemCount = 0;
   int _refSheetsCount = 0;
   String _newItemDropDisplay = '';
@@ -26,11 +27,22 @@ class StateProvider with ChangeNotifier {
   bool get isUpdateAvailable => _isUpdateAvailable;
   bool get refSheetsUpdateAvailable => _refSheetsUpdateAvailable;
   bool get listDataCheck => _listDataCheck;
+  bool get modAdderReload => _modAdderReload;
   int get cateListItemCount => _cateListItemCount;
   int get refSheetsCount => _refSheetsCount;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
+
+  void modAdderReloadTrue() {
+    _modAdderReload = true;
+    notifyListeners();
+  }
+
+  void modAdderReloadFalse() {
+    _modAdderReload = false;
+    notifyListeners();
+  }
 
   void listDataCheckTrue() {
     _listDataCheck = true;

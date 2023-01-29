@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:intl/intl.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -772,10 +771,10 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
       tempFavCate.allModFiles.add(element);
     }
     if (tempFavCate.itemNames.indexWhere((element) => element == paramModFileList.first.modName) == -1) {
-      tempFavCate.itemNames.insert(0, paramModFileList.first.modName);
-      tempFavCate.imageIcons.insert(0, curCate.imageIcons[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
-      tempFavCate.numOfMods.insert(0, 1);
-      tempFavCate.numOfApplied.insert(0, curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.itemNames.add(paramModFileList.first.modName);
+      tempFavCate.imageIcons.add(curCate.imageIcons[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.numOfMods.add(1);
+      tempFavCate.numOfApplied.add(curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
       tempFavCate.numOfItems++;
     } else {
       tempFavCate.numOfMods[tempFavCate.itemNames.indexOf(paramModFileList.first.modName)] += 1;
