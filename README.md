@@ -95,6 +95,8 @@ Maybe a Linux version for steam deck
 
 Flutter and various libraries from [pub.dev](https://pub.dev/packages)
 
+[Zamboni](https://github.com/Shadowth117/Zamboni) and [DDStronk](https://github.com/scorpdx/ddstronk)
+
 Found a bug? [Leave a message here](https://github.com/KizKizz/pso2_mod_manager/issues)
 
 Made by キス★ (KizKizz)  
