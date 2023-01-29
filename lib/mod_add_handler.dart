@@ -47,7 +47,7 @@ List<String> _magsCsv = ['Mags.csv', 'MagsNGS.csv'];
 List<String> _stickersCsv = ['Stickers.csv'];
 List<String> _innerwearCsv = ['FemaleNGSInnerwear.csv', 'MaleNGSInnerwear.csv', 'MaleInnerwear.csv', 'FemaleInnerwear.csv'];
 List<String> _outerwearCsv = ['FemaleNGSOuters.csv', 'MaleNGSOuters.csv', 'FemaleOuters.csv', 'MaleOuters.csv'];
-List<String> _bodyPaintCsv = ['FemaleNGSBodyPaint.csv', 'MaleNGSBodyPaint.csv', 'FemaleBodyPaint.csv', 'MaleBodyPaint.csv'];
+List<String> _bodyPaintCsv = ['GenderlessNGSBodyPaint.csv', 'FemaleNGSBodyPaint.csv', 'MaleNGSBodyPaint.csv', 'FemaleBodyPaint.csv', 'MaleBodyPaint.csv'];
 List<String> _facePaintCsv = ['FacePaintNGS.csv', 'FacePaint.csv'];
 List<String> _hairCsv = ['CasealHair.csv', 'FemaleHair.csv', 'MaleHair.csv', 'AllHairNGS.csv'];
 List<String> _castBodyCsv = ['CastBodies.csv', 'CasealBodies.csv', 'CastNGSBodies.csv', 'CasealNGSBodies.csv'];
@@ -1541,8 +1541,8 @@ Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN)
       });
       final newPath = File(XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).path)
           .copySync('$tempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
-      if (newPath.existsSync()) {
-        //Directory('${Directory.current.path}$s${iceName}_ext').deleteSync(recursive: true);
+      if (await newPath.exists()) {
+        Directory('${Directory.current.path}$s${iceName}_ext').deleteSync(recursive: true);
       }
       return newPath.path;
     }

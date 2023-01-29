@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -63,6 +64,8 @@ bool _previewWindowVisible = true;
 double windowsWidth = 1280.0;
 double windowsHeight = 720.0;
 //Future? filesData;
+Directory dataDir = Directory('');
+List<File> iceFiles = [];
 List<ModFile> allModFiles = [];
 var dataStreamController = StreamController();
 TextEditingController newSetTextController = TextEditingController();

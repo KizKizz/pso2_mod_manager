@@ -10,7 +10,7 @@ class StateProvider with ChangeNotifier {
   bool _isUpdateAvailable = false;
   bool _languageReload = false;
   bool _refSheetsUpdateAvailable = false;
-  bool _itemAdderRefresh = false;
+  bool _listDataCheck = false;
   int _cateListItemCount = 0;
   int _refSheetsCount = 0;
   String _newItemDropDisplay = '';
@@ -25,20 +25,20 @@ class StateProvider with ChangeNotifier {
   bool get addingBoxState => _addingBoxState;
   bool get isUpdateAvailable => _isUpdateAvailable;
   bool get refSheetsUpdateAvailable => _refSheetsUpdateAvailable;
-  bool get itemAdderRefresh => _itemAdderRefresh;
+  bool get listDataCheck => _listDataCheck;
   int get cateListItemCount => _cateListItemCount;
   int get refSheetsCount => _refSheetsCount;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
 
-  void itemAdderRefreshTrue() {
-    _itemAdderRefresh = true;
+  void listDataCheckTrue() {
+    _listDataCheck = true;
     notifyListeners();
   }
 
-  void itemAdderRefreshFalse() {
-    _itemAdderRefresh = false;
+  void listDataCheckFalse() {
+    _listDataCheck = false;
     notifyListeners();
   }
 

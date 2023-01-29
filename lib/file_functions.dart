@@ -14,9 +14,6 @@ import 'main.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-Directory dataDir = Directory('$binDirPath${s}data');
-List<File> iceFiles = [];
-
 Future<void> reapplyMods(List<ModFile> modList) async {
   //Checksum
   if (checkSumFilePath != null) {

@@ -15,8 +15,6 @@ import 'package:pso2_mod_manager/ui_text.dart';
 
 import 'mod_classes.dart';
 
-List<String> _itemIconInfoFromCsV = [];
-
 Future<List<ModFile>> modsLoader() async {
   final allFiles = Directory(modsDirPath).listSync(recursive: true).whereType<File>();
   List<ModFile> allModFiles = [];
@@ -493,10 +491,6 @@ Future<List<List<ModFile>>> getAppliedModsList() async {
 
 Future<List<File>> getImagesList(List<File> imgFile) async {
   return imgFile.toList();
-}
-
-void getItemIconInfoFromCsv(XFile iceFile) async {
-  _itemIconInfoFromCsV = await findItemInCsv(iceFile);
 }
 
 Future<List<ModSet>> getSetsList() async {

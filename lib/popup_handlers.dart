@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
