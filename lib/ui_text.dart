@@ -546,7 +546,7 @@ class TranslationText {
     modsLabelText = json['modsLabelText'];
     modLabelText = json['modLabelText'];
     modAddedSuccessfullyText = json['modAddedSuccessfullyText'];
-
+    
     //version 162
     preparingItemsText = json['preparingItemsText'];
     mayTakeSomeTimeText = json['mayTakeSomeTimeText'];
@@ -724,6 +724,7 @@ class TranslationText {
     data['modsLabelText'] = modsLabelText;
     data['modLabelText'] = modLabelText;
     data['modAddedSuccessfullyText'] = modAddedSuccessfullyText;
+
     data['preparingItemsText'] = preparingItemsText;
     data['mayTakeSomeTimeText'] = mayTakeSomeTimeText;
 
@@ -908,6 +909,7 @@ void convertLangTextData(var jsonResponse) {
       //version 162
       b['preparingItemsText'],
       b['mayTakeSomeTimeText']
+
     );
     curLangText = translation;
   }
