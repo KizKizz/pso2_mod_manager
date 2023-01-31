@@ -159,16 +159,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       s = '\\';
     }
     windowManager.addListener(this);
+    miscCheck();
     getSortType();
     getAppVer();
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkRefSheetsForUpdates(context);
     languagePackCheck();
-    miscCheck();
-    //mainPathsCheck();
-    //miscCheck();
-    //dirPathCheck();
+  
     super.initState();
   }
 
