@@ -159,16 +159,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       s = '\\';
     }
     windowManager.addListener(this);
+    miscCheck();
     getSortType();
     getAppVer();
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkRefSheetsForUpdates(context);
     languagePackCheck();
-    miscCheck();
-    //mainPathsCheck();
-    //miscCheck();
-    //dirPathCheck();
+  
     super.initState();
   }
 
@@ -658,7 +656,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                           //Dark theme
                           if (MyApp.themeNotifier.value == ThemeMode.dark)
                             Tooltip(
-                              message: curLangText!.lightModeTooltipText,
+                              message: curLangText!.darkModeTooltipText,
                               height: 25,
                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                               waitDuration: const Duration(seconds: 1),
@@ -687,7 +685,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                             ),
                           if (MyApp.themeNotifier.value == ThemeMode.light)
                             Tooltip(
-                              message: curLangText!.darkModeTooltipText,
+                              message: curLangText!.lightModeTooltipText,
                               height: 25,
                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                               waitDuration: const Duration(seconds: 1),

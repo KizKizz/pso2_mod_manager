@@ -1,10 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "description": [
-        "Added auto fetch item icons to item adder",
-        "Item icons will also auto fetch in Item List upon opening the app (Might take some time upon first time)",
-        "Some bug fixes and other optimization"
+        "Fixed a bug where the app stuck in preparing items for new users"
     ],
     "windows_file": "",
     "linux_file": ""

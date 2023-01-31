@@ -36,25 +36,27 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
 
   void itemIconHandler() async {
     itemRefSheetsList = await popSheetsList(refSheetsDirPath);
-    for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
-      if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
-        for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
-          final filesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>();
-          final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
-          if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
-            final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
-            List<String> infoString = await findItemInCsv(XFile(iceFile.path));
-            if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
-              await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+    if (modsDirPath.isNotEmpty) {
+      for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
+        if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
+          for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
+            final filesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>();
+            final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
+            if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
+              final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
+              List<String> infoString = await findItemInCsv(XFile(iceFile.path));
+              if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
+                await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+              }
+              //print(infoString);
             }
-            //print(infoString);
           }
         }
       }
+      Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+        element.deleteSync(recursive: true);
+      });
     }
-    Directory(tempDirPath).listSync(recursive: false).forEach((element) {
-      element.deleteSync(recursive: true);
-    });
     setState(() {
       itemRefSheetsList.clear();
       context.read<StateProvider>().listDataCheckTrue();
