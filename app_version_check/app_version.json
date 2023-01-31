@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "1.6.3",
     "description": [
-        "Fixed a bug where the app stucks in preparing items for new users"
+        "Fixed a bug where the app stuck in preparing items for new users"
     ],
     "windows_file": "",
     "linux_file": ""

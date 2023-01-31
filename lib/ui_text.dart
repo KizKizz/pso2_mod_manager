@@ -951,7 +951,7 @@ TranslationText defaultUILangLoader() {
       'Mods in Set',
 
       //Mod Items
-      'Refresh Mod List',
+      'Refreshing Mod List',
       'Add New Category',
       'Add New Item',
       ' in File Explorer',
