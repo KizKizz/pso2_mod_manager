@@ -233,7 +233,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                     height: 20,
                   ),
                   FutureBuilder(
-                      future: Future.delayed(const Duration(minutes: 2)),
+                      future: Future.delayed(const Duration(minutes: 1)),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           return ElevatedButton(

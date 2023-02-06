@@ -623,143 +623,171 @@ void modsRemover(List<ModFile> modsList) {
 
 //Auto Files adder
 Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIcon) async {
+  //List<List<String>> addedItems = [];
   for (var sortedLine in sortedList) {
-    List<String> addedIceFiles = [];
-    List<String> addedImgs = [];
-    List<String> addedVids = [];
-    //Get mods info
-    String category = sortedLine[0];
-    String itemName = '';
-    if (curActiveLang == 'JP') {
-      itemName = sortedLine[1];
-    } else {
-      itemName = sortedLine[2];
-    }
-    //List<String> mainNames = sortedLine[3].split('|');
-    List<String> subNames = sortedLine[5].split('|');
-    List<String> fileInfos = sortedLine[6].split('|');
-    String newItemPath = '$modsDirPath$s$category$s$itemName';
-
-    //Copy icon image to main item dir
-    if (sortedLine[3].isNotEmpty && p.extension(sortedLine[3]) == '.png' && !File('$newItemPath$s$itemName.png').existsSync()) {
-      Directory(newItemPath).createSync(recursive: true);
-      File(sortedLine[3]).copySync('$newItemPath$s$itemName.png');
-    }
-
-    //Create folders inside Mods folder
-    for (var field in fileInfos) {
-      String newFilePath = '';
-      String curMainName = field.split(':')[0];
-      String curSubName = field.split(':')[1];
-      String curFile = field.split(':')[2];
-      if (subNames.isEmpty) {
-        Directory('$modsDirPath$s$category$s$itemName$s$curMainName').createSync(recursive: true);
-        File('$tempDirPath$s$curMainName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile');
-        newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile';
+    if (sortedLine[4].isNotEmpty) {
+      List<String> addedIceFiles = [];
+      List<String> addedImgs = [];
+      List<String> addedVids = [];
+      //Get mods info
+      String category = sortedLine[0];
+      String itemName = '';
+      if (curActiveLang == 'JP') {
+        itemName = sortedLine[1];
       } else {
-        Directory('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName').createSync(recursive: true);
-        File('$tempDirPath$s$curMainName$s$curSubName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile');
-        newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile';
+        itemName = sortedLine[2];
       }
 
-      //Add sorted files to lists
-      if (p.extension(newFilePath) == '') {
-        addedIceFiles.add(field);
-      } else if ((p.extension(newFilePath) == '.jpg' || p.extension(newFilePath) == '.png')) {
-        addedImgs.add(field);
-      } else if ((p.extension(newFilePath) == '.mp4' || p.extension(newFilePath) == '.webm')) {
-        addedVids.add(field);
-      }
-    }
-
-    //Create mod files
-    List<ModFile> newModFiles = [];
-
-    for (var ice in addedIceFiles) {
-      String curIceMainName = ice.split(':')[0];
-      String curIceSubName = ice.split(':')[1];
-      String curFile = ice.split(':')[2];
-      String newDirPath = '';
-      if (subNames.isEmpty) {
-        newDirPath = '$modsDirPath$s$category$s$itemName$s$curIceMainName';
-      } else {
-        newDirPath = '$modsDirPath$s$category$s$itemName$s$curIceMainName$s$curIceSubName';
-      }
-      List<String> curImgs = addedImgs.where((element) => element.split(':')[0] == curIceMainName && element.split(':')[1] == curIceSubName).toList();
-      List<String> curVids = addedVids.where((element) => element.split(':')[0] == curIceMainName && element.split(':')[1] == curIceSubName).toList();
-      List<File> imgFiles = [];
-      for (var element in curImgs) {
-        String imgName = element.split(':')[2];
-        imgFiles.add(File('$newDirPath$s$imgName'));
-      }
-      List<File> vidFiles = [];
-      for (var element in curVids) {
-        String vidName = element.split(':')[2];
-        vidFiles.add(File('$newDirPath$s$vidName'));
-      }
-      //Get parent for list and icepath
-      String iceFileParents = '';
-      String iceFileParentPath = newItemPath;
-      if (curIceSubName.isEmpty) {
-        iceFileParents = curIceMainName;
-        iceFileParentPath += '$s$curIceMainName';
-      } else {
-        iceFileParents = '$curIceMainName > $curIceSubName';
-        iceFileParentPath += '$s$curIceMainName$s$curIceSubName';
-      }
-
-      ModFile curModFile =
-          ModFile('', '$modsDirPath$s$category$s$itemName', itemName, '$iceFileParentPath$s$curFile', curFile, iceFileParents, '', '', getImagesList(imgFiles), false, true, true, false, vidFiles);
-      curModFile.categoryName = category;
-      curModFile.categoryPath = '$modsDirPath$s$category';
-      newModFiles.add(curModFile);
-
-      //Json Write
-      allModFiles.add(curModFile);
-      allModFiles.map((mod) => mod.toJson()).toList();
-      File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
-    }
-
-    //Update Cate list
-    final newModRoot = Directory(newItemPath).listSync(recursive: false).whereType<File>();
-    Iterable<File> thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
-    List<File> icons = [];
-    if (thumbnails.isEmpty) {
-      icons.add(File('assets/img/placeholdersquare.png'));
-    } else {
-      icons.addAll(thumbnails);
-    }
-    final selectedCategory = cateList.firstWhere((element) => element.categoryName == category);
-    if (selectedCategory.itemNames.indexWhere((element) => element == itemName) == -1) {
-      selectedCategory.itemNames.insert(0, itemName);
-      for (var cate in cateList) {
-        if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
-          int index = 0;
-          if (cate.itemNames.length > 1) {
-            index = cate.itemNames.indexOf(itemName.toString());
-          }
-          cate.allModFiles.addAll(newModFiles);
-          cate.imageIcons.insert(index, icons);
-          cate.numOfMods.insert(0, 0);
-          cate.numOfMods[index] = subNames.length;
-          cate.numOfItems++;
-          cate.numOfApplied.add(0);
+      List<String> subNames = [];
+      if (sortedLine[5].isNotEmpty) {
+        for (var name in sortedLine[5].split('|')) {
+          subNames.add(name.split(':')[1]);
         }
       }
-    } else {
-      for (var cate in cateList) {
-        if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
-          int index = 0;
-          if (cate.itemNames.length > 1) {
-            index = cate.itemNames.indexOf(itemName.toString());
+
+      List<String> fileInfos = [];
+      if (sortedLine[5].isNotEmpty) {
+        List<String> mainSubNames = sortedLine[5].split('|');
+        for (var name in sortedLine[6].split('|')) {
+          if (mainSubNames.indexWhere((element) => element.split(':').first == name.split(':').first) != -1 &&
+              mainSubNames.indexWhere((element) => element.split(':')[1] == name.split(':')[1]) != -1) {
+            fileInfos.add(name);
           }
-          cate.allModFiles.addAll(newModFiles);
-          cate.numOfMods[index] += subNames.length;
+        }
+      } else {
+        for (var name in sortedLine[6].split('|')) {
+          fileInfos.add(name);
         }
       }
+
+      String newItemPath = '$modsDirPath$s$category$s$itemName';
+
+      //Copy icon image to main item dir
+      if (sortedLine[3].isNotEmpty && p.extension(sortedLine[3]) == '.png' && !File('$newItemPath$s$itemName.png').existsSync()) {
+        Directory(newItemPath).createSync(recursive: true);
+        File(sortedLine[3]).copySync('$newItemPath$s$itemName.png');
+      }
+
+      //Create folders inside Mods folder
+      for (var field in fileInfos) {
+        String newFilePath = '';
+        String curMainName = field.split(':')[0];
+        String curSubName = field.split(':')[1];
+        String curFile = field.split(':')[2];
+        if (subNames.isEmpty) {
+          Directory('$modsDirPath$s$category$s$itemName$s$curMainName').createSync(recursive: true);
+          File('$tempDirPath$s$curMainName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile');
+          newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile';
+        } else {
+          Directory('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName').createSync(recursive: true);
+          File('$tempDirPath$s$curMainName$s$curSubName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile');
+          newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile';
+        }
+
+        //Add sorted files to lists
+        if (p.extension(newFilePath) == '') {
+          addedIceFiles.add(field);
+        } else if ((p.extension(newFilePath) == '.jpg' || p.extension(newFilePath) == '.png')) {
+          addedImgs.add(field);
+        } else if ((p.extension(newFilePath) == '.mp4' || p.extension(newFilePath) == '.webm')) {
+          addedVids.add(field);
+        }
+      }
+
+      //Create mod files
+      List<ModFile> newModFiles = [];
+
+      for (var ice in addedIceFiles) {
+        String curIceMainName = ice.split(':')[0];
+        String curIceSubName = ice.split(':')[1];
+        String curFile = ice.split(':')[2];
+        String newDirPath = '';
+        if (subNames.isEmpty) {
+          newDirPath = '$modsDirPath$s$category$s$itemName$s$curIceMainName';
+        } else {
+          newDirPath = '$modsDirPath$s$category$s$itemName$s$curIceMainName$s$curIceSubName';
+        }
+        List<String> curImgs = addedImgs.where((element) => element.split(':')[0] == curIceMainName && element.split(':')[1] == curIceSubName).toList();
+        List<String> curVids = addedVids.where((element) => element.split(':')[0] == curIceMainName && element.split(':')[1] == curIceSubName).toList();
+        List<File> imgFiles = [];
+        for (var element in curImgs) {
+          String imgName = element.split(':')[2];
+          imgFiles.add(File('$newDirPath$s$imgName'));
+        }
+        List<File> vidFiles = [];
+        for (var element in curVids) {
+          String vidName = element.split(':')[2];
+          vidFiles.add(File('$newDirPath$s$vidName'));
+        }
+        //Get parent for list and icepath
+        String iceFileParents = '';
+        String iceFileParentPath = newItemPath;
+        if (curIceSubName.isEmpty) {
+          iceFileParents = curIceMainName;
+          iceFileParentPath += '$s$curIceMainName';
+        } else {
+          iceFileParents = '$curIceMainName > $curIceSubName';
+          iceFileParentPath += '$s$curIceMainName$s$curIceSubName';
+        }
+
+        ModFile curModFile =
+            ModFile('', '$modsDirPath$s$category$s$itemName', itemName, '$iceFileParentPath$s$curFile', curFile, iceFileParents, '', '', getImagesList(imgFiles), false, true, true, false, vidFiles);
+        curModFile.categoryName = category;
+        curModFile.categoryPath = '$modsDirPath$s$category';
+        newModFiles.add(curModFile);
+
+        //Json Write
+        allModFiles.add(curModFile);
+        allModFiles.map((mod) => mod.toJson()).toList();
+        File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
+      }
+
+      //Update Cate list
+      final newModRoot = Directory(newItemPath).listSync(recursive: false).whereType<File>();
+      Iterable<File> thumbnails = newModRoot.where((e) => p.extension(e.path) == '.jpg' || p.extension(e.path) == '.png');
+      List<File> icons = [];
+      if (thumbnails.isEmpty) {
+        icons.add(File('assets/img/placeholdersquare.png'));
+      } else {
+        icons.addAll(thumbnails);
+      }
+      final selectedCategory = cateList.firstWhere((element) => element.categoryName == category);
+      if (selectedCategory.itemNames.indexWhere((element) => element == itemName) == -1) {
+        selectedCategory.itemNames.insert(0, itemName);
+        for (var cate in cateList) {
+          if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
+            int index = 0;
+            if (cate.itemNames.length > 1) {
+              index = cate.itemNames.indexOf(itemName.toString());
+            }
+            cate.allModFiles.addAll(newModFiles);
+            cate.imageIcons.insert(index, icons);
+            cate.numOfMods.insert(0, 0);
+            cate.numOfMods[index] = subNames.length;
+            cate.numOfItems++;
+            cate.numOfApplied.add(0);
+          }
+        }
+      } else {
+        for (var cate in cateList) {
+          if (cate.itemNames.indexWhere((e) => e == itemName) != -1) {
+            int index = 0;
+            if (cate.itemNames.length > 1) {
+              index = cate.itemNames.indexOf(itemName.toString());
+            }
+            cate.allModFiles.addAll(newModFiles);
+            cate.numOfMods[index] += subNames.length;
+          }
+        }
+      }
+      //addedItems.add(sortedLine);
+      Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
     }
-    Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
   }
+// print(sortedModsList);
+//   for (var item in addedItems) {
+//     sortedModsList.remove(item);
+//   }
 }
 
 ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramModFileList, ModCategory paramFavCate, bool isAdding) {
