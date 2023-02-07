@@ -1,8 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.3",
+    "version": "1.6.4",
     "description": [
-        "Fixed a bug where the app stuck in preparing items for new users"
+        "Added a way to select/mark which items/mods will be added in Mods Adder",
+        "Improved Mods Adder logics (still a WIP) and more bug fixes",
+        "Added a button to unstuck at 'Preparing Items' screen if it takes longer than a minute to load",
+        "Some minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

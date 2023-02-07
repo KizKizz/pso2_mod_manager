@@ -229,6 +229,22 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                     height: 20,
                   ),
                   const CircularProgressIndicator(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  FutureBuilder(
+                      future: Future.delayed(const Duration(minutes: 1)),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return ElevatedButton(
+                              onPressed: () {
+                                context.read<StateProvider>().listDataCheckTrue();
+                              },
+                              child: const Text('Continue anyways'));
+                        } else {
+                          return Container(); // Return empty container to avoid build errors
+                        }
+                      })
                 ],
               )
         : Column(
