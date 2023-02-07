@@ -1303,6 +1303,20 @@ void modAddHandler(context) {
                                                                                                 }
                                                                                               }
                                                                                               sortedModsList[index][5] = subTemp;
+
+                                                                                              //check mains to disable or able the whole item if all main disabled
+                                                                                              bool allMainRemoving = true;
+                                                                                              for (var element in sortedModsList[index][4].split('|')) {
+                                                                                                if (element.split(':').last != '[TOREMOVE]') {
+                                                                                                  allMainRemoving = false;
+                                                                                                  break;
+                                                                                                }
+                                                                                              }
+                                                                                              if (allMainRemoving) {
+                                                                                                sortedModsList[index][1] = sortedModsList[index][1] += ':[TOREMOVE]';
+                                                                                                sortedModsList[index][2] = sortedModsList[index][2] += ':[TOREMOVE]';
+                                                                                                //print(sortedModsList[index][4]);
+                                                                                              }
                                                                                               //print(sortedModsList[index]);
                                                                                               setState(
                                                                                                 () {},
@@ -1568,9 +1582,13 @@ void modAddHandler(context) {
                                                                                                         }
                                                                                                       }
                                                                                                       sortedModsList[index][5] = subTemp;
+                                                                                                      //print(sortedModsList[index][5]);
+
+                                                                                                      //check sub to disable or able main if all or one disabled
                                                                                                       bool allSubRemoving = true;
-                                                                                                      for (var element in subTemp.split('|')) {
-                                                                                                        if (element.split(':').last != '[TOREMOVE]') {
+                                                                                                      for (var element in sortedModsList[index][5].split('|')) {
+                                                                                                        if (element.split(':').first == sortedModsList[index][5].split('|')[sub].split(':')[0] &&
+                                                                                                            element.split(':').last != '[TOREMOVE]') {
                                                                                                           allSubRemoving = false;
                                                                                                           break;
                                                                                                         }
@@ -1593,7 +1611,21 @@ void modAddHandler(context) {
                                                                                                           }
                                                                                                         }
                                                                                                         sortedModsList[index][4] = mainTemp;
-                                                                                                        print(sortedModsList[index][4]);
+                                                                                                        //print(sortedModsList[index][4]);
+                                                                                                      }
+
+                                                                                                      //check mains to disable or able the whole item if all main disabled
+                                                                                                      bool allMainRemoving = true;
+                                                                                                      for (var element in sortedModsList[index][4].split('|')) {
+                                                                                                        if (element.split(':').last != '[TOREMOVE]') {
+                                                                                                          allMainRemoving = false;
+                                                                                                          break;
+                                                                                                        }
+                                                                                                      }
+                                                                                                      if (allMainRemoving) {
+                                                                                                        sortedModsList[index][1] = sortedModsList[index][1] += ':[TOREMOVE]';
+                                                                                                        sortedModsList[index][2] = sortedModsList[index][2] += ':[TOREMOVE]';
+                                                                                                        //print(sortedModsList[index][4]);
                                                                                                       }
                                                                                                       //print(sortedModsList[index]);
                                                                                                       setState(
@@ -1636,7 +1668,7 @@ void modAddHandler(context) {
                                                                                                         }
                                                                                                       }
                                                                                                       sortedModsList[index][4] = mainTemp;
-                                                                                                      print(sortedModsList[index][4]);
+                                                                                                      //print(sortedModsList[index][4]);
                                                                                                       final subNames = sortedModsList[index][5].split('|');
                                                                                                       String subTemp = '';
                                                                                                       for (int i = 0; i < subNames.length; i++) {
@@ -1683,18 +1715,15 @@ void modAddHandler(context) {
                                                                                   ],
                                                                                 ),
                                                                             //if has no subfolders
-                                                                            for (int u = 0; u < sortedModsList[index][5].split('|').length; u++)
-                                                                              if (sortedModsList[index][5].split('|')[u].isEmpty)
-                                                                                for (int i = 0; i < sortedModsList[index][6].split('|').length; i++)
-                                                                                  if (sortedModsList[index][6].split('|')[i].split(':')[0] ==
-                                                                                          sortedModsList[index][4].split('|')[ex].split(':').first &&
-                                                                                      sortedModsList[index][6].split('|')[i].split(':')[1] == '')
-                                                                                    ListTile(
-                                                                                      title: Padding(
-                                                                                        padding: const EdgeInsets.only(left: 10),
-                                                                                        child: Text(sortedModsList[index][6].split('|')[i].split(':').last),
-                                                                                      ),
-                                                                                    )
+                                                                            for (int i = 0; i < sortedModsList[index][6].split('|').length; i++)
+                                                                              if (sortedModsList[index][6].split('|')[i].split(':')[0] == sortedModsList[index][4].split('|')[ex].split(':').first &&
+                                                                                  sortedModsList[index][6].split('|')[i].split(':')[1] == '')
+                                                                                ListTile(
+                                                                                  title: Padding(
+                                                                                    padding: const EdgeInsets.only(left: 10),
+                                                                                    child: Text(sortedModsList[index][6].split('|')[i].split(':').last),
+                                                                                  ),
+                                                                                )
                                                                           ],
                                                                         )
                                                                     ],
