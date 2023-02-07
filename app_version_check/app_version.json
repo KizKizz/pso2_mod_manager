@@ -2,8 +2,8 @@
     "name": "PSO2NGS Mod Manager",
     "version": "1.6.4",
     "description": [
-        "Added a way to select which items/mods to be added in Mods Adder",
-        "Improve Mods Adder logics (working a bit better butstill need to improve futher)",
+        "Added a way to select/mark which items/mods will be added in Mods Adder",
+        "Improve Mods Adder logics (still a WIP) and more bug fixes",
         "Added a button to unstuck at 'Preparing Items' screen if it takes longer than a minute to load",
         "Some minor bug fixes"
     ],

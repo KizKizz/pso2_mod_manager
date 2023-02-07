@@ -1092,7 +1092,7 @@ void modAddHandler(context) {
                                                                       for (int ex = 0; ex < sortedModsList[index][4].split('|').length; ex++)
                                                                         ExpansionTile(
                                                                           initiallyExpanded: true,
-                                                                          childrenPadding: const EdgeInsets.only(left: 5),
+                                                                          childrenPadding: const EdgeInsets.only(left: 15),
                                                                           textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                           iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                           collapsedTextColor:
@@ -1370,7 +1370,7 @@ void modAddHandler(context) {
                                                                                   sortedModsList[index][5].split('|')[sub].split(':').first == sortedModsList[index][4].split('|')[ex].split(':').first)
                                                                                 ExpansionTile(
                                                                                   initiallyExpanded: false,
-                                                                                  childrenPadding: const EdgeInsets.only(left: 10),
+                                                                                  childrenPadding: const EdgeInsets.only(left: 20),
                                                                                   textColor:
                                                                                       MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                                   iconColor:
@@ -1710,7 +1710,13 @@ void modAddHandler(context) {
                                                                                           sortedModsList[index][6].split('|')[i].split(':')[1] ==
                                                                                               sortedModsList[index][5].split('|')[sub].split(':')[1])
                                                                                         ListTile(
-                                                                                          title: Text(sortedModsList[index][6].split('|')[i].split(':').last),
+                                                                                          title: Text(
+                                                                                            sortedModsList[index][6].split('|')[i].split(':').last,
+                                                                                            style: TextStyle(
+                                                                                                color: sortedModsList[index][5].split('|')[sub].split(':').last == '[TOREMOVE]'
+                                                                                                    ? Theme.of(context).disabledColor
+                                                                                                    : null),
+                                                                                          ),
                                                                                         )
                                                                                   ],
                                                                                 ),
@@ -1720,8 +1726,12 @@ void modAddHandler(context) {
                                                                                   sortedModsList[index][6].split('|')[i].split(':')[1] == '')
                                                                                 ListTile(
                                                                                   title: Padding(
-                                                                                    padding: const EdgeInsets.only(left: 10),
-                                                                                    child: Text(sortedModsList[index][6].split('|')[i].split(':').last),
+                                                                                    padding: const EdgeInsets.only(left: 0),
+                                                                                    child: Text(sortedModsList[index][6].split('|')[i].split(':').last,
+                                                                                        style: TextStyle(
+                                                                                            color: sortedModsList[index][4].split('|')[ex].split(':').last == '[TOREMOVE]'
+                                                                                                ? Theme.of(context).disabledColor
+                                                                                                : null)),
                                                                                   ),
                                                                                 )
                                                                           ],
@@ -1739,43 +1749,45 @@ void modAddHandler(context) {
                                           Padding(
                                             padding: const EdgeInsets.only(right: 5),
                                             child: Container(
-                                              //height: 60,
+                                              constraints: BoxConstraints(maxHeight: constraints.maxHeight - 200),
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(3),
                                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(5.0),
-                                                    child: Center(
-                                                        child: _duplicateModNames.isNotEmpty
-                                                            ? Text(
-                                                                '${curLangText!.renameSpaceLabelText} $_duplicateModNames ${curLangText!.spaceBeforeAddingLabelText}',
-                                                                textAlign: TextAlign.center,
-                                                              )
-                                                            : Text(
-                                                                curLangText!.errorModsInToBeAddedListLabelText,
-                                                                textAlign: TextAlign.center,
-                                                              )),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(bottom: 5),
-                                                    child: ElevatedButton(
-                                                      child: Text(curLangText!.returnBtnLabel),
-                                                      onPressed: () {
-                                                        _exitConfirmDialog = false;
-                                                        _duplicateModNames.clear();
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      },
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(5.0),
+                                                      child: Center(
+                                                          child: _duplicateModNames.isNotEmpty
+                                                              ? Text(
+                                                                  '${curLangText!.renameSpaceLabelText} $_duplicateModNames ${curLangText!.spaceBeforeAddingLabelText}',
+                                                                  textAlign: TextAlign.center,
+                                                                )
+                                                              : Text(
+                                                                  curLangText!.errorModsInToBeAddedListLabelText,
+                                                                  textAlign: TextAlign.center,
+                                                                )),
                                                     ),
-                                                  ),
-                                                ],
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 5),
+                                                      child: ElevatedButton(
+                                                        child: Text(curLangText!.returnBtnLabel),
+                                                        onPressed: () {
+                                                          _exitConfirmDialog = false;
+                                                          _duplicateModNames.clear();
+                                                          setState(
+                                                            () {},
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
