@@ -1,11 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.4",
+    "version": "1.6.5",
     "description": [
-        "Added a way to select/mark which items/mods will be added in Mods Adder",
-        "Improved Mods Adder logics (still a WIP) and more bug fixes",
-        "Added a button to unstuck at 'Preparing Items' screen if it takes longer than a minute to load",
-        "Some minor bug fixes"
+        "Hotfix for items with \\/:*?\"<>| in their name, which preventing these items/mods to be added when using the Mods Adder because those characters cannot be used to create the actual folders"
     ],
     "windows_file": "",
     "linux_file": ""

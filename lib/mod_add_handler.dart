@@ -5,6 +5,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
+import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 //import 'package:collection/collection.dart';
 
@@ -111,126 +112,64 @@ void modAddHandler(context) {
   }
 
   Future<List<String>> findItemInCsv(XFile inputFile) async {
+    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var file in itemRefSheetsList) {
       for (var line in file) {
         if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
           var lineSplit = line.split(',');
+          String jpItemName = lineSplit[0];
+          String enItemName = lineSplit[1];
+          for (var char in charToReplace) {
+            jpItemName = jpItemName.replaceAll(char, '_');
+            enItemName = enItemName.replaceAll(char, '_');
+          }
           //[0 Category, 1 JP name, 2 EN name, 3 icon]
           if (_emoteCsv.indexWhere((element) => file.first == element) != -1) {
-            return (['Emotes', lineSplit[1].replaceAll('/', '_'), lineSplit[2].replaceAll('/', '_'), '']);
+            String jpEmoteName = lineSplit[1];
+            String enEmoteName = lineSplit[2];
+            for (var char in charToReplace) {
+              jpEmoteName = jpEmoteName.replaceAll(char, '_');
+              enEmoteName = enEmoteName.replaceAll(char, '_');
+            }
+            return (['Emotes', jpEmoteName, enEmoteName, '']);
           } else if (_basewearCsv.indexWhere((element) => element == file.first) != -1) {
             if (lineSplit[0].contains('[Ba]') || lineSplit[1].contains('[Ba]')) {
-              return ([
-                'Basewears',
-                lineSplit[0].replaceAll('/', '_'),
-                lineSplit[1].replaceAll('/', '_'),
-                await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-              ]);
+              return (['Basewears', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
             } else if (lineSplit[0].contains('[Se]') || lineSplit[1].contains('[Se]')) {
-              return ([
-                'Setwears',
-                lineSplit[0].replaceAll('/', '_'),
-                lineSplit[1].replaceAll('/', '_'),
-                await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-              ]);
+              return (['Setwears', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
             } else {
-              return (['Misc', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
+              return (['Misc', jpItemName, enItemName, '']);
             }
           } else if (_accessoriesCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Accessories',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[3], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Accessories', jpItemName, enItemName, await getIconPath(lineSplit[3], jpItemName, enItemName)]);
           } else if (_innerwearCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Innerwears',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Innerwears', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_outerwearCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Outerwears',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Outerwears', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_bodyPaintCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Body Paints',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Body Paints', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_magsCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Mags',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[3], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Mags', jpItemName, enItemName, await getIconPath(lineSplit[3], jpItemName, enItemName)]);
           } else if (_stickersCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Stickers',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Stickers', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_facePaintCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Face Paints',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Face Paints', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_hairCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Hairs',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Hairs', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_castBodyCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Cast Body Parts',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Cast Body Parts', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_castArmCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Cast Arm Parts',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Cast Arm Parts', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_castLegCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Cast Leg Parts',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Cast Leg Parts', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_eyeCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Eyes',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Eyes', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_costumeCsv.indexWhere((element) => file.first == element) != -1) {
-            return ([
-              'Costumes',
-              lineSplit[0].replaceAll('/', '_'),
-              lineSplit[1].replaceAll('/', '_'),
-              await getIconPath(lineSplit[4], lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'))
-            ]);
+            return (['Costumes', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);
           } else if (_motionCsv.indexWhere((element) => file.first == element) != -1) {
-            return (['Motions', lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
+            return (['Motions', jpItemName, enItemName, '']);
           } else {
-            return ([file.first, lineSplit[0].replaceAll('/', '_'), lineSplit[1].replaceAll('/', '_'), '']);
+            return ([file.first, jpItemName, enItemName, '']);
           }
         }
       }
@@ -864,6 +803,7 @@ void modAddHandler(context) {
                                                                                                   border: const OutlineInputBorder(),
                                                                                                   hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
                                                                                                 ),
+                                                                                                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                 onEditingComplete: () {
                                                                                                   if (renameTextBoxController.text.isNotEmpty) {
                                                                                                     String newItemName = renameTextBoxController.text.trim();
@@ -1114,6 +1054,7 @@ void modAddHandler(context) {
                                                                                             border: const OutlineInputBorder(),
                                                                                             hintText: sortedModsList[index][4].split('|')[ex],
                                                                                           ),
+                                                                                          inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                           onEditingComplete: () {
                                                                                             if (renameTextBoxController.text.isNotEmpty) {
                                                                                               String oldMainDirName = sortedModsList[index][4].split('|')[ex];
@@ -1393,6 +1334,7 @@ void modAddHandler(context) {
                                                                                                     border: const OutlineInputBorder(),
                                                                                                     hintText: sortedModsList[index][5].split('|')[sub].split(':')[1],
                                                                                                   ),
+                                                                                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                   onEditingComplete: (() {
                                                                                                     if (renameTextBoxController.text.isNotEmpty) {
                                                                                                       String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
