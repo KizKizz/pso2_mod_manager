@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "1.6.5",
     "description": [
-        "Hotfix for items with \\/:*?\"<>| in their name, preventing the mods to be added, because these characters cannot be used to create folders when adding mods using Mods Adder"
+        "Hotfix for items with \\/:*?\"<>| in their name, which preventing these items/mods to be added when using the Mods Adder because those characters cannot be used to create actual folders"
     ],
     "windows_file": "",
     "linux_file": ""
