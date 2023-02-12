@@ -205,6 +205,9 @@ class TranslationText {
     this.removeModFromAdding,
     this.addItemBackToAdding,
     this.addModBackToAdding,
+
+    //version 166
+    this.newUserNoticeText,
   );
 
   //Header buttons
@@ -388,6 +391,9 @@ class TranslationText {
   String addItemBackToAdding;
   String addModBackToAdding;
 
+  //version 166
+  String newUserNoticeText;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -568,6 +574,9 @@ class TranslationText {
     removeModFromAdding = json['removeModFromAdding'];
     addItemBackToAdding = json['addItemBackToAdding'];
     addModBackToAdding = json['addModBackToAdding'];
+
+    //version 166
+    newUserNoticeText = json['newUserNoticeText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -752,6 +761,9 @@ class TranslationText {
     data['removeModFromAdding'] = removeModFromAdding;
     data['addItemBackToAdding'] = addItemBackToAdding;
     data['addModBackToAdding'] = addModBackToAdding;
+
+    //version 166
+    data['newUserNoticeText'] = newUserNoticeText;
 
     return data;
   }
@@ -940,6 +952,9 @@ void convertLangTextData(var jsonResponse) {
       b['removeModFromAdding'],
       b['addItemBackToAdding'],
       b['addModBackToAdding'],
+
+      //version 166
+      b['newUserNoticeText'],
     );
     curLangText = translation;
   }
@@ -1128,5 +1143,7 @@ TranslationText defaultUILangLoader() {
     'Mark this item to be added',
     'Mark this mod to be added',
 
+    //version 166
+    'If this is your first time using PSO2NGS Mod Manager please restore the game files to their orginals before applying mods to the game'
   );
 }
