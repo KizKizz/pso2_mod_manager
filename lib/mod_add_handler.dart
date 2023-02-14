@@ -73,11 +73,9 @@ void modAddHandler(context) {
 
       String itemName = '';
       if (curActiveLang == 'JP') {
-        itemName = itemNameJP.replaceAll('/', '_');
-        itemName = itemName.replaceAll(':', '_');
+        itemName = itemNameJP;
       } else {
-        itemName = itemNameEN.replaceAll('/', '_');
-        itemName = itemName.replaceAll(':', '_');
+        itemName = itemNameEN;
       }
 
       XFile ddsIcon = XFile('');
