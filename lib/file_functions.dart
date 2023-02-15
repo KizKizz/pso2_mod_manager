@@ -645,20 +645,30 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
         }
       }
 
-      List<String> fileInfos = [];
-      if (sortedLine[5].isNotEmpty) {
-        List<String> mainSubNames = sortedLine[5].split('|');
-        for (var name in sortedLine[6].split('|')) {
-          if (mainSubNames.indexWhere((element) => element.split(':').first == name.split(':').first) != -1 &&
-              mainSubNames.indexWhere((element) => element.split(':')[1] == name.split(':')[1]) != -1) {
-            fileInfos.add(name);
-          }
-        }
-      } else {
-        for (var name in sortedLine[6].split('|')) {
-          fileInfos.add(name);
-        }
+      //List<String> fileInfos = [];
+      // if (sortedLine[5].isNotEmpty) {
+      //   List<String> mainNames = sortedLine[4].split('|');
+      //   List<String> mainSubNames = sortedLine[5].split('|');
+      //   for (var name in sortedLine[6].split('|')) {
+      //     if (mainSubNames.indexWhere((element) => element.split(':').first == name.split(':').first) != -1 &&
+      //         mainSubNames.indexWhere((element) => element.split(':')[1] == name.split(':')[1]) != -1) {
+      //       fileInfos.add(name);
+      //     }
+      //   }
+      // } else {
+      // for (var name in sortedLine[6].split('|')) {
+      //   fileInfos.add(name);
+      // }
+      //}
+
+      List<String> fileInfos = sortedLine[6].split('|');
+
+      List<String> modFolders = [];
+      for (var fileInfo in fileInfos) {
+        List<String> temp = fileInfo.split(':');
+        modFolders.add('${temp.first}:${temp[1]}');
       }
+      final finalModFolders = modFolders.toSet();
 
       String newItemPath = '$modsDirPath$s$category$s$itemName';
 
@@ -763,7 +773,7 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
             cate.allModFiles.addAll(newModFiles);
             cate.imageIcons.insert(index, icons);
             cate.numOfMods.insert(0, 0);
-            cate.numOfMods[index] = subNames.length;
+              cate.numOfMods[index] = finalModFolders.length;
             cate.numOfItems++;
             cate.numOfApplied.add(0);
           }
@@ -776,11 +786,23 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
               index = cate.itemNames.indexOf(itemName.toString());
             }
             cate.allModFiles.addAll(newModFiles);
-            cate.numOfMods[index] += subNames.length;
+            cate.numOfMods[index] += finalModFolders.length;
           }
         }
       }
       //addedItems.add(sortedLine);
+
+      // Sort cate list
+      if (selectedSortType == 1) {
+        cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
+        ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+        cateList.insert(0, favCate);
+        selectedSortTypeString = curLangText!.sortCateByNumItemsText;
+      } else if (selectedSortType == 0) {
+        cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+        ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
+        cateList.insert(0, favCate);
+      }
       Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
     }
   }
