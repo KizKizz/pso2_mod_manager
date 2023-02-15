@@ -191,7 +191,9 @@ void modAddHandler(context) {
         if (!File(file.path).existsSync()) {
           mainDirPaths.add(file.path);
         } else {
-          mainDirPaths.add(File(file.path).parent.path);
+          if (mainDirPaths.indexWhere((element) => element == File(file.path).parent.path) == -1) {
+            mainDirPaths.add(File(file.path).parent.path);
+          }
         }
       }
     }
@@ -286,7 +288,7 @@ void modAddHandler(context) {
     }
     for (var extraFile in extraFiles) {
       for (var file in filesList) {
-        if (file[4].split('|').contains(extraFile[4]) && file[5].split('|').contains(extraFile[5])) {
+        if (file[4].split('|').contains(extraFile[4]) && file[5].split('|').contains(extraFile[5].split(':').last)) {
           file[6] += '|${extraFile[6]}';
         }
       }
@@ -508,6 +510,7 @@ void modAddHandler(context) {
                                                 onPressed: _newModDragDropList.isNotEmpty
                                                     ? (() {
                                                         _newModDragDropList.clear();
+                                                        _newModMainFolderList.clear();
                                                         setState(
                                                           () {},
                                                         );
