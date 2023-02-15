@@ -188,7 +188,11 @@ void modAddHandler(context) {
       } else if (_pathsToRemove.indexWhere((element) => element == file.name) != -1) {
         mainDirPaths.add(file.path.replaceFirst('$s${file.name}', ''));
       } else {
-        mainDirPaths.add(file.path);
+        if (!File(file.path).existsSync()) {
+          mainDirPaths.add(file.path);
+        } else {
+          mainDirPaths.add(File(file.path).parent.path);
+        }
       }
     }
 
