@@ -1,4 +1,3 @@
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
@@ -71,6 +70,7 @@ List<String> localRefSheetsList = [];
 bool _checksumDownloading = false;
 String tempDirPath = '${Directory.current.path}${s}temp';
 String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
+bool _firstTimeUser = false;
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkRefSheetsForUpdates(context);
     languagePackCheck();
-  
+
     super.initState();
   }
 
@@ -209,6 +209,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       } else {
         Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
       }
+
+      // First time user load
+      _firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
     });
   }
 
@@ -1010,6 +1013,46 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                 })
                               : null,
                           child: Text(curLangText!.downloadUpdateBtnLabel)),
+                    ],
+                  ),
+                  actions: const [SizedBox()],
+                ),
+              ),
+            )),
+
+          //First use Notice
+          if (_firstTimeUser)
+            ScaffoldMessenger(
+                child: Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor),
+                ),
+                child: MaterialBanner(
+                  backgroundColor: Theme.of(context).canvasColor,
+                  elevation: 0,
+                  padding: const EdgeInsets.all(0),
+                  leadingPadding: const EdgeInsets.only(left: 15, right: 5),
+                  leading: Icon(
+                    Icons.new_releases_outlined,
+                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent,
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        curLangText!.newUserNoticeText,
+                        style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setBool('isFirstTimeLoad', false);
+                            _firstTimeUser = false;
+                            setState(() {});
+                          },
+                          child: Text(curLangText!.dismissBtnText)),
                     ],
                   ),
                   actions: const [SizedBox()],
