@@ -71,6 +71,7 @@ bool _checksumDownloading = false;
 String tempDirPath = '${Directory.current.path}${s}temp';
 String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
 bool _firstTimeUser = false;
+String versionToSkipUpdate = '';
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -212,6 +213,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       // First time user load
       _firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
+
+      // Check version to skip update
+      versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');
     });
   }
 
@@ -896,7 +900,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           ),
 
           //New version banner
-          if (context.watch<StateProvider>().isUpdateAvailable)
+          if (context.watch<StateProvider>().isUpdateAvailable && versionToSkipUpdate != appVersion && curLangText != null)
             ScaffoldMessenger(
                 child: Padding(
               padding: const EdgeInsets.only(bottom: 3),
@@ -937,6 +941,18 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       ),
                       Row(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: ElevatedButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('versionToSkipUpdate', appVersion);
+                                  versionToSkipUpdate = appVersion;
+                                  Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                  setState(() {});
+                                }),
+                                child: Text(curLangText!.skipVersionUpdateBtnLabel)),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(right: 5),
                             child: ElevatedButton(

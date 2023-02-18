@@ -36,7 +36,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
 
   void itemIconHandler() async {
     itemRefSheetsList = await popSheetsList(refSheetsDirPath);
-    if (modsDirPath.isNotEmpty) {
+    if (modsDirPath.isNotEmpty && itemRefSheetsList.isNotEmpty) {
       for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
         if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
           for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
@@ -44,9 +44,13 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
             final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
             if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
               final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
-              List<String> infoString = await findItemInCsv(XFile(iceFile.path));
-              if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
-                await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+              if (iceFile.path.isNotEmpty) {
+                List<String> infoString = await findItemInCsv(XFile(iceFile.path));
+                if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
+                  await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+                }
+              } else {
+                break;
               }
               //print(infoString);
             }
@@ -233,14 +237,14 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                     height: 20,
                   ),
                   FutureBuilder(
-                      future: Future.delayed(const Duration(minutes: 1)),
+                      future: Future.delayed(const Duration(seconds: 0)),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          return ElevatedButton(
+                          return MaterialButton(
                               onPressed: () {
                                 context.read<StateProvider>().listDataCheckTrue();
                               },
-                              child: const Text('Continue anyways'));
+                              child: Text(curLangText!.clickContinueIfStuckBtnLabel));
                         } else {
                           return Container(); // Return empty container to avoid build errors
                         }

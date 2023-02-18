@@ -1,8 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.6",
+    "version": "1.6.7",
     "description": [
-        "Minor bug fixes for Add Mods functions"
+        "Added a button to skip current update",
+        "Adjusted timer on unstuck button for preparing items",
+        "Some minor bugs fixes"
     ],
     "windows_file": "",
     "linux_file": ""

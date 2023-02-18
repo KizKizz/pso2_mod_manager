@@ -72,17 +72,6 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
             } else {
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
-              // Sort cate list
-              // if (selectedSortType == 1) {
-              //   cateList.sort(((a, b) => b.numOfItems.compareTo(a.numOfItems)));
-              //   ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
-              //   cateList.insert(0, favCate);
-              //   selectedSortTypeString = curLangText!.sortCateByNumItemsText;
-              // } else if (selectedSortType == 0) {
-              //   cateList.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
-              //   ModCategory favCate = cateList.removeAt(cateList.indexWhere((element) => element.categoryName == 'Favorites'));
-              //   cateList.insert(0, favCate);
-              // }
               appliedModsListGet = getAppliedModsList();
               modSetsListGet = getSetsList();
 
