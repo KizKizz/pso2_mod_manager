@@ -2090,7 +2090,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                     ),
                     child: totalAppliedItems < 2
-                        ? Text('$totalAppliedItems${curLangText!.itemLabelText} | $totalAppliedFiles ${curLangText!.fileAppliedLabelText}',
+                        ? Text('$totalAppliedItems${curLangText!.itemLabelText} | $totalAppliedFiles ${curLangText!.singleFileAppliedLabelText}',
                             style: const TextStyle(
                               fontSize: 13,
                             ))

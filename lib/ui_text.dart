@@ -212,6 +212,8 @@ class TranslationText {
     //version 167
     this.clickContinueIfStuckBtnLabel,
     this.skipVersionUpdateBtnLabel,
+    this.singleFileAppliedLabelText,
+    this.titleNewUpdateToolTip,
   );
 
   //Header buttons
@@ -401,6 +403,8 @@ class TranslationText {
   //version 167
   String skipVersionUpdateBtnLabel;
   String clickContinueIfStuckBtnLabel;
+  String singleFileAppliedLabelText;
+  String titleNewUpdateToolTip;
 
   fromJson(Map<String, dynamic> json) {
     //Header buttons
@@ -589,6 +593,8 @@ class TranslationText {
     //version 167
     skipVersionUpdateBtnLabel = json['skipVersionUpdateBtnLabel'];
     clickContinueIfStuckBtnLabel = json['clickContinueIfStuckBtnLabel'];
+    singleFileAppliedLabelText = json['singleFileAppliedLabelText'];
+    titleNewUpdateToolTip = json['titleNewUpdateToolTip'];
   }
 
   Map<String, dynamic> toJson() {
@@ -780,6 +786,8 @@ class TranslationText {
     //version 167
     data['skipVersionUpdateBtnLabel'] = skipVersionUpdateBtnLabel;
     data['clickContinueIfStuckBtnLabel'] = clickContinueIfStuckBtnLabel;
+    data['singleFileAppliedLabelText'] = singleFileAppliedLabelText;
+    data['titleNewUpdateToolTip'] = titleNewUpdateToolTip;
 
     return data;
   }
@@ -975,6 +983,8 @@ void convertLangTextData(var jsonResponse) {
       //version 167
       b['skipVersionUpdateBtnLabel'],
       b['clickContinueIfStuckBtnLabel'],
+      b['singleFileAppliedLabelText'],
+      b['titleNewUpdateToolTip'],
     );
     curLangText = translation;
   }
@@ -1168,5 +1178,7 @@ TranslationText defaultUILangLoader() {
 
       //version 167
       'Skip this update',
-      'Click to continue if app is stuck');
+      'Click to continue if app is stuck',
+      'File Applied',
+      'New update available. Click to go to download page');
 }
