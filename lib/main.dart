@@ -71,6 +71,7 @@ bool _checksumDownloading = false;
 String tempDirPath = '${Directory.current.path}${s}temp';
 String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
 bool _firstTimeUser = false;
+String versionToSkipUpdate = '';
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -212,6 +213,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       // First time user load
       _firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
+
+      // Check version to skip update
+      versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');
     });
   }
 
@@ -312,18 +316,41 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 children: [
                   Expanded(
                     child: MoveWindow(
-                        child: Container(
-                      padding: const EdgeInsets.only(left: 10, top: 2.5),
-                      child: Tooltip(
-                          message: 'Version: $appVersion | Made by キス★',
-                          height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 2),
-                          child: const Text(
-                            'PSO2NGS Mod Manager',
-                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                          )),
-                    )),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, bottom: 7),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Tooltip(
+                                message: 'Version: $appVersion | Made by キス★',
+                                height: 25,
+                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                waitDuration: const Duration(seconds: 2),
+                                child: const Text(
+                                  'PSO2NGS Mod Manager',
+                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                                )),
+
+                            if (versionToSkipUpdate == appVersion && curLangText != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: Tooltip(
+                                message: curLangText!.titleNewUpdateToolTip,
+                                height: 25,
+                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                waitDuration: const Duration(milliseconds: 100),
+                                child: MaterialButton(
+                                  visualDensity: VisualDensity.compact,
+                                  height: 20,
+                                  minWidth: 10,
+                                  onPressed: () {launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));},
+                                  child: Icon(Icons.download, size: 25, color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber,)
+                                ),
+                              ),
+                            ),
+                          ],
+                          ),
+                        )),
                   ),
 
                   //Buttons
@@ -896,7 +923,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           ),
 
           //New version banner
-          if (context.watch<StateProvider>().isUpdateAvailable)
+          if (context.watch<StateProvider>().isUpdateAvailable && versionToSkipUpdate != appVersion && curLangText != null)
             ScaffoldMessenger(
                 child: Padding(
               padding: const EdgeInsets.only(bottom: 3),
@@ -937,6 +964,18 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                       ),
                       Row(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: ElevatedButton(
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('versionToSkipUpdate', appVersion);
+                                  versionToSkipUpdate = appVersion;
+                                  Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                  setState(() {});
+                                }),
+                                child: Text(curLangText!.skipVersionUpdateBtnLabel)),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(right: 5),
                             child: ElevatedButton(

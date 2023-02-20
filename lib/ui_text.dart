@@ -208,6 +208,12 @@ class TranslationText {
 
     //version 166
     this.newUserNoticeText,
+
+    //version 167
+    this.clickContinueIfStuckBtnLabel,
+    this.skipVersionUpdateBtnLabel,
+    this.singleFileAppliedLabelText,
+    this.titleNewUpdateToolTip,
   );
 
   //Header buttons
@@ -394,6 +400,12 @@ class TranslationText {
   //version 166
   String newUserNoticeText;
 
+  //version 167
+  String skipVersionUpdateBtnLabel;
+  String clickContinueIfStuckBtnLabel;
+  String singleFileAppliedLabelText;
+  String titleNewUpdateToolTip;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -577,6 +589,12 @@ class TranslationText {
 
     //version 166
     newUserNoticeText = json['newUserNoticeText'];
+
+    //version 167
+    skipVersionUpdateBtnLabel = json['skipVersionUpdateBtnLabel'];
+    clickContinueIfStuckBtnLabel = json['clickContinueIfStuckBtnLabel'];
+    singleFileAppliedLabelText = json['singleFileAppliedLabelText'];
+    titleNewUpdateToolTip = json['titleNewUpdateToolTip'];
   }
 
   Map<String, dynamic> toJson() {
@@ -764,6 +782,12 @@ class TranslationText {
 
     //version 166
     data['newUserNoticeText'] = newUserNoticeText;
+
+    //version 167
+    data['skipVersionUpdateBtnLabel'] = skipVersionUpdateBtnLabel;
+    data['clickContinueIfStuckBtnLabel'] = clickContinueIfStuckBtnLabel;
+    data['singleFileAppliedLabelText'] = singleFileAppliedLabelText;
+    data['titleNewUpdateToolTip'] = titleNewUpdateToolTip;
 
     return data;
   }
@@ -955,6 +979,12 @@ void convertLangTextData(var jsonResponse) {
 
       //version 166
       b['newUserNoticeText'],
+
+      //version 167
+      b['skipVersionUpdateBtnLabel'],
+      b['clickContinueIfStuckBtnLabel'],
+      b['singleFileAppliedLabelText'],
+      b['titleNewUpdateToolTip'],
     );
     curLangText = translation;
   }
@@ -962,188 +992,193 @@ void convertLangTextData(var jsonResponse) {
 
 TranslationText defaultUILangLoader() {
   return TranslationText(
-    //Header buttons
-    'Paths Reselect',
-    'Folders',
-    'Mods',
-    'Backups',
-    'Deleted Items',
-    'Checksum:',
-    'Checksum missing. Click!',
-    'Mod Sets',
-    'Mod List',
-    'Preview:',
-    'Light',
-    'Dark',
+      //Header buttons
+      'Paths Reselect',
+      'Folders',
+      'Mods',
+      'Backups',
+      'Deleted Items',
+      'Checksum:',
+      'Checksum missing. Click!',
+      'Mod Sets',
+      'Mod List',
+      'Preview:',
+      'Light',
+      'Dark',
 
-    //Header buttons tooltips
-    'Reselect path for pso2_bin, Mod Manager folder',
-    'Open Mods, Backups, Deleted Items folder',
-    'modsFolderTooltipText',
-    'Open Checksum folder',
-    'Manage Mod Sets',
-    'Show/Hide Preview window',
-    'Switch to Dark theme',
-    'Switch to Light theme',
-    'Language select',
+      //Header buttons tooltips
+      'Reselect path for pso2_bin, Mod Manager folder',
+      'Open Mods, Backups, Deleted Items folder',
+      'modsFolderTooltipText',
+      'Open Checksum folder',
+      'Manage Mod Sets',
+      'Show/Hide Preview window',
+      'Switch to Dark theme',
+      'Switch to Light theme',
+      'Language select',
 
-    //Main Headers
-    'Items',
-    'Available Mods',
-    'Preview',
-    'Applied Mods',
-    'Sets',
-    'Mods in Set',
+      //Main Headers
+      'Items',
+      'Available Mods',
+      'Preview',
+      'Applied Mods',
+      'Sets',
+      'Mods in Set',
 
-    //Mod Items
-    'Refreshing Mod List',
-    'Add New Category',
-    'Add New Item',
-    ' in File Explorer',
-    'Search for mods',
-    'New Category Name',
-    'Add Category',
-    'Single Item',
-    'Multiple Items',
-    'Drop modded .ice files and folder(s)\nhere to add',
-    'Drop modded item folder(s) here to add',
-    'Drop item\'s\nicon here\n(Optional)',
-    'Select a Category',
-    'Item Name',
-    'Mod Name (Optional)',
-    'Add Mods',
-    'Add mods to',
-    'Favorite',
-    'Accessories',
-    'Basewears',
-    'Body Paints',
-    'Emotes',
-    'Innerwears',
-    'Misc',
-    'Motions',
-    'Outerwears',
-    'Setwears',
-    'Unapply this mod from the game',
-    'Apply this mod to the game',
-    'Mod Name',
-    'Save all mods in applied list to sets',
-    'Click on \'Mod Sets\' button to add new set',
-    'Apply all mods under ',
-    ' to the game',
-    'Unapply all mods under ',
-    ' from the game',
-    'New Set Name',
-    'Add New Set',
-    'Add Set',
-    'Hold to delete ',
-    'Hold to remove ',
-    'Hold to reapply all mods to the game',
-    'Hold to remove all applied mods from the game',
+      //Mod Items
+      'Refreshing Mod List',
+      'Add New Category',
+      'Add New Item',
+      ' in File Explorer',
+      'Search for mods',
+      'New Category Name',
+      'Add Category',
+      'Single Item',
+      'Multiple Items',
+      'Drop modded .ice files and folder(s)\nhere to add',
+      'Drop modded item folder(s) here to add',
+      'Drop item\'s\nicon here\n(Optional)',
+      'Select a Category',
+      'Item Name',
+      'Mod Name (Optional)',
+      'Add Mods',
+      'Add mods to',
+      'Favorite',
+      'Accessories',
+      'Basewears',
+      'Body Paints',
+      'Emotes',
+      'Innerwears',
+      'Misc',
+      'Motions',
+      'Outerwears',
+      'Setwears',
+      'Unapply this mod from the game',
+      'Apply this mod to the game',
+      'Mod Name',
+      'Save all mods in applied list to sets',
+      'Click on \'Mod Sets\' button to add new set',
+      'Apply all mods under ',
+      ' to the game',
+      'Unapply all mods under ',
+      ' from the game',
+      'New Set Name',
+      'Add New Set',
+      'Add Set',
+      'Hold to delete ',
+      'Hold to remove ',
+      'Hold to reapply all mods to the game',
+      'Hold to remove all applied mods from the game',
 
-    //Misc
-    ' Items',
-    ' Item',
-    'Files applied:',
-    'Files applied',
-    'Close',
-    'Open ',
-    'Add',
-    'Add ',
-    'Remove ',
-    'Delete ',
-    'Refreshing',
-    'Mods:',
-    'Applied:',
-    ' to favorites',
-    ' from favorites',
-    'Done',
-    ' Files',
-    ' File',
-    'One or more mod files in this set currently being applied to the game',
-    'Delete Category',
-    ' and move it to Deleted Items folder?\nThis will also remove all items in this category',
-    'Cannot delete ',
-    '. Unaplly these mods first:\n\n',
-    'Delete Item',
-    ' and move it to Deleted Items folder?\nThis will also delete all mods in this item',
-    'Delete Mod',
-    ' and move it to Deleted Items folder?\nThis will also delete all files in this mod',
-    '. Unapply these files first:\n\n',
-    '. Remove from Favorites first',
-    'No Results Found',
-    ' from ',
-    'Loading UI',
-    'Select your checksum file',
-    'New Update Available!',
-    'New Version:',
-    'Your Version:',
-    'Patch Notes...',
-    'Update',
-    'Dismiss',
-    'Waiting for user\'s action',
-    'pso2_bin Path Reselect',
-    'Mod Manager Folder Path Reselect',
-    'Current path:',
-    'Choose a new path?',
+      //Misc
+      ' Items',
+      ' Item',
+      'Files applied:',
+      'Files applied',
+      'Close',
+      'Open ',
+      'Add',
+      'Add ',
+      'Remove ',
+      'Delete ',
+      'Refreshing',
+      'Mods:',
+      'Applied:',
+      ' to favorites',
+      ' from favorites',
+      'Done',
+      ' Files',
+      ' File',
+      'One or more mod files in this set currently being applied to the game',
+      'Delete Category',
+      ' and move it to Deleted Items folder?\nThis will also remove all items in this category',
+      'Cannot delete ',
+      '. Unaplly these mods first:\n\n',
+      'Delete Item',
+      ' and move it to Deleted Items folder?\nThis will also delete all mods in this item',
+      'Delete Mod',
+      ' and move it to Deleted Items folder?\nThis will also delete all files in this mod',
+      '. Unapply these files first:\n\n',
+      '. Remove from Favorites first',
+      'No Results Found',
+      ' from ',
+      'Loading UI',
+      'Select your checksum file',
+      'New Update Available!',
+      'New Version:',
+      'Your Version:',
+      'Patch Notes...',
+      'Update',
+      'Dismiss',
+      'Waiting for user\'s action',
+      'pso2_bin Path Reselect',
+      'Mod Manager Folder Path Reselect',
+      'Current path:',
+      'Choose a new path?',
 
-    //Error messages
-    'Category name can\'t be empty',
-    'Category name already exist',
-    'Name can\'t be empty',
-    'The name already exists',
-    'The file(s) bellow won\'t be added. Use the \'Single Item\' Tab or \'Add Mod\' instead.',
-    'Original file of ',
-    ' is not found!',
-    'Replaced: ',
-    'Backup file of ',
-    'There are mod files currently being applied. Unapply them first!',
-    'pso2_bin folder not found. Select it now?\nSelect \'Exit\' will close the app',
-    'Mod Manager Folder not found',
-    'Select a path to store your mods?\nSelect \'No\' will create a folder inside \'pso2_bin\' folder',
+      //Error messages
+      'Category name can\'t be empty',
+      'Category name already exist',
+      'Name can\'t be empty',
+      'The name already exists',
+      'The file(s) bellow won\'t be added. Use the \'Single Item\' Tab or \'Add Mod\' instead.',
+      'Original file of ',
+      ' is not found!',
+      'Replaced: ',
+      'Backup file of ',
+      'There are mod files currently being applied. Unapply them first!',
+      'pso2_bin folder not found. Select it now?\nSelect \'Exit\' will close the app',
+      'Mod Manager Folder not found',
+      'Select a path to store your mods?\nSelect \'No\' will create a folder inside \'pso2_bin\' folder',
 
-    //version 160
-    'Add Mods',
-    'Add new mods to Mod Manager',
-    'Downloading checksum..',
-    'New update for item reference available',
-    'Downloading',
-    'of',
-    'Download Update',
-    'Sort Categories',
-    'Sort by name',
-    'Sort by item amount',
-    'Preparing',
-    'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
-    'Remove',
-    'Clear All',
-    'Process',
-    'Waiting for data',
-    'Error when loading data. Please restart the app.',
-    'Edit',
-    'Rename ',
-    ' before adding',
-    'There are still mods in the list waiting to be added',
-    'Return',
-    'Add All',
-    'currently not supported. Open the archive file then drag the content in here instead',
-    'Click to download checksum file. Hold to manually select',
+      //version 160
+      'Add Mods',
+      'Add new mods to Mod Manager',
+      'Downloading checksum..',
+      'New update for item reference available',
+      'Downloading',
+      'of',
+      'Download Update',
+      'Sort Categories',
+      'Sort by name',
+      'Sort by item amount',
+      'Preparing',
+      'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+      'Remove',
+      'Clear All',
+      'Process',
+      'Waiting for data',
+      'Error when loading data. Please restart the app.',
+      'Edit',
+      'Rename ',
+      ' before adding',
+      'There are still mods in the list waiting to be added',
+      'Return',
+      'Add All',
+      'currently not supported. Open the archive file then drag the content in here instead',
+      'Click to download checksum file. Hold to manually select',
 
-    //version 161
-    'Mods',
-    'Mod',
-    'Mods added successfully',
+      //version 161
+      'Mods',
+      'Mod',
+      'Mods added successfully',
 
-    //version 162
-    'Preparing Items',
-    'This may take some time',
+      //version 162
+      'Preparing Items',
+      'This may take some time',
 
-    //version 164
-    'Mark this item not to be added',
-    'Mark this mod not to be added',
-    'Mark this item to be added',
-    'Mark this mod to be added',
+      //version 164
+      'Mark this item not to be added',
+      'Mark this mod not to be added',
+      'Mark this item to be added',
+      'Mark this mod to be added',
 
-    //version 166
-    'If this is your first time using PSO2NGS Mod Manager please restore the game files to their orginals before applying mods to the game'
-  );
+      //version 166
+      'If this is your first time using PSO2NGS Mod Manager please restore the game files to their orginals before applying mods to the game',
+
+      //version 167
+      'Skip this update',
+      'Click to continue if app is stuck',
+      'File Applied',
+      'New update available. Click to go to download page');
 }
