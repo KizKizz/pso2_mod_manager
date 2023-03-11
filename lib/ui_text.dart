@@ -214,6 +214,10 @@ class TranslationText {
     this.skipVersionUpdateBtnLabel,
     this.singleFileAppliedLabelText,
     this.titleNewUpdateToolTip,
+
+    //version 168
+    this.nameCannotBeEmptyErrorText,
+    this.nameAlreadyExistsErrorText,
   );
 
   //Header buttons
@@ -406,6 +410,10 @@ class TranslationText {
   String singleFileAppliedLabelText;
   String titleNewUpdateToolTip;
 
+  //verion 168
+  String nameCannotBeEmptyErrorText;
+  String nameAlreadyExistsErrorText;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -595,6 +603,10 @@ class TranslationText {
     clickContinueIfStuckBtnLabel = json['clickContinueIfStuckBtnLabel'];
     singleFileAppliedLabelText = json['singleFileAppliedLabelText'];
     titleNewUpdateToolTip = json['titleNewUpdateToolTip'];
+
+    //version 168
+    nameCannotBeEmptyErrorText = json['nameCannotBeEmptyErrorText'];
+    nameAlreadyExistsErrorText = json['nameAlreadyExistsErrorText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -788,6 +800,10 @@ class TranslationText {
     data['clickContinueIfStuckBtnLabel'] = clickContinueIfStuckBtnLabel;
     data['singleFileAppliedLabelText'] = singleFileAppliedLabelText;
     data['titleNewUpdateToolTip'] = titleNewUpdateToolTip;
+
+    //version 168
+    data['nameCannotBeEmptyErrorText'] = nameCannotBeEmptyErrorText;
+    data['nameAlreadyExistsErrorText'] = nameAlreadyExistsErrorText;
 
     return data;
   }
@@ -985,6 +1001,10 @@ void convertLangTextData(var jsonResponse) {
       b['clickContinueIfStuckBtnLabel'],
       b['singleFileAppliedLabelText'],
       b['titleNewUpdateToolTip'],
+
+      //version 168
+      b['nameCannotBeEmptyErrorText'],
+      b['nameAlreadyExistsErrorText'],
     );
     curLangText = translation;
   }
@@ -1180,5 +1200,7 @@ TranslationText defaultUILangLoader() {
       'Skip this update',
       'Click to continue if app is stuck',
       'File Applied',
-      'New update available. Click to go to download page');
+      'New update available. Click to go to download page',
+      'Name cannot be empty',
+      'Name already exists');
 }

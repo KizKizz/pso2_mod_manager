@@ -39,6 +39,7 @@ List<String> _nonSupportedFileNames = [];
 //List<List<String>> _dropdownCategories = [];
 List<String> _dropdownCategories = [];
 List<String> _selectedCategories = [];
+final _subItemFormValidate = GlobalKey<FormState>();
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
@@ -807,17 +808,31 @@ void modAddHandler(context) {
                                                                                                   contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                   border: const OutlineInputBorder(),
                                                                                                   hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
+                                                                                                  // suffix: SizedBox(
+                                                                                                  //   width: 40,
+                                                                                                  //   child: MaterialButton(
+                                                                                                  //     onPressed: () {
+                                                                                                  //       renameTextBoxController.clear();
+                                                                                                  //     },
+                                                                                                  //     child: const Icon(Icons.close),
+                                                                                                  //   ),
+                                                                                                  // )
                                                                                                 ),
                                                                                                 inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                 onEditingComplete: () {
                                                                                                   if (renameTextBoxController.text.isNotEmpty) {
                                                                                                     String newItemName = renameTextBoxController.text.trim();
-                                                                                                    if (sortedModsList[index][0] == 'Basewears') {
+                                                                                                    if (sortedModsList[index][0] == 'Basewears' && !renameTextBoxController.text.contains('[Ba]')) {
                                                                                                       newItemName += ' [Ba]';
-                                                                                                    } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                                    } else if (sortedModsList[index][0] == 'Innerwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[In]')) {
                                                                                                       newItemName += ' [In]';
-                                                                                                    } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                                    } else if (sortedModsList[index][0] == 'Outerwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[Ou]')) {
                                                                                                       newItemName += ' [Ou]';
+                                                                                                    } else if (sortedModsList[index][0] == 'Setwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                      newItemName += ' [Se]';
                                                                                                     } else {
                                                                                                       newItemName = renameTextBoxController.text;
                                                                                                     }
@@ -849,12 +864,16 @@ void modAddHandler(context) {
                                                                                               onPressed: () {
                                                                                                 if (renameTextBoxController.text.isNotEmpty) {
                                                                                                   String newItemName = renameTextBoxController.text.trim();
-                                                                                                  if (sortedModsList[index][0] == 'Basewears') {
+                                                                                                  if (sortedModsList[index][0] == 'Basewears' && !renameTextBoxController.text.contains('[Ba]')) {
                                                                                                     newItemName += ' [Ba]';
-                                                                                                  } else if (sortedModsList[index][0] == 'Innerwears') {
+                                                                                                  } else if (sortedModsList[index][0] == 'Innerwears' &&
+                                                                                                      !renameTextBoxController.text.contains('[In]')) {
                                                                                                     newItemName += ' [In]';
-                                                                                                  } else if (sortedModsList[index][0] == 'Outerwears') {
+                                                                                                  } else if (sortedModsList[index][0] == 'Outerwears' &&
+                                                                                                      !renameTextBoxController.text.contains('[Ou]')) {
                                                                                                     newItemName += ' [Ou]';
+                                                                                                  } else if (sortedModsList[index][0] == 'Setwears' && !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                    newItemName += ' [Se]';
                                                                                                   } else {
                                                                                                     newItemName = renameTextBoxController.text;
                                                                                                   }
@@ -917,6 +936,12 @@ void modAddHandler(context) {
                                                                                                         (sortedModsList[index][1].split(':').last != '[TOREMOVE]' ||
                                                                                                             sortedModsList[index][2].split(':').last != '[TOREMOVE]')
                                                                                                     ? () {
+                                                                                                        renameTextBoxController.text =
+                                                                                                            curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2];
+                                                                                                        renameTextBoxController.selection = TextSelection(
+                                                                                                          baseOffset: 0,
+                                                                                                          extentOffset: renameTextBoxController.text.length,
+                                                                                                        );
                                                                                                         _isNameEditing = true;
                                                                                                         _itemNameRenameIndex[index] = true;
                                                                                                         setState(
@@ -1062,6 +1087,7 @@ void modAddHandler(context) {
                                                                                           inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                           onEditingComplete: () {
                                                                                             if (renameTextBoxController.text.isNotEmpty) {
+                                                                                              //print('OLD: $sortedModsList');
                                                                                               String oldMainDirName = sortedModsList[index][4].split('|')[ex];
                                                                                               // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
                                                                                               //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
@@ -1087,10 +1113,23 @@ void modAddHandler(context) {
                                                                                               }
 
                                                                                               //Itemlist
+                                                                                              //Item name replace
                                                                                               List<String> mainDirsString = sortedModsList[index][4].split('|');
                                                                                               mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
                                                                                               sortedModsList[index][4] = mainDirsString.join('|');
 
+                                                                                              //Subitem Item name replace
+                                                                                              List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
+                                                                                              for (var element in mainDirsInSubItemString) {
+                                                                                                List<String> split = element.split((':'));
+                                                                                                if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                                                                                  split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                                  mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
+                                                                                                }
+                                                                                              }
+                                                                                              sortedModsList[index][5] = mainDirsInSubItemString.join('|');
+
+                                                                                              //icefile Item name replace
                                                                                               List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
                                                                                               for (var element in mainDirsInItemString) {
                                                                                                 List<String> split = element.split((':'));
@@ -1151,6 +1190,17 @@ void modAddHandler(context) {
                                                                                             mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
                                                                                             sortedModsList[index][4] = mainDirsString.join('|');
 
+                                                                                            //Subitem Item name replace
+                                                                                            List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
+                                                                                            for (var element in mainDirsInSubItemString) {
+                                                                                              List<String> split = element.split((':'));
+                                                                                              if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                                                                                split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
+                                                                                                mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
+                                                                                              }
+                                                                                            }
+                                                                                            sortedModsList[index][5] = mainDirsInSubItemString.join('|');
+
                                                                                             List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
                                                                                             for (var element in mainDirsInItemString) {
                                                                                               List<String> split = element.split((':'));
@@ -1199,6 +1249,11 @@ void modAddHandler(context) {
                                                                                         child: MaterialButton(
                                                                                           onPressed: !_isNameEditing && sortedModsList[index][4].split('|')[ex].split(':').last != '[TOREMOVE]'
                                                                                               ? () {
+                                                                                                  renameTextBoxController.text = sortedModsList[index][4].split('|')[ex];
+                                                                                                  renameTextBoxController.selection = TextSelection(
+                                                                                                    baseOffset: 0,
+                                                                                                    extentOffset: renameTextBoxController.text.length,
+                                                                                                  );
                                                                                                   _isNameEditing = true;
                                                                                                   _mainFolderRenameIndex[index][ex] = true;
                                                                                                   setState(
@@ -1329,18 +1384,112 @@ void modAddHandler(context) {
                                                                                           children: [
                                                                                             Expanded(
                                                                                               child: SizedBox(
-                                                                                                height: 40,
-                                                                                                child: TextFormField(
-                                                                                                  autofocus: true,
-                                                                                                  controller: renameTextBoxController,
-                                                                                                  maxLines: 1,
-                                                                                                  decoration: InputDecoration(
-                                                                                                    contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                    border: const OutlineInputBorder(),
-                                                                                                    hintText: sortedModsList[index][5].split('|')[sub].split(':')[1],
+                                                                                                height: context.watch<StateProvider>().itemAdderSubItemETHeight,
+                                                                                                child: Form(
+                                                                                                  key: _subItemFormValidate,
+                                                                                                  child: TextFormField(
+                                                                                                    autofocus: true,
+                                                                                                    controller: renameTextBoxController,
+                                                                                                    maxLines: 1,
+                                                                                                    decoration: InputDecoration(
+                                                                                                      contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                      border: const OutlineInputBorder(),
+                                                                                                      hintText: sortedModsList[index][5].split('|')[sub].split(':')[1],
+                                                                                                    ),
+                                                                                                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                                    validator: (value) {
+                                                                                                      if (value == null || value.isEmpty) {
+                                                                                                        Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                        return curLangText!.nameCannotBeEmptyErrorText;
+                                                                                                      }
+                                                                                                      final List<String> subDirList = sortedModsList[index][5]
+                                                                                                          .split('|')
+                                                                                                          .where((element) =>
+                                                                                                              element.split(':')[1] != sortedModsList[index][5].split('|')[sub].split(':')[1])
+                                                                                                          .toList();
+                                                                                                      List<String> subDirNames = [];
+                                                                                                      for (var name in subDirList) {
+                                                                                                        subDirNames.add(name.split(':')[1]);
+                                                                                                      }
+
+                                                                                                      for (var name in subDirNames) {
+                                                                                                        if (name.toLowerCase() == value.toLowerCase()) {
+                                                                                                          Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                          return curLangText!.nameAlreadyExistsErrorText;
+                                                                                                        }
+                                                                                                      }
+
+                                                                                                      return null;
+                                                                                                    },
+                                                                                                    onEditingComplete: (() {
+                                                                                                      if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                        if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                          String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
+                                                                                                          String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
+                                                                                                          // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                          //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                          List<FileSystemEntity> curFilesInSubDir =
+                                                                                                              Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
+                                                                                                                  .listSync(recursive: true);
+                                                                                                          for (var element in curFilesInSubDir) {
+                                                                                                            //print(curFilesInMainDir);
+                                                                                                            String newMainPath = element.path.replaceFirst(
+                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            if (!File(element.path).existsSync()) {
+                                                                                                              Directory(newMainPath).createSync(recursive: true);
+                                                                                                            } else {
+                                                                                                              Directory(File(newMainPath).parent.path).createSync(recursive: true);
+                                                                                                            }
+                                                                                                          }
+                                                                                                          for (var element in curFilesInSubDir) {
+                                                                                                            String newMainPath = element.path.replaceFirst(
+                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            if (File(element.path).existsSync()) {
+                                                                                                              File(element.path).copySync(newMainPath);
+                                                                                                            }
+                                                                                                          }
+
+                                                                                                          //List
+                                                                                                          List<String> subDirsString = sortedModsList[index][5].split('|');
+                                                                                                          subDirsString[subDirsString.indexOf('$mainDirName:$oldSubDirName')] =
+                                                                                                              '$mainDirName:${renameTextBoxController.text}';
+                                                                                                          sortedModsList[index][5] = subDirsString.join('|');
+
+                                                                                                          List<String> subDirsInItemString = sortedModsList[index][6].split('|');
+                                                                                                          for (var element in subDirsInItemString) {
+                                                                                                            List<String> split = element.split((':'));
+                                                                                                            if (split.indexWhere((element) => element == oldSubDirName) != -1) {
+                                                                                                              split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
+                                                                                                              subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
+                                                                                                            }
+                                                                                                          }
+                                                                                                          sortedModsList[index][6] = subDirsInItemString.join('|');
+                                                                                                        }
+
+                                                                                                        //Clear
+                                                                                                        Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                        _subFoldersRenameIndex[index][sub] = false;
+                                                                                                        renameTextBoxController.clear();
+                                                                                                        _isNameEditing = false;
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      }
+                                                                                                    }),
                                                                                                   ),
-                                                                                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                                  onEditingComplete: (() {
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            const SizedBox(
+                                                                                              width: 5,
+                                                                                            ),
+                                                                                            SizedBox(
+                                                                                              width: 40,
+                                                                                              child: MaterialButton(
+                                                                                                onPressed: () {
+                                                                                                  if (_subItemFormValidate.currentState!.validate()) {
                                                                                                     if (renameTextBoxController.text.isNotEmpty) {
                                                                                                       String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
                                                                                                       String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
@@ -1390,72 +1539,11 @@ void modAddHandler(context) {
                                                                                                     _subFoldersRenameIndex[index][sub] = false;
                                                                                                     renameTextBoxController.clear();
                                                                                                     _isNameEditing = false;
+                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                     setState(
                                                                                                       () {},
                                                                                                     );
-                                                                                                  }),
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                            const SizedBox(
-                                                                                              width: 5,
-                                                                                            ),
-                                                                                            SizedBox(
-                                                                                              width: 40,
-                                                                                              child: MaterialButton(
-                                                                                                onPressed: () {
-                                                                                                  if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                    String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
-                                                                                                    String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
-                                                                                                    // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                    //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
-                                                                                                    List<FileSystemEntity> curFilesInSubDir =
-                                                                                                        Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
-                                                                                                            .listSync(recursive: true);
-                                                                                                    for (var element in curFilesInSubDir) {
-                                                                                                      //print(curFilesInMainDir);
-                                                                                                      String newMainPath = element.path.replaceFirst(
-                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
-                                                                                                      if (!File(element.path).existsSync()) {
-                                                                                                        Directory(newMainPath).createSync(recursive: true);
-                                                                                                      } else {
-                                                                                                        Directory(File(newMainPath).parent.path).createSync(recursive: true);
-                                                                                                      }
-                                                                                                    }
-                                                                                                    for (var element in curFilesInSubDir) {
-                                                                                                      String newMainPath = element.path.replaceFirst(
-                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                          '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
-                                                                                                      if (File(element.path).existsSync()) {
-                                                                                                        File(element.path).copySync(newMainPath);
-                                                                                                      }
-                                                                                                    }
-
-                                                                                                    //List
-                                                                                                    List<String> subDirsString = sortedModsList[index][5].split('|');
-                                                                                                    subDirsString[subDirsString.indexOf('$mainDirName:$oldSubDirName')] =
-                                                                                                        '$mainDirName:${renameTextBoxController.text}';
-                                                                                                    sortedModsList[index][5] = subDirsString.join('|');
-
-                                                                                                    List<String> subDirsInItemString = sortedModsList[index][6].split('|');
-                                                                                                    for (var element in subDirsInItemString) {
-                                                                                                      List<String> split = element.split((':'));
-                                                                                                      if (split.indexWhere((element) => element == oldSubDirName) != -1) {
-                                                                                                        split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
-                                                                                                        subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
-                                                                                                      }
-                                                                                                    }
-                                                                                                    sortedModsList[index][6] = subDirsInItemString.join('|');
                                                                                                   }
-
-                                                                                                  //Clear
-                                                                                                  _subFoldersRenameIndex[index][sub] = false;
-                                                                                                  renameTextBoxController.clear();
-                                                                                                  _isNameEditing = false;
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
                                                                                                 },
                                                                                                 child: const Icon(Icons.check),
                                                                                               ),
@@ -1485,6 +1573,11 @@ void modAddHandler(context) {
                                                                                                 child: MaterialButton(
                                                                                                   onPressed: !_isNameEditing && sortedModsList[index][5].split('|')[sub].split(':').last != '[TOREMOVE]'
                                                                                                       ? () {
+                                                                                                          renameTextBoxController.text = sortedModsList[index][5].split('|')[sub].split(':')[1];
+                                                                                                          renameTextBoxController.selection = TextSelection(
+                                                                                                            baseOffset: 0,
+                                                                                                            extentOffset: renameTextBoxController.text.length,
+                                                                                                          );
                                                                                                           _subFoldersRenameIndex[index][sub] = true;
                                                                                                           _isNameEditing = true;
                                                                                                           setState(
@@ -1782,6 +1875,7 @@ void modAddHandler(context) {
                                                           sortedModsList.clear();
                                                           _newModDragDropList.clear();
                                                           modsToAddList.clear();
+                                                          _isNameEditing = false;
                                                           setState(
                                                             () {},
                                                           );

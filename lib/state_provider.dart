@@ -17,6 +17,7 @@ class StateProvider with ChangeNotifier {
   String _newItemDropDisplay = '';
   String _newSingleItemDropDisplay = '';
   String _newModDropDisplay = '';
+  double _itemAdderSubItemETHeight = 40;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -33,6 +34,12 @@ class StateProvider with ChangeNotifier {
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
+  double get itemAdderSubItemETHeight => _itemAdderSubItemETHeight;
+
+  void itemAdderSubItemETHeightSet(double height) {
+    _itemAdderSubItemETHeight = height;
+    notifyListeners();
+  }
 
   void modAdderReloadTrue() {
     _modAdderReload = true;
