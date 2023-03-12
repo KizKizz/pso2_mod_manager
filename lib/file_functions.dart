@@ -822,9 +822,10 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
     }
     if (tempFavCate.itemNames.indexWhere((element) => element == paramModFileList.first.modName) == -1) {
       tempFavCate.itemNames.add(paramModFileList.first.modName);
-      tempFavCate.imageIcons.add(curCate.imageIcons[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.itemNames.sort((a, b) => a.compareTo(b));
+      tempFavCate.imageIcons.insert(tempFavCate.itemNames.indexOf(paramModFileList.first.modName), curCate.imageIcons[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
       tempFavCate.numOfMods.add(1);
-      tempFavCate.numOfApplied.add(curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
+      tempFavCate.numOfApplied.insert(tempFavCate.itemNames.indexOf(paramModFileList.first.modName), curCate.numOfApplied[curCate.itemNames.indexOf(paramModFileList.first.modName)]);
       tempFavCate.numOfItems++;
     } else {
       tempFavCate.numOfMods[tempFavCate.itemNames.indexOf(paramModFileList.first.modName)] += 1;

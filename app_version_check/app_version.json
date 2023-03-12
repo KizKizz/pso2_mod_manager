@@ -1,11 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.7",
+    "version": "1.6.8",
     "description": [
-        "Added a button to skip current update",
-        "Added an update button near the title (only appears if current update is ignored)",
-        "Adjusted unstuck button for preparing items to always show",
-        "Some minor bugs fixes"
+        "Enlarged items in Item List",
+        "Fixed some bugs in Mod Adder (renaming mods)",
+        "Other minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
