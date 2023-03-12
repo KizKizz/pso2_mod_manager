@@ -300,6 +300,7 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
     for (var parent in parents) {
       List<ModFile> sameParent = sameMods.where((element) => element.iceParent == parent).toList();
       favModsList.add(sameParent);
+      favModsList.sort((a, b) => a.first.modName.compareTo(b.first.modName));
     }
   }
 
@@ -307,7 +308,7 @@ List<ModCategory> categories(List<ModFile> allModFiles) {
   for (var list in favModsList) {
     tempFavCate = addOrRemoveFav(categories, list, tempFavCate, true);
   }
-  tempFavCate.itemNames.sort();
+  //tempFavCate.itemNames.sort();
   categories.insert(0, tempFavCate);
 
   return categories;

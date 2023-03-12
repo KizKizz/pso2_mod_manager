@@ -808,15 +808,6 @@ void modAddHandler(context) {
                                                                                                   contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                   border: const OutlineInputBorder(),
                                                                                                   hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
-                                                                                                  // suffix: SizedBox(
-                                                                                                  //   width: 40,
-                                                                                                  //   child: MaterialButton(
-                                                                                                  //     onPressed: () {
-                                                                                                  //       renameTextBoxController.clear();
-                                                                                                  //     },
-                                                                                                  //     child: const Icon(Icons.close),
-                                                                                                  //   ),
-                                                                                                  // )
                                                                                                 ),
                                                                                                 inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                 onEditingComplete: () {
