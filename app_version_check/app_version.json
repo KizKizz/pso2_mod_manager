@@ -1,10 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.8",
+    "version": "1.6.9",
     "description": [
-        "Enlarged items in Item List",
-        "Fixed some bugs in Mod Adder (renaming mods)",
-        "Other minor bug fixes"
+        "Fixed a bug where Mods Adder skipping included preview images"
     ],
     "windows_file": "",
     "linux_file": ""
