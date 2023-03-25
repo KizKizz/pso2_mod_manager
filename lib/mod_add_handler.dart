@@ -279,7 +279,11 @@ void modAddHandler(context) {
                 filesList.add(itemInfo);
               }
             } else {
-              extraFiles.add(['', '', '', '', mainDirName, '$mainDirName:$subDirName', '$mainDirName:$subDirName:${inputFile.name}']);
+              if (subDirName.isNotEmpty) {
+                extraFiles.add(['', '', '', '', mainDirName, '$mainDirName:$subDirName', '$mainDirName:$subDirName:${inputFile.name}']);
+              } else {
+                extraFiles.add(['', '', '', '', mainDirName, '', '$mainDirName:$subDirName:${inputFile.name}']);
+              }
             }
 
             //print('Sub: $subDirName');
