@@ -288,9 +288,11 @@ void modAddHandler(context) {
       }
     }
     for (var extraFile in extraFiles) {
+      //print(extraFile);
       for (var file in filesList) {
-        if (file[4].split('|').contains(extraFile[4]) && file[5].split('|').contains(extraFile[5].split(':').last)) {
+        if (file[4].split('|').contains(extraFile[4]) && file[5].split('|').contains(extraFile[5])) {
           file[6] += '|${extraFile[6]}';
+          //print(file);
         }
       }
     }
@@ -548,6 +550,9 @@ void modAddHandler(context) {
                                                             modsToAddList.add(XFile(file.path));
                                                           }
                                                         }
+                                                        // for (var element in modsToAddList) {
+                                                        //   print(element.name);
+                                                        // }
 
                                                         //clear lists
                                                         sortedModsListLoad = fetchItemName(modsToAddList);
