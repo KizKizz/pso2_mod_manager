@@ -168,7 +168,7 @@ void modAddHandler(context) {
           } else if (_motionCsv.indexWhere((element) => file.first == element) != -1) {
             return (['Motions', jpItemName, enItemName, '']);
           } else {
-            return ([file.first, jpItemName, enItemName, '']);
+            return (['Misc', jpItemName, enItemName, '']);
           }
         }
       }

@@ -497,7 +497,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (!isSearching && !isRefreshing)
           Expanded(
             child: SingleChildScrollView(
-              controller: AdjustableScrollController(80),
+              //controller: AdjustableScrollController(80),
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -1256,7 +1256,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (isSearching && cateListSearchResult.isNotEmpty)
           Expanded(
             child: SingleChildScrollView(
-              controller: AdjustableScrollController(80),
+              //controller: AdjustableScrollController(80),
               child: AbsorbPointer(
                 absorbing: !isSearching,
                 child: ListView.builder(
@@ -1777,7 +1777,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         }
                         //print(snapshot.data);
                         return SingleChildScrollView(
-                            controller: AdjustableScrollController(80),
+                            //controller: AdjustableScrollController(80),
                             child: ListView.builder(
                                 key: Key('builder ${modNameCatSelected.toString()}'),
                                 shrinkWrap: true,
@@ -2672,7 +2672,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       //}
                       //print(snapshot.data);
                       return SingleChildScrollView(
-                          controller: AdjustableScrollController(80),
+                          //controller: AdjustableScrollController(80),
                           child: ListView.builder(
                               //key: Key('builder ${modNameCatSelected.toString()}'),
                               shrinkWrap: true,
@@ -3089,7 +3089,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   }
                   //print(snapshot.data);
                   return SingleChildScrollView(
-                      controller: AdjustableScrollController(80),
+                      //controller: AdjustableScrollController(80),
                       child: ListView.builder(
                           //key: Key('builder ${modNameCatSelected.toString()}'),
                           shrinkWrap: true,
@@ -3420,7 +3420,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         }
                         //print(snapshot.data);
                         return SingleChildScrollView(
-                            controller: AdjustableScrollController(80),
+                            //controller: AdjustableScrollController(80),
                             child: ListView.builder(
                                 //key: Key('builder ${modNameCatSelected.toString()}'),
                                 shrinkWrap: true,
