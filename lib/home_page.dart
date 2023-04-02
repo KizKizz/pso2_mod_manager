@@ -223,6 +223,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          elevation: 0,
           flexibleSpace: Container(
               height: 30,
               width: double.maxFinite,
@@ -483,6 +484,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             )
           ],
+        ),
+
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
         ),
 
         //Category List
@@ -1773,6 +1780,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          elevation: 0,
+        ),
+
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
         ),
 
         //Mod view
@@ -2318,7 +2332,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          elevation: 0,
         ),
+
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+
         if (isPreviewImgsOn && context.watch<StateProvider>().previewWindowVisible)
           Expanded(
               child: FutureBuilder(
@@ -2477,6 +2499,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          elevation: 0,
           actions: [
             if (appliedModsList.isNotEmpty || totalAppliedItems > 0)
               Padding(
@@ -2707,6 +2730,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ],
         ),
+        
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+
         Expanded(
             child: FutureBuilder(
                 future: appliedModsListGet,
@@ -3052,6 +3082,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         backgroundColor: Theme.of(context).canvasColor,
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
+        elevation: 0,
         flexibleSpace: Container(
             height: 30,
             width: double.maxFinite,
@@ -3133,6 +3164,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
+      ),
+
+      const Divider(
+        height: 1,
+        thickness: 1,
+        //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
 
       //List
@@ -3495,7 +3532,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
+          elevation: 0,
         ),
+        
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+
         if (isSetSelected)
           Expanded(
               child: FutureBuilder(
