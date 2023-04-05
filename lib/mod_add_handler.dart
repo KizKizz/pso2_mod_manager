@@ -168,7 +168,7 @@ void modAddHandler(context) {
           } else if (_motionCsv.indexWhere((element) => file.first == element) != -1) {
             return (['Motions', jpItemName, enItemName, '']);
           } else {
-            return ([file.first, jpItemName, enItemName, '']);
+            return (['Misc', jpItemName, enItemName, '']);
           }
         }
       }
@@ -813,10 +813,12 @@ void modAddHandler(context) {
                                                                                                 autofocus: true,
                                                                                                 controller: renameTextBoxController,
                                                                                                 maxLines: 1,
+                                                                                                maxLength: 50,
                                                                                                 decoration: InputDecoration(
                                                                                                   contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                   border: const OutlineInputBorder(),
                                                                                                   hintText: curActiveLang == 'JP' ? sortedModsList[index][1] : sortedModsList[index][2],
+                                                                                                  counterText: '',
                                                                                                 ),
                                                                                                 inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                 onEditingComplete: () {
@@ -1079,10 +1081,12 @@ void modAddHandler(context) {
                                                                                           autofocus: true,
                                                                                           controller: renameTextBoxController,
                                                                                           maxLines: 1,
+                                                                                          maxLength: 50,
                                                                                           decoration: InputDecoration(
                                                                                             contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                             border: const OutlineInputBorder(),
                                                                                             hintText: sortedModsList[index][4].split('|')[ex],
+                                                                                            counterText: '',
                                                                                           ),
                                                                                           inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                           onEditingComplete: () {
@@ -1391,10 +1395,12 @@ void modAddHandler(context) {
                                                                                                     autofocus: true,
                                                                                                     controller: renameTextBoxController,
                                                                                                     maxLines: 1,
+                                                                                                    maxLength: 50,
                                                                                                     decoration: InputDecoration(
                                                                                                       contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                       border: const OutlineInputBorder(),
                                                                                                       hintText: sortedModsList[index][5].split('|')[sub].split(':')[1],
+                                                                                                      counterText: '',
                                                                                                     ),
                                                                                                     inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                                                                                                     validator: (value) {

@@ -52,6 +52,13 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                     curLangText!.errorLoadingRestartApp,
                     style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                   ),
+                  const SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(snapshot.error.toString(),
+                    softWrap: true,
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                  )
                 ],
               );
             } else if (!snapshot.hasData) {

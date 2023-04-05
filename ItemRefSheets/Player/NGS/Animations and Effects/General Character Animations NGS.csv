@@ -20,6 +20,10 @@
 ,character/pl_dualblade_base.ice,8c35baaef72308e28f4af22fa27e12ac
 ,character/pl_dualblade_cam.ice,9f7370ad3751b2d22d66d90fe7d8df75
 ,character/pl_dualblade_std.ice,ed40b9261c1c6a06fe43d3418daba31b
+,character/pl_gunslash_act.ice,533852395df326a501b0d82da9be5274
+,character/pl_gunslash_base.ice,8a3c997a9b6153c2d06f38099a44188d
+,character/pl_gunslash_cam.ice,14ea0cc1e45c656f8ed5a1418ecd107b
+,character/pl_gunslash_std.ice,2cd6f1872400e0d5028bb607cbd0bd2e
 ,character/pl_jetboots_act.ice,7b340ec96cddbd4adb79ead5a8e92000
 ,character/pl_jetboots_base.ice,77b55cb18080e8031e571f253b45df05
 ,character/pl_jetboots_cam.ice,303288dcc9dca9ddf33854896f237b89
