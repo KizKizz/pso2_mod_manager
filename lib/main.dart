@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/lang_loading_page.dart';
@@ -166,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkRefSheetsForUpdates(context);
+    ApplicationConfig().checkChecksumFileForUpdates(context);
     languagePackCheck();
 
     super.initState();
@@ -317,21 +319,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   Expanded(
                     child: MoveWindow(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 7),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Tooltip(
-                                message: 'Version: $appVersion | Made by キス★',
-                                height: 25,
-                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                waitDuration: const Duration(seconds: 2),
-                                child: const Text(
-                                  'PSO2NGS Mod Manager',
-                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                                )),
-
-                            if (versionToSkipUpdate == appVersion && curLangText != null)
+                      padding: const EdgeInsets.only(left: 10, bottom: 7),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Tooltip(
+                              message: 'Version: $appVersion | Made by キス★',
+                              height: 25,
+                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                              waitDuration: const Duration(seconds: 2),
+                              child: const Text(
+                                'PSO2NGS Mod Manager',
+                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                              )),
+                          if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
                               child: Tooltip(
@@ -340,17 +341,22 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                 waitDuration: const Duration(milliseconds: 100),
                                 child: MaterialButton(
-                                  visualDensity: VisualDensity.compact,
-                                  height: 20,
-                                  minWidth: 10,
-                                  onPressed: () {launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));},
-                                  child: Icon(Icons.download, size: 25, color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber,)
-                                ),
+                                    visualDensity: VisualDensity.compact,
+                                    height: 20,
+                                    minWidth: 10,
+                                    onPressed: () {
+                                      launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                                    },
+                                    child: Icon(
+                                      Icons.download,
+                                      size: 25,
+                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber,
+                                    )),
                               ),
                             ),
-                          ],
-                          ),
-                        )),
+                        ],
+                      ),
+                    )),
                   ),
 
                   //Buttons
@@ -439,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Checksum
                           Tooltip(
-                            message: checkSumFilePath != null ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
+                            message: checkSumFilePath != null || checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString() ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
@@ -469,17 +475,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   setState(() {});
                                   await Dio()
                                       .download(
-                                          'https://github.com/KizKizz/pso2_mod_manager/raw/main/checksum/d4455ebc2bef618f29106da7692ebc1a', '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a')
+                                          checksumFileLink, '$checksumDirPath$s$checksumFileName')
                                       .then((value) {
                                     _checksumDownloading = false;
-                                    checkSumFilePath = '$checksumDirPath${s}d4455ebc2bef618f29106da7692ebc1a';
+                                    checkSumFilePath = '$checksumDirPath$s$checksumFileName';
                                     setState(() {});
                                   });
                                 } else {
                                   await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
-                              child: checkSumFilePath != null
+                              child: checkSumFilePath != null || checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString()
                                   ? Row(
                                       children: [
                                         const Icon(

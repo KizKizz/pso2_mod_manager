@@ -12,6 +12,9 @@ String newVersion = '';
 String patchNotes = '';
 List<String> patchNoteSplit = [];
 int refSheetsNewVersion = -1;
+String checksumFileLink = '';
+String checksumFileName = '';
+String checksumFileMD5 = '';
 
 class ApplicationConfig {
   //App version Check
@@ -63,12 +66,6 @@ class ApplicationConfig {
         refSheetsNewVersion = int.parse(newVersionValue);
         Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
       }
-
-      // String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
-      // patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
-      // patchNoteSplit = patchNotes.split(', ');
-      //debugPrint('Response: ${patchNotes.first}');
-      
     }
   }
 
@@ -80,6 +77,34 @@ class ApplicationConfig {
           await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json')).timeout(Duration(seconds: timeout));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
+      }
+    } on TimeoutException catch (e) {
+      debugPrint('Timeout Error: $e');
+    } on SocketException catch (e) {
+      debugPrint('Socket Error: $e');
+    } on Error catch (e) {
+      debugPrint('General Error: $e');
+    }
+    return jsonDecode(jsonResponse);
+  }
+
+  //Checksum File check
+  Future<void> checkChecksumFileForUpdates(context) async {
+    final jsonVal = await loadRefSheetsJsonFromGithub();
+    if (jsonVal.entries.first.key != 'null') {
+      checksumFileName = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileName').value;
+      checksumFileLink = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileLink').value;
+      checksumFileMD5 = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileMD5').value;
+    }
+  }
+
+  Future<Map<String, dynamic>> loadChecksumFileJsonFromGithub() async {
+    String jsonResponse = '{"null": "null"}';
+    int timeout = 5;
+    try {
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json')).timeout(Duration(seconds: timeout));
+      if (response.statusCode == 200) {
+        jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
       }
     } on TimeoutException catch (e) {
       debugPrint('Timeout Error: $e');

@@ -1,13 +1,14 @@
+import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
-
-
 
 class DataLoadingPage extends StatefulWidget {
   const DataLoadingPage({Key? key}) : super(key: key);
@@ -18,7 +19,6 @@ class DataLoadingPage extends StatefulWidget {
 }
 
 class _DataLoadingPageState extends State<DataLoadingPage> {
-  
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -52,12 +52,12 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                     curLangText!.errorLoadingRestartApp,
                     style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(snapshot.error.toString(),
-                    softWrap: true,
-                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                    child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
                   )
                 ],
               );
@@ -77,6 +77,12 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 ],
               );
             } else {
+              if (checkSumFilePath != null) {
+                String checkSumInWin32 = '$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}';
+                if (getFileChecksum(checkSumFilePath!) != getFileChecksum(checkSumInWin32) || !File(checkSumInWin32).existsSync()) {
+                  File(checkSumFilePath!).copySync(checkSumInWin32);
+                }
+              }
               allModFiles = snapshot.data;
               cateList = categories(allModFiles);
               appliedModsListGet = getAppliedModsList();
