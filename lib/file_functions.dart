@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cross_file/cross_file.dart';
+import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
@@ -853,4 +854,17 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
   File(modSettingsPath).writeAsStringSync(json.encode(allModFiles));
 
   return tempFavCate;
+}
+
+Future<String?> getFileChecksum(String filePath) async {
+  final file = File(filePath);
+  if (!file.existsSync()) return null;
+  try {
+    final stream = file.openRead();
+    final hash = await md5.bind(stream).first;
+    // NOTE: No need to convert it to base64
+    return base64.encode(hash.bytes);
+  } catch (exception) {
+    return null;
+  }
 }
