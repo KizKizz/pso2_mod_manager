@@ -469,6 +469,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     String? checksumPath = checksumLocation!.paths.first;
                                     File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
                                     checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    File(checkSumFilePath.toString()).copySync('$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}');
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   }
@@ -483,6 +484,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   await Dio().download(netChecksumFileLink, '$checksumDirPath$s$netChecksumFileName').then((value) {
                                     _checksumDownloading = false;
                                     checkSumFilePath = '$checksumDirPath$s$netChecksumFileName';
+                                    File(checkSumFilePath.toString()).copySync('$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}');
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
