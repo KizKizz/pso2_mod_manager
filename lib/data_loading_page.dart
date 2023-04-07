@@ -80,6 +80,9 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
               if (checkSumFilePath != null) {
                 String checkSumInWin32 = '$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}';
                 if (getFileChecksum(checkSumFilePath!) != getFileChecksum(checkSumInWin32) || !File(checkSumInWin32).existsSync()) {
+                  if (File(checkSumInWin32).existsSync()) {
+                    File(checkSumInWin32).deleteSync();
+                  }
                   File(checkSumFilePath!).copySync(checkSumInWin32);
                 }
               }

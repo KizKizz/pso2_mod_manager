@@ -445,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Checksum
                           Tooltip(
-                            message: checkSumFilePath != null || checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString() ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
+                            message: checkSumFilePath != null && checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString() ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
@@ -485,7 +485,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                   await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
-                              child: checkSumFilePath != null || checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString()
+                              child: checkSumFilePath != null && checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString()
                                   ? Row(
                                       children: [
                                         const Icon(
