@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -73,6 +74,9 @@ String tempDirPath = '${Directory.current.path}${s}temp';
 String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
 bool _firstTimeUser = false;
 String versionToSkipUpdate = '';
+String? localChecksumMD5;
+String? win32ChecksumMD5;
+String win32CheckSumFilePath = '';
 
 Future<void> main() async {
   DartVLC.initialize();
@@ -445,13 +449,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
                           //Checksum
                           Tooltip(
-                            message: checkSumFilePath != null && checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString() ? curLangText!.checksumToolTipText : curLangText!.checksumHoldBtnTooltip,
+                            message: checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                ? curLangText!.checksumToolTipText
+                                : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onLongPress: () async {
-                                if (checkSumFilePath == null) {
+                                if (checkSumFilePath == null || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
                                   checksumLocation = await FilePicker.platform.pickFiles(
                                     dialogTitle: curLangText!.checksumSelectPopupText,
                                     allowMultiple: false,
@@ -463,6 +469,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                     String? checksumPath = checksumLocation!.paths.first;
                                     File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
                                     checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
+                                    Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   }
                                 } else {
@@ -470,22 +477,20 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                 }
                               },
                               onPressed: (() async {
-                                if (checkSumFilePath == null) {
+                                if (checkSumFilePath == null || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
                                   _checksumDownloading = true;
                                   setState(() {});
-                                  await Dio()
-                                      .download(
-                                          checksumFileLink, '$checksumDirPath$s$checksumFileName')
-                                      .then((value) {
+                                  await Dio().download(netChecksumFileLink, '$checksumDirPath$s$netChecksumFileName').then((value) {
                                     _checksumDownloading = false;
-                                    checkSumFilePath = '$checksumDirPath$s$checksumFileName';
+                                    checkSumFilePath = '$checksumDirPath$s$netChecksumFileName';
+                                    Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
                                 } else {
                                   await launchUrl(Uri.parse('file:$checksumDirPath'));
                                 }
                               }),
-                              child: checkSumFilePath != null && checksumFileMD5 == getFileChecksum(checkSumFilePath!).toString()
+                              child: checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                   ? Row(
                                       children: [
                                         const Icon(
@@ -509,7 +514,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        if (!_checksumDownloading) Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                        if (!_checksumDownloading && checkSumFilePath == null)
+                                          Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                        if (!_checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
+                                          Text('Checksum outdated. Click!', style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
                                         if (_checksumDownloading) Text(curLangText!.checksumDownloadingBtnLabel, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),

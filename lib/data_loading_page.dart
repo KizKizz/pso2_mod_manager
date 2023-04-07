@@ -77,13 +77,9 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 ],
               );
             } else {
-              if (checkSumFilePath != null) {
-                String checkSumInWin32 = '$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}';
-                if (getFileChecksum(checkSumFilePath!) != getFileChecksum(checkSumInWin32) || !File(checkSumInWin32).existsSync()) {
-                  if (File(checkSumInWin32).existsSync()) {
-                    File(checkSumInWin32).deleteSync();
-                  }
-                  File(checkSumFilePath!).copySync(checkSumInWin32);
+              if (checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match && localChecksumMD5 != null && win32ChecksumMD5 != null) {
+                if (win32ChecksumMD5 != localChecksumMD5 || !File(win32CheckSumFilePath).existsSync()) {
+                  File(checkSumFilePath.toString()).copySync(win32CheckSumFilePath);
                 }
               }
               allModFiles = snapshot.data;

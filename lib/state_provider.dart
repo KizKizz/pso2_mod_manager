@@ -18,6 +18,7 @@ class StateProvider with ChangeNotifier {
   String _newSingleItemDropDisplay = '';
   String _newModDropDisplay = '';
   double _itemAdderSubItemETHeight = 40;
+  bool _isChecksumMD5Match = true;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -35,6 +36,17 @@ class StateProvider with ChangeNotifier {
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
   double get itemAdderSubItemETHeight => _itemAdderSubItemETHeight;
+  bool get isChecksumMD5Match => _isChecksumMD5Match;
+
+  void checksumMD5MatchTrue() {
+    _isChecksumMD5Match = true;
+    notifyListeners();
+  }
+
+  void checksumMD5MatchFalse() {
+    _isChecksumMD5Match = false;
+    notifyListeners();
+  }
 
   void itemAdderSubItemETHeightSet(double height) {
     _itemAdderSubItemETHeight = height;

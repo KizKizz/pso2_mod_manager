@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
@@ -12,9 +13,9 @@ String newVersion = '';
 String patchNotes = '';
 List<String> patchNoteSplit = [];
 int refSheetsNewVersion = -1;
-String checksumFileLink = '';
-String checksumFileName = '';
-String checksumFileMD5 = '';
+String netChecksumFileLink = '';
+String netChecksumFileName = '';
+String netChecksumFileMD5 = '';
 
 class ApplicationConfig {
   //App version Check
@@ -90,11 +91,18 @@ class ApplicationConfig {
 
   //Checksum File check
   Future<void> checkChecksumFileForUpdates(context) async {
-    final jsonVal = await loadRefSheetsJsonFromGithub();
+    final jsonVal = await loadChecksumFileJsonFromGithub();
     if (jsonVal.entries.first.key != 'null') {
-      checksumFileName = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileName').value;
-      checksumFileLink = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileLink').value;
-      checksumFileMD5 = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileMD5').value;
+      netChecksumFileName = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileName').value;
+      netChecksumFileLink = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileLink').value;
+      netChecksumFileMD5 = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileMD5').value;
+
+      if (checkSumFilePath != null) {
+        String? checksumMD5 = await getFileHash(checkSumFilePath!);
+        if (checksumMD5.toString() != netChecksumFileMD5) {
+          Provider.of<StateProvider>(context, listen: false).checksumMD5MatchFalse();
+        }
+      }
     }
   }
 

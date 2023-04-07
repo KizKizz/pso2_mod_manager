@@ -774,7 +774,7 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
             cate.allModFiles.addAll(newModFiles);
             cate.imageIcons.insert(index, icons);
             cate.numOfMods.insert(0, 0);
-              cate.numOfMods[index] = finalModFolders.length;
+            cate.numOfMods[index] = finalModFolders.length;
             cate.numOfItems++;
             cate.numOfApplied.add(0);
           }
@@ -856,14 +856,13 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
   return tempFavCate;
 }
 
-Future<String?> getFileChecksum(String filePath) async {
+Future<String?> getFileHash(String filePath) async {
   final file = File(filePath);
   if (!file.existsSync()) return null;
   try {
     final stream = file.openRead();
     final hash = await md5.bind(stream).first;
-    print(hash);
-  
+
     return hash.toString();
   } catch (exception) {
     return null;
