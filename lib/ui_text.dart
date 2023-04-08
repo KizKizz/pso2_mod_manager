@@ -219,7 +219,7 @@ class TranslationText {
     this.nameCannotBeEmptyErrorText,
     this.nameAlreadyExistsErrorText,
 
-    //version 170
+    //version 1610
     this.checksumOutdatedErrorText,
     this.downloadChecksumFirstTooltipText,
   );
@@ -418,7 +418,7 @@ class TranslationText {
   String nameCannotBeEmptyErrorText;
   String nameAlreadyExistsErrorText;
 
-  //version 170
+  //version 1610
   String checksumOutdatedErrorText;
   String downloadChecksumFirstTooltipText;
 
@@ -616,7 +616,7 @@ class TranslationText {
     nameCannotBeEmptyErrorText = json['nameCannotBeEmptyErrorText'];
     nameAlreadyExistsErrorText = json['nameAlreadyExistsErrorText'];
 
-    //version 170
+    //version 1610
     checksumOutdatedErrorText = json['checksumOutdatedErrorText'];
     downloadChecksumFirstTooltipText = json['downloadChecksumFirstTooltipText'];
   }
@@ -817,7 +817,7 @@ class TranslationText {
     data['nameCannotBeEmptyErrorText'] = nameCannotBeEmptyErrorText;
     data['nameAlreadyExistsErrorText'] = nameAlreadyExistsErrorText;
 
-    //version 170
+    //version 1610
     data['checksumOutdatedErrorText'] = checksumOutdatedErrorText;
     data['downloadChecksumFirstTooltipText'] = downloadChecksumFirstTooltipText;
 
@@ -1022,7 +1022,7 @@ void convertLangTextData(var jsonResponse) {
       b['nameCannotBeEmptyErrorText'],
       b['nameAlreadyExistsErrorText'],
 
-      //version 170
+      //version 1610
       b['checksumOutdatedErrorText'],
       b['downloadChecksumFirstTooltipText'],
     );
@@ -1223,7 +1223,7 @@ TranslationText defaultUILangLoader() {
       'New update available. Click to go to download page',
       'Name cannot be empty',
       'Name already exists',
-      //version 170
+      //version 1610
       'Checksum outdated. Click!',
       'Checksum file is missing, click the red "Checksum missing" button on the title bar to download');
 }
