@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -77,13 +75,9 @@ class _DataLoadingPageState extends State<DataLoadingPage> {
                 ],
               );
             } else {
-              if (checkSumFilePath != null) {
-                String checkSumInWin32 = '$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}';
-                if (getFileChecksum(checkSumFilePath!) != getFileChecksum(checkSumInWin32) || !File(checkSumInWin32).existsSync()) {
-                  if (File(checkSumInWin32).existsSync()) {
-                    File(checkSumInWin32).deleteSync();
-                  }
-                  File(checkSumFilePath!).copySync(checkSumInWin32);
+              if (checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match && localChecksumMD5 != null && win32ChecksumMD5 != null) {
+                if (win32ChecksumMD5 != localChecksumMD5 || !File(win32CheckSumFilePath).existsSync()) {
+                  File(checkSumFilePath.toString()).copySync(win32CheckSumFilePath);
                 }
               }
               allModFiles = snapshot.data;

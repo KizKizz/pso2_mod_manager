@@ -2045,13 +2045,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                     width: 40,
                                                                     height: 40,
                                                                     child: Tooltip(
-                                                                      message:
-                                                                          '${curLangText!.applyModUnderTooltipText}"${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.toTheGameTooltipText}',
+                                                                      message: checkSumFilePath != null
+                                                                          ? '${curLangText!.applyModUnderTooltipText}"${modFilesList[index][subParentIndex].first.iceParent}"${curLangText!.toTheGameTooltipText}'
+                                                                          : curLangText!.downloadChecksumFirstTooltipText,
                                                                       height: 25,
                                                                       textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                       waitDuration: const Duration(seconds: 1),
                                                                       child: MaterialButton(
-                                                                        onPressed: (() {
+                                                                        onPressed: checkSumFilePath != null 
+                                                                        ? (() {
                                                                           setState(() {
                                                                             isLoading[index][subParentIndex] = true;
                                                                             modsToDataAdder(modFilesList[index][subParentIndex].where((element) => element.isApplied == false).toList()).then((_) {
@@ -2095,10 +2097,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               });
                                                                             });
                                                                           });
-                                                                        }),
+                                                                        })
+                                                                        : null,
                                                                         child: Icon(
                                                                           Icons.playlist_add,
-                                                                          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                          color: checkSumFilePath != null
+                                                                          ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
+                                                                          : Theme.of(context).disabledColor,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -2257,12 +2262,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                           child: const Icon(Icons.replay),
                                                                         ))
                                                                     : Tooltip(
-                                                                        message: curLangText!.applyThisModTooltipText,
+                                                                        message: checkSumFilePath != null
+                                                                        ? curLangText!.applyThisModTooltipText
+                                                                        : curLangText!.downloadChecksumFirstTooltipText,
                                                                         height: 25,
                                                                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                         waitDuration: const Duration(seconds: 2),
                                                                         child: MaterialButton(
-                                                                          onPressed: (() {
+                                                                          onPressed: checkSumFilePath != null
+                                                                          ? (() {
                                                                             setState(() {
                                                                               modsToDataAdder([modFilesList[index][subParentIndex][i]]);
                                                                               //appliedModsList.add(modFilesList[index]);
@@ -2302,7 +2310,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                                                               modAppliedDup.clear();
                                                                             });
-                                                                          }),
+                                                                          })
+                                                                          : null,
                                                                           child: const Icon(Icons.add_to_drive),
                                                                         ),
                                                                       ),
@@ -2633,7 +2642,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               width: 40,
               height: 40,
               child: Tooltip(
-                message: curLangText!.holdToRemoveAllBtnTooltipText,
+                message: curLangText!.holdToReapplyBtnTooltipText,
                 height: 25,
                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                 waitDuration: const Duration(seconds: 1),
@@ -2876,12 +2885,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           width: 40,
                                                           height: 40,
                                                           child: Tooltip(
-                                                            message: 'Apply unapplied mods under ${appliedModsList[index].first.iceParent} to the game',
+                                                            message: checkSumFilePath != null
+                                                            ? '${curLangText!.applyModUnderTooltipText}"${appliedModsList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}'
+                                                            : curLangText!.downloadChecksumFirstTooltipText,
                                                             height: 25,
                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                             waitDuration: const Duration(seconds: 1),
                                                             child: MaterialButton(
-                                                              onPressed: (() {
+                                                              onPressed: checkSumFilePath != null
+                                                              ? (() {
                                                                 setState(() {
                                                                   isLoadingAppliedList[index] = true;
                                                                   modsToDataAdder(appliedModsList[index].where((element) => element.isApplied == false).toList()).then((_) {
@@ -2925,10 +2937,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                     });
                                                                   });
                                                                 });
-                                                              }),
+                                                              })
+                                                              : null,
                                                               child: Icon(
                                                                 Icons.playlist_add,
-                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                color: checkSumFilePath != null
+                                                                ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
+                                                                : Theme.of(context).disabledColor,
                                                               ),
                                                             ),
                                                           ),
@@ -3030,12 +3045,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                   child: const Icon(Icons.replay),
                                                                 ))
                                                             : Tooltip(
-                                                                message: curLangText!.applyThisModTooltipText,
+                                                                message: checkSumFilePath != null
+                                                                ? curLangText!.applyThisModTooltipText
+                                                                : curLangText!.downloadChecksumFirstTooltipText,
                                                                 height: 25,
                                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                 waitDuration: const Duration(seconds: 1),
                                                                 child: MaterialButton(
-                                                                  onPressed: (() {
+                                                                  onPressed: checkSumFilePath != null
+                                                                  ? (() {
                                                                     setState(() {
                                                                       modsToDataAdder([appliedModsList[index][i]]);
                                                                       //appliedModsList.add(modFilesList[index]);
@@ -3056,7 +3074,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                             )));
                                                                       }
                                                                     });
-                                                                  }),
+                                                                  })
+                                                                  : null,
                                                                   child: const Icon(Icons.add_to_drive),
                                                                 ),
                                                               ),
@@ -3393,12 +3412,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 width: 40,
                                                 height: 40,
                                                 child: Tooltip(
-                                                  message: '${curLangText!.applyModUnderTooltipText}"${setsList[index].setName}"${curLangText!.toTheGameTooltipText}',
+                                                  message: checkSumFilePath != null
+                                                  ? '${curLangText!.applyModUnderTooltipText}"${setsList[index].setName}"${curLangText!.toTheGameTooltipText}'
+                                                  : curLangText!.downloadChecksumFirstTooltipText,
                                                   height: 25,
                                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                   waitDuration: const Duration(seconds: 1),
                                                   child: MaterialButton(
-                                                    onPressed: (() async {
+                                                    onPressed: checkSumFilePath != null
+                                                    ? (() async {
                                                       isLoadingSetList[index] = true;
                                                       modFilesFromSetList = await getModFilesBySet(setsList[index].modFiles);
                                                       List<List<ModFile>> modFilesToApply = [];
@@ -3458,10 +3480,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           });
                                                         }
                                                       });
-                                                    }),
+                                                    })
+                                                    : null,
                                                     child: Icon(
                                                       Icons.playlist_add,
-                                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                      color: checkSumFilePath != null
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
+                                                      : Theme.of(context).disabledColor,
                                                     ),
                                                   ),
                                                 ),
@@ -3752,12 +3777,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                             width: 40,
                                                             height: 40,
                                                             child: Tooltip(
-                                                              message: '"${curLangText!.applyModUnderTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}',
+                                                              message: checkSumFilePath != null
+                                                              ? '"${curLangText!.applyModUnderTooltipText}"${modFilesFromSetList[index].first.iceParent}"${curLangText!.toTheGameTooltipText}'
+                                                              : curLangText!.downloadChecksumFirstTooltipText,
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 1),
                                                               child: MaterialButton(
-                                                                onPressed: (() {
+                                                                onPressed: checkSumFilePath != null
+                                                                ? (() {
                                                                   setState(() {
                                                                     isLoadingModSetList[index] = true;
                                                                     modsToDataAdder(modFilesFromSetList[index].where((element) => element.isApplied == false).toList()).then((_) {
@@ -3810,10 +3838,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       });
                                                                     });
                                                                   });
-                                                                }),
+                                                                })
+                                                                : null,
                                                                 child: Icon(
                                                                   Icons.playlist_add,
-                                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                  color: checkSumFilePath != null
+                                                                  ? MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color
+                                                                  : Theme.of(context).disabledColor,
                                                                 ),
                                                               ),
                                                             ),
@@ -3943,12 +3974,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                   child: const Icon(Icons.replay),
                                                                 ))
                                                             : Tooltip(
-                                                                message: curLangText!.applyThisModTooltipText,
+                                                                message: checkSumFilePath != null
+                                                                ? curLangText!.applyThisModTooltipText
+                                                                : curLangText!.downloadChecksumFirstTooltipText,
                                                                 height: 25,
                                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                 waitDuration: const Duration(seconds: 2),
                                                                 child: MaterialButton(
-                                                                  onPressed: (() {
+                                                                  onPressed: checkSumFilePath != null
+                                                                  ? (() {
                                                                     setState(() {
                                                                       modsToDataAdder([modFilesFromSetList[index][i]]);
                                                                       for (var list in setsList) {
@@ -3999,7 +4033,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                                                       modAppliedDup.clear();
                                                                     });
-                                                                  }),
+                                                                  })
+                                                                  : null,
                                                                   child: const Icon(Icons.add_to_drive),
                                                                 ),
                                                               ),

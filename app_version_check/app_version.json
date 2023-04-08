@@ -1,8 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.9",
+    "version": "1.6.10",
     "description": [
-        "Fixed a bug where Mods Adder skipping included preview images"
+        "Improved checksum detection (the app now check for checksum in win32 every startup and auto reapply if missing)",
+        "Data loading screens now show detailed error messages if encountered",
+        "Fixed some bugs when using scrollbar",
+        "Fixed some other minor bugs"
     ],
     "windows_file": "",
     "linux_file": ""

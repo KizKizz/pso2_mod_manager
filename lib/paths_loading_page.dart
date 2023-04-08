@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
+import 'package:pso2_mod_manager/file_functions.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
@@ -198,8 +199,15 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         for (var file in filesInCSFolder) {
           if (p.extension(file.path) == '') {
             checkSumFilePath = file.path;
+            win32CheckSumFilePath = '$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}';
           }
         }
+      }
+      if (checkSumFilePath != null) {
+        localChecksumMD5 = await getFileHash(checkSumFilePath.toString());
+      }
+      if (win32CheckSumFilePath.isNotEmpty) {
+        win32ChecksumMD5 = await getFileHash(win32CheckSumFilePath);
       }
     }
     if (binDirPath.isNotEmpty) {

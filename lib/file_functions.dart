@@ -16,8 +16,8 @@ import 'package:path/path.dart' as p;
 
 Future<void> reapplyMods(List<ModFile> modList) async {
   //Checksum
-  if (checkSumFilePath != null) {
-    File(checkSumFilePath!).copySync('$binDirPath${s}data${s}win32$s${checkSumFilePath!.split(s).last}');
+  if (checkSumFilePath != null && localChecksumMD5 != await getFileHash(win32CheckSumFilePath)) {
+    File(checkSumFilePath!).copySync(win32CheckSumFilePath);
   }
 
   if (modList.length > 1) {
@@ -239,8 +239,8 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
   List<ModFile> actualAppliedMods = [];
   originalFilesMissingList.clear();
   //Checksum
-  if (checkSumFilePath != null) {
-    File(checkSumFilePath!).copySync('$binDirPath${s}data${s}win32$s${checkSumFilePath!.split(s).last}');
+  if (checkSumFilePath != null && localChecksumMD5 != await getFileHash(win32CheckSumFilePath)) {
+    File(checkSumFilePath!).copySync(win32CheckSumFilePath);
   }
 
   //Bulk apply
@@ -774,7 +774,7 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
             cate.allModFiles.addAll(newModFiles);
             cate.imageIcons.insert(index, icons);
             cate.numOfMods.insert(0, 0);
-              cate.numOfMods[index] = finalModFolders.length;
+            cate.numOfMods[index] = finalModFolders.length;
             cate.numOfItems++;
             cate.numOfApplied.add(0);
           }
@@ -856,14 +856,14 @@ ModCategory addOrRemoveFav(List<ModCategory> categoryList, List<ModFile> paramMo
   return tempFavCate;
 }
 
-Future<String?> getFileChecksum(String filePath) async {
+Future<String?> getFileHash(String filePath) async {
   final file = File(filePath);
   if (!file.existsSync()) return null;
   try {
     final stream = file.openRead();
     final hash = await md5.bind(stream).first;
-    // NOTE: No need to convert it to base64
-    return base64.encode(hash.bytes);
+
+    return hash.toString();
   } catch (exception) {
     return null;
   }
