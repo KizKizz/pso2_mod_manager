@@ -16,8 +16,8 @@ import 'package:path/path.dart' as p;
 
 Future<void> reapplyMods(List<ModFile> modList) async {
   //Checksum
-  if (checkSumFilePath != null) {
-    File(checkSumFilePath!).copySync('$binDirPath${s}data${s}win32$s${checkSumFilePath!.split(s).last}');
+  if (checkSumFilePath != null && localChecksumMD5 != await getFileHash(win32CheckSumFilePath)) {
+    File(checkSumFilePath!).copySync(win32CheckSumFilePath);
   }
 
   if (modList.length > 1) {
@@ -239,8 +239,8 @@ Future<void> modsToDataAdder(List<ModFile> modList) async {
   List<ModFile> actualAppliedMods = [];
   originalFilesMissingList.clear();
   //Checksum
-  if (checkSumFilePath != null) {
-    File(checkSumFilePath!).copySync('$binDirPath${s}data${s}win32$s${checkSumFilePath!.split(s).last}');
+  if (checkSumFilePath != null && localChecksumMD5 != await getFileHash(win32CheckSumFilePath)) {
+    File(checkSumFilePath!).copySync(win32CheckSumFilePath);
   }
 
   //Bulk apply

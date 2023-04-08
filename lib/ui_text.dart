@@ -218,6 +218,10 @@ class TranslationText {
     //version 168
     this.nameCannotBeEmptyErrorText,
     this.nameAlreadyExistsErrorText,
+
+    //version 170
+    this.checksumOutdatedErrorText,
+    this.downloadChecksumFirstTooltipText,
   );
 
   //Header buttons
@@ -414,6 +418,10 @@ class TranslationText {
   String nameCannotBeEmptyErrorText;
   String nameAlreadyExistsErrorText;
 
+  //version 170
+  String checksumOutdatedErrorText;
+  String downloadChecksumFirstTooltipText;
+
   fromJson(Map<String, dynamic> json) {
     //Header buttons
     pathsReselectBtnText = json['pathsReselectBtnText'];
@@ -607,6 +615,10 @@ class TranslationText {
     //version 168
     nameCannotBeEmptyErrorText = json['nameCannotBeEmptyErrorText'];
     nameAlreadyExistsErrorText = json['nameAlreadyExistsErrorText'];
+
+    //version 170
+    checksumOutdatedErrorText = json['checksumOutdatedErrorText'];
+    downloadChecksumFirstTooltipText = json['downloadChecksumFirstTooltipText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -804,6 +816,10 @@ class TranslationText {
     //version 168
     data['nameCannotBeEmptyErrorText'] = nameCannotBeEmptyErrorText;
     data['nameAlreadyExistsErrorText'] = nameAlreadyExistsErrorText;
+
+    //version 170
+    data['checksumOutdatedErrorText'] = checksumOutdatedErrorText;
+    data['downloadChecksumFirstTooltipText'] = downloadChecksumFirstTooltipText;
 
     return data;
   }
@@ -1005,6 +1021,10 @@ void convertLangTextData(var jsonResponse) {
       //version 168
       b['nameCannotBeEmptyErrorText'],
       b['nameAlreadyExistsErrorText'],
+
+      //version 170
+      b['checksumOutdatedErrorText'],
+      b['downloadChecksumFirstTooltipText'],
     );
     curLangText = translation;
   }
@@ -1202,5 +1222,8 @@ TranslationText defaultUILangLoader() {
       'File Applied',
       'New update available. Click to go to download page',
       'Name cannot be empty',
-      'Name already exists');
+      'Name already exists',
+      //version 170
+      'Checksum outdated. Click!',
+      'Checksum file is missing, click the red "Checksum missing" button on the title bar to download');
 }
