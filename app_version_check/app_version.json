@@ -3,9 +3,9 @@
     "version": "1.6.10",
     "description": [
         "Improved checksum detection (the app now check for checksum in win32 every startup and auto reapply if missing)",
-        "Data loading screens now show detailed error messages if encoutered",
+        "Data loading screens now show detailed error messages if encountered",
         "Fixed some bugs when using scrollbar",
-        "Fixed ome other minor bugs"
+        "Fixed some other minor bugs"
     ],
     "windows_file": "",
     "linux_file": ""
