@@ -7,7 +7,7 @@ part 'item_class.g.dart';
 class Item {
   Item(this.name, this.icon, this.category, this.location, this.isNew, this.isFavorite, this.mods);
   String name;
-  String icon;
+  Uri icon;
   String category;
   String location;
   bool isFavorite;
