@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/functions/test.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/lang_loading_page.dart';
@@ -172,6 +173,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     ApplicationConfig().checkRefSheetsForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
     languagePackCheck();
+
+    test();
 
     super.initState();
   }
