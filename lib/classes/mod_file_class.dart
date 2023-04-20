@@ -8,9 +8,9 @@ class ModFile {
   String modName;
   String itemName;
   String md5;
-  String location;
-  String ogLocation;
-  String bkLocation;
+  Uri location;
+  Uri ogLocation;
+  Uri bkLocation;
   DateTime applyDate;
   bool applyStatus;
   bool isNew;

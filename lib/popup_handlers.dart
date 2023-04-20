@@ -125,6 +125,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                       backupDirPath = '$mainModDirPath${s}Backups';
                       checksumDirPath = '$mainModDirPath${s}Checksum';
                       modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                      modsListJsonPath = Uri.file('$mainModDirPath/PSO2ModManModsList.json');
                       modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
                       langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
                       deletedItemsPath = '$mainModDirPath${s}Deleted Items';
@@ -178,6 +179,9 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                       if (!File(modSettingsPath).existsSync()) {
                         await File(modSettingsPath).create(recursive: true);
                       }
+                      if (!File(modsListJsonPath.toFilePath()).existsSync()) {
+                        await File(modsListJsonPath.toFilePath()).create(recursive: true);
+                      }
                       if (!File(modSetsSettingsPath).existsSync()) {
                         await File(modSetsSettingsPath).create(recursive: true);
                       }
@@ -227,6 +231,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         backupDirPath = '$mainModDirPath${s}Backups';
                         checksumDirPath = '$mainModDirPath${s}Checksum';
                         modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                        modsListJsonPath = Uri.file('$mainModDirPath/PSO2ModManModsList.json');
                         modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
                         langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
                         deletedItemsPath = '$mainModDirPath${s}Deleted Items';
@@ -287,6 +292,9 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                         if (!File(modSettingsPath).existsSync()) {
                           await File(modSettingsPath).create(recursive: true);
                         }
+                        if (!File(modsListJsonPath.toFilePath()).existsSync()) {
+                          await File(modsListJsonPath.toFilePath()).create(recursive: true);
+                        }
                         if (!File(modSetsSettingsPath).existsSync()) {
                           await File(modSetsSettingsPath).create(recursive: true);
                         }
@@ -329,6 +337,7 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           backupDirPath = '$mainModDirPath${s}Backups';
                           checksumDirPath = '$mainModDirPath${s}Checksum';
                           modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+                          modsListJsonPath = Uri.file('$mainModDirPath/PSO2ModManModsList.json');
                           modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
                           langSettingsPath = '${Directory.current.path}${s}Language${s}LanguageSettings.json';
                           deletedItemsPath = '$mainModDirPath${s}Deleted Items';
@@ -387,6 +396,9 @@ Future mainModManDirDialog(context, String popupTitle, String popupMessage, bool
                           }
                           if (!File(modSettingsPath).existsSync()) {
                             await File(modSettingsPath).create(recursive: true);
+                          }
+                          if (!File(modsListJsonPath.toFilePath()).existsSync()) {
+                            await File(modsListJsonPath.toFilePath()).create(recursive: true);
                           }
                           if (!File(modSetsSettingsPath).existsSync()) {
                             await File(modSetsSettingsPath).create(recursive: true);

@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
+import 'package:pso2_mod_manager/functions/startup_loader.dart';
+import 'package:pso2_mod_manager/functions/test.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
@@ -121,6 +123,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       backupDirPath = '$mainModDirPath${s}Backups';
       checksumDirPath = '$mainModDirPath${s}Checksum';
       modSettingsPath = '$mainModDirPath${s}PSO2ModManSettings.json';
+      modsListJsonPath = Uri.file('$mainModDirPath/PSO2ModManModsList.json');
       modSetsSettingsPath = '$mainModDirPath${s}PSO2ModManModSets.json';
       deletedItemsPath = '$mainModDirPath${s}Deleted Items';
       //Check if exist, create dirs
@@ -185,6 +188,9 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       if (!File(modSettingsPath).existsSync()) {
         await File(modSettingsPath).create(recursive: true);
       }
+      if (!File(modsListJsonPath.toFilePath()).existsSync()) {
+        await File(modsListJsonPath.toFilePath()).create(recursive: true);
+      }
       if (!File(modSetsSettingsPath).existsSync()) {
         await File(modSetsSettingsPath).create(recursive: true);
       }
@@ -209,6 +215,10 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
       if (win32CheckSumFilePath.isNotEmpty) {
         win32ChecksumMD5 = await getFileHash(win32CheckSumFilePath);
       }
+
+      test();
+
+      startupLoader(modsDirPath);
     }
     if (binDirPath.isNotEmpty) {
       dataDir = Directory('$binDirPath${s}data');
