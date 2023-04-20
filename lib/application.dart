@@ -42,9 +42,8 @@ class ApplicationConfig {
 
   Future<Map<String, dynamic>> loadJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 10;
     try {
-      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json')).timeout(Duration(seconds: timeout));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json'));
       }
@@ -72,10 +71,9 @@ class ApplicationConfig {
 
   Future<Map<String, dynamic>> loadRefSheetsJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 5;
     try {
       http.Response response =
-          await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json')).timeout(Duration(seconds: timeout));
+          await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       }
@@ -108,9 +106,8 @@ class ApplicationConfig {
 
   Future<Map<String, dynamic>> loadChecksumFileJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 5;
     try {
-      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json')).timeout(Duration(seconds: timeout));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
       }

@@ -54,14 +54,42 @@ Future<List<Category>> startupLoader(String modsDirPath) async {
 
         //Get submods in mods
         List<SubMod> submods = [];
+        //Get modfiles in mods
+        final modFilesInModDir = Directory(modDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '');
+        if (modFilesInModDir.isNotEmpty) {
+          //Set submods
+          //Get mod files in submods
+          List<ModFile> modFilesInMainDir = [];
+          for (var modFile in modFilesInModDir) {
+            //Fetch og ice location
+            List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+            List<Uri> ogIceFileLocations = [];
+            for (var dataFolder in dataFolders) {
+              Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');
+              final ogFiles = Directory(iceInDataFolderPath.toFilePath()).listSync(recursive: true).whereType<File>();
+              final matchingOGFiles = ogFiles.where((element) => XFile(element.path).name == XFile(modFile.path).name);
+              for (var ogFile in matchingOGFiles) {
+                ogIceFileLocations.add(ogFile.uri);
+              }
+            }
+
+            //Populate modFiles
+            modFilesInMainDir.add(ModFile(XFile(modFile.path).name, XFile(modDir.path).name, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name,
+                getFileHash(modFile.path).toString(), '', Uri.file(modFile.path), ogIceFileLocations, [], DateTime(0), false, false, false));
+          }
+
+          //Populate submods
+          submods.add(SubMod(XFile(modDir.path).name, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(modDir.path), false, DateTime(0), false, false,
+              modPreviewImages, modPreviewVideos, [], modFilesInMainDir));
+        }
+
+        //Get submods
         for (var submodDir in Directory(modDir.path).listSync(recursive: true).whereType<Directory>()) {
-          //print(submodDir.path);
           //Fetch submod name
           List<String> submodPathSegment = Uri.file(submodDir.path).pathSegments;
           List<String> submodDirs = [];
           submodDirs.addAll(submodPathSegment);
           submodDirs.removeRange(0, submodDirs.indexOf(XFile(modDir.path).name) + 1);
-
           final submodName = submodDirs.join(' > ');
           //Get preview images;
           List<Uri> submodPreviewImages = [];
@@ -86,12 +114,11 @@ Future<List<Category>> startupLoader(String modsDirPath) async {
               List<Uri> ogIceFileLocations = [];
               for (var dataFolder in dataFolders) {
                 Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');
-                //final ogFiles = Directory(iceInDataFolderPath.toFilePath()).listSync(recursive: true).whereType<File>();
-                //final matchingOGFiles = ogFiles.where((element) => XFile(element.path).name == XFile(modFile.path).name);
-                // for (var ogFile in matchingOGFiles) {
-                //   ogIceFileLocations.add(ogFile.uri);
-                // }
-                
+                final ogFiles = Directory(iceInDataFolderPath.toFilePath()).listSync(recursive: true).whereType<File>();
+                final matchingOGFiles = ogFiles.where((element) => XFile(element.path).name == XFile(modFile.path).name);
+                for (var ogFile in matchingOGFiles) {
+                  ogIceFileLocations.add(ogFile.uri);
+                }
               }
 
               //Populate modFiles

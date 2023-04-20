@@ -642,7 +642,9 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
       List<String> subNames = [];
       if (sortedLine[5].isNotEmpty) {
         for (var name in sortedLine[5].split('|')) {
-          subNames.add(name.split(':')[1]);
+          if (name.isNotEmpty) {
+            subNames.add(name.split(':')[1]);
+          }
         }
       }
 
