@@ -9,10 +9,10 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/main.dart';
 
 void test() {
-  ModFile testModFile = ModFile('name', 'modName', 'itemName', 'md5', Uri(), Uri(), Uri(), DateTime.now(), false, true, false);
-  SubMod testSubMod = SubMod('Test Sub Mod', 'category', 'itemName', false, DateTime.now(), [], true, false, [], [], [testModFile]);
-  Mod testMod = Mod('Test Mod', 'category', 'itemName', false, DateTime.now(), [], true, false, [], [], [testSubMod]);
-  Item testItem = Item('name', Uri(), 'category', 'location', true, false, [testMod]);
+  ModFile testModFile = ModFile('name', 'submodName', 'modName', 'itemName', 'category', 'md5', 'ogmd5', Uri(), [], [], DateTime.now(), false, true, false);
+  SubMod testSubMod = SubMod('name', 'modName', 'itemName', 'category', Uri(), false, DateTime(0), false, false, [], [], [], [testModFile]);
+  Mod testMod = Mod('Test Mod', 'itemName', 'category', Uri(),false, DateTime.now(), true, false, [], [], [], [testSubMod]);
+  Item testItem = Item('name', Uri(), 'category', Uri(), false, false, DateTime(0), false, [testMod]);
   Category testCate = Category('name', Uri(), true, [testItem]);
 
   List<Category> testCateList = [testCate, testCate];

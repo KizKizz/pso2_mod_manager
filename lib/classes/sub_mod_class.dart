@@ -5,17 +5,20 @@ part 'sub_mod_class.g.dart';
 
 @JsonSerializable()
 class SubMod {
-  SubMod(this.name, this.category, this.itemName, this.applyStatus, this.applyDate, this.appliedModFiles, this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.modFiles);
+  SubMod(this.name, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedModFiles,
+      this.modFiles);
   String name;
-  String category;
+  String modName;
   String itemName;
+  String category;
+  Uri location;
   bool applyStatus;
   DateTime applyDate;
-  List<ModFile> appliedModFiles;
   bool isNew;
   bool isFavorite;
   List<Uri> previewImages;
   List<Uri> previewVideos;
+  List<ModFile> appliedModFiles;
   List<ModFile> modFiles;
 
   factory SubMod.fromJson(Map<String, dynamic> json) => _$SubModFromJson(json);

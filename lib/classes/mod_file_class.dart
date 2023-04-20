@@ -1,16 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'mod_file_class.g.dart';
+
 @JsonSerializable()
 class ModFile {
-  ModFile(this.name, this.modName, this.itemName, this.md5, this.location, this.ogLocation, this.bkLocation, this.applyDate, this.applyStatus, this.isNew, this.isFavorite);
+  ModFile(
+      this.name, this.submodName, this.modName, this.itemName, this.category, this.md5, this.ogMd5, this.location, this.ogLocations, this.bkLocations, this.applyDate, this.applyStatus, this.isNew, this.isFavorite);
   String name;
+  String submodName;
   String modName;
   String itemName;
+  String category;
   String md5;
+  String ogMd5;
   Uri location;
-  Uri ogLocation;
-  Uri bkLocation;
+  List<Uri> ogLocations;
+  List<Uri> bkLocations;
   DateTime applyDate;
   bool applyStatus;
   bool isNew;

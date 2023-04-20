@@ -8,13 +8,11 @@ part of 'mod_class.dart';
 
 Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       json['name'] as String,
-      json['category'] as String,
       json['itemName'] as String,
+      json['category'] as String,
+      Uri.parse(json['location'] as String),
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
-      (json['appliedSubMods'] as List<dynamic>)
-          .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
-          .toList(),
       json['isNew'] as bool,
       json['isFavorite'] as bool,
       (json['previewImages'] as List<dynamic>)
@@ -23,6 +21,9 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       (json['previewVideos'] as List<dynamic>)
           .map((e) => Uri.parse(e as String))
           .toList(),
+      (json['appliedSubMods'] as List<dynamic>)
+          .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
+          .toList(),
       (json['subMods'] as List<dynamic>)
           .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,14 +31,15 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
 
 Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
       'name': instance.name,
-      'category': instance.category,
       'itemName': instance.itemName,
+      'category': instance.category,
+      'location': instance.location.toString(),
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
-      'appliedSubMods': instance.appliedSubMods,
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,
       'previewImages': instance.previewImages.map((e) => e.toString()).toList(),
       'previewVideos': instance.previewVideos.map((e) => e.toString()).toList(),
+      'appliedSubMods': instance.appliedSubMods,
       'subMods': instance.subMods,
     };
