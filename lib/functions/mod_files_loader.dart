@@ -13,7 +13,7 @@ import 'package:pso2_mod_manager/file_functions.dart';
 
 import '../main.dart';
 
-Future<List<Category>> startupLoader(String modsDirPath) async {
+Future<List<Category>> modFilesLoader(Uri modsDirPath) async {
   //Load local json
   var jsonData = jsonDecode(File(modsListJsonPath.toFilePath()).readAsStringSync());
   var jsonCategories = [];
@@ -22,8 +22,9 @@ Future<List<Category>> startupLoader(String modsDirPath) async {
   }
 
   //Load local data
+  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
   List<Category> categories = [];
-  final dirsInModsDir = Directory(modsDirPath).listSync(recursive: false);
+  final dirsInModsDir = Directory(modsDirPath.toFilePath()).listSync(recursive: false);
   for (var cateDir in dirsInModsDir) {
     List<Item> items = [];
     for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
@@ -62,7 +63,6 @@ Future<List<Category>> startupLoader(String modsDirPath) async {
           List<ModFile> modFilesInMainDir = [];
           for (var modFile in modFilesInModDir) {
             //Fetch og ice location
-            List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
             List<Uri> ogIceFileLocations = [];
             for (var dataFolder in dataFolders) {
               Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');
@@ -110,7 +110,6 @@ Future<List<Category>> startupLoader(String modsDirPath) async {
           for (var modFile in Directory(submodDir.path).listSync(recursive: false).whereType<File>()) {
             if (p.extension(modFile.path) == '') {
               //Fetch og ice location
-              List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
               List<Uri> ogIceFileLocations = [];
               for (var dataFolder in dataFolders) {
                 Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');

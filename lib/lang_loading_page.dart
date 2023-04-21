@@ -40,6 +40,7 @@ class _LangLoadingPageState extends State<LangLoadingPage> {
     }
 
     if (curLangText == null) {
+      curLangText = TranslationText.fromJson(jsonDecode(File(modsListJsonPath.toFilePath()).readAsStringSync()))
       convertLangTextData(jsonDecode(File(curSelectedLangPath).readAsStringSync()));
       //await Future.delayed(const Duration(milliseconds: 500));
       setState(() {});

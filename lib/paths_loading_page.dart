@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
-import 'package:pso2_mod_manager/functions/startup_loader.dart';
+import 'package:pso2_mod_manager/functions/mod_files_loader.dart';
 import 'package:pso2_mod_manager/functions/test.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
@@ -18,6 +18,8 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+
+import 'functions/paths_loader.dart';
 
 List<String> _cateToIgnoreScan = ['Emotes', 'Motions'];
 
@@ -216,9 +218,12 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         win32ChecksumMD5 = await getFileHash(win32CheckSumFilePath);
       }
 
+      pathsLoader(context);
+      //pso2binPathGet(context);
+
       test();
 
-      startupLoader(modsDirPath);
+      modFilesLoader(modManModsDirPath);
     }
     if (binDirPath.isNotEmpty) {
       dataDir = Directory('$binDirPath${s}data');
