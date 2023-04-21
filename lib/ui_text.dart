@@ -1,31 +1,18 @@
-import 'package:pso2_mod_manager/main.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'ui_text.g.dart';
 
 
-
+@JsonSerializable()
 class TranslationLanguage {
   TranslationLanguage(this.langInitial, this.langFilePath, this.selected);
 
   String langInitial;
-  String langFilePath;
+  Uri langFilePath;
   bool selected;
 
-  fromJson(Map<String, dynamic> json) {
-    langInitial = json['langInitial'];
-    langFilePath = json['langFilePath'];
-    selected = json['selected'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['langInitial'] = langInitial;
-    data['langFilePath'] = langFilePath;
-    data['selected'] = selected;
-
-    return data;
-  }
+  factory TranslationLanguage.fromJson(Map<String, dynamic> json) => _$TranslationLanguageFromJson(json);
+  Map<String, dynamic> toJson() => _$TranslationLanguageToJson(this);
 }
 
 @JsonSerializable()

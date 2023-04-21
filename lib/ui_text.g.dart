@@ -6,6 +6,21 @@ part of 'ui_text.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) =>
+    TranslationLanguage(
+      json['langInitial'] as String,
+      Uri.parse(json['langFilePath'] as String),
+      json['selected'] as bool,
+    );
+
+Map<String, dynamic> _$TranslationLanguageToJson(
+        TranslationLanguage instance) =>
+    <String, dynamic>{
+      'langInitial': instance.langInitial,
+      'langFilePath': instance.langFilePath.toString(),
+      'selected': instance.selected,
+    };
+
 TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
     TranslationText(
       json['pathsReselectBtnText'] as String,

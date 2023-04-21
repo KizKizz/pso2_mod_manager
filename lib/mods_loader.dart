@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
+import 'package:pso2_mod_manager/functions/language_loader.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/main.dart';
 // ignore: depend_on_referenced_packages
@@ -534,23 +535,3 @@ Future<List<List<ModFile>>> getModFilesBySet(String modSetList) async {
   return modFilesInSetList.toList();
 }
 
-//Language Loader
-Future<List<TranslationLanguage>> translationLoader() async {
-  List<TranslationLanguage> langList = [];
-  void convertData(var jsonResponse) {
-    for (var b in jsonResponse) {
-      TranslationLanguage translation = TranslationLanguage(
-        b['langInitial'],
-        b['langFilePath'],
-        b['selected'],
-      );
-      langList.add(translation);
-    }
-  }
-
-  if (langList.isEmpty && File(langSettingsPath).readAsStringSync().isNotEmpty) {
-    convertData(jsonDecode(File(langSettingsPath).readAsStringSync()));
-  }
-
-  return langList;
-}

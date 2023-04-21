@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
+import 'package:pso2_mod_manager/functions/language_loader.dart';
 import 'package:pso2_mod_manager/functions/mod_files_loader.dart';
 import 'package:pso2_mod_manager/functions/test.dart';
 import 'package:pso2_mod_manager/home_page.dart';
