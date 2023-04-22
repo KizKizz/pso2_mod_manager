@@ -8,9 +8,9 @@ part of 'item_class.dart';
 
 Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       json['name'] as String,
-      Uri.parse(json['icon'] as String),
+      json['icon'] as String,
       json['category'] as String,
-      Uri.parse(json['location'] as String),
+      json['location'] as String,
       json['isNew'] as bool,
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
@@ -22,9 +22,9 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'name': instance.name,
-      'icon': instance.icon.toString(),
+      'icon': instance.icon,
       'category': instance.category,
-      'location': instance.location.toString(),
+      'location': instance.location,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
       'isFavorite': instance.isFavorite,

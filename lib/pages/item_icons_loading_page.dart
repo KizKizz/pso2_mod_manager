@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/pages/paths_loading_page.dart';
+import 'package:pso2_mod_manager/loaders/startup_item_icon_loader.dart';
+import 'package:pso2_mod_manager/pages/main_page.dart';
 
-class UILanguageLoadingPage extends StatefulWidget {
-  const UILanguageLoadingPage({Key? key}) : super(key: key);
+class ItemIconsLoadingPage extends StatefulWidget {
+  const ItemIconsLoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<UILanguageLoadingPage> createState() => _UILanguageLoadingPageState();
+  State<ItemIconsLoadingPage> createState() => _ItemIconsLoadingPageState();
 }
 
-class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
+class _ItemIconsLoadingPageState extends State<ItemIconsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: uiTextLoader(),
+        future: itemIconsLoader(),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -25,7 +25,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
                   Text(
-                    'Loading UI',
+                    'Loading Icons',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
@@ -43,7 +43,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading UI',
+                      'Error when loading missing item icons',
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -63,7 +63,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Text(
-                      'Loading UI',
+                      'Loading Icons',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -74,8 +74,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                 ),
               );
             } else {
-              curLangText = snapshot.data;
-              return const PathsLoadingPage();
+              return const MainPage();
             }
           }
         });

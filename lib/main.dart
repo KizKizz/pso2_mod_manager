@@ -1,37 +1,24 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:cross_file/cross_file.dart';
 import 'package:dart_vlc/dart_vlc.dart';
-import 'package:dio/dio.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
-import 'package:pso2_mod_manager/functions/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/home_page.dart';
-import 'package:pso2_mod_manager/item_ref.dart';
-import 'package:pso2_mod_manager/lang_loading_page.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
-import 'package:pso2_mod_manager/custom_window_button.dart';
-import 'package:pso2_mod_manager/mods_loader.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
-import 'package:pso2_mod_manager/paths_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
-import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
 String binDirPath = '';
@@ -43,8 +30,6 @@ String checksumDirPath = '';
 String modSettingsPath = '';
 String modSetsSettingsPath = '';
 String deletedItemsPath = '';
-String curSelectedLangPath = '';
-//String languageDirPath = '${Directory.current.path}${s}Language$s';
 String langSettingsPath = '';
 String curLanguageDirPath = '';
 
@@ -69,10 +54,7 @@ TextEditingController newSetTextController = TextEditingController();
 TextEditingController newLangTextController = TextEditingController();
 final newSetFormKey = GlobalKey<FormState>();
 List<String> localRefSheetsList = [];
-bool _checksumDownloading = false;
-String tempDirPath = '${Directory.current.path}${s}temp';
-String zamboniExePath = '${Directory.current.path}${s}Zamboni${s}Zamboni.exe';
-bool _firstTimeUser = false;
+bool firstTimeUser = false;
 String versionToSkipUpdate = '';
 String? localChecksumMD5;
 String? win32ChecksumMD5;
@@ -87,28 +69,12 @@ Future<void> main() async {
   windowsWidth = (prefs.getDouble('windowsWidth') ?? 1280.0);
   windowsHeight = (prefs.getDouble('windowsHeight') ?? 720.0);
 
-  // WindowOptions windowOptions = const WindowOptions(
-  //   size: Size(1280, 720),
-  //   center: true,
-  //   //backgroundColor: Colors.transparent,
-  //   skipTaskbar: true,
-  //   //titleBarStyle: TitleBarStyle.hidden
-  // );
-
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => StateProvider()),
   ], child: const MyApp()));
   doWhenWindowReady(() {
     Size initialSize = Size(windowsWidth, windowsHeight);
     appWindow.minSize = const Size(1280, 500);
-    //Temp fix for windows 10 white screen, remove when conflicts solved
-    // if (Platform.isWindows) {
-    //   WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
-    //     appWindow.size = initialSize + const Offset(0, 5);
-    //   });
-    // } else {
-    //   appWindow.size = initialSize;
-    // }
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
@@ -219,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       // First time user load
-      _firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
+      firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
 
       // Check version to skip update
       versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');
@@ -228,7 +194,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return const UILanguageLoadingPage();
+    return const Scaffold(
+      body: UILanguageLoadingPage(),
+    );
   }
 }
 

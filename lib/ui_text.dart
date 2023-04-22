@@ -8,7 +8,7 @@ class TranslationLanguage {
   TranslationLanguage(this.langInitial, this.langFilePath, this.selected);
 
   String langInitial;
-  Uri langFilePath;
+  String langFilePath;
   bool selected;
 
   factory TranslationLanguage.fromJson(Map<String, dynamic> json) => _$TranslationLanguageFromJson(json);

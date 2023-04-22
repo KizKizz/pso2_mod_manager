@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/ui_text.dart';
 
 class LangLoadingPage extends StatefulWidget {
   const LangLoadingPage({Key? key}) : super(key: key);

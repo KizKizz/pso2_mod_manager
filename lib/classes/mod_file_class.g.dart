@@ -14,13 +14,9 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
       json['category'] as String,
       json['md5'] as String,
       json['ogMd5'] as String,
-      Uri.parse(json['location'] as String),
-      (json['ogLocations'] as List<dynamic>)
-          .map((e) => Uri.parse(e as String))
-          .toList(),
-      (json['bkLocations'] as List<dynamic>)
-          .map((e) => Uri.parse(e as String))
-          .toList(),
+      json['location'] as String,
+      (json['ogLocations'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['bkLocations'] as List<dynamic>).map((e) => e as String).toList(),
       DateTime.parse(json['applyDate'] as String),
       json['applyStatus'] as bool,
       json['isNew'] as bool,
@@ -35,9 +31,9 @@ Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
       'category': instance.category,
       'md5': instance.md5,
       'ogMd5': instance.ogMd5,
-      'location': instance.location.toString(),
-      'ogLocations': instance.ogLocations.map((e) => e.toString()).toList(),
-      'bkLocations': instance.bkLocations.map((e) => e.toString()).toList(),
+      'location': instance.location,
+      'ogLocations': instance.ogLocations,
+      'bkLocations': instance.bkLocations,
       'applyDate': instance.applyDate.toIso8601String(),
       'applyStatus': instance.applyStatus,
       'isNew': instance.isNew,

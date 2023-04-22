@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
-import 'package:pso2_mod_manager/functions/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_classes.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/mods_loader.dart';
@@ -684,26 +685,26 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList, XFile itemIco
 
       //Create folders inside Mods folder
       for (var field in fileInfos) {
-        String newFilePath = '';
+        Uri newFilePath = Uri();
         String curMainName = field.split(':')[0];
         String curSubName = field.split(':')[1];
         String curFile = field.split(':')[2];
         if (subNames.isEmpty) {
-          Directory('$modsDirPath$s$category$s$itemName$s$curMainName').createSync(recursive: true);
-          File('$tempDirPath$s$curMainName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile');
-          newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curFile';
+          Directory(Uri.directory('$modManDirPath$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
+          File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curFile').toFilePath()).copySync(Uri.file('$modsDirPath/$category/$itemName/$curMainName/$curFile').toFilePath());
+          newFilePath = Uri.file('$modsDirPath/$category/$itemName/$curMainName/$curFile');
         } else {
-          Directory('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName').createSync(recursive: true);
-          File('$tempDirPath$s$curMainName$s$curSubName$s$curFile').copySync('$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile');
-          newFilePath = '$modsDirPath$s$category$s$itemName$s$curMainName$s$curSubName$s$curFile';
+          Directory(Uri.directory('$modsDirPath/$category/$itemName/$curMainName/$curSubName').toFilePath()).createSync(recursive: true);
+          File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curSubName/$curFile').toFilePath()).copySync(Uri.file('$modsDirPath/$category/$itemName/$curMainName/$curSubName/$curFile').toFilePath());
+          newFilePath = Uri.file('$modsDirPath/$category/$itemName/$curMainName/$curSubName/$curFile');
         }
 
         //Add sorted files to lists
-        if (p.extension(newFilePath) == '') {
+        if (p.extension(newFilePath.toFilePath()) == '') {
           addedIceFiles.add(field);
-        } else if ((p.extension(newFilePath) == '.jpg' || p.extension(newFilePath) == '.png')) {
+        } else if ((p.extension(newFilePath.toFilePath()) == '.jpg' || p.extension(newFilePath.toFilePath()) == '.png')) {
           addedImgs.add(field);
-        } else if ((p.extension(newFilePath) == '.mp4' || p.extension(newFilePath) == '.webm')) {
+        } else if ((p.extension(newFilePath.toFilePath()) == '.mp4' || p.extension(newFilePath.toFilePath()) == '.webm')) {
           addedVids.add(field);
         }
       }

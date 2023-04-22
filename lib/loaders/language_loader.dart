@@ -5,73 +5,69 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 
 //Language Paths
-Uri modManLanguageDirPath = Uri();
+String modManLanguageDirPath = '';
 //Language Jsons Path
-Uri modManSelectedLanguageJsonPath = Uri();
-Uri modManLanguageSettingsJsonPath = Uri();
+String modManSelectedLanguageJsonPath = '';
+String modManLanguageSettingsJsonPath = '';
 
 TranslationText? curLangText;
 List<TranslationLanguage> languageList = [];
 
-Future<TranslationText> uiTextLoader() async {
+Future<TranslationText?> uiTextLoader() async {
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  modManLanguageDirPath = Uri.directory('${Directory.current.path}\\Language');
-  Directory(modManLanguageDirPath.toFilePath()).createSync();
-  modManLanguageSettingsJsonPath = Uri.file('${Directory.current.path}\\Language\\LanguageSettings.json');
-  if (!File(modManLanguageSettingsJsonPath.toFilePath()).existsSync()) {
-    File(modManLanguageSettingsJsonPath.toFilePath()).createSync();
+  modManLanguageDirPath = Uri.file('${Directory.current.path}/Language').toFilePath();
+  Directory(modManLanguageDirPath).createSync();
+  modManLanguageSettingsJsonPath = Uri.file('$modManLanguageDirPath/LanguageSettings.json').toFilePath();
+  if (!File(modManLanguageSettingsJsonPath).existsSync()) {
+    File(modManLanguageSettingsJsonPath).createSync();
     //Create default EN language json
-    Uri enUITextJsonPath = Uri.file('$modManLanguageDirPath\\EN.json');
-    File(enUITextJsonPath.toFilePath()).createSync();
+    String enUITextJsonPath = Uri.file('$modManLanguageDirPath/EN.json').toFilePath();
+    File(enUITextJsonPath).createSync();
     languageList.add(TranslationLanguage('EN', enUITextJsonPath, true));
     TranslationText defaultENLanguage = defaultUILangLoader();
     //Write translation to json
-    File(enUITextJsonPath.toFilePath()).writeAsStringSync(encoder.convert(defaultENLanguage));
+    File(enUITextJsonPath).writeAsStringSync(encoder.convert(defaultENLanguage));
     //Add to language dropdown
     //langDropDownList.add(newLangTextController.text.toUpperCase());
     //Write to settings json
     languageList.map((lang) => lang.toJson()).toList();
-    File(modManLanguageSettingsJsonPath.toFilePath()).writeAsStringSync(encoder.convert(languageList));
+    File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
     langDropDownList.add('EN');
   } else {
     //Load local json
-    var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath.toFilePath()).readAsStringSync());
-    //List<TranslationLanguage> languagesFromJson = [];
+    var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath).readAsStringSync());
     for (var lang in jsonData) {
       languageList.add(TranslationLanguage.fromJson(lang));
     }
 
     for (var lang in languageList) {
-      if (!File(lang.langFilePath.path).existsSync()) {
-        //Uri enUITextJsonPath = Uri.file('$modManLanguageDirPath${lang.langInitial}.json');
-        File(lang.langFilePath.path).createSync();
-        TranslationText defaultENLanguage = defaultUILangLoader();
-        File(lang.langFilePath.path).writeAsStringSync(encoder.convert(defaultENLanguage));
+      //Rewrite language file path
+      if (!lang.langFilePath.contains(modManLanguageDirPath)) {
+        lang.langFilePath = Uri.file('$modManLanguageDirPath/${lang.langInitial}.json').toFilePath();
+        File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
       }
+      if (!File(lang.langFilePath).existsSync()) {
+        //Uri enUITextJsonPath = Uri.file('$modManLanguageDirPath${lang.langInitial}.json');
+        File(lang.langFilePath).createSync();
+        TranslationText defaultENLanguage = defaultUILangLoader();
+        File(lang.langFilePath).writeAsStringSync(encoder.convert(defaultENLanguage));
+      }
+      langDropDownList.add(lang.langInitial);
     }
   }
 
-  //TranslationText returnLanguage;
   int selectedIndex = languageList.indexWhere((element) => element.selected);
   if (selectedIndex != -1) {
-    langDropDownList.add(languageList[selectedIndex].langInitial);
     langDropDownSelected = languageList[selectedIndex].langInitial;
-    var jsonData = jsonDecode(File(languageList[selectedIndex].langFilePath.path).readAsStringSync());
-
-    //returnLanguage = TranslationText.fromJson(jsonData);
+    var jsonData = jsonDecode(File(languageList[selectedIndex].langFilePath).readAsStringSync());
     return TranslationText.fromJson(jsonData);
   } else {
     int enIndex = languageList.indexWhere((element) => element.langInitial == 'EN');
     languageList[enIndex].selected = true;
-    langDropDownList.add(languageList[enIndex].langInitial);
     langDropDownSelected = languageList[enIndex].langInitial;
-    var jsonData = jsonDecode(File(languageList[enIndex].langFilePath.toFilePath()).readAsStringSync());
-
-    //returnLanguage = TranslationText.fromJson(jsonData);
+    var jsonData = jsonDecode(File(languageList[enIndex].langFilePath).readAsStringSync());
     return TranslationText.fromJson(jsonData);
   }
-
-  //return returnLanguage;
 }
 
 // Future<void> languagePackCheck() async {
@@ -192,23 +188,23 @@ Future<TranslationText> uiTextLoader() async {
 //     topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
 //   }
 
-//Language Loader
-Future<List<TranslationLanguage>> translationLoader() async {
-  List<TranslationLanguage> langList = [];
-  void convertData(var jsonResponse) {
-    for (var b in jsonResponse) {
-      TranslationLanguage translation = TranslationLanguage(
-        b['langInitial'],
-        b['langFilePath'],
-        b['selected'],
-      );
-      langList.add(translation);
-    }
-  }
+// //Language Loader
+// Future<List<TranslationLanguage>> translationLoader() async {
+//   List<TranslationLanguage> langList = [];
+//   void convertData(var jsonResponse) {
+//     for (var b in jsonResponse) {
+//       TranslationLanguage translation = TranslationLanguage(
+//         b['langInitial'],
+//         b['langFilePath'],
+//         b['selected'],
+//       );
+//       langList.add(translation);
+//     }
+//   }
 
-  if (langList.isEmpty && File(langSettingsPath).readAsStringSync().isNotEmpty) {
-    convertData(jsonDecode(File(langSettingsPath).readAsStringSync()));
-  }
+//   if (langList.isEmpty && File(langSettingsPath).readAsStringSync().isNotEmpty) {
+//     convertData(jsonDecode(File(langSettingsPath).readAsStringSync()));
+//   }
 
-  return langList;
-}
+//   return langList;
+// }

@@ -13,9 +13,9 @@ class ModFile {
   String category;
   String md5;
   String ogMd5;
-  Uri location;
-  List<Uri> ogLocations;
-  List<Uri> bkLocations;
+  String location;
+  List<String> ogLocations;
+  List<String> bkLocations;
   DateTime applyDate;
   bool applyStatus;
   bool isNew;

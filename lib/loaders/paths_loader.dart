@@ -2,26 +2,28 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/functions/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
 //All paths go here
 //Main paths
-Uri pso2binPath = Uri();
-Uri modManDirParentDirPath = Uri();
-Uri modManDirPath = Uri();
-Uri modManModsDirPath = Uri();
-Uri modManBackupsDirPath = Uri();
-Uri modManChecksumDirPath = Uri();
-Uri modManDeletedItemsDirPath = Uri();
+String pso2binPath = '';
+String modManDirParentDirPath = '';
+String modManDirPath = '';
+String modManModsDirPath = '';
+String modManBackupsDirPath = '';
+String modManChecksumDirPath = '';
+String modManDeletedItemsDirPath = '';
 //Misc path
-Uri modManAddModsTempDirPath = Uri();
-Uri modManAddModsUnpackDirPath = Uri();
+String modManAddModsTempDirPath = '';
+String modManAddModsUnpackDirPath = '';
+String zamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
+String refSheetsDirPath = Uri.directory('${Directory.current.path}/ItemRefSheets').toFilePath();
 //Json files path
-Uri modManModsListJsonPath = Uri();
-Uri modManModSetsJsonPath = Uri();
-Uri modManModSettingsJsonPath = Uri();
+String modManModsListJsonPath = '';
+String modManModSetsJsonPath = '';
+String modManModSettingsJsonPath = '';
 
 //Default Mod Caterories
 List<String> defaultCateforyDirs = [
@@ -47,54 +49,54 @@ List<String> defaultCateforyDirs = [
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
   //pso2_bin path
-  pso2binPath = Uri.directory(prefs.getString('binDirPath') ?? '');
-  while (pso2binPath.path.isEmpty) {
+  pso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
+  while (pso2binPath.isEmpty) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
-      pso2binPath = Uri.directory(pso2binPathFromPicker);
+      pso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
     }
   }
   //modman dir path
-  modManDirParentDirPath = Uri.directory(prefs.getString('mainModManDirPath') ?? '');
-  while (modManDirParentDirPath.path.isEmpty) {
+  modManDirParentDirPath = Uri.file(prefs.getString('mainModManDirPath') ?? '').toFilePath();
+  while (modManDirParentDirPath.isEmpty) {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
-      modManDirParentDirPath = Uri.directory(modManDirPathFromPicker);
+      modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
     } else {
       modManDirParentDirPath = pso2binPath;
     }
   }
 
   //Create modman folder if not already existed
-  modManDirPath = Uri.directory('${modManDirParentDirPath.toFilePath()}PSO2 Mod Manager');
-  Directory(modManDirPath.toFilePath()).createSync();
+  modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  Directory(modManDirPath).createSync();
   //Create Mods folder and default categories
-  modManModsDirPath = Uri.directory('${modManDirPath.toFilePath()}Mods');
+  modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
   for (var name in defaultCateforyDirs) {
-    Directory(modManModsDirPath.toFilePath() + name).createSync();
+    Directory('$modManModsDirPath/$name').createSync();
   }
   //Create Backups folder
-  modManBackupsDirPath = Uri.directory('${modManDirPath.toFilePath()}Backups');
-  Directory(modManBackupsDirPath.toFilePath()).createSync();
+  modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
+  Directory(modManBackupsDirPath).createSync();
   List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
   for (var name in dataFolders) {
-    Directory(modManBackupsDirPath.toFilePath() + name).createSync();
+    Directory('$modManBackupsDirPath/$name').createSync();
   }
   //Create Checksum folder
-  modManChecksumDirPath = Uri.directory('${modManDirPath.toFilePath()}Checksum');
-  Directory(modManChecksumDirPath.toFilePath()).createSync();
+  modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
+  Directory(modManChecksumDirPath).createSync();
   //Create Deleted Items folder
-  modManDeletedItemsDirPath = Uri.directory('${modManDirPath.toFilePath()}Deleted Items');
-  Directory(modManDeletedItemsDirPath.toFilePath());
+  modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
+  Directory(modManDeletedItemsDirPath);
   //Create misc folders
-  modManAddModsTempDirPath = Uri.directory('${Directory.current.path}\\temp');
-  Directory(modManAddModsTempDirPath.toFilePath()).createSync(recursive: true);
-  modManAddModsUnpackDirPath = Uri.directory('${Directory.current.path}\\unpack');
-  Directory(modManAddModsUnpackDirPath.toFilePath()).createSync(recursive: true);
+  modManAddModsTempDirPath = Uri.file('${Directory.current.path}/temp').toFilePath();
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
+  modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
+  Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   //Create Json files
-  modManModsListJsonPath = Uri.file('${modManDirPath.toFilePath()}PSO2ModManModsList.json');
-  modManModSetsJsonPath = Uri.file('${modManDirPath.toFilePath()}PSO2ModManModSets.json');
-  modManModSettingsJsonPath = Uri.file('${modManDirPath.toFilePath()}PSO2ModManSettings.json');
+  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManModSets.json').toFilePath();
+  modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
 
   //Return true if all paths loaded
   return true;

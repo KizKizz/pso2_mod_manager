@@ -5,14 +5,11 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/csv_data_handler.dart';
 import 'package:pso2_mod_manager/data_loading_page.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
-import 'package:pso2_mod_manager/functions/language_loader.dart';
-import 'package:pso2_mod_manager/functions/mod_files_loader.dart';
-import 'package:pso2_mod_manager/functions/test.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/test.dart';
 import 'package:pso2_mod_manager/home_page.dart';
-import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/popup_handlers.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -20,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-import 'functions/paths_loader.dart';
 
 List<String> _cateToIgnoreScan = ['Emotes', 'Motions'];
 
@@ -35,43 +31,43 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
   @override
   void initState() {
     mainPathsCheck();
-    itemIconHandler();
+    // itemIconHandler();
 
     super.initState();
   }
 
-  void itemIconHandler() async {
-    itemRefSheetsList = await popSheetsList(refSheetsDirPath);
-    if (modsDirPath.isNotEmpty && itemRefSheetsList.isNotEmpty) {
-      for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
-        if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
-          for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
-            final filesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>();
-            final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
-            if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
-              final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
-              if (iceFile.path.isNotEmpty) {
-                List<String> infoString = await findItemInCsv(XFile(iceFile.path));
-                if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
-                  await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
-                }
-              } else {
-                break;
-              }
-              //print(infoString);
-            }
-          }
-        }
-      }
-      Directory(tempDirPath).listSync(recursive: false).forEach((element) {
-        element.deleteSync(recursive: true);
-      });
-    }
-    setState(() {
-      itemRefSheetsList.clear();
-      context.read<StateProvider>().listDataCheckTrue();
-    });
-  }
+  // void itemIconHandler() async {
+  //   itemRefSheetsList = await popSheetsList(refSheetsDirPath);
+  //   if (modsDirPath.isNotEmpty && itemRefSheetsList.isNotEmpty) {
+  //     for (var cateDir in Directory(modsDirPath).listSync(recursive: false)) {
+  //       if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {
+  //         for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
+  //           final filesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>();
+  //           final imgFilesInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.png' || p.extension(element.path) == '.jpg');
+  //           if (filesInItemDir.isEmpty || imgFilesInItemDir.isEmpty) {
+  //             final iceFile = Directory(itemDir.path).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '');
+  //             if (iceFile.path.isNotEmpty) {
+  //               List<String> infoString = await findItemInCsv(XFile(iceFile.path));
+  //               if (infoString.isNotEmpty && infoString[3].isNotEmpty) {
+  //                 await File(infoString[3]).copy('${itemDir.path}$s${XFile(infoString[3]).name}');
+  //               }
+  //             } else {
+  //               break;
+  //             }
+  //             //print(infoString);
+  //           }
+  //         }
+  //       }
+  //     }
+  //     Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+  //       element.deleteSync(recursive: true);
+  //     });
+  //   }
+  //   setState(() {
+  //     itemRefSheetsList.clear();
+  //     context.read<StateProvider>().listDataCheckTrue();
+  //   });
+  // }
 
   void mainPathsCheck() async {
     final prefs = await SharedPreferences.getInstance();
@@ -219,12 +215,12 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
         win32ChecksumMD5 = await getFileHash(win32CheckSumFilePath);
       }
 
-      pathsLoader(context);
+      //pathsLoader(context);
       //pso2binPathGet(context);
 
       test();
 
-      modFilesLoader(modManModsDirPath);
+      //modFilesLoader(modManModsDirPath);
     }
     if (binDirPath.isNotEmpty) {
       dataDir = Directory('$binDirPath${s}data');
@@ -232,6 +228,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
 
       setState(() {
         context.read<StateProvider>().mainBinFoundTrue();
+        context.read<StateProvider>().listDataCheckTrue();
       });
     }
   }

@@ -7,9 +7,9 @@ part 'item_class.g.dart';
 class Item {
   Item(this.name, this.icon, this.category, this.location, this.isNew, this.applyStatus, this.applyDate, this.isFavorite, this.mods);
   String name;
-  Uri icon;
+  String icon;
   String category;
-  Uri location;
+  String location;
   bool applyStatus;
   DateTime applyDate;
   bool isFavorite;

@@ -7,7 +7,7 @@ part 'category_class.g.dart';
 class Category {
   Category(this.name, this.location, this.visible, this.items);
   String name;
-  Uri location;
+  String location;
   bool visible;
   List<Item> items;
   

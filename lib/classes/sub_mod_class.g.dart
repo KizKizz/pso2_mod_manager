@@ -11,17 +11,13 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       json['modName'] as String,
       json['itemName'] as String,
       json['category'] as String,
-      Uri.parse(json['location'] as String),
+      json['location'] as String,
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
       json['isNew'] as bool,
       json['isFavorite'] as bool,
-      (json['previewImages'] as List<dynamic>)
-          .map((e) => Uri.parse(e as String))
-          .toList(),
-      (json['previewVideos'] as List<dynamic>)
-          .map((e) => Uri.parse(e as String))
-          .toList(),
+      (json['previewImages'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['previewVideos'] as List<dynamic>).map((e) => e as String).toList(),
       (json['appliedModFiles'] as List<dynamic>)
           .map((e) => ModFile.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -35,13 +31,13 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'modName': instance.modName,
       'itemName': instance.itemName,
       'category': instance.category,
-      'location': instance.location.toString(),
+      'location': instance.location,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,
-      'previewImages': instance.previewImages.map((e) => e.toString()).toList(),
-      'previewVideos': instance.previewVideos.map((e) => e.toString()).toList(),
+      'previewImages': instance.previewImages,
+      'previewVideos': instance.previewVideos,
       'appliedModFiles': instance.appliedModFiles,
       'modFiles': instance.modFiles,
     };

@@ -9,13 +9,13 @@ class Mod {
   String name;
   String itemName;
   String category;
-  Uri location;
+  String location;
   bool applyStatus;
   DateTime applyDate;
   bool isNew;
   bool isFavorite;
-  List<Uri> previewImages;
-  List<Uri> previewVideos;
+  List<String> previewImages;
+  List<String> previewVideos;
   List<SubMod> appliedSubMods;
   List<SubMod> subMods;
 

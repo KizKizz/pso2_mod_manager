@@ -10,10 +10,11 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 import '../main.dart';
 
-Future<List<Category>> modFilesLoader(Uri modsDirPath) async {
+Future<List<Category>> modFilesLoader(String modsDirPath) async {
   //Load local json
   var jsonData = jsonDecode(File(modsListJsonPath.toFilePath()).readAsStringSync());
   var jsonCategories = [];
@@ -24,33 +25,33 @@ Future<List<Category>> modFilesLoader(Uri modsDirPath) async {
   //Load local data
   List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
   List<Category> categories = [];
-  final dirsInModsDir = Directory(modsDirPath.toFilePath()).listSync(recursive: false);
+  final dirsInModsDir = Directory(modsDirPath).listSync(recursive: false);
   for (var cateDir in dirsInModsDir) {
     List<Item> items = [];
     for (var itemDir in Directory(cateDir.path).listSync(recursive: false)) {
       //Get item icon
-      Uri itemIcon = Uri();
+      String itemIcon = '';
       final imagesInItemDir = Directory(itemDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
       if (imagesInItemDir.isNotEmpty) {
-        itemIcon = Uri.file(imagesInItemDir.first.path);
+        itemIcon = Uri.file(imagesInItemDir.first.path).toFilePath();
       } else {
-        itemIcon = Uri.file('assets/img/placeholdersquare.png');
+        itemIcon = Uri.file('assets/img/placeholdersquare.png').toFilePath();
       }
 
       //Get mods in items
       List<Mod> mods = [];
       for (var modDir in Directory(itemDir.path).listSync(recursive: false).whereType<Directory>()) {
         //Get preview images;
-        List<Uri> modPreviewImages = [];
+        List<String> modPreviewImages = [];
         final imagesInModDir = Directory(modDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
         for (var element in imagesInModDir) {
-          modPreviewImages.add(Uri.file(element.path));
+          modPreviewImages.add(Uri.file(element.path).toFilePath());
         }
         //Get preview videps;
-        List<Uri> modPreviewVideos = [];
+        List<String> modPreviewVideos = [];
         final videosInModDir = Directory(modDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
         for (var element in videosInModDir) {
-          modPreviewVideos.add(Uri.file(element.path));
+          modPreviewVideos.add(Uri.file(element.path).toFilePath());
         }
 
         //Get submods in mods
@@ -63,23 +64,23 @@ Future<List<Category>> modFilesLoader(Uri modsDirPath) async {
           List<ModFile> modFilesInMainDir = [];
           for (var modFile in modFilesInModDir) {
             //Fetch og ice location
-            List<Uri> ogIceFileLocations = [];
+            List<String> ogIceFileLocations = [];
             for (var dataFolder in dataFolders) {
-              Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');
-              final ogFiles = Directory(iceInDataFolderPath.toFilePath()).listSync(recursive: true).whereType<File>();
+              String iceInDataFolderPath = Uri.file('$pso2binPath/data/$dataFolder').toFilePath();
+              final ogFiles = Directory(iceInDataFolderPath).listSync(recursive: true).whereType<File>();
               final matchingOGFiles = ogFiles.where((element) => XFile(element.path).name == XFile(modFile.path).name);
               for (var ogFile in matchingOGFiles) {
-                ogIceFileLocations.add(ogFile.uri);
+                ogIceFileLocations.add(Uri.file(ogFile.path).toFilePath());
               }
             }
 
             //Populate modFiles
             modFilesInMainDir.add(ModFile(XFile(modFile.path).name, XFile(modDir.path).name, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name,
-                getFileHash(modFile.path).toString(), '', Uri.file(modFile.path), ogIceFileLocations, [], DateTime(0), false, false, false));
+                getFileHash(modFile.path).toString(), '', Uri.file(modFile.path).toFilePath(), ogIceFileLocations, [], DateTime(0), false, false, false));
           }
 
           //Populate submods
-          submods.add(SubMod(XFile(modDir.path).name, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(modDir.path), false, DateTime(0), false, false,
+          submods.add(SubMod(XFile(modDir.path).name, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(modDir.path).toFilePath(), false, DateTime(0), false, false,
               modPreviewImages, modPreviewVideos, [], modFilesInMainDir));
         }
 
@@ -92,56 +93,56 @@ Future<List<Category>> modFilesLoader(Uri modsDirPath) async {
           submodDirs.removeRange(0, submodDirs.indexOf(XFile(modDir.path).name) + 1);
           final submodName = submodDirs.join(' > ');
           //Get preview images;
-          List<Uri> submodPreviewImages = [];
+          List<String> submodPreviewImages = [];
           final imagesInSubmodDir =
               Directory(submodDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
           for (var element in imagesInSubmodDir) {
-            submodPreviewImages.add(Uri.file(element.path));
+            submodPreviewImages.add(Uri.file(element.path).toFilePath());
           }
           //Get preview videos;
-          List<Uri> submodPreviewVideos = [];
+          List<String> submodPreviewVideos = [];
           final videosInSubmodDir =
               Directory(submodDir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
           for (var element in videosInSubmodDir) {
-            submodPreviewVideos.add(Uri.file(element.path));
+            submodPreviewVideos.add(Uri.file(element.path).toFilePath());
           }
           //Get mod files in submods
           List<ModFile> modFiles = [];
           for (var modFile in Directory(submodDir.path).listSync(recursive: false).whereType<File>()) {
             if (p.extension(modFile.path) == '') {
               //Fetch og ice location
-              List<Uri> ogIceFileLocations = [];
+              List<String> ogIceFileLocations = [];
               for (var dataFolder in dataFolders) {
-                Uri iceInDataFolderPath = Uri.file('$binDirPath\\data\\$dataFolder');
-                final ogFiles = Directory(iceInDataFolderPath.toFilePath()).listSync(recursive: true).whereType<File>();
+                String iceInDataFolderPath = Uri.file('$binDirPath/data/$dataFolder').toFilePath();
+                final ogFiles = Directory(iceInDataFolderPath).listSync(recursive: true).whereType<File>();
                 final matchingOGFiles = ogFiles.where((element) => XFile(element.path).name == XFile(modFile.path).name);
                 for (var ogFile in matchingOGFiles) {
-                  ogIceFileLocations.add(ogFile.uri);
+                  ogIceFileLocations.add(Uri.file(ogFile.path).toFilePath());
                 }
               }
 
               //Populate modFiles
               modFiles.add(ModFile(XFile(modFile.path).name, submodName, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, getFileHash(modFile.path).toString(), '',
-                  Uri.file(modFile.path), ogIceFileLocations, [], DateTime(0), false, false, false));
+                  Uri.file(modFile.path).toFilePath(), ogIceFileLocations, [], DateTime(0), false, false, false));
             }
           }
 
           //Populate submods
-          submods.add(SubMod(submodName, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(submodDir.path), false, DateTime(0), false, false, submodPreviewImages,
+          submods.add(SubMod(submodName, XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(submodDir.path).toFilePath(), false, DateTime(0), false, false, submodPreviewImages,
               submodPreviewVideos, [], modFiles));
         }
 
         //Populate mods
         mods.add(
-            Mod(XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(modDir.path), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], submods));
+            Mod(XFile(modDir.path).name, XFile(itemDir.path).name, XFile(cateDir.path).name, Uri.file(modDir.path).toFilePath(), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], submods));
       }
 
       //Populate items
-      items.add(Item(XFile(itemDir.path).name, itemIcon, XFile(cateDir.path).name, Uri.file(itemDir.path), false, false, DateTime(0), false, mods));
+      items.add(Item(XFile(itemDir.path).name, itemIcon, XFile(cateDir.path).name, Uri.file(itemDir.path).toFilePath(), false, false, DateTime(0), false, mods));
     }
 
     //Add items to categories
-    categories.add(Category(XFile(cateDir.path).name, Uri.file(cateDir.path), true, items));
+    categories.add(Category(XFile(cateDir.path).name, Uri.file(cateDir.path).toFilePath(), true, items));
   }
 
   //Write

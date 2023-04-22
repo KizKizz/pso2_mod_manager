@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 // ignore: depend_on_referenced_packages
@@ -55,7 +56,7 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
   List<List<String>> extraFiles = [];
   //int unknownModsCounter = 1;
   for (var inputFile in inputFiles) {
-    if (File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
+    if (File(inputFile.path).existsSync() && !inputFile.path.contains(modManAddModsTempDirPath)) {
       for (var mainPath in mainDirPaths) {
         //Paths have main path and continue with /
         if (inputFile.path.contains('$mainPath$s')) {
@@ -74,10 +75,10 @@ Future<List<List<String>>> fetchItemName(List<XFile> inputFiles) async {
           }
 
           //moving files to temp with sorted paths
-          if (!Directory('$tempDirPath$s$mainDirName$s$subDirName').existsSync()) {
-            Directory('$tempDirPath$s$mainDirName$s$subDirName').createSync(recursive: true);
+          if (!Directory('$modManAddModsTempDirPath$s$mainDirName$s$subDirName').existsSync()) {
+            Directory('$modManAddModsTempDirPath$s$mainDirName$s$subDirName').createSync(recursive: true);
           }
-          File(inputFile.path).copySync('$tempDirPath$s$mainDirName$s$subDirName$s${inputFile.name}');
+          File(inputFile.path).copySync('$modManAddModsTempDirPath$s$mainDirName$s$subDirName$s${inputFile.name}');
 
           //get category and item name
           int indexInFilesList = -1;
@@ -170,7 +171,7 @@ Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN)
           //processTrigger = true;
         });
         final newPath = File(XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).path)
-            .copySync('$tempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
+            .copySync('$modManAddModsTempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
         if (await newPath.exists()) {
           Directory('${Directory.current.path}$s${iceName}_ext').deleteSync(recursive: true);
         }

@@ -13,7 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/file_functions.dart';
-import 'package:pso2_mod_manager/functions/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
@@ -97,7 +98,7 @@ void modAddHandler(context) {
           //processTrigger = true;
         });
         final newPath = File(XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).path)
-            .copySync('$tempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
+            .copySync('$modManAddModsTempDirPath$s${XFile(ddsIcon.path.replaceRange(ddsIcon.path.lastIndexOf('.'), null, '.png')).name}');
         if (await newPath.exists()) {
           Directory('${Directory.current.path}$s${iceName}_ext').deleteSync(recursive: true);
         }
@@ -204,7 +205,7 @@ void modAddHandler(context) {
     List<List<String>> extraFiles = [];
     //int unknownModsCounter = 1;
     for (var inputFile in inputFiles) {
-      if (File(inputFile.path).existsSync() && !inputFile.path.contains(tempDirPath)) {
+      if (File(inputFile.path).existsSync() && !inputFile.path.contains(modManAddModsTempDirPath)) {
         for (var mainPath in mainDirPaths) {
           //Paths have main path and continue with /
           if (inputFile.path.contains('$mainPath$s')) {
@@ -223,10 +224,10 @@ void modAddHandler(context) {
             }
 
             //moving files to temp with sorted paths
-            if (!Directory('$tempDirPath$s$mainDirName$s$subDirName').existsSync()) {
-              Directory('$tempDirPath$s$mainDirName$s$subDirName').createSync(recursive: true);
+            if (!Directory('$modManAddModsTempDirPath$s$mainDirName$s$subDirName').existsSync()) {
+              Directory('$modManAddModsTempDirPath$s$mainDirName$s$subDirName').createSync(recursive: true);
             }
-            File(inputFile.path).copySync('$tempDirPath$s$mainDirName$s$subDirName$s${inputFile.name}');
+            File(inputFile.path).copySync('$modManAddModsTempDirPath$s$mainDirName$s$subDirName$s${inputFile.name}');
 
             //get category and item name
             int indexInFilesList = -1;
@@ -1094,24 +1095,24 @@ void modAddHandler(context) {
                                                                                             if (renameTextBoxController.text.isNotEmpty) {
                                                                                               //print('OLD: $sortedModsList');
                                                                                               String oldMainDirName = sortedModsList[index][4].split('|')[ex];
-                                                                                              // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
-                                                                                              //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
+                                                                                              // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
+                                                                                              //     .renameSync('$modManAddModsTempDirPath$s${renameTextBoxController.text}');
                                                                                               List<FileSystemEntity> curFilesInMainDir =
-                                                                                                  Directory('$tempDirPath$s$oldMainDirName').listSync(recursive: true);
+                                                                                                  Directory('$modManAddModsTempDirPath$s$oldMainDirName').listSync(recursive: true);
                                                                                               for (var element in curFilesInMainDir) {
                                                                                                 //print(curFilesInMainDir);
                                                                                                 String newMainPath = element.path
-                                                                                                    .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                                    .replaceFirst('$modManAddModsTempDirPath$s$oldMainDirName$s', '$modManAddModsTempDirPath$s${renameTextBoxController.text}$s');
                                                                                                 if (!File(element.path).existsSync()) {
                                                                                                   Directory(newMainPath).createSync(recursive: true);
                                                                                                 }
                                                                                                 if (sortedModsList[index][5].isEmpty) {
-                                                                                                  Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
+                                                                                                  Directory('$modManAddModsTempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
                                                                                                 }
                                                                                               }
                                                                                               for (var element in curFilesInMainDir) {
                                                                                                 String newMainPath = element.path
-                                                                                                    .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                                    .replaceFirst('$modManAddModsTempDirPath$s$oldMainDirName$s', '$modManAddModsTempDirPath$s${renameTextBoxController.text}$s');
                                                                                                 if (File(element.path).existsSync()) {
                                                                                                   File(element.path).copySync(newMainPath);
                                                                                                 }
@@ -1167,24 +1168,24 @@ void modAddHandler(context) {
                                                                                         onPressed: () {
                                                                                           if (renameTextBoxController.text.isNotEmpty) {
                                                                                             String oldMainDirName = sortedModsList[index][4].split('|')[ex];
-                                                                                            // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
-                                                                                            //     .renameSync('$tempDirPath$s${renameTextBoxController.text}');
+                                                                                            // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
+                                                                                            //     .renameSync('$modManAddModsTempDirPath$s${renameTextBoxController.text}');
                                                                                             List<FileSystemEntity> curFilesInMainDir =
-                                                                                                Directory('$tempDirPath$s$oldMainDirName').listSync(recursive: true);
+                                                                                                Directory('$modManAddModsTempDirPath$s$oldMainDirName').listSync(recursive: true);
                                                                                             for (var element in curFilesInMainDir) {
                                                                                               //print(curFilesInMainDir);
                                                                                               String newMainPath = element.path
-                                                                                                  .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                                  .replaceFirst('$modManAddModsTempDirPath$s$oldMainDirName$s', '$modManAddModsTempDirPath$s${renameTextBoxController.text}$s');
                                                                                               if (!File(element.path).existsSync()) {
                                                                                                 Directory(newMainPath).createSync(recursive: true);
                                                                                               }
                                                                                               if (sortedModsList[index][5].isEmpty) {
-                                                                                                Directory('$tempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
+                                                                                                Directory('$modManAddModsTempDirPath$s${renameTextBoxController.text}').createSync(recursive: true);
                                                                                               }
                                                                                             }
                                                                                             for (var element in curFilesInMainDir) {
                                                                                               String newMainPath = element.path
-                                                                                                  .replaceFirst('$tempDirPath$s$oldMainDirName$s', '$tempDirPath$s${renameTextBoxController.text}$s');
+                                                                                                  .replaceFirst('$modManAddModsTempDirPath$s$oldMainDirName$s', '$modManAddModsTempDirPath$s${renameTextBoxController.text}$s');
                                                                                               if (File(element.path).existsSync()) {
                                                                                                 File(element.path).copySync(newMainPath);
                                                                                               }
@@ -1433,16 +1434,16 @@ void modAddHandler(context) {
                                                                                                         if (renameTextBoxController.text.isNotEmpty) {
                                                                                                           String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
                                                                                                           String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
-                                                                                                          // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                          //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                          // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                          //     '$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
                                                                                                           List<FileSystemEntity> curFilesInSubDir =
-                                                                                                              Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
+                                                                                                              Directory('$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
                                                                                                                   .listSync(recursive: true);
                                                                                                           for (var element in curFilesInSubDir) {
                                                                                                             //print(curFilesInMainDir);
                                                                                                             String newMainPath = element.path.replaceFirst(
-                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                                '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                                '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                             if (!File(element.path).existsSync()) {
                                                                                                               Directory(newMainPath).createSync(recursive: true);
                                                                                                             } else {
@@ -1451,8 +1452,8 @@ void modAddHandler(context) {
                                                                                                           }
                                                                                                           for (var element in curFilesInSubDir) {
                                                                                                             String newMainPath = element.path.replaceFirst(
-                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                                '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                                '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                                '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                             if (File(element.path).existsSync()) {
                                                                                                               File(element.path).copySync(newMainPath);
                                                                                                             }
@@ -1500,16 +1501,16 @@ void modAddHandler(context) {
                                                                                                     if (renameTextBoxController.text.isNotEmpty) {
                                                                                                       String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
                                                                                                       String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
-                                                                                                      // Directory('$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                      //     '$tempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
+                                                                                                      // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
+                                                                                                      //     '$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
                                                                                                       List<FileSystemEntity> curFilesInSubDir =
-                                                                                                          Directory('$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
+                                                                                                          Directory('$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName')
                                                                                                               .listSync(recursive: true);
                                                                                                       for (var element in curFilesInSubDir) {
                                                                                                         //print(curFilesInMainDir);
                                                                                                         String newMainPath = element.path.replaceFirst(
-                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                            '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                         if (!File(element.path).existsSync()) {
                                                                                                           Directory(newMainPath).createSync(recursive: true);
                                                                                                         } else {
@@ -1518,8 +1519,8 @@ void modAddHandler(context) {
                                                                                                       }
                                                                                                       for (var element in curFilesInSubDir) {
                                                                                                         String newMainPath = element.path.replaceFirst(
-                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
-                                                                                                            '$tempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
+                                                                                                            '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s$oldSubDirName$s',
+                                                                                                            '$modManAddModsTempDirPath$s${sortedModsList[index][4].split('|')[ex]}$s${renameTextBoxController.text}$s');
                                                                                                         if (File(element.path).existsSync()) {
                                                                                                           File(element.path).copySync(newMainPath);
                                                                                                         }
@@ -1867,7 +1868,7 @@ void modAddHandler(context) {
                                               child: ElevatedButton(
                                                   onPressed: sortedModsList.isNotEmpty || context.watch<StateProvider>().modAdderReload
                                                       ? (() {
-                                                          Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                             element.deleteSync(recursive: true);
                                                           });
                                                           Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
@@ -1897,7 +1898,7 @@ void modAddHandler(context) {
                                               child: ElevatedButton(
                                                   onPressed: (() async {
                                                     if (_exitConfirmDialog) {
-                                                      Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                         element.deleteSync(recursive: true);
                                                       });
                                                       Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
@@ -2021,7 +2022,7 @@ void modAddHandler(context) {
                                                               sortedModsList.clear();
                                                               _newModDragDropList.clear();
                                                               modsToAddList.clear();
-                                                              Directory(tempDirPath).listSync(recursive: false).forEach((element) {
+                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                 element.deleteSync(recursive: true);
                                                               });
                                                               Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
