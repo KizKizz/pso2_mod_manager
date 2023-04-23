@@ -8,7 +8,7 @@ import 'package:window_manager/window_manager.dart';
 
 //All paths go here
 //Main paths
-String pso2binPath = '';
+String modManPso2binPath = '';
 String modManDirParentDirPath = '';
 String modManDirPath = '';
 String modManModsDirPath = '';
@@ -18,8 +18,8 @@ String modManDeletedItemsDirPath = '';
 //Misc path
 String modManAddModsTempDirPath = '';
 String modManAddModsUnpackDirPath = '';
-String zamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
-String refSheetsDirPath = Uri.directory('${Directory.current.path}/ItemRefSheets').toFilePath();
+String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
+String modManRefSheetsDirPath = Uri.directory('${Directory.current.path}/ItemRefSheets').toFilePath();
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -49,11 +49,11 @@ List<String> defaultCateforyDirs = [
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
   //pso2_bin path
-  pso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
-  while (pso2binPath.isEmpty) {
+  modManPso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
+  while (modManPso2binPath.isEmpty) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
-      pso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
+      modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
     }
   }
   //modman dir path
@@ -63,7 +63,7 @@ Future<bool> pathsLoader(context) async {
     if (modManDirPathFromPicker != null) {
       modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
     } else {
-      modManDirParentDirPath = pso2binPath;
+      modManDirParentDirPath = modManPso2binPath;
     }
   }
 
@@ -95,8 +95,11 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManModSets.json').toFilePath();
+  File(modManModSetsJsonPath).createSync();
   modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  File(modManModSettingsJsonPath).createSync();
 
   //Return true if all paths loaded
   return true;

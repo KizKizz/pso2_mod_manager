@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
-import 'package:pso2_mod_manager/csv_data_handler.dart';
+import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
@@ -10,7 +10,7 @@ import 'package:path/path.dart' as p;
 List<String> _cateToIgnoreScan = ['Emotes', 'Motions'];
 
 Future<bool> itemIconsLoader() async {
-  itemRefSheetsList = await popSheetsList(refSheetsDirPath);
+  itemRefSheetsList = await popSheetsList(modManRefSheetsDirPath);
   if (itemRefSheetsList.isNotEmpty) {
     for (var cateDir in Directory(modManModsDirPath).listSync(recursive: false)) {
       if (!_cateToIgnoreScan.contains(XFile(cateDir.path).name)) {

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/pages/main_page.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/reboot_dir_paths_loader.dart';
+import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 
-class PathsLoadingPage extends StatefulWidget {
-  const PathsLoadingPage({Key? key}) : super(key: key);
+class DataFilesLoadingPage extends StatefulWidget {
+  const DataFilesLoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<PathsLoadingPage> createState() => _PathsLoadingPageState();
+  State<DataFilesLoadingPage> createState() => _DataFilesLoadingPageState();
 }
 
-class _PathsLoadingPageState extends State<PathsLoadingPage> {
+class _DataFilesLoadingPageState extends State<DataFilesLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: pathsLoader(context),
+        future: dataFilesFetch(),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -25,7 +26,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
                   Text(
-                    'Loading Paths',
+                    'Indexing Files',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
@@ -43,7 +44,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading paths',
+                      'Error when indexing game files',
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -63,7 +64,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Text(
-                      'Loading Paths',
+                      'Indexing Files',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -74,7 +75,8 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else {
-              return const MainPage();
+              rebootDirPaths = snapshot.data;
+              return const ModsLoadingPage();
             }
           }
         });

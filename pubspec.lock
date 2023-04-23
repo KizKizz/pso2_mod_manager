@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
-  audio_video_progress_bar:
-    dependency: transitive
-    description:
-      name: audio_video_progress_bar
-      sha256: "7be62917604e19e3873e12c8025bbc6dbee5876e1fa4cd7772ea1d0eb0e88d99"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.0"
   bitsdojo_window:
     dependency: "direct main"
     description:
@@ -249,22 +241,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  dart_vlc:
-    dependency: "direct main"
-    description:
-      name: dart_vlc
-      sha256: f93499b938fbb6ce9eb3fb0368878cd18eac4e18ed45956731a0d6e758d75a34
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
-  dart_vlc_ffi:
-    dependency: transitive
-    description:
-      name: dart_vlc_ffi
-      sha256: "670d4b27296935e4e4b8d903d6833c222fc94133bbd3e9fa36d8a2e7751a63d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0+1"
   desktop_drop:
     dependency: "direct main"
     description:
@@ -720,6 +696,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.6"
+  scrollable_positioned_list:
+    dependency: transitive
+    description:
+      name: scrollable_positioned_list
+      sha256: ca7fcaa743db712d4f7b1580526f494d0093c77a721a65705ee51fbeac7a2bd3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.5"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -829,6 +813,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+  sticky_grouped_list:
+    dependency: "direct main"
+    description:
+      name: sticky_grouped_list
+      sha256: "40398cb90321f07cbdbdd3049c27a5f048bd75a13abb19453b07a956f53a0eda"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   stream_channel:
     dependency: transitive
     description:

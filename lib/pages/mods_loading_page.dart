@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/pages/main_page.dart';
+import 'package:pso2_mod_manager/pages/home_page.dart';
 
-class PathsLoadingPage extends StatefulWidget {
-  const PathsLoadingPage({Key? key}) : super(key: key);
+class ModsLoadingPage extends StatefulWidget {
+  const ModsLoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<PathsLoadingPage> createState() => _PathsLoadingPageState();
+  State<ModsLoadingPage> createState() => _ModsLoadingPageState();
 }
 
-class _PathsLoadingPageState extends State<PathsLoadingPage> {
+class _ModsLoadingPageState extends State<ModsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: pathsLoader(context),
+        future: modFilesLoader(modManModsDirPath),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -25,7 +27,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
                   Text(
-                    'Loading Paths',
+                    'Loading Mods',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
@@ -43,7 +45,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading paths',
+                      'Error when loading mod files',
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -63,7 +65,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Text(
-                      'Loading Paths',
+                      'Loading Mods',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -74,7 +76,15 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else {
-              return const MainPage();
+              itemCategories = snapshot.data;
+              for (var category in itemCategories) {
+                if (!itemCategoryGroups.contains(category.group)) {
+                  itemCategoryGroups.add(category.group);
+                }
+              }
+              String tempOthers = itemCategoryGroups.removeAt(itemCategoryGroups.indexOf('Others'));
+              itemCategoryGroups.add(tempOthers);
+              return const HomePage();
             }
           }
         });

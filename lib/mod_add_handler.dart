@@ -12,10 +12,9 @@ import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/scroll_controller.dart';
@@ -82,7 +81,7 @@ void modAddHandler(context) {
       }
 
       XFile ddsIcon = XFile('');
-      await Process.run(zamboniExePath, [iconFile.path]).then((value) {
+      await Process.run(modManZamboniExePath, [iconFile.path]).then((value) {
         if (Directory('${Directory.current.path}$s${iceName}_ext').existsSync()) {
           final files = Directory('${Directory.current.path}$s${iceName}_ext').listSync(recursive: true).whereType<File>();
           ddsIcon = XFile(files.firstWhere((element) => p.extension(element.path) == '.dds').path);
@@ -321,7 +320,7 @@ void modAddHandler(context) {
                   child: Scaffold(
                     body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                       return FutureBuilder(
-                        future: popSheetsList(refSheetsDirPath),
+                        future: popSheetsList(modManRefSheetsDirPath),
                         builder: ((
                           BuildContext context,
                           AsyncSnapshot snapshot,
@@ -687,20 +686,20 @@ void modAddHandler(context) {
                                                         }
                                                       }
                                                       //get catelist
-                                                      if (_dropdownCategories.isEmpty) {
-                                                        for (var category in cateList) {
-                                                          if (category.categoryName != 'Favorites') {
-                                                            _dropdownCategories.add(category.categoryName);
-                                                          }
-                                                        }
-                                                      } else if (dropdownCategories.isNotEmpty && _dropdownCategories.length < cateList.length) {
-                                                        _dropdownCategories.clear();
-                                                        for (var category in cateList) {
-                                                          if (category.categoryName != 'Favorites') {
-                                                            _dropdownCategories.add(category.categoryName);
-                                                          }
-                                                        }
-                                                      }
+                                                      // if (_dropdownCategories.isEmpty) {
+                                                      //   for (var category in cateList) {
+                                                      //     if (category.categoryName != 'Favorites') {
+                                                      //       _dropdownCategories.add(category.categoryName);
+                                                      //     }
+                                                      //   }
+                                                      // } else if (dropdownCategories.isNotEmpty && _dropdownCategories.length < cateList.length) {
+                                                      //   _dropdownCategories.clear();
+                                                      //   for (var category in cateList) {
+                                                      //     if (category.categoryName != 'Favorites') {
+                                                      //       _dropdownCategories.add(category.categoryName);
+                                                      //     }
+                                                      //   }
+                                                      // }
 
                                                       if (_selectedCategories.isEmpty) {
                                                         for (var element in sortedModsList) {
@@ -2007,37 +2006,37 @@ void modAddHandler(context) {
                                                           }
                                                           //Add mods
                                                           if (_duplicateModNames.isEmpty) {
-                                                            modFilesAdder(context, sortedModsList, XFile('')).then((_) {
-                                                              //clear lists and delete temp
-                                                              _isAddedSuccess = true;
-                                                              setState(
-                                                                () {},
-                                                              );
-                                                              _mainFolderRenameIndex.clear();
-                                                              _newModMainFolderList.clear();
-                                                              _selectedCategories.clear();
-                                                              _exitConfirmDialog = false;
-                                                              Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                              _duplicateModNames.clear();
-                                                              sortedModsList.clear();
-                                                              _newModDragDropList.clear();
-                                                              modsToAddList.clear();
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              setState(
-                                                                () {},
-                                                              );
-                                                              Future.delayed(const Duration(seconds: 1)).then((value) {
-                                                                _isAddedSuccess = false;
-                                                                setState(
-                                                                  () {},
-                                                                );
-                                                              });
-                                                            });
+                                                            // modFilesAdder(context, sortedModsList, XFile('')).then((_) {
+                                                            //   //clear lists and delete temp
+                                                            //   _isAddedSuccess = true;
+                                                            //   setState(
+                                                            //     () {},
+                                                            //   );
+                                                            //   _mainFolderRenameIndex.clear();
+                                                            //   _newModMainFolderList.clear();
+                                                            //   _selectedCategories.clear();
+                                                            //   _exitConfirmDialog = false;
+                                                            //   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                            //   _duplicateModNames.clear();
+                                                            //   sortedModsList.clear();
+                                                            //   _newModDragDropList.clear();
+                                                            //   modsToAddList.clear();
+                                                            //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            //     element.deleteSync(recursive: true);
+                                                            //   });
+                                                            //   Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                                            //     element.deleteSync(recursive: true);
+                                                            //   });
+                                                            //   setState(
+                                                            //     () {},
+                                                            //   );
+                                                            //   Future.delayed(const Duration(seconds: 1)).then((value) {
+                                                            //     _isAddedSuccess = false;
+                                                            //     setState(
+                                                            //       () {},
+                                                            //     );
+                                                            //   });
+                                                            // });
                                                           } else {
                                                             _exitConfirmDialog = true;
                                                           }

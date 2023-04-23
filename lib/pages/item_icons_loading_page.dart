@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/loaders/startup_item_icon_loader.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
+import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 
 class ItemIconsLoadingPage extends StatefulWidget {
   const ItemIconsLoadingPage({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class _ItemIconsLoadingPageState extends State<ItemIconsLoadingPage> {
                 ),
               );
             } else {
-              return const MainPage();
+              return const ModsLoadingPage();
             }
           }
         });

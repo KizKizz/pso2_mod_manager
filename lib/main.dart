@@ -4,65 +4,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:dart_vlc/dart_vlc.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
-import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/home_page.dart';
-import 'package:pso2_mod_manager/mod_classes.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pso2_mod_manager/popup_handlers.dart';
 // ignore: depend_on_referenced_packages
 import 'package:window_manager/window_manager.dart';
 
-String binDirPath = '';
-String mainModManDirPath = '';
-String mainModDirPath = '';
-String modsDirPath = '';
-String backupDirPath = '';
-String checksumDirPath = '';
-String modSettingsPath = '';
-String modSetsSettingsPath = '';
-String deletedItemsPath = '';
-String langSettingsPath = '';
-String curLanguageDirPath = '';
-
-String curActiveLang = '';
-List<String> langDropDownList = [];
-String langDropDownSelected = '';
-List<String> topBtnMenuItems = [];
-String s = '/';
-String appVersion = '';
-int refSheetsVersion = -1;
-String? checkSumFilePath;
-FilePickerResult? checksumLocation;
-bool _previewWindowVisible = true;
-double windowsWidth = 1280.0;
-double windowsHeight = 720.0;
-//Future? filesData;
-Directory dataDir = Directory('');
-List<File> iceFiles = [];
-List<ModFile> allModFiles = [];
-var dataStreamController = StreamController();
-TextEditingController newSetTextController = TextEditingController();
-TextEditingController newLangTextController = TextEditingController();
-final newSetFormKey = GlobalKey<FormState>();
-List<String> localRefSheetsList = [];
-bool firstTimeUser = false;
-String versionToSkipUpdate = '';
-String? localChecksumMD5;
-String? win32ChecksumMD5;
-String win32CheckSumFilePath = '';
-Uri modsListJsonPath = Uri();
-
 Future<void> main() async {
-  DartVLC.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -139,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkRefSheetsForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
-    //languagePackCheck();
 
     super.initState();
   }
@@ -157,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> getSortType() async {
     final prefs = await SharedPreferences.getInstance();
     // 0 => sort by name, 1 => sort by item amount
-    selectedSortType = (prefs.getInt('selectedSortType') ?? 0);
+    //selectedSortType = (prefs.getInt('selectedSortType') ?? 0);
   }
 
   @override
@@ -177,8 +130,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         MyApp.themeNotifier.value = ThemeMode.dark;
       }
       //previewWindows Check
-      _previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
-      if (_previewWindowVisible) {
+      previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
+      if (previewWindowVisible) {
         Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
       } else {
         Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
@@ -247,10 +200,10 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) async {
     switch (item) {
       case MenuItems._binFolder:
-        binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
+        //binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
       case MenuItems.modManFolder:
-        mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
+        //mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
         break;
     }
   }

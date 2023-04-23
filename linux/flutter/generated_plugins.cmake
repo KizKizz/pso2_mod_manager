@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_linux
-  dart_vlc
   desktop_drop
   media_kit_libs_linux
   media_kit_video

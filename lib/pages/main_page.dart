@@ -12,15 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/home_page.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
-import 'package:pso2_mod_manager/lang_loading_page.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/paths_loading_page.dart';
-import 'package:pso2_mod_manager/popup_handlers.dart';
+import 'package:pso2_mod_manager/pages/reboot_paths_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -132,49 +130,49 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Mod sets
-                          Tooltip(
-                            message: curLangText!.modSetsTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: SizedBox(
-                              width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                    modFilesFromSetList.clear();
-                                    modFilesList.clear();
-                                    modsSetAppBarName = '';
-                                    modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                  } else {
-                                    modFilesFromSetList.clear();
-                                    modFilesList.clear();
-                                    modsSetAppBarName = '';
-                                    modsViewAppBarName = '';
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                  }
-                                }),
-                                child: Row(
-                                  children: [
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.list_alt_outlined,
-                                        size: 18,
-                                      ),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.view_list_outlined,
-                                        size: 18,
-                                      ),
-                                    const SizedBox(width: 2.5),
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Tooltip(
+                          //   message: curLangText!.modSetsTooltipText,
+                          //   height: 25,
+                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //   waitDuration: const Duration(seconds: 1),
+                          //   child: SizedBox(
+                          //     width: 99,
+                          //     child: MaterialButton(
+                          //       onPressed: (() {
+                          //         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                          //           modFilesFromSetList.clear();
+                          //           modFilesList.clear();
+                          //           modsSetAppBarName = '';
+                          //           modsViewAppBarName = '';
+                          //           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                          //         } else {
+                          //           modFilesFromSetList.clear();
+                          //           modFilesList.clear();
+                          //           modsSetAppBarName = '';
+                          //           modsViewAppBarName = '';
+                          //           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                          //         }
+                          //       }),
+                          //       child: Row(
+                          //         children: [
+                          //           if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                          //             const Icon(
+                          //               Icons.list_alt_outlined,
+                          //               size: 18,
+                          //             ),
+                          //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                          //             const Icon(
+                          //               Icons.view_list_outlined,
+                          //               size: 18,
+                          //             ),
+                          //           const SizedBox(width: 2.5),
+                          //           if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                          //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Checksum
                           Tooltip(
@@ -269,7 +267,7 @@ class _MainPageState extends State<MainPage> {
                                 if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
                                   Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
                                   prefs.setBool('previewWindowVisible', false);
-                                  previewPlayer.stop();
+                                  //previewPlayer.stop();
                                 } else {
                                   Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
                                   prefs.setBool('previewWindowVisible', true);
@@ -644,7 +642,7 @@ class _MainPageState extends State<MainPage> {
                                     }
 
                                     topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
-                                    sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
+                                    //sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
 
                                     //Json Write
                                     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
@@ -703,7 +701,7 @@ class _MainPageState extends State<MainPage> {
                           TextButton(
                               onPressed: (() {
                                 setState(() {
-                                  patchNotesDialog(context);
+                                  //patchNotesDialog(context);
                                 });
                               }),
                               child: Text(curLangText!.patchNoteLabelText)),
@@ -783,7 +781,7 @@ class _MainPageState extends State<MainPage> {
                               ? (() {
                                   //Indexing files
 
-                                  for (var file in Directory('$refSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                                  for (var file in Directory('$modManRefSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
                                     localRefSheetsList.add(file.path);
                                   }
 
@@ -846,7 +844,7 @@ class _MainPageState extends State<MainPage> {
               ),
             )),
 
-            const Expanded(child: PathsLoadingPage())
+            const Expanded(child: DataFilesLoadingPage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
