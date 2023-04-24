@@ -75,7 +75,7 @@ class _DataFilesLoadingPageState extends State<DataFilesLoadingPage> {
                 ),
               );
             } else {
-              rebootDirPaths = snapshot.data;
+              ogDataFilePaths = snapshot.data;
               return const ModsLoadingPage();
             }
           }
