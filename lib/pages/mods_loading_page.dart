@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
 
 class ModsLoadingPage extends StatefulWidget {
@@ -15,7 +14,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: modFilesLoader(modManModsDirPath),
+        future: categoryTypesLoader(),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -76,14 +75,8 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 ),
               );
             } else {
-              itemCategories = snapshot.data;
-              for (var category in itemCategories) {
-                if (!itemCategoryGroups.contains(category.group)) {
-                  itemCategoryGroups.add(category.group);
-                }
-              }
-              String tempOthers = itemCategoryGroups.removeAt(itemCategoryGroups.indexOf('Others'));
-              itemCategoryGroups.add(tempOthers);
+              moddedItemsList = snapshot.data;
+              
               return const HomePage();
             }
           }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
+import 'package:pso2_mod_manager/classes/category_type_class.dart';
 
 String binDirPath = '';
 String mainModManDirPath = '';
@@ -44,6 +45,6 @@ String? win32ChecksumMD5;
 String win32CheckSumFilePath = '';
 List<String> ogDataFilePaths = [];
 //
-List<Category> itemCategories = [];
+List<CategoryType> moddedItemsList = [];
 //
 List<String> itemCategoryGroups = [];
