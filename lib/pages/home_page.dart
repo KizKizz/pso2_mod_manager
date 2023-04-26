@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     MultiSplitView mainViews = MultiSplitView(
       controller: _viewsController,
       children: [
-        if (!context.watch<StateProvider>().setsWindowVisible) itemsView(context),
+        if (!context.watch<StateProvider>().setsWindowVisible) itemsView(),
         if (!context.watch<StateProvider>().setsWindowVisible) modsView(),
         if (context.watch<StateProvider>().setsWindowVisible) setList(),
         if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
@@ -69,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         : viewsTheme;
   }
 
-  Widget itemsView(context) {
+  Widget itemsView() {
     var searchBoxLeftPadding = 10;
     return Column(
       children: [
@@ -106,11 +109,11 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (groupIndex != 0)
-                      const Divider(
-                        height: 1,
-                        thickness: 1,
-                        //color: Theme.of(context).textTheme.headlineMedium?.color,
-                      ),
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          //color: Theme.of(context).textTheme.headlineMedium?.color,
+                        ),
                       ExpansionTile(
                         title: Text(moddedItemsList[groupIndex].groupName),
                         initiallyExpanded: moddedItemsList[groupIndex].expanded,
@@ -120,72 +123,168 @@ class _HomePageState extends State<HomePage> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: moddedItemsList[groupIndex].categories.length,
                             itemBuilder: (context, categoryIndex) {
-                                return ExpansionTile(
-                                    initiallyExpanded: false,
-                                    childrenPadding: const EdgeInsets.all(0),
-                                    textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
-                                    iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
-                                    collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
-                                    collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
-                                    onExpansionChanged: (newState) {},
-                                    title: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(moddedItemsList[groupIndex].categories[categoryIndex].name),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
-                                              child: Container(
-                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(color: Theme.of(context).highlightColor),
-                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                  ),
-                                                  child: moddedItemsList[groupIndex].categories[categoryIndex].items.length < 2
-                                                      ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
-                                                          style: const TextStyle(
-                                                            fontSize: 13,
-                                                          ))
-                                                      : Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemsLabelText}',
-                                                          style: const TextStyle(
-                                                            fontSize: 13,
-                                                          ))),
+                              var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                              return ExpansionTile(
+                                  initiallyExpanded: false,
+                                  childrenPadding: const EdgeInsets.all(0),
+                                  textColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                                  iconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                                  collapsedTextColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                                  collapsedIconColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Colors.white,
+                                  onExpansionChanged: (newState) {},
+                                  title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(curCategory.name),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                            child: Container(
+                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(color: Theme.of(context).highlightColor),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                ),
+                                                child: curCategory.items.length < 2
+                                                    ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))
+                                                    : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                        ))),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          if (!defaultCateforyDirs.contains(curCategory.name))
+                                            Tooltip(
+                                                message: '${curLangText!.deleteBtnTooltipText} ${curCategory.name}',
+                                                height: 25,
+                                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                waitDuration: const Duration(seconds: 2),
+                                                child: SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: MaterialButton(
+                                                      onPressed: (() {
+                                                        setState(() {});
+                                                      }),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.delete_sweep_rounded,
+                                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                          )
+                                                        ],
+                                                      )),
+                                                )),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  children: [
+                                    ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: curCategory.items.length,
+                                        itemBuilder: (context, itemIndex) {
+                                          var curItem = curCategory.items[itemIndex];
+                                          return SizedBox(
+                                            height: 84,
+                                            child: Card(
+                                              margin: const EdgeInsets.all(1),
+                                              color: Theme.of(context).canvasColor,
+                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+                                              child: InkWell(
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
+                                                      child: Container(
+                                                          width: 80,
+                                                          height: 80,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(3),
+                                                            border: Border.all(color: Theme.of(context).hintColor),
+                                                          ),
+                                                          child: Image.file(
+                                                            File(curItem.icon),
+                                                            filterQuality: FilterQuality.none,
+                                                            fit: BoxFit.fitWidth,
+                                                          )),
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            curItem.name,
+                                                            style: const TextStyle(fontSize: 16),
+                                                          ),
+                                                          Text(
+                                                            '${curLangText!.modscolonLableText} ${curItem.mods.length}',
+                                                            style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                          ),
+                                                          Text(
+                                                            '${curLangText!.fileAppliedColonLabelText} ${curItem.mods.where((element) => element.applyStatus == true).length}',
+                                                            style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(right: 15),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                        children: [
+                                                          if (curItem.isNew)
+                                                            SizedBox(
+                                                                height: 50,
+                                                                child:
+                                                                    Icon(Icons.new_releases, color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber)),
+
+                                                          //Buttons
+                                                          Tooltip(
+                                                              message: '${curLangText!.openBtnTooltipText}${curItem.name}${curLangText!.inExplorerBtnTootipText}',
+                                                              height: 25,
+                                                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                              waitDuration: const Duration(seconds: 2),
+                                                              child: SizedBox(
+                                                                width: 34,
+                                                                height: 50,
+                                                                child: MaterialButton(
+                                                                    onPressed: (() async {
+                                                                      await launchUrl(Uri.parse('file:${curItem.location}'));
+                                                                    }),
+                                                                    child: Row(
+                                                                      children: const [
+                                                                        Icon(
+                                                                          Icons.folder_open_rounded,
+                                                                          size: 18,
+                                                                        )
+                                                                      ],
+                                                                    )),
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                onTap: () {
+                                                  setState(() {});
+                                                },
+                                              ),
                                             ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            if (!defaultCateforyDirs.contains(moddedItemsList[groupIndex].categories[categoryIndex].name))
-                                              Tooltip(
-                                                  message: '${curLangText!.deleteBtnTooltipText} ${moddedItemsList[groupIndex].categories[categoryIndex].name}',
-                                                  height: 25,
-                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                  waitDuration: const Duration(seconds: 2),
-                                                  child: SizedBox(
-                                                    width: 40,
-                                                    height: 40,
-                                                    child: MaterialButton(
-                                                        onPressed: (() {
-                                                          setState(() {});
-                                                        }),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons.delete_sweep_rounded,
-                                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            )
-                                                          ],
-                                                        )),
-                                                  )),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    children: []);
-                              
-                            }, // optional
+                                          );
+                                        }),
+                                  ]);
+                            },
                           ),
                         ],
                       ),
@@ -199,10 +298,10 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-}
 
-Widget modsView() {
-  return Container();
+  Widget modsView() {
+    return Container();
+  }
 }
 
 Widget setList() {

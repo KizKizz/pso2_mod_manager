@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
+// ignore: depend_on_referenced_packages
+
 
 class PathsLoadingPage extends StatefulWidget {
   const PathsLoadingPage({Key? key}) : super(key: key);
@@ -74,6 +77,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else {
+              
               return const MainPage();
             }
           }

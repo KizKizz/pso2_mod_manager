@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -33,7 +34,7 @@ List<String> _motionCsv = [
   'SubstituteMotionSwim.csv'
 ];
 
-List<List<String>> _itemRefSheetsList = [];
+List<List<String>> itemIconRefSheetsList = [];
 
 Future<String> itemIconFetch(XFile moddedIceList) async {
   //CLear temp dir
@@ -42,12 +43,13 @@ Future<String> itemIconFetch(XFile moddedIceList) async {
   });
 
   //populate sheets
-  if (_itemRefSheetsList.isEmpty) {
-    _itemRefSheetsList = await popSheetsList(modManRefSheetsDirPath);
+  if (itemIconRefSheetsList.isEmpty) {
+    itemIconRefSheetsList = await popSheetsList(modManRefSheetsDirPath);
   }
 
   //Find item in csv
   List<String> itemInCsv = [];
+  //itemInCsv = await compute(findItemInCsv, moddedIceList);
   itemInCsv = await findItemInCsv(moddedIceList);
 
   if (itemInCsv.isNotEmpty) {
@@ -61,7 +63,7 @@ Future<String> itemIconFetch(XFile moddedIceList) async {
 
 Future<List<String>> findItemInCsv(XFile inputFile) async {
   List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-  for (var file in _itemRefSheetsList) {
+  for (var file in itemIconRefSheetsList) {
     for (var line in file) {
       if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
         var lineSplit = line.split(',');

@@ -1054,7 +1054,7 @@ TranslationText defaultUILangLoader() {
       'Language select',
 
       //Main Headers
-      'Items',
+      'Item List',
       'Available Mods',
       'Preview',
       'Applied Mods',

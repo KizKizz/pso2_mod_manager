@@ -18,7 +18,7 @@ import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/pages/reboot_paths_loading_page.dart';
+import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -176,7 +176,7 @@ class _MainPageState extends State<MainPage> {
 
                           //Checksum
                           Tooltip(
-                            message: checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                            message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                 ? curLangText!.checksumToolTipText
                                 : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
@@ -184,7 +184,7 @@ class _MainPageState extends State<MainPage> {
                             waitDuration: const Duration(seconds: 1),
                             child: MaterialButton(
                               onLongPress: () async {
-                                if (checkSumFilePath == null || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
+                                if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
                                   checksumLocation = await FilePicker.platform.pickFiles(
                                     dialogTitle: curLangText!.checksumSelectPopupText,
                                     allowMultiple: false,
@@ -194,33 +194,33 @@ class _MainPageState extends State<MainPage> {
                                   );
                                   if (checksumLocation != null) {
                                     String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync('$checksumDirPath$s${checksumPath.split(s).last}');
-                                    checkSumFilePath = '$checksumDirPath$s${checksumPath.split(s).last}';
-                                    File(checkSumFilePath.toString()).copySync('$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}');
-                                
+                                    File(checksumPath!).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
+                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();
+                                    File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
+
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   }
                                 } else {
-                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
                                 }
                               },
                               onPressed: (() async {
-                                if (checkSumFilePath == null || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
+                                if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
                                   _checksumDownloading = true;
                                   setState(() {});
-                                  await Dio().download(netChecksumFileLink, '$checksumDirPath$s$netChecksumFileName').then((value) {
+                                  await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
                                     _checksumDownloading = false;
-                                    checkSumFilePath = '$checksumDirPath$s$netChecksumFileName';
-                                    File(checkSumFilePath.toString()).copySync('$binDirPath${s}data${s}win32$s${XFile(checkSumFilePath!).name}');
+                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
+                                    File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
                                 } else {
-                                  await launchUrl(Uri.parse('file:$checksumDirPath'));
+                                  await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
                                 }
                               }),
-                              child: checkSumFilePath != null && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                              child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                   ? Row(
                                       children: [
                                         const Icon(
@@ -244,7 +244,7 @@ class _MainPageState extends State<MainPage> {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        if (!_checksumDownloading && checkSumFilePath == null)
+                                        if (!_checksumDownloading && modManChecksumFilePath.isEmpty)
                                           Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
                                         if (!_checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
                                           Text(curLangText!.checksumOutdatedErrorText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
@@ -844,7 +844,7 @@ class _MainPageState extends State<MainPage> {
               ),
             )),
 
-            const Expanded(child: DataFilesLoadingPage())
+          const Expanded(child: ModsLoadingPage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],

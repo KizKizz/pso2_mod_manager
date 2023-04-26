@@ -11,7 +11,6 @@ String mainModManDirPath = '';
 String mainModDirPath = '';
 String modsDirPath = '';
 String backupDirPath = '';
-String checksumDirPath = '';
 String modSettingsPath = '';
 String modSetsSettingsPath = '';
 String deletedItemsPath = '';
@@ -24,7 +23,6 @@ List<String> topBtnMenuItems = [];
 String s = '/';
 String appVersion = '';
 int refSheetsVersion = -1;
-String? checkSumFilePath;
 FilePickerResult? checksumLocation;
 bool previewWindowVisible = true;
 double windowsWidth = 1280.0;
@@ -46,5 +44,3 @@ String win32CheckSumFilePath = '';
 List<String> ogDataFilePaths = [];
 //
 List<CategoryType> moddedItemsList = [];
-//
-List<String> itemCategoryGroups = [];

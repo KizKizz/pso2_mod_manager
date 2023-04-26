@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
@@ -10,7 +9,6 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -46,6 +44,7 @@ Future<List<CategoryType>> categoryTypesLoader() async {
 
 Future<List<Category>> modFilesLoader(String modsDirPath) async {
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
+
   //Load local json
   // if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
   //   var jsonData = jsonDecode(File(modManModsListJsonPath).readAsStringSync());
@@ -155,8 +154,8 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
             List<String> ogIceFileLocations = ogDataFilePaths.where((element) => p.basename(element) == p.basename(modFile)).toList();
 
             //Populate modFiles
-            modFilesInMainDir.add(ModFile(p.basename(modFile), p.basename(modDir), p.basename(modDir), p.basename(itemDir), p.basename(cateDir.path), getFileHash(modFile).toString(), '',
-                Uri.file(modFile).toFilePath(), ogIceFileLocations, [], DateTime(0), false, false, false));
+            modFilesInMainDir.add(ModFile(p.basename(modFile), p.basename(modDir), p.basename(modDir), p.basename(itemDir), p.basename(cateDir.path), '', '', Uri.file(modFile).toFilePath(),
+                ogIceFileLocations, [], DateTime(0), false, false, false));
           }
 
           //Populate submods
@@ -194,8 +193,8 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
             List<String> ogIceFileLocations = ogDataFilePaths.where((element) => p.basename(element) == p.basename(modFile)).toList();
 
             //Populate modFiles
-            modFiles.add(ModFile(p.basename(modFile), submodName, p.basename(modDir), p.basename(itemDir), p.basename(cateDir.path), getFileHash(modFile).toString(), '',
-                Uri.file(modFile).toFilePath(), ogIceFileLocations, [], DateTime(0), false, false, false));
+            modFiles.add(ModFile(p.basename(modFile), submodName, p.basename(modDir), p.basename(itemDir), p.basename(cateDir.path), '', '', Uri.file(modFile).toFilePath(), ogIceFileLocations, [],
+                DateTime(0), false, false, false));
           }
 
           //Populate submods
@@ -208,8 +207,8 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
             Mod(p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], submods));
       }
 
-      //   //   //Populate items
-      items.add(Item(XFile(itemDir).name, itemIcon, XFile(cateDir.path).name, Uri.file(itemDir).toFilePath(), false, false, DateTime(0), false, mods));
+      //Populate items
+      items.add(Item(p.basename(itemDir), itemIcon, p.basename(cateDir.path), Uri.file(itemDir).toFilePath(), false, false, DateTime(0), false, mods));
     }
 
     //Group categories
@@ -224,6 +223,11 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
 
     //Add items to categories
     categories.add(Category(p.basename(cateDir.path), group, Uri.file(cateDir.path).toFilePath(), true, items));
+  }
+
+  //Clear refsheets
+  if (itemIconRefSheetsList.isEmpty) {
+    itemIconRefSheetsList.clear();
   }
 
   //Write

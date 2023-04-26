@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
 String newVersion = '';
@@ -95,8 +96,8 @@ class ApplicationConfig {
       netChecksumFileLink = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileLink').value;
       netChecksumFileMD5 = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileMD5').value;
 
-      if (checkSumFilePath != null) {
-        String? checksumMD5 = await getFileHash(checkSumFilePath!);
+      if (modManChecksumFilePath.isNotEmpty) {
+        String? checksumMD5 = await getFileHash(modManChecksumFilePath);
         if (checksumMD5.toString() != netChecksumFileMD5) {
           Provider.of<StateProvider>(context, listen: false).checksumMD5MatchFalse();
         }
