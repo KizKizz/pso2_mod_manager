@@ -5,8 +5,8 @@ part 'mod_class.g.dart';
 
 @JsonSerializable()
 class Mod {
-  Mod(this.name, this.itemName, this.category, this.location, this.applyStatus, this.applyDate,  this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedSubMods, this.subMods);
-  String name;
+  Mod(this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate,  this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedSubMods, this.submods);
+  String modName;
   String itemName;
   String category;
   String location;
@@ -17,7 +17,7 @@ class Mod {
   List<String> previewImages;
   List<String> previewVideos;
   List<SubMod> appliedSubMods;
-  List<SubMod> subMods;
+  List<SubMod> submods;
 
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);

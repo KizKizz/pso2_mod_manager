@@ -7,7 +7,7 @@ part of 'sub_mod_class.dart';
 // **************************************************************************
 
 SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
-      json['name'] as String,
+      json['submodName'] as String,
       json['modName'] as String,
       json['itemName'] as String,
       json['category'] as String,
@@ -27,7 +27,7 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
     );
 
 Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
-      'name': instance.name,
+      'submodName': instance.submodName,
       'modName': instance.modName,
       'itemName': instance.itemName,
       'category': instance.category,

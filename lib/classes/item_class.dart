@@ -5,8 +5,8 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item {
-  Item(this.name, this.icon, this.category, this.location, this.isNew, this.applyStatus, this.applyDate, this.isFavorite, this.mods);
-  String name;
+  Item(this.itemName, this.icon, this.category, this.location, this.isNew, this.applyStatus, this.applyDate, this.isFavorite, this.mods);
+  String itemName;
   String icon;
   String category;
   String location;

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
-import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/global_variables.dart';

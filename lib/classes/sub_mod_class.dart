@@ -5,9 +5,9 @@ part 'sub_mod_class.g.dart';
 
 @JsonSerializable()
 class SubMod {
-  SubMod(this.name, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedModFiles,
+  SubMod(this.submodName, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedModFiles,
       this.modFiles);
-  String name;
+  String submodName;
   String modName;
   String itemName;
   String category;

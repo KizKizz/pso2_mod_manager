@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(curCategory.name),
+                                          Text(curCategory.categoryName),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                             child: Container(
@@ -161,9 +161,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       Row(
                                         children: [
-                                          if (!defaultCateforyDirs.contains(curCategory.name))
+                                          if (!defaultCateforyDirs.contains(curCategory.categoryName))
                                             Tooltip(
-                                                message: '${curLangText!.deleteBtnTooltipText} ${curCategory.name}',
+                                                message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
                                                 height: 25,
                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                 waitDuration: const Duration(seconds: 2),
@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            curItem.name,
+                                                            curItem.itemName,
                                                             style: const TextStyle(fontSize: 16),
                                                           ),
                                                           Text(
@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
 
                                                           //Buttons
                                                           Tooltip(
-                                                              message: '${curLangText!.openBtnTooltipText}${curItem.name}${curLangText!.inExplorerBtnTootipText}',
+                                                              message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
                                                               height: 25,
                                                               textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                               waitDuration: const Duration(seconds: 2),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
@@ -14,21 +15,11 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<List<CategoryType>> categoryTypesLoader() async {
-  List<Category> categoriesFromMods = await modFilesLoader(modManModsDirPath);
+  List<CategoryType> categoriesFromMods = await modFilesLoader(modManModsDirPath);
 
-  List<CategoryType> categoryTypes = [];
-  for (var cate in categoriesFromMods) {
-    if (categoryTypes.isEmpty) {
-      categoryTypes.add(CategoryType(cate.group, 0, true, true, [cate]));
-    } else {
-      if (categoryTypes.indexWhere((element) => element.groupName == cate.group) != -1) {
-        categoryTypes[categoryTypes.indexWhere((element) => element.groupName == cate.group)].categories.add(cate);
-      } else {
-        categoryTypes.add(CategoryType(cate.group, 0, true, true, [cate]));
-      }
-    }
-  }
-  for (var type in categoryTypes) {
+  
+  
+  for (var type in categoriesFromMods) {
     if (type.groupName == 'Layering Wears') {
       type.position = 1;
     } else if (type.groupName == 'Cast Parts') {
@@ -38,21 +29,27 @@ Future<List<CategoryType>> categoryTypesLoader() async {
     }
   }
 
-  categoryTypes.sort(((a, b) => a.position.compareTo(b.position)));
-  return categoryTypes;
+  categoriesFromMods.sort(((a, b) => a.position.compareTo(b.position)));
+
+  //Save to json
+  categoriesFromMods.map((cateType) => cateType.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  //File(modManModsListJsonPath).writeAsStringSync(encoder.convert(categoryTypes));
+
+  return categoriesFromMods;
 }
 
-Future<List<Category>> modFilesLoader(String modsDirPath) async {
+Future<List<CategoryType>> modFilesLoader(String modsDirPath) async {
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
+  List<CategoryType> modListFromJson = [];
 
-  //Load local json
-  // if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
-  //   var jsonData = jsonDecode(File(modManModsListJsonPath).readAsStringSync());
-  //   var jsonCategories = [];
-  //   for (var cate in jsonData) {
-  //     jsonCategories.add(Category.fromJson(cate));
-  //   }
-  // }
+  //Load list from json
+  if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
+    var jsonData = jsonDecode(File(modManModsListJsonPath).readAsStringSync());
+    for (var type in jsonData) {
+      modListFromJson.add(CategoryType.fromJson(type));
+    }
+  }
 
   //Load Mod Files
   List<String> modsDirFolderPaths = [];
@@ -66,8 +63,25 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
     modsDirFilePaths.add(file.path);
   }
 
+  //Remove existed
+  for (var cateType in modListFromJson) {
+    for (var cate in cateType.categories) {
+      modsDirFolderPaths.remove(cate.location);
+      for (var item in cate.items) {
+        modsDirFolderPaths.remove(item.location);
+        for (var mod in item.mods) {
+          modsDirFolderPaths.remove(mod.location);
+          for (var submod in mod.submods) {
+            modsDirFolderPaths.remove(submod.location);
+            modsDirFilePaths.removeWhere((element) => element.contains(submod.location));
+          }
+        }
+      }
+    }
+  }
+
   //Preping category list
-  List<Category> categories = [];
+  //List<Category> categories = [];
   final dirsInModsDir = Directory(modManModsDirPath).listSync(recursive: false);
   for (var cateDir in dirsInModsDir) {
     final dirPathsInCurCategory = modsDirFolderPaths.where((element) => element.contains(cateDir.path)).toList();
@@ -159,8 +173,28 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
           }
 
           //Populate submods
-          submods.add(SubMod(p.basename(modDir), p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages,
-              modPreviewVideos, [], modFilesInMainDir));
+          for (var cateType in modListFromJson) {
+            int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+            if (cateIndex != -1) {
+              int itemIndex = cateType.categories[cateIndex].items.indexWhere((element) => element.itemName == p.basename(itemDir));
+              if (itemIndex != -1) {
+                int modIndex = cateType.categories[cateIndex].items[itemIndex].mods.indexWhere((element) => element.modName == p.basename(modDir));
+                if (modIndex != -1) {
+                  int submodIndex = cateType.categories[cateIndex].items[itemIndex].mods[modIndex].submods.indexWhere((element) => element.submodName == p.basename(modDir));
+                  if (submodIndex != -1) {
+                    cateType.categories[cateIndex].items[itemIndex].mods[modIndex].submods[submodIndex].modFiles.addAll(modFilesInMainDir);
+                    break;
+                  } else {
+                    submods.add(SubMod(p.basename(modDir), p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false,
+                        modPreviewImages, modPreviewVideos, [], modFilesInMainDir));
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          // submods.add(SubMod(p.basename(modDir), p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages,
+          //     modPreviewVideos, [], modFilesInMainDir));
         }
 
         //Get submods
@@ -198,17 +232,67 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
           }
 
           //Populate submods
-          submods.add(SubMod(submodName, p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(submodDir).toFilePath(), false, DateTime(0), false, false, submodPreviewImages,
-              submodPreviewVideos, [], modFiles));
+          for (var cateType in modListFromJson) {
+            int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+            if (cateIndex != -1) {
+              int itemIndex = cateType.categories[cateIndex].items.indexWhere((element) => element.itemName == p.basename(itemDir));
+              if (itemIndex != -1) {
+                int modIndex = cateType.categories[cateIndex].items[itemIndex].mods.indexWhere((element) => element.modName == p.basename(modDir));
+                if (modIndex != -1) {
+                  int submodIndex = cateType.categories[cateIndex].items[itemIndex].mods[modIndex].submods.indexWhere((element) => element.submodName == submodName);
+                  if (submodIndex != -1) {
+                    cateType.categories[cateIndex].items[itemIndex].mods[modIndex].submods[submodIndex].modFiles.addAll(modFiles);
+                    break;
+                  } else {
+                    submods.add(SubMod(submodName, p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(submodDir).toFilePath(), false, DateTime(0), false, false,
+                        submodPreviewImages, submodPreviewVideos, [], modFiles));
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          // submods.add(SubMod(submodName, p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(submodDir).toFilePath(), false, DateTime(0), false, false, submodPreviewImages,
+          //     submodPreviewVideos, [], modFiles));
         }
 
         //Populate mods
-        mods.add(
-            Mod(p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], submods));
+        for (var cateType in modListFromJson) {
+          int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+          if (cateIndex != -1) {
+            int itemIndex = cateType.categories[cateIndex].items.indexWhere((element) => element.itemName == p.basename(itemDir));
+            if (itemIndex != -1) {
+              int modIndex = cateType.categories[cateIndex].items[itemIndex].mods.indexWhere((element) => element.modName == p.basename(modDir));
+              if (modIndex != -1) {
+                cateType.categories[cateIndex].items[itemIndex].mods[modIndex].submods.addAll(submods);
+                break;
+              } else {
+                mods.add(Mod(p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [],
+                    submods));
+                break;
+              }
+            }
+          }
+        }
+        //mods.add(
+        //    Mod(p.basename(modDir), p.basename(itemDir), XFile(cateDir.path).name, Uri.file(modDir).toFilePath(), false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], submods));
       }
 
       //Populate items
-      items.add(Item(p.basename(itemDir), itemIcon, p.basename(cateDir.path), Uri.file(itemDir).toFilePath(), false, false, DateTime(0), false, mods));
+      for (var cateType in modListFromJson) {
+        int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+        if (cateIndex != -1) {
+          int itemIndex = cateType.categories[cateIndex].items.indexWhere((element) => element.itemName == p.basename(itemDir));
+          if (itemIndex != -1) {
+            cateType.categories[cateIndex].items[itemIndex].mods.addAll(mods);
+            break;
+          } else {
+            items.add(Item(p.basename(itemDir), itemIcon, p.basename(cateDir.path), Uri.file(itemDir).toFilePath(), false, false, DateTime(0), false, mods));
+            break;
+          }
+        }
+      }
+      //items.add(Item(p.basename(itemDir), itemIcon, p.basename(cateDir.path), Uri.file(itemDir).toFilePath(), false, false, DateTime(0), false, mods));
     }
 
     //Group categories
@@ -220,9 +304,28 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
     } else {
       group = 'Others';
     }
+    if (modListFromJson.isEmpty || modListFromJson.indexWhere((element) => element.groupName == group) == -1) {
+      modListFromJson.add(CategoryType(group, 0, true, true, []));
+    }
 
     //Add items to categories
-    categories.add(Category(p.basename(cateDir.path), group, Uri.file(cateDir.path).toFilePath(), true, items));
+    int cateTypeIndex = -1;
+    for (var cateType in modListFromJson) {
+      if (cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path)) != -1) {
+        cateTypeIndex = cateType.categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+        break;
+      }
+    }
+    if (cateTypeIndex != -1) {
+      int existedCateIndex = modListFromJson[cateTypeIndex].categories.indexWhere((element) => element.categoryName == p.basename(cateDir.path));
+      if (existedCateIndex != -1) {
+        modListFromJson[cateTypeIndex].categories[existedCateIndex].items.addAll(items);
+      }
+    } else {
+      modListFromJson.last.categories.add(Category(p.basename(cateDir.path), group, Uri.file(cateDir.path).toFilePath(), true, items));
+    }
+
+    //categories.add(Category(p.basename(cateDir.path), group, Uri.file(cateDir.path).toFilePath(), true, items));
   }
 
   //Clear refsheets
@@ -232,7 +335,7 @@ Future<List<Category>> modFilesLoader(String modsDirPath) async {
 
   //Write
 
-  return categories;
+  return modListFromJson;
 }
 
 //Path helper

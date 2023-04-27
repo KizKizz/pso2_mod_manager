@@ -7,7 +7,7 @@ part of 'item_class.dart';
 // **************************************************************************
 
 Item _$ItemFromJson(Map<String, dynamic> json) => Item(
-      json['name'] as String,
+      json['itemName'] as String,
       json['icon'] as String,
       json['category'] as String,
       json['location'] as String,
@@ -21,7 +21,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
     );
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
-      'name': instance.name,
+      'itemName': instance.itemName,
       'icon': instance.icon,
       'category': instance.category,
       'location': instance.location,

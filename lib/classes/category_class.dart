@@ -5,8 +5,8 @@ part 'category_class.g.dart';
 
 @JsonSerializable()
 class Category {
-  Category(this.name, this.group, this.location, this.visible, this.items);
-  String name;
+  Category(this.categoryName, this.group, this.location, this.visible, this.items);
+  String categoryName;
   String group;
   String location;
   bool visible;

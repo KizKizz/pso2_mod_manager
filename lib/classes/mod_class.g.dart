@@ -7,7 +7,7 @@ part of 'mod_class.dart';
 // **************************************************************************
 
 Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
-      json['name'] as String,
+      json['modName'] as String,
       json['itemName'] as String,
       json['category'] as String,
       json['location'] as String,
@@ -20,13 +20,13 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       (json['appliedSubMods'] as List<dynamic>)
           .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
           .toList(),
-      (json['subMods'] as List<dynamic>)
+      (json['submods'] as List<dynamic>)
           .map((e) => SubMod.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
-      'name': instance.name,
+      'modName': instance.modName,
       'itemName': instance.itemName,
       'category': instance.category,
       'location': instance.location,
@@ -37,5 +37,5 @@ Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
       'previewImages': instance.previewImages,
       'previewVideos': instance.previewVideos,
       'appliedSubMods': instance.appliedSubMods,
-      'subMods': instance.subMods,
+      'submods': instance.submods,
     };

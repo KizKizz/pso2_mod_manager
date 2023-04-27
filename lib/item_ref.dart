@@ -10,7 +10,6 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-import 'main.dart';
 import 'package:path/path.dart' as p;
 
 //String playerRefSheetsDirPath = '$refSheetsDirPath${s}Player';

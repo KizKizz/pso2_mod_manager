@@ -7,7 +7,7 @@ part of 'mod_file_class.dart';
 // **************************************************************************
 
 ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
-      json['name'] as String,
+      json['modFileName'] as String,
       json['submodName'] as String,
       json['modName'] as String,
       json['itemName'] as String,
@@ -24,7 +24,7 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
     );
 
 Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
-      'name': instance.name,
+      'modFileName': instance.modFileName,
       'submodName': instance.submodName,
       'modName': instance.modName,
       'itemName': instance.itemName,
