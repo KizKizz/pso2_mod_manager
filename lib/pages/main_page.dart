@@ -27,6 +27,7 @@ import 'package:path/path.dart' as p;
 
 bool firstTimeUser = false;
 bool _checksumDownloading = false;
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -39,6 +40,348 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: Drawer(
+          child: ScrollbarTheme(
+              data: ScrollbarThemeData(
+                thumbColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.hovered)) {
+                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                  }
+                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                }),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        'Settings',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      //color: Theme.of(context).textTheme.headlineMedium?.color,
+                    ),
+                    const SizedBox(height: 5,),
+
+                    //Dark theme
+                    if (MyApp.themeNotifier.value == ThemeMode.dark)
+                      Tooltip(
+                        message: curLangText!.darkModeTooltipText,
+                        height: 25,
+                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                        waitDuration: const Duration(seconds: 1),
+                        child: SizedBox(
+                          //width: 70,
+                          child: MaterialButton(
+                            onPressed: (() async {
+                              MyApp.themeNotifier.value = ThemeMode.light;
+                              final prefs = await SharedPreferences.getInstance();
+
+                              prefs.setBool('isDarkModeOn', false);
+                              //setState(() {});
+                            }),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.dark_mode,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 5),
+                                Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (MyApp.themeNotifier.value == ThemeMode.light)
+                      Tooltip(
+                        message: curLangText!.lightModeTooltipText,
+                        height: 25,
+                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                        waitDuration: const Duration(seconds: 1),
+                        child: SizedBox(
+                          //width: 70,
+                          child: MaterialButton(
+                            onPressed: (() async {
+                              final prefs = await SharedPreferences.getInstance();
+                              MyApp.themeNotifier.value = ThemeMode.dark;
+                              prefs.setBool('isDarkModeOn', true);
+                              //setState(() {});
+                            }),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.light_mode,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 2.5),
+                                Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 5,),
+
+                    //Language
+                    Tooltip(
+                      message: curLangText!.languageTooltipText,
+                      height: 25,
+                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                      waitDuration: const Duration(seconds: 1),
+                      child: InkWell(
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("Add a new language"),
+                              content: SizedBox(
+                                height: 110,
+                                width: 300,
+                                child: Column(
+                                  children: [
+                                    const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        height: 50,
+                                        width: 60,
+                                        child: TextFormField(
+                                          inputFormatters: [UpperCaseTextFormatter()],
+                                          controller: newLangTextController,
+                                          maxLines: 1,
+                                          maxLength: 2,
+                                          style: const TextStyle(fontSize: 15),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.only(left: 10, top: 10),
+                                            //hintText: '',
+                                            border: OutlineInputBorder(),
+                                            //isDense: true,
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Language initial can\'t be empty';
+                                            }
+                                            if (langDropDownList.indexWhere((e) => e == value) != -1) {
+                                              return 'Language initial already exists';
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (text) {
+                                            setState(() {
+                                              setState(
+                                                () {},
+                                              );
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                    String newLangPath = Uri.file('$modManLanguageDirPath/${newLangTextController.text.toUpperCase()}.json').toFilePath();
+                                    TranslationText? newText = curLangText;
+                                    if (!File(newLangPath).existsSync()) {
+                                      await File(newLangPath).create(recursive: true);
+                                    }
+                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                    languageList.add(newLang);
+                                    languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
+                                    langDropDownList.add(newLangTextController.text.toUpperCase());
+                                    newLangTextController.clear();
+                                    //Json Write to language file
+                                    File(newLangPath).writeAsStringSync(encoder.convert(newText));
+                                    //Json Write to settings
+                                    languageList.map((lang) => lang.toJson()).toList();
+                                    File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+                                    setState(() {});
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: const Text("Add"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                          customButton: AbsorbPointer(
+                            absorbing: true,
+                            child: MaterialButton(
+                              onPressed: (() {}),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.language, size: 18,),
+                                  const SizedBox(width: 5,),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Current language: $langDropDownSelected', style: const TextStyle(fontWeight: FontWeight.normal),),
+                                        const Icon(Icons.arrow_drop_down)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                          ),
+                          buttonDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                          isDense: true,
+                          dropdownElevation: 3,
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
+                          //dropdownWidth: 250,
+                          //offset: const Offset(-130, 0),
+                          iconSize: 15,
+                          itemHeight: 20,
+                          itemPadding: const EdgeInsets.symmetric(horizontal: 5),
+                          items: langDropDownList
+                              .map((item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 3),
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                            //fontSize: 14,
+                                            //fontWeight: FontWeight.bold,
+                                            //color: Colors.white,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )
+                                    ],
+                                  )))
+                              .toList(),
+                          value: langDropDownSelected,
+                          onChanged: (value) async {
+                            langDropDownSelected = value.toString();
+                            for (var lang in languageList) {
+                              if (lang.langInitial == value) {
+                                lang.selected = true;
+                                curActiveLang = lang.langInitial;
+                                var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
+                                curLangText = TranslationText.fromJson(jsonData);
+                              } else {
+                                lang.selected = false;
+                              }
+                            }
+
+                            topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
+                            //sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
+
+                            //Json Write
+                            const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                            languageList.map((lang) => lang.toJson()).toList();
+                            File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+                            Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
+                            setState(() {});
+                            await Future.delayed(const Duration(seconds: 2));
+                            Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
+                            setState(() {});
+                          },
+                        )),
+                      ),
+                    ),
+                    const SizedBox(height: 5,),
+
+                    
+                    //Path reselect
+                    Tooltip(
+                      message: curLangText!.pathsReselectTooltipText,
+                      height: 25,
+                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                      waitDuration: const Duration(seconds: 1),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          customButton: AbsorbPointer(
+                            absorbing: true,
+                            child: MaterialButton(
+                              onPressed: (() {}),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.folder_open_outlined,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                        const Icon(Icons.arrow_drop_down)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          isDense: true,
+                          items: [
+                            ...MenuItems.pathMenuItems.map(
+                              (item) => DropdownMenuItem<MenuItem>(
+                                value: item,
+                                alignment: AlignmentDirectional.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                  MenuItems.buildItem(context, item)
+                                ],),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            MenuItems.onChanged(context, value as MenuItem);
+                          },
+                          itemHeight: 35,
+                          //dropdownWidth: 130,
+                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                          ),
+              
+                          dropdownElevation: 8,
+                          offset: const Offset(0, -3),
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+              ))),
       body: Column(
         children: [
           WindowTitleBarBox(
@@ -374,286 +717,31 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Path menu
-                          Tooltip(
-                            message: curLangText!.pathsReselectTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  customButton: AbsorbPointer(
-                                    absorbing: true,
-                                    child: MaterialButton(
-                                      onPressed: (() {}),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.folder_open_outlined,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  isDense: true,
-                                  items: [
-                                    ...MenuItems.pathMenuItems.map(
-                                      (item) => DropdownMenuItem<MenuItem>(
-                                        value: item,
-                                        child: MenuItems.buildItem(context, item),
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    MenuItems.onChanged(context, value as MenuItem);
-                                  },
-                                  itemHeight: 35,
-                                  dropdownWidth: 130,
-                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                  ),
-                                  dropdownElevation: 8,
-                                  offset: const Offset(0, -3),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //Dark theme
-                          if (MyApp.themeNotifier.value == ThemeMode.dark)
-                            Tooltip(
-                              message: curLangText!.darkModeTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: SizedBox(
-                                width: 70,
-                                child: MaterialButton(
-                                  onPressed: (() async {
-                                    MyApp.themeNotifier.value = ThemeMode.light;
-                                    final prefs = await SharedPreferences.getInstance();
-
-                                    prefs.setBool('isDarkModeOn', false);
-                                    //setState(() {});
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.light_mode_outlined,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.lightModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (MyApp.themeNotifier.value == ThemeMode.light)
-                            Tooltip(
-                              message: curLangText!.lightModeTooltipText,
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 1),
-                              child: SizedBox(
-                                width: 70,
-                                child: MaterialButton(
-                                  onPressed: (() async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    MyApp.themeNotifier.value = ThemeMode.dark;
-                                    prefs.setBool('isDarkModeOn', true);
-                                    //setState(() {});
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.dark_mode_outlined,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.darkModeBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
 
                           //Language select
+
+                          //Settings button
                           Tooltip(
-                            message: curLangText!.languageTooltipText,
+                            message: curLangText!.darkModeTooltipText,
                             height: 25,
                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                             waitDuration: const Duration(seconds: 1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: InkWell(
-                                onLongPress: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      title: const Text("Add a new language"),
-                                      content: SizedBox(
-                                        height: 110,
-                                        width: 300,
-                                        child: Column(
-                                          children: [
-                                            const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                height: 50,
-                                                width: 60,
-                                                child: TextFormField(
-                                                  inputFormatters: [UpperCaseTextFormatter()],
-                                                  controller: newLangTextController,
-                                                  maxLines: 1,
-                                                  maxLength: 2,
-                                                  style: const TextStyle(fontSize: 15),
-                                                  decoration: const InputDecoration(
-                                                    contentPadding: EdgeInsets.only(left: 10, top: 10),
-                                                    //hintText: '',
-                                                    border: OutlineInputBorder(),
-                                                    //isDense: true,
-                                                  ),
-                                                  validator: (value) {
-                                                    if (value == null || value.isEmpty) {
-                                                      return 'Language initial can\'t be empty';
-                                                    }
-                                                    if (langDropDownList.indexWhere((e) => e == value) != -1) {
-                                                      return 'Language initial already exists';
-                                                    }
-                                                    return null;
-                                                  },
-                                                  onChanged: (text) {
-                                                    setState(() {
-                                                      setState(
-                                                        () {},
-                                                      );
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(ctx).pop();
-                                          },
-                                          child: const Text("Cancel"),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                            String newLangPath = Uri.file('$modManLanguageDirPath/${newLangTextController.text.toUpperCase()}.json').toFilePath();
-                                            TranslationText? newText = curLangText;
-                                            if (!File(newLangPath).existsSync()) {
-                                              await File(newLangPath).create(recursive: true);
-                                            }
-                                            TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
-                                            languageList.add(newLang);
-                                            languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
-                                            langDropDownList.add(newLangTextController.text.toUpperCase());
-                                            newLangTextController.clear();
-                                            //Json Write to language file
-                                            File(newLangPath).writeAsStringSync(encoder.convert(newText));
-                                            //Json Write to settings
-                                            languageList.map((lang) => lang.toJson()).toList();
-                                            File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
-                                            setState(() {});
-                                            Navigator.of(ctx).pop();
-                                          },
-                                          child: const Text("Add"),
-                                        ),
-                                      ],
+                            child: SizedBox(
+                              //width: 95,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  _scaffoldKey.currentState!.openEndDrawer();
+                                }),
+                                child: Row(
+                                  children: const [
+                                    Icon(
+                                      Icons.settings,
+                                      size: 18,
                                     ),
-                                  );
-                                },
-                                child: DropdownButtonHideUnderline(
-                                    child: DropdownButton2(
-                                  customButton: AbsorbPointer(
-                                    absorbing: true,
-                                    child: SizedBox(
-                                      width: 34,
-                                      child: MaterialButton(
-                                        onPressed: (() {}),
-                                        child: Text(langDropDownSelected),
-                                      ),
-                                    ),
-                                  ),
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                  ),
-                                  buttonDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                  isDense: true,
-                                  dropdownElevation: 3,
-                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
-                                  //dropdownWidth: 250,
-                                  //offset: const Offset(-130, 0),
-                                  iconSize: 15,
-                                  itemHeight: 20,
-                                  itemPadding: const EdgeInsets.symmetric(horizontal: 5),
-                                  items: langDropDownList
-                                      .map((item) => DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.only(bottom: 3),
-                                                child: Text(
-                                                  item,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    //fontWeight: FontWeight.bold,
-                                                    //color: Colors.white,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              )
-                                            ],
-                                          )))
-                                      .toList(),
-                                  value: langDropDownSelected,
-                                  onChanged: (value) async {
-                                    langDropDownSelected = value.toString();
-                                    for (var lang in languageList) {
-                                      if (lang.langInitial == value) {
-                                        lang.selected = true;
-                                        curActiveLang = lang.langInitial;
-                                        var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
-                                        curLangText = TranslationText.fromJson(jsonData);
-                                      } else {
-                                        lang.selected = false;
-                                      }
-                                    }
-
-                                    topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
-                                    //sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
-
-                                    //Json Write
-                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                    languageList.map((lang) => lang.toJson()).toList();
-                                    File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
-                                    Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
-                                    setState(() {});
-                                    await Future.delayed(const Duration(seconds: 2));
-                                    Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
-                                    setState(() {});
-                                  },
-                                )),
+                                    SizedBox(width: 2.5),
+                                    Text('Settings', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -851,3 +939,51 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
+//Menu items
+class MenuItem {
+  final String text;
+  //final IconData icon;
+
+  const MenuItem({
+    required this.text,
+    //required this.icon,
+  });
+}
+
+class MenuItems {
+  static const List<MenuItem> pathMenuItems = [_binFolder, modManFolder];
+  static const _binFolder = MenuItem(text: 'pso2_bin');
+  static const modManFolder = MenuItem(text: 'Mod Manager');
+
+  static Widget buildItem(context, MenuItem item) {
+    return Row(
+      children: [
+        // Icon(
+        //   item.icon,
+        //   color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+        //   size: 20,
+        // ),
+        // const SizedBox(
+        //   width: 5,
+        // ),
+        Text(
+          item.text,
+          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, MenuItem item) async {
+    switch (item) {
+      case MenuItems._binFolder:
+        //binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
+        break;
+      case MenuItems.modManFolder:
+        //mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
+        break;
+    }
+  }
+}
+

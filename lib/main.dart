@@ -163,48 +163,5 @@ class UpperCaseTextFormatter extends TextInputFormatter {
   }
 }
 
-class MenuItem {
-  final String text;
-  final IconData icon;
 
-  const MenuItem({
-    required this.text,
-    required this.icon,
-  });
-}
 
-class MenuItems {
-  static const List<MenuItem> pathMenuItems = [_binFolder, modManFolder];
-  static const _binFolder = MenuItem(text: 'pso2_bin', icon: Icons.folder);
-  static const modManFolder = MenuItem(text: 'Mod Manager', icon: Icons.folder_open_outlined);
-
-  static Widget buildItem(context, MenuItem item) {
-    return Row(
-      children: [
-        Icon(
-          item.icon,
-          color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-          size: 20,
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        Text(
-          item.text,
-          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, MenuItem item) async {
-    switch (item) {
-      case MenuItems._binFolder:
-        //binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
-        break;
-      case MenuItems.modManFolder:
-        //mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
-        break;
-    }
-  }
-}
