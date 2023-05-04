@@ -15,7 +15,11 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<List<CategoryType>> modFileStructureLoader() async {
+  //Get og file paths
+  ogDataFiles = Directory(Uri.file('$modManPso2binPath/data').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+
   List<CategoryType> structureFromJson = [];
+  List<CategoryType> cateTypes = [];
 
   //Load list from json
   if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
@@ -29,22 +33,46 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     final categoryDirsinMods = Directory(modManModsDirPath).listSync(recursive: false).whereType<Directory>();
     List<String> layerWearsGroup = ['Basewears', 'Innerwears', 'Outerwears', 'Setwears'];
     List<String> castPartsGroup = ['Cast Arm Parts', 'Cast Body Parts', 'Cast Leg Parts'];
-    List<Category> categories = [];
+    //List<Category> categories = [];
+
     for (var dir in categoryDirsinMods) {
       //Group categories
+      int groupPosition = 3;
       String group = 'Others';
       if (layerWearsGroup.contains(p.basename(dir.path))) {
         group = 'Layering Wears';
+        groupPosition = 1;
       } else if (castPartsGroup.contains(p.basename(dir.path))) {
         group = 'Cast Parts';
+        groupPosition = 2;
       } else {
         group = 'Others';
+        groupPosition = 3;
       }
-      categories.add(Category(p.basename(dir.path), group, Uri.directory(dir.path).toFilePath(), true, await itemsFetcher(dir.path)));
+
+      if (cateTypes.indexWhere((element) => element.groupName == group) == -1) {
+        cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.directory(dir.path).toFilePath(), true, await itemsFetcher(dir.path))]));
+      } else {
+        int index = cateTypes.indexWhere((element) => element.groupName == group);
+        cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.directory(dir.path).toFilePath(), true, await itemsFetcher(dir.path)));
+      }
+      //categories.add(Category(p.basename(dir.path), group, Uri.directory(dir.path).toFilePath(), true, await itemsFetcher(dir.path)));
     }
+
+    cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
   }
 
-  return [];
+  //Save to json
+  cateTypes.map((cateType) => cateType.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  //File(modManModsListJsonPath).writeAsStringSync(encoder.convert(categoryTypes));
+
+  //Clear refsheets
+  if (itemIconRefSheetsList.isNotEmpty) {
+    itemIconRefSheetsList.clear();
+  }
+
+  return cateTypes;
 }
 
 Future<List<Item>> itemsFetcher(String catePath) async {
@@ -89,10 +117,86 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       }
     }
 
-    items.add(Item(p.basename(dir.path), itemIcon, p.basename(catePath), Uri.directory(dir.path).toFilePath(), false, false, DateTime(0), false, []));
+    items.add(Item(p.basename(dir.path), itemIcon, p.basename(catePath), Uri.directory(dir.path).toFilePath(), false, false, DateTime(0), false, modsFetcher(dir.path, p.basename(catePath))));
   }
 
   return items;
+}
+
+List<Mod> modsFetcher(String itemPath, String cateName) {
+  final foldersInItemPath = Directory(itemPath).listSync(recursive: false).whereType<Directory>().toList();
+  List<Mod> mods = [];
+  for (var dir in foldersInItemPath) {
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    for (var element in imagesInModDir) {
+      modPreviewImages.add(Uri.file(element.path).toFilePath());
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    }
+
+    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [],
+        subModFetcher(dir.path, cateName, p.basename(itemPath))));
+  }
+
+  return mods;
+}
+
+List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
+  List<SubMod> submods = [];
+  //ices in main mod dir
+  final filesInMainModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  if (filesInMainModDir.isNotEmpty) {
+    List<ModFile> modFiles = [];
+    for (var file in filesInMainModDir) {
+      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //List<String> ogFilePaths = [];
+      // for (var element in ogFiles) {
+      //   ogFilePaths.add(element.path);
+      // }
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], DateTime(0), false, false, false));
+    }
+
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+    for (var element in imagesInModDir) {
+      modPreviewImages.add(Uri.file(element.path).toFilePath());
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    }
+
+    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+  }
+
+  //ices in sub dirs
+  final foldersInModDir = Directory(modPath).listSync(recursive: true).whereType<Directory>().toList();
+  for (var dir in foldersInModDir) {
+    final filesInDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+    List<ModFile> modFiles = [];
+    for (var file in filesInDir) {
+      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //List<String> ogFilePaths = [];
+      // for (var element in ogFiles) {
+      //   ogFilePaths.add(element.path);
+      // }
+
+      List<String> parentPaths = file.parent.path.split(modPath).last.split(Uri.file('/').toFilePath());
+
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], DateTime(0), false, false, false));
+    }
+  }
+
+  return submods;
 }
 
 // Future<List<CategoryType>> categoryTypesLoader() async {

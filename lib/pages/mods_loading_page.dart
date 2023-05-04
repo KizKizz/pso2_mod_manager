@@ -14,7 +14,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: categoryTypesLoader(),
+        future: modFileStructureLoader(),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,

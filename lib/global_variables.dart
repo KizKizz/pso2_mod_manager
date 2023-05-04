@@ -40,6 +40,5 @@ String versionToSkipUpdate = '';
 String? localChecksumMD5;
 String? win32ChecksumMD5;
 String win32CheckSumFilePath = '';
-List<String> ogDataFilePaths = [];
-//
+List<String> ogDataFiles = [];
 List<CategoryType> moddedItemsList = [];
