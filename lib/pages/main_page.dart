@@ -716,10 +716,6 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
 
-                          //Path menu
-
-                          //Language select
-
                           //Settings button
                           Tooltip(
                             message: curLangText!.darkModeTooltipText,
