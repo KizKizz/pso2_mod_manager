@@ -54,7 +54,10 @@ class _MainPageState extends State<MainPage> {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, 
+                    children: [
+                      //Title
                     Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: Text(
@@ -82,26 +85,24 @@ class _MainPageState extends State<MainPage> {
                         height: 25,
                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                         waitDuration: const Duration(seconds: 1),
-                        child: SizedBox(
-                          //width: 70,
-                          child: MaterialButton(
-                            onPressed: (() async {
-                              MyApp.themeNotifier.value = ThemeMode.light;
-                              final prefs = await SharedPreferences.getInstance();
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            MyApp.themeNotifier.value = ThemeMode.light;
+                            final prefs = await SharedPreferences.getInstance();
 
-                              prefs.setBool('isDarkModeOn', false);
-                              //setState(() {});
-                            }),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.dark_mode,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 5),
-                                Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
-                              ],
-                            ),
+                            prefs.setBool('isDarkModeOn', false);
+                            //setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.dark_mode,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 5),
+                              Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
                           ),
                         ),
                       ),
@@ -111,25 +112,23 @@ class _MainPageState extends State<MainPage> {
                         height: 25,
                         textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                         waitDuration: const Duration(seconds: 1),
-                        child: SizedBox(
-                          //width: 70,
-                          child: MaterialButton(
-                            onPressed: (() async {
-                              final prefs = await SharedPreferences.getInstance();
-                              MyApp.themeNotifier.value = ThemeMode.dark;
-                              prefs.setBool('isDarkModeOn', true);
-                              //setState(() {});
-                            }),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.light_mode,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 2.5),
-                                Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
-                              ],
-                            ),
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            MyApp.themeNotifier.value = ThemeMode.dark;
+                            prefs.setBool('isDarkModeOn', true);
+                            //setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.light_mode,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 2.5),
+                              Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
                           ),
                         ),
                       ),
@@ -259,6 +258,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
                           ),
+                          buttonHeight: 40,
                           dropdownDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
                             color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
@@ -331,6 +331,7 @@ class _MainPageState extends State<MainPage> {
 
                     //Path reselect
                     MaterialButton(
+                      height: 40,
                       onPressed: (() {}),
                       child: Row(
                         children: const [
@@ -339,7 +340,7 @@ class _MainPageState extends State<MainPage> {
                             size: 18,
                           ),
                           SizedBox(width: 5),
-                          Text('Reselect pso2bin path', style: TextStyle(fontWeight: FontWeight.normal),),
+                          Text('Reselect pso2_bin path', style: TextStyle(fontWeight: FontWeight.normal),),
                         ],
                       ),
                     ),
@@ -349,6 +350,7 @@ class _MainPageState extends State<MainPage> {
 
                     //Path reselect
                     MaterialButton(
+                      height: 40,
                       onPressed: (() {}),
                       child: Row(
                         children: const [

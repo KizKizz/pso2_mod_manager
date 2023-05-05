@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:advance_expansion_tile/advance_expansion_tile.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   String modViewItemName = '';
   List<Mod> modViewList = [];
+  List<Image> previewImages = [];
 
   @override
   void initState() {
@@ -292,6 +295,10 @@ class _HomePageState extends State<HomePage> {
                                                         )
                                                       ],
                                                     ),
+                                                    // onTapDown: (details) {
+                                                    //   modViewList = [];
+                                                    //   setState(() {});
+                                                    // },
                                                     onTap: () {
                                                       modViewItemName = curItem.itemName;
                                                       modViewList = curItem.mods;
@@ -320,50 +327,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget modsView() {
-    if (modViewList.isEmpty) {
-      return Column(children: [
-        AppBar(
-          automaticallyImplyLeading: false,
-          actions: <Widget>[Container()],
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.availableModsHeaderText)),
-          backgroundColor: Theme.of(context).canvasColor,
-          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-          toolbarHeight: 30,
-          elevation: 0,
-        ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          //color: Theme.of(context).textTheme.headlineMedium?.color,
-        ),
-        Expanded(
-            child: ScrollbarTheme(
-                data: ScrollbarThemeData(
-                  thumbColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.hovered)) {
-                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                    }
-                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                  }),
-                ),
-                child: SingleChildScrollView(child: Container())))
-      ]);
-    } else {
-      return Column(children: [
-        AppBar(
-          automaticallyImplyLeading: false,
-          actions: <Widget>[Container()],
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(modViewItemName)),
-          backgroundColor: Theme.of(context).canvasColor,
-          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-          toolbarHeight: 30,
-          elevation: 0,
-        ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          //color: Theme.of(context).textTheme.headlineMedium?.color,
-        ),
+    return Column(children: [
+      AppBar(
+        automaticallyImplyLeading: false,
+        actions: <Widget>[Container()],
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(modViewItemName)),
+        backgroundColor: Theme.of(context).canvasColor,
+        foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+        toolbarHeight: 30,
+        elevation: 0,
+      ),
+      const Divider(
+        height: 1,
+        thickness: 1,
+        //color: Theme.of(context).textTheme.headlineMedium?.color,
+      ),
+      if (modViewList.isNotEmpty)
         Expanded(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
@@ -385,8 +364,16 @@ class _HomePageState extends State<HomePage> {
                             margin: const EdgeInsets.all(1),
                             color: Theme.of(context).canvasColor,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                            child: ExpansionTile(
+                            child: AdvanceExpansionTile(
+                              key: GlobalKey(),
                               title: Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                              onTap: () {
+                                previewImages.clear();
+                                for (var path in curMod.previewImages) {
+                                  previewImages.add(Image.file(File(path)));
+                                }
+                                setState(() {});
+                              },
                               children: [
                                 ListView.builder(
                                     shrinkWrap: true,
@@ -414,8 +401,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         }))))
-      ]);
-    }
+    ]);
   }
 
   Widget setList() {
@@ -476,51 +462,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget modPreviewView() {
-    if (modViewList.isEmpty) {
-      return Column(children: [
-        AppBar(
-          automaticallyImplyLeading: false,
-          actions: <Widget>[Container()],
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.previewHeaderText)),
-          backgroundColor: Theme.of(context).canvasColor,
-          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-          toolbarHeight: 30,
-          elevation: 0,
-        ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          //color: Theme.of(context).textTheme.headlineMedium?.color,
-        ),
+    return Column(children: [
+      AppBar(
+        automaticallyImplyLeading: false,
+        actions: <Widget>[Container()],
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text('Preview for $modViewItemName')),
+        backgroundColor: Theme.of(context).canvasColor,
+        foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+        toolbarHeight: 30,
+        elevation: 0,
+      ),
+      const Divider(
+        height: 1,
+        thickness: 1,
+        //color: Theme.of(context).textTheme.headlineMedium?.color,
+      ),
+      if (previewImages.isEmpty)
         Expanded(
-            child: ScrollbarTheme(
-                data: ScrollbarThemeData(
-                  thumbColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.hovered)) {
-                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                    }
-                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                  }),
-                ),
-                child: SingleChildScrollView(child: Container())))
-      ]);
-    } else {
-      return Column(children: [
-        AppBar(
-          automaticallyImplyLeading: false,
-          actions: <Widget>[Container()],
-          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text('Preview for $modViewItemName')),
-          backgroundColor: Theme.of(context).canvasColor,
-          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-          toolbarHeight: 30,
-          elevation: 0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Text(
+                'No preview available',
+                style: TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
         ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          //color: Theme.of(context).textTheme.headlineMedium?.color,
+      if (previewImages.isNotEmpty)
+        Expanded(
+          child: CarouselSlider(
+        options: CarouselOptions(
+          aspectRatio: 2.0,
+          viewportFraction: 1,
+          enlargeCenterPage: true,
+          scrollDirection: Axis.vertical,
+          reverse: true,
+          autoPlayInterval: const Duration(seconds: 1),
+          autoPlay: previewImages.length > 1 ? true : false,
         ),
-      ]);
-    }
+        items: previewImages,
+      ),
+        )
+    ]);
   }
 }
