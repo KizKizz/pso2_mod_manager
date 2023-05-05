@@ -71,7 +71,9 @@ class _MainPageState extends State<MainPage> {
                       thickness: 1,
                       //color: Theme.of(context).textTheme.headlineMedium?.color,
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(
+                      height: 5,
+                    ),
 
                     //Dark theme
                     if (MyApp.themeNotifier.value == ThemeMode.dark)
@@ -131,7 +133,9 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(
+                      height: 5,
+                    ),
 
                     //Language
                     Tooltip(
@@ -232,13 +236,21 @@ class _MainPageState extends State<MainPage> {
                               onPressed: (() {}),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.language, size: 18,),
-                                  const SizedBox(width: 5,),
+                                  const Icon(
+                                    Icons.language,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
                                   Expanded(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Current language: $langDropDownSelected', style: const TextStyle(fontWeight: FontWeight.normal),),
+                                        Text(
+                                          'Current language: $langDropDownSelected',
+                                          style: const TextStyle(fontWeight: FontWeight.normal),
+                                        ),
                                         const Icon(Icons.arrow_drop_down)
                                       ],
                                     ),
@@ -273,10 +285,10 @@ class _MainPageState extends State<MainPage> {
                                         child: Text(
                                           item,
                                           style: const TextStyle(
-                                            //fontSize: 14,
-                                            //fontWeight: FontWeight.bold,
-                                            //color: Colors.white,
-                                          ),
+                                              //fontSize: 14,
+                                              //fontWeight: FontWeight.bold,
+                                              //color: Colors.white,
+                                              ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       )
@@ -313,72 +325,104 @@ class _MainPageState extends State<MainPage> {
                         )),
                       ),
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(
+                      height: 5,
+                    ),
 
-                    
                     //Path reselect
-                    Tooltip(
-                      message: curLangText!.pathsReselectTooltipText,
-                      height: 25,
-                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                      waitDuration: const Duration(seconds: 1),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          customButton: AbsorbPointer(
-                            absorbing: true,
-                            child: MaterialButton(
-                              onPressed: (() {}),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.folder_open_outlined,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                        const Icon(Icons.arrow_drop_down)
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                    MaterialButton(
+                      onPressed: (() {}),
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.folder_open_outlined,
+                            size: 18,
                           ),
-                          isDense: true,
-                          items: [
-                            ...MenuItems.pathMenuItems.map(
-                              (item) => DropdownMenuItem<MenuItem>(
-                                value: item,
-                                alignment: AlignmentDirectional.center,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                  MenuItems.buildItem(context, item)
-                                ],),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            MenuItems.onChanged(context, value as MenuItem);
-                          },
-                          itemHeight: 35,
-                          //dropdownWidth: 130,
-                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                          dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                          ),
-              
-                          dropdownElevation: 8,
-                          offset: const Offset(0, -3),
-                        ),
+                          SizedBox(width: 5),
+                          Text('Reselect pso2bin path', style: TextStyle(fontWeight: FontWeight.normal),),
+                        ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    //Path reselect
+                    MaterialButton(
+                      onPressed: (() {}),
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.folder_open_outlined,
+                            size: 18,
+                          ),
+                          SizedBox(width: 5),
+                          Text('Reselect Mod Manager folder path', style: TextStyle(fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ),
+                    // Tooltip(
+                    //   message: curLangText!.pathsReselectTooltipText,
+                    //   height: 25,
+                    //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                    //   waitDuration: const Duration(seconds: 1),
+                    //   child: DropdownButtonHideUnderline(
+                    //     child: DropdownButton2(
+                    //       customButton: AbsorbPointer(
+                    //         absorbing: true,
+                    //         child: MaterialButton(
+                    //           onPressed: (() {}),
+                    //           child: Row(
+                    //             children: [
+                    //               const Icon(
+                    //                 Icons.folder_open_outlined,
+                    //                 size: 18,
+                    //               ),
+                    //               const SizedBox(width: 5),
+                    //               Expanded(
+                    //                 child: Row(
+                    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //                   children: [
+                    //                     Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                    //                     const Icon(Icons.arrow_drop_down)
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       isDense: true,
+                    //       items: [
+                    //         ...MenuItems.pathMenuItems.map(
+                    //           (item) => DropdownMenuItem<MenuItem>(
+                    //             value: item,
+                    //             alignment: AlignmentDirectional.center,
+                    //             child: Row(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: [
+                    //               MenuItems.buildItem(context, item)
+                    //             ],),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //       onChanged: (value) {
+                    //         MenuItems.onChanged(context, value as MenuItem);
+                    //       },
+                    //       itemHeight: 35,
+                    //       //dropdownWidth: 130,
+                    //       itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                    //       dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                    //       dropdownDecoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(3),
+                    //         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                    //       ),
+
+                    //       dropdownElevation: 8,
+                    //       offset: const Offset(0, -3),
+                    //     ),
+                    //   ),
+                    // ),
                   ]),
                 ),
               ))),
@@ -639,82 +683,82 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Open Folder menu
-                          Tooltip(
-                            message: curLangText!.foldersTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  customButton: AbsorbPointer(
-                                    absorbing: true,
-                                    child: MaterialButton(
-                                      onPressed: (() {}),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.folder_copy_outlined,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  isDense: true,
-                                  items: topBtnMenuItems
-                                      .map((item) => DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
-                                              if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
-                                              if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              Container(
-                                                padding: const EdgeInsets.only(bottom: 3),
-                                                child: Text(
-                                                  item,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    //fontWeight: FontWeight.bold,
-                                                    //color: Colors.white,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              )
-                                            ],
-                                          )))
-                                      .toList(),
-                                  onChanged: (value) async {
-                                    if (value == curLangText!.modsFolderBtnText) {
-                                      await launchUrl(Uri.parse('file:$modsDirPath'));
-                                    } else if (value == curLangText!.backupFolderBtnText) {
-                                      await launchUrl(Uri.parse('file:$backupDirPath'));
-                                    } else if (value == curLangText!.deletedItemsBtnText) {
-                                      await launchUrl(Uri.parse('file:$deletedItemsPath'));
-                                    }
-                                  },
-                                  itemHeight: 35,
-                                  dropdownWidth: 130,
-                                  itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                                  dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                  ),
-                                  dropdownElevation: 8,
-                                  offset: const Offset(0, -3),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Tooltip(
+                          //   message: curLangText!.foldersTooltipText,
+                          //   height: 25,
+                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                          //   waitDuration: const Duration(seconds: 1),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(right: 5),
+                          //     child: DropdownButtonHideUnderline(
+                          //       child: DropdownButton2(
+                          //         customButton: AbsorbPointer(
+                          //           absorbing: true,
+                          //           child: MaterialButton(
+                          //             onPressed: (() {}),
+                          //             child: Row(
+                          //               children: [
+                          //                 const Icon(
+                          //                   Icons.folder_copy_outlined,
+                          //                   size: 18,
+                          //                 ),
+                          //                 const SizedBox(width: 2.5),
+                          //                 Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         isDense: true,
+                          //         items: topBtnMenuItems
+                          //             .map((item) => DropdownMenuItem<String>(
+                          //                 value: item,
+                          //                 child: Row(
+                          //                   mainAxisAlignment: MainAxisAlignment.start,
+                          //                   children: [
+                          //                     if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
+                          //                     if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
+                          //                     if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
+                          //                     const SizedBox(
+                          //                       width: 5,
+                          //                     ),
+                          //                     Container(
+                          //                       padding: const EdgeInsets.only(bottom: 3),
+                          //                       child: Text(
+                          //                         item,
+                          //                         style: const TextStyle(
+                          //                           fontSize: 14,
+                          //                           //fontWeight: FontWeight.bold,
+                          //                           //color: Colors.white,
+                          //                         ),
+                          //                         overflow: TextOverflow.ellipsis,
+                          //                       ),
+                          //                     )
+                          //                   ],
+                          //                 )))
+                          //             .toList(),
+                          //         onChanged: (value) async {
+                          //           if (value == curLangText!.modsFolderBtnText) {
+                          //             await launchUrl(Uri.parse('file:$modsDirPath'));
+                          //           } else if (value == curLangText!.backupFolderBtnText) {
+                          //             await launchUrl(Uri.parse('file:$backupDirPath'));
+                          //           } else if (value == curLangText!.deletedItemsBtnText) {
+                          //             await launchUrl(Uri.parse('file:$deletedItemsPath'));
+                          //           }
+                          //         },
+                          //         itemHeight: 35,
+                          //         dropdownWidth: 130,
+                          //         itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          //         dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                          //         dropdownDecoration: BoxDecoration(
+                          //           borderRadius: BorderRadius.circular(3),
+                          //           color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                          //         ),
+                          //         dropdownElevation: 8,
+                          //         offset: const Offset(0, -3),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Settings button
                           Tooltip(
@@ -982,4 +1026,3 @@ class MenuItems {
     }
   }
 }
-

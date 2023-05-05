@@ -39,12 +39,12 @@ class _HomePageState extends State<HomePage> {
         if (!context.watch<StateProvider>().setsWindowVisible) modsView(),
         if (context.watch<StateProvider>().setsWindowVisible) setList(),
         if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
-        if (!context.watch<StateProvider>().previewWindowVisible) filesView(),
+        if (!context.watch<StateProvider>().previewWindowVisible) appliedModsView(),
         if (context.watch<StateProvider>().previewWindowVisible)
           MultiSplitView(
             axis: Axis.vertical,
             controller: _verticalViewsController,
-            children: [modPreviewView(), filesView()],
+            children: [modPreviewView(), appliedModsView()],
           )
       ],
     );
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         AppBar(
           automaticallyImplyLeading: false,
-            actions: <Widget>[Container()],
+          actions: <Widget>[Container()],
           title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.itemsHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage> {
       return Column(children: [
         AppBar(
           automaticallyImplyLeading: false,
-            actions: <Widget>[Container()],
+          actions: <Widget>[Container()],
           title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.availableModsHeaderText)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -352,7 +352,7 @@ class _HomePageState extends State<HomePage> {
       return Column(children: [
         AppBar(
           automaticallyImplyLeading: false,
-            actions: <Widget>[Container()],
+          actions: <Widget>[Container()],
           title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(modViewItemName)),
           backgroundColor: Theme.of(context).canvasColor,
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -426,11 +426,101 @@ class _HomePageState extends State<HomePage> {
     return Container();
   }
 
-  Widget filesView() {
-    return Container();
+  Widget appliedModsView() {
+    if (modViewList.isEmpty) {
+      return Column(children: [
+        AppBar(
+          automaticallyImplyLeading: false,
+          actions: <Widget>[Container()],
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.appliedModsHeadersText)),
+          backgroundColor: Theme.of(context).canvasColor,
+          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+          toolbarHeight: 30,
+          elevation: 0,
+        ),
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+        Expanded(
+            child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.hovered)) {
+                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                    }
+                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                  }),
+                ),
+                child: SingleChildScrollView(child: Container())))
+      ]);
+    } else {
+      return Column(children: [
+        AppBar(
+          automaticallyImplyLeading: false,
+          actions: <Widget>[Container()],
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.appliedModsHeadersText)),
+          backgroundColor: Theme.of(context).canvasColor,
+          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+          toolbarHeight: 30,
+          elevation: 0,
+        ),
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+      ]);
+    }
   }
 
   Widget modPreviewView() {
-    return Container();
+    if (modViewList.isEmpty) {
+      return Column(children: [
+        AppBar(
+          automaticallyImplyLeading: false,
+          actions: <Widget>[Container()],
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.previewHeaderText)),
+          backgroundColor: Theme.of(context).canvasColor,
+          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+          toolbarHeight: 30,
+          elevation: 0,
+        ),
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+        Expanded(
+            child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.hovered)) {
+                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                    }
+                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                  }),
+                ),
+                child: SingleChildScrollView(child: Container())))
+      ]);
+    } else {
+      return Column(children: [
+        AppBar(
+          automaticallyImplyLeading: false,
+          actions: <Widget>[Container()],
+          title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text('Preview for $modViewItemName')),
+          backgroundColor: Theme.of(context).canvasColor,
+          foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
+          toolbarHeight: 30,
+          elevation: 0,
+        ),
+        const Divider(
+          height: 1,
+          thickness: 1,
+          //color: Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+      ]);
+    }
   }
 }
