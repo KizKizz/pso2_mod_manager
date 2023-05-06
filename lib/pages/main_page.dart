@@ -440,19 +440,25 @@ class _MainPageState extends State<MainPage> {
                   Expanded(
                     child: MoveWindow(
                         child: Padding(
-                      padding: const EdgeInsets.only(left: 10, bottom: 7),
+                      padding: const EdgeInsets.only(left: 10),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Tooltip(
-                              message: 'Version: $appVersion | Made by キス★',
-                              height: 25,
-                              textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                              waitDuration: const Duration(seconds: 2),
-                              child: const Text(
-                                'PSO2NGS Mod Manager',
-                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                              )),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Tooltip(
+                                  message: 'Version: $appVersion | Made by キス★',
+                                  height: 25,
+                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                  waitDuration: const Duration(seconds: 2),
+                                  child: const Text(
+                                    'PSO2NGS Mod Manager',
+                                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                                  )),
+                            ],
+                          ),
                           if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
@@ -483,7 +489,7 @@ class _MainPageState extends State<MainPage> {
                   //Buttons
                   if (curLangText != null)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 7),
+                      padding: const EdgeInsets.only(bottom: 0),
                       child: Row(
                         children: [
                           //Add Items/Mods

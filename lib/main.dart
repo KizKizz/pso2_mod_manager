@@ -53,9 +53,8 @@ class MyApp extends StatelessWidget {
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-                //primarySwatch: Colors.blueGrey
-                primaryColor: Colors.black),
+            theme: ThemeData(primarySwatch: Colors.green, colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow)),
+            //primaryColor: Colors.black),
             darkTheme: ThemeData.dark(),
             themeMode: currentMode,
             home: const MyHomePage(
@@ -159,6 +158,3 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     );
   }
 }
-
-
-

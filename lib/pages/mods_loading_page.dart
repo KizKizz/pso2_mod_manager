@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
@@ -77,7 +79,12 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
             } else {
               moddedItemsList = snapshot.data;
               
-              return const HomePage();
+              return Stack(
+                children: [
+                  Image.file(File('D:\\Download\\Konachan.com - 355752 sample.jpg'), width: double.infinity, height: double.infinity, fit: BoxFit.cover,),
+                  const HomePage(),
+                ],
+              );
             }
           }
         });
