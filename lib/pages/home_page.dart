@@ -23,7 +23,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
+  List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
+
   String modViewItemName = '';
+  String previewModName = '';
+  bool hoveringOnSubmod = false;
   List<Mod> modViewList = [];
   List<Image> previewImages = [];
 
@@ -295,11 +299,11 @@ class _HomePageState extends State<HomePage> {
                                                         )
                                                       ],
                                                     ),
-                                                    // onTapDown: (details) {
-                                                    //   modViewList = [];
-                                                    //   setState(() {});
-                                                    // },
                                                     onTap: () {
+                                                      for (var element in modViewETKeys) {
+                                                        element.currentState?.collapse();
+                                                      }
+                                                      modViewETKeys.clear();
                                                       modViewItemName = curItem.itemName;
                                                       modViewList = curItem.mods;
                                                       setState(() {});
@@ -331,7 +335,7 @@ class _HomePageState extends State<HomePage> {
       AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(modViewItemName)),
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: modViewItemName.isNotEmpty ? Text(modViewItemName) : Text(curLangText!.availableModsHeaderText)),
         backgroundColor: Theme.of(context).canvasColor,
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -359,45 +363,76 @@ class _HomePageState extends State<HomePage> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: modViewList.length,
                         itemBuilder: (context, modIndex) {
+                          modViewETKeys.add(GlobalKey());
                           var curMod = modViewList[modIndex];
-                          return Card(
-                            margin: const EdgeInsets.all(1),
-                            color: Theme.of(context).canvasColor,
-                            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                            child: AdvanceExpansionTile(
-                              key: GlobalKey(),
-                              title: Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                              onTap: () {
-                                previewImages.clear();
+                          return InkWell(
+                            //Hover for preview
+                            onTap: () {},
+                            onHover: (hovering) {
+                              if (hovering) {
+                                previewModName = curMod.modName;
                                 for (var path in curMod.previewImages) {
                                   previewImages.add(Image.file(File(path)));
                                 }
-                                setState(() {});
-                              },
-                              children: [
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: curMod.submods.length,
-                                    itemBuilder: (context, submodIndex) {
-                                      var curSubmod = curMod.submods[submodIndex];
-                                      return ExpansionTile(
-                                        title: Text(curSubmod.submodName),
-                                        children: [
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              itemCount: curSubmod.modFiles.length,
-                                              itemBuilder: (context, modFileIndex) {
-                                                var curModFile = curSubmod.modFiles[modFileIndex];
-                                                return ListTile(
-                                                  title: Text(curModFile.modFileName),
-                                                );
-                                              })
-                                        ],
-                                      );
-                                    }),
-                              ],
+                              } else {
+                                previewModName = '';
+                                previewImages.clear();
+                              }
+                              setState(() {});
+                            },
+                            child: Card(
+                              margin: const EdgeInsets.all(1),
+                              color: Theme.of(context).canvasColor,
+                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                              child: AdvanceExpansionTile(
+                                key: modViewETKeys[modIndex],
+                                title: Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                children: [
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: curMod.submods.length,
+                                      itemBuilder: (context, submodIndex) {
+                                        var curSubmod = curMod.submods[submodIndex];
+                                        return InkWell(
+                                          //submod preview images
+                                          onTap: () {},
+                                          onHover: (hovering) {
+                                            if (hovering) {
+                                              hoveringOnSubmod = true;
+                                              previewModName = curSubmod.submodName;
+                                              previewImages.clear();
+                                              for (var path in curSubmod.previewImages) {
+                                                previewImages.add(Image.file(File(path)));
+                                              }
+                                            } else {
+                                              previewModName = curMod.modName;
+                                              hoveringOnSubmod = false;
+                                              for (var path in curMod.previewImages) {
+                                                previewImages.add(Image.file(File(path)));
+                                              }
+                                            }
+                                            setState(() {});
+                                          },
+                                          child: ExpansionTile(
+                                            title: Text(curSubmod.submodName),
+                                            children: [
+                                              ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  itemCount: curSubmod.modFiles.length,
+                                                  itemBuilder: (context, modFileIndex) {
+                                                    var curModFile = curSubmod.modFiles[modFileIndex];
+                                                    return ListTile(
+                                                      title: Text(curModFile.modFileName),
+                                                    );
+                                                  })
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                ],
+                              ),
                             ),
                           );
                         }))))
@@ -466,7 +501,7 @@ class _HomePageState extends State<HomePage> {
       AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text('Preview for $modViewItemName')),
+        title: Container(padding: const EdgeInsets.only(bottom: 10), child: previewModName.isNotEmpty ? Text('Preview: $previewModName') : Text(curLangText!.previewHeaderText)),
         backgroundColor: Theme.of(context).canvasColor,
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -477,7 +512,7 @@ class _HomePageState extends State<HomePage> {
         thickness: 1,
         //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
-      if (previewImages.isEmpty)
+      if (previewImages.isEmpty || (previewImages.isEmpty && hoveringOnSubmod))
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -490,20 +525,20 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      if (previewImages.isNotEmpty)
+      if ((previewImages.isNotEmpty && !hoveringOnSubmod) || (previewImages.isNotEmpty && hoveringOnSubmod))
         Expanded(
           child: CarouselSlider(
-        options: CarouselOptions(
-          aspectRatio: 2.0,
-          viewportFraction: 1,
-          enlargeCenterPage: true,
-          scrollDirection: Axis.vertical,
-          reverse: true,
-          autoPlayInterval: const Duration(seconds: 1),
-          autoPlay: previewImages.length > 1 ? true : false,
-        ),
-        items: previewImages,
-      ),
+            options: CarouselOptions(
+              aspectRatio: 2.0,
+              viewportFraction: 1,
+              enlargeCenterPage: true,
+              scrollDirection: Axis.vertical,
+              reverse: true,
+              autoPlayInterval: const Duration(seconds: 1),
+              autoPlay: previewImages.length > 1 ? true : false,
+            ),
+            items: previewImages,
+          ),
         )
     ]);
   }

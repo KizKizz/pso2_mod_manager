@@ -19,7 +19,7 @@ String curActiveLang = '';
 List<String> langDropDownList = [];
 String langDropDownSelected = '';
 List<String> topBtnMenuItems = [];
-String s = '/';
+//String s = '/';
 String appVersion = '';
 int refSheetsVersion = -1;
 FilePickerResult? checksumLocation;

@@ -78,64 +78,6 @@ class _MainPageState extends State<MainPage> {
                       height: 5,
                     ),
 
-                    //Dark theme
-                    if (MyApp.themeNotifier.value == ThemeMode.dark)
-                      Tooltip(
-                        message: curLangText!.darkModeTooltipText,
-                        height: 25,
-                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                        waitDuration: const Duration(seconds: 1),
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            MyApp.themeNotifier.value = ThemeMode.light;
-                            final prefs = await SharedPreferences.getInstance();
-
-                            prefs.setBool('isDarkModeOn', false);
-                            //setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.dark_mode,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 5),
-                              Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (MyApp.themeNotifier.value == ThemeMode.light)
-                      Tooltip(
-                        message: curLangText!.lightModeTooltipText,
-                        height: 25,
-                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                        waitDuration: const Duration(seconds: 1),
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            final prefs = await SharedPreferences.getInstance();
-                            MyApp.themeNotifier.value = ThemeMode.dark;
-                            prefs.setBool('isDarkModeOn', true);
-                            //setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.light_mode,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 2.5),
-                              Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-
                     //Language
                     Tooltip(
                       message: curLangText!.languageTooltipText,
@@ -240,7 +182,7 @@ class _MainPageState extends State<MainPage> {
                                     size: 18,
                                   ),
                                   const SizedBox(
-                                    width: 5,
+                                    width: 10,
                                   ),
                                   Expanded(
                                     child: Row(
@@ -329,6 +271,66 @@ class _MainPageState extends State<MainPage> {
                       height: 5,
                     ),
 
+                    
+
+                    //Dark theme
+                    if (MyApp.themeNotifier.value == ThemeMode.dark)
+                      Tooltip(
+                        message: curLangText!.darkModeTooltipText,
+                        height: 25,
+                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                        waitDuration: const Duration(seconds: 1),
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            MyApp.themeNotifier.value = ThemeMode.light;
+                            final prefs = await SharedPreferences.getInstance();
+
+                            prefs.setBool('isDarkModeOn', false);
+                            //setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.dark_mode,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (MyApp.themeNotifier.value == ThemeMode.light)
+                      Tooltip(
+                        message: curLangText!.lightModeTooltipText,
+                        height: 25,
+                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                        waitDuration: const Duration(seconds: 1),
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            MyApp.themeNotifier.value = ThemeMode.dark;
+                            prefs.setBool('isDarkModeOn', true);
+                            //setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.light_mode,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 2.5),
+                              Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
                     //Path reselect
                     MaterialButton(
                       height: 40,
@@ -339,7 +341,7 @@ class _MainPageState extends State<MainPage> {
                             Icons.folder_open_outlined,
                             size: 18,
                           ),
-                          SizedBox(width: 5),
+                          SizedBox(width: 10),
                           Text('Reselect pso2_bin path', style: TextStyle(fontWeight: FontWeight.normal),),
                         ],
                       ),
@@ -358,7 +360,7 @@ class _MainPageState extends State<MainPage> {
                             Icons.folder_open_outlined,
                             size: 18,
                           ),
-                          SizedBox(width: 5),
+                          SizedBox(width: 10),
                           Text('Reselect Mod Manager folder path', style: TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
@@ -498,7 +500,7 @@ class _MainPageState extends State<MainPage> {
                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                     element.deleteSync(recursive: true);
                                   });
-                                  Directory('${Directory.current.path}${s}unpack').listSync(recursive: false).forEach((element) {
+                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
                                     element.deleteSync(recursive: true);
                                   });
                                   modAddHandler(context);
@@ -910,7 +912,7 @@ class _MainPageState extends State<MainPage> {
                               ? (() {
                                   //Indexing files
 
-                                  for (var file in Directory('$modManRefSheetsDirPath${s}Player').listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                                  for (var file in Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
                                     localRefSheetsList.add(file.path);
                                   }
 

@@ -82,9 +82,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   void initState() {
-    if (Platform.isWindows) {
-      s = '\\';
-    }
     windowManager.addListener(this);
     miscCheck();
     getSortType();

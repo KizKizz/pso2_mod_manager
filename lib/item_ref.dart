@@ -32,8 +32,8 @@ Future<List<List<String>>> popSheetsList(String csvDirPath) async {
 Future<void> downloadNewRefSheets(context, List<String> filePaths) async {
   final dio = Dio();
   for (var path in filePaths) {
-    String localPath = path.replaceAll(s, '/');
-    String githubPath = localPath.replaceFirst(modManRefSheetsDirPath.replaceAll(s, '/'), 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets');
+    String localPath = path.replaceAll(Uri.file('/').toFilePath(), '/');
+    String githubPath = localPath.replaceFirst(modManRefSheetsDirPath.replaceAll(Uri.file('/').toFilePath(), '/'), 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets');
 
     await dio.download(githubPath, path);
     Provider.of<StateProvider>(context, listen: false).refSheetsCountUp();
