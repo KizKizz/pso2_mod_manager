@@ -53,9 +53,31 @@ class MyApp extends StatelessWidget {
         builder: (_, ThemeMode currentMode, __) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(primarySwatch: Colors.green, colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow)),
-            //primaryColor: Colors.black),
-            darkTheme: ThemeData.dark(),
+            // theme: ThemeData(primarySwatch: Colors.green, colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow)),
+            // //primaryColor: Colors.black),
+            // darkTheme: ThemeData.dark(),
+            //themeMode: ThemeMode.light, // Change it as you want
+            theme: ThemeData(
+                primaryColor: Colors.white,
+                primaryColorLight: Colors.amber,
+                primaryColorDark: Colors.black,
+                brightness: Brightness.light,
+                canvasColor: Colors.white,
+                //indicatorColor: Colors.white,
+                primarySwatch: Colors.red,
+                // next line is important!
+                appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark)),
+            darkTheme: ThemeData(
+                primaryColor: Colors.black,
+                primaryColorLight: Colors.black,
+                primaryColorDark: Colors.black,
+                brightness: Brightness.dark,
+                canvasColor: Colors.grey.shade900,
+                //indicatorColor: Colors.white,
+                primarySwatch: Colors.cyan,
+                // next line is important!
+                appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)),
+
             themeMode: currentMode,
             home: const MyHomePage(
               title: '',
@@ -120,6 +142,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //UI opacity
+      Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
+
       //Darkmode check
       isDarkModeOn = (prefs.getBool('isDarkModeOn') ?? false);
       if (isDarkModeOn) {

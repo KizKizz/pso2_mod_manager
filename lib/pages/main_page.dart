@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
@@ -28,6 +29,8 @@ import 'package:path/path.dart' as p;
 bool firstTimeUser = false;
 bool _checksumDownloading = false;
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+Color pickerColor = Color(0xff443a49);
+Color currentColor = Color(0xff443a49);
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -54,16 +57,14 @@ class _MainPageState extends State<MainPage> {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, 
-                    children: [
-                      //Title
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    //Title
                     Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: Text(
                         'Settings',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
                         ),
@@ -271,7 +272,62 @@ class _MainPageState extends State<MainPage> {
                       height: 5,
                     ),
 
-                    
+                    //Path reselect
+                    MaterialButton(
+                      height: 40,
+                      onPressed: (() {}),
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.folder_open_outlined,
+                            size: 18,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'Reselect pso2_bin path',
+                            style: TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    //Path reselect
+                    MaterialButton(
+                      height: 40,
+                      onPressed: (() {}),
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.folder_open_outlined,
+                            size: 18,
+                          ),
+                          SizedBox(width: 10),
+                          Text('Reselect Mod Manager folder path', style: TextStyle(fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    const Divider(
+                      indent: 5,
+                      endIndent: 5,
+                      height: 1,
+                      thickness: 1,
+                      //color: Theme.of(context).textTheme.headlineMedium?.color,
+                    ),
+
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      child: Text(
+                        'Theme:',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
 
                     //Dark theme
                     if (MyApp.themeNotifier.value == ThemeMode.dark)
@@ -321,7 +377,7 @@ class _MainPageState extends State<MainPage> {
                                 Icons.light_mode,
                                 size: 18,
                               ),
-                              const SizedBox(width: 2.5),
+                              const SizedBox(width: 10),
                               Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
@@ -331,40 +387,128 @@ class _MainPageState extends State<MainPage> {
                       height: 5,
                     ),
 
-                    //Path reselect
-                    MaterialButton(
-                      height: 40,
-                      onPressed: (() {}),
+                    //Opacity slider
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 7),
                       child: Row(
                         children: const [
                           Icon(
-                            Icons.folder_open_outlined,
+                            Icons.opacity_outlined,
                             size: 18,
                           ),
-                          SizedBox(width: 10),
-                          Text('Reselect pso2_bin path', style: TextStyle(fontWeight: FontWeight.normal),),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('UI Opacity:'),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
+                    Slider(
+                        min: 0.0,
+                        max: 1.0,
+                        value: context.watch<StateProvider>().uiOpacityValue,
+                        onChanged: (value) async {
+                          Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet(value);
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setDouble('uiOpacityValue', value);
+                        }),
+                    //Theme color picker
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 7),
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.color_lens,
+                            size: 18,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Colors:'),
+                        ],
+                      ),
                     ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 0, top: 5, bottom: 2.5),
+                              child: MaterialButton(
+                                minWidth: 242,
+                                height: 30,
+                                color: Theme.of(context).indicatorColor,
+                                onPressed: () {
+                                  getColor(context);
+                                },
+                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                  child: MaterialButton(
+                                    minWidth: 120,
+                                    height: 30,
+                                    color: Theme.of(context).primaryColor,
+                                    onPressed: () {},
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
+                                  child: MaterialButton(
+                                    minWidth: 120,
+                                    height: 30,
+                                    color: Theme.of(context).primaryColorLight,
+                                    onPressed: () {},
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                  child: MaterialButton(
+                                    minWidth: 120,
+                                    height: 30,
+                                    color: Theme.of(context).primaryColorDark,
+                                    onPressed: () {},
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
+                                  child: MaterialButton(
+                                    minWidth: 120,
+                                    height: 30,
+                                    color: Theme.of(context).canvasColor,
+                                    onPressed: () {},
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 0, top: 5, bottom: 2.5),
+                              child: MaterialButton(
+                                minWidth: 242,
+                                height: 30,
+                                //color: Theme.of(context).primaryColor,
+                                onPressed: () {},
+                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                child: const Text('Reset to default colors'),
+                              ),
+                            ),
+                          ],
+                        )),
 
-                    //Path reselect
-                    MaterialButton(
-                      height: 40,
-                      onPressed: (() {}),
-                      child: Row(
-                        children: const [
-                          Icon(
-                            Icons.folder_open_outlined,
-                            size: 18,
-                          ),
-                          SizedBox(width: 10),
-                          Text('Reselect Mod Manager folder path', style: TextStyle(fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ),
                     // Tooltip(
                     //   message: curLangText!.pathsReselectTooltipText,
                     //   height: 25,
@@ -918,7 +1062,8 @@ class _MainPageState extends State<MainPage> {
                               ? (() {
                                   //Indexing files
 
-                                  for (var file in Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
+                                  for (var file
+                                      in Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
                                     localRefSheetsList.add(file.path);
                                   }
 

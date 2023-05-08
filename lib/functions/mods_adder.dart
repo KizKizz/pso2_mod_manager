@@ -61,30 +61,20 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
 
       //Create folders inside Mods folder
       for (var field in fileInfos) {
-        Uri newFilePath = Uri();
         String curMainName = field.split(':')[0];
         String curSubName = field.split(':')[1];
         String curFile = field.split(':')[2];
         if (subNames.isEmpty) {
-          Directory(Uri.directory('$modManDirPath$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
+          Directory(Uri.directory('$modManModsDirPath$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
           File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curFile').toFilePath()).copySync(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curFile').toFilePath());
-          newFilePath = Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curFile');
         } else {
           Directory(Uri.directory('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName').toFilePath()).createSync(recursive: true);
           File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curSubName/$curFile').toFilePath())
               .copySync(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName/$curFile').toFilePath());
-          newFilePath = Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName/$curFile');
         }
 
-        foldersInNewItemPath.add(Directory(Uri.directory('$modManDirPath$category/$itemName/$curMainName').toFilePath()));
-
-        //Add sorted files to lists
-        if (p.extension(newFilePath.toFilePath()) == '') {
-          addedIceFiles.add(field);
-        } else if ((p.extension(newFilePath.toFilePath()) == '.jpg' || p.extension(newFilePath.toFilePath()) == '.png')) {
-          addedImgs.add(field);
-        } else if ((p.extension(newFilePath.toFilePath()) == '.mp4' || p.extension(newFilePath.toFilePath()) == '.webm')) {
-          addedVids.add(field);
+        if (foldersInNewItemPath.indexWhere((element) => element.path == Uri.file('$modManModsDirPath/$category/$itemName/$curMainName').toFilePath()) == -1) {
+          foldersInNewItemPath.add(Directory(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName').toFilePath()));
         }
       }
 

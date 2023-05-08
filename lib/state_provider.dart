@@ -19,6 +19,7 @@ class StateProvider with ChangeNotifier {
   String _newModDropDisplay = '';
   double _itemAdderSubItemETHeight = 40;
   bool _isChecksumMD5Match = true;
+  double _uiOpacityValue = 0.6;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -37,6 +38,12 @@ class StateProvider with ChangeNotifier {
   String get newModDropDisplay => _newModDropDisplay;
   double get itemAdderSubItemETHeight => _itemAdderSubItemETHeight;
   bool get isChecksumMD5Match => _isChecksumMD5Match;
+  double get uiOpacityValue => _uiOpacityValue;
+
+  void uiOpacityValueSet(double value) {
+    _uiOpacityValue = value;
+    notifyListeners();
+  }
 
   void checksumMD5MatchTrue() {
     _isChecksumMD5Match = true;
