@@ -29,8 +29,6 @@ import 'package:path/path.dart' as p;
 bool firstTimeUser = false;
 bool _checksumDownloading = false;
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-Color pickerColor = Color(0xff443a49);
-Color currentColor = Color(0xff443a49);
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -40,6 +38,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -438,9 +440,28 @@ class _MainPageState extends State<MainPage> {
                               child: MaterialButton(
                                 minWidth: 242,
                                 height: 30,
-                                color: Theme.of(context).indicatorColor,
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Color(lightModePrimarySwatch.value) : Color(darkModePrimarySwatch.value),
                                 onPressed: () {
-                                  getColor(context);
+                                  if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                    currentColor = Color(lightModePrimarySwatch.value);
+                                    pickerColor = currentColor;
+                                    getColor(context).then((_) {
+                                      CustomMaterialColor newMaterialColor = CustomMaterialColor(pickerColor.red, pickerColor.green, pickerColor.blue);
+                                      lightModePrimarySwatch = newMaterialColor.materialColor;
+                                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                      MyApp.themeNotifier.notifyListeners();
+                                    });
+                                  } else {
+                                    currentColor = Color(darkModePrimarySwatch.value);
+                                    pickerColor = currentColor;
+                                    getColor(context).then((_) {
+                                      CustomMaterialColor newMaterialColor = CustomMaterialColor(pickerColor.red, pickerColor.green, pickerColor.blue);
+                                      darkModePrimarySwatch = newMaterialColor.materialColor;
+                                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                      MyApp.themeNotifier.notifyListeners();
+                                    });
+                                  }
+                                  setState(() {});
                                 },
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                               ),
@@ -489,7 +510,27 @@ class _MainPageState extends State<MainPage> {
                                     minWidth: 120,
                                     height: 30,
                                     color: Theme.of(context).canvasColor,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                        currentColor = lightModeCanvasColor;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          lightModeCanvasColor = pickerColor;
+                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                          MyApp.themeNotifier.notifyListeners();
+                                        });
+                                        setState(() {});
+                                      } else {
+                                        currentColor = darkModeCanvasColor;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          darkModeCanvasColor = pickerColor;
+                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                          MyApp.themeNotifier.notifyListeners();
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
                                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   ),
                                 ),

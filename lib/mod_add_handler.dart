@@ -309,6 +309,7 @@ void modAddHandler(context) {
     return filesList;
   }
 
+  //Main popup
   showDialog(
       barrierDismissible: false,
       context: context,

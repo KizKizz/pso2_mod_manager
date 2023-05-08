@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +8,26 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:window_manager/window_manager.dart';
+
+//Colors
+Color lightModePrimaryColor = const Color(0xffffffff);
+Color lightModePrimaryColorLight = const Color(0xff3181ff);
+Color lightModePrimaryColorDark = const Color(0xff000000);
+Color lightModeCanvasColor = const Color(0xffffffff);
+MaterialColor lightModePrimarySwatch = Colors.blue;
+
+Color darkModePrimaryColor = const Color(0xff000000);
+Color darkModePrimaryColorLight = const Color(0xff3181ff);
+Color darkModePrimaryColorDark = const Color(0xff000000);
+Color darkModeCanvasColor = const Color(0xff272727);
+MaterialColor darkModePrimarySwatch = Colors.blue;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,23 +71,23 @@ class MyApp extends StatelessWidget {
             // darkTheme: ThemeData.dark(),
             //themeMode: ThemeMode.light, // Change it as you want
             theme: ThemeData(
-                primaryColor: Colors.white,
-                primaryColorLight: Colors.amber,
-                primaryColorDark: Colors.black,
+                primaryColor: lightModePrimaryColor,
+                primaryColorLight: lightModePrimaryColorLight,
+                primaryColorDark: lightModePrimaryColorDark,
                 brightness: Brightness.light,
-                canvasColor: Colors.white,
+                canvasColor: lightModeCanvasColor,
                 //indicatorColor: Colors.white,
-                primarySwatch: Colors.red,
+                primarySwatch: lightModePrimarySwatch,
                 // next line is important!
                 appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark)),
             darkTheme: ThemeData(
-                primaryColor: Colors.black,
-                primaryColorLight: Colors.black,
-                primaryColorDark: Colors.black,
+                primaryColor: darkModePrimaryColor,
+                primaryColorLight: darkModePrimaryColorLight,
+                primaryColorDark: darkModePrimaryColorDark,
                 brightness: Brightness.dark,
-                canvasColor: Colors.grey.shade900,
+                canvasColor: darkModeCanvasColor,
                 //indicatorColor: Colors.white,
-                primarySwatch: Colors.cyan,
+                primarySwatch: darkModePrimarySwatch,
                 // next line is important!
                 appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)),
 
