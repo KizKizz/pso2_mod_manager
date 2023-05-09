@@ -49,7 +49,7 @@ Future<void> main() async {
   lightModePrimarySwatch = savedLightMaterialColor.materialColor;
 
   darkModePrimaryColor = Color(prefs.getInt('darkModePrimaryColor') ?? 0xff000000);
-  darkModePrimaryColorLight = Color(prefs.getInt('darkModePrimaryColorLight') ?? 0xff3181ff);
+  darkModePrimaryColorLight = Color(prefs.getInt('darkModePrimaryColorLight') ?? 0xff706f6f);
   darkModePrimaryColorDark = Color(prefs.getInt('darkModePrimaryColorDark') ?? 0xff000000);
   darkModeCanvasColor = Color(prefs.getInt('darkModeCanvasColor') ?? 0xff2e2d2d);
   Color savedDarkModePrimarySwatch = Color(prefs.getInt('darkModePrimarySwatch') ?? Colors.blue.value);
