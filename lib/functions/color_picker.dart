@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:pso2_mod_manager/main.dart';
 
 Color pickerColor = const Color(0x001759c2);
 Color currentColor = const Color(0xff443a49);
+Color? selectedColor;
 
 class CustomMaterialColor {
   final int r;
@@ -68,7 +68,7 @@ Future<void> getColor(context) async {
                           ElevatedButton(
                             child: const Text('Close'),
                             onPressed: () {
-                              //Navigator.of(context).pop();
+                              Navigator.of(context).pop();
                             },
                           ),
                           ElevatedButton(
@@ -81,7 +81,8 @@ Future<void> getColor(context) async {
                             child: const Text('Got it'),
                             onPressed: () {
                               setState(() {
-                                
+                                selectedColor = pickerColor;
+                                //print(pickerColor);
                               });
                               Navigator.of(context).pop();
                             },

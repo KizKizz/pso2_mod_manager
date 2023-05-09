@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
+import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 
 class ModsLoadingPage extends StatefulWidget {
   const ModsLoadingPage({Key? key}) : super(key: key);
@@ -79,12 +82,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
             } else {
               moddedItemsList = snapshot.data;
               
-              return Stack(
-                children: [
-                  Image.file(File('D:\\Download\\Konachan.com - 355752 sample.jpg'), width: double.infinity, height: double.infinity, fit: BoxFit.cover,),
-                  const HomePage(),
-                ],
-              );
+              return const HomePage();
             }
           }
         });

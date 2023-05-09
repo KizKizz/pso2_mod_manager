@@ -97,7 +97,12 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
-        : viewsTheme;
+        : Stack(
+          children: [
+            if (context.watch<StateProvider>().backgroundImageTrigger)
+            Image.file(backgroundImage, width: double.infinity, height: double.infinity, fit: BoxFit.cover,),
+          viewsTheme
+          ]);
   }
 
   Widget itemsView() {
@@ -345,7 +350,7 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
         title: Container(padding: const EdgeInsets.only(bottom: 10), child: modViewItemName.isNotEmpty ? Text(modViewItemName) : Text(curLangText!.availableModsHeaderText)),
-        backgroundColor: Theme.of(context).cardColor.withOpacity(headersOpacityValue),
+        backgroundColor: Theme.of(context).canvasColor.withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
         elevation: 0,

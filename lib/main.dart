@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +27,11 @@ MaterialColor lightModePrimarySwatch = Colors.blue;
 Color darkModePrimaryColor = const Color(0xff000000);
 Color darkModePrimaryColorLight = const Color(0xff3181ff);
 Color darkModePrimaryColorDark = const Color(0xff000000);
-Color darkModeCanvasColor = const Color(0xff272727);
+Color darkModeCanvasColor = const Color(0xff1e1e1e);
 MaterialColor darkModePrimarySwatch = Colors.blue;
+
+//Background image
+File backgroundImage = File('');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +39,25 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   windowsWidth = (prefs.getDouble('windowsWidth') ?? 1280.0);
   windowsHeight = (prefs.getDouble('windowsHeight') ?? 720.0);
+  //Colors from prefs
+  lightModePrimaryColor = Color(prefs.getInt('lightModePrimaryColor') ?? 0xffffffff);
+  lightModePrimaryColorLight = Color(prefs.getInt('lightModePrimaryColorLight') ?? 0xff3181ff);
+  lightModePrimaryColorDark = Color(prefs.getInt('lightModePrimaryColorDark') ?? 0xff000000);
+  lightModeCanvasColor = Color(prefs.getInt('lightModeCanvasColor') ?? 0xffffffff);
+  Color savedLightModePrimarySwatch = Color(prefs.getInt('lightModePrimarySwatch') ?? Colors.blue.value);
+  CustomMaterialColor savedLightMaterialColor = CustomMaterialColor(savedLightModePrimarySwatch.red, savedLightModePrimarySwatch.green, savedLightModePrimarySwatch.blue);
+  lightModePrimarySwatch = savedLightMaterialColor.materialColor;
+
+  darkModePrimaryColor = Color(prefs.getInt('darkModePrimaryColor') ?? 0xff000000);
+  darkModePrimaryColorLight = Color(prefs.getInt('darkModePrimaryColorLight') ?? 0xff3181ff);
+  darkModePrimaryColorDark = Color(prefs.getInt('darkModePrimaryColorDark') ?? 0xff000000);
+  darkModeCanvasColor = Color(prefs.getInt('darkModeCanvasColor') ?? 0xff2e2d2d);
+  Color savedDarkModePrimarySwatch = Color(prefs.getInt('darkModePrimarySwatch') ?? Colors.blue.value);
+  CustomMaterialColor savedDarkMaterialColor = CustomMaterialColor(savedDarkModePrimarySwatch.red, savedDarkModePrimarySwatch.green, savedDarkModePrimarySwatch.blue);
+  darkModePrimarySwatch = savedDarkMaterialColor.materialColor;
+
+  //Background image path from prefs
+  backgroundImage = File(prefs.getString('backgroundImagePath') ?? '');
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => StateProvider()),
@@ -155,6 +178,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //Background Image check
+      if (backgroundImage.path.isNotEmpty) {
+        if (backgroundImage.existsSync()) {
+          Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
+        } else {
+          Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
+        }
+      }
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
 

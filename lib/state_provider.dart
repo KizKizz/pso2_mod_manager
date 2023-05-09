@@ -20,6 +20,7 @@ class StateProvider with ChangeNotifier {
   double _itemAdderSubItemETHeight = 40;
   bool _isChecksumMD5Match = true;
   double _uiOpacityValue = 0.6;
+  bool _backgroundImageTrigger = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -39,6 +40,17 @@ class StateProvider with ChangeNotifier {
   double get itemAdderSubItemETHeight => _itemAdderSubItemETHeight;
   bool get isChecksumMD5Match => _isChecksumMD5Match;
   double get uiOpacityValue => _uiOpacityValue;
+  bool get backgroundImageTrigger => _backgroundImageTrigger;
+
+  void backgroundImageTriggerTrue() {
+    _backgroundImageTrigger = true;
+    notifyListeners();
+  }
+
+  void backgroundImageTriggerFalse() {
+    _backgroundImageTrigger = false;
+    notifyListeners();
+  }
 
   void uiOpacityValueSet(double value) {
     _uiOpacityValue = value;

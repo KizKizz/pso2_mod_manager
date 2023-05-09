@@ -405,15 +405,18 @@ class _MainPageState extends State<MainPage> {
                         ],
                       ),
                     ),
-                    Slider(
-                        min: 0.0,
-                        max: 1.0,
-                        value: context.watch<StateProvider>().uiOpacityValue,
-                        onChanged: (value) async {
-                          Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet(value);
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setDouble('uiOpacityValue', value);
-                        }),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 7),
+                      child: Slider(
+                          min: 0.0,
+                          max: 1.0,
+                          value: context.watch<StateProvider>().uiOpacityValue,
+                          onChanged: (value) async {
+                            Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet(value);
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setDouble('uiOpacityValue', value);
+                          }),
+                    ),
                     //Theme color picker
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 7),
@@ -441,26 +444,36 @@ class _MainPageState extends State<MainPage> {
                                 minWidth: 242,
                                 height: 30,
                                 color: MyApp.themeNotifier.value == ThemeMode.light ? Color(lightModePrimarySwatch.value) : Color(darkModePrimarySwatch.value),
-                                onPressed: () {
+                                onPressed: () async {
+                                  final prefs = await SharedPreferences.getInstance();
                                   if (MyApp.themeNotifier.value == ThemeMode.light) {
                                     currentColor = Color(lightModePrimarySwatch.value);
                                     pickerColor = currentColor;
                                     getColor(context).then((_) {
-                                      CustomMaterialColor newMaterialColor = CustomMaterialColor(pickerColor.red, pickerColor.green, pickerColor.blue);
-                                      lightModePrimarySwatch = newMaterialColor.materialColor;
-                                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                      MyApp.themeNotifier.notifyListeners();
+                                      if (selectedColor != null) {
+                                        CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
+                                        lightModePrimarySwatch = newMaterialColor.materialColor;
+                                        prefs.setInt('lightModePrimarySwatch', selectedColor!.value);
+                                        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                        MyApp.themeNotifier.notifyListeners();
+                                        selectedColor = null;
+                                      }
                                     });
                                   } else {
                                     currentColor = Color(darkModePrimarySwatch.value);
                                     pickerColor = currentColor;
                                     getColor(context).then((_) {
-                                      CustomMaterialColor newMaterialColor = CustomMaterialColor(pickerColor.red, pickerColor.green, pickerColor.blue);
-                                      darkModePrimarySwatch = newMaterialColor.materialColor;
-                                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                      MyApp.themeNotifier.notifyListeners();
+                                      if (selectedColor != null) {
+                                        CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
+                                        darkModePrimarySwatch = newMaterialColor.materialColor;
+                                        prefs.setInt('darkModePrimarySwatch', selectedColor!.value);
+                                        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                        MyApp.themeNotifier.notifyListeners();
+                                        selectedColor = null;
+                                      }
                                     });
                                   }
+
                                   setState(() {});
                                 },
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
@@ -475,7 +488,36 @@ class _MainPageState extends State<MainPage> {
                                     minWidth: 120,
                                     height: 30,
                                     color: Theme.of(context).primaryColor,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                        currentColor = lightModePrimaryColor;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            lightModePrimaryColor = selectedColor!;
+                                            prefs.setInt('lightModePrimaryColor', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      } else {
+                                        currentColor = darkModePrimaryColor;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            darkModePrimaryColor = selectedColor!;
+                                            prefs.setInt('darkModePrimaryColor', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
                                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   ),
                                 ),
@@ -485,7 +527,36 @@ class _MainPageState extends State<MainPage> {
                                     minWidth: 120,
                                     height: 30,
                                     color: Theme.of(context).primaryColorLight,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                        currentColor = lightModePrimaryColorLight;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            lightModePrimaryColorLight = selectedColor!;
+                                            prefs.setInt('lightModePrimaryColorLight', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      } else {
+                                        currentColor = darkModePrimaryColorLight;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            darkModePrimaryColorLight = selectedColor!;
+                                            prefs.setInt('darkModePrimaryColorLight', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
                                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   ),
                                 ),
@@ -500,7 +571,36 @@ class _MainPageState extends State<MainPage> {
                                     minWidth: 120,
                                     height: 30,
                                     color: Theme.of(context).primaryColorDark,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                        currentColor = lightModePrimaryColorDark;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            lightModePrimaryColorDark = selectedColor!;
+                                            prefs.setInt('lightModePrimaryColorDark', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      } else {
+                                        currentColor = darkModePrimaryColorDark;
+                                        pickerColor = currentColor;
+                                        getColor(context).then((_) {
+                                          if (selectedColor != null) {
+                                            darkModePrimaryColorDark = selectedColor!;
+                                            prefs.setInt('darkModePrimaryColorDark', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
                                     shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   ),
                                 ),
@@ -510,23 +610,32 @@ class _MainPageState extends State<MainPage> {
                                     minWidth: 120,
                                     height: 30,
                                     color: Theme.of(context).canvasColor,
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
                                       if (MyApp.themeNotifier.value == ThemeMode.light) {
                                         currentColor = lightModeCanvasColor;
                                         pickerColor = currentColor;
                                         getColor(context).then((_) {
-                                          lightModeCanvasColor = pickerColor;
-                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                          MyApp.themeNotifier.notifyListeners();
+                                          if (selectedColor != null) {
+                                            lightModeCanvasColor = selectedColor!;
+                                            prefs.setInt('lightModeCanvasColor', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
                                         });
                                         setState(() {});
                                       } else {
                                         currentColor = darkModeCanvasColor;
                                         pickerColor = currentColor;
                                         getColor(context).then((_) {
-                                          darkModeCanvasColor = pickerColor;
-                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                          MyApp.themeNotifier.notifyListeners();
+                                          if (selectedColor != null) {
+                                            darkModeCanvasColor = selectedColor!;
+                                            prefs.setInt('darkModeCanvasColor', selectedColor!.value);
+                                            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                            MyApp.themeNotifier.notifyListeners();
+                                            selectedColor = null;
+                                          }
                                         });
                                         setState(() {});
                                       }
@@ -542,9 +651,122 @@ class _MainPageState extends State<MainPage> {
                                 minWidth: 242,
                                 height: 30,
                                 //color: Theme.of(context).primaryColor,
-                                onPressed: () {},
+                                onLongPress: () async {
+                                  final prefs = await SharedPreferences.getInstance();
+
+                                  if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                    lightModePrimaryColor = const Color(0xffffffff);
+                                    lightModePrimaryColorLight = const Color(0xff3181ff);
+                                    lightModePrimaryColorDark = const Color(0xff000000);
+                                    lightModeCanvasColor = const Color(0xffffffff);
+                                    lightModePrimarySwatch = Colors.blue;
+                                    //Save to prefs
+                                    prefs.setInt('lightModePrimaryColor', lightModePrimaryColor.value);
+                                    prefs.setInt('lightModePrimaryColorLight', lightModePrimaryColorLight.value);
+                                    prefs.setInt('lightModePrimaryColorDark', lightModePrimaryColorDark.value);
+                                    prefs.setInt('lightModeCanvasColor', lightModeCanvasColor.value);
+                                    prefs.setInt('lightModePrimarySwatch', Colors.blue.value);
+                                  } else {
+                                    darkModePrimaryColor = const Color(0xff000000);
+                                    darkModePrimaryColorLight = const Color(0xff3181ff);
+                                    darkModePrimaryColorDark = const Color(0xff000000);
+                                    darkModeCanvasColor = const Color(0xff2e2d2d);
+                                    darkModePrimarySwatch = Colors.blue;
+                                    //Save to prefs
+                                    prefs.setInt('darkModePrimaryColor', darkModePrimaryColor.value);
+                                    prefs.setInt('darkModePrimaryColorLight', darkModePrimaryColorLight.value);
+                                    prefs.setInt('darkModePrimaryColorDark', darkModePrimaryColorDark.value);
+                                    prefs.setInt('darkModeCanvasColor', darkModeCanvasColor.value);
+                                    prefs.setInt('darkModePrimarySwatch', Colors.blue.value);
+                                  }
+                                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                  MyApp.themeNotifier.notifyListeners();
+                                },
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                child: const Text('Reset to default colors'),
+                                onPressed: () {},
+                                child: const Text('Hold to reset to default colors'),
+                              ),
+                            ),
+
+                            //Background Image
+                            Padding(
+                              padding: const EdgeInsets.only(left: 7, right: 7, top: 10),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.image,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text('Background Image:'),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
+                              child: Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  InkWell(
+                                    child: Container(
+                                      constraints: const BoxConstraints(maxWidth: 232),
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
+                                      child: backgroundImage.path != ''
+                                          ? Stack(
+                                              alignment: Alignment.bottomCenter,
+                                              children: [
+                                                Image.file(
+                                                  backgroundImage,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
+                                              ],
+                                            )
+                                          : const Center(child: Text('No image found. Click!')),
+                                    ),
+                                    onTap: () async {
+                                      await FilePicker.platform.pickFiles(dialogTitle: 'Select your image', lockParentWindow: true, type: FileType.image).then((value) async {
+                                        if (value != null) {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          backgroundImage = File(value.paths.first!);
+                                          prefs.setString('backgroundImagePath', backgroundImage.path);
+                                          Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
+                                        }
+                                      });
+                                      setState(() {});
+                                      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                      MyApp.themeNotifier.notifyListeners();
+                                    },
+                                  ),
+                                  if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger)
+                                    Tooltip(
+                                      message: 'Hold to remove background image',
+                                      height: 25,
+                                      child: InkWell(
+                                        child: Container(
+                                          decoration: ShapeDecoration(
+                                            color: Colors.red,
+                                            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete_forever_outlined,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onLongPress: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          prefs.setString('backgroundImagePath', '');
+                                          backgroundImage = File('');
+                                          Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ],
