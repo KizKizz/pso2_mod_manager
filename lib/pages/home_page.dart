@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             viewsTheme
           ]);
   }
-
+//=====================================================================================================================================================================================
   Widget itemsView() {
     var searchBoxLeftPadding = 10;
     return Column(
@@ -236,7 +236,6 @@ class _HomePageState extends State<HomePage> {
                                             itemCount: curCategory.items.length,
                                             itemBuilder: (context, itemIndex) {
                                               var curItem = curCategory.items[itemIndex];
-                                              List<bool> itemHovering = List.generate(curCategory.items.length, (int index) => false);
                                               return SizedBox(
                                                 height: 84,
                                                 child: Container(
@@ -281,29 +280,24 @@ class _HomePageState extends State<HomePage> {
                                                             ],
                                                           ),
                                                         ),
-                                                        
-                                                          Visibility.maintain(
-                                                            visible: itemHovering[itemIndex],
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.only(right: 15),
-                                                              child: Row(
-                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                children: [
-                                                                  //Buttons
-                                                                  
-                                                                  Tooltip(
-                                                                      message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                      height: 25,
-                                                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                      waitDuration: const Duration(milliseconds: 500),
-                                                                      child: InkWell(
-                                                                        child: const Icon(Icons.folder_open),
-                                                                        onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                      )),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          )
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(right: 15),
+                                                          child: Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: [
+                                                              //Buttons
+                                                              Tooltip(
+                                                                  message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                  height: 25,
+                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                    child: const Icon(Icons.folder_open),
+                                                                    onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        )
                                                       ],
                                                     ),
                                                     onTap: () {
@@ -316,15 +310,7 @@ class _HomePageState extends State<HomePage> {
                                                       setState(() {});
                                                     },
                                                     onHover: (value) {
-                                                      
                                                       setState(() {
-                                                        if (value) {
-                                                        itemHovering[itemIndex] = true;
-                                                        print(itemHovering[itemIndex].toString());
-                                                      } else {
-                                                        //itemHovering[itemIndex] = false;
-                                                        print(itemHovering[itemIndex].toString());
-                                                      }
                                                       });
                                                     },
                                                   ),
@@ -348,7 +334,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-
+//=====================================================================================================================================================================================
   Widget modsView() {
     return Column(children: [
       AppBar(
@@ -541,7 +527,7 @@ class _HomePageState extends State<HomePage> {
                         }))))
     ]);
   }
-
+//=====================================================================================================================================================================================
   Widget appliedModsView() {
     return Column(children: [
       AppBar(
@@ -571,7 +557,7 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(child: Container())))
     ]);
   }
-
+//=====================================================================================================================================================================================
   Widget modPreviewView() {
     return Column(children: [
       AppBar(
@@ -619,12 +605,12 @@ class _HomePageState extends State<HomePage> {
         )
     ]);
   }
-
+//=====================================================================================================================================================================================
   //Mod Set
   Widget setList() {
     return Container();
   }
-
+//=====================================================================================================================================================================================
   Widget modInSetList() {
     return Container();
   }
