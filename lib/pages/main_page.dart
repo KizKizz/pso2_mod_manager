@@ -48,11 +48,11 @@ class _MainPageState extends State<MainPage> {
       key: _scaffoldKey,
       endDrawer: Drawer(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //Title
           Padding(
-            padding: const EdgeInsets.only(left: 5, top: 5,bottom: 5),
+            padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
             child: Text(
               'Settings',
               style: TextStyle(
@@ -85,8 +85,13 @@ class _MainPageState extends State<MainPage> {
                       Tooltip(
                         message: curLangText!.languageTooltipText,
                         height: 25,
-                        textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                        waitDuration: const Duration(seconds: 1),
+                        textStyle: const TextStyle(fontSize: 14),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).canvasColor.withOpacity(0.8),
+                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                          borderRadius: const BorderRadius.all(Radius.circular(2)),
+                        ),
+                        waitDuration: const Duration(milliseconds: 500),
                         child: InkWell(
                           onLongPress: () {
                             showDialog(
@@ -253,10 +258,10 @@ class _MainPageState extends State<MainPage> {
                                   lang.selected = false;
                                 }
                               }
-          
+
                               topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
                               //sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
-          
+
                               //Json Write
                               const JsonEncoder encoder = JsonEncoder.withIndent('  ');
                               languageList.map((lang) => lang.toJson()).toList();
@@ -273,7 +278,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-          
+
                       //Path reselect
                       MaterialButton(
                         height: 40,
@@ -295,7 +300,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-          
+
                       //Path reselect
                       MaterialButton(
                         height: 40,
@@ -314,7 +319,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-          
+
                       const Divider(
                         indent: 5,
                         endIndent: 5,
@@ -322,7 +327,7 @@ class _MainPageState extends State<MainPage> {
                         thickness: 1,
                         //color: Theme.of(context).textTheme.headlineMedium?.color,
                       ),
-          
+
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         child: Text(
@@ -330,20 +335,25 @@ class _MainPageState extends State<MainPage> {
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
-          
+
                       //Dark theme
                       if (MyApp.themeNotifier.value == ThemeMode.dark)
                         Tooltip(
                           message: curLangText!.darkModeTooltipText,
                           height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
+                          textStyle: const TextStyle(fontSize: 14),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).canvasColor.withOpacity(0.8),
+                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                          ),
+                          waitDuration: const Duration(milliseconds: 500),
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
                               MyApp.themeNotifier.value = ThemeMode.light;
                               final prefs = await SharedPreferences.getInstance();
-          
+
                               prefs.setBool('isDarkModeOn', false);
                               //setState(() {});
                             }),
@@ -363,8 +373,13 @@ class _MainPageState extends State<MainPage> {
                         Tooltip(
                           message: curLangText!.lightModeTooltipText,
                           height: 25,
-                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          waitDuration: const Duration(seconds: 1),
+                          textStyle: const TextStyle(fontSize: 14),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).canvasColor.withOpacity(0.8),
+                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                          ),
+                          waitDuration: const Duration(milliseconds: 500),
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
@@ -388,7 +403,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-          
+
                       //Opacity slider
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 7),
@@ -473,7 +488,7 @@ class _MainPageState extends State<MainPage> {
                                         }
                                       });
                                     }
-          
+
                                     setState(() {});
                                   },
                                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
@@ -653,7 +668,7 @@ class _MainPageState extends State<MainPage> {
                                   //color: Theme.of(context).primaryColor,
                                   onLongPress: () async {
                                     final prefs = await SharedPreferences.getInstance();
-          
+
                                     if (MyApp.themeNotifier.value == ThemeMode.light) {
                                       lightModePrimaryColor = const Color(0xffffffff);
                                       lightModePrimaryColorLight = const Color(0xff3181ff);
@@ -687,7 +702,7 @@ class _MainPageState extends State<MainPage> {
                                   child: const Text('Hold to reset to default colors'),
                                 ),
                               ),
-          
+
                               //Background Image
                               Padding(
                                 padding: const EdgeInsets.only(left: 7, right: 7, top: 10),
@@ -746,6 +761,13 @@ class _MainPageState extends State<MainPage> {
                                       Tooltip(
                                         message: 'Hold to remove background image',
                                         height: 25,
+                                        textStyle: const TextStyle(fontSize: 14),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                        ),
+                                        waitDuration: const Duration(milliseconds: 500),
                                         child: InkWell(
                                           child: Container(
                                             decoration: ShapeDecoration(
@@ -771,7 +793,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           )),
-          
+
                       // Tooltip(
                       //   message: curLangText!.pathsReselectTooltipText,
                       //   height: 25,
@@ -828,7 +850,7 @@ class _MainPageState extends State<MainPage> {
                       //         borderRadius: BorderRadius.circular(3),
                       //         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
                       //       ),
-          
+
                       //       dropdownElevation: 8,
                       //       offset: const Offset(0, -3),
                       //     ),
@@ -861,8 +883,13 @@ class _MainPageState extends State<MainPage> {
                               Tooltip(
                                   message: 'Version: $appVersion | Made by キス★',
                                   height: 25,
-                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                  waitDuration: const Duration(seconds: 2),
+                                  textStyle: const TextStyle(fontSize: 14),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                    borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                  ),
+                                  waitDuration: const Duration(milliseconds: 500),
                                   child: const Text(
                                     'PSO2NGS Mod Manager',
                                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
@@ -875,8 +902,13 @@ class _MainPageState extends State<MainPage> {
                               child: Tooltip(
                                 message: curLangText!.titleNewUpdateToolTip,
                                 height: 25,
-                                textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                waitDuration: const Duration(milliseconds: 100),
+                                textStyle: const TextStyle(fontSize: 14),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                ),
+                                waitDuration: const Duration(milliseconds: 500),
                                 child: MaterialButton(
                                     visualDensity: VisualDensity.compact,
                                     height: 20,
@@ -906,8 +938,13 @@ class _MainPageState extends State<MainPage> {
                           Tooltip(
                             message: curLangText!.addModsTooltip,
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
+                            textStyle: const TextStyle(fontSize: 14),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            ),
+                            waitDuration: const Duration(milliseconds: 500),
                             child: SizedBox(
                               width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
@@ -986,8 +1023,13 @@ class _MainPageState extends State<MainPage> {
                                 ? curLangText!.checksumToolTipText
                                 : curLangText!.checksumHoldBtnTooltip,
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
+                            textStyle: const TextStyle(fontSize: 14),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            ),
+                            waitDuration: const Duration(milliseconds: 500),
                             child: MaterialButton(
                               onLongPress: () async {
                                 if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
@@ -1064,8 +1106,13 @@ class _MainPageState extends State<MainPage> {
                           Tooltip(
                             message: curLangText!.previewTooltipText,
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
+                            textStyle: const TextStyle(fontSize: 14),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            ),
+                            waitDuration: const Duration(milliseconds: 500),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
@@ -1184,8 +1231,13 @@ class _MainPageState extends State<MainPage> {
                           Tooltip(
                             message: curLangText!.darkModeTooltipText,
                             height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
+                            textStyle: const TextStyle(fontSize: 14),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            ),
+                            waitDuration: const Duration(milliseconds: 500),
                             child: SizedBox(
                               //width: 95,
                               child: MaterialButton(

@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> previewImages = [];
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
+  List<List<List<bool>>> itemButtonsVisible = [];
 
   @override
   void initState() {
@@ -108,9 +109,11 @@ class _HomePageState extends State<HomePage> {
             viewsTheme
           ]);
   }
+
 //=====================================================================================================================================================================================
   Widget itemsView() {
     var searchBoxLeftPadding = 10;
+
     return Column(
       children: [
         AppBar(
@@ -143,6 +146,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: moddedItemsList.length,
                 itemBuilder: (context, groupIndex) {
+                  if (itemButtonsVisible.isEmpty || itemButtonsVisible.length != moddedItemsList.length) {
+                    itemButtonsVisible = List.generate(moddedItemsList.length, (index) => []);
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -170,6 +176,9 @@ class _HomePageState extends State<HomePage> {
                                 itemCount: moddedItemsList[groupIndex].categories.length,
                                 itemBuilder: (context, categoryIndex) {
                                   var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                                  if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                    itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                  }
                                   return ExpansionTile(
                                       backgroundColor: Colors.transparent,
                                       initiallyExpanded: false,
@@ -207,8 +216,13 @@ class _HomePageState extends State<HomePage> {
                                                 Tooltip(
                                                     message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
                                                     height: 25,
-                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                    waitDuration: const Duration(seconds: 2),
+                                                    textStyle: const TextStyle(fontSize: 14),
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                    ),
+                                                    waitDuration: const Duration(milliseconds: 500),
                                                     child: SizedBox(
                                                       width: 40,
                                                       height: 40,
@@ -236,6 +250,10 @@ class _HomePageState extends State<HomePage> {
                                             itemCount: curCategory.items.length,
                                             itemBuilder: (context, itemIndex) {
                                               var curItem = curCategory.items[itemIndex];
+                                              if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty || itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                                itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                              }
+
                                               return SizedBox(
                                                 height: 84,
                                                 child: Container(
@@ -280,22 +298,30 @@ class _HomePageState extends State<HomePage> {
                                                             ],
                                                           ),
                                                         ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(right: 15),
-                                                          child: Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: [
-                                                              //Buttons
-                                                              Tooltip(
-                                                                  message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                  height: 25,
-                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                  waitDuration: const Duration(milliseconds: 500),
-                                                                  child: InkWell(
-                                                                    child: const Icon(Icons.folder_open),
-                                                                    onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                  )),
-                                                            ],
+                                                        Visibility(
+                                                          visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 15),
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                              children: [
+                                                                //Buttons
+                                                                Tooltip(
+                                                                    message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                    height: 25,
+                                                                    textStyle: const TextStyle(fontSize: 14),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                    ),
+                                                                    waitDuration: const Duration(milliseconds: 500),
+                                                                    child: InkWell(
+                                                                      child: const Icon(Icons.folder_open),
+                                                                      onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                    )),
+                                                              ],
+                                                            ),
                                                           ),
                                                         )
                                                       ],
@@ -311,6 +337,11 @@ class _HomePageState extends State<HomePage> {
                                                     },
                                                     onHover: (value) {
                                                       setState(() {
+                                                        if (value) {
+                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                        } else {
+                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                        }
                                                       });
                                                     },
                                                   ),
@@ -334,6 +365,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
 //=====================================================================================================================================================================================
   Widget modsView() {
     return Column(children: [
@@ -417,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                        Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variation' : '${curMod.submods.length} Variations',
+                                        Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
                                             style: const TextStyle(
                                               fontSize: 13,
                                             )),
@@ -426,20 +458,27 @@ class _HomePageState extends State<HomePage> {
                                     Wrap(
                                       children: [
                                         //Add-Remove button
-                                        Tooltip(
-                                          message: 'Add this mod to game',
-                                          waitDuration: const Duration(milliseconds: 500),
-                                          height: 25,
-                                          child: InkWell(
-                                            child: Icon(
-                                              Icons.post_add_outlined,
-                                              color: Theme.of(context).hintColor,
+                                        if (curMod.submods.length == 1)
+                                          Tooltip(
+                                            message: 'Add this mod to game',
+                                            height: 25,
+                                            textStyle: const TextStyle(fontSize: 14),
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                backgroundBlendMode: BlendMode.darken),
+                                            waitDuration: const Duration(milliseconds: 500),
+                                            child: InkWell(
+                                              child: Icon(
+                                                Icons.post_add_outlined,
+                                                color: Theme.of(context).hintColor,
+                                              ),
+                                              onTap: () async {
+                                                setState(() {});
+                                              },
                                             ),
-                                            onTap: () async {
-                                              setState(() {});
-                                            },
                                           ),
-                                        ),
                                       ],
                                     ),
                                   ],
@@ -527,6 +566,7 @@ class _HomePageState extends State<HomePage> {
                         }))))
     ]);
   }
+
 //=====================================================================================================================================================================================
   Widget appliedModsView() {
     return Column(children: [
@@ -557,6 +597,7 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(child: Container())))
     ]);
   }
+
 //=====================================================================================================================================================================================
   Widget modPreviewView() {
     return Column(children: [
@@ -605,11 +646,13 @@ class _HomePageState extends State<HomePage> {
         )
     ]);
   }
+
 //=====================================================================================================================================================================================
   //Mod Set
   Widget setList() {
     return Container();
   }
+
 //=====================================================================================================================================================================================
   Widget modInSetList() {
     return Container();
