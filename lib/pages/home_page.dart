@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   String previewModName = '';
   bool hoveringOnSubmod = false;
   List<Mod> modViewList = [];
-  List<Image> previewImages = [];
+  List<Widget> previewImages = [];
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
 
@@ -97,11 +97,15 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
-        : Stack(
-          children: [
+        : Stack(children: [
             if (context.watch<StateProvider>().backgroundImageTrigger)
-            Image.file(backgroundImage, width: double.infinity, height: double.infinity, fit: BoxFit.cover,),
-          viewsTheme
+              Image.file(
+                backgroundImage,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            viewsTheme
           ]);
   }
 
@@ -156,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                           child: ExpansionTile(
                             backgroundColor: Colors.transparent,
-                            title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                            collapsedTextColor: Theme.of(context).colorScheme.primary,
+                            title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
                             initiallyExpanded: moddedItemsList[groupIndex].expanded,
                             children: [
                               ListView.builder(
@@ -175,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(curCategory.categoryName),
+                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w500)),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
@@ -231,6 +236,7 @@ class _HomePageState extends State<HomePage> {
                                             itemCount: curCategory.items.length,
                                             itemBuilder: (context, itemIndex) {
                                               var curItem = curCategory.items[itemIndex];
+                                              List<bool> itemHovering = List.generate(curCategory.items.length, (int index) => false);
                                               return SizedBox(
                                                 height: 84,
                                                 child: Container(
@@ -247,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                                                               height: 80,
                                                               decoration: BoxDecoration(
                                                                 borderRadius: BorderRadius.circular(3),
-                                                                border: Border.all(color: Theme.of(context).hintColor),
+                                                                border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
                                                               ),
                                                               child: Image.file(
                                                                 File(curItem.icon),
@@ -265,52 +271,39 @@ class _HomePageState extends State<HomePage> {
                                                                 style: const TextStyle(fontSize: 16),
                                                               ),
                                                               Text(
-                                                                '${curLangText!.modscolonLableText} ${curItem.mods.length}',
+                                                                curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
                                                                 style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                               ),
                                                               Text(
-                                                                '${curLangText!.fileAppliedColonLabelText} ${curItem.mods.where((element) => element.applyStatus == true).length}',
+                                                                '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
                                                                 style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(right: 15),
-                                                          child: Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: [
-                                                              if (curItem.isNew)
-                                                                SizedBox(
-                                                                    height: 50,
-                                                                    child: Icon(Icons.new_releases,
-                                                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amber)),
-
-                                                              //Buttons
-                                                              Tooltip(
-                                                                  message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                  height: 25,
-                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                  waitDuration: const Duration(seconds: 2),
-                                                                  child: SizedBox(
-                                                                    width: 34,
-                                                                    height: 50,
-                                                                    child: MaterialButton(
-                                                                        onPressed: (() async {
-                                                                          await launchUrl(Uri.file(curItem.location));
-                                                                        }),
-                                                                        child: Row(
-                                                                          children: const [
-                                                                            Icon(
-                                                                              Icons.folder_open_rounded,
-                                                                              size: 18,
-                                                                            )
-                                                                          ],
-                                                                        )),
-                                                                  )),
-                                                            ],
-                                                          ),
-                                                        )
+                                                        
+                                                          Visibility.maintain(
+                                                            visible: itemHovering[itemIndex],
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(right: 15),
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                                children: [
+                                                                  //Buttons
+                                                                  
+                                                                  Tooltip(
+                                                                      message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                      height: 25,
+                                                                      textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                      waitDuration: const Duration(milliseconds: 500),
+                                                                      child: InkWell(
+                                                                        child: const Icon(Icons.folder_open),
+                                                                        onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                      )),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
                                                       ],
                                                     ),
                                                     onTap: () {
@@ -321,6 +314,18 @@ class _HomePageState extends State<HomePage> {
                                                       modViewItemName = curItem.itemName;
                                                       modViewList = curItem.mods;
                                                       setState(() {});
+                                                    },
+                                                    onHover: (value) {
+                                                      
+                                                      setState(() {
+                                                        if (value) {
+                                                        itemHovering[itemIndex] = true;
+                                                        print(itemHovering[itemIndex].toString());
+                                                      } else {
+                                                        //itemHovering[itemIndex] = false;
+                                                        print(itemHovering[itemIndex].toString());
+                                                      }
+                                                      });
                                                     },
                                                   ),
                                                 ),
@@ -386,7 +391,25 @@ class _HomePageState extends State<HomePage> {
                               if (hovering) {
                                 previewModName = curMod.modName;
                                 for (var path in curMod.previewImages) {
-                                  previewImages.add(Image.file(File(path)));
+                                  previewImages.add(Stack(
+                                    alignment: Alignment.bottomCenter,
+                                    children: [
+                                      Image.file(
+                                        File(path),
+                                        //fit: BoxFit.cover,
+                                      ),
+                                      Container(
+                                          //width: double.minPositive,
+                                          height: 25,
+                                          color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                          child: Center(
+                                              child: Text(
+                                                  curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                                      ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                                      : curMod.modName,
+                                                  style: const TextStyle(fontSize: 17))))
+                                    ],
+                                  ));
                                 }
                               } else {
                                 previewModName = '';
@@ -401,7 +424,40 @@ class _HomePageState extends State<HomePage> {
                                   side: BorderSide(color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                               child: AdvanceExpansionTile(
                                 key: modViewETKeys[modIndex],
-                                title: Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                        Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variation' : '${curMod.submods.length} Variations',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                            )),
+                                      ],
+                                    ),
+                                    Wrap(
+                                      children: [
+                                        //Add-Remove button
+                                        Tooltip(
+                                          message: 'Add this mod to game',
+                                          waitDuration: const Duration(milliseconds: 500),
+                                          height: 25,
+                                          child: InkWell(
+                                            child: Icon(
+                                              Icons.post_add_outlined,
+                                              color: Theme.of(context).hintColor,
+                                            ),
+                                            onTap: () async {
+                                              setState(() {});
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                                 children: [
                                   ListView.builder(
                                       shrinkWrap: true,
@@ -418,13 +474,42 @@ class _HomePageState extends State<HomePage> {
                                               previewModName = curSubmod.submodName;
                                               previewImages.clear();
                                               for (var path in curSubmod.previewImages) {
-                                                previewImages.add(Image.file(File(path)));
+                                                previewImages.add(Stack(
+                                                  alignment: Alignment.bottomCenter,
+                                                  children: [
+                                                    Image.file(
+                                                      File(path),
+                                                      //fit: BoxFit.cover,
+                                                    ),
+                                                    Container(
+                                                        height: 25,
+                                                        color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                        child: Center(child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17))))
+                                                  ],
+                                                ));
                                               }
                                             } else {
                                               previewModName = curMod.modName;
                                               hoveringOnSubmod = false;
                                               for (var path in curMod.previewImages) {
-                                                previewImages.add(Image.file(File(path)));
+                                                previewImages.add(Stack(
+                                                  alignment: Alignment.bottomCenter,
+                                                  children: [
+                                                    Image.file(
+                                                      File(path),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    Container(
+                                                        height: 25,
+                                                        color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                        child: Center(
+                                                            child: Text(
+                                                                curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                                                    ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                                                    : curMod.modName,
+                                                                style: const TextStyle(fontSize: 17))))
+                                                  ],
+                                                ));
                                               }
                                             }
                                             setState(() {});
@@ -440,7 +525,8 @@ class _HomePageState extends State<HomePage> {
                                                   itemBuilder: (context, modFileIndex) {
                                                     var curModFile = curSubmod.modFiles[modFileIndex];
                                                     return ListTile(
-                                                      tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                      tileColor: Colors.transparent,
+                                                      //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                                       title: Text(curModFile.modFileName),
                                                     );
                                                   })
@@ -523,6 +609,7 @@ class _HomePageState extends State<HomePage> {
               viewportFraction: 1,
               enlargeCenterPage: true,
               scrollDirection: Axis.vertical,
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
               reverse: true,
               autoPlayInterval: const Duration(seconds: 1),
               autoPlay: previewImages.length > 1 ? true : false,
