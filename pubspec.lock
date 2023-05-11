@@ -265,14 +265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
-  draggable_float_widget:
-    dependency: "direct main"
-    description:
-      name: draggable_float_widget
-      sha256: f3b291b335b7f7c7b721a6f42aeb6209fdfb055ea87980bff68c551b250795ea
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   dropdown_button2:
     dependency: "direct main"
     description:
@@ -281,14 +273,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.2"
-  event_bus:
-    dependency: transitive
-    description:
-      name: event_bus
-      sha256: "44baa799834f4c803921873e7446a2add0f3efa45e101a054b1f0ab9b95f8edc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
