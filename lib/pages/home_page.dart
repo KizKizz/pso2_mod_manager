@@ -107,7 +107,6 @@ class _HomePageState extends State<HomePage> {
                 fit: BoxFit.cover,
               ),
             viewsTheme,
-            
           ]);
   }
 
@@ -163,7 +162,8 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(left: 2),
                         child: Card(
                           margin: const EdgeInsets.all(1),
-                          color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                          //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
                           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                           child: ExpansionTile(
                             backgroundColor: Colors.transparent,
@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                                                     height: 25,
                                                     textStyle: const TextStyle(fontSize: 14),
                                                     decoration: BoxDecoration(
-                                                      color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                       borderRadius: const BorderRadius.all(Radius.circular(2)),
                                                     ),
@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                                                                     height: 25,
                                                                     textStyle: const TextStyle(fontSize: 14),
                                                                     decoration: BoxDecoration(
-                                                                      color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                       borderRadius: const BorderRadius.all(Radius.circular(2)),
                                                                     ),
@@ -438,50 +438,157 @@ class _HomePageState extends State<HomePage> {
                             },
                             child: Card(
                               margin: const EdgeInsets.all(1),
-                              color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                              //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                               child: AdvanceExpansionTile(
+                                backgroundColor: Colors.transparent,
                                 key: modViewETKeys[modIndex],
                                 title: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                        Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                            )),
-                                      ],
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        //Add-Remove button
-                                        if (curMod.submods.length == 1)
-                                          Tooltip(
-                                            message: 'Add this mod to game',
-                                            height: 25,
-                                            textStyle: const TextStyle(fontSize: 14),
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context).canvasColor.withOpacity(0.8),
-                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                backgroundBlendMode: BlendMode.darken),
-                                            waitDuration: const Duration(milliseconds: 500),
-                                            child: InkWell(
-                                              child: Icon(
-                                                Icons.post_add_outlined,
-                                                color: Theme.of(context).hintColor,
-                                              ),
-                                              onTap: () async {
-                                                setState(() {});
-                                              },
-                                            ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                  )),
+                                              if (curMod.submods.indexWhere((element) => element.applyStatus == true) != -1)
+                                                Text('Currently applied: ${curMod.submods[curMod.submods.indexWhere((element) => element.applyStatus == true)].submodName}',
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                    )),
+                                            ],
                                           ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
+                                    if (curMod.submods.length == 1)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: Wrap(
+                                          spacing: 5,
+                                          children: [
+                                            //Add-Remove button
+                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                              Tooltip(
+                                                message: 'Apply ${curMod.submods.first.submodName} to the game',
+                                                height: 25,
+                                                textStyle: const TextStyle(fontSize: 14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                waitDuration: const Duration(milliseconds: 500),
+                                                child: InkWell(
+                                                  child: const Icon(
+                                                    Icons.add_to_queue_outlined,
+                                                  ),
+                                                  onTap: () async {
+                                                    setState(() {
+                                                      //set apply status
+                                                      for (var element in curMod.submods.first.modFiles) {
+                                                        element.applyStatus = true;
+                                                      }
+                                                      curMod.applyStatus = true;
+                                                      curMod.submods.first.applyStatus = true;
+                                                      //
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                              Tooltip(
+                                                message: 'Remove ${curMod.submods.first.submodName} from the game',
+                                                height: 25,
+                                                textStyle: const TextStyle(fontSize: 14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                waitDuration: const Duration(milliseconds: 500),
+                                                child: InkWell(
+                                                  child: const Icon(
+                                                    Icons.remove_from_queue_outlined,
+                                                  ),
+                                                  onTap: () async {
+                                                    setState(() {
+                                                      //set apply status
+                                                      for (var element in curMod.submods.first.modFiles) {
+                                                        element.applyStatus = false;
+                                                      }
+                                                      curMod.applyStatus = false;
+                                                      curMod.submods.first.applyStatus = false;
+                                                      //
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            //Favorite
+                                            Tooltip(
+                                              message: 'Add ${curMod.submods.first.submodName} to favorite',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: const Icon(
+                                                  Icons.favorite_border_outlined,
+                                                ),
+                                                onTap: () async {
+                                                  setState(() {});
+                                                },
+                                              ),
+                                            ),
+                                            //Open folder
+                                            Tooltip(
+                                              message: 'Open ${curMod.submods.first.submodName} in File Explorer',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: const Icon(
+                                                  Icons.folder_open_outlined,
+                                                ),
+                                                onTap: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
+                                              ),
+                                            ),
+                                            //Delete
+                                            Tooltip(
+                                              message: 'Hold to remove ${curMod.submods.first.submodName} from Mod Manager',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: const Icon(
+                                                  Icons.delete_forever_outlined,
+                                                ),
+                                                onLongPress: () async {
+                                                  setState(() {});
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                   ],
                                 ),
                                 children: [
@@ -542,7 +649,130 @@ class _HomePageState extends State<HomePage> {
                                           },
                                           child: ExpansionTile(
                                             backgroundColor: Colors.transparent,
-                                            title: Text(curSubmod.submodName),
+                                            title: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Expanded(child: Text(curSubmod.submodName)),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 5),
+                                                  child: Wrap(
+                                                    spacing: 5,
+                                                    children: [
+                                                      //Add-Remove button
+                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                        Tooltip(
+                                                          message: 'Apply ${curSubmod.submodName} to the game',
+                                                          height: 25,
+                                                          textStyle: const TextStyle(fontSize: 14),
+                                                          decoration: BoxDecoration(
+                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                          waitDuration: const Duration(milliseconds: 500),
+                                                          child: InkWell(
+                                                            child: const Icon(
+                                                              Icons.add_to_queue_outlined,
+                                                            ),
+                                                            onTap: () async {
+                                                              setState(() {
+                                                                //set apply status
+                                                                for (var element in curSubmod.modFiles) {
+                                                                  element.applyStatus = true;
+                                                                }
+                                                                curMod.applyStatus = true;
+                                                                curSubmod.applyStatus = true;
+                                                                //
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                                        Tooltip(
+                                                          message: 'Remove ${curSubmod.submodName} from the game',
+                                                          height: 25,
+                                                          textStyle: const TextStyle(fontSize: 14),
+                                                          decoration: BoxDecoration(
+                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                          waitDuration: const Duration(milliseconds: 500),
+                                                          child: InkWell(
+                                                            child: const Icon(
+                                                              Icons.remove_from_queue_outlined,
+                                                            ),
+                                                            onTap: () async {
+                                                              setState(() {
+                                                                //set apply status
+                                                                for (var element in curSubmod.modFiles) {
+                                                                  element.applyStatus = false;
+                                                                }
+                                                                curMod.applyStatus = false;
+                                                                curSubmod.applyStatus = false;
+                                                                //
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+                                                      //Favorite
+                                                      Tooltip(
+                                                        message: 'Add ${curSubmod.submodName} to favorite',
+                                                        height: 25,
+                                                        textStyle: const TextStyle(fontSize: 14),
+                                                        decoration: BoxDecoration(
+                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                        waitDuration: const Duration(milliseconds: 500),
+                                                        child: InkWell(
+                                                          child: const Icon(
+                                                            Icons.favorite_border_outlined,
+                                                          ),
+                                                          onTap: () async {
+                                                            setState(() {});
+                                                          },
+                                                        ),
+                                                      ),
+                                                      //Open folder
+                                                      Tooltip(
+                                                        message: 'Open ${curSubmod.submodName} in File Explorer',
+                                                        height: 25,
+                                                        textStyle: const TextStyle(fontSize: 14),
+                                                        decoration: BoxDecoration(
+                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                        waitDuration: const Duration(milliseconds: 500),
+                                                        child: InkWell(
+                                                          child: const Icon(
+                                                            Icons.folder_open_outlined,
+                                                          ),
+                                                          onTap: () async => await launchUrl(Uri.file(curSubmod.location)),
+                                                        ),
+                                                      ),
+                                                      //Delete
+                                                      Tooltip(
+                                                        message: 'Hold to remove ${curSubmod.submodName} from Mod Manager',
+                                                        height: 25,
+                                                        textStyle: const TextStyle(fontSize: 14),
+                                                        decoration: BoxDecoration(
+                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                        waitDuration: const Duration(milliseconds: 500),
+                                                        child: InkWell(
+                                                          child: const Icon(
+                                                            Icons.delete_forever_outlined,
+                                                          ),
+                                                          onLongPress: () async {
+                                                            setState(() {});
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                             children: [
                                               ListView.builder(
                                                   shrinkWrap: true,
@@ -553,6 +783,77 @@ class _HomePageState extends State<HomePage> {
                                                     return ListTile(
                                                       tileColor: Colors.transparent,
                                                       //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                      trailing: Wrap(
+                                                        spacing: 10,
+                                                        children: [
+                                                          //Add-Remove button
+                                                          if (curModFile.applyStatus == false)
+                                                            Tooltip(
+                                                              message: 'Apply ${curModFile.modFileName} to the game',
+                                                              height: 25,
+                                                              textStyle: const TextStyle(fontSize: 14),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                              waitDuration: const Duration(milliseconds: 500),
+                                                              child: InkWell(
+                                                                child: const Icon(
+                                                                  Icons.add_to_queue_outlined,
+                                                                ),
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    //set apply status
+                                                                    curModFile.applyStatus = true;
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          if (curModFile.applyStatus == true)
+                                                            Tooltip(
+                                                              message: 'Remove ${curModFile.modFileName} from the game',
+                                                              height: 25,
+                                                              textStyle: const TextStyle(fontSize: 14),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                              waitDuration: const Duration(milliseconds: 500),
+                                                              child: InkWell(
+                                                                child: const Icon(
+                                                                  Icons.remove_from_queue_outlined,
+                                                                ),
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    //set apply status
+                                                                    curModFile.applyStatus = false;
+                                                                    //
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+
+                                                          //Delete
+                                                          Tooltip(
+                                                            message: 'Hold to remove ${curModFile.modFileName} from Mod Manager',
+                                                            height: 25,
+                                                            textStyle: const TextStyle(fontSize: 14),
+                                                            decoration: BoxDecoration(
+                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                            waitDuration: const Duration(milliseconds: 500),
+                                                            child: InkWell(
+                                                              child: const Icon(
+                                                                Icons.delete_forever_outlined,
+                                                              ),
+                                                              onLongPress: () async {
+                                                                setState(() {});
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                       title: Text(curModFile.modFileName),
                                                     );
                                                   })
@@ -621,10 +922,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Text(
-                'No preview available',
-                style: TextStyle(fontSize: 15),
+            children: [
+              Container(
+                decoration: BoxDecoration(color: Theme.of(context).canvasColor.withOpacity(0.8), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                child: const Text(
+                  'No preview available',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             ],
           ),

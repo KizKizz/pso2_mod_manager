@@ -22,12 +22,14 @@ Color lightModePrimaryColor = const Color(0xffffffff);
 Color lightModePrimaryColorLight = const Color(0xff3181ff);
 Color lightModePrimaryColorDark = const Color(0xff000000);
 Color lightModeCanvasColor = const Color(0xffffffff);
+Color lightModeUIBackgroundColor = const Color(0xffffffff);
 MaterialColor lightModePrimarySwatch = Colors.blue;
 
 Color darkModePrimaryColor = const Color(0xff000000);
 Color darkModePrimaryColorLight = const Color(0xff3181ff);
 Color darkModePrimaryColorDark = const Color(0xff000000);
-Color darkModeCanvasColor = const Color(0xff1e1e1e);
+Color darkModeCanvasColor = const Color(0xff2e2d2d);
+Color darkModeUIBackgroundColor = const Color(0xff2e2d2d);
 MaterialColor darkModePrimarySwatch = Colors.blue;
 
 //Background image
@@ -44,6 +46,8 @@ Future<void> main() async {
   lightModePrimaryColorLight = Color(prefs.getInt('lightModePrimaryColorLight') ?? 0xff3181ff);
   lightModePrimaryColorDark = Color(prefs.getInt('lightModePrimaryColorDark') ?? 0xff000000);
   lightModeCanvasColor = Color(prefs.getInt('lightModeCanvasColor') ?? 0xffffffff);
+  lightModeUIBackgroundColor = Color(prefs.getInt('lightModeUIBackgroundColor') ?? 0xffffffff);
+
   Color savedLightModePrimarySwatch = Color(prefs.getInt('lightModePrimarySwatch') ?? Colors.blue.value);
   CustomMaterialColor savedLightMaterialColor = CustomMaterialColor(savedLightModePrimarySwatch.red, savedLightModePrimarySwatch.green, savedLightModePrimarySwatch.blue);
   lightModePrimarySwatch = savedLightMaterialColor.materialColor;
@@ -52,6 +56,8 @@ Future<void> main() async {
   darkModePrimaryColorLight = Color(prefs.getInt('darkModePrimaryColorLight') ?? 0xff706f6f);
   darkModePrimaryColorDark = Color(prefs.getInt('darkModePrimaryColorDark') ?? 0xff000000);
   darkModeCanvasColor = Color(prefs.getInt('darkModeCanvasColor') ?? 0xff2e2d2d);
+  darkModeUIBackgroundColor = Color(prefs.getInt('darkModeUIBackgroundColor') ?? 0xff2e2d2d);
+
   Color savedDarkModePrimarySwatch = Color(prefs.getInt('darkModePrimarySwatch') ?? Colors.blue.value);
   CustomMaterialColor savedDarkMaterialColor = CustomMaterialColor(savedDarkModePrimarySwatch.red, savedDarkModePrimarySwatch.green, savedDarkModePrimarySwatch.blue);
   darkModePrimarySwatch = savedDarkMaterialColor.materialColor;
@@ -194,6 +200,13 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       if (isDarkModeOn) {
         MyApp.themeNotifier.value = ThemeMode.dark;
       }
+      //Set uibackground color value
+      if (MyApp.themeNotifier.value == ThemeMode.light) {
+        Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(lightModeUIBackgroundColor.value);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(darkModeUIBackgroundColor.value);
+      }
+
       //previewWindows Check
       previewWindowVisible = (prefs.getBool('previewWindowVisible') ?? true);
       if (previewWindowVisible) {

@@ -87,7 +87,7 @@ class _MainPageState extends State<MainPage> {
                         height: 25,
                         textStyle: const TextStyle(fontSize: 14),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).canvasColor.withOpacity(0.8),
+                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                           border: Border.all(color: Theme.of(context).primaryColorLight),
                           borderRadius: const BorderRadius.all(Radius.circular(2)),
                         ),
@@ -343,7 +343,7 @@ class _MainPageState extends State<MainPage> {
                           height: 25,
                           textStyle: const TextStyle(fontSize: 14),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).canvasColor.withOpacity(0.8),
+                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                             border: Border.all(color: Theme.of(context).primaryColorLight),
                             borderRadius: const BorderRadius.all(Radius.circular(2)),
                           ),
@@ -353,7 +353,7 @@ class _MainPageState extends State<MainPage> {
                             onPressed: (() async {
                               MyApp.themeNotifier.value = ThemeMode.light;
                               final prefs = await SharedPreferences.getInstance();
-
+                              Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(lightModeUIBackgroundColor.value);
                               prefs.setBool('isDarkModeOn', false);
                               //setState(() {});
                             }),
@@ -375,7 +375,7 @@ class _MainPageState extends State<MainPage> {
                           height: 25,
                           textStyle: const TextStyle(fontSize: 14),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).canvasColor.withOpacity(0.8),
+                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                             border: Border.all(color: Theme.of(context).primaryColorLight),
                             borderRadius: const BorderRadius.all(Radius.circular(2)),
                           ),
@@ -386,6 +386,7 @@ class _MainPageState extends State<MainPage> {
                               final prefs = await SharedPreferences.getInstance();
                               MyApp.themeNotifier.value = ThemeMode.dark;
                               prefs.setBool('isDarkModeOn', true);
+                              Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(darkModeUIBackgroundColor.value);
                               //setState(() {});
                             }),
                             child: Row(
@@ -453,126 +454,107 @@ class _MainPageState extends State<MainPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, top: 5, bottom: 2.5),
-                                child: MaterialButton(
-                                  minWidth: 242,
-                                  height: 30,
-                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Color(lightModePrimarySwatch.value) : Color(darkModePrimarySwatch.value),
-                                  onPressed: () async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    if (MyApp.themeNotifier.value == ThemeMode.light) {
-                                      currentColor = Color(lightModePrimarySwatch.value);
-                                      pickerColor = currentColor;
-                                      getColor(context).then((_) {
-                                        if (selectedColor != null) {
-                                          CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
-                                          lightModePrimarySwatch = newMaterialColor.materialColor;
-                                          prefs.setInt('lightModePrimarySwatch', selectedColor!.value);
-                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                          MyApp.themeNotifier.notifyListeners();
-                                          selectedColor = null;
-                                        }
-                                      });
-                                    } else {
-                                      currentColor = Color(darkModePrimarySwatch.value);
-                                      pickerColor = currentColor;
-                                      getColor(context).then((_) {
-                                        if (selectedColor != null) {
-                                          CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
-                                          darkModePrimarySwatch = newMaterialColor.materialColor;
-                                          prefs.setInt('darkModePrimarySwatch', selectedColor!.value);
-                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                          MyApp.themeNotifier.notifyListeners();
-                                          selectedColor = null;
-                                        }
-                                      });
-                                    }
-
-                                    setState(() {});
-                                  },
-                                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                ),
-                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
-                                    child: MaterialButton(
-                                      minWidth: 120,
-                                      height: 30,
-                                      color: Theme.of(context).primaryColor,
-                                      onPressed: () async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        if (MyApp.themeNotifier.value == ThemeMode.light) {
-                                          currentColor = lightModePrimaryColor;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              lightModePrimaryColor = selectedColor!;
-                                              prefs.setInt('lightModePrimaryColor', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
+                                    child: Tooltip(
+                                      message: 'Primary swatch',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(lightModePrimarySwatch.value) : Color(darkModePrimarySwatch.value),
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = Color(lightModePrimarySwatch.value);
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
+                                                lightModePrimarySwatch = newMaterialColor.materialColor;
+                                                prefs.setInt('lightModePrimarySwatch', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                          } else {
+                                            currentColor = Color(darkModePrimarySwatch.value);
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                CustomMaterialColor newMaterialColor = CustomMaterialColor(selectedColor!.red, selectedColor!.green, selectedColor!.blue);
+                                                darkModePrimarySwatch = newMaterialColor.materialColor;
+                                                prefs.setInt('darkModePrimarySwatch', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                          }
+
                                           setState(() {});
-                                        } else {
-                                          currentColor = darkModePrimaryColor;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              darkModePrimaryColor = selectedColor!;
-                                              prefs.setInt('darkModePrimaryColor', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
-                                    child: MaterialButton(
-                                      minWidth: 120,
-                                      height: 30,
-                                      color: Theme.of(context).primaryColorLight,
-                                      onPressed: () async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        if (MyApp.themeNotifier.value == ThemeMode.light) {
-                                          currentColor = lightModePrimaryColorLight;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              lightModePrimaryColorLight = selectedColor!;
-                                              prefs.setInt('lightModePrimaryColorLight', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        } else {
-                                          currentColor = darkModePrimaryColorLight;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              darkModePrimaryColorLight = selectedColor!;
-                                              prefs.setInt('darkModePrimaryColorLight', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    child: Tooltip(
+                                      message: 'Main UI background',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(lightModeUIBackgroundColor.value) : Color(darkModeUIBackgroundColor.value),
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = lightModeUIBackgroundColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                lightModeUIBackgroundColor = selectedColor!;
+                                                prefs.setInt('lightModeUIBackgroundColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(lightModeUIBackgroundColor.value);
+                                                setState(() {});
+                                                selectedColor = null;
+                                              }
+                                            });
+                                          } else {
+                                            currentColor = darkModeUIBackgroundColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                darkModeUIBackgroundColor = selectedColor!;
+                                                prefs.setInt('darkModeUIBackgroundColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(darkModeUIBackgroundColor.value);
+                                                setState(() {});
+                                                selectedColor = null;
+                                              }
+                                            });
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -582,80 +564,204 @@ class _MainPageState extends State<MainPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
-                                    child: MaterialButton(
-                                      minWidth: 120,
-                                      height: 30,
-                                      color: Theme.of(context).primaryColorDark,
-                                      onPressed: () async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        if (MyApp.themeNotifier.value == ThemeMode.light) {
-                                          currentColor = lightModePrimaryColorDark;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              lightModePrimaryColorDark = selectedColor!;
-                                              prefs.setInt('lightModePrimaryColorDark', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        } else {
-                                          currentColor = darkModePrimaryColorDark;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              darkModePrimaryColorDark = selectedColor!;
-                                              prefs.setInt('darkModePrimaryColorDark', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    child: Tooltip(
+                                      message: 'Primary color',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: Theme.of(context).primaryColor,
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = lightModePrimaryColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                lightModePrimaryColor = selectedColor!;
+                                                prefs.setInt('lightModePrimaryColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          } else {
+                                            currentColor = darkModePrimaryColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                darkModePrimaryColor = selectedColor!;
+                                                prefs.setInt('darkModePrimaryColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
-                                    child: MaterialButton(
-                                      minWidth: 120,
-                                      height: 30,
-                                      color: Theme.of(context).canvasColor,
-                                      onPressed: () async {
-                                        final prefs = await SharedPreferences.getInstance();
-                                        if (MyApp.themeNotifier.value == ThemeMode.light) {
-                                          currentColor = lightModeCanvasColor;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              lightModeCanvasColor = selectedColor!;
-                                              prefs.setInt('lightModeCanvasColor', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        } else {
-                                          currentColor = darkModeCanvasColor;
-                                          pickerColor = currentColor;
-                                          getColor(context).then((_) {
-                                            if (selectedColor != null) {
-                                              darkModeCanvasColor = selectedColor!;
-                                              prefs.setInt('darkModeCanvasColor', selectedColor!.value);
-                                              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                              MyApp.themeNotifier.notifyListeners();
-                                              selectedColor = null;
-                                            }
-                                          });
-                                          setState(() {});
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    child: Tooltip(
+                                      message: 'Primary light',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: Theme.of(context).primaryColorLight,
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = lightModePrimaryColorLight;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                lightModePrimaryColorLight = selectedColor!;
+                                                prefs.setInt('lightModePrimaryColorLight', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          } else {
+                                            currentColor = darkModePrimaryColorLight;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                darkModePrimaryColorLight = selectedColor!;
+                                                prefs.setInt('darkModePrimaryColorLight', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                    child: Tooltip(
+                                      message: 'Primary dark',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: Theme.of(context).primaryColorDark,
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = lightModePrimaryColorDark;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                lightModePrimaryColorDark = selectedColor!;
+                                                prefs.setInt('lightModePrimaryColorDark', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          } else {
+                                            currentColor = darkModePrimaryColorDark;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                darkModePrimaryColorDark = selectedColor!;
+                                                prefs.setInt('darkModePrimaryColorDark', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
+                                    child: Tooltip(
+                                      message: 'Main canvas background',
+                                      height: 25,
+                                      textStyle: const TextStyle(fontSize: 14),
+                                      decoration: BoxDecoration(
+                                        color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                        border: Border.all(color: Theme.of(context).primaryColorLight),
+                                        borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                      ),
+                                      waitDuration: const Duration(milliseconds: 500),
+                                      child: MaterialButton(
+                                        minWidth: 120,
+                                        height: 30,
+                                        color: Theme.of(context).canvasColor,
+                                        onPressed: () async {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          if (MyApp.themeNotifier.value == ThemeMode.light) {
+                                            currentColor = lightModeCanvasColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                lightModeCanvasColor = selectedColor!;
+                                                prefs.setInt('lightModeCanvasColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          } else {
+                                            currentColor = darkModeCanvasColor;
+                                            pickerColor = currentColor;
+                                            getColor(context).then((_) {
+                                              if (selectedColor != null) {
+                                                darkModeCanvasColor = selectedColor!;
+                                                prefs.setInt('darkModeCanvasColor', selectedColor!.value);
+                                                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                                MyApp.themeNotifier.notifyListeners();
+                                                selectedColor = null;
+                                              }
+                                            });
+                                            setState(() {});
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -674,28 +780,35 @@ class _MainPageState extends State<MainPage> {
                                       lightModePrimaryColorLight = const Color(0xff3181ff);
                                       lightModePrimaryColorDark = const Color(0xff000000);
                                       lightModeCanvasColor = const Color(0xffffffff);
+                                      lightModeUIBackgroundColor = const Color(0xffffffff);
                                       lightModePrimarySwatch = Colors.blue;
                                       //Save to prefs
                                       prefs.setInt('lightModePrimaryColor', lightModePrimaryColor.value);
                                       prefs.setInt('lightModePrimaryColorLight', lightModePrimaryColorLight.value);
                                       prefs.setInt('lightModePrimaryColorDark', lightModePrimaryColorDark.value);
                                       prefs.setInt('lightModeCanvasColor', lightModeCanvasColor.value);
+                                      prefs.setInt('lightModeUIBackgroundColor', lightModeUIBackgroundColor.value);
                                       prefs.setInt('lightModePrimarySwatch', Colors.blue.value);
+                                      Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(lightModeUIBackgroundColor.value);
                                     } else {
                                       darkModePrimaryColor = const Color(0xff000000);
                                       darkModePrimaryColorLight = const Color(0xff706f6f);
                                       darkModePrimaryColorDark = const Color(0xff000000);
                                       darkModeCanvasColor = const Color(0xff2e2d2d);
+                                      darkModeUIBackgroundColor = const Color(0xff2e2d2d);
                                       darkModePrimarySwatch = Colors.blue;
                                       //Save to prefs
                                       prefs.setInt('darkModePrimaryColor', darkModePrimaryColor.value);
                                       prefs.setInt('darkModePrimaryColorLight', darkModePrimaryColorLight.value);
                                       prefs.setInt('darkModePrimaryColorDark', darkModePrimaryColorDark.value);
                                       prefs.setInt('darkModeCanvasColor', darkModeCanvasColor.value);
+                                      prefs.setInt('darkModeUIBackgroundColor', darkModeUIBackgroundColor.value);
                                       prefs.setInt('darkModePrimarySwatch', Colors.blue.value);
+                                      Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValueSet(darkModeUIBackgroundColor.value);
                                     }
                                     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                                     MyApp.themeNotifier.notifyListeners();
+                                    setState(() {});
                                   },
                                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   onPressed: () {},
@@ -763,7 +876,7 @@ class _MainPageState extends State<MainPage> {
                                         height: 25,
                                         textStyle: const TextStyle(fontSize: 14),
                                         decoration: BoxDecoration(
-                                          color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                                           border: Border.all(color: Theme.of(context).primaryColorLight),
                                           borderRadius: const BorderRadius.all(Radius.circular(2)),
                                         ),
@@ -885,7 +998,7 @@ class _MainPageState extends State<MainPage> {
                                   height: 25,
                                   textStyle: const TextStyle(fontSize: 14),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                     borderRadius: const BorderRadius.all(Radius.circular(2)),
                                   ),
@@ -904,7 +1017,7 @@ class _MainPageState extends State<MainPage> {
                                 height: 25,
                                 textStyle: const TextStyle(fontSize: 14),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).canvasColor.withOpacity(0.8),
+                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                   borderRadius: const BorderRadius.all(Radius.circular(2)),
                                 ),
@@ -940,7 +1053,7 @@ class _MainPageState extends State<MainPage> {
                             height: 25,
                             textStyle: const TextStyle(fontSize: 14),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(2)),
                             ),
@@ -1025,7 +1138,7 @@ class _MainPageState extends State<MainPage> {
                             height: 25,
                             textStyle: const TextStyle(fontSize: 14),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(2)),
                             ),
@@ -1108,7 +1221,7 @@ class _MainPageState extends State<MainPage> {
                             height: 25,
                             textStyle: const TextStyle(fontSize: 14),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(2)),
                             ),
@@ -1233,7 +1346,7 @@ class _MainPageState extends State<MainPage> {
                             height: 25,
                             textStyle: const TextStyle(fontSize: 14),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor.withOpacity(0.8),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(2)),
                             ),

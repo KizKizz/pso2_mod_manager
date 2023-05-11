@@ -21,6 +21,7 @@ class StateProvider with ChangeNotifier {
   bool _isChecksumMD5Match = true;
   double _uiOpacityValue = 0.6;
   bool _backgroundImageTrigger = false;
+  int _uiBackgroundColorValue = 0;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -41,6 +42,12 @@ class StateProvider with ChangeNotifier {
   bool get isChecksumMD5Match => _isChecksumMD5Match;
   double get uiOpacityValue => _uiOpacityValue;
   bool get backgroundImageTrigger => _backgroundImageTrigger;
+  int get uiBackgroundColorValue => _uiBackgroundColorValue;
+
+  void uiBackgroundColorValueSet(int value) {
+    _uiBackgroundColorValue = value;
+    notifyListeners();
+  }
 
   void backgroundImageTriggerTrue() {
     _backgroundImageTrigger = true;
