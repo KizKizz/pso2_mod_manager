@@ -1,12 +1,8 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
-import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
-import 'package:pso2_mod_manager/state_provider.dart';
 
 class ModsLoadingPage extends StatefulWidget {
   const ModsLoadingPage({Key? key}) : super(key: key);

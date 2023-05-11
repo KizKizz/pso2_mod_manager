@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -20,9 +19,6 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
   //print(sortedList);
   for (var sortedLine in sortedList) {
     if (sortedLine[4].isNotEmpty) {
-      List<String> addedIceFiles = [];
-      List<String> addedImgs = [];
-      List<String> addedVids = [];
       //Get mods info
       String category = sortedLine[0];
       String itemName = '';

@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/mods_adder.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';

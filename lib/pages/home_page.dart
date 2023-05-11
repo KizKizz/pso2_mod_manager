@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:draggable_float_widget/draggable_float_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
@@ -106,7 +107,8 @@ class _HomePageState extends State<HomePage> {
                 height: double.infinity,
                 fit: BoxFit.cover,
               ),
-            viewsTheme
+            viewsTheme,
+            
           ]);
   }
 
