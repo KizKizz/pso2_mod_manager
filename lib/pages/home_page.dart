@@ -5,7 +5,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/mod_file_restore.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -28,11 +31,13 @@ class _HomePageState extends State<HomePage> {
   String modViewItemName = '';
   String previewModName = '';
   bool hoveringOnSubmod = false;
-  List<Mod> modViewList = [];
+  //List<Mod> modViewList = [];
+  Item? modViewItem;
   List<Widget> previewImages = [];
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
   List<List<List<bool>>> itemButtonsVisible = [];
+  List<List<List<bool>>> appliedItemButtonsVisible = [];
 
   @override
   void initState() {
@@ -106,7 +111,10 @@ class _HomePageState extends State<HomePage> {
                 height: double.infinity,
                 fit: BoxFit.cover,
               ),
-            viewsTheme,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2),
+              child: viewsTheme,
+            ),
           ]);
   }
 
@@ -333,7 +341,7 @@ class _HomePageState extends State<HomePage> {
                                                       }
                                                       modViewETKeys.clear();
                                                       modViewItemName = curItem.itemName;
-                                                      modViewList = curItem.mods;
+                                                      modViewItem = curItem;
                                                       setState(() {});
                                                     },
                                                     onHover: (value) {
@@ -384,7 +392,7 @@ class _HomePageState extends State<HomePage> {
         thickness: 1,
         //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
-      if (modViewList.isNotEmpty)
+      if (modViewItem != null)
         Expanded(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
@@ -399,10 +407,10 @@ class _HomePageState extends State<HomePage> {
                     child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: modViewList.length,
+                        itemCount: modViewItem!.mods.length,
                         itemBuilder: (context, modIndex) {
                           modViewETKeys.add(GlobalKey());
-                          var curMod = modViewList[modIndex];
+                          var curMod = modViewItem!.mods[modIndex];
                           return InkWell(
                             //Hover for preview
                             onTap: () {},
@@ -453,7 +461,7 @@ class _HomePageState extends State<HomePage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                          Column(
+                                          Row(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
@@ -461,8 +469,9 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 13,
                                                   )),
                                               if (curMod.submods.indexWhere((element) => element.applyStatus == true) != -1)
-                                                Text('Currently applied: ${curMod.submods[curMod.submods.indexWhere((element) => element.applyStatus == true)].submodName}',
+                                                Text(' | Currently applied: ${curMod.submods[curMod.submods.indexWhere((element) => element.applyStatus == true)].submodName}',
                                                     style: const TextStyle(
+                                                      color: Colors.amber,
                                                       fontSize: 13,
                                                     )),
                                             ],
@@ -658,7 +667,7 @@ class _HomePageState extends State<HomePage> {
                                                   child: Wrap(
                                                     spacing: 5,
                                                     children: [
-                                                      //Add-Remove button
+                                                      //Add-Remove button in submod
                                                       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
                                                         Tooltip(
                                                           message: 'Apply ${curSubmod.submodName} to the game',
@@ -674,15 +683,22 @@ class _HomePageState extends State<HomePage> {
                                                               Icons.add_to_queue_outlined,
                                                             ),
                                                             onTap: () async {
-                                                              setState(() {
-                                                                //set apply status
-                                                                for (var element in curSubmod.modFiles) {
-                                                                  element.applyStatus = true;
-                                                                }
-                                                                curMod.applyStatus = true;
-                                                                curSubmod.applyStatus = true;
-                                                                //
-                                                              });
+                                                              //check for dub applied mod
+
+                                                              //set apply status
+
+                                                              if (modViewItem!.mods.indexWhere((element) => element.applyStatus == true) == -1) {}
+
+                                                              for (var element in curSubmod.modFiles) {
+                                                                modFileRestore(moddedItemsList, element);
+                                                                element.applyStatus = true;
+                                                              }
+                                                              modViewItem!.applyStatus = true;
+                                                              curMod.applyStatus = true;
+                                                              curSubmod.applyStatus = true;
+
+                                                              appliedItemList = appliedListBuilder(moddedItemsList);
+                                                              setState(() {});
                                                             },
                                                           ),
                                                         ),
@@ -701,15 +717,16 @@ class _HomePageState extends State<HomePage> {
                                                               Icons.remove_from_queue_outlined,
                                                             ),
                                                             onTap: () async {
-                                                              setState(() {
-                                                                //set apply status
-                                                                for (var element in curSubmod.modFiles) {
-                                                                  element.applyStatus = false;
-                                                                }
-                                                                curMod.applyStatus = false;
-                                                                curSubmod.applyStatus = false;
-                                                                //
-                                                              });
+                                                              //set apply status
+                                                              for (var element in curSubmod.modFiles) {
+                                                                element.applyStatus = false;
+                                                              }
+                                                              modViewItem!.applyStatus = false;
+                                                              curMod.applyStatus = false;
+                                                              curSubmod.applyStatus = false;
+                                                              appliedItemList = appliedListBuilder(moddedItemsList);
+                                                              //
+                                                              setState(() {});
                                                             },
                                                           ),
                                                         ),
@@ -801,11 +818,15 @@ class _HomePageState extends State<HomePage> {
                                                                 child: const Icon(
                                                                   Icons.add_to_queue_outlined,
                                                                 ),
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    //set apply status
-                                                                    curModFile.applyStatus = true;
-                                                                  });
+                                                                onTap: () async {
+                                                                  //set apply status
+                                                                  modFileRestore(moddedItemsList, curModFile);
+                                                                  modViewItem!.applyStatus = true;
+                                                                  curMod.applyStatus = true;
+                                                                  curSubmod.applyStatus = true;
+                                                                  curModFile.applyStatus = true;
+                                                                  appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                  setState(() {});
                                                                 },
                                                               ),
                                                             ),
@@ -824,11 +845,20 @@ class _HomePageState extends State<HomePage> {
                                                                   Icons.remove_from_queue_outlined,
                                                                 ),
                                                                 onTap: () {
-                                                                  setState(() {
-                                                                    //set apply status
-                                                                    curModFile.applyStatus = false;
-                                                                    //
-                                                                  });
+                                                                  //set apply status
+                                                                  curModFile.applyStatus = false;
+                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                    curSubmod.applyStatus = false;
+                                                                  }
+                                                                  if (curMod.submods.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                    curMod.applyStatus = false;
+                                                                  }
+                                                                  if (modViewItem!.mods.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                    modViewItem!.applyStatus = false;
+                                                                  }
+                                                                  //
+                                                                  appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                  setState(() {});
                                                                 },
                                                               ),
                                                             ),
@@ -887,16 +917,239 @@ class _HomePageState extends State<HomePage> {
         //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
       Expanded(
-          child: ScrollbarTheme(
-              data: ScrollbarThemeData(
-                thumbColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.hovered)) {
-                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                  }
-                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                }),
-              ),
-              child: SingleChildScrollView(child: Container())))
+        child: ScrollbarTheme(
+          data: ScrollbarThemeData(
+            thumbColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.hovered)) {
+                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+              }
+              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+            }),
+          ),
+          child: SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: appliedItemList.length,
+              itemBuilder: (context, groupIndex) {
+                if (appliedItemButtonsVisible.isEmpty || appliedItemButtonsVisible.length != appliedItemList.length) {
+                  appliedItemButtonsVisible = List.generate(appliedItemList.length, (index) => []);
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (groupIndex != 0)
+                      const Divider(
+                        height: 1,
+                        thickness: 1,
+                        //color: Theme.of(context).textTheme.headlineMedium?.color,
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Card(
+                        margin: const EdgeInsets.all(1),
+                        color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                        //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                        child: ExpansionTile(
+                          backgroundColor: Colors.transparent,
+                          collapsedTextColor: Theme.of(context).colorScheme.primary,
+                          title: Text(appliedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                          initiallyExpanded: appliedItemList[groupIndex].expanded,
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: appliedItemList[groupIndex].categories.length,
+                              itemBuilder: (context, categoryIndex) {
+                                var curCategory = appliedItemList[groupIndex].categories[categoryIndex];
+                                if (appliedItemButtonsVisible[groupIndex].isEmpty || appliedItemButtonsVisible[groupIndex].length != appliedItemList[groupIndex].categories.length) {
+                                  appliedItemButtonsVisible[groupIndex] = List.generate(appliedItemList[groupIndex].categories.length, (index) => []);
+                                }
+                                return ExpansionTile(
+                                    backgroundColor: Colors.transparent,
+                                    initiallyExpanded: false,
+                                    childrenPadding: const EdgeInsets.all(0),
+                                    title: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                              child: Container(
+                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(color: Theme.of(context).highlightColor),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                  ),
+                                                  child: curCategory.items.length < 2
+                                                      ? Text('${appliedItemList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                          style: const TextStyle(
+                                                            fontSize: 13,
+                                                          ))
+                                                      : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                          style: const TextStyle(
+                                                            fontSize: 13,
+                                                          ))),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            if (!defaultCateforyDirs.contains(curCategory.categoryName))
+                                              Tooltip(
+                                                  message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
+                                                  height: 25,
+                                                  textStyle: const TextStyle(fontSize: 14),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                  ),
+                                                  waitDuration: const Duration(milliseconds: 500),
+                                                  child: SizedBox(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child: MaterialButton(
+                                                        onPressed: (() {
+                                                          setState(() {});
+                                                        }),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.delete_sweep_rounded,
+                                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                            )
+                                                          ],
+                                                        )),
+                                                  )),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    children: [
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount: curCategory.items.length,
+                                          itemBuilder: (context, itemIndex) {
+                                            var curItem = curCategory.items[itemIndex];
+                                            if (appliedItemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
+                                                appliedItemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                              appliedItemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                            }
+
+                                            return SizedBox(
+                                              height: 84,
+                                              child: Container(
+                                                margin: const EdgeInsets.all(1),
+                                                color: Colors.transparent,
+                                                //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+                                                child: InkWell(
+                                                  child: Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
+                                                        child: Container(
+                                                            width: 80,
+                                                            height: 80,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(3),
+                                                              border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                            ),
+                                                            child: Image.file(
+                                                              File(curItem.icon),
+                                                              filterQuality: FilterQuality.none,
+                                                              fit: BoxFit.fitWidth,
+                                                            )),
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              curItem.itemName,
+                                                              style: const TextStyle(fontSize: 16),
+                                                            ),
+                                                            Text(
+                                                              curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
+                                                              style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                            ),
+                                                            Text(
+                                                              '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
+                                                              style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Visibility(
+                                                        visible: appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex],
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(right: 15),
+                                                          child: Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: [
+                                                              //Buttons
+                                                              Tooltip(
+                                                                  message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                  height: 25,
+                                                                  textStyle: const TextStyle(fontSize: 14),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                  ),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                    child: const Icon(Icons.folder_open),
+                                                                    onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  onTap: () {
+                                                    for (var element in modViewETKeys) {
+                                                      element.currentState?.collapse();
+                                                    }
+                                                    modViewETKeys.clear();
+                                                    modViewItemName = curItem.itemName;
+                                                    modViewItem!.mods = curItem.mods;
+                                                    setState(() {});
+                                                  },
+                                                  onHover: (value) {
+                                                    setState(() {
+                                                      if (value) {
+                                                        appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                      } else {
+                                                        appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    ]);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
     ]);
   }
 

@@ -28,3 +28,4 @@ String? win32ChecksumMD5;
 String win32CheckSumFilePath = '';
 List<String> ogDataFiles = [];
 List<CategoryType> moddedItemsList = [];
+List<CategoryType> appliedItemList = [];
