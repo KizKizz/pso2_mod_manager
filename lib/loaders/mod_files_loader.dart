@@ -16,8 +16,17 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<List<CategoryType>> modFileStructureLoader() async {
   //Get og file paths
-  if (ogDataFiles.isEmpty) {
-    ogDataFiles = Directory(Uri.file('$modManPso2binPath/data').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+  if (ogWin32FilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync()) {
+    ogWin32FilePaths = Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+  }
+  if (ogWin32NAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+    ogWin32NAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+  }
+  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).existsSync()) {
+    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+  }
+  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
+    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
   }
 
   List<CategoryType> structureFromJson = [];
@@ -252,7 +261,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
   if (filesInMainModDir.isNotEmpty) {
     List<ModFile> modFiles = [];
     for (var file in filesInMainModDir) {
-      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //final ogFilePaths = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
       //List<String> ogFilePaths = [];
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
@@ -295,7 +304,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     final filesInDir = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
     List<ModFile> modFiles = [];
     for (var file in filesInDir) {
-      //final ogFiles = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
+      //final ogFilePaths = ogDataFiles.where((element) => p.basename(element) == p.basename(file.path)).toList();
       //List<String> ogFilePaths = [];
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);

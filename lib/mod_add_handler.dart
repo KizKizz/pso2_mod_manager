@@ -70,8 +70,25 @@ List<String> _motionCsv = [
 
 void modAddHandler(context) {
   Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN) async {
-    if (ogDataFiles.indexWhere((element) => p.basename(element) == iceName) != -1) {
-      XFile iconFile = XFile(ogDataFiles.firstWhere((element) => p.basename(element) == iceName));
+    String ogIcePath = '';
+    int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    if (win32PathIndex != -1) {
+      ogIcePath = ogWin32FilePaths[win32PathIndex];
+    } else if (win32NAPathIndex != -1) {
+      ogIcePath = ogWin32NAFilePaths[win32NAPathIndex];
+    } else if (win32RebootPathIndex != -1) {
+      ogIcePath = ogWin32RebootFilePaths[win32RebootPathIndex];
+    } else if (win32RebootNAPathIndex != -1) {
+      ogIcePath = ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
+    } else {
+      ogIcePath = '';
+    }
+
+    if (ogIcePath.isNotEmpty) {
+      XFile iconFile = XFile(ogIcePath);
 
       String itemName = '';
       if (curActiveLang == 'JP') {

@@ -128,30 +128,26 @@ Future<List<String>> findItemInCsv(XFile inputFile) async {
 }
 
 Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN) async {
-  String pso2binDataDirPath = Uri.file('$modManPso2binPath/data').toFilePath();
-  XFile? iconIce;
-  List<String> subDataDirs = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  for (var dir in subDataDirs) {
-    if (dir == 'win32' || dir == 'win32_na') {
-      String icePath = Uri.file('$pso2binDataDirPath/$dir/$iceName').toFilePath();
-      if (File(icePath).existsSync() && iconIce == null) {
-        iconIce = XFile(icePath);
-        break;
-      }
+  String ogIcePath = '';
+    int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+    if (win32PathIndex != -1) {
+      ogIcePath = ogWin32FilePaths[win32PathIndex];
+    } else if (win32NAPathIndex != -1) {
+      ogIcePath = ogWin32NAFilePaths[win32NAPathIndex];
+    } else if (win32RebootPathIndex != -1) {
+      ogIcePath = ogWin32RebootFilePaths[win32RebootPathIndex];
+    } else if (win32RebootNAPathIndex != -1) {
+      ogIcePath = ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
     } else {
-      final rebootIces = Directory(Uri.file('$pso2binDataDirPath/$dir').toFilePath()).listSync().whereType<File>();
-      String icePath = '';
-      if (rebootIces.isNotEmpty) {
-        icePath = rebootIces.firstWhere((element) => XFile(element.path).name == iceName).path;
-      }
-      if (icePath.isNotEmpty && File(icePath).existsSync() && iconIce == null) {
-        iconIce = XFile(icePath);
-        break;
-      }
+      ogIcePath = '';
     }
-  }
 
-  if (iconIce != null) {
+  if (ogIcePath.isNotEmpty) {
+    XFile iconIce = XFile(ogIcePath);
+
     String itemName = '';
     if (curActiveLang == 'JP') {
       itemName = itemNameJP;
