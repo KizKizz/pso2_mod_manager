@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -39,7 +40,6 @@ class _HomePageState extends State<HomePage> {
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
   List<List<List<bool>>> itemButtonsVisible = [];
-  List<List<List<bool>>> appliedItemButtonsVisible = [];
 
   @override
   void initState() {
@@ -178,6 +178,7 @@ class _HomePageState extends State<HomePage> {
                           child: ExpansionTile(
                             backgroundColor: Colors.transparent,
                             collapsedTextColor: Theme.of(context).colorScheme.primary,
+                            collapsedIconColor: Theme.of(context).colorScheme.primary,
                             title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
                             initiallyExpanded: moddedItemsList[groupIndex].expanded,
                             children: [
@@ -192,6 +193,8 @@ class _HomePageState extends State<HomePage> {
                                   }
                                   return ExpansionTile(
                                       backgroundColor: Colors.transparent,
+                                      textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                                      iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       initiallyExpanded: false,
                                       childrenPadding: const EdgeInsets.all(0),
                                       title: Row(
@@ -200,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
@@ -296,15 +299,15 @@ class _HomePageState extends State<HomePage> {
                                                             children: [
                                                               Text(
                                                                 curItem.itemName,
-                                                                style: const TextStyle(fontSize: 16),
+                                                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                               ),
                                                               Text(
                                                                 curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
-                                                                style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                               ),
                                                               Text(
                                                                 '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
-                                                                style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                               ),
                                                             ],
                                                           ),
@@ -427,22 +430,32 @@ class _HomePageState extends State<HomePage> {
                                         File(path),
                                         //fit: BoxFit.cover,
                                       ),
-                                      Container(
-                                          //width: double.minPositive,
-                                          height: 25,
-                                          color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                          child: Center(
+                                      FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                              borderRadius: BorderRadius.circular(3),
+                                              border: Border.all(color: Theme.of(context).hintColor),
+                                            ),
+                                            height: 25,
+                                            child: Center(
+                                                child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5),
                                               child: Text(
                                                   curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
                                                       ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
                                                       : curMod.modName,
-                                                  style: const TextStyle(fontSize: 17))))
+                                                  style: const TextStyle(fontSize: 17)),
+                                            ))),
+                                      )
                                     ],
                                   ));
                                 }
                               } else {
                                 previewModName = '';
                                 previewImages.clear();
+                                ;
                               }
                               setState(() {});
                             },
@@ -454,6 +467,9 @@ class _HomePageState extends State<HomePage> {
                                   side: BorderSide(color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                               child: AdvanceExpansionTile(
                                 backgroundColor: Colors.transparent,
+                                textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                 key: modViewETKeys[modIndex],
                                 title: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -462,24 +478,24 @@ class _HomePageState extends State<HomePage> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(curMod.modName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                          Text(curMod.modName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
                                                   style: const TextStyle(
-                                                    fontSize: 13,
+                                                    fontSize: 15,
                                                   )),
                                               //if (curMod.submods.indexWhere((element) => element.applyStatus == true) != -1)
-                                              Text(
-                                                  curMod.submods.indexWhere((element) => element.applyStatus == true) != -1
-                                                      ? 'Applied: ${curMod.submods[curMod.submods.indexWhere((element) => element.applyStatus == true)].submodName}'
-                                                      : 'Applied: None',
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    color: Colors.amber,
-                                                    fontSize: 13,
-                                                  )),
+                                              // Text(
+                                              //     curMod.submods.indexWhere((element) => element.applyStatus == true) != -1
+                                              //         ? 'Applied: ${curMod.submods[curMod.submods.indexWhere((element) => element.applyStatus == true)].submodName}'
+                                              //         : 'Applied: None',
+                                              //     overflow: TextOverflow.ellipsis,
+                                              //     style: const TextStyle(
+                                              //       color: Colors.amber,
+                                              //       fontSize: 13,
+                                              //     )),
                                             ],
                                           ),
                                         ],
@@ -629,10 +645,20 @@ class _HomePageState extends State<HomePage> {
                                                       File(path),
                                                       //fit: BoxFit.cover,
                                                     ),
-                                                    Container(
-                                                        height: 25,
-                                                        color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                        child: Center(child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17))))
+                                                    FittedBox(
+                                                      fit: BoxFit.fitWidth,
+                                                      child: Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                            borderRadius: BorderRadius.circular(3),
+                                                            border: Border.all(color: Theme.of(context).hintColor),
+                                                          ),
+                                                          height: 25,
+                                                          child: Center(
+                                                              child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                  child: Center(child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17)))))),
+                                                    )
                                                   ],
                                                 ));
                                               }
@@ -664,6 +690,9 @@ class _HomePageState extends State<HomePage> {
                                           },
                                           child: ExpansionTile(
                                             backgroundColor: Colors.transparent,
+                                            textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                            iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                            collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                             title: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -952,9 +981,6 @@ class _HomePageState extends State<HomePage> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: appliedItemList.length,
               itemBuilder: (context, groupIndex) {
-                if (appliedItemButtonsVisible.isEmpty || appliedItemButtonsVisible.length != appliedItemList.length) {
-                  appliedItemButtonsVisible = List.generate(appliedItemList.length, (index) => []);
-                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -974,6 +1000,7 @@ class _HomePageState extends State<HomePage> {
                         child: ExpansionTile(
                           backgroundColor: Colors.transparent,
                           collapsedTextColor: Theme.of(context).colorScheme.primary,
+                          collapsedIconColor: Theme.of(context).colorScheme.primary,
                           title: Text(appliedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
                           initiallyExpanded: appliedItemList[groupIndex].expanded,
                           children: [
@@ -983,11 +1010,12 @@ class _HomePageState extends State<HomePage> {
                               itemCount: appliedItemList[groupIndex].categories.length,
                               itemBuilder: (context, categoryIndex) {
                                 var curCategory = appliedItemList[groupIndex].categories[categoryIndex];
-                                if (appliedItemButtonsVisible[groupIndex].isEmpty || appliedItemButtonsVisible[groupIndex].length != appliedItemList[groupIndex].categories.length) {
-                                  appliedItemButtonsVisible[groupIndex] = List.generate(appliedItemList[groupIndex].categories.length, (index) => []);
-                                }
                                 return ExpansionTile(
                                     backgroundColor: Colors.transparent,
+                                    textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                    iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                    collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                    collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
                                     initiallyExpanded: false,
                                     childrenPadding: const EdgeInsets.all(0),
                                     title: Row(
@@ -996,7 +1024,7 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Row(
                                           children: [
-                                            Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                            Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
                                             Padding(
                                               padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                               child: Container(
@@ -1008,11 +1036,11 @@ class _HomePageState extends State<HomePage> {
                                                   child: curCategory.items.length < 2
                                                       ? Text('${appliedItemList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
                                                           style: const TextStyle(
-                                                            fontSize: 13,
+                                                            fontSize: 15,
                                                           ))
                                                       : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
                                                           style: const TextStyle(
-                                                            fontSize: 13,
+                                                            fontSize: 15,
                                                           ))),
                                             ),
                                           ],
@@ -1057,107 +1085,183 @@ class _HomePageState extends State<HomePage> {
                                           itemCount: curCategory.items.length,
                                           itemBuilder: (context, itemIndex) {
                                             var curItem = curCategory.items[itemIndex];
-                                            if (appliedItemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
-                                                appliedItemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
-                                              appliedItemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                            }
 
                                             return ExpansionTile(
                                               backgroundColor: Colors.transparent,
+                                              iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                              textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                              collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                              collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
                                               //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-                                              title: InkWell(
-                                                child: Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                      child: Container(
-                                                          width: 80,
-                                                          height: 80,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(3),
-                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
-                                                          ),
-                                                          child: Image.file(
-                                                            File(curItem.icon),
-                                                            filterQuality: FilterQuality.none,
-                                                            fit: BoxFit.fitWidth,
-                                                          )),
+                                              title: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                    child: Container(
+                                                        width: 80,
+                                                        height: 80,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(3),
+                                                          border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                        ),
+                                                        child: Image.file(
+                                                          File(curItem.icon),
+                                                          filterQuality: FilterQuality.none,
+                                                          fit: BoxFit.fitWidth,
+                                                        )),
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          curItem.itemName,
+                                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                                        ),
+                                                        const Divider(
+                                                          endIndent: 5,
+                                                          height: 10,
+                                                          thickness: 2,
+                                                          //color: Theme.of(context).textTheme.headlineMedium?.color,
+                                                        ),
+                                                        Text(
+                                                          '${curItem.mods.first.modName} > ${curItem.mods.first.submods.first.submodName}',
+                                                          //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                        ),
+                                                        Text(
+                                                          curItem.mods.first.submods.first.modFiles.length < 2
+                                                              ? '${curItem.mods.first.submods.first.modFiles.length} File'
+                                                              : '${curItem.mods.first.submods.first.modFiles.length} Files',
+                                                          //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            curItem.itemName,
-                                                            style: const TextStyle(fontSize: 16),
-                                                          ),
-                                                          const Divider(
-                                                            endIndent: 5,
-                                                            height: 10,
-                                                            thickness: 2,
-                                                            //color: Theme.of(context).textTheme.headlineMedium?.color,
-                                                          ),
-                                                          Text(
-                                                            '${curItem.mods.first.modName} > ${curItem.mods.first.submods.first.submodName}',
-                                                            //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
-                                                          ),
-                                                          Text(
-                                                            curItem.mods.first.submods.first.modFiles.length < 2
-                                                                ? '${curItem.mods.first.submods.first.modFiles.length} File'
-                                                                : '${curItem.mods.first.submods.first.modFiles.length} Files',
-                                                            //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 15),
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                      children: [
+                                                        //Buttons
+                                                        Tooltip(
+                                                            message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                            height: 25,
+                                                            textStyle: const TextStyle(fontSize: 14),
+                                                            decoration: BoxDecoration(
+                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                            ),
+                                                            waitDuration: const Duration(milliseconds: 500),
+                                                            child: InkWell(
+                                                              child: const Icon(Icons.folder_open),
+                                                              onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                            )),
+                                                      ],
                                                     ),
-                                                    Visibility(
-                                                      visible: appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex],
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(right: 15),
-                                                        child: Row(
-                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                  )
+                                                ],
+                                              ),
+                                              children: [
+                                                ListView.builder(
+                                                    shrinkWrap: true,
+                                                    physics: const NeverScrollableScrollPhysics(),
+                                                    itemCount: curItem.mods.first.submods.first.modFiles.length,
+                                                    itemBuilder: (context, modFileIndex) {
+                                                      var curModFile = curItem.mods.first.submods.first.modFiles[modFileIndex];
+                                                      return ListTile(
+                                                        tileColor: Colors.transparent,
+                                                        //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                        trailing: Wrap(
+                                                          spacing: 10,
                                                           children: [
-                                                            //Buttons
-                                                            Tooltip(
-                                                                message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                            //Add-Remove button
+                                                            if (curModFile.applyStatus == false)
+                                                              Tooltip(
+                                                                message: 'Apply ${curModFile.modFileName} to the game',
                                                                 height: 25,
                                                                 textStyle: const TextStyle(fontSize: 14),
                                                                 decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                ),
+                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                                 waitDuration: const Duration(milliseconds: 500),
                                                                 child: InkWell(
-                                                                  child: const Icon(Icons.folder_open),
-                                                                  onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                )),
+                                                                  child: const Icon(
+                                                                    Icons.add_to_queue_outlined,
+                                                                  ),
+                                                                  onTap: () async {
+                                                                    //set apply status
+                                                                    modFileRestore(moddedItemsList, curModFile);
+                                                                    curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
+                                                                    modViewItem!.applyStatus = true;
+                                                                    curItem.mods.first.applyStatus = true;
+                                                                    curItem.mods.first.submods.first.applyStatus = true;
+                                                                    curModFile.applyStatus = true;
+                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                    setState(() {});
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            if (curModFile.applyStatus == true)
+                                                              Tooltip(
+                                                                message: 'Remove ${curModFile.modFileName} from the game',
+                                                                height: 25,
+                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                child: InkWell(
+                                                                  child: const Icon(
+                                                                    Icons.remove_from_queue_outlined,
+                                                                  ),
+                                                                  onTap: () {
+                                                                    //set apply status
+                                                                    curModFile.applyStatus = false;
+                                                                    if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                      curItem.mods.first.submods.first.applyStatus = false;
+                                                                    }
+                                                                    if (curItem.mods.first.submods.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                      curItem.mods.first.applyStatus = false;
+                                                                    }
+                                                                    if (modViewItem!.mods.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                      modViewItem!.applyStatus = false;
+                                                                    }
+                                                                    //
+                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                    setState(() {});
+                                                                  },
+                                                                ),
+                                                              ),
+
+                                                            //Delete
+                                                            Tooltip(
+                                                              message: 'Hold to remove ${curModFile.modFileName} from Mod Manager',
+                                                              height: 25,
+                                                              textStyle: const TextStyle(fontSize: 14),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                              waitDuration: const Duration(milliseconds: 500),
+                                                              child: InkWell(
+                                                                child: const Icon(
+                                                                  Icons.delete_forever_outlined,
+                                                                ),
+                                                                onLongPress: () async {
+                                                                  setState(() {});
+                                                                },
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                onTap: () {
-                                                //   for (var element in modViewETKeys) {
-                                                //     element.currentState?.collapse();
-                                                //   }
-                                                //   modViewETKeys.clear();
-                                                //   modViewItemName = curItem.itemName;
-                                                //   modViewItem!.mods = curItem.mods;
-                                                //   setState(() {});
-                                                },
-                                                onHover: (value) {
-                                                  setState(() {
-                                                    if (value) {
-                                                      appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
-                                                    } else {
-                                                      appliedItemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
-                                                    }
-                                                  });
-                                                },
-                                              ),
+                                                        title: Text(curModFile.modFileName),
+                                                      );
+                                                    })
+                                              ],
                                             );
                                           }),
                                     ]);
