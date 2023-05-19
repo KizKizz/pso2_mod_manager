@@ -208,22 +208,26 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-                            buttonHeight: 40,
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                            buttonStyleData: ButtonStyleData(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                              ),
                             ),
-                            buttonDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
+                            dropdownStyleData: DropdownStyleData(
+                              elevation: 3,
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            iconStyleData: const IconStyleData(iconSize: 15),
+                            menuItemStyleData: const MenuItemStyleData(
+                              height: 20,
+                              padding: EdgeInsets.symmetric(horizontal: 5),
                             ),
                             isDense: true,
-                            dropdownElevation: 3,
-                            dropdownPadding: const EdgeInsets.symmetric(vertical: 2),
-                            //dropdownWidth: 250,
-                            //offset: const Offset(-130, 0),
-                            iconSize: 15,
-                            itemHeight: 20,
-                            itemPadding: const EdgeInsets.symmetric(horizontal: 5),
                             items: langDropDownList
                                 .map((item) => DropdownMenuItem<String>(
                                     value: item,
@@ -283,8 +287,8 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() {}),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(
                               Icons.folder_copy_outlined,
                               size: 18,
@@ -305,8 +309,8 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() {}),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(
                               Icons.folder_copy_outlined,
                               size: 18,
@@ -328,12 +332,16 @@ class _MainPageState extends State<MainPage> {
                         //color: Theme.of(context).textTheme.headlineMedium?.color,
                       ),
 
+                      const SizedBox(
+                        height: 5,
+                      ),
+
                       //Path open
                       MaterialButton(
                         height: 40,
                         onPressed: (() {}),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(
                               Icons.folder_open_outlined,
                               size: 18,
@@ -354,8 +362,8 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() {}),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(
                               Icons.folder_open_outlined,
                               size: 18,
@@ -376,8 +384,8 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() {}),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(
                               Icons.folder_open_outlined,
                               size: 18,
@@ -480,10 +488,10 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Opacity slider
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(
                               Icons.opacity_outlined,
                               size: 18,
@@ -508,10 +516,10 @@ class _MainPageState extends State<MainPage> {
                             }),
                       ),
                       //Theme color picker
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(
                               Icons.color_lens,
                               size: 18,
@@ -891,10 +899,10 @@ class _MainPageState extends State<MainPage> {
                               ),
 
                               //Background Image
-                              Padding(
-                                padding: const EdgeInsets.only(left: 7, right: 7, top: 10),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 7, right: 7, top: 10),
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.image,
                                       size: 18,
@@ -948,44 +956,46 @@ class _MainPageState extends State<MainPage> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger || (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
-                                          Tooltip(
-                                            message: showBackgroundImage ? 'Hide background image' : 'Show background image',
-                                            height: 25,
-                                            textStyle: const TextStyle(fontSize: 14),
-                                            decoration: BoxDecoration(
-                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                            ),
-                                            waitDuration: const Duration(milliseconds: 500),
-                                            child: InkWell(
-                                              child: Container(
-                                                decoration: ShapeDecoration(
-                                                  color: Colors.blue,
-                                                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                ),
-                                                child: Icon(
-                                                  showBackgroundImage ? Icons.hide_image_outlined : Icons.image_outlined,
-                                                  color: Colors.white,
-                                                ),
+                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
+                                              (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
+                                            Tooltip(
+                                              message: showBackgroundImage ? 'Hide background image' : 'Show background image',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
                                               ),
-                                              onTap: () async {
-                                                final prefs = await SharedPreferences.getInstance();
-                                                if (showBackgroundImage) {
-                                                  showBackgroundImage = false;
-                                                  prefs.setBool('showBgImage', false);
-                                                  Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
-                                                } else {
-                                                  showBackgroundImage = true;
-                                                  prefs.setBool('showBgImage', true);
-                                                  Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
-                                                }
-                                                setState(() {});
-                                              },
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: Container(
+                                                  decoration: ShapeDecoration(
+                                                    color: Colors.blue,
+                                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                  ),
+                                                  child: Icon(
+                                                    showBackgroundImage ? Icons.hide_image_outlined : Icons.image_outlined,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onTap: () async {
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  if (showBackgroundImage) {
+                                                    showBackgroundImage = false;
+                                                    prefs.setBool('showBgImage', false);
+                                                    Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
+                                                  } else {
+                                                    showBackgroundImage = true;
+                                                    prefs.setBool('showBgImage', true);
+                                                    Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
+                                                  }
+                                                  setState(() {});
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger || (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
+                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
+                                              (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
                                             Tooltip(
                                               message: 'Hold to remove background image',
                                               height: 25,
@@ -1475,8 +1485,8 @@ class _MainPageState extends State<MainPage> {
                                 onPressed: (() {
                                   _scaffoldKey.currentState!.openEndDrawer();
                                 }),
-                                child: Row(
-                                  children: const [
+                                child: const Row(
+                                  children: [
                                     Icon(
                                       Icons.settings,
                                       size: 18,

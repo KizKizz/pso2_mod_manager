@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
 import 'package:desktop_drop/desktop_drop.dart';
-import 'package:dropdown_button2/custom_dropdown_button2.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
@@ -650,11 +650,11 @@ void modAddHandler(context) {
                                                         ),
                                                       );
                                                     } else if (!snapshot.hasData) {
-                                                      return Center(
+                                                      return const Center(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: const [
+                                                          children: [
                                                             Text(
                                                               'Loading Data',
                                                               style: TextStyle(fontSize: 20),
@@ -788,27 +788,53 @@ void modAddHandler(context) {
                                                                                 SizedBox(
                                                                                     height: 40,
                                                                                     child: sortedModsList[index][0] == 'Misc'
-                                                                                        ? CustomDropdownButton2(
-                                                                                            hint: curLangText!.addSelectCatLabelText,
-                                                                                            dropdownDecoration: BoxDecoration(
-                                                                                              borderRadius: BorderRadius.circular(3),
-                                                                                              color: MyApp.themeNotifier.value == ThemeMode.light
-                                                                                                  ? Theme.of(context).cardColor
-                                                                                                  : Theme.of(context).primaryColor,
+                                                                                        ? DropdownButton2(
+                                                                                            hint: Text(curLangText!.addSelectCatLabelText),
+                                                                                            buttonStyleData: ButtonStyleData(
+                                                                                              decoration: BoxDecoration(
+                                                                                                borderRadius: BorderRadius.circular(3),
+                                                                                                border: Border.all(color: Theme.of(context).hintColor),
+                                                                                              ),
+                                                                                              width: 150,
+                                                                                              height: 35,
                                                                                             ),
-                                                                                            buttonDecoration: BoxDecoration(
-                                                                                              borderRadius: BorderRadius.circular(3),
-                                                                                              border: Border.all(color: Theme.of(context).hintColor),
+                                                                                            dropdownStyleData: DropdownStyleData(
+                                                                                              decoration: BoxDecoration(
+                                                                                                borderRadius: BorderRadius.circular(3),
+                                                                                                color: MyApp.themeNotifier.value == ThemeMode.light
+                                                                                                    ? Theme.of(context).cardColor
+                                                                                                    : Theme.of(context).primaryColor,
+                                                                                              ),
+                                                                                              elevation: 3,
+
+                                                                                              //dropdownWidth: 361,
+                                                                                              maxHeight: constraints.maxHeight * 0.5,
                                                                                             ),
-                                                                                            buttonWidth: 150,
-                                                                                            buttonHeight: 35,
-                                                                                            itemHeight: 40,
-                                                                                            dropdownElevation: 3,
-                                                                                            icon: const Icon(Icons.arrow_drop_down),
-                                                                                            iconSize: 30,
-                                                                                            //dropdownWidth: 361,
-                                                                                            dropdownHeight: constraints.maxHeight * 0.5,
-                                                                                            dropdownItems: _dropdownCategories,
+                                                                                            iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down), iconSize: 30),
+                                                                                            menuItemStyleData: const MenuItemStyleData(
+                                                                                              height: 40,
+                                                                                            ),
+                                                                                            items: _dropdownCategories
+                                                                                                .map((item) => DropdownMenuItem<String>(
+                                                                                                    value: item,
+                                                                                                    child: Row(
+                                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                      children: [
+                                                                                                        Container(
+                                                                                                          padding: const EdgeInsets.only(bottom: 3),
+                                                                                                          child: Text(
+                                                                                                            item,
+                                                                                                            style: const TextStyle(
+                                                                                                                //fontSize: 14,
+                                                                                                                //fontWeight: FontWeight.bold,
+                                                                                                                //color: Colors.white,
+                                                                                                                ),
+                                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                                          ),
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    )))
+                                                                                                .toList(),
                                                                                             value: _selectedCategories[index],
                                                                                             onChanged: (value) {
                                                                                               setState(() {

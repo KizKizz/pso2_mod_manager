@@ -22,11 +22,11 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'Loading Paths',
                     style: TextStyle(fontSize: 20),
@@ -60,11 +60,11 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       'Loading Paths',
                       style: TextStyle(fontSize: 20),

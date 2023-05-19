@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
@@ -21,11 +20,11 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'Loading Mods',
                     style: TextStyle(fontSize: 20),
@@ -59,11 +58,11 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       'Loading Mods',
                       style: TextStyle(fontSize: 20),

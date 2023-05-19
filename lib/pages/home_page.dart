@@ -1,14 +1,14 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
-import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/mod_file_restore.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -18,7 +18,6 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -39,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
   List<List<List<bool>>> itemButtonsVisible = [];
+  bool isApplyingModFiles = false;
 
   @override
   void initState() {
@@ -128,7 +128,12 @@ class _HomePageState extends State<HomePage> {
         AppBar(
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
-          title: searchBoxLeftPadding == 15 ? null : Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.itemsHeaderText)),
+          title: searchBoxLeftPadding == 15
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text(curLangText!.itemsHeaderText),
+                ),
           backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
           foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
           toolbarHeight: 30,
@@ -403,7 +408,13 @@ class _HomePageState extends State<HomePage> {
                     )),
               ),
             Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(child: modViewItem != null ? Text(modViewItem!.itemName) : Text(curLangText!.availableModsHeaderText)),
+              Container(
+                  child: modViewItem != null
+                      ? Text(modViewItem!.itemName)
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Text(curLangText!.availableModsHeaderText),
+                        )),
               if (modViewItem != null)
                 Text(
                   modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
@@ -412,7 +423,7 @@ class _HomePageState extends State<HomePage> {
               if (modViewItem != null && modViewItem!.mods.where((element) => element.applyStatus == true).isNotEmpty)
                 Text(
                   'Applied: ${modViewItem!.mods.firstWhere((m) => m.applyStatus == true).modName} > ${modViewItem!.mods.firstWhere((m) => m.applyStatus == true).submods.firstWhere((e) => e.applyStatus).submodName}',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.primary),
                 ),
             ]),
           ],
@@ -485,7 +496,6 @@ class _HomePageState extends State<HomePage> {
                               } else {
                                 previewModName = '';
                                 previewImages.clear();
-                                ;
                               }
                               setState(() {});
                             },
@@ -744,40 +754,46 @@ class _HomePageState extends State<HomePage> {
                                                               borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                           waitDuration: const Duration(milliseconds: 500),
                                                           child: InkWell(
+                                                            onTap: () async {
+                                                                    //set apply status
+                                                                    isApplyingModFiles = true;
+                                                                    setState(() {});
+                                                                    String filesApplied = '';
+                                                                    int fileCount = 0;
+
+                                                                    for (var modFile in curSubmod.modFiles) {
+                                                                      modFileRestore(moddedItemsList, modFile);
+                                                                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                      if (modFile.ogLocations.isEmpty) {
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.failure, 'Failed to fetch orginal file for ${modFile.modFileName}', 3000));
+                                                                        break;
+                                                                      } else {
+                                                                        modFileApplier(modFile);
+                                                                        modFile.applyStatus = true;
+                                                                        fileCount++;
+                                                                        if (filesApplied.isEmpty) {
+                                                                          filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                        }
+                                                                        filesApplied += '$fileCount.  ${modFile.modFileName}\n';
+                                                                      }
+                                                                    }
+
+                                                                    if (filesApplied.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, filesApplied.trim(), fileCount * 1000));
+                                                                    }
+
+                                                                    modViewItem!.applyStatus = true;
+                                                                    curMod.applyStatus = true;
+                                                                    curSubmod.applyStatus = true;
+                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
+
+                                                                    setState(() {
+                                                                      isApplyingModFiles = false;
+                                                                    });
+                                                                  },
                                                             child: const Icon(
                                                               Icons.add_to_queue_outlined,
                                                             ),
-                                                            onTap: () async {
-                                                              //set apply status
-                                                              String filesApplied = '';
-                                                              int fileCount = 0;
-                                                              for (var modFile in curSubmod.modFiles) {
-                                                                modFileRestore(moddedItemsList, modFile);
-                                                                modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                                                                if (modFile.ogLocations.isEmpty) {
-                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Failed to fetch orginal file for ${modFile.modFileName}', 3000));
-                                                                  break;
-                                                                } else {
-                                                                  modFile.applyStatus = true;
-                                                                  fileCount++;
-                                                                  if (filesApplied.isEmpty) {
-                                                                    filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                  }
-                                                                  filesApplied += '$fileCount.  ${modFile.modFileName}\n';
-                                                                }
-                                                              }
-
-                                                              if (filesApplied.isNotEmpty) {
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(filesApplied.trim(), fileCount * 1000));
-                                                              }
-
-                                                              modViewItem!.applyStatus = true;
-                                                              curMod.applyStatus = true;
-                                                              curSubmod.applyStatus = true;
-                                                              appliedItemList = appliedListBuilder(moddedItemsList);
-
-                                                              setState(() {});
-                                                            },
                                                           ),
                                                         ),
                                                       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
@@ -984,7 +1000,10 @@ class _HomePageState extends State<HomePage> {
       AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: Text(curLangText!.appliedModsHeadersText)),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Text(curLangText!.appliedModsHeadersText),
+        ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -1150,7 +1169,6 @@ class _HomePageState extends State<HomePage> {
                                                 } else {
                                                   previewModName = '';
                                                   previewImages.clear();
-                                                  ;
                                                 }
                                                 setState(() {});
                                               },
@@ -1356,7 +1374,10 @@ class _HomePageState extends State<HomePage> {
       AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[Container()],
-        title: Container(padding: const EdgeInsets.only(bottom: 10), child: previewModName.isNotEmpty ? Text('Preview: $previewModName') : Text(curLangText!.previewHeaderText)),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Text(previewModName.isNotEmpty ? 'Preview: $previewModName' : curLangText!.previewHeaderText),
+        ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
         toolbarHeight: 30,
@@ -1414,16 +1435,12 @@ class _HomePageState extends State<HomePage> {
   }
 
 //Extra=======================================================================================================================================================================================
-  SnackBar snackBarMessage(String message, int durationMS) {
+  SnackBar snackBarMessage(ContentType contentType, String message, int durationMS) {
     return SnackBar(
-      elevation: 5,
+      elevation: 0,
       duration: Duration(milliseconds: durationMS),
-      showCloseIcon: true,
-      backgroundColor: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.9),
-      content: Text(
-        message,
-        style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodySmall!.color),
-      ),
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(contentType: contentType, message: message, title: 'Test', messageFontSize: 14, inMaterialBanner: true,)
     );
   }
 }

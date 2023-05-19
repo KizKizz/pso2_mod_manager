@@ -31,6 +31,8 @@ String modManWin32ChecksumMD5 = '';
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
 String modManModSettingsJsonPath = '';
+//Log file path
+String modManOpLogsFilePath = '';
 
 //Default Mod Caterories
 List<String> defaultCateforyDirs = [
@@ -121,6 +123,9 @@ Future<bool> pathsLoader(context) async {
   File(modManModSetsJsonPath).createSync();
   modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   File(modManModSettingsJsonPath).createSync();
+  //Create log file
+  modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  File(modManOpLogsFilePath).createSync();
 
   //Checksum check
   if (modManChecksumFilePath.isEmpty) {

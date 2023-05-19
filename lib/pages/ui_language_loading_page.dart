@@ -19,11 +19,11 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'Loading UI',
                     style: TextStyle(fontSize: 20),
@@ -57,11 +57,11 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       'Loading UI',
                       style: TextStyle(fontSize: 20),
