@@ -197,7 +197,7 @@ class _MainPageState extends State<MainPage> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Current language: $langDropDownSelected',
+                                            'Current Language: $langDropDownSelected',
                                             style: const TextStyle(fontWeight: FontWeight.normal),
                                           ),
                                           const Icon(Icons.arrow_drop_down)
@@ -286,12 +286,12 @@ class _MainPageState extends State<MainPage> {
                         child: Row(
                           children: const [
                             Icon(
-                              Icons.folder_open_outlined,
+                              Icons.folder_copy_outlined,
                               size: 18,
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Reselect pso2_bin path',
+                              'Reselect pso2_bin Path',
                               style: TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -308,11 +308,85 @@ class _MainPageState extends State<MainPage> {
                         child: Row(
                           children: const [
                             Icon(
+                              Icons.folder_copy_outlined,
+                              size: 18,
+                            ),
+                            SizedBox(width: 10),
+                            Text('Reselect Mod Manager Folder Path', style: TextStyle(fontWeight: FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      const Divider(
+                        indent: 5,
+                        endIndent: 5,
+                        height: 1,
+                        thickness: 1,
+                        //color: Theme.of(context).textTheme.headlineMedium?.color,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() {}),
+                        child: Row(
+                          children: const [
+                            Icon(
                               Icons.folder_open_outlined,
                               size: 18,
                             ),
                             SizedBox(width: 10),
-                            Text('Reselect Mod Manager folder path', style: TextStyle(fontWeight: FontWeight.normal)),
+                            Text(
+                              'Open Mods Folder',
+                              style: TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() {}),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Open Backup Folder',
+                              style: TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() {}),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Open Deleted Items Folder',
+                              style: TextStyle(fontWeight: FontWeight.normal),
+                            ),
                           ],
                         ),
                       ),
@@ -834,74 +908,118 @@ class _MainPageState extends State<MainPage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
-                                child: Stack(
-                                  alignment: Alignment.topRight,
-                                  children: [
-                                    InkWell(
-                                      child: Container(
-                                        constraints: const BoxConstraints(maxWidth: 232),
-                                        decoration: ShapeDecoration(
-                                          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                child: Container(
+                                  constraints: const BoxConstraints(maxWidth: 232),
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.topCenter,
+                                    children: [
+                                      InkWell(
+                                        child: Container(
+                                          child: backgroundImage.path != ''
+                                              ? Stack(
+                                                  alignment: Alignment.bottomCenter,
+                                                  children: [
+                                                    Image.file(
+                                                      backgroundImage,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
+                                                  ],
+                                                )
+                                              : const Center(child: Text('No image found. Click!')),
                                         ),
-                                        child: backgroundImage.path != ''
-                                            ? Stack(
-                                                alignment: Alignment.bottomCenter,
-                                                children: [
-                                                  Image.file(
-                                                    backgroundImage,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
-                                                ],
-                                              )
-                                            : const Center(child: Text('No image found. Click!')),
+                                        onTap: () async {
+                                          await FilePicker.platform.pickFiles(dialogTitle: 'Select your image', lockParentWindow: true, type: FileType.image).then((value) async {
+                                            if (value != null) {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              backgroundImage = File(value.paths.first!);
+                                              prefs.setString('backgroundImagePath', backgroundImage.path);
+                                              Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
+                                            }
+                                          });
+                                          setState(() {});
+                                          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                                          MyApp.themeNotifier.notifyListeners();
+                                        },
                                       ),
-                                      onTap: () async {
-                                        await FilePicker.platform.pickFiles(dialogTitle: 'Select your image', lockParentWindow: true, type: FileType.image).then((value) async {
-                                          if (value != null) {
-                                            final prefs = await SharedPreferences.getInstance();
-                                            backgroundImage = File(value.paths.first!);
-                                            prefs.setString('backgroundImagePath', backgroundImage.path);
-                                            Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
-                                          }
-                                        });
-                                        setState(() {});
-                                        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                                        MyApp.themeNotifier.notifyListeners();
-                                      },
-                                    ),
-                                    if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger)
-                                      Tooltip(
-                                        message: 'Hold to remove background image',
-                                        height: 25,
-                                        textStyle: const TextStyle(fontSize: 14),
-                                        decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                        ),
-                                        waitDuration: const Duration(milliseconds: 500),
-                                        child: InkWell(
-                                          child: Container(
-                                            decoration: ShapeDecoration(
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger || (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
+                                          Tooltip(
+                                            message: showBackgroundImage ? 'Hide background image' : 'Show background image',
+                                            height: 25,
+                                            textStyle: const TextStyle(fontSize: 14),
+                                            decoration: BoxDecoration(
+                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2)),
                                             ),
-                                            child: const Icon(
-                                              Icons.delete_forever_outlined,
-                                              color: Colors.white,
+                                            waitDuration: const Duration(milliseconds: 500),
+                                            child: InkWell(
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  color: Colors.blue,
+                                                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                ),
+                                                child: Icon(
+                                                  showBackgroundImage ? Icons.hide_image_outlined : Icons.image_outlined,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              onTap: () async {
+                                                final prefs = await SharedPreferences.getInstance();
+                                                if (showBackgroundImage) {
+                                                  showBackgroundImage = false;
+                                                  prefs.setBool('showBgImage', false);
+                                                  Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
+                                                } else {
+                                                  showBackgroundImage = true;
+                                                  prefs.setBool('showBgImage', true);
+                                                  Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
+                                                }
+                                                setState(() {});
+                                              },
                                             ),
                                           ),
-                                          onLongPress: () async {
-                                            final prefs = await SharedPreferences.getInstance();
-                                            prefs.setString('backgroundImagePath', '');
-                                            backgroundImage = File('');
-                                            Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
-                                            setState(() {});
-                                          },
-                                        ),
+                                          if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger || (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
+                                            Tooltip(
+                                              message: 'Hold to remove background image',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                              ),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: Container(
+                                                  decoration: ShapeDecoration(
+                                                    color: Colors.red,
+                                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.delete_forever_outlined,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onLongPress: () async {
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  prefs.setString('backgroundImagePath', '');
+                                                  backgroundImage = File('');
+                                                  Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
+                                                  setState(() {});
+                                                },
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -1557,58 +1675,17 @@ class _MainPageState extends State<MainPage> {
               ),
             )),
 
+          Divider(
+            thickness: 1,
+            height: 1,
+            color: Theme.of(context).dividerColor,
+          ),
+
           const Expanded(child: ModsLoadingPage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
       ),
     );
-  }
-}
-
-//Menu items
-class MenuItem {
-  final String text;
-  //final IconData icon;
-
-  const MenuItem({
-    required this.text,
-    //required this.icon,
-  });
-}
-
-class MenuItems {
-  static const List<MenuItem> pathMenuItems = [_binFolder, modManFolder];
-  static const _binFolder = MenuItem(text: 'pso2_bin');
-  static const modManFolder = MenuItem(text: 'Mod Manager');
-
-  static Widget buildItem(context, MenuItem item) {
-    return Row(
-      children: [
-        // Icon(
-        //   item.icon,
-        //   color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-        //   size: 20,
-        // ),
-        // const SizedBox(
-        //   width: 5,
-        // ),
-        Text(
-          item.text,
-          style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color, fontSize: 14, fontWeight: FontWeight.w400),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, MenuItem item) async {
-    switch (item) {
-      case MenuItems._binFolder:
-        //binDirDialog(context, curLangText!.pso2binReselectPopupText, '${curLangText!.curPathText}\n\'$binDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
-        break;
-      case MenuItems.modManFolder:
-        //mainModManDirDialog(context, curLangText!.modmanReselectPopupText, '${curLangText!.curPathText}\n\'$mainModDirPath\'\n\n${curLangText!.chooseNewPathText}', true);
-        break;
-    }
   }
 }

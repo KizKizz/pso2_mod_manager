@@ -32,3 +32,4 @@ List<String> ogWin32NAFilePaths = [];
 List<String> ogWin32RebootNAFilePaths = [];
 List<CategoryType> moddedItemsList = [];
 List<CategoryType> appliedItemList = [];
+bool showBackgroundImage = true;

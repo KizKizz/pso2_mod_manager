@@ -185,6 +185,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       //Background Image check
+      showBackgroundImage = (prefs.getBool('showBgImage') ?? true);
       if (backgroundImage.path.isNotEmpty) {
         if (backgroundImage.existsSync()) {
           Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
