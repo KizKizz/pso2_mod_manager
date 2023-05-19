@@ -1,5 +1,6 @@
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
+import 'package:pso2_mod_manager/functions/unapply_mods.dart';
 
 void modFileRestore(List<CategoryType> moddedList, ModFile modFile) {
   for (var cateType in moddedList) {
@@ -9,7 +10,8 @@ void modFileRestore(List<CategoryType> moddedList, ModFile modFile) {
           for (var submod in mod.submods) {
             int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
             if (modFileIndex != -1) {
-              submod.modFiles[modFileIndex].applyStatus = false;
+              //submod.modFiles[modFileIndex].applyStatus = false;
+              modFileUnapply(submod.modFiles[modFileIndex]);
             }
             if (submod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
               submod.applyStatus = false;

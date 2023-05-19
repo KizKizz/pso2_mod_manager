@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/mod_file_restore.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/unapply_mods.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -122,7 +124,6 @@ class _HomePageState extends State<HomePage> {
 //=====================================================================================================================================================================================
   Widget itemsView() {
     var searchBoxLeftPadding = 10;
-
     return Column(
       children: [
         AppBar(
@@ -755,42 +756,42 @@ class _HomePageState extends State<HomePage> {
                                                           waitDuration: const Duration(milliseconds: 500),
                                                           child: InkWell(
                                                             onTap: () async {
-                                                                    //set apply status
-                                                                    isApplyingModFiles = true;
-                                                                    setState(() {});
-                                                                    String filesApplied = '';
-                                                                    int fileCount = 0;
-
-                                                                    for (var modFile in curSubmod.modFiles) {
-                                                                      modFileRestore(moddedItemsList, modFile);
-                                                                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                                                                      if (modFile.ogLocations.isEmpty) {
-                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.failure, 'Failed to fetch orginal file for ${modFile.modFileName}', 3000));
-                                                                        break;
-                                                                      } else {
-                                                                        modFileApplier(modFile);
-                                                                        modFile.applyStatus = true;
-                                                                        fileCount++;
-                                                                        if (filesApplied.isEmpty) {
-                                                                          filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                        }
-                                                                        filesApplied += '$fileCount.  ${modFile.modFileName}\n';
-                                                                      }
-                                                                    }
-
-                                                                    if (filesApplied.isNotEmpty) {
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, filesApplied.trim(), fileCount * 1000));
-                                                                    }
-
+                                                              //set apply status
+                                                              String filesApplied = '';
+                                                              int fileCount = 0;
+                                                              for (ModFile modFile in curSubmod.modFiles) {
+                                                                modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                //fetch og files
+                                                                if (modFile.ogLocations.isEmpty) {
+                                                                  ScaffoldMessenger.of(context)
+                                                                      .showSnackBar(snackBarMessage(ContentType.failure, 'Error', 'Failed to fetch orginal file for ${modFile.modFileName}', 3000));
+                                                                  break;
+                                                                } else {
+                                                                  modFileApplier(modFile).then((value) {
+                                                                    modFile = value;
                                                                     modViewItem!.applyStatus = true;
                                                                     curMod.applyStatus = true;
                                                                     curSubmod.applyStatus = true;
-                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                    fileCount++;
+                                                                    if (filesApplied.isEmpty) {
+                                                                      filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                    }
+                                                                    filesApplied += '$fileCount.  ${modFile.modFileName}\n';
 
-                                                                    setState(() {
-                                                                      isApplyingModFiles = false;
-                                                                    });
-                                                                  },
+                                                                    //Do if last file
+                                                                    if (curSubmod.modFiles.indexOf(modFile) == curSubmod.modFiles.length - 1) {
+                                                                      appliedItemList = appliedListBuilder(moddedItemsList);
+
+                                                                      if (filesApplied.isNotEmpty) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesApplied.trim(), fileCount * 1000));
+                                                                      }
+                                                                      setState(() {});
+                                                                    }
+                                                                  });
+                                                                }
+                                                              }
+                                                            },
                                                             child: const Icon(
                                                               Icons.add_to_queue_outlined,
                                                             ),
@@ -811,16 +812,37 @@ class _HomePageState extends State<HomePage> {
                                                               Icons.remove_from_queue_outlined,
                                                             ),
                                                             onTap: () async {
-                                                              //set apply status
-                                                              for (var element in curSubmod.modFiles) {
-                                                                element.applyStatus = false;
+                                                              //status
+                                                              String filesUnapplied = '';
+                                                              int fileCount = 0;
+                                                              for (var modFile in curSubmod.modFiles) {
+                                                                modFileUnapply(modFile).then((value) {
+                                                                  modFile = value;
+                                                                  fileCount++;
+                                                                  if (filesUnapplied.isEmpty) {
+                                                                    filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                  }
+                                                                  filesUnapplied += '$fileCount.  ${modFile.modFileName}\n';
+
+                                                                  //Do if last file
+                                                                  if (curSubmod.modFiles.indexOf(modFile) == curSubmod.modFiles.length - 1) {
+                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
+
+                                                                    if (filesUnapplied.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesUnapplied.trim(), fileCount * 1000));
+                                                                    }
+
+                                                                    if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                      modViewItem!.applyStatus = false;
+                                                                      curMod.applyStatus = false;
+                                                                      curSubmod.applyStatus = false;
+                                                                    }
+
+                                                                    setState(() {});
+                                                                  }
+                                                                });
                                                               }
-                                                              modViewItem!.applyStatus = false;
-                                                              curMod.applyStatus = false;
-                                                              curSubmod.applyStatus = false;
-                                                              appliedItemList = appliedListBuilder(moddedItemsList);
-                                                              //
-                                                              setState(() {});
                                                             },
                                                           ),
                                                         ),
@@ -1435,12 +1457,18 @@ class _HomePageState extends State<HomePage> {
   }
 
 //Extra=======================================================================================================================================================================================
-  SnackBar snackBarMessage(ContentType contentType, String message, int durationMS) {
+  SnackBar snackBarMessage(ContentType contentType, String title, String message, int durationMS) {
     return SnackBar(
-      elevation: 0,
-      duration: Duration(milliseconds: durationMS),
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(contentType: contentType, message: message, title: 'Test', messageFontSize: 14, inMaterialBanner: true,)
-    );
+        elevation: 0,
+        duration: Duration(milliseconds: durationMS),
+        backgroundColor: Colors.transparent,
+        content: SizedBox(
+            height: '\n'.allMatches(message).length * 10 + 100,
+            child: AwesomeSnackbarContent(
+              contentType: contentType,
+              message: message,
+              title: title,
+              messageFontSize: 15,
+            )));
   }
 }
