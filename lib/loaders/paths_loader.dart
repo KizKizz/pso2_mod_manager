@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
+import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -124,8 +128,8 @@ Future<bool> pathsLoader(context) async {
   modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   File(modManModSettingsJsonPath).createSync();
   //Create log file
-  modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
-  File(modManOpLogsFilePath).createSync();
+  // modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
   if (modManChecksumFilePath.isEmpty) {
@@ -148,6 +152,7 @@ Future<bool> pathsLoader(context) async {
   return true;
 }
 
+//Get main paths
 Future<String?> pso2binPathGet(context) async {
   return await showDialog(
       barrierDismissible: false,
@@ -182,6 +187,129 @@ Future<String?> pso2binPathGet(context) async {
 }
 
 Future<String?> modManDirPathGet(context) async {
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+              title: Center(
+                child: Text(curLangText!.modmanFolderNotFoundLabelText, style: const TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(left: 16, right: 16),
+              content: Text(
+                curLangText!.modmanFolderNotFoundText,
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: const Text('No'),
+                    onPressed: () async {
+                      Navigator.pop(context, null);
+                    }),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(
+                          context,
+                          await FilePicker.platform.getDirectoryPath(
+                            dialogTitle: 'Select a folder to store Mod Manager folder',
+                            lockParentWindow: true,
+                          ));
+                    },
+                    child: const Text('Yes'))
+              ]));
+}
+
+//Reselect main paths
+Future<bool> pso2PathsReloader(context) async {
+  final prefs = await SharedPreferences.getInstance();
+  String pso2binPathOld = modManPso2binPath;
+  //pso2_bin path
+  String? pso2binPathFromPicker = await pso2binPathReselect(context);
+  if (pso2binPathFromPicker != null) {
+    modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
+    //prefs.setString('binDirPath', modManPso2binPath);
+    modManChecksumFilePath = '';
+    ogModFilesLoader();
+  } else {
+    return false;
+  }
+
+  //Checksum
+  if (modManChecksumFilePath.isEmpty) {
+    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
+    for (var file in filesInCSFolder) {
+      if (p.extension(file.path) == '') {
+        modManChecksumFilePath = file.path;
+        modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
+        File(modManChecksumFilePath).copySync(modManWin32CheckSumFilePath);
+      }
+    }
+  }
+  if (modManChecksumFilePath.isNotEmpty) {
+    modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
+  }
+  if (modManWin32CheckSumFilePath.isNotEmpty) {
+    modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
+  }
+
+  //Apply mods to new data folder
+  for (var type in appliedItemList) {
+    for (var cate in type.categories) {
+      for (var item in cate.items) {
+        if (item.applyStatus == true) {
+          for (var mod in item.mods) {
+            if (mod.applyStatus == true) {
+              for (var submod in mod.submods) {
+                if (submod.applyStatus == true) {
+                  for (var modFile in submod.modFiles) {
+                    if (modFile.applyStatus == true) {
+                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                      modFileApplier(modFile);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //Return true if all paths loaded
+  return true;
+}
+
+Future<String?> pso2binPathReselect(context) async {
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+              title: const Center(
+                child: Text('Reselect pso2_bin path', style: TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+              content: Text('Current path:\n$modManPso2binPath'),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: const Text('Return'),
+                    onPressed: () async {
+                      Navigator.pop(context, null);
+                    }),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(
+                          context,
+                          await FilePicker.platform.getDirectoryPath(
+                            dialogTitle: 'Select \'pso2_bin\' folder path',
+                            lockParentWindow: true,
+                          ));
+                    },
+                    child: const Text('Reselect'))
+              ]));
+}
+
+Future<String?> modManDirPathReselect(context) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,

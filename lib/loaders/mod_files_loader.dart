@@ -15,19 +15,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<List<CategoryType>> modFileStructureLoader() async {
-  //Get og file paths
-  if (ogWin32FilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync()) {
-    ogWin32FilePaths = Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
-  }
-  if (ogWin32NAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
-    ogWin32NAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
-  }
-  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).existsSync()) {
-    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
-  }
-  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
-    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
-  }
+  ogModFilesLoader();
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
@@ -325,3 +313,34 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
   return submods;
 }
 
+void ogModFilesLoader() {
+  //Get og file paths
+  if (ogWin32FilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync()) {
+    ogWin32FilePaths =
+        Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList();
+  }
+  if (ogWin32NAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+    ogWin32NAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath())
+        .listSync(recursive: false)
+        .whereType<File>()
+        .where((element) => p.extension(element.path) == '')
+        .map((e) => e.path)
+        .toList();
+  }
+  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).existsSync()) {
+    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath())
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((element) => p.extension(element.path) == '')
+        .map((e) => e.path)
+        .toList();
+  }
+  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
+    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((element) => p.extension(element.path) == '')
+        .map((e) => e.path)
+        .toList();
+  }
+}

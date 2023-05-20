@@ -8,15 +8,14 @@ import 'package:pso2_mod_manager/global_variables.dart';
 
 Future<ModFile> modFileApplier(ModFile modFile) async {
   //retore dublicate
-  modFileRestore(moddedItemsList, modFile);
+  await modFileRestore(moddedItemsList, modFile);
   modFile = await modFileBackup(modFile);
-  modFile.md5 = await getFileHash(modFile.location);
   //replace files in game data
   for (var ogPath in modFile.ogLocations) {
     File(modFile.location).copySync(ogPath);
   }
+  modFile.md5 = await getFileHash(modFile.location);
   
-  modFile.applyStatus = true;
-  modFile.applyDate = DateTime.now();
+
   return modFile;
 }

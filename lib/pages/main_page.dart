@@ -286,7 +286,9 @@ class _MainPageState extends State<MainPage> {
                       //Path reselect
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {}),
+                        onPressed: (() {
+                          pso2PathsReloader(context);
+                        }),
                         child: const Row(
                           children: [
                             Icon(

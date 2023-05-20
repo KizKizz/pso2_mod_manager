@@ -756,39 +756,39 @@ class _HomePageState extends State<HomePage> {
                                                           waitDuration: const Duration(milliseconds: 500),
                                                           child: InkWell(
                                                             onTap: () async {
-                                                              //set apply status
                                                               String filesApplied = '';
                                                               int fileCount = 0;
-                                                              for (ModFile modFile in curSubmod.modFiles) {
+                                                              bool allOGFilesFound = true;
+                                                              //get og file paths
+                                                              for (var modFile in curSubmod.modFiles) {
                                                                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                                                                //fetch og files
                                                                 if (modFile.ogLocations.isEmpty) {
                                                                   ScaffoldMessenger.of(context)
                                                                       .showSnackBar(snackBarMessage(ContentType.failure, 'Error', 'Failed to fetch orginal file for ${modFile.modFileName}', 3000));
+                                                                  allOGFilesFound = false;
                                                                   break;
-                                                                } else {
+                                                                }
+                                                              }
+                                                              if (allOGFilesFound) {
+                                                                for (var modFile in curSubmod.modFiles) {
                                                                   modFileApplier(modFile).then((value) {
                                                                     modFile = value;
-                                                                    modViewItem!.applyStatus = true;
-                                                                    curMod.applyStatus = true;
-                                                                    curSubmod.applyStatus = true;
-                                                                    fileCount++;
-                                                                    if (filesApplied.isEmpty) {
-                                                                      filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                    }
-                                                                    filesApplied += '$fileCount.  ${modFile.modFileName}\n';
-
-                                                                    //Do if last file
-                                                                    if (curSubmod.modFiles.indexOf(modFile) == curSubmod.modFiles.length - 1) {
-                                                                      appliedItemList = appliedListBuilder(moddedItemsList);
-
-                                                                      if (filesApplied.isNotEmpty) {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesApplied.trim(), fileCount * 1000));
-                                                                      }
-                                                                      setState(() {});
-                                                                    }
+                                                                    setState(() {});
                                                                   });
+                                                                  modFile.applyStatus = true;
+                                                                  modFile.applyDate = DateTime.now();
+                                                                  modViewItem!.applyStatus = true;
+                                                                  curMod.applyStatus = true;
+                                                                  curSubmod.applyStatus = true;
+                                                                  fileCount++;
+                                                                  if (filesApplied.isEmpty) {
+                                                                    filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                  }
+                                                                  filesApplied += '$fileCount.  ${modFile.modFileName}\n';
+                                                                }
+                                                                appliedListBuilder(moddedItemsList).then((value) => appliedItemList = value);
+                                                                if (filesApplied.isNotEmpty) {
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesApplied.trim(), fileCount * 1000));
                                                                 }
                                                               }
                                                             },
@@ -815,34 +815,49 @@ class _HomePageState extends State<HomePage> {
                                                               //status
                                                               String filesUnapplied = '';
                                                               int fileCount = 0;
+
                                                               for (var modFile in curSubmod.modFiles) {
-                                                                modFileUnapply(modFile).then((value) {
-                                                                  modFile = value;
+                                                                //check backups
+                                                                bool allBkFilesFound = true;
+                                                                for (var bkFile in modFile.bkLocations) {
+                                                                  if (!File(bkFile).existsSync()) {
+                                                                    allBkFilesFound = false;
+                                                                    break;
+                                                                  }
+                                                                }
+                                                                if (allBkFilesFound) {
+                                                                  modFileUnapply(modFile).then((value) {
+                                                                    modFile = value;
+                                                                    modFile.ogMd5 = '';
+                                                                  modFile.bkLocations.clear();
+                                                                  modFile.ogLocations.clear();
+                                                                  modFile.applyDate = DateTime(0);
+                                                                    setState(() {});
+                                                                  });
+                                                                  
+                                                                  modFile.applyStatus = false;
                                                                   fileCount++;
+
                                                                   if (filesUnapplied.isEmpty) {
                                                                     filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                   }
                                                                   filesUnapplied += '$fileCount.  ${modFile.modFileName}\n';
-
-                                                                  //Do if last file
-                                                                  if (curSubmod.modFiles.indexOf(modFile) == curSubmod.modFiles.length - 1) {
-                                                                    appliedItemList = appliedListBuilder(moddedItemsList);
-
-                                                                    if (filesUnapplied.isNotEmpty) {
-                                                                      ScaffoldMessenger.of(context)
-                                                                          .showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesUnapplied.trim(), fileCount * 1000));
-                                                                    }
-
-                                                                    if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                      modViewItem!.applyStatus = false;
-                                                                      curMod.applyStatus = false;
-                                                                      curSubmod.applyStatus = false;
-                                                                    }
-
-                                                                    setState(() {});
-                                                                  }
-                                                                });
+                                                                }
                                                               }
+                                                              if (filesUnapplied.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesUnapplied.trim(), fileCount * 1000));
+                                                              }
+
+                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                modViewItem!.applyStatus = false;
+                                                                curMod.applyStatus = false;
+                                                                curSubmod.applyStatus = false;
+                                                              }
+                                                              appliedListBuilder(moddedItemsList).then(
+                                                                (value) {
+                                                                  appliedItemList = value;
+                                                                },
+                                                              );
                                                             },
                                                           ),
                                                         ),
@@ -942,7 +957,11 @@ class _HomePageState extends State<HomePage> {
                                                                   curMod.applyStatus = true;
                                                                   curSubmod.applyStatus = true;
                                                                   curModFile.applyStatus = true;
-                                                                  appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                  appliedListBuilder(moddedItemsList).then(
+                                                                    (value) {
+                                                                      appliedItemList = value;
+                                                                    },
+                                                                  );
                                                                   setState(() {});
                                                                 },
                                                               ),
@@ -974,7 +993,11 @@ class _HomePageState extends State<HomePage> {
                                                                     modViewItem!.applyStatus = false;
                                                                   }
                                                                   //
-                                                                  appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                  appliedListBuilder(moddedItemsList).then(
+                                                                    (value) {
+                                                                      appliedItemList = value;
+                                                                    },
+                                                                  );
                                                                   setState(() {});
                                                                 },
                                                               ),
@@ -1307,7 +1330,11 @@ class _HomePageState extends State<HomePage> {
                                                                       curItem.mods.first.applyStatus = true;
                                                                       curItem.mods.first.submods.first.applyStatus = true;
                                                                       curModFile.applyStatus = true;
-                                                                      appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                      appliedListBuilder(moddedItemsList).then(
+                                                                        (value) {
+                                                                          appliedItemList = value;
+                                                                        },
+                                                                      );
                                                                       setState(() {});
                                                                     },
                                                                   ),
@@ -1339,7 +1366,11 @@ class _HomePageState extends State<HomePage> {
                                                                         modViewItem!.applyStatus = false;
                                                                       }
                                                                       //
-                                                                      appliedItemList = appliedListBuilder(moddedItemsList);
+                                                                      appliedListBuilder(moddedItemsList).then(
+                                                                        (value) {
+                                                                          appliedItemList = value;
+                                                                        },
+                                                                      );
                                                                       setState(() {});
                                                                     },
                                                                   ),

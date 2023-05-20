@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 
-List<CategoryType> appliedListBuilder(List<CategoryType> moddedList)  {
+Future<List<CategoryType>> appliedListBuilder(List<CategoryType> moddedList) async {
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
 
   var jsonData = jsonDecode(encoder.convert(moddedList.map((cateType) => cateType.toJson()).toList()));
