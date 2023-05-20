@@ -221,7 +221,6 @@ Future<String?> modManDirPathGet(context) async {
 //Reselect main paths
 Future<bool> pso2PathsReloader(context) async {
   final prefs = await SharedPreferences.getInstance();
-  String pso2binPathOld = modManPso2binPath;
   //pso2_bin path
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
   if (pso2binPathFromPicker != null) {
@@ -263,7 +262,7 @@ Future<bool> pso2PathsReloader(context) async {
                   for (var modFile in submod.modFiles) {
                     if (modFile.applyStatus == true) {
                       modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                      modFileApplier(modFile);
+                      modFileApply(modFile);
                     }
                   }
                 }

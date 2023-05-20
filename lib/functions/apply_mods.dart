@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/mod_file_restore.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 
-Future<ModFile> modFileApplier(ModFile modFile) async {
+Future<ModFile> modFileApply(ModFile modFile) async {
   //retore dublicate
   await modFileRestore(moddedItemsList, modFile);
   modFile = await modFileBackup(modFile);

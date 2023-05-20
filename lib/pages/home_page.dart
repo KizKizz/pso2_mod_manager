@@ -743,7 +743,7 @@ class _HomePageState extends State<HomePage> {
                                                   child: Wrap(
                                                     spacing: 5,
                                                     children: [
-                                                      //Add-Remove button in submod
+                                                      //Apply button in submod
                                                       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
                                                         Tooltip(
                                                           message: 'Apply ${curSubmod.submodName} to the game',
@@ -771,20 +771,22 @@ class _HomePageState extends State<HomePage> {
                                                               }
                                                               if (allOGFilesFound) {
                                                                 for (var modFile in curSubmod.modFiles) {
-                                                                  modFileApplier(modFile).then((value) {
-                                                                    modFile = value;
-                                                                    setState(() {});
-                                                                  });
-                                                                  modFile.applyStatus = true;
-                                                                  modFile.applyDate = DateTime.now();
-                                                                  modViewItem!.applyStatus = true;
-                                                                  curMod.applyStatus = true;
-                                                                  curSubmod.applyStatus = true;
-                                                                  fileCount++;
-                                                                  if (filesApplied.isEmpty) {
-                                                                    filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                  if (!modFile.applyStatus) {
+                                                                    modFileApply(modFile).then((value) {
+                                                                      modFile = value;
+                                                                      setState(() {});
+                                                                    });
+                                                                    modFile.applyStatus = true;
+                                                                    modFile.applyDate = DateTime.now();
+                                                                    modViewItem!.applyStatus = true;
+                                                                    curMod.applyStatus = true;
+                                                                    curSubmod.applyStatus = true;
+                                                                    fileCount++;
+                                                                    if (filesApplied.isEmpty) {
+                                                                      filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                    }
+                                                                    filesApplied += '$fileCount.  ${modFile.modFileName}\n';
                                                                   }
-                                                                  filesApplied += '$fileCount.  ${modFile.modFileName}\n';
                                                                 }
                                                                 appliedListBuilder(moddedItemsList).then((value) => appliedItemList = value);
                                                                 if (filesApplied.isNotEmpty) {
@@ -797,6 +799,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                         ),
+                                                      //remove button
                                                       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
                                                         Tooltip(
                                                           message: 'Remove ${curSubmod.submodName} from the game',
@@ -829,12 +832,12 @@ class _HomePageState extends State<HomePage> {
                                                                   modFileUnapply(modFile).then((value) {
                                                                     modFile = value;
                                                                     modFile.ogMd5 = '';
-                                                                  modFile.bkLocations.clear();
-                                                                  modFile.ogLocations.clear();
-                                                                  modFile.applyDate = DateTime(0);
+                                                                    modFile.bkLocations.clear();
+                                                                    modFile.ogLocations.clear();
+                                                                    modFile.applyDate = DateTime(0);
                                                                     setState(() {});
                                                                   });
-                                                                  
+
                                                                   modFile.applyStatus = false;
                                                                   fileCount++;
 
@@ -1494,7 +1497,7 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(milliseconds: durationMS),
         backgroundColor: Colors.transparent,
         content: SizedBox(
-            height: '\n'.allMatches(message).length * 10 + 100,
+            height: '\n'.allMatches(message).length * 15 + 100,
             child: AwesomeSnackbarContent(
               contentType: contentType,
               message: message,
