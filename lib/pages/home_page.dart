@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
@@ -1149,6 +1150,8 @@ class _HomePageState extends State<HomePage> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: appliedItemList.length,
               itemBuilder: (context, groupIndex) {
+                int cateListLength = appliedItemList[groupIndex].categories.where((element) => element.items.indexWhere((i) => i.applyStatus == true) != -1).length;
+                List<Category> cateList = appliedItemList[groupIndex].categories.where((element) => element.items.indexWhere((i) => i.applyStatus == true) != -1).toList();
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1175,9 +1178,11 @@ class _HomePageState extends State<HomePage> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: appliedItemList[groupIndex].categories.length,
+                              itemCount: cateListLength,
                               itemBuilder: (context, categoryIndex) {
-                                var curCategory = appliedItemList[groupIndex].categories[categoryIndex];
+                                var curCategory = cateList[categoryIndex];
+                                int itemListLength = curCategory.items.where((element) => element.applyStatus).length;
+                                List<Item> itemList = curCategory.items.where((element) => element.applyStatus).toList();
                                 return ExpansionTile(
                                     backgroundColor: Colors.transparent,
                                     textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -1202,11 +1207,12 @@ class _HomePageState extends State<HomePage> {
                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                   ),
                                                   child: curCategory.items.length < 2
-                                                      ? Text('${appliedItemList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                      ? Text(
+                                                          '${appliedItemList[groupIndex].categories[categoryIndex].items.where((element) => element.applyStatus).length}${curLangText!.itemLabelText}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))
-                                                      : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                      : Text('${curCategory.items.where((element) => element.applyStatus).length}${curLangText!.itemsLabelText}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))),
@@ -1250,16 +1256,19 @@ class _HomePageState extends State<HomePage> {
                                       ListView.builder(
                                           shrinkWrap: true,
                                           physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: curCategory.items.length,
+                                          itemCount: itemListLength,
                                           itemBuilder: (context, itemIndex) {
-                                            var curItem = curCategory.items[itemIndex];
+                                            var curItem = itemList[itemIndex];
+                                            var curMod = curItem.mods.firstWhere((element) => element.applyStatus);
+                                            var curSubmod = curMod.submods.firstWhere((element) => element.applyStatus);
+                                            List<ModFile> appliedModFiles = curSubmod.modFiles;
                                             return InkResponse(
                                               highlightShape: BoxShape.rectangle,
                                               onTap: () => '',
                                               onHover: (hovering) {
                                                 if (hovering) {
-                                                  previewModName = curItem.mods.first.submods.first.submodName;
-                                                  for (var path in curItem.mods.first.submods.first.previewImages) {
+                                                  previewModName = curSubmod.submodName;
+                                                  for (var path in curSubmod.previewImages) {
                                                     previewImages.add(Stack(
                                                       alignment: Alignment.bottomCenter,
                                                       children: [
@@ -1279,7 +1288,7 @@ class _HomePageState extends State<HomePage> {
                                                               child: Center(
                                                                   child: Padding(
                                                                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                child: Text(curItem.mods.first.submods.first.submodName, style: const TextStyle(fontSize: 17)),
+                                                                child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17)),
                                                               ))),
                                                         )
                                                       ],
@@ -1331,13 +1340,11 @@ class _HomePageState extends State<HomePage> {
                                                             //color: Theme.of(context).textTheme.headlineMedium?.color,
                                                           ),
                                                           Text(
-                                                            '${curItem.mods.first.modName} > ${curItem.mods.first.submods.first.submodName}',
+                                                            '${curMod.modName} > ${curSubmod.submodName}',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                           Text(
-                                                            curItem.mods.first.submods.first.modFiles.length < 2
-                                                                ? '${curItem.mods.first.submods.first.modFiles.length} File'
-                                                                : '${curItem.mods.first.submods.first.modFiles.length} Files',
+                                                             '${curSubmod.modFiles.where((element) => element.applyStatus).length} / ${curSubmod.modFiles.length} Files applied',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                         ],
@@ -1372,9 +1379,9 @@ class _HomePageState extends State<HomePage> {
                                                   ListView.builder(
                                                       shrinkWrap: true,
                                                       physics: const NeverScrollableScrollPhysics(),
-                                                      itemCount: curItem.mods.first.submods.first.modFiles.length,
+                                                      itemCount: appliedModFiles.length,
                                                       itemBuilder: (context, modFileIndex) {
-                                                        var curModFile = curItem.mods.first.submods.first.modFiles[modFileIndex];
+                                                        var curModFile = appliedModFiles[modFileIndex];
                                                         return ListTile(
                                                           tileColor: Colors.transparent,
                                                           //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -1409,18 +1416,18 @@ class _HomePageState extends State<HomePage> {
                                                                       if (allOGFilesFound) {
                                                                         modFilesApply(context, [curModFile]).then((value) async {
                                                                           if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                            curItem.mods.first.submods.first.applyDate = DateTime.now();
+                                                                            curSubmod.applyDate = DateTime.now();
                                                                             curItem.applyDate = DateTime.now();
-                                                                            curItem.mods.first.applyDate = DateTime.now();
-                                                                            curItem.mods.first.submods.first.applyStatus = true;
-                                                                            curItem.mods.first.applyStatus = true;
+                                                                            curMod.applyDate = DateTime.now();
+                                                                            curSubmod.applyStatus = true;
+                                                                            curMod.applyStatus = true;
                                                                             curItem.applyStatus = true;
                                                                             List<ModFile> appliedModFiles = value;
                                                                             String fileAppliedText = '';
                                                                             for (var element in appliedModFiles) {
                                                                               if (fileAppliedText.isEmpty) {
                                                                                 fileAppliedText =
-                                                                                    'Sucessfully applied ${curItem.mods.first.submods.first.modName} > ${curItem.mods.first.submods.first.submodName}:\n';
+                                                                                    'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                               }
                                                                               fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                             }
@@ -1450,40 +1457,41 @@ class _HomePageState extends State<HomePage> {
                                                                       Icons.remove,
                                                                     ),
                                                                     onTap: () async {
-                                                                  //status
-                                                                  String filesUnapplied = '';
-                                                                  //check backups
-                                                                  bool allBkFilesFound = true;
-                                                                  for (var bkFile in curModFile.bkLocations) {
-                                                                    if (!File(bkFile).existsSync()) {
-                                                                      allBkFilesFound = false;
-                                                                      ScaffoldMessenger.of(context)
-                                                                          .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curItem.mods.first.submods.first.modFiles.first.modFileName}', 3000));
+                                                                      //status
+                                                                      String filesUnapplied = '';
+                                                                      //check backups
+                                                                      bool allBkFilesFound = true;
+                                                                      for (var bkFile in curModFile.bkLocations) {
+                                                                        if (!File(bkFile).existsSync()) {
+                                                                          allBkFilesFound = false;
+                                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                              'Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
 
-                                                                      break;
-                                                                    }
-                                                                  }
-                                                                  if (allBkFilesFound) {
-                                                                    modFilesUnapply(context, [curModFile]).then((value) async {
-                                                                      List<ModFile> unappliedModFiles = value;
-                                                                      if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                        curItem.applyStatus = false;
-                                                                        curItem.mods.first.applyStatus = false;
-                                                                        curItem.mods.first.submods.first.applyStatus = false;
-                                                                      }
-                                                                      for (var element in unappliedModFiles) {
-                                                                        if (filesUnapplied.isEmpty) {
-                                                                          filesUnapplied = 'Sucessfully remove ${curItem.mods.first.modName} > ${curItem.mods.first.submods.first.submodName}:\n';
+                                                                          break;
                                                                         }
-                                                                        filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                       }
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                      if (allBkFilesFound) {
+                                                                        modFilesUnapply(context, [curModFile]).then((value) async {
+                                                                          List<ModFile> unappliedModFiles = value;
+                                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                            curItem.applyStatus = false;
+                                                                            curMod.applyStatus = false;
+                                                                            curSubmod.applyStatus = false;
+                                                                          }
+                                                                          for (var element in unappliedModFiles) {
+                                                                            if (filesUnapplied.isEmpty) {
+                                                                              filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                            }
+                                                                            filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                          }
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
-                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                      setState(() {});
-                                                                    });
-                                                                  }
-                                                                },
+                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                          setState(() {});
+                                                                        });
+                                                                      }
+                                                                    },
                                                                   ),
                                                                 ),
 
