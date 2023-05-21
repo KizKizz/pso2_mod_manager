@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -9,8 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
-import 'package:pso2_mod_manager/functions/apply_mods.dart';
-import 'package:pso2_mod_manager/functions/mod_file_restore.dart';
+import 'package:pso2_mod_manager/functions/modfile_applied_dup.dart';
+import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
+import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/unapply_mods.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -551,18 +551,44 @@ class _HomePageState extends State<HomePage> {
                                                 waitDuration: const Duration(milliseconds: 500),
                                                 child: InkWell(
                                                   child: const Icon(
-                                                    Icons.add_to_queue_outlined,
+                                                    Icons.add_circle_outline_rounded,
                                                   ),
                                                   onTap: () async {
-                                                    setState(() {
-                                                      //set apply status
-                                                      for (var element in curMod.submods.first.modFiles) {
-                                                        element.applyStatus = true;
+                                                    bool allOGFilesFound = true;
+                                                    //get og file paths
+                                                    for (var modFile in curMod.submods.first.modFiles) {
+                                                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                      if (modFile.ogLocations.isEmpty) {
+                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                        allOGFilesFound = false;
+                                                        break;
                                                       }
-                                                      curMod.applyStatus = true;
-                                                      curMod.submods.first.applyStatus = true;
-                                                      //
-                                                    });
+                                                    }
+                                                    //apply mod files
+                                                    if (allOGFilesFound) {
+                                                      modFilesApply(context, curMod.submods.first.modFiles).then((value) async {
+                                                        if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                          curMod.submods.first.applyDate = DateTime.now();
+                                                          modViewItem!.applyDate = DateTime.now();
+                                                          curMod.applyDate = DateTime.now();
+                                                          curMod.submods.first.applyStatus = true;
+                                                          curMod.applyStatus = true;
+                                                          modViewItem!.applyStatus = true;
+                                                          List<ModFile> appliedModFiles = value;
+                                                          String fileAppliedText = '';
+                                                          for (var element in appliedModFiles) {
+                                                            if (fileAppliedText.isEmpty) {
+                                                              fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                            }
+                                                            fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                          }
+                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                        }
+
+                                                        setState(() {});
+                                                      });
+                                                    }
                                                   },
                                                 ),
                                               ),
@@ -577,21 +603,45 @@ class _HomePageState extends State<HomePage> {
                                                     borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                 waitDuration: const Duration(milliseconds: 500),
                                                 child: InkWell(
-                                                  child: const Icon(
-                                                    Icons.remove_from_queue_outlined,
-                                                  ),
-                                                  onTap: () async {
-                                                    setState(() {
-                                                      //set apply status
-                                                      for (var element in curMod.submods.first.modFiles) {
-                                                        element.applyStatus = false;
+                                                    child: const Icon(
+                                                      Icons.remove_circle_outline_rounded,
+                                                    ),
+                                                    onTap: () async {
+                                                      //status
+                                                      String filesUnapplied = '';
+                                                      //check backups
+                                                      bool allBkFilesFound = true;
+                                                      for (var modFile in curMod.submods.first.modFiles) {
+                                                        for (var bkFile in modFile.bkLocations) {
+                                                          if (!File(bkFile).existsSync()) {
+                                                            allBkFilesFound = false;
+                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
+                                                            break;
+                                                          }
+                                                        }
                                                       }
-                                                      curMod.applyStatus = false;
-                                                      curMod.submods.first.applyStatus = false;
-                                                      //
-                                                    });
-                                                  },
-                                                ),
+                                                      if (allBkFilesFound) {
+                                                        modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
+                                                          List<ModFile> unappliedModFiles = value;
+                                                          if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                            modViewItem!.applyStatus = false;
+                                                            curMod.applyStatus = false;
+                                                            curMod.submods.first.applyStatus = false;
+                                                          }
+                                                          for (var element in unappliedModFiles) {
+                                                            if (filesUnapplied.isEmpty) {
+                                                              filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                            }
+                                                            filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                          }
+                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                          setState(() {});
+                                                        });
+                                                      }
+                                                    }),
                                               ),
                                             //Favorite
                                             Tooltip(
@@ -756,46 +806,44 @@ class _HomePageState extends State<HomePage> {
                                                           waitDuration: const Duration(milliseconds: 500),
                                                           child: InkWell(
                                                             onTap: () async {
-                                                              String filesApplied = '';
-                                                              int fileCount = 0;
                                                               bool allOGFilesFound = true;
                                                               //get og file paths
                                                               for (var modFile in curSubmod.modFiles) {
                                                                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                                 if (modFile.ogLocations.isEmpty) {
-                                                                  ScaffoldMessenger.of(context)
-                                                                      .showSnackBar(snackBarMessage(ContentType.failure, 'Error', 'Failed to fetch orginal file for ${modFile.modFileName}', 3000));
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
                                                                   allOGFilesFound = false;
                                                                   break;
                                                                 }
                                                               }
+                                                              //apply mod files
                                                               if (allOGFilesFound) {
-                                                                for (var modFile in curSubmod.modFiles) {
-                                                                  if (!modFile.applyStatus) {
-                                                                    modFileApply(modFile).then((value) {
-                                                                      modFile = value;
-                                                                      setState(() {});
-                                                                    });
-                                                                    modFile.applyStatus = true;
-                                                                    modFile.applyDate = DateTime.now();
-                                                                    modViewItem!.applyStatus = true;
-                                                                    curMod.applyStatus = true;
+                                                                modFilesApply(context, curSubmod.modFiles).then((value) async {
+                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                    curSubmod.applyDate = DateTime.now();
+                                                                    modViewItem!.applyDate = DateTime.now();
+                                                                    curMod.applyDate = DateTime.now();
                                                                     curSubmod.applyStatus = true;
-                                                                    fileCount++;
-                                                                    if (filesApplied.isEmpty) {
-                                                                      filesApplied = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                    curMod.applyStatus = true;
+                                                                    modViewItem!.applyStatus = true;
+                                                                    List<ModFile> appliedModFiles = value;
+                                                                    String fileAppliedText = '';
+                                                                    for (var element in appliedModFiles) {
+                                                                      if (fileAppliedText.isEmpty) {
+                                                                        fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                      }
+                                                                      fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                     }
-                                                                    filesApplied += '$fileCount.  ${modFile.modFileName}\n';
+                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                   }
-                                                                }
-                                                                appliedListBuilder(moddedItemsList).then((value) => appliedItemList = value);
-                                                                if (filesApplied.isNotEmpty) {
-                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesApplied.trim(), fileCount * 1000));
-                                                                }
+
+                                                                  setState(() {});
+                                                                });
                                                               }
                                                             },
                                                             child: const Icon(
-                                                              Icons.add_to_queue_outlined,
+                                                              Icons.add_circle_outline_rounded,
                                                             ),
                                                           ),
                                                         ),
@@ -812,55 +860,43 @@ class _HomePageState extends State<HomePage> {
                                                           waitDuration: const Duration(milliseconds: 500),
                                                           child: InkWell(
                                                             child: const Icon(
-                                                              Icons.remove_from_queue_outlined,
+                                                              Icons.remove_circle_outline_rounded,
                                                             ),
                                                             onTap: () async {
                                                               //status
                                                               String filesUnapplied = '';
-                                                              int fileCount = 0;
-
+                                                              //check backups
+                                                              bool allBkFilesFound = true;
                                                               for (var modFile in curSubmod.modFiles) {
-                                                                //check backups
-                                                                bool allBkFilesFound = true;
                                                                 for (var bkFile in modFile.bkLocations) {
                                                                   if (!File(bkFile).existsSync()) {
                                                                     allBkFilesFound = false;
+                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
                                                                     break;
                                                                   }
                                                                 }
-                                                                if (allBkFilesFound) {
-                                                                  modFileUnapply(modFile).then((value) {
-                                                                    modFile = value;
-                                                                    modFile.ogMd5 = '';
-                                                                    modFile.bkLocations.clear();
-                                                                    modFile.ogLocations.clear();
-                                                                    modFile.applyDate = DateTime(0);
-                                                                    setState(() {});
-                                                                  });
-
-                                                                  modFile.applyStatus = false;
-                                                                  fileCount++;
-
-                                                                  if (filesUnapplied.isEmpty) {
-                                                                    filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                              }
+                                                              if (allBkFilesFound) {
+                                                                modFilesUnapply(context, curSubmod.modFiles).then((value) async {
+                                                                  List<ModFile> unappliedModFiles = value;
+                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                    modViewItem!.applyStatus = false;
+                                                                    curMod.applyStatus = false;
+                                                                    curSubmod.applyStatus = false;
                                                                   }
-                                                                  filesUnapplied += '$fileCount.  ${modFile.modFileName}\n';
-                                                                }
-                                                              }
-                                                              if (filesUnapplied.isNotEmpty) {
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(ContentType.success, 'Success!', filesUnapplied.trim(), fileCount * 1000));
-                                                              }
+                                                                  for (var element in unappliedModFiles) {
+                                                                    if (filesUnapplied.isEmpty) {
+                                                                      filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                    }
+                                                                    filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                  }
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
-                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                modViewItem!.applyStatus = false;
-                                                                curMod.applyStatus = false;
-                                                                curSubmod.applyStatus = false;
+                                                                  appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                  setState(() {});
+                                                                });
                                                               }
-                                                              appliedListBuilder(moddedItemsList).then(
-                                                                (value) {
-                                                                  appliedItemList = value;
-                                                                },
-                                                              );
                                                             },
                                                           ),
                                                         ),
@@ -950,22 +986,42 @@ class _HomePageState extends State<HomePage> {
                                                               waitDuration: const Duration(milliseconds: 500),
                                                               child: InkWell(
                                                                 child: const Icon(
-                                                                  Icons.add_to_queue_outlined,
+                                                                  Icons.add,
                                                                 ),
                                                                 onTap: () async {
-                                                                  //set apply status
-                                                                  modFileRestore(moddedItemsList, curModFile);
+                                                                  bool allOGFilesFound = true;
+                                                                  //get og file paths
                                                                   curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
-                                                                  modViewItem!.applyStatus = true;
-                                                                  curMod.applyStatus = true;
-                                                                  curSubmod.applyStatus = true;
-                                                                  curModFile.applyStatus = true;
-                                                                  appliedListBuilder(moddedItemsList).then(
-                                                                    (value) {
-                                                                      appliedItemList = value;
-                                                                    },
-                                                                  );
-                                                                  setState(() {});
+                                                                  if (curModFile.ogLocations.isEmpty) {
+                                                                    ScaffoldMessenger.of(context)
+                                                                        .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${curModFile.modFileName}', 3000));
+                                                                    allOGFilesFound = false;
+                                                                  }
+                                                                  //apply mod files
+                                                                  if (allOGFilesFound) {
+                                                                    modFilesApply(context, [curModFile]).then((value) async {
+                                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                        curSubmod.applyDate = DateTime.now();
+                                                                        modViewItem!.applyDate = DateTime.now();
+                                                                        curMod.applyDate = DateTime.now();
+                                                                        curSubmod.applyStatus = true;
+                                                                        curMod.applyStatus = true;
+                                                                        modViewItem!.applyStatus = true;
+                                                                        List<ModFile> appliedModFiles = value;
+                                                                        String fileAppliedText = '';
+                                                                        for (var element in appliedModFiles) {
+                                                                          if (fileAppliedText.isEmpty) {
+                                                                            fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                          }
+                                                                          fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                        }
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                      }
+
+                                                                      setState(() {});
+                                                                    });
+                                                                  }
                                                                 },
                                                               ),
                                                             ),
@@ -981,27 +1037,42 @@ class _HomePageState extends State<HomePage> {
                                                               waitDuration: const Duration(milliseconds: 500),
                                                               child: InkWell(
                                                                 child: const Icon(
-                                                                  Icons.remove_from_queue_outlined,
+                                                                  Icons.remove,
                                                                 ),
-                                                                onTap: () {
-                                                                  //set apply status
-                                                                  curModFile.applyStatus = false;
-                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                    curSubmod.applyStatus = false;
+                                                                onTap: () async {
+                                                                  //status
+                                                                  String filesUnapplied = '';
+                                                                  //check backups
+                                                                  bool allBkFilesFound = true;
+                                                                  for (var bkFile in curModFile.bkLocations) {
+                                                                    if (!File(bkFile).existsSync()) {
+                                                                      allBkFilesFound = false;
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
+
+                                                                      break;
+                                                                    }
                                                                   }
-                                                                  if (curMod.submods.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                    curMod.applyStatus = false;
+                                                                  if (allBkFilesFound) {
+                                                                    modFilesUnapply(context, [curModFile]).then((value) async {
+                                                                      List<ModFile> unappliedModFiles = value;
+                                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                        modViewItem!.applyStatus = false;
+                                                                        curMod.applyStatus = false;
+                                                                        curSubmod.applyStatus = false;
+                                                                      }
+                                                                      for (var element in unappliedModFiles) {
+                                                                        if (filesUnapplied.isEmpty) {
+                                                                          filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                        }
+                                                                        filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                      }
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                      setState(() {});
+                                                                    });
                                                                   }
-                                                                  if (modViewItem!.mods.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                    modViewItem!.applyStatus = false;
-                                                                  }
-                                                                  //
-                                                                  appliedListBuilder(moddedItemsList).then(
-                                                                    (value) {
-                                                                      appliedItemList = value;
-                                                                    },
-                                                                  );
-                                                                  setState(() {});
                                                                 },
                                                               ),
                                                             ),
@@ -1323,22 +1394,44 @@ class _HomePageState extends State<HomePage> {
                                                                   waitDuration: const Duration(milliseconds: 500),
                                                                   child: InkWell(
                                                                     child: const Icon(
-                                                                      Icons.add_to_queue_outlined,
+                                                                      Icons.add,
                                                                     ),
                                                                     onTap: () async {
-                                                                      //set apply status
-                                                                      modFileRestore(moddedItemsList, curModFile);
+                                                                      bool allOGFilesFound = true;
+                                                                      //get og file paths
                                                                       curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
-                                                                      modViewItem!.applyStatus = true;
-                                                                      curItem.mods.first.applyStatus = true;
-                                                                      curItem.mods.first.submods.first.applyStatus = true;
-                                                                      curModFile.applyStatus = true;
-                                                                      appliedListBuilder(moddedItemsList).then(
-                                                                        (value) {
-                                                                          appliedItemList = value;
-                                                                        },
-                                                                      );
-                                                                      setState(() {});
+                                                                      if (curModFile.ogLocations.isEmpty) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${curModFile.modFileName}', 3000));
+                                                                        allOGFilesFound = false;
+                                                                      }
+                                                                      //apply mod files
+                                                                      if (allOGFilesFound) {
+                                                                        modFilesApply(context, [curModFile]).then((value) async {
+                                                                          if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                            curItem.mods.first.submods.first.applyDate = DateTime.now();
+                                                                            curItem.applyDate = DateTime.now();
+                                                                            curItem.mods.first.applyDate = DateTime.now();
+                                                                            curItem.mods.first.submods.first.applyStatus = true;
+                                                                            curItem.mods.first.applyStatus = true;
+                                                                            curItem.applyStatus = true;
+                                                                            List<ModFile> appliedModFiles = value;
+                                                                            String fileAppliedText = '';
+                                                                            for (var element in appliedModFiles) {
+                                                                              if (fileAppliedText.isEmpty) {
+                                                                                fileAppliedText =
+                                                                                    'Sucessfully applied ${curItem.mods.first.submods.first.modName} > ${curItem.mods.first.submods.first.submodName}:\n';
+                                                                              }
+                                                                              fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                            }
+                                                                            ScaffoldMessenger.of(context)
+                                                                                .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                          }
+
+                                                                          setState(() {});
+                                                                        });
+                                                                      }
                                                                     },
                                                                   ),
                                                                 ),
@@ -1354,28 +1447,43 @@ class _HomePageState extends State<HomePage> {
                                                                   waitDuration: const Duration(milliseconds: 500),
                                                                   child: InkWell(
                                                                     child: const Icon(
-                                                                      Icons.remove_from_queue_outlined,
+                                                                      Icons.remove,
                                                                     ),
-                                                                    onTap: () {
-                                                                      //set apply status
-                                                                      curModFile.applyStatus = false;
+                                                                    onTap: () async {
+                                                                  //status
+                                                                  String filesUnapplied = '';
+                                                                  //check backups
+                                                                  bool allBkFilesFound = true;
+                                                                  for (var bkFile in curModFile.bkLocations) {
+                                                                    if (!File(bkFile).existsSync()) {
+                                                                      allBkFilesFound = false;
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curItem.mods.first.submods.first.modFiles.first.modFileName}', 3000));
+
+                                                                      break;
+                                                                    }
+                                                                  }
+                                                                  if (allBkFilesFound) {
+                                                                    modFilesUnapply(context, [curModFile]).then((value) async {
+                                                                      List<ModFile> unappliedModFiles = value;
                                                                       if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                        curItem.applyStatus = false;
+                                                                        curItem.mods.first.applyStatus = false;
                                                                         curItem.mods.first.submods.first.applyStatus = false;
                                                                       }
-                                                                      if (curItem.mods.first.submods.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                        curItem.mods.first.applyStatus = false;
+                                                                      for (var element in unappliedModFiles) {
+                                                                        if (filesUnapplied.isEmpty) {
+                                                                          filesUnapplied = 'Sucessfully remove ${curItem.mods.first.modName} > ${curItem.mods.first.submods.first.submodName}:\n';
+                                                                        }
+                                                                        filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                       }
-                                                                      if (modViewItem!.mods.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                        modViewItem!.applyStatus = false;
-                                                                      }
-                                                                      //
-                                                                      appliedListBuilder(moddedItemsList).then(
-                                                                        (value) {
-                                                                          appliedItemList = value;
-                                                                        },
-                                                                      );
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                       setState(() {});
-                                                                    },
+                                                                    });
+                                                                  }
+                                                                },
                                                                   ),
                                                                 ),
 
@@ -1491,18 +1599,35 @@ class _HomePageState extends State<HomePage> {
   }
 
 //Extra=======================================================================================================================================================================================
-  SnackBar snackBarMessage(ContentType contentType, String title, String message, int durationMS) {
+  SnackBar snackBarMessage(String title, String message, int durationMS) {
     return SnackBar(
         elevation: 0,
-        duration: Duration(milliseconds: durationMS),
-        backgroundColor: Colors.transparent,
-        content: SizedBox(
-            height: '\n'.allMatches(message).length * 15 + 100,
-            child: AwesomeSnackbarContent(
-              contentType: contentType,
-              message: message,
-              title: title,
-              messageFontSize: 15,
-            )));
+        width: windowsWidth * 0.5,
+        padding: const EdgeInsets.all(10),
+        duration: Duration(milliseconds: durationMS < 3000 ? durationMS : 3000),
+        backgroundColor: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+          Radius.circular(5),
+        )),
+        showCloseIcon: true,
+        closeIconColor: Theme.of(context).textTheme.bodyMedium?.color,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyMedium?.color),
+              ),
+            ),
+            Text(
+              message,
+              style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodyMedium?.color),
+            ),
+          ],
+        ));
   }
 }

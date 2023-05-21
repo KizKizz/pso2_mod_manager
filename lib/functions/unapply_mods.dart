@@ -21,7 +21,7 @@ Future<ModFile> modFileUnapply(ModFile modFile) async {
                   if (submod.applyStatus == true) {
                     for (var appliedModFile in submod.modFiles) {
                       if (appliedModFile.applyStatus == true) {
-                        if (appliedModFile.bkLocations.contains(bkPath)) {
+                        if (appliedModFile.bkLocations.contains(bkPath) && appliedModFile.location != modFile.location) {
                           dontRemoveList.add(bkPath);
                         }
                       }
@@ -35,7 +35,7 @@ Future<ModFile> modFileUnapply(ModFile modFile) async {
       }
     }
     if (!dontRemoveList.contains(bkPath)) {
-      await File(bkPath).delete(recursive: true);
+      File(bkPath).deleteSync(recursive: true);
     }
   }
   return modFile;
