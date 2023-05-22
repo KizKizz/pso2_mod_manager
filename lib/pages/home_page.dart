@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
+import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
-import 'package:pso2_mod_manager/functions/modfile_applied_dup.dart';
+import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
-import 'package:pso2_mod_manager/functions/unapply_mods.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   double headersExtraOpacityValue = 0.3;
   List<List<List<bool>>> itemButtonsVisible = [];
   bool isApplyingModFiles = false;
+  bool isCateTypeReordering = false;
 
   @override
   void initState() {
@@ -129,7 +130,31 @@ class _HomePageState extends State<HomePage> {
       children: [
         AppBar(
           automaticallyImplyLeading: false,
-          actions: <Widget>[Container()],
+          actions: <Widget>[
+            Tooltip(
+              message: 'Sort Category Groups',
+              height: 25,
+              textStyle: const TextStyle(fontSize: 14),
+              decoration: BoxDecoration(
+                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+              waitDuration: const Duration(milliseconds: 500),
+              child: InkWell(
+                  child: Icon(
+                    !isCateTypeReordering ? Icons.sort_outlined : Icons.check,
+                  ),
+                  onTap: () {
+                    if (isCateTypeReordering) {
+                      isCateTypeReordering = false;
+                    } else {
+                      isCateTypeReordering = true;
+                    }
+                    setState(() {});
+                  }),
+            ),
+          ],
+          //Title
           title: searchBoxLeftPadding == 15
               ? null
               : Padding(
@@ -157,227 +182,281 @@ class _HomePageState extends State<HomePage> {
               }),
             ),
             child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: moddedItemsList.length,
-                itemBuilder: (context, groupIndex) {
-                  if (itemButtonsVisible.isEmpty || itemButtonsVisible.length != moddedItemsList.length) {
-                    itemButtonsVisible = List.generate(moddedItemsList.length, (index) => []);
-                  }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (groupIndex != 0)
-                        const Divider(
-                          height: 1,
-                          thickness: 1,
-                          //color: Theme.of(context).textTheme.headlineMedium?.color,
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2),
-                        child: Card(
-                          margin: const EdgeInsets.all(1),
-                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                          //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                          child: ExpansionTile(
-                            backgroundColor: Colors.transparent,
-                            collapsedTextColor: Theme.of(context).colorScheme.primary,
-                            collapsedIconColor: Theme.of(context).colorScheme.primary,
-                            title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                            initiallyExpanded: moddedItemsList[groupIndex].expanded,
-                            children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: moddedItemsList[groupIndex].categories.length,
-                                itemBuilder: (context, categoryIndex) {
-                                  var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
-                                  if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                    itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                  }
-                                  return ExpansionTile(
-                                      backgroundColor: Colors.transparent,
-                                      textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                                      iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                      initiallyExpanded: false,
-                                      childrenPadding: const EdgeInsets.all(0),
-                                      title: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
-                                                child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(color: Theme.of(context).highlightColor),
-                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              child: isCateTypeReordering
+                  //Redordering ItemList
+                  ? ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onReorder: (int oldIndex, int newIndex) {
+                        setState(() {
+                          if (oldIndex < newIndex) {
+                            newIndex -= 1;
+                          }
+                          final CategoryType item = moddedItemsList.removeAt(oldIndex);
+                          item.position = newIndex;
+                          moddedItemsList.insert(newIndex, item);
+                        });
+                      },
+                      itemCount: moddedItemsList.length,
+                      itemBuilder: (context, groupIndex) {
+                        return Padding(
+                            key: Key('$groupIndex'),
+                            padding: const EdgeInsets.only(left: 2),
+                            child: Card(
+                              margin: const EdgeInsets.all(1),
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                              child: ListTile(
+                                textColor: Theme.of(context).colorScheme.primary,
+                                title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                trailing: const SizedBox(),
+                              ),
+                            ));
+                      })
+                  //Normal ItemList
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: moddedItemsList.length,
+                      itemBuilder: (context, groupIndex) {
+                        if (itemButtonsVisible.isEmpty || itemButtonsVisible.length != moddedItemsList.length) {
+                          itemButtonsVisible = List.generate(moddedItemsList.length, (index) => []);
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (groupIndex != 0)
+                              const Divider(
+                                height: 1,
+                                thickness: 1,
+                                //color: Theme.of(context).textTheme.headlineMedium?.color,
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2),
+                              child: Card(
+                                margin: const EdgeInsets.all(1),
+                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                child: ExpansionTile(
+                                  backgroundColor: Colors.transparent,
+                                  collapsedTextColor: Theme.of(context).colorScheme.primary,
+                                  collapsedIconColor: Theme.of(context).colorScheme.primary,
+                                  title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                  initiallyExpanded: moddedItemsList[groupIndex].expanded,
+                                  children: [
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: moddedItemsList[groupIndex].categories.length,
+                                      itemBuilder: (context, categoryIndex) {
+                                        var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                                        if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                          itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                        }
+                                        return ExpansionTile(
+                                            backgroundColor: Colors.transparent,
+                                            textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                                            iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                            initiallyExpanded: false,
+                                            childrenPadding: const EdgeInsets.all(0),
+                                            title: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                                      child: Container(
+                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(color: Theme.of(context).highlightColor),
+                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                          ),
+                                                          child: curCategory.items.length < 2
+                                                              ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 13,
+                                                                  ))
+                                                              : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 13,
+                                                                  ))),
                                                     ),
-                                                    child: curCategory.items.length < 2
-                                                        ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
-                                                            style: const TextStyle(
-                                                              fontSize: 13,
-                                                            ))
-                                                        : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
-                                                            style: const TextStyle(
-                                                              fontSize: 13,
-                                                            ))),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    if (!defaultCateforyDirs.contains(curCategory.categoryName))
+                                                      Tooltip(
+                                                          message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
+                                                          height: 25,
+                                                          textStyle: const TextStyle(fontSize: 14),
+                                                          decoration: BoxDecoration(
+                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                          ),
+                                                          waitDuration: const Duration(milliseconds: 500),
+                                                          child: SizedBox(
+                                                            width: 40,
+                                                            height: 40,
+                                                            child: MaterialButton(
+                                                                onPressed: (() {
+                                                                  setState(() {});
+                                                                }),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons.delete_sweep_rounded,
+                                                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                                    )
+                                                                  ],
+                                                                )),
+                                                          )),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                             children: [
-                                              if (!defaultCateforyDirs.contains(curCategory.categoryName))
-                                                Tooltip(
-                                                    message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
-                                                    height: 25,
-                                                    textStyle: const TextStyle(fontSize: 14),
-                                                    decoration: BoxDecoration(
-                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                      borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                    ),
-                                                    waitDuration: const Duration(milliseconds: 500),
-                                                    child: SizedBox(
-                                                      width: 40,
-                                                      height: 40,
-                                                      child: MaterialButton(
-                                                          onPressed: (() {
-                                                            setState(() {});
-                                                          }),
+                                              ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  itemCount: curCategory.items.length,
+                                                  itemBuilder: (context, itemIndex) {
+                                                    var curItem = curCategory.items[itemIndex];
+                                                    if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty || itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                                      itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                                    }
+
+                                                    return SizedBox(
+                                                      height: 84,
+                                                      child: Container(
+                                                        margin: const EdgeInsets.all(1),
+                                                        color: Colors.transparent,
+                                                        //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+                                                        child: InkWell(
                                                           child: Row(
                                                             children: [
-                                                              Icon(
-                                                                Icons.delete_sweep_rounded,
-                                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
+                                                                child: Container(
+                                                                    width: 80,
+                                                                    height: 80,
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(3),
+                                                                      border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                                    ),
+                                                                    child: Image.file(
+                                                                      File(curItem.icon),
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.fitWidth,
+                                                                    )),
+                                                              ),
+                                                              Expanded(
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    Text(
+                                                                      curItem.itemName,
+                                                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                                                    ),
+                                                                    Text(
+                                                                      curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
+                                                                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                    ),
+                                                                    Text(
+                                                                      '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
+                                                                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Visibility(
+                                                                visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(right: 15),
+                                                                  child: Row(
+                                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                                    children: [
+                                                                      //Buttons
+                                                                      Tooltip(
+                                                                          message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                          height: 25,
+                                                                          textStyle: const TextStyle(fontSize: 14),
+                                                                          decoration: BoxDecoration(
+                                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                          ),
+                                                                          waitDuration: const Duration(milliseconds: 500),
+                                                                          child: InkWell(
+                                                                            child: const Icon(Icons.folder_open),
+                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                          )),
+                                                                      //Delete
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left: 5),
+                                                                        child: Tooltip(
+                                                                          message: 'Hold to remove ${curItem.itemName} from Mod Manager',
+                                                                          height: 25,
+                                                                          textStyle: const TextStyle(fontSize: 14),
+                                                                          decoration: BoxDecoration(
+                                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                          waitDuration: const Duration(milliseconds: 500),
+                                                                          child: InkWell(
+                                                                            child: const Icon(
+                                                                              Icons.delete_forever_outlined,
+                                                                            ),
+                                                                            onLongPress: () async {
+                                                                              setState(() {});
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
                                                               )
                                                             ],
-                                                          )),
-                                                    )),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      children: [
-                                        ListView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: curCategory.items.length,
-                                            itemBuilder: (context, itemIndex) {
-                                              var curItem = curCategory.items[itemIndex];
-                                              if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty || itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
-                                                itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                              }
-
-                                              return SizedBox(
-                                                height: 84,
-                                                child: Container(
-                                                  margin: const EdgeInsets.all(1),
-                                                  color: Colors.transparent,
-                                                  //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-                                                  child: InkWell(
-                                                    child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
-                                                          child: Container(
-                                                              width: 80,
-                                                              height: 80,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(3),
-                                                                border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
-                                                              ),
-                                                              child: Image.file(
-                                                                File(curItem.icon),
-                                                                filterQuality: FilterQuality.none,
-                                                                fit: BoxFit.fitWidth,
-                                                              )),
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                curItem.itemName,
-                                                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                                              ),
-                                                              Text(
-                                                                curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
-                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                              ),
-                                                              Text(
-                                                                '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
-                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                              ),
-                                                            ],
                                                           ),
+                                                          onTap: () {
+                                                            for (var element in modViewETKeys) {
+                                                              element.currentState?.collapse();
+                                                            }
+                                                            modViewETKeys.clear();
+                                                            modViewItem = curItem;
+                                                            setState(() {});
+                                                          },
+                                                          onHover: (value) {
+                                                            setState(() {
+                                                              if (value) {
+                                                                itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                              } else {
+                                                                itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                              }
+                                                            });
+                                                          },
                                                         ),
-                                                        Visibility(
-                                                          visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.only(right: 15),
-                                                            child: Row(
-                                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                                              children: [
-                                                                //Buttons
-                                                                Tooltip(
-                                                                    message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                    height: 25,
-                                                                    textStyle: const TextStyle(fontSize: 14),
-                                                                    decoration: BoxDecoration(
-                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                    ),
-                                                                    waitDuration: const Duration(milliseconds: 500),
-                                                                    child: InkWell(
-                                                                      child: const Icon(Icons.folder_open),
-                                                                      onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                    )),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    onTap: () {
-                                                      for (var element in modViewETKeys) {
-                                                        element.currentState?.collapse();
-                                                      }
-                                                      modViewETKeys.clear();
-                                                      modViewItem = curItem;
-                                                      setState(() {});
-                                                    },
-                                                    onHover: (value) {
-                                                      setState(() {
-                                                        if (value) {
-                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
-                                                        } else {
-                                                          itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
-                                                        }
-                                                      });
-                                                    },
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      ]);
-                                },
+                                                      ),
+                                                    );
+                                                  }),
+                                            ]);
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ),
         ),
@@ -390,8 +469,34 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
-        actions: <Widget>[Container()],
+        actions: <Widget>[
+          if (modViewItem == null) Container(),
+          if (modViewItem != null)
+            Align(
+              alignment: Alignment.topCenter,
+              child: Tooltip(
+                message: 'Clear Available Mods view',
+                height: 25,
+                textStyle: const TextStyle(fontSize: 14),
+                decoration: BoxDecoration(
+                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                waitDuration: const Duration(milliseconds: 500),
+                child: InkWell(
+                    child: const Icon(
+                      Icons.clear,
+                    ),
+                    onTap: () async {
+                      modViewItem = null;
+                      setState(() {});
+                    }),
+              ),
+            ),
+        ],
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             if (modViewItem != null)
               Padding(
@@ -409,7 +514,7 @@ class _HomePageState extends State<HomePage> {
                       fit: BoxFit.fitWidth,
                     )),
               ),
-            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
                   child: modViewItem != null
                       ? Text(modViewItem!.itemName)
@@ -540,6 +645,57 @@ class _HomePageState extends State<HomePage> {
                                           spacing: 5,
                                           children: [
                                             //Add-Remove button
+                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                              Tooltip(
+                                                message: 'Remove ${curMod.submods.first.submodName} from the game',
+                                                height: 25,
+                                                textStyle: const TextStyle(fontSize: 14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                waitDuration: const Duration(milliseconds: 500),
+                                                child: InkWell(
+                                                    child: const Icon(
+                                                      Icons.remove_circle_outline_rounded,
+                                                    ),
+                                                    onTap: () async {
+                                                      //status
+                                                      String filesUnapplied = '';
+                                                      //check backups
+                                                      bool allBkFilesFound = true;
+                                                      for (var modFile in curMod.submods.first.modFiles) {
+                                                        for (var bkFile in modFile.bkLocations) {
+                                                          if (!File(bkFile).existsSync()) {
+                                                            allBkFilesFound = false;
+                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
+                                                            break;
+                                                          }
+                                                        }
+                                                      }
+                                                      if (allBkFilesFound) {
+                                                        modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
+                                                          List<ModFile> unappliedModFiles = value;
+                                                          if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                            modViewItem!.applyStatus = false;
+                                                            curMod.applyStatus = false;
+                                                            curMod.submods.first.applyStatus = false;
+                                                          }
+                                                          for (var element in unappliedModFiles) {
+                                                            if (filesUnapplied.isEmpty) {
+                                                              filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                            }
+                                                            filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                          }
+                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                          setState(() {});
+                                                        });
+                                                      }
+                                                    }),
+                                              ),
                                             if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
                                               Tooltip(
                                                 message: 'Apply ${curMod.submods.first.submodName} to the game',
@@ -593,57 +749,7 @@ class _HomePageState extends State<HomePage> {
                                                   },
                                                 ),
                                               ),
-                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
-                                              Tooltip(
-                                                message: 'Remove ${curMod.submods.first.submodName} from the game',
-                                                height: 25,
-                                                textStyle: const TextStyle(fontSize: 14),
-                                                decoration: BoxDecoration(
-                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                waitDuration: const Duration(milliseconds: 500),
-                                                child: InkWell(
-                                                    child: const Icon(
-                                                      Icons.remove_circle_outline_rounded,
-                                                    ),
-                                                    onTap: () async {
-                                                      //status
-                                                      String filesUnapplied = '';
-                                                      //check backups
-                                                      bool allBkFilesFound = true;
-                                                      for (var modFile in curMod.submods.first.modFiles) {
-                                                        for (var bkFile in modFile.bkLocations) {
-                                                          if (!File(bkFile).existsSync()) {
-                                                            allBkFilesFound = false;
-                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
 
-                                                            break;
-                                                          }
-                                                        }
-                                                      }
-                                                      if (allBkFilesFound) {
-                                                        modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
-                                                          List<ModFile> unappliedModFiles = value;
-                                                          if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                            modViewItem!.applyStatus = false;
-                                                            curMod.applyStatus = false;
-                                                            curMod.submods.first.applyStatus = false;
-                                                          }
-                                                          for (var element in unappliedModFiles) {
-                                                            if (filesUnapplied.isEmpty) {
-                                                              filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
-                                                            }
-                                                            filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                          }
-                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
-
-                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                          setState(() {});
-                                                        });
-                                                      }
-                                                    }),
-                                              ),
                                             //Favorite
                                             Tooltip(
                                               message: 'Add ${curMod.submods.first.submodName} to favorite',
@@ -795,59 +901,6 @@ class _HomePageState extends State<HomePage> {
                                                     spacing: 5,
                                                     children: [
                                                       //Apply button in submod
-                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
-                                                        Tooltip(
-                                                          message: 'Apply ${curSubmod.submodName} to the game',
-                                                          height: 25,
-                                                          textStyle: const TextStyle(fontSize: 14),
-                                                          decoration: BoxDecoration(
-                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                          waitDuration: const Duration(milliseconds: 500),
-                                                          child: InkWell(
-                                                            onTap: () async {
-                                                              bool allOGFilesFound = true;
-                                                              //get og file paths
-                                                              for (var modFile in curSubmod.modFiles) {
-                                                                modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                                                                if (modFile.ogLocations.isEmpty) {
-                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
-                                                                  allOGFilesFound = false;
-                                                                  break;
-                                                                }
-                                                              }
-                                                              //apply mod files
-                                                              if (allOGFilesFound) {
-                                                                modFilesApply(context, curSubmod.modFiles).then((value) async {
-                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                    curSubmod.applyDate = DateTime.now();
-                                                                    modViewItem!.applyDate = DateTime.now();
-                                                                    curMod.applyDate = DateTime.now();
-                                                                    curSubmod.applyStatus = true;
-                                                                    curMod.applyStatus = true;
-                                                                    modViewItem!.applyStatus = true;
-                                                                    List<ModFile> appliedModFiles = value;
-                                                                    String fileAppliedText = '';
-                                                                    for (var element in appliedModFiles) {
-                                                                      if (fileAppliedText.isEmpty) {
-                                                                        fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                      }
-                                                                      fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                    }
-                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                  }
-
-                                                                  setState(() {});
-                                                                });
-                                                              }
-                                                            },
-                                                            child: const Icon(
-                                                              Icons.add_circle_outline_rounded,
-                                                            ),
-                                                          ),
-                                                        ),
                                                       //remove button
                                                       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
                                                         Tooltip(
@@ -901,6 +954,60 @@ class _HomePageState extends State<HomePage> {
                                                             },
                                                           ),
                                                         ),
+                                                      if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                        Tooltip(
+                                                          message: 'Apply ${curSubmod.submodName} to the game',
+                                                          height: 25,
+                                                          textStyle: const TextStyle(fontSize: 14),
+                                                          decoration: BoxDecoration(
+                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                          waitDuration: const Duration(milliseconds: 500),
+                                                          child: InkWell(
+                                                            onTap: () async {
+                                                              bool allOGFilesFound = true;
+                                                              //get og file paths
+                                                              for (var modFile in curSubmod.modFiles) {
+                                                                modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                if (modFile.ogLocations.isEmpty) {
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                  allOGFilesFound = false;
+                                                                  break;
+                                                                }
+                                                              }
+                                                              //apply mod files
+                                                              if (allOGFilesFound) {
+                                                                modFilesApply(context, curSubmod.modFiles).then((value) async {
+                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                    curSubmod.applyDate = DateTime.now();
+                                                                    modViewItem!.applyDate = DateTime.now();
+                                                                    curMod.applyDate = DateTime.now();
+                                                                    curSubmod.applyStatus = true;
+                                                                    curMod.applyStatus = true;
+                                                                    modViewItem!.applyStatus = true;
+                                                                    List<ModFile> appliedModFiles = value;
+                                                                    String fileAppliedText = '';
+                                                                    for (var element in appliedModFiles) {
+                                                                      if (fileAppliedText.isEmpty) {
+                                                                        fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                      }
+                                                                      fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                    }
+                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                  }
+
+                                                                  setState(() {});
+                                                                });
+                                                              }
+                                                            },
+                                                            child: const Icon(
+                                                              Icons.add_circle_outline_rounded,
+                                                            ),
+                                                          ),
+                                                        ),
+
                                                       //Favorite
                                                       Tooltip(
                                                         message: 'Add ${curSubmod.submodName} to favorite',
@@ -948,12 +1055,16 @@ class _HomePageState extends State<HomePage> {
                                                             borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         waitDuration: const Duration(milliseconds: 500),
                                                         child: InkWell(
-                                                          child: const Icon(
+                                                          onLongPress: curSubmod.applyStatus
+                                                              ? null
+                                                              : () async {
+                                                                  deleteFilesFromModMan([]);
+                                                                  setState(() {});
+                                                                },
+                                                          child: Icon(
                                                             Icons.delete_forever_outlined,
+                                                            color: curSubmod.applyStatus ? Theme.of(context).disabledColor : null,
                                                           ),
-                                                          onLongPress: () async {
-                                                            setState(() {});
-                                                          },
                                                         ),
                                                       ),
                                                     ],
@@ -1219,37 +1330,6 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
-                                        Row(
-                                          children: [
-                                            if (!defaultCateforyDirs.contains(curCategory.categoryName))
-                                              Tooltip(
-                                                  message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
-                                                  height: 25,
-                                                  textStyle: const TextStyle(fontSize: 14),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                    borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                  ),
-                                                  waitDuration: const Duration(milliseconds: 500),
-                                                  child: SizedBox(
-                                                    width: 40,
-                                                    height: 40,
-                                                    child: MaterialButton(
-                                                        onPressed: (() {
-                                                          setState(() {});
-                                                        }),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons.delete_sweep_rounded,
-                                                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
-                                                            )
-                                                          ],
-                                                        )),
-                                                  )),
-                                          ],
-                                        )
                                       ],
                                     ),
                                     children: [
@@ -1344,7 +1424,7 @@ class _HomePageState extends State<HomePage> {
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                           Text(
-                                                             '${curSubmod.modFiles.where((element) => element.applyStatus).length} / ${curSubmod.modFiles.length} Files applied',
+                                                            '${curSubmod.modFiles.where((element) => element.applyStatus).length} / ${curSubmod.modFiles.length} Files applied',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                         ],
@@ -1356,20 +1436,140 @@ class _HomePageState extends State<HomePage> {
                                                         crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           //Buttons
-                                                          Tooltip(
-                                                              message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                              height: 25,
-                                                              textStyle: const TextStyle(fontSize: 14),
-                                                              decoration: BoxDecoration(
-                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                          //remove button
+                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(left: 5),
+                                                              child: Tooltip(
+                                                                message: 'Remove ${curSubmod.submodName} from the game',
+                                                                height: 25,
+                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                child: InkWell(
+                                                                  child: const Icon(
+                                                                    Icons.remove_circle_outline_rounded,
+                                                                  ),
+                                                                  onTap: () async {
+                                                                    //status
+                                                                    String filesUnapplied = '';
+                                                                    //check backups
+                                                                    bool allBkFilesFound = true;
+                                                                    for (var modFile in curSubmod.modFiles) {
+                                                                      for (var bkFile in modFile.bkLocations) {
+                                                                        if (!File(bkFile).existsSync()) {
+                                                                          allBkFilesFound = false;
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
+                                                                          break;
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                    if (allBkFilesFound) {
+                                                                      modFilesUnapply(context, curSubmod.modFiles).then((value) async {
+                                                                        List<ModFile> unappliedModFiles = value;
+                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                                          modViewItem!.applyStatus = false;
+                                                                          curMod.applyStatus = false;
+                                                                          curSubmod.applyStatus = false;
+                                                                        }
+                                                                        for (var element in unappliedModFiles) {
+                                                                          if (filesUnapplied.isEmpty) {
+                                                                            filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                          }
+                                                                          filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                        }
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                        setState(() {});
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                ),
                                                               ),
-                                                              waitDuration: const Duration(milliseconds: 500),
-                                                              child: InkWell(
-                                                                child: const Icon(Icons.folder_open),
-                                                                onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                              )),
+                                                            ),
+                                                          //Apply button in submod
+                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(left: 5),
+                                                              child: Tooltip(
+                                                                message: 'Apply ${curSubmod.submodName} to the game',
+                                                                height: 25,
+                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                decoration: BoxDecoration(
+                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                child: InkWell(
+                                                                  onTap: () async {
+                                                                    bool allOGFilesFound = true;
+                                                                    //get og file paths
+                                                                    for (var modFile in curSubmod.modFiles) {
+                                                                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                      if (modFile.ogLocations.isEmpty) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                        allOGFilesFound = false;
+                                                                        break;
+                                                                      }
+                                                                    }
+                                                                    //apply mod files
+                                                                    if (allOGFilesFound) {
+                                                                      modFilesApply(context, curSubmod.modFiles).then((value) async {
+                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                          curSubmod.applyDate = DateTime.now();
+                                                                          modViewItem!.applyDate = DateTime.now();
+                                                                          curMod.applyDate = DateTime.now();
+                                                                          curSubmod.applyStatus = true;
+                                                                          curMod.applyStatus = true;
+                                                                          modViewItem!.applyStatus = true;
+                                                                          List<ModFile> appliedModFiles = value;
+                                                                          String fileAppliedText = '';
+                                                                          for (var element in appliedModFiles) {
+                                                                            if (fileAppliedText.isEmpty) {
+                                                                              fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                            }
+                                                                            fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                          }
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                        }
+
+                                                                        setState(() {});
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                  child: const Icon(
+                                                                    Icons.add_circle_outline_rounded,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 5),
+                                                            child: Tooltip(
+                                                                message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                height: 25,
+                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                ),
+                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                child: InkWell(
+                                                                  child: const Icon(Icons.folder_open),
+                                                                  onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                )),
+                                                          ),
                                                         ],
                                                       ),
                                                     )
@@ -1426,8 +1626,7 @@ class _HomePageState extends State<HomePage> {
                                                                             String fileAppliedText = '';
                                                                             for (var element in appliedModFiles) {
                                                                               if (fileAppliedText.isEmpty) {
-                                                                                fileAppliedText =
-                                                                                    'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                               }
                                                                               fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                             }
@@ -1464,8 +1663,8 @@ class _HomePageState extends State<HomePage> {
                                                                       for (var bkFile in curModFile.bkLocations) {
                                                                         if (!File(bkFile).existsSync()) {
                                                                           allBkFilesFound = false;
-                                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                              'Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
 
                                                                           break;
                                                                         }
@@ -1494,26 +1693,6 @@ class _HomePageState extends State<HomePage> {
                                                                     },
                                                                   ),
                                                                 ),
-
-                                                              //Delete
-                                                              Tooltip(
-                                                                message: 'Hold to remove ${curModFile.modFileName} from Mod Manager',
-                                                                height: 25,
-                                                                textStyle: const TextStyle(fontSize: 14),
-                                                                decoration: BoxDecoration(
-                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                waitDuration: const Duration(milliseconds: 500),
-                                                                child: InkWell(
-                                                                  child: const Icon(
-                                                                    Icons.delete_forever_outlined,
-                                                                  ),
-                                                                  onLongPress: () async {
-                                                                    setState(() {});
-                                                                  },
-                                                                ),
-                                                              ),
                                                             ],
                                                           ),
                                                           title: Text(curModFile.modFileName),

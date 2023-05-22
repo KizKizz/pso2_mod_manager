@@ -235,8 +235,10 @@ List<Mod> modsFetcher(String itemPath, String cateName) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
 
-    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [],
-        subModFetcher(dir.path, cateName, p.basename(itemPath))));
+    List<SubMod> newMod = subModFetcher(dir.path, cateName, p.basename(itemPath));
+    if (newMod.isNotEmpty) {
+      mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], newMod));
+    }
   }
 
   return mods;
@@ -270,7 +272,9 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
 
-    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    if (modFiles.isNotEmpty) {
+      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    }
   }
 
   //ices in sub dirs
@@ -305,9 +309,11 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     }
 
     //Get submod name
-    List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
-    parentPaths.removeWhere((element) => element.isEmpty);
-    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    if (modFiles.isNotEmpty) {
+      List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
+      parentPaths.removeWhere((element) => element.isEmpty);
+      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    }
   }
 
   return submods;

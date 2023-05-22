@@ -341,7 +341,9 @@ class _MainPageState extends State<MainPage> {
                       //Path open
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {}),
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManModsDirPath));
+                        }),
                         child: const Row(
                           children: [
                             Icon(
@@ -363,7 +365,9 @@ class _MainPageState extends State<MainPage> {
                       //Path open
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {}),
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManBackupsDirPath));
+                        }),
                         child: const Row(
                           children: [
                             Icon(
@@ -385,7 +389,9 @@ class _MainPageState extends State<MainPage> {
                       //Path open
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {}),
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManDeletedItemsDirPath));
+                        }),
                         child: const Row(
                           children: [
                             Icon(
@@ -1391,84 +1397,6 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
                           ),
-
-                          //Open Folder menu
-                          // Tooltip(
-                          //   message: curLangText!.foldersTooltipText,
-                          //   height: 25,
-                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.only(right: 5),
-                          //     child: DropdownButtonHideUnderline(
-                          //       child: DropdownButton2(
-                          //         customButton: AbsorbPointer(
-                          //           absorbing: true,
-                          //           child: MaterialButton(
-                          //             onPressed: (() {}),
-                          //             child: Row(
-                          //               children: [
-                          //                 const Icon(
-                          //                   Icons.folder_copy_outlined,
-                          //                   size: 18,
-                          //                 ),
-                          //                 const SizedBox(width: 2.5),
-                          //                 Text(curLangText!.foldersBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                          //               ],
-                          //             ),
-                          //           ),
-                          //         ),
-                          //         isDense: true,
-                          //         items: topBtnMenuItems
-                          //             .map((item) => DropdownMenuItem<String>(
-                          //                 value: item,
-                          //                 child: Row(
-                          //                   mainAxisAlignment: MainAxisAlignment.start,
-                          //                   children: [
-                          //                     if (item == curLangText!.modsFolderBtnText && item.isNotEmpty) const Icon(Icons.rule_folder_outlined),
-                          //                     if (item == curLangText!.backupFolderBtnText && item.isNotEmpty) const Icon(Icons.backup_table),
-                          //                     if (item == curLangText!.deletedItemsBtnText && item.isNotEmpty) const Icon(Icons.delete_rounded),
-                          //                     const SizedBox(
-                          //                       width: 5,
-                          //                     ),
-                          //                     Container(
-                          //                       padding: const EdgeInsets.only(bottom: 3),
-                          //                       child: Text(
-                          //                         item,
-                          //                         style: const TextStyle(
-                          //                           fontSize: 14,
-                          //                           //fontWeight: FontWeight.bold,
-                          //                           //color: Colors.white,
-                          //                         ),
-                          //                         overflow: TextOverflow.ellipsis,
-                          //                       ),
-                          //                     )
-                          //                   ],
-                          //                 )))
-                          //             .toList(),
-                          //         onChanged: (value) async {
-                          //           if (value == curLangText!.modsFolderBtnText) {
-                          //             await launchUrl(Uri.parse('file:$modsDirPath'));
-                          //           } else if (value == curLangText!.backupFolderBtnText) {
-                          //             await launchUrl(Uri.parse('file:$backupDirPath'));
-                          //           } else if (value == curLangText!.deletedItemsBtnText) {
-                          //             await launchUrl(Uri.parse('file:$deletedItemsPath'));
-                          //           }
-                          //         },
-                          //         itemHeight: 35,
-                          //         dropdownWidth: 130,
-                          //         itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                          //         dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                          //         dropdownDecoration: BoxDecoration(
-                          //           borderRadius: BorderRadius.circular(3),
-                          //           color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                          //         ),
-                          //         dropdownElevation: 8,
-                          //         offset: const Offset(0, -3),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
 
                           //Settings button
                           Tooltip(
