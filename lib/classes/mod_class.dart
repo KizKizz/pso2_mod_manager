@@ -5,15 +5,18 @@ part 'mod_class.g.dart';
 
 @JsonSerializable()
 class Mod {
-  Mod(this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate,  this.isNew, this.isFavorite, this.previewImages, this.previewVideos, this.appliedSubMods, this.submods);
+  Mod(this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isNew, this.isFavorite, this.isSet, this.previewImages, this.previewVideos,
+      this.appliedSubMods, this.submods);
   String modName;
   String itemName;
   String category;
   String location;
   bool applyStatus;
   DateTime applyDate;
+  int position;
   bool isNew;
   bool isFavorite;
+  bool isSet;
   List<String> previewImages;
   List<String> previewVideos;
   List<SubMod> appliedSubMods;

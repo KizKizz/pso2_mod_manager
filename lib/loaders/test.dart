@@ -9,17 +9,17 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 void test() {
-  ModFile testModFile = ModFile('name', 'submodName', 'modName', 'itemName', 'category', 'md5', 'ogmd5', '', [], [], DateTime.now(), false, true, false);
-  SubMod testSubMod = SubMod('name', 'modName', 'itemName', 'category', '', false, DateTime(0), false, false, [], [], [], [testModFile]);
-  Mod testMod = Mod('Test Mod', 'itemName', 'category', 'Uri()',false, DateTime.now(), true, false, [], [], [], [testSubMod]);
-  Item testItem = Item('name', '', 'category', '', false, false, DateTime(0), false, [testMod]);
-  Category testCate = Category('name', '', '', true, [testItem]);
+  // ModFile testModFile = ModFile('name', 'submodName', 'modName', 'itemName', 'category', 'md5', 'ogmd5', '', [], [], DateTime.now(), false, true, false);
+  // SubMod testSubMod = SubMod('name', 'modName', 'itemName', 'category', '', false, DateTime(0), false, false, [], [], [], [testModFile]);
+  // Mod testMod = Mod('Test Mod', 'itemName', 'category', 'Uri()',false, DateTime.now(), true, false, [], [], [], [testSubMod]);
+  // Item testItem = Item('name', '', 'category', '', false, false, DateTime(0), false, [testMod]);
+  // Category testCate = Category('name', '', '', true, [testItem]);
 
-  List<Category> testCateList = [testCate, testCate];
+  // List<Category> testCateList = [testCate, testCate];
 
-  testCateList.map((cate) => cate.toJson()).toList();
-  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  File(modManModsListJsonPath).writeAsStringSync(encoder.convert(testCateList));
+  // testCateList.map((cate) => cate.toJson()).toList();
+  // const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  // File(modManModsListJsonPath).writeAsStringSync(encoder.convert(testCateList));
 
   //File('${Directory.current.path}/test.json').writeAsStringSync(json.encode(testCate.toJson()));
 }

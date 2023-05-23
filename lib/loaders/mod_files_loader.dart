@@ -40,20 +40,20 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     String group = 'Others';
     if (layerWearsGroup.contains(p.basename(dir.path))) {
       group = 'Layering Wears';
-      groupPosition = 1;
+      groupPosition = 0;
     } else if (castPartsGroup.contains(p.basename(dir.path))) {
       group = 'Cast Parts';
-      groupPosition = 2;
+      groupPosition = 1;
     } else {
       group = 'Others';
-      groupPosition = 3;
+      groupPosition = 2;
     }
 
     if (cateTypes.indexWhere((element) => element.groupName == group) == -1) {
-      cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), true, await itemsFetcher(dir.path))]));
+      cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(dir.path))]));
     } else {
       int index = cateTypes.indexWhere((element) => element.groupName == group);
-      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), true, await itemsFetcher(dir.path)));
+      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(dir.path)));
     }
   }
 
@@ -61,7 +61,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
   for (var type in cateTypes) {
     int typeIndex = structureFromJson.indexWhere((element) => element.groupName == type.groupName);
     if (typeIndex != -1) {
-      type.position = structureFromJson[typeIndex].position;
+      type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
       type.visible = structureFromJson[typeIndex].visible;
       //Settings for categories
@@ -69,6 +69,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
         int cateIndex = structureFromJson[typeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
         if (cateIndex != -1) {
           cate.group = structureFromJson[typeIndex].categories[cateIndex].group;
+          cate.position = cateIndex;
           //cate.location = structureFromJson[typeIndex].categories[cateIndex].location;
           cate.visible = structureFromJson[typeIndex].categories[cateIndex].visible;
           //Settings for items
@@ -143,6 +144,8 @@ Future<List<CategoryType>> modFileStructureLoader() async {
           }
         }
       }
+      //sort cates in catetype
+      type.categories.sort(((a, b) => a.position.compareTo(b.position)));
     }
   }
 
@@ -212,7 +215,7 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       }
     }
 
-    items.add(Item(p.basename(dir.path), itemIcon, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, false, DateTime(0), false, modsFetcher(dir.path, p.basename(catePath))));
+    items.add(Item(p.basename(dir.path), itemIcon, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, modsFetcher(dir.path, p.basename(catePath))));
   }
 
   return items;
@@ -237,7 +240,7 @@ List<Mod> modsFetcher(String itemPath, String cateName) {
 
     List<SubMod> newMod = subModFetcher(dir.path, cateName, p.basename(itemPath));
     if (newMod.isNotEmpty) {
-      mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], newMod));
+      mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, false, false, false, modPreviewImages, modPreviewVideos, [], newMod));
     }
   }
 
@@ -256,7 +259,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], DateTime(0), false, false, false));
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], false, DateTime(0), 0, false, false, false));
     }
 
     //Get preview images;
@@ -273,7 +276,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     }
 
     if (modFiles.isNotEmpty) {
-      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, modPreviewImages, modPreviewVideos, [], modFiles));
     }
   }
 
@@ -305,14 +308,14 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], DateTime(0), false, false, false));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], false, DateTime(0), 0, false, false, false));
     }
 
     //Get submod name
     if (modFiles.isNotEmpty) {
       List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
-      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, modPreviewImages, modPreviewVideos, [], modFiles));
     }
   }
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
@@ -8,7 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -43,8 +46,10 @@ class _HomePageState extends State<HomePage> {
   List<List<List<bool>>> itemButtonsVisible = [];
   bool isApplyingModFiles = false;
   bool isCateTypeReordering = false;
+  bool isCateTypeAscenAlpha = false;
   List<bool> isCatesReordering = [];
   List<bool> isCateTypeListExpanded = [];
+  List<bool> isCatesAscenAlpha = [];
 
   @override
   void initState() {
@@ -133,31 +138,70 @@ class _HomePageState extends State<HomePage> {
         AppBar(
           automaticallyImplyLeading: false,
           actions: <Widget>[
-            Tooltip(
-              message: isCateTypeReordering ? 'Save' : 'Sort Category Groups',
-              height: 25,
-              textStyle: const TextStyle(fontSize: 14),
-              decoration: BoxDecoration(
-                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-              waitDuration: const Duration(milliseconds: 500),
-              child: InkWell(
-                  onTap: isCatesReordering.indexWhere((element) => element) != -1
-                      ? null
-                      : () {
-                          if (isCateTypeReordering) {
-                            isCateTypeReordering = false;
+            Wrap(
+              runAlignment: WrapAlignment.center,
+              spacing: 5,
+              children: [
+                //Sort by alpha
+                if (isCateTypeReordering)
+                  Tooltip(
+                    message: isCateTypeAscenAlpha ? 'Sort by descending name order' : 'Sort by ascending name order',
+                    height: 25,
+                    textStyle: const TextStyle(fontSize: 14),
+                    decoration: BoxDecoration(
+                        color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                        border: Border.all(color: Theme.of(context).primaryColorLight),
+                        borderRadius: const BorderRadius.all(Radius.circular(2))),
+                    waitDuration: const Duration(milliseconds: 500),
+                    child: InkWell(
+                        onTap: () {
+                          if (isCateTypeAscenAlpha) {
+                            //sort cates in catetype
+                            moddedItemsList.sort(((a, b) => b.groupName.compareTo(a.groupName)));
+                            isCateTypeAscenAlpha = false;
                           } else {
-                            isCateTypeReordering = true;
+                            //sort cates in catetype
+                            moddedItemsList.sort(((a, b) => a.groupName.compareTo(b.groupName)));
+                            isCateTypeAscenAlpha = true;
                           }
                           setState(() {});
                         },
-                  child: Icon(
-                    !isCateTypeReordering ? Icons.sort_outlined : Icons.check,
-                    color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
-                  )),
-            ),
+                        child: const Icon(
+                          Icons.sort_by_alpha_outlined,
+                        )),
+                  ),
+                //Sort button
+                Tooltip(
+                  message: isCateTypeReordering ? 'Save' : 'Sort Category Groups',
+                  height: 25,
+                  textStyle: const TextStyle(fontSize: 14),
+                  decoration: BoxDecoration(
+                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                  waitDuration: const Duration(milliseconds: 500),
+                  child: InkWell(
+                      onTap: isCatesReordering.indexWhere((element) => element) != -1
+                          ? null
+                          : () {
+                              if (isCateTypeReordering) {
+                                //Save to json
+                                moddedItemsList.map((cateType) => cateType.toJson()).toList();
+                                const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                File(modManModsListJsonPath).writeAsStringSync(encoder.convert(moddedItemsList));
+                                isCateTypeReordering = false;
+                              } else {
+                                isCateTypeReordering = true;
+                              }
+                              setState(() {});
+                            },
+                      child: Icon(
+                        !isCateTypeReordering ? Icons.sort_outlined : Icons.check,
+                        color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
+                      )),
+                ),
+              ],
+            )
           ],
           //Title
           title: searchBoxLeftPadding == 15
@@ -198,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                           if (oldIndex < newIndex) {
                             newIndex -= 1;
                           }
-                          final CategoryType item = moddedItemsList.removeAt(oldIndex);
+                          CategoryType item = moddedItemsList.removeAt(oldIndex);
                           item.position = newIndex;
                           moddedItemsList.insert(newIndex, item);
                         });
@@ -212,11 +256,10 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(bottom: 2),
                             child: Container(
                               decoration: BoxDecoration(
-                               color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue), 
-                               borderRadius: const BorderRadius.all(Radius.circular(2)),
-                               shape: BoxShape.rectangle,
-                               border: Border.all(color: Theme.of(context).primaryColorLight)
-                              ),
+                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                  shape: BoxShape.rectangle,
+                                  border: Border.all(color: Theme.of(context).primaryColorLight)),
                               child: ListTile(
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                                 onTap: () {},
@@ -240,8 +283,11 @@ class _HomePageState extends State<HomePage> {
                         if (isCatesReordering.isEmpty || isCatesReordering.length != moddedItemsList.length) {
                           isCatesReordering = List.generate(moddedItemsList.length, (index) => false);
                         }
-                        if (isCateTypeListExpanded.isEmpty || isCateTypeListExpanded.length != isCateTypeListExpanded.length) {
+                        if (isCateTypeListExpanded.isEmpty || isCateTypeListExpanded.length != moddedItemsList.length) {
                           isCateTypeListExpanded = List.generate(moddedItemsList.length, (index) => true);
+                        }
+                        if (isCatesAscenAlpha.isEmpty || isCatesAscenAlpha.length != moddedItemsList.length) {
+                          isCatesAscenAlpha = List.generate(moddedItemsList.length, (index) => false);
                         }
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +319,37 @@ class _HomePageState extends State<HomePage> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 5),
                                         child: Wrap(
+                                          runAlignment: WrapAlignment.center,
+                                          spacing: 5,
                                           children: [
+                                            //Sort by alpha
+                                            if (isCatesReordering[groupIndex])
+                                              Tooltip(
+                                                message: isCatesAscenAlpha[groupIndex] ? 'Sort by descending name order' : 'Sort by ascending name order',
+                                                height: 25,
+                                                textStyle: const TextStyle(fontSize: 14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                waitDuration: const Duration(milliseconds: 500),
+                                                child: InkWell(
+                                                    onTap: () {
+                                                      if (isCatesAscenAlpha[groupIndex]) {
+                                                        //sort cates in catetype
+                                                        moddedItemsList[groupIndex].categories.sort(((a, b) => b.categoryName.compareTo(a.categoryName)));
+                                                        isCatesAscenAlpha[groupIndex] = false;
+                                                      } else {
+                                                        //sort cates in catetype
+                                                        moddedItemsList[groupIndex].categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+                                                        isCatesAscenAlpha[groupIndex] = true;
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.sort_by_alpha_outlined,
+                                                    )),
+                                              ),
                                             if (isCateTypeListExpanded[groupIndex])
                                               Tooltip(
                                                 message: isCatesReordering[groupIndex] ? 'Save' : 'Sort Category',
@@ -290,6 +366,10 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     onTap: () {
                                                       if (isCatesReordering[groupIndex]) {
+                                                        //Save to json
+                                                        moddedItemsList.map((cateType) => cateType.toJson()).toList();
+                                                        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                        File(modManModsListJsonPath).writeAsStringSync(encoder.convert(moddedItemsList));
                                                         isCatesReordering[groupIndex] = false;
                                                       } else {
                                                         isCatesReordering[groupIndex] = true;
@@ -316,7 +396,8 @@ class _HomePageState extends State<HomePage> {
                                               if (oldIndex < newIndex) {
                                                 newIndex -= 1;
                                               }
-                                              final Category item = moddedItemsList[groupIndex].categories.removeAt(oldIndex);
+                                              Category item = moddedItemsList[groupIndex].categories.removeAt(oldIndex);
+                                              item.position = newIndex;
                                               moddedItemsList[groupIndex].categories.insert(newIndex, item);
                                             });
                                           },
@@ -798,10 +879,14 @@ class _HomePageState extends State<HomePage> {
                                                         if (allBkFilesFound) {
                                                           modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
                                                             List<ModFile> unappliedModFiles = value;
-                                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                              modViewItem!.applyStatus = false;
-                                                              curMod.applyStatus = false;
+                                                            if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                               curMod.submods.first.applyStatus = false;
+                                                            }
+                                                            if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                              curMod.applyStatus = false;
+                                                            }
+                                                            if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                              modViewItem!.applyStatus = false;
                                                             }
                                                             for (var element in unappliedModFiles) {
                                                               if (filesUnapplied.isEmpty) {
@@ -1056,10 +1141,14 @@ class _HomePageState extends State<HomePage> {
                                                                 if (allBkFilesFound) {
                                                                   modFilesUnapply(context, curSubmod.modFiles).then((value) async {
                                                                     List<ModFile> unappliedModFiles = value;
-                                                                    if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                      modViewItem!.applyStatus = false;
-                                                                      curMod.applyStatus = false;
+                                                                    if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       curSubmod.applyStatus = false;
+                                                                    }
+                                                                    if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                      curMod.applyStatus = false;
+                                                                    }
+                                                                    if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                      modViewItem!.applyStatus = false;
                                                                     }
                                                                     for (var element in unappliedModFiles) {
                                                                       if (filesUnapplied.isEmpty) {
@@ -1292,10 +1381,14 @@ class _HomePageState extends State<HomePage> {
                                                                     if (allBkFilesFound) {
                                                                       modFilesUnapply(context, [curModFile]).then((value) async {
                                                                         List<ModFile> unappliedModFiles = value;
-                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                          modViewItem!.applyStatus = false;
-                                                                          curMod.applyStatus = false;
+                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                           curSubmod.applyStatus = false;
+                                                                        }
+                                                                        if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                          curMod.applyStatus = false;
+                                                                        }
+                                                                        if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                          modViewItem!.applyStatus = false;
                                                                         }
                                                                         for (var element in unappliedModFiles) {
                                                                           if (filesUnapplied.isEmpty) {
@@ -1426,7 +1519,7 @@ class _HomePageState extends State<HomePage> {
                                     iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                     collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                     collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                    initiallyExpanded: false,
+                                    initiallyExpanded: true,
                                     childrenPadding: const EdgeInsets.all(0),
                                     title: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1465,40 +1558,60 @@ class _HomePageState extends State<HomePage> {
                                           itemCount: itemListLength,
                                           itemBuilder: (context, itemIndex) {
                                             var curItem = itemList[itemIndex];
-                                            var curMod = curItem.mods.firstWhere((element) => element.applyStatus);
-                                            var curSubmod = curMod.submods.firstWhere((element) => element.applyStatus);
-                                            List<ModFile> appliedModFiles = curSubmod.modFiles;
+                                            List<Mod> curMods = curItem.mods.where((element) => element.applyStatus).toList();
+                                            //List<SubMod>curSubmod = curMod.submods.where((element) => element.applyStatus);
+                                            //List<ModFile> appliedModFiles = curSubmod.modFiles;
+                                            List<List<ModFile>> allAppliedModFiles = [];
+                                            List<String> applyingModNames = [];
+                                            List<String> allPreviewImages = [];
+                                            int totalModFiles = 0;
+                                            int totalAppliedModFiles = 0;
+                                            for (var mod in curMods) {
+                                              for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                allAppliedModFiles.add([]);
+                                                allAppliedModFiles.last.addAll(submod.modFiles);
+                                                applyingModNames.add('${mod.modName} > ${submod.submodName}');
+                                                allPreviewImages.addAll(submod.previewImages);
+                                                totalModFiles += submod.modFiles.length;
+                                                totalAppliedModFiles += submod.modFiles.where((element) => element.applyStatus).length;
+                                              }
+                                            }
+
                                             return InkResponse(
                                               highlightShape: BoxShape.rectangle,
                                               onTap: () => '',
                                               onHover: (hovering) {
                                                 if (hovering) {
-                                                  previewModName = curSubmod.submodName;
-                                                  for (var path in curSubmod.previewImages) {
-                                                    previewImages.add(Stack(
-                                                      alignment: Alignment.bottomCenter,
-                                                      children: [
-                                                        Image.file(
-                                                          File(path),
-                                                          //fit: BoxFit.cover,
-                                                        ),
-                                                        FittedBox(
-                                                          fit: BoxFit.fitWidth,
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                borderRadius: BorderRadius.circular(3),
-                                                                border: Border.all(color: Theme.of(context).hintColor),
-                                                              ),
-                                                              height: 25,
-                                                              child: Center(
-                                                                  child: Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17)),
-                                                              ))),
-                                                        )
-                                                      ],
-                                                    ));
+                                                  previewModName = curItem.itemName;
+                                                  for (var mod in curMods) {
+                                                    for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                      for (var path in submod.previewImages) {
+                                                        previewImages.add(Stack(
+                                                          alignment: Alignment.bottomCenter,
+                                                          children: [
+                                                            Image.file(
+                                                              File(path),
+                                                              //fit: BoxFit.cover,
+                                                            ),
+                                                            FittedBox(
+                                                              fit: BoxFit.fitWidth,
+                                                              child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                    border: Border.all(color: Theme.of(context).hintColor),
+                                                                  ),
+                                                                  height: 25,
+                                                                  child: Center(
+                                                                      child: Padding(
+                                                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                    child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
+                                                                  ))),
+                                                            )
+                                                          ],
+                                                        ));
+                                                      }
+                                                    }
                                                   }
                                                 } else {
                                                   previewModName = '';
@@ -1512,7 +1625,6 @@ class _HomePageState extends State<HomePage> {
                                                 textColor: Theme.of(context).textTheme.bodyMedium!.color,
                                                 collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                                 collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
                                                 title: Row(
                                                   children: [
                                                     Padding(
@@ -1545,285 +1657,347 @@ class _HomePageState extends State<HomePage> {
                                                             thickness: 2,
                                                             //color: Theme.of(context).textTheme.headlineMedium?.color,
                                                           ),
+                                                          for (int m = 0; m < applyingModNames.length; m++)
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                Text(
+                                                                  applyingModNames[m],
+                                                                  //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(top: 5),
+                                                                  child: Wrap(
+                                                                    runAlignment: WrapAlignment.center,
+                                                                    spacing: 0,
+                                                                    children: [
+                                                                      if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(left: 5),
+                                                                          child: Tooltip(
+                                                                            message: 'Remove ${applyingModNames[m]} from the game',
+                                                                            height: 25,
+                                                                            textStyle: const TextStyle(fontSize: 14),
+                                                                            decoration: BoxDecoration(
+                                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                            waitDuration: const Duration(milliseconds: 500),
+                                                                            child: InkWell(
+                                                                              child: const Icon(
+                                                                                Icons.remove_circle_outline_rounded,
+                                                                              ),
+                                                                              onTap: () async {
+                                                                                //status
+                                                                                String filesUnapplied = '';
+                                                                                //check backups
+                                                                                bool allBkFilesFound = true;
+                                                                                for (var modFile in allAppliedModFiles[m]) {
+                                                                                  for (var bkFile in modFile.bkLocations) {
+                                                                                    if (!File(bkFile).existsSync()) {
+                                                                                      allBkFilesFound = false;
+                                                                                      ScaffoldMessenger.of(context)
+                                                                                          .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
+                                                                                      break;
+                                                                                    }
+                                                                                  }
+                                                                                }
+                                                                                if (allBkFilesFound) {
+                                                                                  modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                    List<ModFile> unappliedModFiles = value;
+                                                                                    previewImages.clear();
+                                                                                    for (var mod in curMods) {
+                                                                                      for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                                                        if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                          submod.applyStatus = false;
+                                                                                        }
+                                                                                        if (submod.applyStatus) {
+                                                                                          
+                                                                                          for (var path in submod.previewImages) {
+                                                                                            previewImages.add(Stack(
+                                                                                              alignment: Alignment.bottomCenter,
+                                                                                              children: [
+                                                                                                Image.file(
+                                                                                                  File(path),
+                                                                                                  //fit: BoxFit.cover,
+                                                                                                ),
+                                                                                                FittedBox(
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                  child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                                                                        borderRadius: BorderRadius.circular(3),
+                                                                                                        border: Border.all(color: Theme.of(context).hintColor),
+                                                                                                      ),
+                                                                                                      height: 25,
+                                                                                                      child: Center(
+                                                                                                          child: Padding(
+                                                                                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                                                        child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
+                                                                                                      ))),
+                                                                                                )
+                                                                                              ],
+                                                                                            ));
+                                                                                          }
+                                                                                        }
+                                                                                      }
+                                                                                      if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                        mod.applyStatus = false;
+                                                                                      }
+                                                                                    }
+
+                                                                                    if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                      curItem.applyStatus = false;
+                                                                                    }
+
+                                                                                    for (var element in unappliedModFiles) {
+                                                                                      if (filesUnapplied.isEmpty) {
+                                                                                        filesUnapplied = 'Sucessfully remove ${applyingModNames[m]}:\n';
+                                                                                      }
+                                                                                      filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                    }
+                                                                                    ScaffoldMessenger.of(context)
+                                                                                        .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                    if (appliedItemList.isEmpty) {
+                                                                                      previewModName = '';
+                                                                                      previewImages.clear();
+                                                                                    }
+                                                                                    setState(() {});
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      //Apply button in submod
+                                                                      if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(left: 5),
+                                                                          child: Tooltip(
+                                                                            message: 'Apply ${applyingModNames[m]} to the game',
+                                                                            height: 25,
+                                                                            textStyle: const TextStyle(fontSize: 14),
+                                                                            decoration: BoxDecoration(
+                                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                            waitDuration: const Duration(milliseconds: 500),
+                                                                            child: InkWell(
+                                                                              onTap: () async {
+                                                                                bool allOGFilesFound = true;
+                                                                                //get og file paths
+                                                                                for (var modFile in allAppliedModFiles[m]) {
+                                                                                  modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                                  if (modFile.ogLocations.isEmpty) {
+                                                                                    ScaffoldMessenger.of(context)
+                                                                                        .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                                    allOGFilesFound = false;
+                                                                                    break;
+                                                                                  }
+                                                                                }
+                                                                                //apply mod files
+                                                                                if (allOGFilesFound) {
+                                                                                  modFilesApply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                    if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
+                                                                                      int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
+                                                                                      int curSubModIndex = curItem.mods[curModIndex].submods
+                                                                                          .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
+                                                                                      curItem.mods[curModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].applyDate = DateTime.now();
+
+                                                                                      curItem.applyStatus = true;
+                                                                                      curItem.applyDate = DateTime.now();
+                                                                                      List<ModFile> appliedModFiles = value;
+                                                                                      String fileAppliedText = '';
+                                                                                      for (var element in appliedModFiles) {
+                                                                                        if (fileAppliedText.isEmpty) {
+                                                                                          fileAppliedText = 'Sucessfully applied ${applyingModNames[m]}:\n';
+                                                                                        }
+                                                                                        fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                      }
+                                                                                      ScaffoldMessenger.of(context)
+                                                                                          .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                    }
+
+                                                                                    setState(() {});
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                              child: const Icon(
+                                                                                Icons.add_circle_outline_rounded,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
                                                           Text(
-                                                            '${curMod.modName} > ${curSubmod.submodName}',
-                                                            //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
-                                                          ),
-                                                          Text(
-                                                            '${curSubmod.modFiles.where((element) => element.applyStatus).length} / ${curSubmod.modFiles.length} Files applied',
+                                                            '$totalAppliedModFiles / $totalModFiles Files applied',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(right: 15),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                                        children: [
-                                                          //Buttons
-                                                          //remove button
-                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(left: 5),
-                                                              child: Tooltip(
-                                                                message: 'Remove ${curSubmod.submodName} from the game',
-                                                                height: 25,
-                                                                textStyle: const TextStyle(fontSize: 14),
-                                                                decoration: BoxDecoration(
-                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                waitDuration: const Duration(milliseconds: 500),
-                                                                child: InkWell(
-                                                                  child: const Icon(
-                                                                    Icons.remove_circle_outline_rounded,
-                                                                  ),
-                                                                  onTap: () async {
-                                                                    //status
-                                                                    String filesUnapplied = '';
-                                                                    //check backups
-                                                                    bool allBkFilesFound = true;
-                                                                    for (var modFile in curSubmod.modFiles) {
-                                                                      for (var bkFile in modFile.bkLocations) {
-                                                                        if (!File(bkFile).existsSync()) {
-                                                                          allBkFilesFound = false;
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
-
-                                                                          break;
-                                                                        }
-                                                                      }
-                                                                    }
-                                                                    if (allBkFilesFound) {
-                                                                      modFilesUnapply(context, curSubmod.modFiles).then((value) async {
-                                                                        List<ModFile> unappliedModFiles = value;
-                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                          modViewItem!.applyStatus = false;
-                                                                          curMod.applyStatus = false;
-                                                                          curSubmod.applyStatus = false;
-                                                                        }
-                                                                        for (var element in unappliedModFiles) {
-                                                                          if (filesUnapplied.isEmpty) {
-                                                                            filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                          }
-                                                                          filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                        }
-                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
-
-                                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                        setState(() {});
-                                                                      });
-                                                                    }
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          //Apply button in submod
-                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
-                                                            Padding(
-                                                              padding: const EdgeInsets.only(left: 5),
-                                                              child: Tooltip(
-                                                                message: 'Apply ${curSubmod.submodName} to the game',
-                                                                height: 25,
-                                                                textStyle: const TextStyle(fontSize: 14),
-                                                                decoration: BoxDecoration(
-                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                waitDuration: const Duration(milliseconds: 500),
-                                                                child: InkWell(
-                                                                  onTap: () async {
-                                                                    bool allOGFilesFound = true;
-                                                                    //get og file paths
-                                                                    for (var modFile in curSubmod.modFiles) {
-                                                                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                                                                      if (modFile.ogLocations.isEmpty) {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
-                                                                        allOGFilesFound = false;
-                                                                        break;
-                                                                      }
-                                                                    }
-                                                                    //apply mod files
-                                                                    if (allOGFilesFound) {
-                                                                      modFilesApply(context, curSubmod.modFiles).then((value) async {
-                                                                        if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                          curSubmod.applyDate = DateTime.now();
-                                                                          modViewItem!.applyDate = DateTime.now();
-                                                                          curMod.applyDate = DateTime.now();
-                                                                          curSubmod.applyStatus = true;
-                                                                          curMod.applyStatus = true;
-                                                                          modViewItem!.applyStatus = true;
-                                                                          List<ModFile> appliedModFiles = value;
-                                                                          String fileAppliedText = '';
-                                                                          for (var element in appliedModFiles) {
-                                                                            if (fileAppliedText.isEmpty) {
-                                                                              fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                            }
-                                                                            fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                          }
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                        }
-
-                                                                        setState(() {});
-                                                                      });
-                                                                    }
-                                                                  },
-                                                                  child: const Icon(
-                                                                    Icons.add_circle_outline_rounded,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(left: 5),
-                                                            child: Tooltip(
-                                                                message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                height: 25,
-                                                                textStyle: const TextStyle(fontSize: 14),
-                                                                decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                ),
-                                                                waitDuration: const Duration(milliseconds: 500),
-                                                                child: InkWell(
-                                                                  child: const Icon(Icons.folder_open),
-                                                                  onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                )),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
+                                                    // Padding(
+                                                    //   padding: const EdgeInsets.only(right: 15),
+                                                    //   child: Row(
+                                                    //     crossAxisAlignment: CrossAxisAlignment.end,
+                                                    //     children: [
+                                                    //       Padding(
+                                                    //         padding: const EdgeInsets.only(left: 5),
+                                                    //         child: Tooltip(
+                                                    //             message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                    //             height: 25,
+                                                    //             textStyle: const TextStyle(fontSize: 14),
+                                                    //             decoration: BoxDecoration(
+                                                    //               color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                    //               border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                    //               borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                    //             ),
+                                                    //             waitDuration: const Duration(milliseconds: 500),
+                                                    //             child: InkWell(
+                                                    //               child: const Icon(Icons.folder_open),
+                                                    //               onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                    //             )),
+                                                    //       ),
+                                                    //     ],
+                                                    //   ),
+                                                    // )
                                                   ],
                                                 ),
                                                 children: [
-                                                  ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      itemCount: appliedModFiles.length,
-                                                      itemBuilder: (context, modFileIndex) {
-                                                        var curModFile = appliedModFiles[modFileIndex];
-                                                        return ListTile(
-                                                          tileColor: Colors.transparent,
-                                                          //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                                          trailing: Wrap(
-                                                            spacing: 10,
-                                                            children: [
-                                                              //Add-Remove button
-                                                              if (curModFile.applyStatus == false)
-                                                                Tooltip(
-                                                                  message: 'Apply ${curModFile.modFileName} to the game',
-                                                                  height: 25,
-                                                                  textStyle: const TextStyle(fontSize: 14),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                  waitDuration: const Duration(milliseconds: 500),
-                                                                  child: InkWell(
-                                                                    child: const Icon(
-                                                                      Icons.add,
-                                                                    ),
-                                                                    onTap: () async {
-                                                                      bool allOGFilesFound = true;
-                                                                      //get og file paths
-                                                                      curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
-                                                                      if (curModFile.ogLocations.isEmpty) {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${curModFile.modFileName}', 3000));
-                                                                        allOGFilesFound = false;
-                                                                      }
-                                                                      //apply mod files
-                                                                      if (allOGFilesFound) {
-                                                                        modFilesApply(context, [curModFile]).then((value) async {
-                                                                          if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                            curSubmod.applyDate = DateTime.now();
-                                                                            curItem.applyDate = DateTime.now();
-                                                                            curMod.applyDate = DateTime.now();
-                                                                            curSubmod.applyStatus = true;
-                                                                            curMod.applyStatus = true;
-                                                                            curItem.applyStatus = true;
-                                                                            List<ModFile> appliedModFiles = value;
-                                                                            String fileAppliedText = '';
-                                                                            for (var element in appliedModFiles) {
-                                                                              if (fileAppliedText.isEmpty) {
-                                                                                fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                              }
-                                                                              fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                            }
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                          }
+                                                  // ListView.builder(
+                                                  //     shrinkWrap: true,
+                                                  //     physics: const NeverScrollableScrollPhysics(),
+                                                  //     itemCount: appliedModFiles.length,
+                                                  //     itemBuilder: (context, modFileIndex) {
+                                                  //       var curModFile = appliedModFiles[modFileIndex];
+                                                  //       return ListTile(
+                                                  //         tileColor: Colors.transparent,
+                                                  //         //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                  //         trailing: Wrap(
+                                                  //           spacing: 10,
+                                                  //           children: [
+                                                  //             //Add-Remove button
+                                                  //             if (curModFile.applyStatus == false)
+                                                  //               Tooltip(
+                                                  //                 message: 'Apply ${curModFile.modFileName} to the game',
+                                                  //                 height: 25,
+                                                  //                 textStyle: const TextStyle(fontSize: 14),
+                                                  //                 decoration: BoxDecoration(
+                                                  //                     color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  //                     border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  //                     borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                  //                 waitDuration: const Duration(milliseconds: 500),
+                                                  //                 child: InkWell(
+                                                  //                   child: const Icon(
+                                                  //                     Icons.add,
+                                                  //                   ),
+                                                  //                   onTap: () async {
+                                                  //                     bool allOGFilesFound = true;
+                                                  //                     //get og file paths
+                                                  //                     curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
+                                                  //                     if (curModFile.ogLocations.isEmpty) {
+                                                  //                       ScaffoldMessenger.of(context)
+                                                  //                           .showSnackBar(snackBarMessage('Error', 'Could not find original file for ${curModFile.modFileName}', 3000));
+                                                  //                       allOGFilesFound = false;
+                                                  //                     }
+                                                  //                     //apply mod files
+                                                  //                     if (allOGFilesFound) {
+                                                  //                       modFilesApply(context, [curModFile]).then((value) async {
+                                                  //                         if (curItem.mods.first.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                  //                           curSubmod.applyDate = DateTime.now();
+                                                  //                           curItem.applyDate = DateTime.now();
+                                                  //                           curMod.applyDate = DateTime.now();
+                                                  //                           curSubmod.applyStatus = true;
+                                                  //                           curMod.applyStatus = true;
+                                                  //                           curItem.applyStatus = true;
+                                                  //                           List<ModFile> appliedModFiles = value;
+                                                  //                           String fileAppliedText = '';
+                                                  //                           for (var element in appliedModFiles) {
+                                                  //                             if (fileAppliedText.isEmpty) {
+                                                  //                               fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                  //                             }
+                                                  //                             fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                  //                           }
+                                                  //                           ScaffoldMessenger.of(context)
+                                                  //                               .showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                  //                           appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                  //                         }
 
-                                                                          setState(() {});
-                                                                        });
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              if (curModFile.applyStatus == true)
-                                                                Tooltip(
-                                                                  message: 'Remove ${curModFile.modFileName} from the game',
-                                                                  height: 25,
-                                                                  textStyle: const TextStyle(fontSize: 14),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                  waitDuration: const Duration(milliseconds: 500),
-                                                                  child: InkWell(
-                                                                    child: const Icon(
-                                                                      Icons.remove,
-                                                                    ),
-                                                                    onTap: () async {
-                                                                      //status
-                                                                      String filesUnapplied = '';
-                                                                      //check backups
-                                                                      bool allBkFilesFound = true;
-                                                                      for (var bkFile in curModFile.bkLocations) {
-                                                                        if (!File(bkFile).existsSync()) {
-                                                                          allBkFilesFound = false;
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
+                                                  //                         setState(() {});
+                                                  //                       });
+                                                  //                     }
+                                                  //                   },
+                                                  //                 ),
+                                                  //               ),
+                                                  //             if (curModFile.applyStatus == true)
+                                                  //               Tooltip(
+                                                  //                 message: 'Remove ${curModFile.modFileName} from the game',
+                                                  //                 height: 25,
+                                                  //                 textStyle: const TextStyle(fontSize: 14),
+                                                  //                 decoration: BoxDecoration(
+                                                  //                     color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  //                     border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  //                     borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                  //                 waitDuration: const Duration(milliseconds: 500),
+                                                  //                 child: InkWell(
+                                                  //                   child: const Icon(
+                                                  //                     Icons.remove,
+                                                  //                   ),
+                                                  //                   onTap: () async {
+                                                  //                     //status
+                                                  //                     String filesUnapplied = '';
+                                                  //                     //check backups
+                                                  //                     bool allBkFilesFound = true;
+                                                  //                     for (var bkFile in curModFile.bkLocations) {
+                                                  //                       if (!File(bkFile).existsSync()) {
+                                                  //                         allBkFilesFound = false;
+                                                  //                         ScaffoldMessenger.of(context)
+                                                  //                             .showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
 
-                                                                          break;
-                                                                        }
-                                                                      }
-                                                                      if (allBkFilesFound) {
-                                                                        modFilesUnapply(context, [curModFile]).then((value) async {
-                                                                          List<ModFile> unappliedModFiles = value;
-                                                                          if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
-                                                                            curItem.applyStatus = false;
-                                                                            curMod.applyStatus = false;
-                                                                            curSubmod.applyStatus = false;
-                                                                          }
-                                                                          for (var element in unappliedModFiles) {
-                                                                            if (filesUnapplied.isEmpty) {
-                                                                              filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                            }
-                                                                            filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                          }
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                  //                         break;
+                                                  //                       }
+                                                  //                     }
+                                                  //                     if (allBkFilesFound) {
+                                                  //                       modFilesUnapply(context, [curModFile]).then((value) async {
+                                                  //                         List<ModFile> unappliedModFiles = value;
+                                                  //                         if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) == -1) {
+                                                  //                           curItem.applyStatus = false;
+                                                  //                           curMod.applyStatus = false;
+                                                  //                           curSubmod.applyStatus = false;
+                                                  //                         }
+                                                  //                         for (var element in unappliedModFiles) {
+                                                  //                           if (filesUnapplied.isEmpty) {
+                                                  //                             filesUnapplied = 'Sucessfully remove ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                  //                           }
+                                                  //                           filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                  //                         }
+                                                  //                         ScaffoldMessenger.of(context)
+                                                  //                             .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
-                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                          setState(() {});
-                                                                        });
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                            ],
-                                                          ),
-                                                          title: Text(curModFile.modFileName),
-                                                        );
-                                                      })
+                                                  //                         appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                  //                         setState(() {});
+                                                  //                       });
+                                                  //                     }
+                                                  //                   },
+                                                  //                 ),
+                                                  //               ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         title: Text(curModFile.modFileName),
+                                                  //       );
+                                                  //     })
                                                 ],
                                               ),
                                             );

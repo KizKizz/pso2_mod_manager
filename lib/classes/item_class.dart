@@ -5,14 +5,16 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item {
-  Item(this.itemName, this.icon, this.category, this.location, this.isNew, this.applyStatus, this.applyDate, this.isFavorite, this.mods);
+  Item(this.itemName, this.icon, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.mods);
   String itemName;
   String icon;
   String category;
   String location;
   bool applyStatus;
   DateTime applyDate;
+  int position;
   bool isFavorite;
+  bool isSet;
   bool isNew;
   List<Mod> mods;
 
