@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
+import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
@@ -270,9 +271,11 @@ class _MainPageState extends State<MainPage> {
                               const JsonEncoder encoder = JsonEncoder.withIndent('  ');
                               languageList.map((lang) => lang.toJson()).toList();
                               File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+                              Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
                               Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
                               setState(() {});
                               await Future.delayed(const Duration(seconds: 2));
+                              Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
                               Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
                               setState(() {});
                             },
@@ -1222,49 +1225,84 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Mod sets
-                          // Tooltip(
-                          //   message: curLangText!.modSetsTooltipText,
-                          //   height: 25,
-                          //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                          //   waitDuration: const Duration(seconds: 1),
-                          //   child: SizedBox(
-                          //     width: 99,
-                          //     child: MaterialButton(
-                          //       onPressed: (() {
-                          //         if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                          //           modFilesFromSetList.clear();
-                          //           modFilesList.clear();
-                          //           modsSetAppBarName = '';
-                          //           modsViewAppBarName = '';
-                          //           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                          //         } else {
-                          //           modFilesFromSetList.clear();
-                          //           modFilesList.clear();
-                          //           modsSetAppBarName = '';
-                          //           modsViewAppBarName = '';
-                          //           Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                          //         }
-                          //       }),
-                          //       child: Row(
-                          //         children: [
-                          //           if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                          //             const Icon(
-                          //               Icons.list_alt_outlined,
-                          //               size: 18,
-                          //             ),
-                          //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                          //             const Icon(
-                          //               Icons.view_list_outlined,
-                          //               size: 18,
-                          //             ),
-                          //           const SizedBox(width: 2.5),
-                          //           if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                          //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+                          Tooltip(
+                            message: curLangText!.modSetsTooltipText,
+                            height: 25,
+                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                            waitDuration: const Duration(seconds: 1),
+                            child: SizedBox(
+                              width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  // if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                  //   modFilesFromSetList.clear();
+                                  //   modFilesList.clear();
+                                  //   modsSetAppBarName = '';
+                                  //   modsViewAppBarName = '';
+                                  //   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                  // } else {
+                                  //   modFilesFromSetList.clear();
+                                  //   modFilesList.clear();
+                                  //   modsSetAppBarName = '';
+                                  //   modsViewAppBarName = '';
+                                  //   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                  // }
+                                }),
+                                child: Row(
+                                  children: [
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.list_alt_outlined,
+                                        size: 18,
+                                      ),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                      const Icon(
+                                        Icons.view_list_outlined,
+                                        size: 18,
+                                      ),
+                                    const SizedBox(width: 2.5),
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Refresh
+                          Tooltip(
+                            message: 'Refresh Mod Manager',
+                            height: 25,
+                            textStyle: const TextStyle(fontSize: 14),
+                            decoration: BoxDecoration(
+                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                            ),
+                            waitDuration: const Duration(milliseconds: 500),
+                            child: MaterialButton(
+                              //visualDensity: VisualDensity.compact,
+                              onPressed: (() async {
+                                listsReloading = true;
+                                Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
+                                modFileStructureLoader().then((value) {
+                                  moddedItemsList = value;
+                                  listsReloading = false;
+                                  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                });
+                              }),
+                              child: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.refresh,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 2.5),
+                                  Text('Refresh', style: TextStyle(fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                          ),
 
                           //Checksum
                           Tooltip(

@@ -1,7 +1,5 @@
-import 'dart:convert';
 
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
-import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 
 // Future<List<CategoryType>> appliedListBuilder(List<CategoryType> moddedList) async {

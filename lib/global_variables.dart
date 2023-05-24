@@ -33,3 +33,4 @@ List<String> ogWin32RebootNAFilePaths = [];
 List<CategoryType> moddedItemsList = [];
 List<CategoryType> appliedItemList = [];
 bool showBackgroundImage = true;
+bool listsReloading = false;

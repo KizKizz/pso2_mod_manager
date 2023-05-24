@@ -22,6 +22,7 @@ class StateProvider with ChangeNotifier {
   double _uiOpacityValue = 0.6;
   bool _backgroundImageTrigger = false;
   int _uiBackgroundColorValue = 0;
+  bool _reloadSplashScreen = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -43,6 +44,17 @@ class StateProvider with ChangeNotifier {
   double get uiOpacityValue => _uiOpacityValue;
   bool get backgroundImageTrigger => _backgroundImageTrigger;
   int get uiBackgroundColorValue => _uiBackgroundColorValue;
+  bool get reloadSplashScreen => _reloadSplashScreen;
+
+  void reloadSplashScreenTrue() {
+    _reloadSplashScreen = true;
+    notifyListeners();
+  }
+
+  void reloadSplashScreenFalse() {
+    _reloadSplashScreen = false;
+    notifyListeners();
+  }
 
   void uiBackgroundColorValueSet(int value) {
     _uiBackgroundColorValue = value;

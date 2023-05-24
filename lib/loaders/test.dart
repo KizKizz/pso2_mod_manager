@@ -1,12 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:pso2_mod_manager/classes/category_class.dart';
-import 'package:pso2_mod_manager/classes/item_class.dart';
-import 'package:pso2_mod_manager/classes/mod_class.dart';
-import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 void test() {
   // ModFile testModFile = ModFile('name', 'submodName', 'modName', 'itemName', 'category', 'md5', 'ogmd5', '', [], [], DateTime.now(), false, true, false);
