@@ -945,6 +945,7 @@ class _MainPageState extends State<MainPage> {
                                                       backgroundImage,
                                                       fit: BoxFit.cover,
                                                     ),
+                                                  
                                                     Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
                                                   ],
                                                 )
@@ -1045,69 +1046,6 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           )),
-
-                      // Tooltip(
-                      //   message: curLangText!.pathsReselectTooltipText,
-                      //   height: 25,
-                      //   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                      //   waitDuration: const Duration(seconds: 1),
-                      //   child: DropdownButtonHideUnderline(
-                      //     child: DropdownButton2(
-                      //       customButton: AbsorbPointer(
-                      //         absorbing: true,
-                      //         child: MaterialButton(
-                      //           onPressed: (() {}),
-                      //           child: Row(
-                      //             children: [
-                      //               const Icon(
-                      //                 Icons.folder_open_outlined,
-                      //                 size: 18,
-                      //               ),
-                      //               const SizedBox(width: 5),
-                      //               Expanded(
-                      //                 child: Row(
-                      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //                   children: [
-                      //                     Text(curLangText!.pathsReselectBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                      //                     const Icon(Icons.arrow_drop_down)
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       isDense: true,
-                      //       items: [
-                      //         ...MenuItems.pathMenuItems.map(
-                      //           (item) => DropdownMenuItem<MenuItem>(
-                      //             value: item,
-                      //             alignment: AlignmentDirectional.center,
-                      //             child: Row(
-                      //               mainAxisAlignment: MainAxisAlignment.center,
-                      //               children: [
-                      //               MenuItems.buildItem(context, item)
-                      //             ],),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //       onChanged: (value) {
-                      //         MenuItems.onChanged(context, value as MenuItem);
-                      //       },
-                      //       itemHeight: 35,
-                      //       //dropdownWidth: 130,
-                      //       itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                      //       dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
-                      //       dropdownDecoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(3),
-                      //         color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                      //       ),
-
-                      //       dropdownElevation: 8,
-                      //       offset: const Offset(0, -3),
-                      //     ),
-                      //   ),
-                      // ),
                     ]),
                   ),
                 )),
