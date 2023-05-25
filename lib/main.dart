@@ -193,6 +193,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
         }
       }
+      //Empty categories hide
+       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
+
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
 

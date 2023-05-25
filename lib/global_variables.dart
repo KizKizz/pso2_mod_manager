@@ -34,3 +34,5 @@ List<CategoryType> moddedItemsList = [];
 List<CategoryType> appliedItemList = [];
 bool showBackgroundImage = true;
 bool listsReloading = false;
+bool isEmptyCatesHide = false;
+List<CategoryType> hiddenItemCategories = [];

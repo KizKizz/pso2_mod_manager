@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
