@@ -39,7 +39,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 
 Future<List<CategoryType>> appliedListBuilder(List<CategoryType> moddedList) async {
   List<CategoryType> newModdedList = [];
-  for (var type in moddedItemsList) {
+  for (var type in moddedList) {
     for (var cate in type.categories) {
       for (var item in cate.items) {
         if (item.applyStatus == true) {
