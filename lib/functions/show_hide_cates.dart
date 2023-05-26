@@ -1,6 +1,13 @@
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 
+void hideCategory(CategoryType categoryType, Category category) {
+  category.visible = false;
+  if (categoryType.categories.where((element) => element.visible).isEmpty) {
+    categoryType.visible = false;
+  }
+}
+
 Future<List<CategoryType>> hideAllEmptyCategories(List<CategoryType> originalList) async {
   List<CategoryType> hiddenList = [];
   for (var cateType in originalList) {
