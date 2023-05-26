@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
@@ -1689,6 +1688,7 @@ class _HomePageState extends State<HomePage> {
 
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
 
+                                                              saveModdedItemListToJson();
                                                               setState(() {});
                                                             });
                                                           }
@@ -1741,6 +1741,7 @@ class _HomePageState extends State<HomePage> {
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                             }
 
+                                                            saveModdedItemListToJson();
                                                             setState(() {});
                                                           });
                                                         }
@@ -2007,6 +2008,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                         appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                        saveModdedItemListToJson();
                                                                         setState(() {});
                                                                       });
                                                                     }
@@ -2059,6 +2061,7 @@ class _HomePageState extends State<HomePage> {
                                                                           appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                         }
 
+                                                                        saveModdedItemListToJson();
                                                                         setState(() {});
                                                                       });
                                                                     }
@@ -2241,6 +2244,7 @@ class _HomePageState extends State<HomePage> {
                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                             }
 
+                                                                            saveModdedItemListToJson();
                                                                             setState(() {});
                                                                           });
                                                                         }
@@ -2297,6 +2301,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                             appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                            saveModdedItemListToJson();
                                                                             setState(() {});
                                                                           });
                                                                         }
@@ -2731,6 +2736,8 @@ class _HomePageState extends State<HomePage> {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
                                                                                   }
+                                                                                  
+                                                                                  saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
                                                                               }
@@ -2788,6 +2795,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   }
 
+                                                                                  saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
                                                                               }
