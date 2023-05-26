@@ -84,6 +84,7 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
             cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
           } else {
             cateInList.items[itemInListIndex].mods.addAll(newModsFetcher(cateInList.items[itemInListIndex].location, cateInList.categoryName, foldersInNewItemPath));
+            cateInList.items[itemInListIndex].isNew = true;
           }
 
           break;
@@ -203,7 +204,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [],  false, DateTime(0), 0, false, false, true));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], false, DateTime(0), 0, false, false, true));
     }
 
     //Get submod name

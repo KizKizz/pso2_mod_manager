@@ -2736,7 +2736,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
                                                                                   }
-                                                                                  
+
                                                                                   saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
