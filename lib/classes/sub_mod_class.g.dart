@@ -18,6 +18,7 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       json['isNew'] as bool,
       json['isFavorite'] as bool,
       json['isSet'] as bool,
+      (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
       (json['previewImages'] as List<dynamic>).map((e) => e as String).toList(),
       (json['previewVideos'] as List<dynamic>).map((e) => e as String).toList(),
       (json['appliedModFiles'] as List<dynamic>)
@@ -40,6 +41,7 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,
+      'setNames': instance.setNames,
       'previewImages': instance.previewImages,
       'previewVideos': instance.previewVideos,
       'appliedModFiles': instance.appliedModFiles,

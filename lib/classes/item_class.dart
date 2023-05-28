@@ -5,7 +5,7 @@ part 'item_class.g.dart';
 
 @JsonSerializable()
 class Item {
-  Item(this.itemName, this.icon, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.mods);
+  Item(this.itemName, this.icon, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isFavorite, this.isSet, this.isNew, this.setNames, this.mods);
   String itemName;
   String icon;
   String category;
@@ -16,6 +16,7 @@ class Item {
   bool isFavorite;
   bool isSet;
   bool isNew;
+  List<String> setNames;
   List<Mod> mods;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

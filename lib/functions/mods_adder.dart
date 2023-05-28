@@ -113,7 +113,7 @@ Future<Item> newItemsFetcher(String catePath, String itemPath) async {
     itemIcon = Uri.file('assets/img/placeholdersquare.png').toFilePath();
   }
 
-  return Item(p.basename(itemPath), itemIcon, p.basename(catePath), Uri.file(itemPath).toFilePath(), true, DateTime(0), 0, false, false, true, newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(p.basename(itemPath), itemIcon, p.basename(catePath), Uri.file(itemPath).toFilePath(), true, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {
@@ -138,7 +138,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
 
-    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, false, modPreviewImages, modPreviewVideos, [],
+    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [],
         newSubModFetcher(dir.path, cateName, p.basename(itemPath))));
   }
 
@@ -157,7 +157,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], false, DateTime(0), 0, false, false, false));
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, false, [], [], []));
     }
 
     //Get preview images;
@@ -173,7 +173,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       modPreviewVideos.add(Uri.file(element.path).toFilePath());
     }
 
-    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [], modFiles));
   }
 
   //ices in sub dirs
@@ -204,13 +204,13 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, [], [], false, DateTime(0), 0, false, false, true));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, true, [], [], []));
     }
 
     //Get submod name
     List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
     parentPaths.removeWhere((element) => element.isEmpty);
-    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, false, modPreviewImages, modPreviewVideos, [], modFiles));
+    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [], modFiles));
   }
 
   return submods;

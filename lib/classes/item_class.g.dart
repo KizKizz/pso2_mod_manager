@@ -17,6 +17,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       json['isFavorite'] as bool,
       json['isSet'] as bool,
       json['isNew'] as bool,
+      (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
       (json['mods'] as List<dynamic>)
           .map((e) => Mod.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -33,5 +34,6 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,
       'isNew': instance.isNew,
+      'setNames': instance.setNames,
       'mods': instance.mods,
     };

@@ -17,6 +17,7 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       json['isNew'] as bool,
       json['isFavorite'] as bool,
       json['isSet'] as bool,
+      (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
       (json['previewImages'] as List<dynamic>).map((e) => e as String).toList(),
       (json['previewVideos'] as List<dynamic>).map((e) => e as String).toList(),
       (json['appliedSubMods'] as List<dynamic>)
@@ -38,6 +39,7 @@ Map<String, dynamic> _$ModToJson(Mod instance) => <String, dynamic>{
       'isNew': instance.isNew,
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,
+      'setNames': instance.setNames,
       'previewImages': instance.previewImages,
       'previewVideos': instance.previewVideos,
       'appliedSubMods': instance.appliedSubMods,

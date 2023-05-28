@@ -15,14 +15,15 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
       json['md5'] as String,
       json['ogMd5'] as String,
       json['location'] as String,
-      (json['ogLocations'] as List<dynamic>).map((e) => e as String).toList(),
-      (json['bkLocations'] as List<dynamic>).map((e) => e as String).toList(),
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
       json['position'] as int,
       json['isFavorite'] as bool,
       json['isSet'] as bool,
       json['isNew'] as bool,
+      (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['ogLocations'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['bkLocations'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
@@ -34,12 +35,13 @@ Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
       'md5': instance.md5,
       'ogMd5': instance.ogMd5,
       'location': instance.location,
-      'ogLocations': instance.ogLocations,
-      'bkLocations': instance.bkLocations,
       'applyStatus': instance.applyStatus,
       'applyDate': instance.applyDate.toIso8601String(),
       'position': instance.position,
       'isFavorite': instance.isFavorite,
       'isSet': instance.isSet,
       'isNew': instance.isNew,
+      'setNames': instance.setNames,
+      'ogLocations': instance.ogLocations,
+      'bkLocations': instance.bkLocations,
     };

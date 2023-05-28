@@ -1138,7 +1138,8 @@ class _MainPageState extends State<MainPage> {
                             child: SizedBox(
                               width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
-                                color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                                //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
                                 onPressed: (() {
                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                     element.deleteSync(recursive: true);
@@ -1172,19 +1173,11 @@ class _MainPageState extends State<MainPage> {
                               width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
-                                  // if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                  //   modFilesFromSetList.clear();
-                                  //   modFilesList.clear();
-                                  //   modsSetAppBarName = '';
-                                  //   modsViewAppBarName = '';
-                                  //   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                  // } else {
-                                  //   modFilesFromSetList.clear();
-                                  //   modFilesList.clear();
-                                  //   modsSetAppBarName = '';
-                                  //   modsViewAppBarName = '';
-                                  //   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                  // }
+                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                  } else {
+                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                  }
                                 }),
                                 child: Row(
                                   children: [
