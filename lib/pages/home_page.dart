@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
   List<ModSet> modSetList = [];
   bool isModSetAdding = false;
   TextEditingController newSetTextController = TextEditingController();
+  String selectedModSetName = '';
 
   @override
   void initState() {
@@ -394,7 +395,7 @@ class _HomePageState extends State<HomePage> {
                     hintStyle: TextStyle(color: Theme.of(context).hintColor),
                     isCollapsed: true,
                     isDense: true,
-                    contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 3),
+                    contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
                     suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                     suffixIcon: InkWell(
                       onTap: () {
@@ -1731,6 +1732,7 @@ class _HomePageState extends State<HomePage> {
 
 //MODVIEW LIST====================================================================================================================================================================================
   Widget modsView() {
+    //normal
     List<String> appBarAppliedModNames = [];
     if (modViewItem != null && !isFavListVisible) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus)) {
@@ -1739,6 +1741,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+    //fav
     if (modViewItem != null && isFavListVisible) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus && element.isFavorite)) {
         for (var sub in mod.submods.where((element) => element.applyStatus && element.isFavorite)) {
@@ -1746,9 +1749,20 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+    //search
     if (modViewItem != null && searchTextController.value.text.isNotEmpty) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus && modSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
         for (var sub in mod.submods.where((element) => element.applyStatus && submodSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
+          if (!appBarAppliedModNames.contains('${mod.modName} > ${sub.submodName}')) {
+            appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
+          }
+        }
+      }
+    }
+    //set
+    if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible) {
+      for (var mod in modViewItem!.mods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(selectedModSetName))) {
+        for (var sub in mod.submods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(selectedModSetName))) {
           if (!appBarAppliedModNames.contains('${mod.modName} > ${sub.submodName}')) {
             appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
           }
@@ -1879,7 +1893,6 @@ class _HomePageState extends State<HomePage> {
       const Divider(
         height: 1,
         thickness: 1,
-        //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
       if (modViewItem != null)
         Expanded(
@@ -1904,12 +1917,15 @@ class _HomePageState extends State<HomePage> {
                           if (isModViewItemListExpanded.isEmpty || isModViewItemListExpanded.length != modViewItem!.mods.length) {
                             isModViewItemListExpanded = List.generate(modViewItem!.mods.length, (index) => false);
                           }
+
                           return Visibility(
                             visible: isFavListVisible
                                 ? curMod.isFavorite
                                 : searchTextController.value.text.toLowerCase().isNotEmpty
-                                    ? modSearchMatchesCheck(curMod, searchTextController.value.text.toLowerCase()) > 0
-                                    : true,
+                                    ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                    : context.watch<StateProvider>().setsWindowVisible
+                                        ? curMod.isSet && curMod.setNames.contains(selectedModSetName)
+                                        : true,
                             child: InkWell(
                               //Hover for preview
                               onTap: () {},
@@ -1982,10 +1998,18 @@ class _HomePageState extends State<HomePage> {
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
-                                                      style: const TextStyle(
-                                                        fontSize: 15,
-                                                      )),
+                                                  context.watch<StateProvider>().setsWindowVisible
+                                                      ? Text(
+                                                          curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                                              ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} Variant'
+                                                              : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} Variants',
+                                                          style: const TextStyle(
+                                                            fontSize: 15,
+                                                          ))
+                                                      : Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
+                                                          style: const TextStyle(
+                                                            fontSize: 15,
+                                                          )),
                                                 ],
                                               ),
                                             ],
@@ -2233,8 +2257,8 @@ class _HomePageState extends State<HomePage> {
                                             return Visibility(
                                               visible: isFavListVisible
                                                   ? curSubmod.isFavorite
-                                                  : searchTextController.value.text.isNotEmpty
-                                                      ? submodSearchMatchesCheck(curSubmod, searchTextController.value.text.toLowerCase()) > 0
+                                                  : context.watch<StateProvider>().setsWindowVisible
+                                                      ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
                                                       : true,
                                               child: InkWell(
                                                 //submod preview images
@@ -3360,7 +3384,7 @@ class _HomePageState extends State<HomePage> {
                   hintStyle: TextStyle(color: Theme.of(context).hintColor),
                   isCollapsed: true,
                   isDense: true,
-                  contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 3),
+                  contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
                   suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                   suffixIcon: InkWell(
                     onTap: () {
@@ -3564,6 +3588,7 @@ class _HomePageState extends State<HomePage> {
                                                 tileColor: Colors.transparent,
                                                 onTap: () {
                                                   modViewItem = curItem;
+                                                  selectedModSetName = curSet.setName;
                                                   setState(() {});
                                                 },
                                                 iconColor: Theme.of(context).textTheme.bodyMedium!.color,
