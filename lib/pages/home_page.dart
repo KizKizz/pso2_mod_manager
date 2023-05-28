@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
   bool isShowHideCates = false;
   List<List<bool>> cateButtonsVisible = [];
   bool isFavListVisible = false;
-  bool isSearchBoxVisible = false;
   TextEditingController searchTextController = TextEditingController();
   List<CategoryType> searchedItemList = [];
 
@@ -158,7 +157,7 @@ class _HomePageState extends State<HomePage> {
           actions: <Widget>[
             //Show all hidden
             Visibility(
-              visible: !isCateTypeReordering && !isShowHideCates,
+              visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
               child: Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Tooltip(
@@ -261,7 +260,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             //Show/Hide button
-            if (!isCateTypeReordering && !isFavListVisible)
+            if (!isCateTypeReordering && !isFavListVisible && searchTextController.value.text.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Tooltip(
@@ -332,7 +331,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     //Sort button
                     Visibility(
-                      visible: !isFavListVisible,
+                      visible: !isFavListVisible && searchTextController.value.text.isEmpty,
                       child: Tooltip(
                         message: isCateTypeReordering ? 'Back' : 'Sort Item List',
                         height: 25,
@@ -388,31 +387,38 @@ class _HomePageState extends State<HomePage> {
                     hintStyle: TextStyle(color: Theme.of(context).hintColor),
                     isCollapsed: true,
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                    suffixIconConstraints: const BoxConstraints(minWidth: 15, minHeight: 28),
+                    contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 3),
+                    suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                     suffixIcon: InkWell(
                       onTap: () {
                         searchTextController.clear();
+                        searchedItemList.clear();
+                        modViewItem = null;
                         setState(() {});
                       },
-                      child: const Icon(Icons.close),
+                      child: Icon(
+                        Icons.close,
+                        color: Theme.of(context).hintColor,
+                      ),
                     ),
-                    constraints: BoxConstraints.tight(const Size.fromHeight(28)),
+                    constraints: BoxConstraints.tight(const Size.fromHeight(26)),
                     // Set border for enabled state (default)
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     // Set border for focused state
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(10),
                     )),
                 onChanged: (value) async {
                   if (value.isNotEmpty) {
                     searchedItemList = await searchListBuilder(moddedItemsList, value);
+                    modViewItem = null;
                   } else {
                     searchedItemList.clear();
+                    modViewItem = null;
                   }
                   setState(() {});
                 },
@@ -996,7 +1002,7 @@ class _HomePageState extends State<HomePage> {
                                             height: 1,
                                             thickness: 1,
                                           ),
-                                        //catetype card
+                                        //search catetype card
                                         Padding(
                                           padding: const EdgeInsets.only(bottom: 1),
                                           child: Card(
@@ -1011,44 +1017,10 @@ class _HomePageState extends State<HomePage> {
                                                 isCateTypeListExpanded[groupIndex] = value;
                                                 setState(() {});
                                               },
-                                              title: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(searchedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                  Wrap(
-                                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                                    runAlignment: WrapAlignment.center,
-                                                    spacing: 5,
-                                                    children: [
-                                                      Tooltip(
-                                                        message: 'Remove ${searchedItemList[groupIndex].groupName} from Favorite List',
-                                                        height: 25,
-                                                        textStyle: const TextStyle(fontSize: 14),
-                                                        decoration: BoxDecoration(
-                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                        waitDuration: const Duration(milliseconds: 500),
-                                                        child: InkWell(
-                                                            onTap: () {
-                                                              removeCateTypeFromFav(searchedItemList[groupIndex]);
-                                                              modViewItem = null;
-                                                              saveModdedItemListToJson();
-                                                              setState(() {});
-                                                            },
-                                                            child: const Icon(
-                                                              FontAwesomeIcons.heartCircleMinus,
-                                                              size: 18,
-                                                            )),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+                                              title: Text(searchedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
                                               initiallyExpanded: searchedItemList[groupIndex].expanded,
                                               children: [
-                                                //Main Normal Cate=========================================================
+                                                //Search Main Normal Cate=========================================================
                                                 ListView.builder(
                                                   shrinkWrap: true,
                                                   physics: const NeverScrollableScrollPhysics(),
@@ -1112,32 +1084,12 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                                 Visibility(
                                                                   visible: cateButtonsVisible[groupIndex][categoryIndex],
-                                                                  child: Wrap(
+                                                                  child: const Wrap(
                                                                     crossAxisAlignment: WrapCrossAlignment.center,
                                                                     runAlignment: WrapAlignment.center,
                                                                     spacing: 5,
                                                                     children: [
-                                                                      Tooltip(
-                                                                        message: 'Remove ${curCategory.categoryName} from Favorite List',
-                                                                        height: 25,
-                                                                        textStyle: const TextStyle(fontSize: 14),
-                                                                        decoration: BoxDecoration(
-                                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                        waitDuration: const Duration(milliseconds: 500),
-                                                                        child: InkWell(
-                                                                            onTap: () async {
-                                                                              removeCateFromFav(curCategory);
-                                                                              modViewItem = null;
-                                                                              saveModdedItemListToJson();
-                                                                              setState(() {});
-                                                                            },
-                                                                            child: const Icon(
-                                                                              FontAwesomeIcons.heartCircleMinus,
-                                                                              size: 18,
-                                                                            )),
-                                                                      ),
+                                                                      //Cate tile buttons
                                                                     ],
                                                                   ),
                                                                 )
@@ -1190,13 +1142,11 @@ class _HomePageState extends State<HomePage> {
                                                                                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                       ),
                                                                                       Text(
-                                                                                        modMatchingNum < 2
-                                                                                            ? '$modMatchingNum Mod'
-                                                                                            : '$modMatchingNum Mods',
+                                                                                        modMatchingNum < 2 ? '$modMatchingNum Mod' : '$modMatchingNum Mods',
                                                                                         style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                       ),
                                                                                       Text(
-                                                                                        '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} Applied',
+                                                                                        '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} Applied',
                                                                                         style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                       ),
                                                                                     ],
@@ -1211,27 +1161,6 @@ class _HomePageState extends State<HomePage> {
                                                                                       runAlignment: WrapAlignment.center,
                                                                                       spacing: 5,
                                                                                       children: [
-                                                                                        Tooltip(
-                                                                                          message: 'Remove ${curItem.itemName} from Favorite List',
-                                                                                          height: 25,
-                                                                                          textStyle: const TextStyle(fontSize: 14),
-                                                                                          decoration: BoxDecoration(
-                                                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                          waitDuration: const Duration(milliseconds: 500),
-                                                                                          child: InkWell(
-                                                                                              onTap: () async {
-                                                                                                removeItemFromFav(curItem);
-                                                                                                modViewItem = null;
-                                                                                                saveModdedItemListToJson();
-                                                                                                setState(() {});
-                                                                                              },
-                                                                                              child: const Icon(
-                                                                                                FontAwesomeIcons.heartCircleMinus,
-                                                                                                size: 18,
-                                                                                              )),
-                                                                                        ),
                                                                                         //Open Buttons
                                                                                         Tooltip(
                                                                                             message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
@@ -1810,6 +1739,15 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+    if (modViewItem != null && searchTextController.value.text.isNotEmpty) {
+      for (var mod in modViewItem!.mods.where((element) => element.applyStatus && modSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
+        for (var sub in mod.submods.where((element) => element.applyStatus && submodSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
+          if (!appBarAppliedModNames.contains('${mod.modName} > ${sub.submodName}')) {
+            appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
+          }
+        }
+      }
+    }
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
@@ -1891,16 +1829,26 @@ class _HomePageState extends State<HomePage> {
                           height: 5,
                           thickness: 1,
                         ),
-                      if (modViewItem != null && !isFavListVisible)
+                      //normal
+                      if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
                         Text(
                           modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                         ),
-                      if (modViewItem != null && isFavListVisible)
+                      //fav
+                      if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty)
                         Text(
                           modViewItem!.mods.where((element) => element.isFavorite).length < 2
                               ? '${modViewItem!.mods.where((element) => element.isFavorite).length} Mod'
                               : '${modViewItem!.mods.where((element) => element.isFavorite).length} Mods',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                        ),
+                      //searching
+                      if (modViewItem != null && searchTextController.value.text.isNotEmpty)
+                        Text(
+                          itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
+                              ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mod'
+                              : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mods',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                         ),
                       if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
@@ -1950,7 +1898,11 @@ class _HomePageState extends State<HomePage> {
                             isModViewItemListExpanded = List.generate(modViewItem!.mods.length, (index) => false);
                           }
                           return Visibility(
-                            visible: isFavListVisible ? curMod.isFavorite : true,
+                            visible: isFavListVisible
+                                ? curMod.isFavorite
+                                : searchTextController.value.text.toLowerCase().isNotEmpty
+                                    ? modSearchMatchesCheck(curMod, searchTextController.value.text.toLowerCase()) > 0
+                                    : true,
                             child: InkWell(
                               //Hover for preview
                               onTap: () {},
@@ -2132,8 +2084,11 @@ class _HomePageState extends State<HomePage> {
                                                               modViewItem!.applyDate = DateTime.now();
                                                               curMod.applyDate = DateTime.now();
                                                               curMod.submods.first.applyStatus = true;
+                                                              curMod.submods.first.isNew = false;
                                                               curMod.applyStatus = true;
+                                                              curMod.isNew = false;
                                                               modViewItem!.applyStatus = true;
+                                                              modViewItem!.isNew = false;
                                                               List<ModFile> appliedModFiles = value;
                                                               String fileAppliedText = '';
                                                               for (var element in appliedModFiles) {
@@ -2269,7 +2224,11 @@ class _HomePageState extends State<HomePage> {
                                           itemBuilder: (context, submodIndex) {
                                             var curSubmod = curMod.submods[submodIndex];
                                             return Visibility(
-                                              visible: isFavListVisible ? curSubmod.isFavorite : true,
+                                              visible: isFavListVisible
+                                                  ? curSubmod.isFavorite
+                                                  : searchTextController.value.text.isNotEmpty
+                                                      ? submodSearchMatchesCheck(curSubmod, searchTextController.value.text.toLowerCase()) > 0
+                                                      : true,
                                               child: InkWell(
                                                 //submod preview images
                                                 onTap: () {},
@@ -2451,8 +2410,11 @@ class _HomePageState extends State<HomePage> {
                                                                           modViewItem!.applyDate = DateTime.now();
                                                                           curMod.applyDate = DateTime.now();
                                                                           curSubmod.applyStatus = true;
+                                                                          curSubmod.isNew = false;
                                                                           curMod.applyStatus = true;
+                                                                          curMod.isNew = false;
                                                                           modViewItem!.applyStatus = true;
+                                                                          modViewItem!.isNew = false;
                                                                           List<ModFile> appliedModFiles = value;
                                                                           String fileAppliedText = '';
                                                                           for (var element in appliedModFiles) {
@@ -2500,7 +2462,6 @@ class _HomePageState extends State<HomePage> {
                                                                     }
                                                                     if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
                                                                       modViewItem!.isFavorite = false;
-                                                                      modViewItem = null;
                                                                     }
                                                                   } else {
                                                                     curSubmod.isFavorite = true;
@@ -2634,8 +2595,11 @@ class _HomePageState extends State<HomePage> {
                                                                               modViewItem!.applyDate = DateTime.now();
                                                                               curMod.applyDate = DateTime.now();
                                                                               curSubmod.applyStatus = true;
+                                                                              curSubmod.isNew = false;
                                                                               curMod.applyStatus = true;
+                                                                              curMod.isNew = false;
                                                                               modViewItem!.applyStatus = true;
+                                                                              modViewItem!.isNew = false;
                                                                               List<ModFile> appliedModFiles = value;
                                                                               String fileAppliedText = '';
                                                                               for (var element in appliedModFiles) {
@@ -2706,6 +2670,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 .showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                             appliedItemList = await appliedListBuilder(moddedItemsList);
+
                                                                             saveModdedItemListToJson();
                                                                             setState(() {});
                                                                           });
@@ -3181,11 +3146,14 @@ class _HomePageState extends State<HomePage> {
                                                                                     int curSubModIndex = curItem.mods[curModIndex].submods
                                                                                         .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
                                                                                     curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                                                    curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
                                                                                     curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
                                                                                     curItem.mods[curModIndex].applyStatus = true;
+                                                                                    curItem.mods[curModIndex].isNew = false;
                                                                                     curItem.mods[curModIndex].applyDate = DateTime.now();
 
                                                                                     curItem.applyStatus = true;
+                                                                                    curItem.isNew = false;
                                                                                     curItem.applyDate = DateTime.now();
                                                                                     List<ModFile> appliedModFiles = value;
                                                                                     String fileAppliedText = '';

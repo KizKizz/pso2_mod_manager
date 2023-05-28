@@ -36,7 +36,10 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
     for (var modFile in modFiles) {
       modFile = await modFileApply(modFile);
       modFile.applyStatus = true;
-      modFile.applyDate = DateTime(0);
+      modFile.applyDate = DateTime.now();
+      if (modFile.isNew) {
+        modFile.isNew = false;
+      }
       appliedModFiles.add(modFile);
     }
   }

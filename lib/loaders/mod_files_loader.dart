@@ -118,7 +118,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                       //submod.previewImages = curJsonSubmodsList[submodIndex].previewImages;
                       //submod.previewVideos = curJsonSubmodsList[submodIndex].previewVideos;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
-                      for (var modFile in curJsonModFilesList) {
+                      for (var modFile in submod.modFiles) {
                         int modFileIndex = curJsonModFilesList.indexWhere((element) => element.location == modFile.location);
                         if (modFileIndex != -1) {
                           modFile.applyDate = curJsonModFilesList[modFileIndex].applyDate;

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
-import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/home_page.dart';
 
-class ModsLoadingPage extends StatefulWidget {
-  const ModsLoadingPage({Key? key}) : super(key: key);
+class AppliedModsLoadingPage extends StatefulWidget {
+  const AppliedModsLoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<ModsLoadingPage> createState() => _ModsLoadingPageState();
+  State<AppliedModsLoadingPage> createState() => _AppliedModsLoadingPageState();
 }
 
-class _ModsLoadingPageState extends State<ModsLoadingPage> {
+class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: modFileStructureLoader(),
+        future: appliedListBuilder(moddedItemsList),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -26,7 +26,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Loading Mods',
+                    'Loading Applied Mods',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
@@ -44,7 +44,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading mod files',
+                      'Error when loading applied mod files',
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -64,7 +64,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Loading Mods',
+                      'Loading Applied Mods',
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
@@ -75,10 +75,10 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 ),
               );
             } else {
-              //Item list
-              moddedItemsList = snapshot.data;
+              //Applied Item list
+              appliedItemList = snapshot.data;
               
-              return const AppliedModsLoadingPage();
+              return const HomePage();
             }
           }
         });

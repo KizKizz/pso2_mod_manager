@@ -225,7 +225,7 @@ Future<bool> pso2PathsReloader(context) async {
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
   if (pso2binPathFromPicker != null) {
     modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
-    //prefs.setString('binDirPath', modManPso2binPath);
+    prefs.setString('binDirPath', modManPso2binPath);
     modManChecksumFilePath = '';
     ogModFilesLoader();
   } else {
