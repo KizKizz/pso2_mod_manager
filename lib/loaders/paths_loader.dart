@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
@@ -67,6 +69,7 @@ Future<bool> pathsLoader(context) async {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
+      prefs.setString('binDirPath', modManPso2binPath);
     }
   }
   //modman dir path
@@ -75,16 +78,22 @@ Future<bool> pathsLoader(context) async {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
       modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+      prefs.setString('mainModManDirPath', modManDirParentDirPath);
     } else {
       modManDirParentDirPath = modManPso2binPath;
       //Create modman folder if not already existed
       modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
       Directory(modManDirPath).createSync();
+      prefs.setString('mainModManDirPath', modManDirParentDirPath);
     }
   }
 
   //Check modman folder if existed, if not choose path to it
-  modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
+    modManDirPath = modManDirParentDirPath;
+  } else {
+    modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  }
   while (!Directory(modManDirPath).existsSync()) {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
@@ -99,15 +108,16 @@ Future<bool> pathsLoader(context) async {
 
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
+  Directory(modManModsDirPath).createSync(recursive: true);
   for (var name in defaultCateforyDirs) {
-    Directory('$modManModsDirPath/$name').createSync();
+    Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
   //Create Backups folder
   modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
   Directory(modManBackupsDirPath).createSync();
   List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
   for (var name in dataFolders) {
-    Directory('$modManBackupsDirPath/$name').createSync();
+    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
   }
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -147,6 +157,8 @@ Future<bool> pathsLoader(context) async {
   if (modManWin32CheckSumFilePath.isNotEmpty) {
     modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
   }
+
+  
 
   //Return true if all paths loaded
   return true;
@@ -197,7 +209,7 @@ Future<String?> modManDirPathGet(context) async {
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                curLangText!.modmanFolderNotFoundText,
+                '${curLangText!.modmanFolderNotFoundText}\nNote: This folder stores mods and backups',
               ),
               actions: <Widget>[
                 ElevatedButton(
@@ -308,22 +320,101 @@ Future<String?> pso2binPathReselect(context) async {
               ]));
 }
 
+Future<bool> modManPathReloader(context) async {
+  final prefs = await SharedPreferences.getInstance();
+  String? modManDirPathFromPicker = await modManDirPathReselect(context);
+  if (modManDirPathFromPicker != null) {
+    modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+    prefs.setString('mainModManDirPath', modManDirParentDirPath);
+  } else {
+    return false;
+  }
+
+  //Check modman folder
+  if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
+    modManDirPath = modManDirParentDirPath;
+  } else {
+    modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  }
+
+  //Create Mods folder and default categories
+  modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
+  Directory(modManModsDirPath).createSync(recursive: true);
+  for (var name in defaultCateforyDirs) {
+    Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
+  }
+  //Create Backups folder
+  modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
+  Directory(modManBackupsDirPath).createSync();
+  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  for (var name in dataFolders) {
+    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  }
+  //Create Checksum folder
+  modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
+  Directory(modManChecksumDirPath).createSync();
+  //Create Deleted Items folder
+  modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
+  Directory(modManDeletedItemsDirPath);
+  //Create misc folders
+  modManAddModsTempDirPath = Uri.file('${Directory.current.path}/temp').toFilePath();
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
+  modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
+  Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  //Create Json files
+  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  File(modManModsListJsonPath).createSync();
+  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
+  File(modManModSetsJsonPath).createSync();
+  modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  File(modManModSettingsJsonPath).createSync();
+  //Create log file
+  // modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  // File(modManOpLogsFilePath).createSync();
+
+  //Checksum check
+  if (modManChecksumFilePath.isEmpty) {
+    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
+    for (var file in filesInCSFolder) {
+      if (p.extension(file.path) == '') {
+        modManChecksumFilePath = file.path;
+        modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
+      }
+    }
+  }
+  if (modManChecksumFilePath.isNotEmpty) {
+    modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
+  }
+  if (modManWin32CheckSumFilePath.isNotEmpty) {
+    modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
+  }
+
+  listsReloading = true;
+  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
+  modFileStructureLoader().then((value) {
+    moddedItemsList = value;
+    listsReloading = false;
+    Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+  });
+
+  //Return true if all paths loaded
+  return true;
+}
+
 Future<String?> modManDirPathReselect(context) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-              title: Center(
-                child: Text(curLangText!.modmanFolderNotFoundLabelText, style: const TextStyle(fontWeight: FontWeight.w700)),
+              title: const Center(
+                child: Text('Reselect Mod Manager Folder Path', style: TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
-              content: Text(
-                curLangText!.modmanFolderNotFoundText,
-              ),
+              content: Text('Note: This folder stores mods and backups\n\nCurrent path:\n$modManDirPath'),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('No'),
+                    child: const Text('Return'),
                     onPressed: () async {
                       Navigator.pop(context, null);
                     }),
@@ -336,6 +427,6 @@ Future<String?> modManDirPathReselect(context) async {
                             lockParentWindow: true,
                           ));
                     },
-                    child: const Text('Yes'))
+                    child: const Text('Reselect'))
               ]));
 }

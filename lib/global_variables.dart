@@ -43,3 +43,4 @@ List<Item> allSetItems = [];
 bool isModSetAdding = false;
 bool isModViewListHidden = false;
 bool isModViewFromApplied = false;
+List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];

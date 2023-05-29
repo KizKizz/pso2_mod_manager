@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
+import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/search_list_builder.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
@@ -370,7 +371,40 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-              )
+              ),
+            //Add new cate group
+            Visibility(
+              visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5, right: 5),
+                child: Tooltip(
+                  message: 'Add new Category Group',
+                  height: 25,
+                  textStyle: const TextStyle(fontSize: 14),
+                  decoration: BoxDecoration(
+                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                  waitDuration: const Duration(milliseconds: 500),
+                  child: InkWell(
+                      onTap: () async {
+                        String newCateTypeName = await categoryGroupAdder(context);
+                        if (newCateTypeName.isNotEmpty) {
+                          moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
+                          for (var cateType in moddedItemsList) {
+                            cateType.position = moddedItemsList.indexOf(cateType);
+                          }
+                          saveModdedItemListToJson();
+                          setState(() {});
+                        }
+                      },
+                      child: const Icon(
+                        Icons.add_to_photos_outlined,
+                        size: 20,
+                      )),
+                ),
+              ),
+            ),
           ],
           //Title
           titleSpacing: 0,
@@ -379,7 +413,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 17, bottom: 5, right: 5),
+                padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
                 child: Text(itemListAppBarName),
               ),
               //Search
@@ -1321,6 +1355,26 @@ class _HomePageState extends State<HomePage> {
                                                         runAlignment: WrapAlignment.center,
                                                         spacing: 5,
                                                         children: [
+                                                          Visibility(
+                                                            visible: isCateTypeListExpanded[groupIndex] &&
+                                                                !isCatesReordering[groupIndex] &&
+                                                                !defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName),
+                                                            child: Tooltip(
+                                                              message: 'Delete ${moddedItemsList[groupIndex].groupName} from Mod Manager',
+                                                              height: 25,
+                                                              textStyle: const TextStyle(fontSize: 14),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                              waitDuration: const Duration(milliseconds: 500),
+                                                              child: InkWell(
+                                                                  child: const Icon(Icons.delete_forever_outlined),
+                                                                  onTap: () {
+                                                                    setState(() {});
+                                                                  }),
+                                                            ),
+                                                          ),
                                                           //Sort by alpha
                                                           if (isCatesReordering[groupIndex])
                                                             Tooltip(
@@ -1351,7 +1405,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           if (isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex])
                                                             Tooltip(
-                                                              message: 'Sort Category',
+                                                              message: 'Sort categories in this group',
                                                               height: 25,
                                                               textStyle: const TextStyle(fontSize: 14),
                                                               decoration: BoxDecoration(
@@ -1366,6 +1420,28 @@ class _HomePageState extends State<HomePage> {
                                                                     setState(() {});
                                                                   }),
                                                             ),
+                                                          //Add new cate to group
+                                                          Visibility(
+                                                            visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+                                                            child: Tooltip(
+                                                              message: 'Add a new Category to ${moddedItemsList[groupIndex].groupName}',
+                                                              height: 25,
+                                                              textStyle: const TextStyle(fontSize: 14),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                              waitDuration: const Duration(milliseconds: 500),
+                                                              child: InkWell(
+                                                                  onTap: () async {
+                                                                    setState(() {});
+                                                                  },
+                                                                  child: const Icon(
+                                                                    Icons.add_circle_outline,
+                                                                    size: 20,
+                                                                  )),
+                                                            ),
+                                                          ),
                                                         ],
                                                       ),
                                                     )
@@ -1939,6 +2015,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {},
                               onHover: (hovering) {
                                 if (hovering) {
+                                  hoveringOnSubmod = true;
                                   previewModName = curMod.modName;
                                   for (var path in curMod.previewImages) {
                                     previewImages.add(Stack(
@@ -1971,6 +2048,7 @@ class _HomePageState extends State<HomePage> {
                                     ));
                                   }
                                 } else {
+                                  hoveringOnSubmod = false;
                                   previewModName = '';
                                   previewImages.clear();
                                 }
@@ -2966,6 +3044,7 @@ class _HomePageState extends State<HomePage> {
                                               onHover: (hovering) {
                                                 if (hovering) {
                                                   previewModName = curItem.itemName;
+                                                  hoveringOnSubmod = true;
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                       for (var path in submod.previewImages) {
@@ -2997,6 +3076,7 @@ class _HomePageState extends State<HomePage> {
                                                     }
                                                   }
                                                 } else {
+                                                  hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
                                                 }
@@ -3306,7 +3386,7 @@ class _HomePageState extends State<HomePage> {
         thickness: 1,
         //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
-      if (previewImages.isEmpty || (previewImages.isEmpty && hoveringOnSubmod))
+      if (previewImages.isEmpty && hoveringOnSubmod)
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -3683,7 +3763,7 @@ class _HomePageState extends State<HomePage> {
                                                         }
                                                         List<ModFile> appliedModFiles = value;
                                                         String fileAppliedText = '';
-                                                        
+
                                                         for (var element in appliedModFiles.where((e) => e.applyStatus)) {
                                                           if (fileAppliedText.isEmpty) {
                                                             fileAppliedText = 'Sucessfully applied all mods in ${curSet.setName}:\n';
@@ -3793,6 +3873,7 @@ class _HomePageState extends State<HomePage> {
                                               onTap: () => '',
                                               onHover: (hovering) {
                                                 if (hovering) {
+                                                  hoveringOnSubmod = true;
                                                   previewModName = curItem.itemName;
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
@@ -3825,6 +3906,7 @@ class _HomePageState extends State<HomePage> {
                                                     }
                                                   }
                                                 } else {
+                                                  hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
                                                 }

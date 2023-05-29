@@ -16,10 +16,10 @@ Future<List<CategoryType>> hideAllEmptyCategories(List<CategoryType> originalLis
         cate.visible = false;
       }
     }
-    if (cateType.categories.where((element) => element.visible).isEmpty) {
+    if (cateType.categories.isNotEmpty && cateType.categories.where((element) => element.visible).isEmpty) {
       cateType.visible = false;
     }
-    if (cateType.categories.where((element) => !element.visible).isNotEmpty) {
+    if (cateType.categories.isNotEmpty && cateType.categories.where((element) => !element.visible).isNotEmpty) {
       hiddenList.add(cateType);
     }
   }

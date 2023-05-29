@@ -310,10 +310,12 @@ class _MainPageState extends State<MainPage> {
                         height: 5,
                       ),
 
-                      //Path reselect
+                      //MM Path reselect
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {}),
+                        onPressed: (() {
+                          modManPathReloader(context);
+                        }),
                         child: const Row(
                           children: [
                             Icon(
