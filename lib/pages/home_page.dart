@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
   String previewModName = '';
   String itemListAppBarName = 'Item List';
   bool hoveringOnSubmod = false;
-  Item? modViewItem;
   Category? modViewCate;
+  Item? modViewItem;
   List<Widget> previewImages = [];
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
@@ -64,8 +64,6 @@ class _HomePageState extends State<HomePage> {
   bool isFavListVisible = false;
   TextEditingController searchTextController = TextEditingController();
   List<CategoryType> searchedItemList = [];
-  List<ModSet> modSetList = [];
-  bool isModSetAdding = false;
   TextEditingController newSetTextController = TextEditingController();
   String selectedModSetName = '';
 
@@ -360,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                                       itemListAppBarName = 'Item List';
                                     } else {
                                       isCateTypeReordering = true;
-                                      itemListAppBarName = 'Sorting Item List';
+                                      itemListAppBarName = 'Sort Item List';
                                     }
                                     setState(() {});
                                   },
@@ -385,52 +383,55 @@ class _HomePageState extends State<HomePage> {
                 child: Text(itemListAppBarName),
               ),
               //Search
-              Expanded(
-                  child: TextField(
-                controller: searchTextController,
-                maxLines: 1,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                    hintText: 'Search for mods',
-                    hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                    isCollapsed: true,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
-                    suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
-                    suffixIcon: InkWell(
-                      onTap: () {
-                        searchTextController.clear();
-                        searchedItemList.clear();
-                        modViewItem = null;
-                        setState(() {});
-                      },
-                      child: Icon(
-                        Icons.close,
-                        color: Theme.of(context).hintColor,
+              Visibility(
+                visible: !isCateTypeReordering && !isShowHideCates && !isFavListVisible,
+                child: Expanded(
+                    child: TextField(
+                  controller: searchTextController,
+                  maxLines: 1,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                      hintText: 'Search for mods',
+                      hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                      isCollapsed: true,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                      suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          searchTextController.clear();
+                          searchedItemList.clear();
+                          modViewItem = null;
+                          setState(() {});
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Theme.of(context).hintColor,
+                        ),
                       ),
-                    ),
-                    constraints: BoxConstraints.tight(const Size.fromHeight(26)),
-                    // Set border for enabled state (default)
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    // Set border for focused state
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
-                      borderRadius: BorderRadius.circular(10),
-                    )),
-                onChanged: (value) async {
-                  if (value.isNotEmpty) {
-                    searchedItemList = await searchListBuilder(moddedItemsList, value);
-                    modViewItem = null;
-                  } else {
-                    searchedItemList.clear();
-                    modViewItem = null;
-                  }
-                  setState(() {});
-                },
-              ))
+                      constraints: BoxConstraints.tight(const Size.fromHeight(26)),
+                      // Set border for enabled state (default)
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      // Set border for focused state
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                        borderRadius: BorderRadius.circular(10),
+                      )),
+                  onChanged: (value) async {
+                    if (value.isNotEmpty) {
+                      searchedItemList = await searchListBuilder(moddedItemsList, value);
+                      modViewItem = null;
+                    } else {
+                      searchedItemList.clear();
+                      modViewItem = null;
+                    }
+                    setState(() {});
+                  },
+                )),
+              )
             ],
           ),
           backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
@@ -947,6 +948,8 @@ class _HomePageState extends State<HomePage> {
                                                                               element.currentState?.collapse();
                                                                             }
                                                                             modViewETKeys.clear();
+                                                                            isModViewListHidden = false;
+                                                                            isModViewFromApplied = false;
                                                                             modViewCate = curCategory;
                                                                             modViewItem = curItem;
                                                                             setState(() {});
@@ -1226,6 +1229,8 @@ class _HomePageState extends State<HomePage> {
                                                                                 element.currentState?.collapse();
                                                                               }
                                                                               modViewETKeys.clear();
+                                                                              isModViewListHidden = false;
+                                                                              isModViewFromApplied = false;
                                                                               modViewCate = curCategory;
                                                                               modViewItem = curItem;
                                                                               setState(() {});
@@ -1691,6 +1696,8 @@ class _HomePageState extends State<HomePage> {
                                                                                   element.currentState?.collapse();
                                                                                 }
                                                                                 modViewETKeys.clear();
+                                                                                isModViewListHidden = false;
+                                                                                isModViewFromApplied = false;
                                                                                 modViewCate = curCategory;
                                                                                 modViewItem = curItem;
                                                                                 setState(() {});
@@ -1734,7 +1741,7 @@ class _HomePageState extends State<HomePage> {
   Widget modsView() {
     //normal
     List<String> appBarAppliedModNames = [];
-    if (modViewItem != null && !isFavListVisible) {
+    if (modViewItem != null && !isFavListVisible && isModViewFromApplied) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus)) {
         for (var sub in mod.submods.where((element) => element.applyStatus)) {
           appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
@@ -1742,7 +1749,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
     //fav
-    if (modViewItem != null && isFavListVisible) {
+    if (modViewItem != null && isFavListVisible && !isModViewFromApplied) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus && element.isFavorite)) {
         for (var sub in mod.submods.where((element) => element.applyStatus && element.isFavorite)) {
           appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
@@ -1750,7 +1757,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
     //search
-    if (modViewItem != null && searchTextController.value.text.isNotEmpty) {
+    if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus && modSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
         for (var sub in mod.submods.where((element) => element.applyStatus && submodSearchMatchesCheck(element, searchTextController.value.text.toLowerCase()) > 0)) {
           if (!appBarAppliedModNames.contains('${mod.modName} > ${sub.submodName}')) {
@@ -1760,7 +1767,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
     //set
-    if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible) {
+    if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(selectedModSetName))) {
         for (var sub in mod.submods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(selectedModSetName))) {
           if (!appBarAppliedModNames.contains('${mod.modName} > ${sub.submodName}')) {
@@ -1773,8 +1780,8 @@ class _HomePageState extends State<HomePage> {
       AppBar(
         automaticallyImplyLeading: false,
         actions: <Widget>[
-          if (modViewItem == null) Container(),
-          if (modViewItem != null)
+          if (isModViewListHidden || modViewItem == null) Container(),
+          if (!isModViewListHidden && modViewItem != null)
             Align(
               alignment: Alignment.topCenter,
               child: Tooltip(
@@ -1801,7 +1808,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if (modViewItem != null)
+            if (!isModViewListHidden && modViewItem != null)
               Padding(
                 padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
                 child: Container(
@@ -1819,14 +1826,14 @@ class _HomePageState extends State<HomePage> {
               ),
             Expanded(
               child: SizedBox(
-                height: modViewItem != null ? 84 : 30,
+                height: !isModViewListHidden && modViewItem != null ? 84 : 30,
                 child: ScrollbarTheme(
                   data: ScrollbarThemeData(
                     thickness: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.hovered)) {
-                        return modViewItem != null ? 5 : 0;
+                        return !isModViewListHidden && modViewItem != null ? 5 : 0;
                       }
-                      return modViewItem != null ? 3 : 0;
+                      return !isModViewListHidden && modViewItem != null ? 3 : 0;
                     }),
                     thumbColor: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.hovered)) {
@@ -1838,7 +1845,7 @@ class _HomePageState extends State<HomePage> {
                   child: SingleChildScrollView(
                     physics: modViewItem == null ? const NeverScrollableScrollPhysics() : null,
                     child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      modViewItem != null
+                      !isModViewListHidden && modViewItem != null
                           ? Text(modViewItem!.itemName)
                           : Padding(
                               padding: const EdgeInsets.only(bottom: 5),
@@ -1851,13 +1858,13 @@ class _HomePageState extends State<HomePage> {
                           thickness: 1,
                         ),
                       //normal
-                      if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
+                      if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && isModViewFromApplied)
                         Text(
                           modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                         ),
                       //fav
-                      if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty)
+                      if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                         Text(
                           modViewItem!.mods.where((element) => element.isFavorite).length < 2
                               ? '${modViewItem!.mods.where((element) => element.isFavorite).length} Mod'
@@ -1865,7 +1872,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                         ),
                       //searching
-                      if (modViewItem != null && searchTextController.value.text.isNotEmpty)
+                      if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
                         Text(
                           itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
                               ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mod'
@@ -1887,14 +1894,15 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-        toolbarHeight: modViewItem != null ? 84 : 30,
+        toolbarHeight: !isModViewListHidden && modViewItem != null ? 84 : 30,
         elevation: 0,
       ),
       const Divider(
         height: 1,
         thickness: 1,
       ),
-      if (modViewItem != null)
+      //Main list
+      if (!isModViewListHidden && modViewItem != null)
         Expanded(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
@@ -1919,11 +1927,11 @@ class _HomePageState extends State<HomePage> {
                           }
 
                           return Visibility(
-                            visible: isFavListVisible
+                            visible: isFavListVisible && !isModViewFromApplied
                                 ? curMod.isFavorite
-                                : searchTextController.value.text.toLowerCase().isNotEmpty
+                                : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied
                                     ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
-                                    : context.watch<StateProvider>().setsWindowVisible
+                                    : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                         ? curMod.isSet && curMod.setNames.contains(selectedModSetName)
                                         : true,
                             child: InkWell(
@@ -1998,7 +2006,7 @@ class _HomePageState extends State<HomePage> {
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  context.watch<StateProvider>().setsWindowVisible
+                                                  context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? Text(
                                                           curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
                                                               ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} Variant'
@@ -2255,9 +2263,9 @@ class _HomePageState extends State<HomePage> {
                                           itemBuilder: (context, submodIndex) {
                                             var curSubmod = curMod.submods[submodIndex];
                                             return Visibility(
-                                              visible: isFavListVisible
+                                              visible: isFavListVisible && !isModViewFromApplied
                                                   ? curSubmod.isFavorite
-                                                  : context.watch<StateProvider>().setsWindowVisible
+                                                  : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
                                                       : true,
                                               child: InkWell(
@@ -2814,6 +2822,7 @@ class _HomePageState extends State<HomePage> {
                         ? null
                         : () {
                             isModSetAdding = true;
+                            isModViewListHidden = true;
                             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                             setState(() {});
                           },
@@ -2996,6 +3005,8 @@ class _HomePageState extends State<HomePage> {
                                               child: ListTile(
                                                 tileColor: Colors.transparent,
                                                 onTap: () {
+                                                  isModViewListHidden = false;
+                                                  isModViewFromApplied = true;
                                                   modViewItem = curItem;
                                                   setState(() {});
                                                 },
@@ -3066,9 +3077,11 @@ class _HomePageState extends State<HomePage> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: [
-                                                                Text(
-                                                                  applyingModNames[m],
-                                                                  //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    applyingModNames[m],
+                                                                    //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                  ),
                                                                 ),
                                                                 Padding(
                                                                   padding: const EdgeInsets.only(top: 5),
@@ -3352,7 +3365,11 @@ class _HomePageState extends State<HomePage> {
                     onTap: newSetTextController.value.text.isEmpty
                         ? null
                         : () {
-                            modSetList.add(ModSet(newSetTextController.value.text, 0, true, false, []));
+                            modSetList.add(ModSet(newSetTextController.value.text, 0, true, false, DateTime.now(), []));
+                            modSetList.sort(
+                              (a, b) => b.addedDate.compareTo(a.addedDate),
+                            );
+                            saveSetListToJson();
                             newSetTextController.clear();
                             setState(() {});
                           },
@@ -3409,7 +3426,11 @@ class _HomePageState extends State<HomePage> {
                   )),
               onChanged: (value) => setState(() {}),
               onSubmitted: (value) {
-                modSetList.add(ModSet(newSetTextController.value.text, 0, true, false, []));
+                modSetList.add(ModSet(newSetTextController.value.text, 0, true, false, DateTime.now(), []));
+                modSetList.sort(
+                  (a, b) => b.addedDate.compareTo(a.addedDate),
+                );
+                saveSetListToJson();
                 newSetTextController.clear();
                 setState(() {});
               },
@@ -3490,7 +3511,201 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
-                                        Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
+                                        Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 5, children: [
+                                          if (curSet.setItems.indexWhere((element) => element.applyStatus == true) != -1)
+                                            Tooltip(
+                                              message: 'Remove all mods in ${curSet.setName} from the game',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                child: const Icon(
+                                                  FontAwesomeIcons.squareMinus,
+                                                ),
+                                                onTap: () async {
+                                                  //status
+                                                  String filesUnapplied = '';
+                                                  //check backups
+                                                  bool allBkFilesFound = true;
+                                                  List<ModFile> allAppliedModFiles = [];
+                                                  for (var item in curSet.setItems) {
+                                                    if (item.applyStatus) {
+                                                      for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        if (mod.applyStatus) {
+                                                          for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                            if (submod.applyStatus) {
+                                                              allAppliedModFiles.addAll(submod.modFiles.where((element) => element.applyStatus));
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+
+                                                  for (var modFile in allAppliedModFiles) {
+                                                    for (var bkFile in modFile.bkLocations) {
+                                                      if (!File(bkFile).existsSync()) {
+                                                        allBkFilesFound = false;
+                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+
+                                                        break;
+                                                      }
+                                                    }
+                                                  }
+                                                  if (allBkFilesFound) {
+                                                    modFilesUnapply(context, allAppliedModFiles).then((value) async {
+                                                      List<ModFile> unappliedModFiles = value;
+                                                      previewImages.clear();
+                                                      for (var item in curSet.setItems) {
+                                                        for (var mod in item.mods) {
+                                                          for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                            if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                              submod.applyStatus = false;
+                                                            }
+                                                            if (submod.applyStatus) {
+                                                              for (var path in submod.previewImages) {
+                                                                previewImages.add(Stack(
+                                                                  alignment: Alignment.bottomCenter,
+                                                                  children: [
+                                                                    Image.file(
+                                                                      File(path),
+                                                                      //fit: BoxFit.cover,
+                                                                    ),
+                                                                    FittedBox(
+                                                                      fit: BoxFit.fitWidth,
+                                                                      child: Container(
+                                                                          decoration: BoxDecoration(
+                                                                            color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                                            borderRadius: BorderRadius.circular(3),
+                                                                            border: Border.all(color: Theme.of(context).hintColor),
+                                                                          ),
+                                                                          height: 25,
+                                                                          child: Center(
+                                                                              child: Padding(
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                            child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
+                                                                          ))),
+                                                                    )
+                                                                  ],
+                                                                ));
+                                                              }
+                                                            }
+                                                          }
+                                                          if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                            mod.applyStatus = false;
+                                                          }
+                                                        }
+                                                      }
+
+                                                      for (var item in curSet.setItems) {
+                                                        if (item.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                          item.applyStatus = false;
+                                                        }
+                                                      }
+
+                                                      for (var element in unappliedModFiles) {
+                                                        if (filesUnapplied.isEmpty) {
+                                                          filesUnapplied = 'Sucessfully removed all mods in ${curSet.setName}:\n';
+                                                        }
+                                                        if (!filesUnapplied.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
+                                                          filesUnapplied += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
+                                                        }
+                                                      }
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
+                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                      if (appliedItemList.isEmpty) {
+                                                        previewModName = '';
+                                                        previewImages.clear();
+                                                      }
+
+                                                      saveModdedItemListToJson();
+                                                      setState(() {});
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+
+                                          //Apply button in submod
+                                          if (curSet.setItems.indexWhere((element) => element.applyStatus == false) != -1)
+                                            Tooltip(
+                                              message: 'Apply all mods in ${curSet.setName} to the game',
+                                              height: 25,
+                                              textStyle: const TextStyle(fontSize: 14),
+                                              decoration: BoxDecoration(
+                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              waitDuration: const Duration(milliseconds: 500),
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  bool allOGFilesFound = true;
+                                                  //get og file paths
+                                                  List<ModFile> allAppliedModFiles = [];
+                                                  for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                    for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                      for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                        allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+                                                      }
+                                                    }
+                                                  }
+
+                                                  for (var modFile in allAppliedModFiles) {
+                                                    modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                    if (modFile.ogLocations.isEmpty) {
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                      allOGFilesFound = false;
+                                                      break;
+                                                    }
+                                                  }
+                                                  //apply mod files
+                                                  if (allOGFilesFound) {
+                                                    modFilesApply(context, allAppliedModFiles).then((value) async {
+                                                      if (allAppliedModFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                        for (var curItem in curSet.setItems) {
+                                                          int curModIndex = curItem.mods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
+                                                          int curSubModIndex = curItem.mods[curModIndex].submods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
+                                                          curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                          curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
+                                                          curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
+                                                          curItem.mods[curModIndex].applyStatus = true;
+                                                          curItem.mods[curModIndex].isNew = false;
+                                                          curItem.mods[curModIndex].applyDate = DateTime.now();
+
+                                                          curItem.applyStatus = true;
+                                                          curItem.isNew = false;
+                                                          curItem.applyDate = DateTime.now();
+                                                        }
+                                                        List<ModFile> appliedModFiles = value;
+                                                        String fileAppliedText = '';
+                                                        
+                                                        for (var element in appliedModFiles.where((e) => e.applyStatus)) {
+                                                          if (fileAppliedText.isEmpty) {
+                                                            fileAppliedText = 'Sucessfully applied all mods in ${curSet.setName}:\n';
+                                                          }
+                                                          if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
+                                                            fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
+                                                          }
+                                                        }
+                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                      }
+
+                                                      saveModdedItemListToJson();
+                                                      setState(() {});
+                                                    });
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  FontAwesomeIcons.squarePlus,
+                                                ),
+                                              ),
+                                            ),
                                           Tooltip(
                                             message: 'Add to this set',
                                             height: 25,
@@ -3507,13 +3722,44 @@ class _HomePageState extends State<HomePage> {
                                                         curSet.setItems = itemsFromAppliedListFetch(appliedItemList);
                                                         setModSetNameToItems(curSet.setName, curSet.setItems);
                                                         isModSetAdding = false;
+                                                        saveModdedItemListToJson();
+                                                        saveSetListToJson();
                                                         setState(() {});
                                                       },
                                                 child: Icon(
                                                   FontAwesomeIcons.folderPlus,
-                                                  size: 18,
+                                                  size: 20,
                                                   color: !isModSetAdding ? Theme.of(context).disabledColor : null,
                                                 )),
+                                          ),
+                                          //Delete
+                                          Tooltip(
+                                            message: 'Hold to remove ${curSet.setName} from Mod Manager',
+                                            height: 25,
+                                            textStyle: const TextStyle(fontSize: 14),
+                                            decoration: BoxDecoration(
+                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                            waitDuration: const Duration(milliseconds: 500),
+                                            child: InkWell(
+                                              onLongPress: curSet.setItems.where((element) => element.applyStatus).isNotEmpty
+                                                  ? null
+                                                  : () async {
+                                                      String tempSetName = curSet.setName;
+                                                      removeModSetNameFromItems(curSet.setName, curSet.setItems);
+                                                      modSetList.remove(curSet);
+                                                      modViewItem = null;
+                                                      saveSetListToJson();
+                                                      saveModdedItemListToJson();
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage('Success!', 'Succesfully removed $tempSetName from Mod Manager', 3000));
+                                                      setState(() {});
+                                                    },
+                                              child: Icon(
+                                                Icons.folder_delete,
+                                                color: curSet.setItems.where((element) => element.applyStatus).isNotEmpty ? Theme.of(context).disabledColor : null,
+                                              ),
+                                            ),
                                           ),
                                         ]),
                                       ],
@@ -3587,6 +3833,8 @@ class _HomePageState extends State<HomePage> {
                                               child: ListTile(
                                                 tileColor: Colors.transparent,
                                                 onTap: () {
+                                                  isModViewListHidden = false;
+                                                  isModViewFromApplied = false;
                                                   modViewItem = curItem;
                                                   selectedModSetName = curSet.setName;
                                                   setState(() {});
@@ -3628,7 +3876,9 @@ class _HomePageState extends State<HomePage> {
                                                                 child: Wrap(
                                                                   crossAxisAlignment: WrapCrossAlignment.center,
                                                                   runAlignment: WrapAlignment.center,
+                                                                  spacing: 5,
                                                                   children: [
+                                                                    //open
                                                                     Tooltip(
                                                                         message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
                                                                         height: 25,
@@ -3642,6 +3892,33 @@ class _HomePageState extends State<HomePage> {
                                                                         child: InkWell(
                                                                           child: const Icon(Icons.folder_open),
                                                                           onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                        )),
+                                                                    //delete
+                                                                    Tooltip(
+                                                                        message: 'Hold to remove ${curItem.itemName} from this set',
+                                                                        height: 25,
+                                                                        textStyle: const TextStyle(fontSize: 14),
+                                                                        decoration: BoxDecoration(
+                                                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                          border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                          borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                        ),
+                                                                        waitDuration: const Duration(milliseconds: 500),
+                                                                        child: InkWell(
+                                                                          onLongPress: curItem.applyStatus
+                                                                              ? null
+                                                                              : () {
+                                                                                  String tempItemName = curItem.itemName;
+                                                                                  removeModSetNameFromItems(curSet.setName, [curItem]);
+                                                                                  modViewItem = null;
+                                                                                  curSet.setItems.remove(curItem);
+                                                                                  saveSetListToJson();
+                                                                                  saveModdedItemListToJson();
+                                                                                  ScaffoldMessenger.of(context)
+                                                                                      .showSnackBar(snackBarMessage('Success!', 'Succesfully removed $tempItemName from ${curSet.setName}', 3000));
+                                                                                  setState(() {});
+                                                                                },
+                                                                          child: Icon(Icons.delete_forever_outlined, color: curItem.applyStatus ? Theme.of(context).disabledColor : null),
                                                                         )),
                                                                   ],
                                                                 ),
@@ -3658,9 +3935,11 @@ class _HomePageState extends State<HomePage> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: [
-                                                                Text(
-                                                                  applyingModNames[m],
-                                                                  //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    applyingModNames[m],
+                                                                    //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                  ),
                                                                 ),
                                                                 Padding(
                                                                   padding: const EdgeInsets.only(top: 5),
@@ -3853,11 +4132,6 @@ class _HomePageState extends State<HomePage> {
                     }),
               )))
     ]);
-  }
-
-//=====================================================================================================================================================================================
-  Widget modInSetList() {
-    return Container();
   }
 
 //Extra=======================================================================================================================================================================================

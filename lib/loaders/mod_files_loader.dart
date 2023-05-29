@@ -85,7 +85,13 @@ Future<List<CategoryType>> modFileStructureLoader() async {
               //item.icon = curJsonItemsList[itemIndex].icon;
               item.isFavorite = curJsonItemsList[itemIndex].isFavorite;
               item.isNew = curJsonItemsList[itemIndex].isNew;
+              item.isSet = curJsonItemsList[itemIndex].isSet;
+              item.setNames = curJsonItemsList[itemIndex].setNames;
               //item.location = curJsonItemsList[itemIndex].location;
+              //Populate modset items
+              if (item.isSet) {
+                allSetItems.add(item);
+              }
               final curJsonModsList = curJsonItemsList[itemIndex].mods;
               for (var mod in item.mods) {
                 int modIndex = curJsonModsList.indexWhere((element) => element.modName == mod.modName);
@@ -101,6 +107,8 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                   //mod.modName = curJsonModsList[modIndex].modName;
                   //mod.previewImages = curJsonModsList[modIndex].previewImages;
                   //mod.previewVideos = curJsonModsList[modIndex].previewVideos;
+                  mod.isSet = curJsonModsList[modIndex].isSet;
+                  mod.setNames = curJsonModsList[modIndex].setNames;
                   final curJsonSubmodsList = curJsonModsList[modIndex].submods;
                   for (var submod in mod.submods) {
                     int submodIndex = curJsonSubmodsList.indexWhere((element) => element.submodName == submod.submodName);
@@ -117,6 +125,8 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                       //submod.submodName = curJsonSubmodsList[submodIndex].submodName;
                       //submod.previewImages = curJsonSubmodsList[submodIndex].previewImages;
                       //submod.previewVideos = curJsonSubmodsList[submodIndex].previewVideos;
+                      submod.isSet = curJsonSubmodsList[submodIndex].isSet;
+                      submod.setNames = curJsonSubmodsList[submodIndex].setNames;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
                       for (var modFile in submod.modFiles) {
                         int modFileIndex = curJsonModFilesList.indexWhere((element) => element.location == modFile.location);
@@ -135,6 +145,8 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                           modFile.ogLocations = curJsonModFilesList[modFileIndex].ogLocations;
                           modFile.ogMd5 = curJsonModFilesList[modFileIndex].ogMd5;
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
+                          modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
+                          modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
                         }
                       }
                     }

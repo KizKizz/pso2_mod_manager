@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -36,3 +38,8 @@ bool showBackgroundImage = true;
 bool listsReloading = false;
 bool isEmptyCatesHide = false;
 List<CategoryType> hiddenItemCategories = [];
+List<ModSet> modSetList = [];
+List<Item> allSetItems = [];
+bool isModSetAdding = false;
+bool isModViewListHidden = false;
+bool isModViewFromApplied = false;

@@ -21,16 +21,34 @@ String netChecksumFileMD5 = '';
 class ApplicationConfig {
   //App version Check
   static List<String> currentVersionValues = appVersion.split('.');
-
   Future<void> checkForUpdates(context) async {
     final jsonVal = await loadJsonFromGithub();
     if (jsonVal.entries.first.key != 'null') {
+      int curMajor = int.parse(currentVersionValues[0]);
+      int curMinor = int.parse(currentVersionValues[1]);
+      int curPatch = int.parse(currentVersionValues[2]);
+
       String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
       List<String> newVersionValues = newVersionValue.split('.');
-      int major = int.parse(newVersionValues[0]);
-      int minor = int.parse(newVersionValues[1]);
-      int patch = int.parse(newVersionValues[2]);
-      if (major > int.parse(currentVersionValues[0]) || minor > int.parse(currentVersionValues[1]) || patch > int.parse(currentVersionValues[2])) {
+      int newMajor = int.parse(newVersionValues[0]);
+      int newMinor = int.parse(newVersionValues[1]);
+      int newPatch = int.parse(newVersionValues[2]);
+
+      if (newPatch > curPatch && newMinor >= curMinor && newMajor >= curMajor) {
+        newVersion = newVersionValue;
+        String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
+        patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
+        patchNoteSplit = patchNotes.split(', ');
+        //debugPrint('Response: ${patchNotes.first}');
+        Provider.of<StateProvider>(context, listen: false).isUpdateAvailableTrue();
+      } else if (newPatch <= curPatch && newMinor > curMinor && newMajor >= curMajor) {
+        newVersion = newVersionValue;
+        String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
+        patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
+        patchNoteSplit = patchNotes.split(', ');
+        //debugPrint('Response: ${patchNotes.first}');
+        Provider.of<StateProvider>(context, listen: false).isUpdateAvailableTrue();
+      } else if (newPatch <= curPatch && newMinor <= curMinor && newMajor > curMajor) {
         newVersion = newVersionValue;
         String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
         patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
@@ -73,8 +91,7 @@ class ApplicationConfig {
   Future<Map<String, dynamic>> loadRefSheetsJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
     try {
-      http.Response response =
-          await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       }

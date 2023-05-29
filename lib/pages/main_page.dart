@@ -945,7 +945,6 @@ class _MainPageState extends State<MainPage> {
                                                       backgroundImage,
                                                       fit: BoxFit.cover,
                                                     ),
-                                                  
                                                     Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
                                                   ],
                                                 )
@@ -1174,8 +1173,12 @@ class _MainPageState extends State<MainPage> {
                               child: MaterialButton(
                                 onPressed: (() {
                                   if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                    isModViewListHidden = true;
+                                    isModSetAdding = false;
                                     Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
                                   } else {
+                                    isModViewListHidden = true;
+                                    isModSetAdding = false;
                                     Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                   }
                                 }),

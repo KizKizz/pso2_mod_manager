@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "1.6.10",
+    "version": "2.0.0",
     "description": [
         "Improved checksum detection (the app now check for checksum in win32 every startup and auto reapply if missing)",
         "Data loading screens now show detailed error messages if encountered",

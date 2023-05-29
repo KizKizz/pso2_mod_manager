@@ -123,7 +123,7 @@ Future<bool> pathsLoader(context) async {
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
   File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManModSets.json').toFilePath();
+  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
   modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   File(modManModSettingsJsonPath).createSync();
