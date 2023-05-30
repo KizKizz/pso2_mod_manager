@@ -41,6 +41,7 @@ List<CategoryType> hiddenItemCategories = [];
 List<ModSet> modSetList = [];
 List<Item> allSetItems = [];
 bool isModSetAdding = false;
+Item? modViewItem;
 bool isModViewListHidden = false;
 bool isModViewFromApplied = false;
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];

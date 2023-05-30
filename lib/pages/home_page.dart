@@ -48,10 +48,10 @@ class _HomePageState extends State<HomePage> {
   String itemListAppBarName = 'Item List';
   bool hoveringOnSubmod = false;
   Category? modViewCate;
-  Item? modViewItem;
   List<Widget> previewImages = [];
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
+  List<bool> cateTypeButtonsVisible = [];
   List<List<List<bool>>> itemButtonsVisible = [];
   bool isApplyingModFiles = false;
   bool isCateTypeReordering = false;
@@ -1304,6 +1304,9 @@ class _HomePageState extends State<HomePage> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: moddedItemsList.length,
                                   itemBuilder: (context, groupIndex) {
+                                    if (cateTypeButtonsVisible.isEmpty || cateTypeButtonsVisible.length != moddedItemsList.length) {
+                                      cateTypeButtonsVisible = List.generate(moddedItemsList.length, (index) => false);
+                                    }
                                     if (itemButtonsVisible.isEmpty || itemButtonsVisible.length != moddedItemsList.length) {
                                       itemButtonsVisible = List.generate(moddedItemsList.length, (index) => []);
                                     }
@@ -1336,244 +1339,208 @@ class _HomePageState extends State<HomePage> {
                                               margin: EdgeInsets.zero,
                                               color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                              child: ExpansionTile(
-                                                backgroundColor: Colors.transparent,
-                                                collapsedTextColor: Theme.of(context).colorScheme.primary,
-                                                collapsedIconColor: Theme.of(context).colorScheme.primary,
-                                                onExpansionChanged: (value) {
-                                                  isCateTypeListExpanded[groupIndex] = value;
+                                              child: InkWell(
+                                                onTap: () {},
+                                                onHover: (value) {
+                                                  if (value) {
+                                                    cateTypeButtonsVisible[groupIndex] = true;
+                                                  } else {
+                                                    cateTypeButtonsVisible[groupIndex] = false;
+                                                  }
                                                   setState(() {});
                                                 },
-                                                title: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 5),
-                                                      child: Wrap(
-                                                        crossAxisAlignment: WrapCrossAlignment.center,
-                                                        runAlignment: WrapAlignment.center,
-                                                        spacing: 5,
-                                                        children: [
-                                                          Visibility(
-                                                            visible: isCateTypeListExpanded[groupIndex] &&
-                                                                !isCatesReordering[groupIndex] &&
-                                                                !defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName),
-                                                            child: Tooltip(
-                                                              message: 'Delete ${moddedItemsList[groupIndex].groupName} from Mod Manager',
-                                                              height: 25,
-                                                              textStyle: const TextStyle(fontSize: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              waitDuration: const Duration(milliseconds: 500),
-                                                              child: InkWell(
-                                                                  child: const Icon(Icons.delete_forever_outlined),
-                                                                  onTap: () {
-                                                                    setState(() {});
-                                                                  }),
-                                                            ),
+                                                child: ExpansionTile(
+                                                  backgroundColor: Colors.transparent,
+                                                  collapsedTextColor: Theme.of(context).colorScheme.primary,
+                                                  collapsedIconColor: Theme.of(context).colorScheme.primary,
+                                                  onExpansionChanged: (value) {
+                                                    isCateTypeListExpanded[groupIndex] = value;
+                                                    setState(() {});
+                                                  },
+                                                  title: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                      Visibility(
+                                                        visible: cateTypeButtonsVisible[groupIndex],
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(left: 5),
+                                                          child: Wrap(
+                                                            crossAxisAlignment: WrapCrossAlignment.center,
+                                                            runAlignment: WrapAlignment.center,
+                                                            spacing: 5,
+                                                            children: [
+                                                              Visibility(
+                                                                visible: isCateTypeListExpanded[groupIndex] &&
+                                                                    !isCatesReordering[groupIndex] &&
+                                                                    !defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName),
+                                                                child: Tooltip(
+                                                                  message: 'Hold to delete ${moddedItemsList[groupIndex].groupName} from Mod Manager',
+                                                                  height: 25,
+                                                                  textStyle: const TextStyle(fontSize: 14),
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                      child: const Icon(Icons.delete_forever_outlined),
+                                                                      onLongPress: () {
+                                                                        if (moddedItemsList[groupIndex].categories.isEmpty) {
+                                                                          modViewItem = null;
+                                                                          moddedItemsList.remove(moddedItemsList[groupIndex]);
+                                                                        } else {
+                                                                          categoryGroupRemover(context, moddedItemsList[groupIndex]);
+                                                                        }
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      }),
+                                                                ),
+                                                              ),
+                                                              //Sort by alpha
+                                                              if (isCatesReordering[groupIndex])
+                                                                Tooltip(
+                                                                  message: isCatesAscenAlpha[groupIndex] ? 'Sort by descending name order' : 'Sort by ascending name order',
+                                                                  height: 25,
+                                                                  textStyle: const TextStyle(fontSize: 14),
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                      onTap: () {
+                                                                        if (isCatesAscenAlpha[groupIndex]) {
+                                                                          //sort cates in catetype
+                                                                          moddedItemsList[groupIndex].categories.sort(((a, b) => b.categoryName.compareTo(a.categoryName)));
+                                                                          isCatesAscenAlpha[groupIndex] = false;
+                                                                        } else {
+                                                                          //sort cates in catetype
+                                                                          moddedItemsList[groupIndex].categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
+                                                                          isCatesAscenAlpha[groupIndex] = true;
+                                                                        }
+                                                                        setState(() {});
+                                                                      },
+                                                                      child: const Icon(
+                                                                        Icons.sort_by_alpha_outlined,
+                                                                      )),
+                                                                ),
+                                                              if (isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex])
+                                                                Tooltip(
+                                                                  message: 'Sort categories in this group',
+                                                                  height: 25,
+                                                                  textStyle: const TextStyle(fontSize: 14),
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                      child: const Icon(Icons.sort_outlined),
+                                                                      onTap: () {
+                                                                        isCatesReordering[groupIndex] = true;
+                                                                        setState(() {});
+                                                                      }),
+                                                                ),
+                                                              //Add new cate to group
+                                                              Visibility(
+                                                                visible: isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex],
+                                                                child: Tooltip(
+                                                                  message: 'Add a new Category to ${moddedItemsList[groupIndex].groupName}',
+                                                                  height: 25,
+                                                                  textStyle: const TextStyle(fontSize: 14),
+                                                                  decoration: BoxDecoration(
+                                                                      color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                  waitDuration: const Duration(milliseconds: 500),
+                                                                  child: InkWell(
+                                                                      onTap: () async {
+                                                                        String newCategoryName = await categoryAdder(context);
+                                                                        if (newCategoryName.isNotEmpty) {
+                                                                          Directory(Uri.file('$modManModsDirPath/$newCategoryName').toFilePath()).createSync();
+                                                                          moddedItemsList[groupIndex].categories.insert(
+                                                                              0,
+                                                                              Category(newCategoryName, moddedItemsList[groupIndex].groupName,
+                                                                                  Uri.file('$modManModsDirPath/$newCategoryName').toFilePath(), 0, true, []));
+                                                                          for (var cate in moddedItemsList[groupIndex].categories) {
+                                                                            cate.position = moddedItemsList[groupIndex].categories.indexOf(cate);
+                                                                          }
+                                                                          saveModdedItemListToJson();
+                                                                          setState(() {});
+                                                                        }
+                                                                      },
+                                                                      child: const Icon(
+                                                                        Icons.add_circle_outline,
+                                                                        size: 20,
+                                                                      )),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                          //Sort by alpha
-                                                          if (isCatesReordering[groupIndex])
-                                                            Tooltip(
-                                                              message: isCatesAscenAlpha[groupIndex] ? 'Sort by descending name order' : 'Sort by ascending name order',
-                                                              height: 25,
-                                                              textStyle: const TextStyle(fontSize: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              waitDuration: const Duration(milliseconds: 500),
-                                                              child: InkWell(
-                                                                  onTap: () {
-                                                                    if (isCatesAscenAlpha[groupIndex]) {
-                                                                      //sort cates in catetype
-                                                                      moddedItemsList[groupIndex].categories.sort(((a, b) => b.categoryName.compareTo(a.categoryName)));
-                                                                      isCatesAscenAlpha[groupIndex] = false;
-                                                                    } else {
-                                                                      //sort cates in catetype
-                                                                      moddedItemsList[groupIndex].categories.sort(((a, b) => a.categoryName.compareTo(b.categoryName)));
-                                                                      isCatesAscenAlpha[groupIndex] = true;
-                                                                    }
-                                                                    setState(() {});
-                                                                  },
-                                                                  child: const Icon(
-                                                                    Icons.sort_by_alpha_outlined,
-                                                                  )),
-                                                            ),
-                                                          if (isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex])
-                                                            Tooltip(
-                                                              message: 'Sort categories in this group',
-                                                              height: 25,
-                                                              textStyle: const TextStyle(fontSize: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              waitDuration: const Duration(milliseconds: 500),
-                                                              child: InkWell(
-                                                                  child: const Icon(Icons.sort_outlined),
-                                                                  onTap: () {
-                                                                    isCatesReordering[groupIndex] = true;
-                                                                    setState(() {});
-                                                                  }),
-                                                            ),
-                                                          //Add new cate to group
-                                                          Visibility(
-                                                            visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
-                                                            child: Tooltip(
-                                                              message: 'Add a new Category to ${moddedItemsList[groupIndex].groupName}',
-                                                              height: 25,
-                                                              textStyle: const TextStyle(fontSize: 14),
-                                                              decoration: BoxDecoration(
-                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              waitDuration: const Duration(milliseconds: 500),
-                                                              child: InkWell(
-                                                                  onTap: () async {
-                                                                    setState(() {});
-                                                                  },
-                                                                  child: const Icon(
-                                                                    Icons.add_circle_outline,
-                                                                    size: 20,
-                                                                  )),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                trailing: !isCatesReordering[groupIndex]
-                                                    ? null
-                                                    : Tooltip(
-                                                        message: 'Back',
-                                                        height: 25,
-                                                        textStyle: const TextStyle(fontSize: 14),
-                                                        decoration: BoxDecoration(
-                                                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                            borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                        waitDuration: const Duration(milliseconds: 500),
-                                                        child: InkWell(
-                                                            child: const Icon(
-                                                              Icons.arrow_back_ios_new,
-                                                            ),
-                                                            onTap: () {
-                                                              //Save to json
-                                                              saveModdedItemListToJson();
-                                                              isCatesReordering[groupIndex] = false;
-
-                                                              setState(() {});
-                                                            }),
-                                                      ),
-                                                initiallyExpanded: moddedItemsList[groupIndex].expanded,
-                                                children: [
-                                                  //Sort Cate=========================================================
-                                                  Visibility(
-                                                    visible: isCatesReordering[groupIndex],
-                                                    child: ReorderableListView.builder(
-                                                        padding: const EdgeInsets.only(left: 2, right: 1),
-                                                        shrinkWrap: true,
-                                                        physics: const NeverScrollableScrollPhysics(),
-                                                        buildDefaultDragHandles: false,
-                                                        onReorder: (int oldIndex, int newIndex) {
-                                                          setState(() {
-                                                            if (oldIndex < newIndex) {
-                                                              newIndex -= 1;
-                                                            }
-                                                            Category item = moddedItemsList[groupIndex].categories.removeAt(oldIndex);
-                                                            item.position = newIndex;
-                                                            moddedItemsList[groupIndex].categories.insert(newIndex, item);
-                                                          });
-                                                        },
-                                                        itemCount: moddedItemsList[groupIndex].categories.length,
-                                                        itemBuilder: (context, categoryIndex) {
-                                                          var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
-                                                          return ReorderableDragStartListener(
-                                                            key: Key('$categoryIndex'),
-                                                            index: categoryIndex,
-                                                            child: SizedBox(
-                                                              height: 63,
-                                                              child: ListTile(
-                                                                  onTap: () {},
-                                                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                                                                  tileColor: Colors.transparent,
-                                                                  minVerticalPadding: 5,
-                                                                  textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                                                                  trailing: const Icon(Icons.drag_handle_outlined),
-                                                                  title: Row(
-                                                                    children: [
-                                                                      Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
-                                                                        child: Container(
-                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                            decoration: BoxDecoration(
-                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                            ),
-                                                                            child: curCategory.items.length < 2
-                                                                                ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
-                                                                                    style: const TextStyle(
-                                                                                      fontSize: 13,
-                                                                                    ))
-                                                                                : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
-                                                                                    style: const TextStyle(
-                                                                                      fontSize: 13,
-                                                                                    ))),
-                                                                      ),
-                                                                    ],
-                                                                  )),
-                                                            ),
-                                                          );
-                                                        }),
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
+                                                  trailing: !isCatesReordering[groupIndex]
+                                                      ? null
+                                                      : Tooltip(
+                                                          message: 'Back',
+                                                          height: 25,
+                                                          textStyle: const TextStyle(fontSize: 14),
+                                                          decoration: BoxDecoration(
+                                                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                          waitDuration: const Duration(milliseconds: 500),
+                                                          child: InkWell(
+                                                              child: const Icon(
+                                                                Icons.arrow_back_ios_new,
+                                                              ),
+                                                              onTap: () {
+                                                                //Save to json
+                                                                saveModdedItemListToJson();
+                                                                isCatesReordering[groupIndex] = false;
 
-                                                  //Main Normal Cate=========================================================
-                                                  Visibility(
-                                                    visible: !isCatesReordering[groupIndex],
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      itemCount: moddedItemsList[groupIndex].categories.length,
-                                                      itemBuilder: (context, categoryIndex) {
-                                                        var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
-                                                        if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                                          itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
-                                                        }
-                                                        if (cateButtonsVisible[groupIndex].isEmpty || cateButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
-                                                          cateButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
-                                                        }
-                                                        return Visibility(
-                                                          visible: curCategory.visible,
-                                                          child: InkResponse(
-                                                            highlightShape: BoxShape.rectangle,
-                                                            onTap: () {},
-                                                            onHover: (value) {
-                                                              if (value) {
-                                                                cateButtonsVisible[groupIndex][categoryIndex] = true;
-                                                              } else {
-                                                                cateButtonsVisible[groupIndex][categoryIndex] = false;
+                                                                setState(() {});
+                                                              }),
+                                                        ),
+                                                  initiallyExpanded: moddedItemsList[groupIndex].expanded,
+                                                  children: [
+                                                    //Sort Cate=========================================================
+                                                    Visibility(
+                                                      visible: isCatesReordering[groupIndex],
+                                                      child: ReorderableListView.builder(
+                                                          padding: const EdgeInsets.only(left: 2, right: 1),
+                                                          shrinkWrap: true,
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          buildDefaultDragHandles: false,
+                                                          onReorder: (int oldIndex, int newIndex) {
+                                                            setState(() {
+                                                              if (oldIndex < newIndex) {
+                                                                newIndex -= 1;
                                                               }
-                                                              setState(() {});
-                                                            },
-                                                            child: ExpansionTile(
-                                                                backgroundColor: Colors.transparent,
-                                                                textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                                iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                                collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                                collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                                initiallyExpanded: false,
-                                                                childrenPadding: EdgeInsets.zero,
-                                                                title: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    Row(
+                                                              Category item = moddedItemsList[groupIndex].categories.removeAt(oldIndex);
+                                                              item.position = newIndex;
+                                                              moddedItemsList[groupIndex].categories.insert(newIndex, item);
+                                                            });
+                                                          },
+                                                          itemCount: moddedItemsList[groupIndex].categories.length,
+                                                          itemBuilder: (context, categoryIndex) {
+                                                            var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                                                            return ReorderableDragStartListener(
+                                                              key: Key('$categoryIndex'),
+                                                              index: categoryIndex,
+                                                              child: SizedBox(
+                                                                height: 63,
+                                                                child: ListTile(
+                                                                    onTap: () {},
+                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                                                    tileColor: Colors.transparent,
+                                                                    minVerticalPadding: 5,
+                                                                    textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                                                                    trailing: const Icon(Icons.drag_handle_outlined),
+                                                                    title: Row(
                                                                       children: [
                                                                         Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
                                                                         Padding(
@@ -1595,209 +1562,289 @@ class _HomePageState extends State<HomePage> {
                                                                                       ))),
                                                                         ),
                                                                       ],
-                                                                    ),
-                                                                    Visibility(
-                                                                      visible: cateButtonsVisible[groupIndex][categoryIndex],
-                                                                      child: Wrap(
-                                                                        crossAxisAlignment: WrapCrossAlignment.center,
-                                                                        runAlignment: WrapAlignment.center,
-                                                                        spacing: 5,
+                                                                    )),
+                                                              ),
+                                                            );
+                                                          }),
+                                                    ),
+
+                                                    //Main Normal Cate=========================================================
+                                                    Visibility(
+                                                      visible: !isCatesReordering[groupIndex],
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics: const NeverScrollableScrollPhysics(),
+                                                        itemCount: moddedItemsList[groupIndex].categories.length,
+                                                        itemBuilder: (context, categoryIndex) {
+                                                          var curCategory = moddedItemsList[groupIndex].categories[categoryIndex];
+                                                          if (itemButtonsVisible[groupIndex].isEmpty || itemButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                            itemButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => []);
+                                                          }
+                                                          if (cateButtonsVisible[groupIndex].isEmpty || cateButtonsVisible[groupIndex].length != moddedItemsList[groupIndex].categories.length) {
+                                                            cateButtonsVisible[groupIndex] = List.generate(moddedItemsList[groupIndex].categories.length, (index) => false);
+                                                          }
+                                                          return Visibility(
+                                                            visible: curCategory.visible,
+                                                            child: InkResponse(
+                                                              highlightShape: BoxShape.rectangle,
+                                                              onTap: () {},
+                                                              onHover: (value) {
+                                                                if (value) {
+                                                                  cateButtonsVisible[groupIndex][categoryIndex] = true;
+                                                                } else {
+                                                                  cateButtonsVisible[groupIndex][categoryIndex] = false;
+                                                                }
+                                                                setState(() {});
+                                                              },
+                                                              child: ExpansionTile(
+                                                                  backgroundColor: Colors.transparent,
+                                                                  textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                                  iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                                  collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                                  collapsedTextColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                                  initiallyExpanded: false,
+                                                                  childrenPadding: EdgeInsets.zero,
+                                                                  title: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    children: [
+                                                                      Row(
                                                                         children: [
-                                                                          Tooltip(
-                                                                            message: 'Hide ${curCategory.categoryName} from Item List',
-                                                                            height: 25,
-                                                                            textStyle: const TextStyle(fontSize: 14),
-                                                                            decoration: BoxDecoration(
-                                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                            waitDuration: const Duration(milliseconds: 500),
-                                                                            child: InkWell(
-                                                                                onLongPress: () async {
-                                                                                  hideCategory(moddedItemsList[groupIndex], curCategory);
-                                                                                  hiddenItemCategories = await hiddenCategoriesGet(moddedItemsList);
-                                                                                  setState(() {});
-                                                                                },
-                                                                                child: const Icon(
-                                                                                  FontAwesomeIcons.solidEyeSlash,
-                                                                                  size: 16,
-                                                                                )),
-                                                                          ),
-                                                                          Visibility(
-                                                                            visible: !defaultCateforyDirs.contains(curCategory.categoryName),
-                                                                            child: Tooltip(
-                                                                              message: '${curLangText!.deleteBtnTooltipText} ${curCategory.categoryName}',
-                                                                              height: 25,
-                                                                              textStyle: const TextStyle(fontSize: 14),
-                                                                              decoration: BoxDecoration(
-                                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                              ),
-                                                                              waitDuration: const Duration(milliseconds: 500),
-                                                                              child: InkWell(
-                                                                                  onTap: () {
-                                                                                    setState(() {});
-                                                                                  },
-                                                                                  child: const Icon(
-                                                                                    Icons.delete_sweep_outlined,
-                                                                                  )),
-                                                                            ),
+                                                                          Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                                                            child: Container(
+                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                decoration: BoxDecoration(
+                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                ),
+                                                                                child: curCategory.items.length < 2
+                                                                                    ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                                                        style: const TextStyle(
+                                                                                          fontSize: 13,
+                                                                                        ))
+                                                                                    : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                                                        style: const TextStyle(
+                                                                                          fontSize: 13,
+                                                                                        ))),
                                                                           ),
                                                                         ],
                                                                       ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                children: [
-                                                                  ListView.builder(
-                                                                      shrinkWrap: true,
-                                                                      physics: const NeverScrollableScrollPhysics(),
-                                                                      itemCount: curCategory.items.length,
-                                                                      itemBuilder: (context, itemIndex) {
-                                                                        var curItem = curCategory.items[itemIndex];
-                                                                        if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
-                                                                            itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
-                                                                          itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
-                                                                        }
+                                                                      Visibility(
+                                                                        visible: cateButtonsVisible[groupIndex][categoryIndex],
+                                                                        child: Wrap(
+                                                                          crossAxisAlignment: WrapCrossAlignment.center,
+                                                                          runAlignment: WrapAlignment.center,
+                                                                          spacing: 10,
+                                                                          children: [
+                                                                            Tooltip(
+                                                                              message: 'Hide ${curCategory.categoryName} from Item List',
+                                                                              height: 25,
+                                                                              textStyle: const TextStyle(fontSize: 14),
+                                                                              decoration: BoxDecoration(
+                                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                              waitDuration: const Duration(milliseconds: 500),
+                                                                              child: InkWell(
+                                                                                  onLongPress: () async {
+                                                                                    hideCategory(moddedItemsList[groupIndex], curCategory);
+                                                                                    hiddenItemCategories = await hiddenCategoriesGet(moddedItemsList);
+                                                                                    setState(() {});
+                                                                                  },
+                                                                                  child: const Icon(
+                                                                                    FontAwesomeIcons.solidEyeSlash,
+                                                                                    size: 16,
+                                                                                  )),
+                                                                            ),
+                                                                            Visibility(
+                                                                              visible: !defaultCateforyDirs.contains(curCategory.categoryName),
+                                                                              child: Tooltip(
+                                                                                message: 'Hold to remove ${curCategory.categoryName} from ${moddedItemsList[groupIndex].groupName}',
+                                                                                height: 25,
+                                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                                decoration: BoxDecoration(
+                                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                                ),
+                                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                                child: InkWell(
+                                                                                    onLongPress: () {
+                                                                                      if (curCategory.items.isEmpty) {
+                                                                                        Directory(curCategory.location).deleteSync(recursive: true);
+                                                                                        moddedItemsList[groupIndex].categories.remove(curCategory);
+                                                                                        for (var cate in moddedItemsList[groupIndex].categories) {
+                                                                                          cate.position = moddedItemsList[groupIndex].categories.indexOf(cate);
+                                                                                        }
+                                                                                        modViewItem = null;
+                                                                                      } else {
+                                                                                        categoryRemover(context, moddedItemsList[groupIndex], curCategory);
+                                                                                      }
+                                                                                      saveModdedItemListToJson();
+                                                                                      setState(() {});
+                                                                                    },
+                                                                                    child: const Icon(
+                                                                                      Icons.delete_sweep_outlined,
+                                                                                    )),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  children: [
+                                                                    ListView.builder(
+                                                                        shrinkWrap: true,
+                                                                        physics: const NeverScrollableScrollPhysics(),
+                                                                        itemCount: curCategory.items.length,
+                                                                        itemBuilder: (context, itemIndex) {
+                                                                          var curItem = curCategory.items[itemIndex];
+                                                                          if (itemButtonsVisible[groupIndex][categoryIndex].isEmpty ||
+                                                                              itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
+                                                                            itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
+                                                                          }
 
-                                                                        return SizedBox(
-                                                                          height: 84,
-                                                                          child: Container(
-                                                                            margin: const EdgeInsets.all(1),
-                                                                            color: Colors.transparent,
-                                                                            //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-                                                                            child: InkWell(
-                                                                              child: Row(
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
-                                                                                    child: Container(
-                                                                                        width: 80,
-                                                                                        height: 80,
-                                                                                        decoration: BoxDecoration(
-                                                                                          borderRadius: BorderRadius.circular(3),
-                                                                                          border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
-                                                                                        ),
-                                                                                        child: Image.file(
-                                                                                          File(curItem.icon),
-                                                                                          filterQuality: FilterQuality.none,
-                                                                                          fit: BoxFit.fitWidth,
-                                                                                        )),
-                                                                                  ),
-                                                                                  Expanded(
-                                                                                    child: Column(
-                                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          curItem.itemName,
-                                                                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                                                                        ),
-                                                                                        Text(
-                                                                                          curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
-                                                                                          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                        ),
-                                                                                        Text(
-                                                                                          '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
-                                                                                          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                        ),
-                                                                                      ],
+                                                                          return SizedBox(
+                                                                            height: 84,
+                                                                            child: Container(
+                                                                              margin: const EdgeInsets.all(1),
+                                                                              color: Colors.transparent,
+                                                                              //shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+                                                                              child: InkWell(
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15, right: 10),
+                                                                                      child: Container(
+                                                                                          width: 80,
+                                                                                          height: 80,
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(3),
+                                                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                                                          ),
+                                                                                          child: Image.file(
+                                                                                            File(curItem.icon),
+                                                                                            filterQuality: FilterQuality.none,
+                                                                                            fit: BoxFit.fitWidth,
+                                                                                          )),
                                                                                     ),
-                                                                                  ),
-                                                                                  Visibility(
-                                                                                    visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.only(right: 15),
-                                                                                      child: Row(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                    Expanded(
+                                                                                      child: Column(
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
-                                                                                          //Buttons
-                                                                                          Tooltip(
-                                                                                              message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
-                                                                                              height: 25,
-                                                                                              textStyle: const TextStyle(fontSize: 14),
-                                                                                              decoration: BoxDecoration(
-                                                                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                                              ),
-                                                                                              waitDuration: const Duration(milliseconds: 500),
-                                                                                              child: InkWell(
-                                                                                                child: const Icon(Icons.folder_open),
-                                                                                                onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                                              )),
-                                                                                          //Delete
-                                                                                          Padding(
-                                                                                            padding: const EdgeInsets.only(left: 5),
-                                                                                            child: Tooltip(
-                                                                                              message: 'Hold to remove ${curItem.itemName} from Mod Manager',
-                                                                                              height: 25,
-                                                                                              textStyle: const TextStyle(fontSize: 14),
-                                                                                              decoration: BoxDecoration(
-                                                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                              waitDuration: const Duration(milliseconds: 500),
-                                                                                              child: InkWell(
-                                                                                                onLongPress: curItem.applyStatus
-                                                                                                    ? null
-                                                                                                    : () async {
-                                                                                                        deleteItemFromModMan(curItem.location).then((value) {
-                                                                                                          String removedName = '${curCategory.categoryName} > ${curItem.itemName}';
-                                                                                                          if (modViewItem == curItem) {
-                                                                                                            modViewItem = null;
-                                                                                                          }
-                                                                                                          curCategory.items.remove(curItem);
-                                                                                                          ScaffoldMessenger.of(context).showSnackBar(
-                                                                                                              snackBarMessage('Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
-                                                                                                          setState(() {});
-                                                                                                        });
-                                                                                                      },
-                                                                                                child: Icon(
-                                                                                                  Icons.delete_forever_outlined,
-                                                                                                  color: curItem.applyStatus ? Theme.of(context).disabledColor : null,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
+                                                                                          Text(
+                                                                                            curItem.itemName,
+                                                                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
+                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
+                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                           ),
                                                                                         ],
                                                                                       ),
                                                                                     ),
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                              onTap: () {
-                                                                                for (var element in modViewETKeys) {
-                                                                                  element.currentState?.collapse();
-                                                                                }
-                                                                                modViewETKeys.clear();
-                                                                                isModViewListHidden = false;
-                                                                                isModViewFromApplied = false;
-                                                                                modViewCate = curCategory;
-                                                                                modViewItem = curItem;
-                                                                                setState(() {});
-                                                                              },
-                                                                              onHover: (value) {
-                                                                                setState(() {
-                                                                                  if (value) {
-                                                                                    itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
-                                                                                  } else {
-                                                                                    itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                                                    Visibility(
+                                                                                      visible: itemButtonsVisible[groupIndex][categoryIndex][itemIndex],
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.only(right: 15),
+                                                                                        child: Row(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                          children: [
+                                                                                            //Buttons
+                                                                                            Tooltip(
+                                                                                                message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                                                height: 25,
+                                                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                                                decoration: BoxDecoration(
+                                                                                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                                                ),
+                                                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                                                child: InkWell(
+                                                                                                  child: const Icon(Icons.folder_open),
+                                                                                                  onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                                                )),
+                                                                                            //Delete
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(left: 5),
+                                                                                              child: Tooltip(
+                                                                                                message: 'Hold to remove ${curItem.itemName} from Mod Manager',
+                                                                                                height: 25,
+                                                                                                textStyle: const TextStyle(fontSize: 14),
+                                                                                                decoration: BoxDecoration(
+                                                                                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                                                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                                                waitDuration: const Duration(milliseconds: 500),
+                                                                                                child: InkWell(
+                                                                                                  onLongPress: curItem.applyStatus
+                                                                                                      ? null
+                                                                                                      : () async {
+                                                                                                          deleteItemFromModMan(curItem.location).then((value) {
+                                                                                                            String removedName = '${curCategory.categoryName} > ${curItem.itemName}';
+                                                                                                            if (modViewItem == curItem) {
+                                                                                                              modViewItem = null;
+                                                                                                            }
+                                                                                                            curCategory.items.remove(curItem);
+                                                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                                snackBarMessage('Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                                            setState(() {});
+                                                                                                          });
+                                                                                                        },
+                                                                                                  child: Icon(
+                                                                                                    Icons.delete_forever_outlined,
+                                                                                                    color: curItem.applyStatus ? Theme.of(context).disabledColor : null,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                                onTap: () {
+                                                                                  for (var element in modViewETKeys) {
+                                                                                    element.currentState?.collapse();
                                                                                   }
-                                                                                });
-                                                                              },
+                                                                                  modViewETKeys.clear();
+                                                                                  isModViewListHidden = false;
+                                                                                  isModViewFromApplied = false;
+                                                                                  modViewCate = curCategory;
+                                                                                  modViewItem = curItem;
+                                                                                  setState(() {});
+                                                                                },
+                                                                                onHover: (value) {
+                                                                                  setState(() {
+                                                                                    if (value) {
+                                                                                      itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = true;
+                                                                                    } else {
+                                                                                      itemButtonsVisible[groupIndex][categoryIndex][itemIndex] = false;
+                                                                                    }
+                                                                                  });
+                                                                                },
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                        );
-                                                                      }),
-                                                                ]),
-                                                          ),
-                                                        );
-                                                      },
+                                                                          );
+                                                                        }),
+                                                                  ]),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
