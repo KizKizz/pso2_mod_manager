@@ -1864,7 +1864,7 @@ class _HomePageState extends State<HomePage> {
   Widget modsView() {
     //normal
     List<String> appBarAppliedModNames = [];
-    if (modViewItem != null && !isFavListVisible && isModViewFromApplied) {
+    if (modViewItem != null && !isFavListVisible) {
       for (var mod in modViewItem!.mods.where((element) => element.applyStatus)) {
         for (var sub in mod.submods.where((element) => element.applyStatus)) {
           appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
@@ -1984,7 +1984,7 @@ class _HomePageState extends State<HomePage> {
                             thickness: 1,
                           ),
                         //normal
-                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && isModViewFromApplied)
+                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
                           Text(
                             modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
