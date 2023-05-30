@@ -1902,6 +1902,7 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
+        titleSpacing: 0,
         actions: <Widget>[
           if (isModViewListHidden || modViewItem == null) Container(),
           if (!isModViewListHidden && modViewItem != null)
@@ -1927,93 +1928,96 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
         ],
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            if (!isModViewListHidden && modViewItem != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      border: Border.all(color: modViewItem!.isNew ? Colors.amber : Theme.of(context).hintColor),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (!isModViewListHidden && modViewItem != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                  child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        border: Border.all(color: modViewItem!.isNew ? Colors.amber : Theme.of(context).hintColor),
+                      ),
+                      child: Image.file(
+                        File(modViewItem!.icon),
+                        filterQuality: FilterQuality.none,
+                        fit: BoxFit.fitWidth,
+                      )),
+                ),
+              Expanded(
+                child: SizedBox(
+                  height: !isModViewListHidden && modViewItem != null ? 84 : 30,
+                  child: ScrollbarTheme(
+                    data: ScrollbarThemeData(
+                      thickness: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.hovered)) {
+                          return !isModViewListHidden && modViewItem != null ? 5 : 0;
+                        }
+                        return !isModViewListHidden && modViewItem != null ? 3 : 0;
+                      }),
+                      thumbColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.hovered)) {
+                          return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                        }
+                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                      }),
                     ),
-                    child: Image.file(
-                      File(modViewItem!.icon),
-                      filterQuality: FilterQuality.none,
-                      fit: BoxFit.fitWidth,
-                    )),
-              ),
-            Expanded(
-              child: SizedBox(
-                height: !isModViewListHidden && modViewItem != null ? 84 : 30,
-                child: ScrollbarTheme(
-                  data: ScrollbarThemeData(
-                    thickness: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.hovered)) {
-                        return !isModViewListHidden && modViewItem != null ? 5 : 0;
-                      }
-                      return !isModViewListHidden && modViewItem != null ? 3 : 0;
-                    }),
-                    thumbColor: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.hovered)) {
-                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                      }
-                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                    }),
-                  ),
-                  child: SingleChildScrollView(
-                    physics: modViewItem == null ? const NeverScrollableScrollPhysics() : null,
-                    child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      !isModViewListHidden && modViewItem != null
-                          ? Text(modViewItem!.itemName)
-                          : Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: Text(curLangText!.availableModsHeaderText),
-                            ),
-                      if (modViewItem != null)
-                        const Divider(
-                          endIndent: 5,
-                          height: 5,
-                          thickness: 1,
-                        ),
-                      //normal
-                      if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && isModViewFromApplied)
-                        Text(
-                          modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                        ),
-                      //fav
-                      if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
-                        Text(
-                          modViewItem!.mods.where((element) => element.isFavorite).length < 2
-                              ? '${modViewItem!.mods.where((element) => element.isFavorite).length} Mod'
-                              : '${modViewItem!.mods.where((element) => element.isFavorite).length} Mods',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                        ),
-                      //searching
-                      if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
-                        Text(
-                          itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
-                              ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mod'
-                              : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mods',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                        ),
-                      if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
-                        for (int i = 0; i < appBarAppliedModNames.length; i++)
-                          Text(
-                            'Applied: ${appBarAppliedModNames[i]}',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.primary),
+                    child: SingleChildScrollView(
+                      physics: modViewItem == null ? const NeverScrollableScrollPhysics() : null,
+                      child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        !isModViewListHidden && modViewItem != null
+                            ? Text(modViewItem!.itemName)
+                            : Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Text(curLangText!.availableModsHeaderText),
+                              ),
+                        if (modViewItem != null)
+                          const Divider(
+                            endIndent: 5,
+                            height: 5,
+                            thickness: 1,
                           ),
-                    ]),
+                        //normal
+                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && isModViewFromApplied)
+                          Text(
+                            modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          ),
+                        //fav
+                        if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
+                          Text(
+                            modViewItem!.mods.where((element) => element.isFavorite).length < 2
+                                ? '${modViewItem!.mods.where((element) => element.isFavorite).length} Mod'
+                                : '${modViewItem!.mods.where((element) => element.isFavorite).length} Mods',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          ),
+                        //searching
+                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
+                          Text(
+                            itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
+                                ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mod'
+                                : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mods',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          ),
+                        if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
+                          for (int i = 0; i < appBarAppliedModNames.length; i++)
+                            Text(
+                              'Applied: ${appBarAppliedModNames[i]}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.primary),
+                            ),
+                      ]),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -2928,11 +2932,34 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
+        titleSpacing: 0,
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 5),
             child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
-              //Show all hidden
+              //Remove all mods from game
+              Tooltip(
+                message: 'Hold to remove all applied mods from the game',
+                height: 25,
+                textStyle: const TextStyle(fontSize: 14),
+                decoration: BoxDecoration(
+                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                waitDuration: const Duration(milliseconds: 500),
+                child: InkWell(
+                    onTap: appliedItemList.isEmpty
+                        ? null
+                        : () {
+                            
+                            setState(() {});
+                          },
+                    child: Icon(
+                      Icons.playlist_remove,
+                      color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+                    )),
+              ),
+              //Add to mod set
               Tooltip(
                 message: 'Add all applied mods to Mod Sets',
                 height: 25,
@@ -2961,7 +2988,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
         title: Padding(
-          padding: const EdgeInsets.only(bottom: 5),
+          padding: const EdgeInsets.only(left: 5, bottom: 5),
           child: Text(curLangText!.appliedModsHeadersText),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
@@ -3418,9 +3445,10 @@ class _HomePageState extends State<HomePage> {
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
+        titleSpacing: 0,
         actions: <Widget>[Container()],
         title: Padding(
-          padding: const EdgeInsets.only(bottom: 5),
+          padding: const EdgeInsets.only(left: 5, bottom: 5),
           child: Text(previewModName.isNotEmpty ? 'Preview: $previewModName' : curLangText!.previewHeaderText),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
@@ -3514,7 +3542,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 17, bottom: 5, right: 5),
+              padding: EdgeInsets.only(left: 5, bottom: 5, right: 5),
               child: Text('Mod Sets'),
             ),
             //Search
