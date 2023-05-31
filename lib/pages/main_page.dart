@@ -22,6 +22,7 @@ import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
+import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
@@ -42,6 +43,8 @@ class _MainPageState extends State<MainPage> {
   void changeColor(Color color) {
     setState(() => pickerColor = color);
   }
+
+  int totalSheetFilesCount = File(modManRefSheetListFilePath).readAsLinesSync().length;
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +86,8 @@ class _MainPageState extends State<MainPage> {
                     padding: const EdgeInsets.all(5),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       //Language
-                      Tooltip(
+                      ModManTooltip(
                         message: curLangText!.languageTooltipText,
-                        height: 25,
-                        textStyle: const TextStyle(fontSize: 14),
-                        decoration: BoxDecoration(
-                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                          borderRadius: const BorderRadius.all(Radius.circular(2)),
-                        ),
-                        waitDuration: const Duration(milliseconds: 500),
                         child: InkWell(
                           onLongPress: () {
                             showDialog(
@@ -433,16 +428,8 @@ class _MainPageState extends State<MainPage> {
 
                       //Dark theme
                       if (MyApp.themeNotifier.value == ThemeMode.dark)
-                        Tooltip(
+                        ModManTooltip(
                           message: curLangText!.darkModeTooltipText,
-                          height: 25,
-                          textStyle: const TextStyle(fontSize: 14),
-                          decoration: BoxDecoration(
-                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                            border: Border.all(color: Theme.of(context).primaryColorLight),
-                            borderRadius: const BorderRadius.all(Radius.circular(2)),
-                          ),
-                          waitDuration: const Duration(milliseconds: 500),
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
@@ -465,16 +452,8 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       if (MyApp.themeNotifier.value == ThemeMode.light)
-                        Tooltip(
+                        ModManTooltip(
                           message: curLangText!.lightModeTooltipText,
-                          height: 25,
-                          textStyle: const TextStyle(fontSize: 14),
-                          decoration: BoxDecoration(
-                            color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                            border: Border.all(color: Theme.of(context).primaryColorLight),
-                            borderRadius: const BorderRadius.all(Radius.circular(2)),
-                          ),
-                          waitDuration: const Duration(milliseconds: 500),
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
@@ -554,15 +533,8 @@ class _MainPageState extends State<MainPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Primary swatch',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -605,15 +577,8 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Main UI background',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -659,15 +624,8 @@ class _MainPageState extends State<MainPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Primary color',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -708,15 +666,8 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Primary light',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -762,15 +713,8 @@ class _MainPageState extends State<MainPage> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Primary dark',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                          color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -811,16 +755,8 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
-                                    child: Tooltip(
+                                    child: ModManTooltip(
                                       message: 'Main canvas background',
-                                      height: 25,
-                                      textStyle: const TextStyle(fontSize: 14),
-                                      decoration: BoxDecoration(
-                                        color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                        border: Border.all(color: Theme.of(context).primaryColorLight),
-                                        borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                      ),
-                                      waitDuration: const Duration(milliseconds: 500),
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -971,16 +907,8 @@ class _MainPageState extends State<MainPage> {
                                         children: [
                                           if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
                                               (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
-                                            Tooltip(
+                                            ModManTooltip(
                                               message: showBackgroundImage ? 'Hide background image' : 'Show background image',
-                                              height: 25,
-                                              textStyle: const TextStyle(fontSize: 14),
-                                              decoration: BoxDecoration(
-                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                              ),
-                                              waitDuration: const Duration(milliseconds: 500),
                                               child: InkWell(
                                                 child: Container(
                                                   decoration: ShapeDecoration(
@@ -1009,16 +937,8 @@ class _MainPageState extends State<MainPage> {
                                             ),
                                           if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
                                               (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
-                                            Tooltip(
+                                            ModManTooltip(
                                               message: 'Hold to remove background image',
-                                              height: 25,
-                                              textStyle: const TextStyle(fontSize: 14),
-                                              decoration: BoxDecoration(
-                                                color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                              ),
-                                              waitDuration: const Duration(milliseconds: 500),
                                               child: InkWell(
                                                 child: Container(
                                                   decoration: ShapeDecoration(
@@ -1071,16 +991,8 @@ class _MainPageState extends State<MainPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Tooltip(
+                              ModManTooltip(
                                   message: 'Version: $appVersion | Made by キス★',
-                                  height: 25,
-                                  textStyle: const TextStyle(fontSize: 14),
-                                  decoration: BoxDecoration(
-                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                    border: Border.all(color: Theme.of(context).primaryColorLight),
-                                    borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                  ),
-                                  waitDuration: const Duration(milliseconds: 500),
                                   child: const Text(
                                     'PSO2NGS Mod Manager',
                                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
@@ -1090,16 +1002,8 @@ class _MainPageState extends State<MainPage> {
                           if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
-                              child: Tooltip(
+                              child: ModManTooltip(
                                 message: curLangText!.titleNewUpdateToolTip,
-                                height: 25,
-                                textStyle: const TextStyle(fontSize: 14),
-                                decoration: BoxDecoration(
-                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                ),
-                                waitDuration: const Duration(milliseconds: 500),
                                 child: MaterialButton(
                                     visualDensity: VisualDensity.compact,
                                     height: 20,
@@ -1126,16 +1030,8 @@ class _MainPageState extends State<MainPage> {
                       child: Row(
                         children: [
                           //Add Items/Mods
-                          Tooltip(
+                          ModManTooltip(
                             message: curLangText!.addModsTooltip,
-                            height: 25,
-                            textStyle: const TextStyle(fontSize: 14),
-                            decoration: BoxDecoration(
-                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            ),
-                            waitDuration: const Duration(milliseconds: 500),
                             child: SizedBox(
                               width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
@@ -1165,11 +1061,8 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Mod sets
-                          Tooltip(
-                            message: curLangText!.modSetsTooltipText,
-                            height: 25,
-                            textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                            waitDuration: const Duration(seconds: 1),
+                          ModManTooltip(
+                            message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.modSetsTooltipText : 'Manage Mod List',
                             child: SizedBox(
                               width: 99,
                               child: MaterialButton(
@@ -1206,16 +1099,8 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Refresh
-                          Tooltip(
+                          ModManTooltip(
                             message: 'Refresh Mod Manager',
-                            height: 25,
-                            textStyle: const TextStyle(fontSize: 14),
-                            decoration: BoxDecoration(
-                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            ),
-                            waitDuration: const Duration(milliseconds: 500),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
@@ -1241,18 +1126,10 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Checksum
-                          Tooltip(
+                          ModManTooltip(
                             message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                 ? curLangText!.checksumToolTipText
                                 : curLangText!.checksumHoldBtnTooltip,
-                            height: 25,
-                            textStyle: const TextStyle(fontSize: 14),
-                            decoration: BoxDecoration(
-                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            ),
-                            waitDuration: const Duration(milliseconds: 500),
                             child: MaterialButton(
                               onLongPress: () async {
                                 if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
@@ -1326,16 +1203,8 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Preview
-                          Tooltip(
+                          ModManTooltip(
                             message: curLangText!.previewTooltipText,
-                            height: 25,
-                            textStyle: const TextStyle(fontSize: 14),
-                            decoration: BoxDecoration(
-                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            ),
-                            waitDuration: const Duration(milliseconds: 500),
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
@@ -1373,16 +1242,8 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Settings button
-                          Tooltip(
+                          ModManTooltip(
                             message: curLangText!.darkModeTooltipText,
-                            height: 25,
-                            textStyle: const TextStyle(fontSize: 14),
-                            decoration: BoxDecoration(
-                              color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(2)),
-                            ),
-                            waitDuration: const Duration(milliseconds: 500),
                             child: SizedBox(
                               //width: 95,
                               child: MaterialButton(
@@ -1512,25 +1373,18 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       if (context.watch<StateProvider>().refSheetsCount < 1)
                         Text(
-                          curLangText!.itemRefUpdateAvailableText,
+                          'New update available for item reference sheets (Important for Add Mods function to work correctly)',
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                       if (context.watch<StateProvider>().refSheetsCount > 0)
                         Text(
-                          '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} ${localRefSheetsList.length}',
+                          '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} $totalSheetFilesCount of the required item reference sheets. (Important for Add Mods function to work correctly)',
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                       ElevatedButton(
                           onPressed: context.watch<StateProvider>().refSheetsCount < 1
                               ? (() {
-                                  //Indexing files
-
-                                  for (var file
-                                      in Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv')) {
-                                    localRefSheetsList.add(file.path);
-                                  }
-
-                                  downloadNewRefSheets(context, localRefSheetsList).then((_) async {
+                                  downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
                                     final prefs = await SharedPreferences.getInstance();
                                     prefs.setInt('refSheetsVersion', refSheetsNewVersion);
                                     //print('complete');

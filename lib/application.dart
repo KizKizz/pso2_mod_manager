@@ -7,8 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 
 String newVersion = '';
 String patchNotes = '';
@@ -78,12 +82,30 @@ class ApplicationConfig {
 
   //Ref Sheets version check
   Future<void> checkRefSheetsForUpdates(context) async {
-    final jsonVal = await loadRefSheetsJsonFromGithub();
-    if (jsonVal.entries.first.key != 'null') {
-      String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
-      if (refSheetsVersion < int.parse(newVersionValue)) {
+    final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
+    if (!Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync() || sheetFiles.isEmpty) {
+      final jsonVal = await loadRefSheetsJsonFromGithub();
+      if (jsonVal.entries.first.key != 'null') {
+        String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
         refSheetsNewVersion = int.parse(newVersionValue);
-        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+      }
+      Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+      //auto download
+      downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+        //print('complete');
+        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+        Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+      });
+    } else {
+      final jsonVal = await loadRefSheetsJsonFromGithub();
+      if (jsonVal.entries.first.key != 'null') {
+        String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
+        if (refSheetsVersion < int.parse(newVersionValue)) {
+          refSheetsNewVersion = int.parse(newVersionValue);
+          Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,11 +12,14 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:window_manager/window_manager.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 //Colors
 Color lightModePrimaryColor = const Color(0xffffffff);
@@ -147,11 +151,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   void initState() {
     windowManager.addListener(this);
     miscCheck();
-    getSortType();
     getAppVer();
+    
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
-    ApplicationConfig().checkRefSheetsForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
 
     super.initState();
@@ -162,15 +165,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     appVersion = packageInfo.version;
   }
 
+
   Future<void> getRefSheetsVersion() async {
     final prefs = await SharedPreferences.getInstance();
     refSheetsVersion = (prefs.getInt('refSheetsVersion') ?? 0);
-  }
-
-  Future<void> getSortType() async {
-    final prefs = await SharedPreferences.getInstance();
-    // 0 => sort by name, 1 => sort by item amount
-    //selectedSortType = (prefs.getInt('selectedSortType') ?? 0);
   }
 
   @override
@@ -194,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         }
       }
       //Empty categories hide
-       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
+      isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
 
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));

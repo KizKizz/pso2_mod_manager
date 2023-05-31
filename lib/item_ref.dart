@@ -28,13 +28,14 @@ Future<List<List<String>>> popSheetsList(String csvDirPath) async {
   return csvList;
 }
 
-Future<void> downloadNewRefSheets(context, List<String> filePaths) async {
+Future<void> downloadNewRefSheets(context, File refSheetListFile) async {
   final dio = Dio();
-  for (var path in filePaths) {
+  final fileList = refSheetListFile.readAsLinesSync();
+  for (var path in fileList) {
     String localPath = path.replaceAll(Uri.file('/').toFilePath(), '/');
-    String githubPath = localPath.replaceFirst(modManRefSheetsDirPath.replaceAll(Uri.file('/').toFilePath(), '/'), 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets');
+    String githubPath = 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets$localPath';
 
-    await dio.download(githubPath, path);
+    await dio.download(githubPath, Uri.file('$modManRefSheetsDirPath$path').toFilePath());
     Provider.of<StateProvider>(context, listen: false).refSheetsCountUp();
   }
 }
