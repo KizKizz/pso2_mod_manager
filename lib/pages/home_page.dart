@@ -29,6 +29,8 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
+import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1884,34 +1886,19 @@ class _HomePageState extends State<HomePage> {
                                   hoveringOnSubmod = true;
                                   previewModName = curMod.modName;
                                   for (var path in curMod.previewImages) {
-                                    previewImages.add(Stack(
-                                      alignment: Alignment.bottomCenter,
-                                      children: [
-                                        Image.file(
-                                          File(path),
-                                          //fit: BoxFit.cover,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.fitWidth,
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                borderRadius: BorderRadius.circular(3),
-                                                border: Border.all(color: Theme.of(context).hintColor),
-                                              ),
-                                              height: 25,
-                                              child: Center(
-                                                  child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                child: Text(
-                                                    curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
-                                                        ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
-                                                        : curMod.modName,
-                                                    style: const TextStyle(fontSize: 17)),
-                                              ))),
-                                        )
-                                      ],
-                                    ));
+                                    previewImages.add(PreviewImageStack(
+                                        imagePath: path,
+                                        overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                            ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                            : curMod.modName));
+                                  }
+                                  for (var path in curMod.previewVideos) {
+                                    previewImages.add(PreviewVideoStack(
+                                        listIndex: previewImages.length + 1,
+                                        videoPath: path,
+                                        overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
+                                            ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
+                                            : curMod.modName));
                                   }
                                 } else {
                                   hoveringOnSubmod = false;
@@ -2190,62 +2177,17 @@ class _HomePageState extends State<HomePage> {
                                                     previewModName = curSubmod.submodName;
                                                     previewImages.clear();
                                                     for (var path in curSubmod.previewImages) {
-                                                      previewImages.add(Stack(
-                                                        alignment: Alignment.bottomCenter,
-                                                        children: [
-                                                          Image.file(
-                                                            File(path),
-                                                            //fit: BoxFit.cover,
-                                                          ),
-                                                          FittedBox(
-                                                            fit: BoxFit.fitWidth,
-                                                            child: Container(
-                                                                decoration: BoxDecoration(
-                                                                  color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                  borderRadius: BorderRadius.circular(3),
-                                                                  border: Border.all(color: Theme.of(context).hintColor),
-                                                                ),
-                                                                height: 25,
-                                                                child: Center(
-                                                                    child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                        child: Center(child: Text(curSubmod.submodName, style: const TextStyle(fontSize: 17)))))),
-                                                          )
-                                                        ],
-                                                      ));
+                                                      previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
                                                     }
                                                   } else {
                                                     previewModName = curMod.modName;
                                                     hoveringOnSubmod = false;
                                                     for (var path in curMod.previewImages) {
-                                                      previewImages.add(Stack(
-                                                        alignment: Alignment.bottomCenter,
-                                                        children: [
-                                                          Image.file(
-                                                            File(path),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                          FittedBox(
-                                                            fit: BoxFit.fitWidth,
-                                                            child: Container(
-                                                                decoration: BoxDecoration(
-                                                                  color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                  borderRadius: BorderRadius.circular(3),
-                                                                  border: Border.all(color: Theme.of(context).hintColor),
-                                                                ),
-                                                                height: 25,
-                                                                child: Center(
-                                                                    child: Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                  child: Text(
-                                                                      curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
-                                                                          ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
-                                                                          : curMod.modName,
-                                                                      style: const TextStyle(fontSize: 17)),
-                                                                ))),
-                                                          )
-                                                        ],
-                                                      ));
+                                                      previewImages.add(PreviewImageStack(
+                                                          imagePath: path,
+                                                          overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                                              : curMod.modName));
                                                     }
                                                   }
                                                   setState(() {});
@@ -2837,30 +2779,7 @@ class _HomePageState extends State<HomePage> {
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                       for (var path in submod.previewImages) {
-                                                        previewImages.add(Stack(
-                                                          alignment: Alignment.bottomCenter,
-                                                          children: [
-                                                            Image.file(
-                                                              File(path),
-                                                              //fit: BoxFit.cover,
-                                                            ),
-                                                            FittedBox(
-                                                              fit: BoxFit.fitWidth,
-                                                              child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                    borderRadius: BorderRadius.circular(3),
-                                                                    border: Border.all(color: Theme.of(context).hintColor),
-                                                                  ),
-                                                                  height: 25,
-                                                                  child: Center(
-                                                                      child: Padding(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                    child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
-                                                                  ))),
-                                                            )
-                                                          ],
-                                                        ));
+                                                        previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                       }
                                                     }
                                                   }
@@ -2986,30 +2905,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       }
                                                                                       if (submod.applyStatus) {
                                                                                         for (var path in submod.previewImages) {
-                                                                                          previewImages.add(Stack(
-                                                                                            alignment: Alignment.bottomCenter,
-                                                                                            children: [
-                                                                                              Image.file(
-                                                                                                File(path),
-                                                                                                //fit: BoxFit.cover,
-                                                                                              ),
-                                                                                              FittedBox(
-                                                                                                fit: BoxFit.fitWidth,
-                                                                                                child: Container(
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                                                      borderRadius: BorderRadius.circular(3),
-                                                                                                      border: Border.all(color: Theme.of(context).hintColor),
-                                                                                                    ),
-                                                                                                    height: 25,
-                                                                                                    child: Center(
-                                                                                                        child: Padding(
-                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                                                      child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
-                                                                                                    ))),
-                                                                                              )
-                                                                                            ],
-                                                                                          ));
+                                                                                          previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                                                         }
                                                                                       }
                                                                                     }
@@ -3185,6 +3081,9 @@ class _HomePageState extends State<HomePage> {
               reverse: true,
               autoPlayInterval: const Duration(seconds: 1),
               autoPlay: previewImages.length > 1 ? true : false,
+              onPageChanged: (index, reason) {
+                if (previewImages[index].toString().contains('PreviewVideoStack')) {}
+              },
             ),
             items: previewImages,
           ),
@@ -3405,30 +3304,7 @@ class _HomePageState extends State<HomePage> {
                                                             }
                                                             if (submod.applyStatus) {
                                                               for (var path in submod.previewImages) {
-                                                                previewImages.add(Stack(
-                                                                  alignment: Alignment.bottomCenter,
-                                                                  children: [
-                                                                    Image.file(
-                                                                      File(path),
-                                                                      //fit: BoxFit.cover,
-                                                                    ),
-                                                                    FittedBox(
-                                                                      fit: BoxFit.fitWidth,
-                                                                      child: Container(
-                                                                          decoration: BoxDecoration(
-                                                                            color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                            borderRadius: BorderRadius.circular(3),
-                                                                            border: Border.all(color: Theme.of(context).hintColor),
-                                                                          ),
-                                                                          height: 25,
-                                                                          child: Center(
-                                                                              child: Padding(
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                            child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
-                                                                          ))),
-                                                                    )
-                                                                  ],
-                                                                ));
+                                                                previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                               }
                                                             }
                                                           }
@@ -3614,30 +3490,7 @@ class _HomePageState extends State<HomePage> {
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                       for (var path in submod.previewImages) {
-                                                        previewImages.add(Stack(
-                                                          alignment: Alignment.bottomCenter,
-                                                          children: [
-                                                            Image.file(
-                                                              File(path),
-                                                              //fit: BoxFit.cover,
-                                                            ),
-                                                            FittedBox(
-                                                              fit: BoxFit.fitWidth,
-                                                              child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                    borderRadius: BorderRadius.circular(3),
-                                                                    border: Border.all(color: Theme.of(context).hintColor),
-                                                                  ),
-                                                                  height: 25,
-                                                                  child: Center(
-                                                                      child: Padding(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                    child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
-                                                                  ))),
-                                                            )
-                                                          ],
-                                                        ));
+                                                        previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                       }
                                                     }
                                                   }
@@ -3784,30 +3637,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       }
                                                                                       if (submod.applyStatus) {
                                                                                         for (var path in submod.previewImages) {
-                                                                                          previewImages.add(Stack(
-                                                                                            alignment: Alignment.bottomCenter,
-                                                                                            children: [
-                                                                                              Image.file(
-                                                                                                File(path),
-                                                                                                //fit: BoxFit.cover,
-                                                                                              ),
-                                                                                              FittedBox(
-                                                                                                fit: BoxFit.fitWidth,
-                                                                                                child: Container(
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: Theme.of(context).canvasColor.withOpacity(0.5),
-                                                                                                      borderRadius: BorderRadius.circular(3),
-                                                                                                      border: Border.all(color: Theme.of(context).hintColor),
-                                                                                                    ),
-                                                                                                    height: 25,
-                                                                                                    child: Center(
-                                                                                                        child: Padding(
-                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                                                      child: Text(submod.submodName, style: const TextStyle(fontSize: 17)),
-                                                                                                    ))),
-                                                                                              )
-                                                                                            ],
-                                                                                          ));
+                                                                                          previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                                                         }
                                                                                       }
                                                                                     }

@@ -7,6 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
@@ -68,6 +69,12 @@ Future<void> main() async {
 
   //Background image path from prefs
   backgroundImage = File(prefs.getString('backgroundImagePath') ?? '');
+
+
+  //video init
+  WidgetsFlutterBinding.ensureInitialized();
+  /// [MediaKit.ensureInitialized] must be called before using the library.
+  MediaKit.ensureInitialized();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => StateProvider()),

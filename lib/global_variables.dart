@@ -46,3 +46,4 @@ bool isModViewFromApplied = false;
 List<Widget> previewImages = [];
 String previewModName = '';
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
+Map<int, Duration> previewVideoDurations = {};
