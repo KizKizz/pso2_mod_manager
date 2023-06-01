@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -46,4 +49,5 @@ bool isModViewFromApplied = false;
 List<Widget> previewImages = [];
 String previewModName = '';
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
-Map<int, Duration> previewVideoDurations = {};
+final Player videoPlayer = Player();
+final VideoController vidPlayercontroller = VideoController(videoPlayer);

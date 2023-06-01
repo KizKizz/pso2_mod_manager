@@ -78,6 +78,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    videoPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //set headers opacity values
     if (context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue > 1.0) {
@@ -791,13 +797,20 @@ class _HomePageState extends State<HomePage> {
                                                                                     height: 80,
                                                                                     decoration: BoxDecoration(
                                                                                       borderRadius: BorderRadius.circular(3),
-                                                                                      border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                                                      border:
+                                                                                          Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
                                                                                     ),
-                                                                                    child: Image.file(
-                                                                                      File(curItem.icon),
-                                                                                      filterQuality: FilterQuality.none,
-                                                                                      fit: BoxFit.fitWidth,
-                                                                                    )),
+                                                                                    child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                        ? Image.asset(
+                                                                                            'assets/img/placeholdersquare.png',
+                                                                                            filterQuality: FilterQuality.none,
+                                                                                            fit: BoxFit.fitWidth,
+                                                                                          )
+                                                                                        : Image.file(
+                                                                                            File(curItem.icon),
+                                                                                            filterQuality: FilterQuality.none,
+                                                                                            fit: BoxFit.fitWidth,
+                                                                                          )),
                                                                               ),
                                                                               Expanded(
                                                                                 child: Column(
@@ -1073,13 +1086,20 @@ class _HomePageState extends State<HomePage> {
                                                                                       height: 80,
                                                                                       decoration: BoxDecoration(
                                                                                         borderRadius: BorderRadius.circular(3),
-                                                                                        border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                                                        border:
+                                                                                            Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
                                                                                       ),
-                                                                                      child: Image.file(
-                                                                                        File(curItem.icon),
-                                                                                        filterQuality: FilterQuality.none,
-                                                                                        fit: BoxFit.fitWidth,
-                                                                                      )),
+                                                                                      child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                          ? Image.asset(
+                                                                                              'assets/img/placeholdersquare.png',
+                                                                                              filterQuality: FilterQuality.none,
+                                                                                              fit: BoxFit.fitWidth,
+                                                                                            )
+                                                                                          : Image.file(
+                                                                                              File(curItem.icon),
+                                                                                              filterQuality: FilterQuality.none,
+                                                                                              fit: BoxFit.fitWidth,
+                                                                                            )),
                                                                                 ),
                                                                                 Expanded(
                                                                                   child: Column(
@@ -1562,13 +1582,20 @@ class _HomePageState extends State<HomePage> {
                                                                                           height: 80,
                                                                                           decoration: BoxDecoration(
                                                                                             borderRadius: BorderRadius.circular(3),
-                                                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                                                            border: Border.all(
+                                                                                                color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
                                                                                           ),
-                                                                                          child: Image.file(
-                                                                                            File(curItem.icon),
-                                                                                            filterQuality: FilterQuality.none,
-                                                                                            fit: BoxFit.fitWidth,
-                                                                                          )),
+                                                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                              ? Image.asset(
+                                                                                                  'assets/img/placeholdersquare.png',
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                )
+                                                                                              : Image.file(
+                                                                                                  File(curItem.icon),
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                )),
                                                                                     ),
                                                                                     Expanded(
                                                                                       child: Column(
@@ -1759,13 +1786,19 @@ class _HomePageState extends State<HomePage> {
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: modViewItem!.isNew ? Colors.amber : Theme.of(context).hintColor),
+                        border: Border.all(color: modViewItem!.isNew ? Colors.amber : Theme.of(context).hintColor, width: modViewItem!.isNew ? 3 : 1),
                       ),
-                      child: Image.file(
-                        File(modViewItem!.icon),
-                        filterQuality: FilterQuality.none,
-                        fit: BoxFit.fitWidth,
-                      )),
+                      child: modViewItem!.icon.contains('assets/img/placeholdersquare.png')
+                          ? Image.asset(
+                              'assets/img/placeholdersquare.png',
+                              filterQuality: FilterQuality.none,
+                              fit: BoxFit.fitWidth,
+                            )
+                          : Image.file(
+                              File(modViewItem!.icon),
+                              filterQuality: FilterQuality.none,
+                              fit: BoxFit.fitWidth,
+                            )),
                 ),
               Expanded(
                 child: SizedBox(
@@ -1882,7 +1915,7 @@ class _HomePageState extends State<HomePage> {
                               //Hover for preview
                               onTap: () {},
                               onHover: (hovering) {
-                                if (hovering) {
+                                if (hovering && previewWindowVisible) {
                                   hoveringOnSubmod = true;
                                   previewModName = curMod.modName;
                                   for (var path in curMod.previewImages) {
@@ -1894,7 +1927,6 @@ class _HomePageState extends State<HomePage> {
                                   }
                                   for (var path in curMod.previewVideos) {
                                     previewImages.add(PreviewVideoStack(
-                                        listIndex: previewImages.length + 1,
                                         videoPath: path,
                                         overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
                                             ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
@@ -1904,6 +1936,7 @@ class _HomePageState extends State<HomePage> {
                                   hoveringOnSubmod = false;
                                   previewModName = '';
                                   previewImages.clear();
+                                  videoPlayer.remove(0);
                                 }
                                 setState(() {});
                               },
@@ -1914,7 +1947,8 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                   //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                   shape: RoundedRectangleBorder(
-                                      side: BorderSide(color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                      side: BorderSide(width: curMod.isNew ? 2 : 1, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight),
+                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   child: AdvanceExpansionTile(
                                     backgroundColor: Colors.transparent,
                                     textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -2172,12 +2206,18 @@ class _HomePageState extends State<HomePage> {
                                                 //submod preview images
                                                 onTap: () {},
                                                 onHover: (hovering) {
-                                                  if (hovering) {
+                                                  if (hovering && previewWindowVisible) {
                                                     hoveringOnSubmod = true;
                                                     previewModName = curSubmod.submodName;
                                                     previewImages.clear();
+                                                    videoPlayer.remove(0);
                                                     for (var path in curSubmod.previewImages) {
                                                       previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
+                                                    }
+                                                    for (var path in curSubmod.previewVideos) {
+                                                      previewImages.add(PreviewVideoStack(
+                                                          videoPath: path,
+                                                          overlayText: curSubmod.submodName));
                                                     }
                                                   } else {
                                                     previewModName = curMod.modName;
@@ -2187,6 +2227,13 @@ class _HomePageState extends State<HomePage> {
                                                           imagePath: path,
                                                           overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
                                                               ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                                              : curMod.modName));
+                                                    }
+                                                    for (var path in curMod.previewVideos) {
+                                                      previewImages.add(PreviewVideoStack(
+                                                          videoPath: path,
+                                                          overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
+                                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
                                                               : curMod.modName));
                                                     }
                                                   }
@@ -2783,10 +2830,18 @@ class _HomePageState extends State<HomePage> {
                                                       }
                                                     }
                                                   }
+                                                  for (var mod in curMods) {
+                                                    for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                      for (var path in submod.previewVideos) {
+                                                        previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
+                                                      }
+                                                    }
+                                                  }
                                                 } else {
                                                   hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
+                                                  videoPlayer.remove(0);
                                                 }
                                                 setState(() {});
                                               },
@@ -2809,13 +2864,19 @@ class _HomePageState extends State<HomePage> {
                                                           height: 80,
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(3),
-                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
                                                           ),
-                                                          child: Image.file(
-                                                            File(curItem.icon),
-                                                            filterQuality: FilterQuality.none,
-                                                            fit: BoxFit.fitWidth,
-                                                          )),
+                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                              ? Image.asset(
+                                                                  'assets/img/placeholdersquare.png',
+                                                                  filterQuality: FilterQuality.none,
+                                                                  fit: BoxFit.fitWidth,
+                                                                )
+                                                              : Image.file(
+                                                                  File(curItem.icon),
+                                                                  filterQuality: FilterQuality.none,
+                                                                  fit: BoxFit.fitWidth,
+                                                                )),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -2897,15 +2958,19 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                   List<ModFile> unappliedModFiles = value;
                                                                                   previewImages.clear();
+                                                                                  videoPlayer.remove(0);
                                                                                   for (var mod in curMods) {
                                                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                                                      if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                      if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1 && previewWindowVisible) {
                                                                                         submod.applyStatus = false;
                                                                                         submod.applyDate = DateTime(0);
                                                                                       }
-                                                                                      if (submod.applyStatus) {
+                                                                                      if (submod.applyStatus && previewWindowVisible) {
                                                                                         for (var path in submod.previewImages) {
                                                                                           previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
+                                                                                        }
+                                                                                        for (var path in submod.previewVideos) {
+                                                                                          previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
                                                                                         }
                                                                                       }
                                                                                     }
@@ -2932,6 +2997,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (appliedItemList.isEmpty) {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
+                                                                                    videoPlayer.remove(0);
                                                                                   }
 
                                                                                   saveModdedItemListToJson();
@@ -3079,11 +3145,8 @@ class _HomePageState extends State<HomePage> {
               scrollDirection: Axis.vertical,
               enlargeStrategy: CenterPageEnlargeStrategy.scale,
               reverse: true,
-              autoPlayInterval: const Duration(seconds: 1),
+              autoPlayInterval: videoPlayer.state.tracks.video.isNotEmpty ? const Duration(seconds: 3) : const Duration(seconds: 1),
               autoPlay: previewImages.length > 1 ? true : false,
-              onPageChanged: (index, reason) {
-                if (previewImages[index].toString().contains('PreviewVideoStack')) {}
-              },
             ),
             items: previewImages,
           ),
@@ -3296,15 +3359,19 @@ class _HomePageState extends State<HomePage> {
                                                     modFilesUnapply(context, allAppliedModFiles).then((value) async {
                                                       List<ModFile> unappliedModFiles = value;
                                                       previewImages.clear();
+                                                      videoPlayer.remove(0);
                                                       for (var item in curSet.setItems) {
                                                         for (var mod in item.mods) {
                                                           for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                             if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                               submod.applyStatus = false;
                                                             }
-                                                            if (submod.applyStatus) {
+                                                            if (submod.applyStatus && previewWindowVisible) {
                                                               for (var path in submod.previewImages) {
                                                                 previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
+                                                              }
+                                                              for (var path in submod.previewVideos) {
+                                                                previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
                                                               }
                                                             }
                                                           }
@@ -3334,6 +3401,7 @@ class _HomePageState extends State<HomePage> {
                                                       if (appliedItemList.isEmpty) {
                                                         previewModName = '';
                                                         previewImages.clear();
+                                                        videoPlayer.remove(0);
                                                       }
 
                                                       saveModdedItemListToJson();
@@ -3484,7 +3552,7 @@ class _HomePageState extends State<HomePage> {
                                               highlightShape: BoxShape.rectangle,
                                               onTap: () => '',
                                               onHover: (hovering) {
-                                                if (hovering) {
+                                                if (hovering && previewWindowVisible) {
                                                   hoveringOnSubmod = true;
                                                   previewModName = curItem.itemName;
                                                   for (var mod in curMods) {
@@ -3494,10 +3562,18 @@ class _HomePageState extends State<HomePage> {
                                                       }
                                                     }
                                                   }
+                                                  for (var mod in curMods) {
+                                                    for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                      for (var path in submod.previewVideos) {
+                                                        previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
+                                                      }
+                                                    }
+                                                  }
                                                 } else {
                                                   hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
+                                                  videoPlayer.remove(0);
                                                 }
                                                 setState(() {});
                                               },
@@ -3521,13 +3597,19 @@ class _HomePageState extends State<HomePage> {
                                                           height: 80,
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(3),
-                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor),
+                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
                                                           ),
-                                                          child: Image.file(
-                                                            File(curItem.icon),
-                                                            filterQuality: FilterQuality.none,
-                                                            fit: BoxFit.fitWidth,
-                                                          )),
+                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                              ? Image.asset(
+                                                                  'assets/img/placeholdersquare.png',
+                                                                  filterQuality: FilterQuality.none,
+                                                                  fit: BoxFit.fitWidth,
+                                                                )
+                                                              : Image.file(
+                                                                  File(curItem.icon),
+                                                                  filterQuality: FilterQuality.none,
+                                                                  fit: BoxFit.fitWidth,
+                                                                )),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -3630,14 +3712,18 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                   List<ModFile> unappliedModFiles = value;
                                                                                   previewImages.clear();
+                                                                                  videoPlayer.remove(0);
                                                                                   for (var mod in curMods) {
                                                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                                       if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                         submod.applyStatus = false;
                                                                                       }
-                                                                                      if (submod.applyStatus) {
+                                                                                      if (submod.applyStatus && previewWindowVisible) {
                                                                                         for (var path in submod.previewImages) {
                                                                                           previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
+                                                                                        }
+                                                                                        for (var path in submod.previewVideos) {
+                                                                                          previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
                                                                                         }
                                                                                       }
                                                                                     }
@@ -3662,6 +3748,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (appliedItemList.isEmpty) {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
+                                                                                    videoPlayer.remove(0);
                                                                                   }
 
                                                                                   saveModdedItemListToJson();

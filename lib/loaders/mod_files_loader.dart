@@ -205,7 +205,7 @@ Future<List<Item>> itemsFetcher(String catePath) async {
     if (imagesFoundInItemDir.isNotEmpty) {
       itemIcon = imagesFoundInItemDir.first.path;
     } else if (cateToIgnoreScan.contains(p.basename(dir.path))) {
-      itemIcon = Uri.file('assets/img/placeholdersquare.png').toFilePath();
+      itemIcon = 'assets/img/placeholdersquare.png';
     } else {
       List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       if (iceFilesInCurItem.isEmpty) {
@@ -230,7 +230,7 @@ Future<List<Item>> itemsFetcher(String catePath) async {
           element.deleteSync(recursive: true);
         });
       } else {
-        itemIcon = Uri.file('assets/img/placeholdersquare.png').toFilePath();
+        itemIcon = 'assets/img/placeholdersquare.png';
       }
     }
 
