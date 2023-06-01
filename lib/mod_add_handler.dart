@@ -2045,7 +2045,7 @@ void modAddHandler(context) {
                                               child: Padding(
                                                 padding: const EdgeInsets.only(left: 5),
                                                 child: ElevatedButton(
-                                                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.primary.withBlue(150))),
+                                                    style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                     onPressed: sortedModsList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
                                                         ? (() async {
                                                             //Remove 'TOREMOVE' lines from list
