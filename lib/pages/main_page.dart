@@ -1212,10 +1212,12 @@ class _MainPageState extends State<MainPage> {
                                 final prefs = await SharedPreferences.getInstance();
                                 if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
                                   Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                  previewWindowVisible = false;
                                   prefs.setBool('previewWindowVisible', false);
                                   //previewPlayer.stop();
                                 } else {
                                   Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                  previewWindowVisible = true;
                                   prefs.setBool('previewWindowVisible', true);
                                 }
                               }),

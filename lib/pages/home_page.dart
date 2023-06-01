@@ -2961,11 +2961,11 @@ class _HomePageState extends State<HomePage> {
                                                                                   videoPlayer.remove(0);
                                                                                   for (var mod in curMods) {
                                                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                                                      if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1 && previewWindowVisible) {
+                                                                                      if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                         submod.applyStatus = false;
                                                                                         submod.applyDate = DateTime(0);
                                                                                       }
-                                                                                      if (submod.applyStatus && previewWindowVisible) {
+                                                                                      if (submod.applyStatus) {
                                                                                         for (var path in submod.previewImages) {
                                                                                           previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                                                         }
@@ -3366,7 +3366,7 @@ class _HomePageState extends State<HomePage> {
                                                             if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                               submod.applyStatus = false;
                                                             }
-                                                            if (submod.applyStatus && previewWindowVisible) {
+                                                            if (submod.applyStatus) {
                                                               for (var path in submod.previewImages) {
                                                                 previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                               }
@@ -3718,7 +3718,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                         submod.applyStatus = false;
                                                                                       }
-                                                                                      if (submod.applyStatus && previewWindowVisible) {
+                                                                                      if (submod.applyStatus) {
                                                                                         for (var path in submod.previewImages) {
                                                                                           previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                                                         }
