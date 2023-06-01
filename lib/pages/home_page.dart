@@ -2215,9 +2215,7 @@ class _HomePageState extends State<HomePage> {
                                                       previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
                                                     }
                                                     for (var path in curSubmod.previewVideos) {
-                                                      previewImages.add(PreviewVideoStack(
-                                                          videoPath: path,
-                                                          overlayText: curSubmod.submodName));
+                                                      previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curSubmod.submodName));
                                                     }
                                                   } else {
                                                     previewModName = curMod.modName;
@@ -2990,6 +2988,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     }
                                                                                     filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                   }
+                                                                                  saveModdedItemListToJson();
                                                                                   ScaffoldMessenger.of(context)
                                                                                       .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
@@ -3000,7 +2999,6 @@ class _HomePageState extends State<HomePage> {
                                                                                     videoPlayer.remove(0);
                                                                                   }
 
-                                                                                  saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
                                                                               }

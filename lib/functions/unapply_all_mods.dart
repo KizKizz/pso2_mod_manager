@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 
-List<String> unapplyAllMods(context) {
+Future<List<String>> unapplyAllMods(context) async {
   String unappliedFileNames = '';
   for (var type in appliedItemList) {
     for (var cate in type.categories) {
@@ -39,9 +39,6 @@ List<String> unapplyAllMods(context) {
                     submod.applyDate = DateTime(0);
                     previewImages.clear();
                     previewModName = '';
-
-                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                    saveModdedItemListToJson();
                   });
                 }
               }
@@ -59,5 +56,7 @@ List<String> unapplyAllMods(context) {
       }
     }
   }
+  appliedItemList = await appliedListBuilder(moddedItemsList);
+  saveModdedItemListToJson();
   return ['Success!', (unappliedFileNames.trim())];
 }
