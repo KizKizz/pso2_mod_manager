@@ -40,14 +40,14 @@ Future<List<String>> unapplyAllMods(context) async {
                     previewImages.clear();
                     videoPlayer.remove(0);
                     previewModName = '';
-                    //if (mod.submods.where((element) => element.applyStatus).isEmpty) {
+                    if (mod.submods.where((element) => element.applyStatus).isEmpty) {
                     mod.applyStatus = false;
                     mod.applyDate = DateTime(0);
-                    //}
-                    ////if (item.mods.where((element) => element.applyStatus).isEmpty) {
+                    }
+                    if (item.mods.where((element) => element.applyStatus).isEmpty) {
                     item.applyStatus = false;
                     item.applyDate = DateTime(0);
-                    //}
+                    }
 
                     appliedItemList = await appliedListBuilder(moddedItemsList);
                     saveModdedItemListToJson();
