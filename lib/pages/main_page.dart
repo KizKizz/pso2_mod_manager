@@ -1109,6 +1109,7 @@ class _MainPageState extends State<MainPage> {
                                 modFileStructureLoader().then((value) {
                                   moddedItemsList = value;
                                   listsReloading = false;
+                                  modViewItem = null;
                                   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
                                 });
                               }),
