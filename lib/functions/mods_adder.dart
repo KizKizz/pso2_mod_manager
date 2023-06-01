@@ -61,10 +61,10 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
         String curSubName = field.split(':')[1];
         String curFile = field.split(':')[2];
         if (subNames.isEmpty) {
-          Directory(Uri.directory('$modManModsDirPath$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
+          Directory(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
           File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curFile').toFilePath()).copySync(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curFile').toFilePath());
         } else {
-          Directory(Uri.directory('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName').toFilePath()).createSync(recursive: true);
+          Directory(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName').toFilePath()).createSync(recursive: true);
           File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curSubName/$curFile').toFilePath())
               .copySync(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curSubName/$curFile').toFilePath());
         }
@@ -86,8 +86,10 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
             cateInList.items[itemInListIndex].mods.addAll(newModsFetcher(cateInList.items[itemInListIndex].location, cateInList.categoryName, foldersInNewItemPath));
             cateInList.items[itemInListIndex].isNew = true;
             //Sort alpha
-            cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            cateInList.items[itemInListIndex].mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
           }
+          //Sort alpha
+          cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
 
           break;
         }

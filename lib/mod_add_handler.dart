@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/widgets/tooltip.dart';
 
 List<String> _pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_na'];
 bool _newModDragging = false;
@@ -41,6 +42,7 @@ List<String> _nonSupportedFileNames = [];
 List<String> _dropdownCategories = [];
 List<String> _selectedCategories = [];
 final _subItemFormValidate = GlobalKey<FormState>();
+bool dropZoneMax = true;
 
 //Csv lists
 List<String> _accessoriesCsv = ['Accessories.csv'];
@@ -337,6 +339,7 @@ void modAddHandler(context) {
                   width: MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height,
                   child: Scaffold(
+                    backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                     body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                       return FutureBuilder(
                         future: popSheetsList(modManRefSheetsDirPath),
@@ -371,11 +374,7 @@ void modAddHandler(context) {
                                   quarterTurns: -1,
                                   child: Text(
                                     'ADD MODS',
-                                    style: TextStyle(
-                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 20,
-                                        letterSpacing: constraints.maxHeight / 10),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 10),
                                   )),
                               VerticalDivider(
                                 width: 10,
@@ -384,216 +383,220 @@ void modAddHandler(context) {
                                 endIndent: 5,
                                 color: Theme.of(context).textTheme.bodySmall!.color,
                               ),
-                              Column(
-                                children: [
-                                  Stack(
-                                    alignment: AlignmentDirectional.bottomStart,
-                                    children: [
-                                      DropTarget(
-                                        //enable: true,
-                                        onDragDone: (detail) async {
-                                          for (var element in detail.files) {
-                                            if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
-                                              if (_nonSupportedFileNames.indexWhere((e) => e == element.name) == -1) {
-                                                _nonSupportedFileNames.add(element.name);
+                              SizedBox(
+                                width: dropZoneMax
+                                    ? constraints.maxWidth * 0.7
+                                    : _newModDragDropList.isEmpty
+                                        ? constraints.maxWidth * 0.3
+                                        : constraints.maxWidth * 0.45,
+                                child: Column(
+                                  children: [
+                                    Stack(
+                                      alignment: AlignmentDirectional.bottomStart,
+                                      children: [
+                                        DropTarget(
+                                          //enable: true,
+                                          onDragDone: (detail) async {
+                                            for (var element in detail.files) {
+                                              if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
+                                                if (_nonSupportedFileNames.indexWhere((e) => e == element.name) == -1) {
+                                                  _nonSupportedFileNames.add(element.name);
+                                                }
+                                              } else if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
+                                                _newModDragDropList.add(element);
+                                                _newModMainFolderList.add(element);
                                               }
-                                            } else if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
-                                              _newModDragDropList.add(element);
-                                              _newModMainFolderList.add(element);
                                             }
-                                          }
-                                          setState(
-                                            () {},
-                                          );
-                                        },
-                                        onDragEntered: (detail) {
-                                          setState(() {
-                                            _newModDragging = true;
-                                          });
-                                        },
-                                        onDragExited: (detail) {
-                                          setState(() {
-                                            _newModDragging = false;
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(top: 5),
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(3),
-                                                border: Border.all(color: Theme.of(context).hintColor),
-                                                color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
-                                              ),
-                                              height: constraints.maxHeight - 42,
-                                              width: constraints.maxWidth * 0.45,
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  if (_newModDragDropList.isEmpty)
-                                                    Center(
-                                                        child: Text(
-                                                      curLangText!.dragNdropBoxLabelText,
-                                                      style: const TextStyle(fontSize: 20),
-                                                      textAlign: TextAlign.center,
-                                                    )),
-                                                  if (_newModDragDropList.isNotEmpty)
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(right: 5),
-                                                        child: SizedBox(
-                                                            width: constraints.maxWidth,
-                                                            height: constraints.maxHeight,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 0),
-                                                              child: ListView.builder(
-                                                                  itemCount: _newModDragDropList.length,
-                                                                  itemBuilder: (BuildContext context, int index) {
-                                                                    return ListTile(
-                                                                      //dense: true,
-                                                                      // leading: const Icon(
-                                                                      //     Icons.list),
-                                                                      trailing: SizedBox(
-                                                                        width: 40,
-                                                                        child: Tooltip(
-                                                                          message: curLangText!.removeBtnLabel,
-                                                                          height: 25,
-                                                                          textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                          waitDuration: const Duration(seconds: 2),
-                                                                          child: MaterialButton(
-                                                                            child: const Icon(Icons.remove_circle),
-                                                                            onPressed: () {
-                                                                              _newModDragDropList.removeAt(index);
-                                                                              setState(
-                                                                                () {},
-                                                                              );
-                                                                            },
+                                            setState(
+                                              () {},
+                                            );
+                                          },
+                                          onDragEntered: (detail) {
+                                            setState(() {
+                                              _newModDragging = true;
+                                            });
+                                          },
+                                          onDragExited: (detail) {
+                                            setState(() {
+                                              _newModDragging = false;
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 5),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(3),
+                                                  border: Border.all(color: Theme.of(context).hintColor),
+                                                  color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
+                                                ),
+                                                height: constraints.maxHeight - 42,
+                                                //width: constraints.maxWidth * 0.45,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    if (_newModDragDropList.isEmpty)
+                                                      Center(
+                                                          child: Text(
+                                                        curLangText!.dragNdropBoxLabelText,
+                                                        style: const TextStyle(fontSize: 20),
+                                                        textAlign: TextAlign.center,
+                                                      )),
+                                                    if (_newModDragDropList.isNotEmpty)
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(right: 5),
+                                                          child: SizedBox(
+                                                              width: constraints.maxWidth,
+                                                              height: constraints.maxHeight,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 0),
+                                                                child: ListView.builder(
+                                                                    itemCount: _newModDragDropList.length,
+                                                                    itemBuilder: (BuildContext context, int index) {
+                                                                      return ListTile(
+                                                                        //dense: true,
+                                                                        // leading: const Icon(
+                                                                        //     Icons.list),
+                                                                        trailing: SizedBox(
+                                                                          width: 40,
+                                                                          child: ModManTooltip(
+                                                                            message: curLangText!.removeBtnLabel,
+                                                                            child: MaterialButton(
+                                                                              child: const Icon(Icons.remove_circle),
+                                                                              onPressed: () {
+                                                                                _newModDragDropList.removeAt(index);
+                                                                                setState(
+                                                                                  () {},
+                                                                                );
+                                                                              },
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      title: Text(_newModDragDropList[index].name),
-                                                                      subtitle: Text(
-                                                                        _newModDragDropList[index].path,
-                                                                        maxLines: 1,
-                                                                        overflow: TextOverflow.ellipsis,
-                                                                        softWrap: false,
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                            )),
-                                                      ),
-                                                    )
-                                                ],
-                                              )),
-                                        ),
-                                      ),
-                                      if (_nonSupportedFileNames.isNotEmpty)
-                                        Container(
-                                          width: constraints.maxWidth * 0.45,
-                                          //height: 60,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(3),
-                                            color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(5.0),
-                                                child: Center(
-                                                    child: Text(
-                                                  '$_nonSupportedFileNames ${curLangText!.errorFilesNotSupportedText}',
-                                                  textAlign: TextAlign.center,
+                                                                        title: Text(_newModDragDropList[index].name),
+                                                                        subtitle: Text(
+                                                                          _newModDragDropList[index].path,
+                                                                          maxLines: 1,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          softWrap: false,
+                                                                        ),
+                                                                      );
+                                                                    }),
+                                                              )),
+                                                        ),
+                                                      )
+                                                  ],
                                                 )),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 5),
-                                                child: ElevatedButton(
-                                                  child: Text(curLangText!.closeBtnText),
-                                                  onPressed: () {
-                                                    _nonSupportedFileNames.clear();
-                                                    setState(
-                                                      () {},
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
                                           ),
                                         ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: constraints.maxWidth * 0.45,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 5, bottom: 4),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButton(
-                                                onPressed: _newModDragDropList.isNotEmpty
-                                                    ? (() {
-                                                        _newModDragDropList.clear();
-                                                        _newModMainFolderList.clear();
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      })
-                                                    : null,
-                                                child: Text(curLangText!.clearAllBtnLabel)),
+                                        if (_nonSupportedFileNames.isNotEmpty)
+                                          Container(
+                                            //width: constraints.maxWidth * 0.45,
+                                            //height: 60,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3), border: Border.all(color: Theme.of(context).primaryColorLight), color: Theme.of(context).dialogBackgroundColor),
+                                            child: Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(5.0),
+                                                  child: Center(
+                                                      child: Text(
+                                                    '$_nonSupportedFileNames ${curLangText!.errorFilesNotSupportedText}',
+                                                    textAlign: TextAlign.center,
+                                                  )),
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 5),
+                                                  child: ElevatedButton(
+                                                    child: Text(curLangText!.closeBtnText),
+                                                    onPressed: () {
+                                                      _nonSupportedFileNames.clear();
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                            child: ElevatedButton(
-                                                onPressed: _newModDragDropList.isNotEmpty
-                                                    ? (() async {
-                                                        for (var file in _newModDragDropList) {
-                                                          if (p.extension(file.path) == '.zip') {
-                                                            await extractFileToDisk(file.path, Uri.file('unpack/${file.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true)
-                                                                .then((_) => setState(
-                                                                      () {
-                                                                        for (var file in Directory(modManAddModsUnpackDirPath).listSync(recursive: true)) {
-                                                                          modsToAddList.add(XFile(file.path));
-                                                                        }
-                                                                      },
-                                                                    ));
-                                                            //modsToAddList.addAll(await sortFile(file.name.split('.').first));
-                                                          } else if (Directory(file.path).existsSync()) {
-                                                            List<XFile> filesInFolder = [XFile(file.path)];
-                                                            for (var file in Directory(file.path).listSync(recursive: true)) {
-                                                              //if (File(file.path).existsSync()) {
-                                                              filesInFolder.add(XFile(file.path));
-                                                              //}
-                                                            }
-                                                            modsToAddList.addAll(filesInFolder);
-                                                          } else {
-                                                            modsToAddList.add(XFile(file.path));
-                                                          }
-                                                        }
-                                                        // for (var element in modsToAddList) {
-                                                        //   print(element.name);
-                                                        // }
-
-                                                        //clear lists
-                                                        sortedModsListLoad = fetchItemName(modsToAddList);
-                                                        _newModDragDropList.clear();
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      })
-                                                    : null,
-                                                child: Text(curLangText!.progressBtnLabel)),
-                                          ),
-                                        ],
-                                      ),
+                                      ],
                                     ),
-                                  )
-                                ],
+                                    SizedBox(
+                                      //width: constraints.maxWidth * 0.7,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 5, bottom: 4),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                  onPressed: _newModDragDropList.isNotEmpty
+                                                      ? (() {
+                                                          _newModDragDropList.clear();
+                                                          _newModMainFolderList.clear();
+                                                          setState(
+                                                            () {},
+                                                          );
+                                                        })
+                                                      : null,
+                                                  child: Text(curLangText!.clearAllBtnLabel)),
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                  onPressed: _newModDragDropList.isNotEmpty
+                                                      ? (() async {
+                                                          for (var file in _newModDragDropList) {
+                                                            if (p.extension(file.path) == '.zip') {
+                                                              await extractFileToDisk(file.path, Uri.file('unpack/${file.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true)
+                                                                  .then((_) => setState(
+                                                                        () {
+                                                                          for (var file in Directory(modManAddModsUnpackDirPath).listSync(recursive: true)) {
+                                                                            modsToAddList.add(XFile(file.path));
+                                                                          }
+                                                                        },
+                                                                      ));
+                                                              //modsToAddList.addAll(await sortFile(file.name.split('.').first));
+                                                            } else if (Directory(file.path).existsSync()) {
+                                                              List<XFile> filesInFolder = [XFile(file.path)];
+                                                              for (var file in Directory(file.path).listSync(recursive: true)) {
+                                                                //if (File(file.path).existsSync()) {
+                                                                filesInFolder.add(XFile(file.path));
+                                                                //}
+                                                              }
+                                                              modsToAddList.addAll(filesInFolder);
+                                                            } else {
+                                                              modsToAddList.add(XFile(file.path));
+                                                            }
+                                                          }
+                                                          // for (var element in modsToAddList) {
+                                                          //   print(element.name);
+                                                          // }
+
+                                                          //clear lists
+                                                          sortedModsListLoad = fetchItemName(modsToAddList);
+                                                          _newModDragDropList.clear();
+                                                          dropZoneMax = false;
+                                                          setState(
+                                                            () {},
+                                                          );
+                                                        })
+                                                      : null,
+                                                  child: Text(curLangText!.progressBtnLabel)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                               VerticalDivider(
                                 width: 10,
@@ -749,12 +752,9 @@ void modAddHandler(context) {
                                                                 itemBuilder: (context, index) {
                                                                   return Card(
                                                                     margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
+                                                                    //color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                                                     shape: RoundedRectangleBorder(
-                                                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                        side: BorderSide(
-                                                                            width: 1,
-                                                                            color:
-                                                                                MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight)),
+                                                                        side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                                     child: ExpansionTile(
                                                                       initiallyExpanded: true,
                                                                       //Edit Item's name
@@ -1892,9 +1892,9 @@ void modAddHandler(context) {
                                             child: Container(
                                               constraints: BoxConstraints(maxHeight: constraints.maxHeight - 200),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(3),
-                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                                              ),
+                                                  borderRadius: BorderRadius.circular(3),
+                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                  color: Theme.of(context).dialogBackgroundColor),
                                               child: SingleChildScrollView(
                                                 child: Column(
                                                   children: [
@@ -1956,36 +1956,39 @@ void modAddHandler(context) {
                                         padding: const EdgeInsets.only(top: 5, bottom: 4, right: 5),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  onPressed: sortedModsList.isNotEmpty || context.watch<StateProvider>().modAdderReload
-                                                      ? (() {
-                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                            element.deleteSync(recursive: true);
-                                                          });
-                                                          Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                            element.deleteSync(recursive: true);
-                                                          });
-                                                          _mainFolderRenameIndex.clear();
-                                                          _newModMainFolderList.clear();
-                                                          _selectedCategories.clear();
-                                                          _exitConfirmDialog = false;
-                                                          Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                          _duplicateModNames.clear();
-                                                          sortedModsList.clear();
-                                                          _newModDragDropList.clear();
-                                                          modsToAddList.clear();
-                                                          _isNameEditing = false;
-                                                          setState(
-                                                            () {},
-                                                          );
-                                                        })
-                                                      : null,
-                                                  child: Text(curLangText!.clearAllBtnLabel)),
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
+                                            Visibility(
+                                              visible: !dropZoneMax,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 5),
+                                                child: ElevatedButton(
+                                                    onPressed: sortedModsList.isNotEmpty || context.watch<StateProvider>().modAdderReload
+                                                        ? (() {
+                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            _mainFolderRenameIndex.clear();
+                                                            _newModMainFolderList.clear();
+                                                            _selectedCategories.clear();
+                                                            _exitConfirmDialog = false;
+                                                            Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                            _duplicateModNames.clear();
+                                                            sortedModsList.clear();
+                                                            _newModDragDropList.clear();
+                                                            modsToAddList.clear();
+                                                            _isNameEditing = false;
+                                                            dropZoneMax = true;
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          })
+                                                        : null,
+                                                    child: Text(curLangText!.clearAllBtnLabel)),
+                                              ),
                                             ),
                                             Expanded(
                                               child: ElevatedButton(
@@ -2011,6 +2014,7 @@ void modAddHandler(context) {
                                                       setState(
                                                         () {},
                                                       );
+                                                      dropZoneMax = true;
                                                       Navigator.of(context).pop();
                                                     } else if (sortedModsList.isNotEmpty || modsToAddList.isNotEmpty || _newModDragDropList.isNotEmpty) {
                                                       _exitConfirmDialog = true;
@@ -2030,117 +2034,121 @@ void modAddHandler(context) {
                                                       setState(
                                                         () {},
                                                       );
+                                                      dropZoneMax = true;
                                                       Navigator.of(context).pop();
                                                     }
                                                   }),
                                                   child: Text(curLangText!.closeBtnText)),
                                             ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  onPressed: sortedModsList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
-                                                      ? (() async {
-                                                          //Remove 'TOREMOVE' lines from list
-                                                          List<List<String>> removingItems = [];
-                                                          for (var line in sortedModsList) {
-                                                            if (line[1].split(':').last != '[TOREMOVE]' && line[2].split(':').last != '[TOREMOVE]') {
-                                                              List<String> mainLine = [];
-                                                              for (var main in line[4].split('|')) {
-                                                                if (main.split(':').last != '[TOREMOVE]') {
-                                                                  mainLine.add(main);
+                                            Visibility(
+                                              visible: !dropZoneMax,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 5),
+                                                child: ElevatedButton(
+                                                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.primary.withBlue(150))),
+                                                    onPressed: sortedModsList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
+                                                        ? (() async {
+                                                            //Remove 'TOREMOVE' lines from list
+                                                            List<List<String>> removingItems = [];
+                                                            for (var line in sortedModsList) {
+                                                              if (line[1].split(':').last != '[TOREMOVE]' && line[2].split(':').last != '[TOREMOVE]') {
+                                                                List<String> mainLine = [];
+                                                                for (var main in line[4].split('|')) {
+                                                                  if (main.split(':').last != '[TOREMOVE]') {
+                                                                    mainLine.add(main);
+                                                                  }
                                                                 }
-                                                              }
-                                                              line[4] = mainLine.join('|');
+                                                                line[4] = mainLine.join('|');
 
-                                                              List<String> subLine = [];
-                                                              for (var sub in line[5].split('|')) {
-                                                                if (sub.split(':').last != '[TOREMOVE]') {
-                                                                  subLine.add(sub);
+                                                                List<String> subLine = [];
+                                                                for (var sub in line[5].split('|')) {
+                                                                  if (sub.split(':').last != '[TOREMOVE]') {
+                                                                    subLine.add(sub);
+                                                                  }
                                                                 }
+                                                                line[5] = subLine.join('|');
+                                                              } else {
+                                                                removingItems.add(line);
                                                               }
-                                                              line[5] = subLine.join('|');
-                                                            } else {
-                                                              removingItems.add(line);
                                                             }
-                                                          }
-                                                          for (var item in removingItems) {
-                                                            sortedModsList.remove(item);
-                                                          }
-                                                          //print(sortedModsList);
-
-                                                          //Check for dub mods
-                                                          _duplicateModNames.clear();
-                                                          for (var sortedLine in sortedModsList) {
-                                                            String category = sortedLine[0];
-                                                            String itemName = '';
-                                                            if (curActiveLang == 'JP') {
-                                                              itemName = sortedLine[1];
-                                                            } else {
-                                                              itemName = sortedLine[2];
+                                                            for (var item in removingItems) {
+                                                              sortedModsList.remove(item);
                                                             }
-                                                            List<String> mainNames = sortedLine[4].split('|');
+                                                            //print(sortedModsList);
 
-                                                            if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath()).existsSync()) {
-                                                              if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
-                                                                      .listSync(recursive: false)
-                                                                      .indexWhere((element) => mainNames.contains(p.basename(element.path))) !=
-                                                                  -1) {
-                                                                for (var mainName in mainNames) {
-                                                                  if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
-                                                                          .listSync(recursive: false)
-                                                                          .indexWhere((element) => p.basename(element.path) == mainName) !=
-                                                                      -1) {
-                                                                    _duplicateModNames.add(' "$mainName" in $itemName ');
+                                                            //Check for dub mods
+                                                            _duplicateModNames.clear();
+                                                            for (var sortedLine in sortedModsList) {
+                                                              String category = sortedLine[0];
+                                                              String itemName = '';
+                                                              if (curActiveLang == 'JP') {
+                                                                itemName = sortedLine[1];
+                                                              } else {
+                                                                itemName = sortedLine[2];
+                                                              }
+                                                              List<String> mainNames = sortedLine[4].split('|');
+
+                                                              if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath()).existsSync()) {
+                                                                if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
+                                                                        .listSync(recursive: false)
+                                                                        .indexWhere((element) => mainNames.contains(p.basename(element.path))) !=
+                                                                    -1) {
+                                                                  for (var mainName in mainNames) {
+                                                                    if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
+                                                                            .listSync(recursive: false)
+                                                                            .indexWhere((element) => p.basename(element.path) == mainName) !=
+                                                                        -1) {
+                                                                      _duplicateModNames.add(' "$mainName" in $itemName ');
+                                                                    }
                                                                   }
                                                                 }
                                                               }
                                                             }
-                                                          }
-                                                          //Add mods
-                                                          if (_duplicateModNames.isEmpty) {
-                                                            modFilesAdder(context, sortedModsList).then((_) {
-                                                              //clear lists and delete temp
-                                                              _isAddedSuccess = true;
-                                                              setState(
-                                                                () {},
-                                                              );
-                                                              _mainFolderRenameIndex.clear();
-                                                              _newModMainFolderList.clear();
-                                                              _selectedCategories.clear();
-                                                              _exitConfirmDialog = false;
-                                                              Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                              //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
-                                                              _duplicateModNames.clear();
-                                                              sortedModsList.clear();
-                                                              _newModDragDropList.clear();
-                                                              modsToAddList.clear();
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              setState(
-                                                                () {},
-                                                              );
-                                                              Future.delayed(const Duration(seconds: 1)).then((value) {
-                                                                _isAddedSuccess = false;
+                                                            //Add mods
+                                                            if (_duplicateModNames.isEmpty) {
+                                                              modFilesAdder(context, sortedModsList).then((_) {
+                                                                //clear lists and delete temp
+                                                                _isAddedSuccess = true;
                                                                 setState(
                                                                   () {},
                                                                 );
+                                                                _mainFolderRenameIndex.clear();
+                                                                _newModMainFolderList.clear();
+                                                                _selectedCategories.clear();
+                                                                _exitConfirmDialog = false;
+                                                                Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                                //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
+                                                                _duplicateModNames.clear();
+                                                                sortedModsList.clear();
+                                                                _newModDragDropList.clear();
+                                                                modsToAddList.clear();
+                                                                Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                  element.deleteSync(recursive: true);
+                                                                });
+                                                                Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                                  element.deleteSync(recursive: true);
+                                                                });
+                                                                setState(
+                                                                  () {},
+                                                                );
+                                                                Future.delayed(const Duration(seconds: 1)).then((value) {
+                                                                  _isAddedSuccess = false;
+                                                                  dropZoneMax = true;
+                                                                  setState(
+                                                                    () {},
+                                                                  );
+                                                                });
                                                               });
-                                                            });
-                                                          } else {
-                                                            _exitConfirmDialog = true;
-                                                          }
-                                                          setState(
-                                                            () {},
-                                                          );
-                                                        })
-                                                      : null,
-                                                  child: Text(curLangText!.addAllBtnLabelText)),
+                                                            } else {
+                                                              _exitConfirmDialog = true;
+                                                            }
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          })
+                                                        : null,
+                                                    child: Text(curLangText!.addAllBtnLabelText)),
+                                              ),
                                             ),
                                           ],
                                         ),
