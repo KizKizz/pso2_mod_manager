@@ -1725,10 +1725,21 @@ void modAddHandler(context) {
                                                                                                         //check sub to disable or able main if all or one disabled
                                                                                                         bool allSubRemoving = true;
                                                                                                         for (var element in sortedModsList[index][5].split('|')) {
-                                                                                                          if (element.split(':').first == sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              element.split(':').last != '[TOREMOVE]') {
-                                                                                                            allSubRemoving = false;
-                                                                                                            break;
+                                                                                                          if (sortedModsList[index][5].split('|').length > 1) {
+
+                                                                                                            if (element.split(':').first == sortedModsList[index][5].split('|')[sub].split(':')[0] &&
+                                                                                                                element.split(':').last != '[TOREMOVE]' ||
+                                                                                                                sortedModsList[index][6].contains('${sortedModsList[index][4]}::')) {
+                                                                                                              allSubRemoving = false;
+                                                                                                              break;
+                                                                                                            }
+                                                                                                          } else {
+                                                                                                            if (element.split(':').first == sortedModsList[index][5].split('|')[0].split(':')[0] &&
+                                                                                                                element.split(':').last != '[TOREMOVE]' ||
+                                                                                                                sortedModsList[index][6].contains('${sortedModsList[index][4]}::')) {
+                                                                                                              allSubRemoving = false;
+                                                                                                              break;
+                                                                                                            }
                                                                                                           }
                                                                                                         }
                                                                                                         if (allSubRemoving) {

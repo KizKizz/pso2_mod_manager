@@ -798,8 +798,13 @@ class _HomePageState extends State<HomePage> {
                                                                                     height: 80,
                                                                                     decoration: BoxDecoration(
                                                                                       borderRadius: BorderRadius.circular(3),
-                                                                                      border:
-                                                                                          Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
+                                                                                      border: Border.all(
+                                                                                          color: curItem.isNew
+                                                                                              ? Colors.amber
+                                                                                              : curItem.applyStatus
+                                                                                                  ? Theme.of(context).colorScheme.primary
+                                                                                                  : Theme.of(context).hintColor,
+                                                                                          width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                     ),
                                                                                     child: curItem.icon.contains('assets/img/placeholdersquare.png')
                                                                                         ? Image.asset(
@@ -1087,8 +1092,13 @@ class _HomePageState extends State<HomePage> {
                                                                                       height: 80,
                                                                                       decoration: BoxDecoration(
                                                                                         borderRadius: BorderRadius.circular(3),
-                                                                                        border:
-                                                                                            Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
+                                                                                        border: Border.all(
+                                                                                            color: curItem.isNew
+                                                                                                ? Colors.amber
+                                                                                                : curItem.applyStatus
+                                                                                                    ? Theme.of(context).colorScheme.primary
+                                                                                                    : Theme.of(context).hintColor,
+                                                                                            width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                       ),
                                                                                       child: curItem.icon.contains('assets/img/placeholdersquare.png')
                                                                                           ? Image.asset(
@@ -1584,7 +1594,12 @@ class _HomePageState extends State<HomePage> {
                                                                                           decoration: BoxDecoration(
                                                                                             borderRadius: BorderRadius.circular(3),
                                                                                             border: Border.all(
-                                                                                                color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
+                                                                                                color: curItem.isNew
+                                                                                                    ? Colors.amber
+                                                                                                    : curItem.applyStatus
+                                                                                                        ? Theme.of(context).colorScheme.primary
+                                                                                                        : Theme.of(context).hintColor,
+                                                                                                width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                           ),
                                                                                           child: curItem.icon.contains('assets/img/placeholdersquare.png')
                                                                                               ? Image.asset(
@@ -1787,7 +1802,13 @@ class _HomePageState extends State<HomePage> {
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: modViewItem!.isNew ? Colors.amber : Theme.of(context).hintColor, width: modViewItem!.isNew ? 3 : 1),
+                        border: Border.all(
+                            color: modViewItem!.isNew
+                                ? Colors.amber
+                                : modViewItem!.applyStatus
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).hintColor,
+                            width: modViewItem!.isNew || modViewItem!.applyStatus ? 3 : 1),
                       ),
                       child: modViewItem!.icon.contains('assets/img/placeholdersquare.png')
                           ? Image.asset(
@@ -2940,7 +2961,13 @@ class _HomePageState extends State<HomePage> {
                                                           height: 80,
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(3),
-                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
+                                                            border: Border.all(
+                                                                color: curItem.isNew
+                                                                    ? Colors.amber
+                                                                    : curItem.applyStatus
+                                                                        ? Theme.of(context).colorScheme.primary
+                                                                        : Theme.of(context).hintColor,
+                                                                width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                           ),
                                                           child: curItem.icon.contains('assets/img/placeholdersquare.png')
                                                               ? Image.asset(
@@ -3711,7 +3738,13 @@ class _HomePageState extends State<HomePage> {
                                                           height: 80,
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(3),
-                                                            border: Border.all(color: curItem.isNew ? Colors.amber : Theme.of(context).hintColor, width: curItem.isNew ? 3 : 1),
+                                                            border: Border.all(
+                                                                color: curItem.isNew
+                                                                    ? Colors.amber
+                                                                    : curItem.applyStatus
+                                                                        ? Theme.of(context).colorScheme.primary
+                                                                        : Theme.of(context).hintColor,
+                                                                width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                           ),
                                                           child: curItem.icon.contains('assets/img/placeholdersquare.png')
                                                               ? Image.asset(

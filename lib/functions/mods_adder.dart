@@ -117,7 +117,7 @@ Future<Item> newItemsFetcher(String catePath, String itemPath) async {
     itemIcon = 'assets/img/placeholdersquare.png';
   }
 
-  return Item(p.basename(itemPath), itemIcon, p.basename(catePath), Uri.file(itemPath).toFilePath(), true, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(p.basename(itemPath), itemIcon, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {
