@@ -13,7 +13,7 @@ Future<ModFile?> modFileAppliedDupRestore(List<CategoryType> moddedList, ModFile
               //submod.modFiles[modFileIndex].applyStatus = false;
               submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
               submod.modFiles[modFileIndex].applyStatus = false;
-              submod.modFiles[modFileIndex].ogMd5 = '';
+              submod.modFiles[modFileIndex].ogMd5s.clear();
               submod.modFiles[modFileIndex].bkLocations.clear();
               submod.modFiles[modFileIndex].ogLocations.clear();
               submod.modFiles[modFileIndex].applyDate = DateTime(0);

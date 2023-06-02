@@ -6,7 +6,7 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
   List<ModFile> unappliedModFiles = [];
   for (var modFile in modFiles) {
     modFile = await modFileUnapply(modFile);
-    modFile.ogMd5 = '';
+    modFile.ogMd5s.clear();
     modFile.bkLocations.clear();
     modFile.ogLocations.clear();
     modFile.applyDate = DateTime(0);

@@ -164,7 +164,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -213,7 +213,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, true, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, true, [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }

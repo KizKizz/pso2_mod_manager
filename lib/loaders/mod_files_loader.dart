@@ -143,7 +143,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                           //modFile.modFileName = curJsonModFilesList[modFileIndex].modFileName;
                           //modFile.modName = curJsonModFilesList[modFileIndex].modName;
                           modFile.ogLocations = curJsonModFilesList[modFileIndex].ogLocations;
-                          modFile.ogMd5 = curJsonModFilesList[modFileIndex].ogMd5;
+                          modFile.ogMd5s = curJsonModFilesList[modFileIndex].ogMd5s;
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
@@ -278,7 +278,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], []));
     }
 
     //Get preview images;
@@ -327,7 +327,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', '', file.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], []));
     }
 
     //Get submod name

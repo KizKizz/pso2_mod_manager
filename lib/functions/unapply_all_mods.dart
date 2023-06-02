@@ -24,7 +24,7 @@ Future<List<String>> unapplyAllMods(context) async {
                     if (!File(bkFile).existsSync()) {
                       allBkFilesFound = false;
                       if (!bkNotFoundFileNames.contains(modFile.modFileName)) {
-                        bkNotFoundFileNames += '${modFile.modFileName}\n';
+                        bkNotFoundFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName} ${modFile.modFileName}\n';
                       }
                     }
                   }
@@ -34,24 +34,27 @@ Future<List<String>> unapplyAllMods(context) async {
                 }
 
                 if (allBkFilesFound) {
-                  modFilesUnapply(context, allAppliedModFiles).then((value) async {
-                    submod.applyStatus = false;
-                    submod.applyDate = DateTime(0);
-                    previewImages.clear();
-                    videoPlayer.remove(0);
-                    previewModName = '';
-                    if (mod.submods.where((element) => element.applyStatus).isEmpty) {
+                  await modFilesUnapply(context, allAppliedModFiles);
+                  if (submod.applyStatus) {
+                    unappliedFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName}\n';
+                  }
+                  submod.applyStatus = false;
+                  submod.applyDate = DateTime(0);
+                  previewImages.clear();
+                  videoPlayer.remove(0);
+                  previewModName = '';
+                  
+                  if (mod.submods.where((element) => element.applyStatus).isEmpty) {
                     mod.applyStatus = false;
                     mod.applyDate = DateTime(0);
-                    }
-                    if (item.mods.where((element) => element.applyStatus).isEmpty) {
+                  }
+                  if (item.mods.where((element) => element.applyStatus).isEmpty) {
                     item.applyStatus = false;
                     item.applyDate = DateTime(0);
-                    }
+                  }
 
-                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                    saveModdedItemListToJson();
-                  });
+                  appliedItemList = await appliedListBuilder(moddedItemsList);
+                  saveModdedItemListToJson();
                 }
               }
             }
@@ -61,5 +64,5 @@ Future<List<String>> unapplyAllMods(context) async {
     }
   }
 
-  return ['Success!', (unappliedFileNames.trim())];
+  return ['Success!', 'Succesfully removed these mods from the game:\n${unappliedFileNames.trim()}'];
 }
