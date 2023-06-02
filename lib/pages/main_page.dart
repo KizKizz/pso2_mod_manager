@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
           Padding(
             padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
             child: Text(
-              'Settings',
+              curLangText!.uiSettings,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -86,196 +86,190 @@ class _MainPageState extends State<MainPage> {
                     padding: const EdgeInsets.all(5),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       //Language
-                      ModManTooltip(
-                        message: curLangText!.languageTooltipText,
-                        child: InkWell(
-                          onLongPress: () {
-                            showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: const Text("Add a new language"),
-                                content: SizedBox(
-                                  height: 110,
-                                  width: 300,
-                                  child: Column(
-                                    children: [
-                                      const Text('Enter new language\'s initial:\n(2 characters, ex: EN for English)'),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          height: 50,
-                                          width: 60,
-                                          child: TextFormField(
-                                            inputFormatters: [UpperCaseTextFormatter()],
-                                            controller: newLangTextController,
-                                            maxLines: 1,
-                                            maxLength: 2,
-                                            style: const TextStyle(fontSize: 15),
-                                            decoration: const InputDecoration(
-                                              contentPadding: EdgeInsets.only(left: 10, top: 10),
-                                              //hintText: '',
-                                              border: OutlineInputBorder(),
-                                              //isDense: true,
-                                            ),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Language initial can\'t be empty';
-                                              }
-                                              if (langDropDownList.indexWhere((e) => e == value) != -1) {
-                                                return 'Language initial already exists';
-                                              }
-                                              return null;
-                                            },
-                                            onChanged: (text) {
-                                              setState(() {
-                                                setState(
-                                                  () {},
-                                                );
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(ctx).pop();
-                                    },
-                                    child: const Text("Cancel"),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                      String newLangPath = Uri.file('$modManLanguageDirPath/${newLangTextController.text.toUpperCase()}.json').toFilePath();
-                                      TranslationText? newText = curLangText;
-                                      if (!File(newLangPath).existsSync()) {
-                                        await File(newLangPath).create(recursive: true);
-                                      }
-                                      TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
-                                      languageList.add(newLang);
-                                      languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
-                                      langDropDownList.add(newLangTextController.text.toUpperCase());
-                                      newLangTextController.clear();
-                                      //Json Write to language file
-                                      File(newLangPath).writeAsStringSync(encoder.convert(newText));
-                                      //Json Write to settings
-                                      languageList.map((lang) => lang.toJson()).toList();
-                                      File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
-                                      setState(() {});
-                                      Navigator.of(ctx).pop();
-                                    },
-                                    child: const Text("Add"),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                            customButton: AbsorbPointer(
-                              absorbing: true,
-                              child: MaterialButton(
-                                onPressed: (() {}),
-                                child: Row(
+                      InkWell(
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(curLangText!.uiAddANewLanguage),
+                              content: SizedBox(
+                                height: 110,
+                                width: 300,
+                                child: Column(
                                   children: [
-                                    const Icon(
-                                      Icons.language,
-                                      size: 18,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Current Language: $langDropDownSelected',
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                    Text(curLangText!.uiNewLanguageInititalInput),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        height: 50,
+                                        width: 60,
+                                        child: TextFormField(
+                                          inputFormatters: [UpperCaseTextFormatter()],
+                                          controller: newLangTextController,
+                                          maxLines: 1,
+                                          maxLength: 2,
+                                          style: const TextStyle(fontSize: 15),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.only(left: 10, top: 10),
+                                            //hintText: '',
+                                            border: OutlineInputBorder(),
+                                            //isDense: true,
                                           ),
-                                          const Icon(Icons.arrow_drop_down)
-                                        ],
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return curLangText!.uiNewLanguageInitialEmptyError;
+                                            }
+                                            if (langDropDownList.indexWhere((e) => e == value) != -1) {
+                                              return curLangText!.uiNewLanguageInititalAlreadyExisted;
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (text) {
+                                            setState(() {
+                                              setState(
+                                                () {},
+                                              );
+                                            });
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text(curLangText!.uiCancel),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                    String newLangPath = Uri.file('$modManLanguageDirPath/${newLangTextController.text.toUpperCase()}.json').toFilePath();
+                                    TranslationText? newText = curLangText;
+                                    if (!File(newLangPath).existsSync()) {
+                                      await File(newLangPath).create(recursive: true);
+                                    }
+                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                    languageList.add(newLang);
+                                    languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
+                                    langDropDownList.add(newLangTextController.text.toUpperCase());
+                                    newLangTextController.clear();
+                                    //Json Write to language file
+                                    File(newLangPath).writeAsStringSync(encoder.convert(newText));
+                                    //Json Write to settings
+                                    languageList.map((lang) => lang.toJson()).toList();
+                                    File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+                                    setState(() {});
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text(curLangText!.uiAdd),
+                                ),
+                              ],
                             ),
-                            buttonStyleData: ButtonStyleData(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                            ),
-                            dropdownStyleData: DropdownStyleData(
-                              elevation: 3,
-                              padding: const EdgeInsets.symmetric(vertical: 2),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            iconStyleData: const IconStyleData(iconSize: 15),
-                            menuItemStyleData: const MenuItemStyleData(
-                              height: 20,
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                            ),
-                            isDense: true,
-                            items: langDropDownList
-                                .map((item) => DropdownMenuItem<String>(
-                                    value: item,
+                          );
+                        },
+                        child: DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                          customButton: AbsorbPointer(
+                            absorbing: true,
+                            child: MaterialButton(
+                              onPressed: (() {}),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.language,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.only(bottom: 3),
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                                //fontSize: 14,
-                                                //fontWeight: FontWeight.bold,
-                                                //color: Colors.white,
-                                                ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )
+                                        Text(
+                                          '${curLangText!.uiCurrentLanguage}: $langDropDownSelected',
+                                          style: const TextStyle(fontWeight: FontWeight.normal),
+                                        ),
+                                        const Icon(Icons.arrow_drop_down)
                                       ],
-                                    )))
-                                .toList(),
-                            value: langDropDownSelected,
-                            onChanged: (value) async {
-                              langDropDownSelected = value.toString();
-                              for (var lang in languageList) {
-                                if (lang.langInitial == value) {
-                                  lang.selected = true;
-                                  curActiveLang = lang.langInitial;
-                                  var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
-                                  curLangText = TranslationText.fromJson(jsonData);
-                                } else {
-                                  lang.selected = false;
-                                }
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          buttonStyleData: ButtonStyleData(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            elevation: 3,
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).cardColor : Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(iconSize: 15),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 20,
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                          ),
+                          isDense: true,
+                          items: langDropDownList
+                              .map((item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 3),
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                              //fontSize: 14,
+                                              //fontWeight: FontWeight.bold,
+                                              //color: Colors.white,
+                                              ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )
+                                    ],
+                                  )))
+                              .toList(),
+                          value: langDropDownSelected,
+                          onChanged: (value) async {
+                            langDropDownSelected = value.toString();
+                            for (var lang in languageList) {
+                              if (lang.langInitial == value) {
+                                lang.selected = true;
+                                curActiveLang = lang.langInitial;
+                                var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
+                                curLangText = TranslationText.fromJson(jsonData);
+                              } else {
+                                lang.selected = false;
                               }
+                            }
 
-                              topBtnMenuItems = [curLangText!.modsFolderBtnText, curLangText!.backupFolderBtnText, curLangText!.deletedItemsBtnText];
-                              //sortTypeList = [curLangText!.sortCateByNameText, curLangText!.sortCateByNumItemsText];
-
-                              //Json Write
-                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                              languageList.map((lang) => lang.toJson()).toList();
-                              File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
-                              Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-                              Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
-                              setState(() {});
-                              await Future.delayed(const Duration(seconds: 2));
-                              Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
-                              Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
-                              setState(() {});
-                            },
-                          )),
-                        ),
+                            //Json Write
+                            const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                            languageList.map((lang) => lang.toJson()).toList();
+                            File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+                            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
+                            Provider.of<StateProvider>(context, listen: false).languageReloadTrue();
+                            setState(() {});
+                            await Future.delayed(const Duration(seconds: 2));
+                            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                            Provider.of<StateProvider>(context, listen: false).languageReloadFalse();
+                            setState(() {});
+                          },
+                        )),
                       ),
                       const SizedBox(
                         height: 5,
@@ -287,7 +281,7 @@ class _MainPageState extends State<MainPage> {
                         onPressed: (() {
                           pso2PathsReloader(context);
                         }),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               Icons.folder_copy_outlined,
@@ -295,7 +289,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Reselect pso2_bin Path',
+                              curLangText!.uiReselectPso2binPath,
                               style: TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -311,14 +305,14 @@ class _MainPageState extends State<MainPage> {
                         onPressed: (() {
                           modManPathReloader(context);
                         }),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               Icons.folder_copy_outlined,
                               size: 18,
                             ),
                             SizedBox(width: 10),
-                            Text('Reselect Mod Manager Folder Path', style: TextStyle(fontWeight: FontWeight.normal)),
+                            Text(curLangText!.uiReselectModManFolderPath, style: TextStyle(fontWeight: FontWeight.normal)),
                           ],
                         ),
                       ),
@@ -344,7 +338,7 @@ class _MainPageState extends State<MainPage> {
                         onPressed: (() async {
                           await launchUrl(Uri.file(modManModsDirPath));
                         }),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               Icons.folder_open_outlined,
@@ -352,7 +346,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Open Mods Folder',
+                              curLangText!.uiOpenModsFolder,
                               style: TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -368,7 +362,7 @@ class _MainPageState extends State<MainPage> {
                         onPressed: (() async {
                           await launchUrl(Uri.file(modManBackupsDirPath));
                         }),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               Icons.folder_open_outlined,
@@ -376,7 +370,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Open Backup Folder',
+                              curLangText!.uiOpenBackupFolder,
                               style: TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -392,7 +386,7 @@ class _MainPageState extends State<MainPage> {
                         onPressed: (() async {
                           await launchUrl(Uri.file(modManDeletedItemsDirPath));
                         }),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Icon(
                               Icons.folder_open_outlined,
@@ -400,7 +394,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              'Open Deleted Items Folder',
+                              curLangText!.uiOpenDeletedItemsFolder,
                               style: TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -418,10 +412,10 @@ class _MainPageState extends State<MainPage> {
                         //color: Theme.of(context).textTheme.headlineMedium?.color,
                       ),
 
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         child: Text(
-                          'Theme:',
+                          '${curLangText!.uiTheme}:',
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -429,7 +423,7 @@ class _MainPageState extends State<MainPage> {
                       //Dark theme
                       if (MyApp.themeNotifier.value == ThemeMode.dark)
                         ModManTooltip(
-                          message: curLangText!.darkModeTooltipText,
+                          message: curLangText!.uiSwitchToLightTheme,
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
@@ -446,14 +440,14 @@ class _MainPageState extends State<MainPage> {
                                   size: 18,
                                 ),
                                 const SizedBox(width: 10),
-                                Text('Appearance: ${curLangText!.darkModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                                Text('${curLangText!.uiAppearance}: ${curLangText!.uiDarkTheme}', style: const TextStyle(fontWeight: FontWeight.w400))
                               ],
                             ),
                           ),
                         ),
                       if (MyApp.themeNotifier.value == ThemeMode.light)
                         ModManTooltip(
-                          message: curLangText!.lightModeTooltipText,
+                          message: curLangText!.uiSwitchToDarkTheme,
                           child: MaterialButton(
                             height: 40,
                             onPressed: (() async {
@@ -470,7 +464,7 @@ class _MainPageState extends State<MainPage> {
                                   size: 18,
                                 ),
                                 const SizedBox(width: 10),
-                                Text('Appearance: ${curLangText!.lightModeBtnText}', style: const TextStyle(fontWeight: FontWeight.w400))
+                                Text('${curLangText!.uiAppearance}: ${curLangText!.uiLightTheme}', style: const TextStyle(fontWeight: FontWeight.w400))
                               ],
                             ),
                           ),
@@ -480,7 +474,7 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Opacity slider
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
                           children: [
@@ -491,7 +485,7 @@ class _MainPageState extends State<MainPage> {
                             SizedBox(
                               width: 10,
                             ),
-                            Text('UI Opacity:'),
+                            Text('${curLangText!.uiUIOpacity}:'),
                           ],
                         ),
                       ),
@@ -508,7 +502,7 @@ class _MainPageState extends State<MainPage> {
                             }),
                       ),
                       //Theme color picker
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
                           children: [
@@ -519,7 +513,7 @@ class _MainPageState extends State<MainPage> {
                             SizedBox(
                               width: 10,
                             ),
-                            Text('Colors:'),
+                            Text('${curLangText!.uiUIColors}:'),
                           ],
                         ),
                       ),
@@ -534,7 +528,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Primary swatch',
+                                      message: curLangText!.uiPrimarySwatch,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -578,7 +572,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Main UI background',
+                                      message: curLangText!.uiMainUIBackground,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -625,7 +619,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Primary color',
+                                      message: curLangText!.uiPrimaryColor,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -667,7 +661,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Primary light',
+                                      message: curLangText!.uiPrimaryLight,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -714,7 +708,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Primary dark',
+                                      message: curLangText!.uiPrimaryDark,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -756,7 +750,7 @@ class _MainPageState extends State<MainPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 10, top: 5, bottom: 2.5),
                                     child: ModManTooltip(
-                                      message: 'Main canvas background',
+                                      message: curLangText!.uiMainCanvasBackground,
                                       child: MaterialButton(
                                         minWidth: 120,
                                         height: 30,
@@ -843,12 +837,12 @@ class _MainPageState extends State<MainPage> {
                                   },
                                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   onPressed: () {},
-                                  child: const Text('Hold to reset to default colors'),
+                                  child: Text(curLangText!.uiHoldToResetColors),
                                 ),
                               ),
 
                               //Background Image
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 7, right: 7, top: 10),
                                 child: Row(
                                   children: [
@@ -859,7 +853,7 @@ class _MainPageState extends State<MainPage> {
                                     SizedBox(
                                       width: 10,
                                     ),
-                                    Text('Background Image:'),
+                                    Text('${curLangText!.uiBackgroundImage}:'),
                                   ],
                                 ),
                               ),
@@ -883,13 +877,13 @@ class _MainPageState extends State<MainPage> {
                                                       backgroundImage,
                                                       fit: BoxFit.cover,
                                                     ),
-                                                    Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: const Center(child: Text('Click to change')))
+                                                    Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: Center(child: Text(curLangText!.uiClicktoChangeBackgroundImage)))
                                                   ],
                                                 )
-                                              : const Center(child: Text('No image found. Click!')),
+                                              : Center(child: Text(curLangText!.uiNoBackgroundImageFound)),
                                         ),
                                         onTap: () async {
-                                          await FilePicker.platform.pickFiles(dialogTitle: 'Select your image', lockParentWindow: true, type: FileType.image).then((value) async {
+                                          await FilePicker.platform.pickFiles(dialogTitle: curLangText!.uiSelectBackgroundImage, lockParentWindow: true, type: FileType.image).then((value) async {
                                             if (value != null) {
                                               final prefs = await SharedPreferences.getInstance();
                                               backgroundImage = File(value.paths.first!);
@@ -908,7 +902,7 @@ class _MainPageState extends State<MainPage> {
                                           if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
                                               (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
                                             ModManTooltip(
-                                              message: showBackgroundImage ? 'Hide background image' : 'Show background image',
+                                              message: showBackgroundImage ? curLangText!.uiHideBackgroundImage : curLangText!.uiShowBackgroundImage,
                                               child: InkWell(
                                                 child: Container(
                                                   decoration: ShapeDecoration(
@@ -938,7 +932,7 @@ class _MainPageState extends State<MainPage> {
                                           if (Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger ||
                                               (!showBackgroundImage && !Provider.of<StateProvider>(context, listen: false).backgroundImageTrigger))
                                             ModManTooltip(
-                                              message: 'Hold to remove background image',
+                                              message: curLangText!.uiHoldToRemoveBackgroundImage,
                                               child: InkWell(
                                                 child: Container(
                                                   decoration: ShapeDecoration(
@@ -992,7 +986,7 @@ class _MainPageState extends State<MainPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               ModManTooltip(
-                                  message: 'Version: $appVersion | Made by キス★',
+                                  message: '${curLangText!.uiVersion}: $appVersion | ${curLangText!.uiMadeBy} キス★',
                                   child: const Text(
                                     'PSO2NGS Mod Manager',
                                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
@@ -1003,7 +997,7 @@ class _MainPageState extends State<MainPage> {
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
                               child: ModManTooltip(
-                                message: curLangText!.titleNewUpdateToolTip,
+                                message: curLangText!.uiNewUpdateAvailableClickToDownload,
                                 child: MaterialButton(
                                     visualDensity: VisualDensity.compact,
                                     height: 20,
@@ -1031,7 +1025,7 @@ class _MainPageState extends State<MainPage> {
                         children: [
                           //Add Items/Mods
                           ModManTooltip(
-                            message: curLangText!.addModsTooltip,
+                            message: curLangText!.uiAddNewModsToMM,
                             child: SizedBox(
                               width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
@@ -1053,7 +1047,7 @@ class _MainPageState extends State<MainPage> {
                                       size: 18,
                                     ),
                                     const SizedBox(width: 2.5),
-                                    Text(curLangText!.addModsBtnLabel, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -1062,7 +1056,7 @@ class _MainPageState extends State<MainPage> {
 
                           //Mod sets
                           ModManTooltip(
-                            message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.modSetsTooltipText : 'Manage Mod List',
+                            message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                             child: SizedBox(
                               width: 99,
                               child: MaterialButton(
@@ -1090,8 +1084,8 @@ class _MainPageState extends State<MainPage> {
                                         size: 18,
                                       ),
                                     const SizedBox(width: 2.5),
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modSetsBtnText, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.modListBtnText, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -1100,7 +1094,7 @@ class _MainPageState extends State<MainPage> {
 
                           //Refresh
                           ModManTooltip(
-                            message: 'Refresh Mod Manager',
+                            message: curLangText!.uiRefreshMM,
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
@@ -1113,14 +1107,14 @@ class _MainPageState extends State<MainPage> {
                                   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
                                 });
                               }),
-                              child: const Row(
+                              child: Row(
                                 children: [
                                   Icon(
                                     Icons.refresh,
                                     size: 18,
                                   ),
                                   SizedBox(width: 2.5),
-                                  Text('Refresh', style: TextStyle(fontWeight: FontWeight.w400)),
+                                  Text(curLangText!.uiRefresh, style: TextStyle(fontWeight: FontWeight.w400)),
                                 ],
                               ),
                             ),
@@ -1129,13 +1123,13 @@ class _MainPageState extends State<MainPage> {
                           //Checksum
                           ModManTooltip(
                             message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
-                                ? curLangText!.checksumToolTipText
-                                : curLangText!.checksumHoldBtnTooltip,
+                                ? curLangText!.uiOpenChecksumFolder
+                                : curLangText!.uiChecksumDownloadSelect,
                             child: MaterialButton(
                               onLongPress: () async {
                                 if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
                                   checksumLocation = await FilePicker.platform.pickFiles(
-                                    dialogTitle: curLangText!.checksumSelectPopupText,
+                                    dialogTitle: curLangText!.uiSelectLocalChecksum,
                                     allowMultiple: false,
                                     // type: FileType.custom,
                                     // allowedExtensions: ['\'\''],
@@ -1177,7 +1171,7 @@ class _MainPageState extends State<MainPage> {
                                           size: 18,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        Text('${curLangText!.checksumBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                        Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
                                         Text('OK',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
@@ -1194,10 +1188,10 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                         const SizedBox(width: 2.5),
                                         if (!_checksumDownloading && modManChecksumFilePath.isEmpty)
-                                          Text(curLangText!.checksumMissingBtnText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                          Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
                                         if (!_checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
-                                          Text(curLangText!.checksumOutdatedErrorText, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (_checksumDownloading) Text(curLangText!.checksumDownloadingBtnLabel, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                          Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+                                        if (_checksumDownloading) Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
@@ -1205,7 +1199,7 @@ class _MainPageState extends State<MainPage> {
 
                           //Preview
                           ModManTooltip(
-                            message: curLangText!.previewTooltipText,
+                            message: curLangText!.uiPreviewShowHide,
                             child: MaterialButton(
                               //visualDensity: VisualDensity.compact,
                               onPressed: (() async {
@@ -1228,7 +1222,7 @@ class _MainPageState extends State<MainPage> {
                                     size: 18,
                                   ),
                                   const SizedBox(width: 2.5),
-                                  Text('${curLangText!.previewBtnText} ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                  Text('${curLangText!.uiPreview}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
                                   if (context.watch<StateProvider>().previewWindowVisible)
                                     SizedBox(
                                         width: 23,
@@ -1246,21 +1240,21 @@ class _MainPageState extends State<MainPage> {
 
                           //Settings button
                           ModManTooltip(
-                            message: curLangText!.darkModeTooltipText,
+                            message: curLangText!.uiOpenMMSettings,
                             child: SizedBox(
                               //width: 95,
                               child: MaterialButton(
                                 onPressed: (() {
                                   _scaffoldKey.currentState!.openEndDrawer();
                                 }),
-                                child: const Row(
+                                child: Row(
                                   children: [
                                     Icon(
                                       Icons.settings,
                                       size: 18,
                                     ),
                                     SizedBox(width: 2.5),
-                                    Text('Settings', style: TextStyle(fontWeight: FontWeight.w400))
+                                    Text(curLangText!.uiSettings, style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
@@ -1299,12 +1293,12 @@ class _MainPageState extends State<MainPage> {
                       Row(
                         children: [
                           Text(
-                            curLangText!.newUpdateAvailText,
+                            curLangText!.uiNewMMUpdateAvailable,
                             style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 5),
-                            child: Text('${curLangText!.newAppVerText} $newVersion - ${curLangText!.curAppVerText} $appVersion'),
+                            child: Text('${curLangText!.uiNewVersion}: $newVersion - ${curLangText!.uiCurrentVersion}: $appVersion'),
                           ),
                           TextButton(
                               onPressed: (() {
@@ -1312,7 +1306,7 @@ class _MainPageState extends State<MainPage> {
                                   //patchNotesDialog(context);
                                 });
                               }),
-                              child: Text(curLangText!.patchNoteLabelText)),
+                              child: Text(curLangText!.uiPatchNote)),
                         ],
                       ),
                       Row(
@@ -1327,7 +1321,7 @@ class _MainPageState extends State<MainPage> {
                                   Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                   setState(() {});
                                 }),
-                                child: Text(curLangText!.skipVersionUpdateBtnLabel)),
+                                child: Text(curLangText!.uiSkipMMUpdate)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 5),
@@ -1336,14 +1330,14 @@ class _MainPageState extends State<MainPage> {
                                   Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                   setState(() {});
                                 }),
-                                child: Text(curLangText!.dismissBtnText)),
+                                child: Text(curLangText!.uiDismiss)),
                           ),
                           ElevatedButton(
                               onPressed: (() {
                                 Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
                                 launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                               }),
-                              child: Text(curLangText!.updateBtnText)),
+                              child: Text(curLangText!.uiUpdate)),
                         ],
                       )
                     ],
@@ -1376,12 +1370,12 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       if (context.watch<StateProvider>().refSheetsCount < 1)
                         Text(
-                          'New update available for item reference sheets (Important for Add Mods function to work correctly)',
+                          curLangText!.uiNewRefSheetsUpdate,
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                       if (context.watch<StateProvider>().refSheetsCount > 0)
                         Text(
-                          '${curLangText!.downloadingText} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.filesOfText} $totalSheetFilesCount of the required item reference sheets. (Important for Add Mods function to work correctly)',
+                          '${curLangText!.uiDownloading} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.uiOf} $totalSheetFilesCount ${curLangText!.uiRefSheetsDownloadingCount}',
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                       ElevatedButton(
@@ -1398,7 +1392,7 @@ class _MainPageState extends State<MainPage> {
                                   setState(() {});
                                 })
                               : null,
-                          child: Text(curLangText!.downloadUpdateBtnLabel)),
+                          child: Text(curLangText!.uiDownloadUpdate)),
                     ],
                   ),
                   actions: const [SizedBox()],
@@ -1428,7 +1422,7 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        curLangText!.newUserNoticeText,
+                        curLangText!.uiNewUserNotice,
                         style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                       ),
                       ElevatedButton(
@@ -1438,7 +1432,7 @@ class _MainPageState extends State<MainPage> {
                             firstTimeUser = false;
                             setState(() {});
                           },
-                          child: Text(curLangText!.dismissBtnText)),
+                          child: Text(curLangText!.uiDismiss)),
                     ],
                   ),
                   actions: const [SizedBox()],

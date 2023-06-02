@@ -190,7 +190,7 @@ Future<String?> pso2binPathGet(context) async {
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                curLangText!.pso2binNotFoundPopupText,
+                'pso2_bin folder not found. Select it now?\nSelecting "Exit" will close the app',
               ),
               actions: <Widget>[
                 ElevatedButton(
@@ -219,11 +219,11 @@ Future<String?> modManDirPathGet(context) async {
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
-                child: Text(curLangText!.modmanFolderNotFoundLabelText, style: const TextStyle(fontWeight: FontWeight.w700)),
+                child: Text('Mod Manager Folder not found', style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                '${curLangText!.modmanFolderNotFoundText}\nNote: This folder stores mods and backups',
+                'Select a path to store your mods?\nSelecting "No" will create a folder inside "pso2_bin" folder\nNote: This folder stores mods and backups',
               ),
               actions: <Widget>[
                 ElevatedButton(

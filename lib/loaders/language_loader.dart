@@ -24,7 +24,7 @@ Future<TranslationText?> uiTextLoader() async {
     String enUITextJsonPath = Uri.file('$modManLanguageDirPath/EN.json').toFilePath();
     File(enUITextJsonPath).createSync();
     languageList.add(TranslationLanguage('EN', enUITextJsonPath, true));
-    TranslationText defaultENLanguage = defaultUILangLoader();
+    TranslationText defaultENLanguage = TranslationText();
     //Write translation to json
     File(enUITextJsonPath).writeAsStringSync(encoder.convert(defaultENLanguage));
     //Add to language dropdown
@@ -49,7 +49,7 @@ Future<TranslationText?> uiTextLoader() async {
       if (!File(lang.langFilePath).existsSync()) {
         //Uri enUITextJsonPath = Uri.file('$modManLanguageDirPath${lang.langInitial}.json');
         File(lang.langFilePath).createSync();
-        TranslationText defaultENLanguage = defaultUILangLoader();
+        TranslationText defaultENLanguage = TranslationText();
         File(lang.langFilePath).writeAsStringSync(encoder.convert(defaultENLanguage));
       }
       langDropDownList.add(lang.langInitial);

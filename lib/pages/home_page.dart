@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
 
-  String itemListAppBarName = 'Item List';
+  String itemListAppBarName = curLangText!.uiItemList;
   bool hoveringOnSubmod = false;
   Category? modViewCate;
   double headersOpacityValue = 0.7;
@@ -135,12 +135,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 if (context.watch<StateProvider>().languageReload)
                   Text(
-                    curLangText!.loadingUIText,
+                    curLangText!.uiLoadingUILanguage,
                     style: const TextStyle(fontSize: 20),
                   ),
                 if (listsReloading)
-                  const Text(
-                    'Reloading Mods',
+                  Text(
+                    curLangText!.uiReloadingMods,
                     style: TextStyle(fontSize: 20),
                   ),
                 const SizedBox(
@@ -178,15 +178,15 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: ModManTooltip(
-                  message: isFavListVisible ? 'Back' : 'Show Favorite List',
+                  message: isFavListVisible ? curLangText!.uiBack : curLangText!.uiShowFavList,
                   child: InkWell(
                       onTap: () {
                         if (isFavListVisible) {
                           isFavListVisible = false;
-                          itemListAppBarName = 'Item List';
+                          itemListAppBarName = curLangText!.uiItemList;
                         } else {
                           isFavListVisible = true;
-                          itemListAppBarName = 'Favorite Item List';
+                          itemListAppBarName = curLangText!.uiFavItemList;
                         }
                         modViewItem = null;
                         setState(() {});
@@ -208,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   //Show all hidden
                   ModManTooltip(
-                    message: 'Unhide all categories',
+                    message: curLangText!.uiUnhideAllCate,
                     child: InkWell(
                         onTap: hiddenItemCategories.isEmpty
                             ? null
@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   //Hide empty cates button
                   ModManTooltip(
-                    message: isEmptyCatesHide ? 'Turn off auto hide empty categories' : 'Turn on auto hide empty categories',
+                    message: isEmptyCatesHide ? curLangText!.uiTurnOffAutoHideEmptyCate : curLangText!.uiTurnOnAutoHideEmptyCate,
                     child: InkWell(
                         onTap: () async {
                           final prefs = await SharedPreferences.getInstance();
@@ -260,17 +260,17 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: ModManTooltip(
-                  message: isShowHideCates ? 'Back' : 'Show/Hide categories',
+                  message: isShowHideCates ? curLangText!.uiBack : curLangText!.uiShowHideCate,
                   child: InkWell(
                       onTap: isCatesReordering.indexWhere((element) => element) != -1
                           ? null
                           : () {
                               if (isShowHideCates) {
                                 isShowHideCates = false;
-                                itemListAppBarName = 'Item List';
+                                itemListAppBarName = curLangText!.uiItemList;
                               } else {
                                 isShowHideCates = true;
-                                itemListAppBarName = 'Hidden Item List';
+                                itemListAppBarName = curLangText!.uiHiddenItemList;
                               }
                               setState(() {});
                             },
@@ -293,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                     //Sort by alpha
                     if (isCateTypeReordering)
                       ModManTooltip(
-                        message: isCateTypeAscenAlpha ? 'Sort by name decending' : 'Sort by name ascending',
+                        message: isCateTypeAscenAlpha ? curLangText!.uiSortByNameDescen : curLangText!.uiSortByNameAscen,
                         child: InkWell(
                             onTap: () {
                               if (isCateTypeAscenAlpha) {
@@ -315,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                     Visibility(
                       visible: !isFavListVisible && searchTextController.value.text.isEmpty,
                       child: ModManTooltip(
-                        message: isCateTypeReordering ? 'Back' : 'Sort Item List',
+                        message: isCateTypeReordering ? curLangText!.uiBack : curLangText!.uiSortItemList,
                         child: InkWell(
                             onTap: isCatesReordering.indexWhere((element) => element) != -1
                                 ? null
@@ -324,10 +324,10 @@ class _HomePageState extends State<HomePage> {
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
-                                      itemListAppBarName = 'Item List';
+                                      itemListAppBarName = curLangText!.uiItemList;
                                     } else {
                                       isCateTypeReordering = true;
-                                      itemListAppBarName = 'Sort Item List';
+                                      itemListAppBarName = curLangText!.uiSortItemList;
                                     }
                                     setState(() {});
                                   },
@@ -346,7 +346,7 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 5, right: 5),
                 child: ModManTooltip(
-                  message: 'Add new Category Group',
+                  message: curLangText!.uiAddNewCateGroup,
                   child: InkWell(
                       onTap: () async {
                         String newCateTypeName = await categoryGroupAdder(context);
@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                   maxLines: 1,
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                      hintText: 'Search for mods',
+                      hintText: curLangText!.uiSearchForMods,
                       hintStyle: TextStyle(color: Theme.of(context).hintColor),
                       isCollapsed: true,
                       isDense: true,
@@ -485,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Text(hiddenItemCategories[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
                                       ModManTooltip(
-                                        message: 'Unhide ${hiddenItemCategories[groupIndex].groupName}',
+                                        message: '${curLangText!.uiUnhide} ${hiddenItemCategories[groupIndex].groupName}',
                                         child: InkWell(
                                             onTap: () {
                                               for (var cate in hiddenItemCategories[groupIndex].categories) {
@@ -519,7 +519,7 @@ class _HomePageState extends State<HomePage> {
                                                 minVerticalPadding: 5,
                                                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                                                 trailing: ModManTooltip(
-                                                  message: 'Unhide ${curCategory.categoryName}',
+                                                  message: '${curLangText!.uiUnhide} ${curCategory.categoryName}',
                                                   child: InkWell(
                                                       onTap: () {
                                                         showHiddenCategory(hiddenItemCategories, hiddenItemCategories[groupIndex], curCategory);
@@ -542,11 +542,11 @@ class _HomePageState extends State<HomePage> {
                                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                           ),
                                                           child: curCategory.items.length < 2
-                                                              ? Text('${hiddenItemCategories[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                              ? Text('${hiddenItemCategories[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
                                                                   style: const TextStyle(
                                                                     fontSize: 13,
                                                                   ))
-                                                              : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                              : Text('${curCategory.items.length} ${curLangText!.uiItems}',
                                                                   style: const TextStyle(
                                                                     fontSize: 13,
                                                                   ))),
@@ -664,7 +664,7 @@ class _HomePageState extends State<HomePage> {
                                                   spacing: 5,
                                                   children: [
                                                     ModManTooltip(
-                                                      message: 'Remove ${moddedItemsList[groupIndex].groupName} from Favorite List',
+                                                      message: '${curLangText!.uiRemove} ${moddedItemsList[groupIndex].groupName} ${curLangText!.uiFromFavList}',
                                                       child: InkWell(
                                                           onTap: () {
                                                             removeCateTypeFromFav(moddedItemsList[groupIndex]);
@@ -733,11 +733,11 @@ class _HomePageState extends State<HomePage> {
                                                                           borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                         ),
                                                                         child: curCategory.items.where((element) => element.isFavorite).length < 2
-                                                                            ? Text('${curCategory.items.where((element) => element.isFavorite).length}${curLangText!.itemLabelText}',
+                                                                            ? Text('${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItem}',
                                                                                 style: const TextStyle(
                                                                                   fontSize: 13,
                                                                                 ))
-                                                                            : Text('${curCategory.items.where((element) => element.isFavorite).length}${curLangText!.itemsLabelText}',
+                                                                            : Text('${curCategory.items.where((element) => element.isFavorite).length} ${curLangText!.uiItems}',
                                                                                 style: const TextStyle(
                                                                                   fontSize: 13,
                                                                                 ))),
@@ -752,7 +752,7 @@ class _HomePageState extends State<HomePage> {
                                                                   spacing: 5,
                                                                   children: [
                                                                     ModManTooltip(
-                                                                      message: 'Remove ${curCategory.categoryName} from Favorite List',
+                                                                      message: '${curLangText!.uiRemove} ${curCategory.categoryName} ${curLangText!.uiFromFavList}',
                                                                       child: InkWell(
                                                                           onTap: () async {
                                                                             removeCateFromFav(curCategory);
@@ -829,12 +829,12 @@ class _HomePageState extends State<HomePage> {
                                                                                     ),
                                                                                     Text(
                                                                                       curItem.mods.where((element) => element.isFavorite).length < 2
-                                                                                          ? '${curItem.mods.where((element) => element.isFavorite).length} Mod'
-                                                                                          : '${curItem.mods.where((element) => element.isFavorite).length} Mods',
+                                                                                          ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                                                                          : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
                                                                                       style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                     ),
                                                                                     Text(
-                                                                                      '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} Applied',
+                                                                                      '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
                                                                                       style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                     ),
                                                                                   ],
@@ -850,7 +850,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     spacing: 5,
                                                                                     children: [
                                                                                       ModManTooltip(
-                                                                                        message: 'Remove ${curItem.itemName} from Favorite List',
+                                                                                        message: '${curLangText!.uiRemove} ${curItem.itemName} ${curLangText!.uiFromFavList}',
                                                                                         child: InkWell(
                                                                                             onTap: () async {
                                                                                               removeItemFromFav(curItem);
@@ -865,14 +865,14 @@ class _HomePageState extends State<HomePage> {
                                                                                       ),
                                                                                       //Open Buttons
                                                                                       ModManTooltip(
-                                                                                          message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                                          message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
                                                                                           child: InkWell(
                                                                                             child: const Icon(Icons.folder_open),
                                                                                             onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                                           )),
                                                                                       //Delete
                                                                                       ModManTooltip(
-                                                                                        message: 'Hold to remove ${curItem.itemName} from Mod Manager',
+                                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
                                                                                         child: InkWell(
                                                                                           onLongPress: curItem.applyStatus
                                                                                               ? null
@@ -884,7 +884,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                     }
                                                                                                     curCategory.items.remove(curItem);
                                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                        context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                                        context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                                                     setState(() {});
                                                                                                   });
                                                                                                 },
@@ -1039,11 +1039,11 @@ class _HomePageState extends State<HomePage> {
                                                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                           ),
                                                                           child: itemMatchingNum < 2
-                                                                              ? Text('$itemMatchingNum${curLangText!.itemLabelText}',
+                                                                              ? Text('$itemMatchingNum ${curLangText!.uiItem}',
                                                                                   style: const TextStyle(
                                                                                     fontSize: 13,
                                                                                   ))
-                                                                              : Text('$itemMatchingNum${curLangText!.itemsLabelText}',
+                                                                              : Text('$itemMatchingNum ${curLangText!.uiItems}',
                                                                                   style: const TextStyle(
                                                                                     fontSize: 13,
                                                                                   ))),
@@ -1122,11 +1122,11 @@ class _HomePageState extends State<HomePage> {
                                                                                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                       ),
                                                                                       Text(
-                                                                                        modMatchingNum < 2 ? '$modMatchingNum Mod' : '$modMatchingNum Mods',
+                                                                                        modMatchingNum < 2 ? '$modMatchingNum ${curLangText!.uiMod}' : '$modMatchingNum ${curLangText!.uiMods}',
                                                                                         style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                       ),
                                                                                       Text(
-                                                                                        '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} Applied',
+                                                                                        '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiApplied}',
                                                                                         style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                       ),
                                                                                     ],
@@ -1143,14 +1143,14 @@ class _HomePageState extends State<HomePage> {
                                                                                       children: [
                                                                                         //Open Buttons
                                                                                         ModManTooltip(
-                                                                                            message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                                            message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
                                                                                             child: InkWell(
                                                                                               child: const Icon(Icons.folder_open),
                                                                                               onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                                             )),
                                                                                         //Delete
                                                                                         ModManTooltip(
-                                                                                          message: 'Hold to remove ${curItem.itemName} from Mod Manager',
+                                                                                          message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
                                                                                           child: InkWell(
                                                                                             onLongPress: curItem.applyStatus
                                                                                                 ? null
@@ -1162,7 +1162,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                       }
                                                                                                       curCategory.items.remove(curItem);
                                                                                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                          context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                                          context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                                                       setState(() {});
                                                                                                     });
                                                                                                   },
@@ -1295,7 +1295,7 @@ class _HomePageState extends State<HomePage> {
                                                                     !isCatesReordering[groupIndex] &&
                                                                     !defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName),
                                                                 child: ModManTooltip(
-                                                                  message: 'Hold to delete ${moddedItemsList[groupIndex].groupName} from Mod Manager',
+                                                                  message: '${curLangText!.uiHoldToDelete} ${moddedItemsList[groupIndex].groupName} ${curLangText!.uiFromMM}',
                                                                   child: InkWell(
                                                                       child: const Icon(Icons.delete_forever_outlined),
                                                                       onLongPress: () {
@@ -1313,7 +1313,7 @@ class _HomePageState extends State<HomePage> {
                                                               //Sort by alpha
                                                               if (isCatesReordering[groupIndex])
                                                                 ModManTooltip(
-                                                                  message: isCatesAscenAlpha[groupIndex] ? 'Sort by descending name order' : 'Sort by ascending name order',
+                                                                  message: isCatesAscenAlpha[groupIndex] ? curLangText!.uiSortByNameDescen : curLangText!.uiSortByNameAscen,
                                                                   child: InkWell(
                                                                       onTap: () {
                                                                         if (isCatesAscenAlpha[groupIndex]) {
@@ -1333,7 +1333,7 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                               if (isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex])
                                                                 ModManTooltip(
-                                                                  message: 'Sort categories in this group',
+                                                                  message: curLangText!.uiSortCateInThisGroup,
                                                                   child: InkWell(
                                                                       child: const Icon(Icons.sort_outlined),
                                                                       onTap: () {
@@ -1345,7 +1345,7 @@ class _HomePageState extends State<HomePage> {
                                                               Visibility(
                                                                 visible: isCateTypeListExpanded[groupIndex] && !isCatesReordering[groupIndex],
                                                                 child: ModManTooltip(
-                                                                  message: 'Add a new Category to ${moddedItemsList[groupIndex].groupName}',
+                                                                  message: '${curLangText!.uiAddANewCateTo} ${moddedItemsList[groupIndex].groupName}',
                                                                   child: InkWell(
                                                                       onTap: () async {
                                                                         String newCategoryName = await categoryAdder(context);
@@ -1377,7 +1377,7 @@ class _HomePageState extends State<HomePage> {
                                                   trailing: !isCatesReordering[groupIndex]
                                                       ? null
                                                       : ModManTooltip(
-                                                          message: 'Back',
+                                                          message: curLangText!.uiBack,
                                                           child: InkWell(
                                                               child: const Icon(
                                                                 Icons.arrow_back_ios_new,
@@ -1437,11 +1437,11 @@ class _HomePageState extends State<HomePage> {
                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                               ),
                                                                               child: curCategory.items.length < 2
-                                                                                  ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                                                  ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
                                                                                       style: const TextStyle(
                                                                                         fontSize: 13,
                                                                                       ))
-                                                                                  : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                                                  : Text('${curCategory.items.length} ${curLangText!.uiItems}',
                                                                                       style: const TextStyle(
                                                                                         fontSize: 13,
                                                                                       ))),
@@ -1505,11 +1505,11 @@ class _HomePageState extends State<HomePage> {
                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                 ),
                                                                                 child: curCategory.items.length < 2
-                                                                                    ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length}${curLangText!.itemLabelText}',
+                                                                                    ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
                                                                                         style: const TextStyle(
                                                                                           fontSize: 13,
                                                                                         ))
-                                                                                    : Text('${curCategory.items.length}${curLangText!.itemsLabelText}',
+                                                                                    : Text('${curCategory.items.length} ${curLangText!.uiItems}',
                                                                                         style: const TextStyle(
                                                                                           fontSize: 13,
                                                                                         ))),
@@ -1524,7 +1524,7 @@ class _HomePageState extends State<HomePage> {
                                                                           spacing: 10,
                                                                           children: [
                                                                             ModManTooltip(
-                                                                              message: 'Hide ${curCategory.categoryName} from Item List',
+                                                                              message: '${curLangText!.uiHide} ${curCategory.categoryName} ${curLangText!.uiFromItemList}',
                                                                               child: InkWell(
                                                                                   onLongPress: () async {
                                                                                     hideCategory(moddedItemsList[groupIndex], curCategory);
@@ -1539,7 +1539,7 @@ class _HomePageState extends State<HomePage> {
                                                                             Visibility(
                                                                               visible: !defaultCateforyDirs.contains(curCategory.categoryName),
                                                                               child: ModManTooltip(
-                                                                                message: 'Hold to remove ${curCategory.categoryName} from ${moddedItemsList[groupIndex].groupName}',
+                                                                                message: '${curLangText!.uiHoldToRemove} ${curCategory.categoryName} ${curLangText!.uiFrom} ${moddedItemsList[groupIndex].groupName}',
                                                                                 child: InkWell(
                                                                                     onLongPress: () {
                                                                                       if (curCategory.items.isEmpty) {
@@ -1623,11 +1623,11 @@ class _HomePageState extends State<HomePage> {
                                                                                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                           ),
                                                                                           Text(
-                                                                                            curItem.mods.length < 2 ? '${curItem.mods.length} Mod' : '${curItem.mods.length} Mods',
+                                                                                            curItem.mods.length < 2 ? '${curItem.mods.length} ${curLangText!.uiMod}' : '${curItem.mods.length} ${curLangText!.uiMods}',
                                                                                             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                           ),
                                                                                           Text(
-                                                                                            '${curItem.mods.where((element) => element.applyStatus == true).length} Applied',
+                                                                                            '${curItem.mods.where((element) => element.applyStatus == true).length} ${curLangText!.uiApplied}',
                                                                                             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                           ),
                                                                                         ],
@@ -1642,7 +1642,7 @@ class _HomePageState extends State<HomePage> {
                                                                                           children: [
                                                                                             //Buttons
                                                                                             ModManTooltip(
-                                                                                                message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                                                message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
                                                                                                 child: InkWell(
                                                                                                   child: const Icon(Icons.folder_open),
                                                                                                   onTap: () async => await launchUrl(Uri.file(curItem.location)),
@@ -1651,7 +1651,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             Padding(
                                                                                               padding: const EdgeInsets.only(left: 5),
                                                                                               child: ModManTooltip(
-                                                                                                message: 'Hold to remove ${curItem.itemName} from Mod Manager',
+                                                                                                message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
                                                                                                 child: InkWell(
                                                                                                   onLongPress: curItem.applyStatus
                                                                                                       ? null
@@ -1663,7 +1663,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                             }
                                                                                                             curCategory.items.remove(curItem);
                                                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                                                context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                                                context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                                                             setState(() {});
                                                                                                           });
                                                                                                         },
@@ -1776,7 +1776,7 @@ class _HomePageState extends State<HomePage> {
             Align(
               alignment: Alignment.topCenter,
               child: ModManTooltip(
-                message: 'Clear Available Mods view',
+                message: curLangText!.uiClearAvailableModsView,
                 child: InkWell(
                     child: const Icon(
                       Icons.clear,
@@ -1847,7 +1847,7 @@ class _HomePageState extends State<HomePage> {
                             ? Text(modViewItem!.itemName)
                             : Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
-                                child: Text(curLangText!.availableModsHeaderText),
+                                child: Text(curLangText!.uiAvailableMods),
                               ),
                         if (modViewItem != null)
                           const Divider(
@@ -1858,29 +1858,29 @@ class _HomePageState extends State<HomePage> {
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
                           Text(
-                            modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} Mod' : '${modViewItem!.mods.length} Mods',
+                            modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                           ),
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Text(
                             modViewItem!.mods.where((element) => element.isFavorite).length < 2
-                                ? '${modViewItem!.mods.where((element) => element.isFavorite).length} Mod'
-                                : '${modViewItem!.mods.where((element) => element.isFavorite).length} Mods',
+                                ? '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                : '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                           ),
                         //searching
                         if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
                           Text(
                             itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
-                                ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mod'
-                                : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} Mods',
+                                ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMod}'
+                                : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMods}',
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                           ),
                         if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
                           for (int i = 0; i < appBarAppliedModNames.length; i++)
                             Text(
-                              'Applied: ${appBarAppliedModNames[i]}',
+                              '${curLangText!.uiApplied}: ${appBarAppliedModNames[i]}',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.primary),
                             ),
                       ]),
@@ -1996,12 +1996,12 @@ class _HomePageState extends State<HomePage> {
                                                   context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? Text(
                                                           curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
-                                                              ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} Variant'
-                                                              : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} Variants',
+                                                              ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
+                                                              : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))
-                                                      : Text(curMod.submods.length < 2 ? '${curMod.submods.length} Variant' : '${curMod.submods.length} Variants',
+                                                      : Text(curMod.submods.length < 2 ? '${curMod.submods.length} ${curLangText!.uiVariant}' : '${curMod.submods.length} ${curLangText!.uiVariants}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           )),
@@ -2033,7 +2033,7 @@ class _HomePageState extends State<HomePage> {
                                                       Visibility(
                                                         visible: !isModViewModsRemoving,
                                                         child: ModManTooltip(
-                                                          message: 'Remove ${curMod.submods.first.submodName} from the game',
+                                                          message: '${curLangText!.uiRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromTheGame}',
                                                           child: InkWell(
                                                               child: const Icon(
                                                                 FontAwesomeIcons.squareMinus,
@@ -2050,7 +2050,7 @@ class _HomePageState extends State<HomePage> {
                                                                     if (!File(bkFile).existsSync()) {
                                                                       allBkFilesFound = false;
                                                                       ScaffoldMessenger.of(context)
-                                                                          .showSnackBar(snackBarMessage(context, 'Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+                                                                          .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
                                                                       break;
                                                                     }
@@ -2071,12 +2071,12 @@ class _HomePageState extends State<HomePage> {
 
                                                                     for (var element in unappliedModFiles) {
                                                                       if (filesUnapplied.isEmpty) {
-                                                                        filesUnapplied = 'Sucessfully removed ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                                        filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
                                                                       }
                                                                       filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                     }
                                                                     ScaffoldMessenger.of(context)
-                                                                        .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
 
@@ -2105,7 +2105,7 @@ class _HomePageState extends State<HomePage> {
                                                       Visibility(
                                                         visible: !isModViewModsApplying,
                                                         child: ModManTooltip(
-                                                          message: 'Apply ${curMod.submods.first.submodName} to the game',
+                                                          message: '${curLangText!.uiApply} ${curMod.submods.first.submodName} ${curLangText!.uiToTheGame}',
                                                           child: InkWell(
                                                             child: const Icon(
                                                               FontAwesomeIcons.squarePlus,
@@ -2119,7 +2119,7 @@ class _HomePageState extends State<HomePage> {
                                                                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                                 if (modFile.ogLocations.isEmpty) {
                                                                   ScaffoldMessenger.of(context)
-                                                                      .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                   allOGFilesFound = false;
                                                                   break;
                                                                 }
@@ -2141,12 +2141,12 @@ class _HomePageState extends State<HomePage> {
                                                                     String fileAppliedText = '';
                                                                     for (var element in appliedModFiles) {
                                                                       if (fileAppliedText.isEmpty) {
-                                                                        fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                                        fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
                                                                       }
                                                                       fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                     }
                                                                     ScaffoldMessenger.of(context)
-                                                                        .showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                   }
 
@@ -2165,8 +2165,8 @@ class _HomePageState extends State<HomePage> {
                                                 //Favorite
                                                 ModManTooltip(
                                                   message: curMod.submods.first.isFavorite
-                                                      ? 'Remove ${curMod.submods.first.submodName} from Favorite List'
-                                                      : 'Add ${curMod.submods.first.submodName} to Favorite List',
+                                                      ? '${curLangText!.uiRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromFavList}'
+                                                      : '${curLangText!.uiAdd} ${curMod.submods.first.submodName} ${curLangText!.uiToFavList}',
                                                   child: InkWell(
                                                     child: Icon(curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus, size: 18),
                                                     onTap: () async {
@@ -2191,7 +2191,7 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 //Open folder
                                                 ModManTooltip(
-                                                  message: 'Open ${curMod.submods.first.submodName} in File Explorer',
+                                                  message: '${curLangText!.uiOpen} ${curMod.submods.first.submodName} ${curLangText!.uiInFileExplorer}',
                                                   child: InkWell(
                                                     child: const Icon(
                                                       Icons.folder_open_outlined,
@@ -2201,7 +2201,7 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 //Delete
                                                 ModManTooltip(
-                                                  message: 'Hold to remove ${curMod.submods.first.submodName} from Mod Manager',
+                                                  message: '${curLangText!.uiHoldToRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromMM}',
                                                   child: InkWell(
                                                     onLongPress: curMod.applyStatus
                                                         ? null
@@ -2212,7 +2212,7 @@ class _HomePageState extends State<HomePage> {
                                                                 modViewCate!.items.remove(modViewItem);
                                                                 modViewItem = null;
                                                                 ScaffoldMessenger.of(context)
-                                                                    .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                 previewModName = '';
                                                                 previewImages.clear();
                                                                 setState(() {});
@@ -2234,7 +2234,7 @@ class _HomePageState extends State<HomePage> {
                                                                 previewModName = '';
                                                                 previewImages.clear();
                                                                 ScaffoldMessenger.of(context)
-                                                                    .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                 setState(() {});
                                                               });
                                                             }
@@ -2334,7 +2334,7 @@ class _HomePageState extends State<HomePage> {
                                                                   Visibility(
                                                                     visible: !isModViewModsRemoving,
                                                                     child: ModManTooltip(
-                                                                      message: 'Remove ${curSubmod.submodName} from the game',
+                                                                      message: '${curLangText!.uiRemove} ${curSubmod.submodName} ${curLangText!.uiFromTheGame}',
                                                                       child: InkWell(
                                                                         child: const Icon(
                                                                           FontAwesomeIcons.squareMinus,
@@ -2351,7 +2351,7 @@ class _HomePageState extends State<HomePage> {
                                                                               if (!File(bkFile).existsSync()) {
                                                                                 allBkFilesFound = false;
                                                                                 ScaffoldMessenger.of(context)
-                                                                                    .showSnackBar(snackBarMessage(context, 'Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+                                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
                                                                                 break;
                                                                               }
@@ -2371,13 +2371,13 @@ class _HomePageState extends State<HomePage> {
                                                                               }
                                                                               for (var element in unappliedModFiles) {
                                                                                 if (filesUnapplied.isEmpty) {
-                                                                                  filesUnapplied = 'Sucessfully removed ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                  filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                                 }
                                                                                 filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                               }
 
                                                                               ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                  .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                               isModViewModsRemoving = false;
@@ -2405,7 +2405,7 @@ class _HomePageState extends State<HomePage> {
                                                                   Visibility(
                                                                     visible: !isModViewModsApplying,
                                                                     child: ModManTooltip(
-                                                                      message: 'Apply ${curSubmod.submodName} to the game',
+                                                                      message: '${curLangText!.uiApply} ${curSubmod.submodName} ${curLangText!.uiToTheGame}',
                                                                       child: InkWell(
                                                                         onTap: () async {
                                                                           isModViewModsApplying = true;
@@ -2416,7 +2416,7 @@ class _HomePageState extends State<HomePage> {
                                                                             modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                                             if (modFile.ogLocations.isEmpty) {
                                                                               ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                                  .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                               allOGFilesFound = false;
                                                                               break;
                                                                             }
@@ -2438,12 +2438,12 @@ class _HomePageState extends State<HomePage> {
                                                                                 String fileAppliedText = '';
                                                                                 for (var element in appliedModFiles) {
                                                                                   if (fileAppliedText.isEmpty) {
-                                                                                    fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                    fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                                   }
                                                                                   fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                 }
                                                                                 ScaffoldMessenger.of(context)
-                                                                                    .showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                 appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                               }
 
@@ -2464,7 +2464,7 @@ class _HomePageState extends State<HomePage> {
 
                                                             //Favorite
                                                             ModManTooltip(
-                                                              message: curSubmod.isFavorite ? 'Remove ${curSubmod.submodName} from Favorite List' : 'Add ${curSubmod.submodName} to Favorite List',
+                                                              message: curSubmod.isFavorite ? '${curLangText!.uiRemove} ${curSubmod.submodName} ${curLangText!.uiFromFavList}' : '${curLangText!.uiAdd} ${curSubmod.submodName} ${curLangText!.uiToFavList}',
                                                               child: InkWell(
                                                                 child: Icon(
                                                                   curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
@@ -2491,7 +2491,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                             //Open folder
                                                             ModManTooltip(
-                                                              message: 'Open ${curSubmod.submodName} in File Explorer',
+                                                              message: '${curLangText!.uiOpen} ${curSubmod.submodName} ${curLangText!.uiInFileExplorer}',
                                                               child: InkWell(
                                                                 child: const Icon(
                                                                   Icons.folder_open_outlined,
@@ -2501,7 +2501,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                             //Delete
                                                             ModManTooltip(
-                                                              message: 'Hold to remove ${curSubmod.submodName} from Mod Manager',
+                                                              message: '${curLangText!.uiHoldToRemove} ${curSubmod.submodName} ${curLangText!.uiFromMM}',
                                                               child: InkWell(
                                                                 onLongPress: curSubmod.applyStatus
                                                                     ? null
@@ -2514,7 +2514,7 @@ class _HomePageState extends State<HomePage> {
                                                                             previewModName = '';
                                                                             previewImages.clear();
                                                                             ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                             setState(() {});
                                                                           });
                                                                         } else {
@@ -2534,7 +2534,7 @@ class _HomePageState extends State<HomePage> {
                                                                             previewModName = '';
                                                                             previewImages.clear();
                                                                             ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                             setState(() {});
                                                                           });
                                                                         }
@@ -2568,7 +2568,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //Add-Remove button
                                                                 if (curModFile.applyStatus == false)
                                                                   ModManTooltip(
-                                                                    message: 'Apply ${curModFile.modFileName} to the game',
+                                                                    message: '${curLangText!.uiApply} ${curModFile.modFileName} ${curLangText!.uiToTheGame}',
                                                                     child: InkWell(
                                                                       child: const Icon(
                                                                         Icons.add,
@@ -2579,7 +2579,7 @@ class _HomePageState extends State<HomePage> {
                                                                         curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
                                                                         if (curModFile.ogLocations.isEmpty) {
                                                                           ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${curModFile.modFileName}', 3000));
+                                                                              .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${curModFile.modFileName}', 3000));
                                                                           allOGFilesFound = false;
                                                                         }
                                                                         //apply mod files
@@ -2599,12 +2599,12 @@ class _HomePageState extends State<HomePage> {
                                                                               String fileAppliedText = '';
                                                                               for (var element in appliedModFiles) {
                                                                                 if (fileAppliedText.isEmpty) {
-                                                                                  fileAppliedText = 'Sucessfully applied ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                  fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                                 }
                                                                                 fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                               }
                                                                               ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                  .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                             }
 
@@ -2617,7 +2617,7 @@ class _HomePageState extends State<HomePage> {
                                                                   ),
                                                                 if (curModFile.applyStatus == true)
                                                                   ModManTooltip(
-                                                                    message: 'Remove ${curModFile.modFileName} from the game',
+                                                                    message: '${curLangText!.uiRemove} ${curModFile.modFileName} ${curLangText!.uiFromTheGame}',
                                                                     child: InkWell(
                                                                       child: const Icon(
                                                                         Icons.remove,
@@ -2631,7 +2631,7 @@ class _HomePageState extends State<HomePage> {
                                                                           if (!File(bkFile).existsSync()) {
                                                                             allBkFilesFound = false;
                                                                             ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(snackBarMessage(context, 'Error', 'Could not find backup file for ${curModFile.modFileName}', 3000));
+                                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${curModFile.modFileName}', 3000));
 
                                                                             break;
                                                                           }
@@ -2650,12 +2650,12 @@ class _HomePageState extends State<HomePage> {
                                                                             }
                                                                             for (var element in unappliedModFiles) {
                                                                               if (filesUnapplied.isEmpty) {
-                                                                                filesUnapplied = 'Sucessfully removed ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${curMod.modName} > ${curSubmod.submodName}:\n';
                                                                               }
                                                                               filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                             }
                                                                             ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                             appliedItemList = await appliedListBuilder(moddedItemsList);
 
@@ -2669,7 +2669,7 @@ class _HomePageState extends State<HomePage> {
 
                                                                 //Delete
                                                                 ModManTooltip(
-                                                                  message: 'Hold to remove ${curModFile.modFileName} from Mod Manager',
+                                                                  message: '${curLangText!.uiHoldToRemove} ${curModFile.modFileName} ${curLangText!.uiFromMM}',
                                                                   child: InkWell(
                                                                     onLongPress: curModFile.applyStatus
                                                                         ? null
@@ -2682,7 +2682,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 previewModName = '';
                                                                                 previewImages.clear();
                                                                                 ScaffoldMessenger.of(context)
-                                                                                    .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                               });
                                                                               setState(() {});
                                                                             } else {
@@ -2706,7 +2706,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 previewModName = '';
                                                                                 previewImages.clear();
                                                                                 ScaffoldMessenger.of(context)
-                                                                                    .showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $removedName from Mod Manager', 3000));
+                                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                                 setState(() {});
                                                                               });
                                                                             }
@@ -2752,7 +2752,7 @@ class _HomePageState extends State<HomePage> {
             child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
               //Remove all mods from game
               ModManTooltip(
-                message: 'Hold to remove all applied mods from the game',
+                message: curLangText!.uiHoldToRemoveAllAppliedMods,
                 child: InkWell(
                     onLongPress: appliedItemList.isEmpty
                         ? null
@@ -2769,7 +2769,7 @@ class _HomePageState extends State<HomePage> {
               ),
               //Add to mod set
               ModManTooltip(
-                message: 'Add all applied mods to Mod Sets',
+                message: curLangText!.uiAddAllAppliedModsToSets,
                 child: InkWell(
                     onTap: appliedItemList.isEmpty
                         ? null
@@ -2790,7 +2790,7 @@ class _HomePageState extends State<HomePage> {
         ],
         title: Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 5),
-          child: Text(curLangText!.appliedModsHeadersText),
+          child: Text(curLangText!.uiAppliedMods),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -2877,11 +2877,11 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   child: curCategory.items.length < 2
                                                       ? Text(
-                                                          '${appliedItemList[groupIndex].categories[categoryIndex].items.where((element) => element.applyStatus).length}${curLangText!.itemLabelText}',
+                                                          '${appliedItemList[groupIndex].categories[categoryIndex].items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))
-                                                      : Text('${curCategory.items.where((element) => element.applyStatus).length}${curLangText!.itemsLabelText}',
+                                                      : Text('${curCategory.items.where((element) => element.applyStatus).length} ${curLangText!.uiItems}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))),
@@ -3001,7 +3001,7 @@ class _HomePageState extends State<HomePage> {
                                                                   runAlignment: WrapAlignment.center,
                                                                   children: [
                                                                     ModManTooltip(
-                                                                        message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
                                                                         child: InkWell(
                                                                           child: const Icon(Icons.folder_open),
                                                                           onTap: () async => await launchUrl(Uri.file(curItem.location)),
@@ -3036,7 +3036,7 @@ class _HomePageState extends State<HomePage> {
                                                                     children: [
                                                                       if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
                                                                         ModManTooltip(
-                                                                          message: 'Remove ${applyingModNames[m]} from the game',
+                                                                          message: '${curLangText!.uiRemove} ${applyingModNames[m]} ${curLangText!.uiFromTheGame}',
                                                                           child: InkWell(
                                                                             child: const Icon(
                                                                               FontAwesomeIcons.squareMinus,
@@ -3051,7 +3051,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (!File(bkFile).existsSync()) {
                                                                                     allBkFilesFound = false;
                                                                                     ScaffoldMessenger.of(context)
-                                                                                        .showSnackBar(snackBarMessage(context, 'Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+                                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
                                                                                     break;
                                                                                   }
@@ -3089,13 +3089,13 @@ class _HomePageState extends State<HomePage> {
                                                                                   }
                                                                                   for (var element in unappliedModFiles) {
                                                                                     if (filesUnapplied.isEmpty) {
-                                                                                      filesUnapplied = 'Sucessfully removed ${applyingModNames[m]}:\n';
+                                                                                      filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${applyingModNames[m]}:\n';
                                                                                     }
                                                                                     filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                   }
                                                                                   saveModdedItemListToJson();
                                                                                   ScaffoldMessenger.of(context)
-                                                                                      .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   if (appliedItemList.isEmpty) {
@@ -3113,7 +3113,7 @@ class _HomePageState extends State<HomePage> {
                                                                       //Apply button in submod
                                                                       if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
                                                                         ModManTooltip(
-                                                                          message: 'Apply ${applyingModNames[m]} to the game',
+                                                                          message: '${curLangText!.uiApply} ${applyingModNames[m]} ${curLangText!.uiToTheGame}',
                                                                           child: InkWell(
                                                                             onTap: () async {
                                                                               bool allOGFilesFound = true;
@@ -3122,7 +3122,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                                                 if (modFile.ogLocations.isEmpty) {
                                                                                   ScaffoldMessenger.of(context)
-                                                                                      .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                                   allOGFilesFound = false;
                                                                                   break;
                                                                                 }
@@ -3148,12 +3148,12 @@ class _HomePageState extends State<HomePage> {
                                                                                     String fileAppliedText = '';
                                                                                     for (var element in appliedModFiles) {
                                                                                       if (fileAppliedText.isEmpty) {
-                                                                                        fileAppliedText = 'Sucessfully applied ${applyingModNames[m]}:\n';
+                                                                                        fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${applyingModNames[m]}:\n';
                                                                                       }
                                                                                       fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                     }
                                                                                     ScaffoldMessenger.of(context)
-                                                                                        .showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   }
 
@@ -3173,7 +3173,7 @@ class _HomePageState extends State<HomePage> {
                                                               ],
                                                             ),
                                                           Text(
-                                                            '$totalAppliedModFiles / $totalModFiles Files applied',
+                                                            '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                         ],
@@ -3210,7 +3210,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[Container()],
         title: Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 5),
-          child: Text(previewModName.isNotEmpty ? 'Preview: $previewModName' : curLangText!.previewHeaderText),
+          child: Text(previewModName.isNotEmpty ? '${curLangText!.uiPreview}: $previewModName' : curLangText!.uiPreview),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -3230,8 +3230,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 decoration: BoxDecoration(color: Theme.of(context).canvasColor.withOpacity(0.8), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                child: const Text(
-                  'No preview available',
+                child: Text(
+                  curLangText!.uiNoPreViewAvailable,
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -3269,7 +3269,7 @@ class _HomePageState extends State<HomePage> {
             child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
               //Show all hidden
               ModManTooltip(
-                message: 'Create new Mod Set',
+                message: curLangText!.uiCreateNewModSet,
                 child: InkWell(
                     onTap: newSetTextController.value.text.isEmpty
                         ? null
@@ -3295,9 +3295,9 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 5, bottom: 5, right: 5),
-              child: Text('Mod Sets'),
+              child: Text(curLangText!.uiModSets),
             ),
             //Search
             Expanded(
@@ -3306,7 +3306,7 @@ class _HomePageState extends State<HomePage> {
               maxLines: 1,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
-                  hintText: 'Enter new Mod Set name',
+                  hintText: curLangText!.uiEnterNewModSetName,
                   hintStyle: TextStyle(color: Theme.of(context).hintColor),
                   isCollapsed: true,
                   isDense: true,
@@ -3409,11 +3409,11 @@ class _HomePageState extends State<HomePage> {
                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                   ),
                                                   child: curSet.setItems.length < 2
-                                                      ? Text('${curSet.setItems.length}${curLangText!.itemLabelText}',
+                                                      ? Text('${curSet.setItems.length} ${curLangText!.uiItem}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))
-                                                      : Text('${curSet.setItems.length}${curLangText!.itemsLabelText}',
+                                                      : Text('${curSet.setItems.length} ${curLangText!.uiItems}',
                                                           style: const TextStyle(
                                                             fontSize: 15,
                                                           ))),
@@ -3435,7 +3435,7 @@ class _HomePageState extends State<HomePage> {
                                                 Visibility(
                                                   visible: !isModViewModsRemoving,
                                                   child: ModManTooltip(
-                                                    message: 'Remove all mods in ${curSet.setName} from the game',
+                                                    message: '${curLangText!.uiRemoveAllModsIn} ${curSet.setName} ${curLangText!.uiFromTheGame}',
                                                     child: InkWell(
                                                       child: const Icon(
                                                         FontAwesomeIcons.squareMinus,
@@ -3507,13 +3507,13 @@ class _HomePageState extends State<HomePage> {
 
                                                             for (var element in unappliedModFiles) {
                                                               if (filesUnapplied.isEmpty) {
-                                                                filesUnapplied = 'Sucessfully removed all mods in ${curSet.setName}:\n';
+                                                                filesUnapplied = '${curLangText!.uiSuccessfullyRemoveAllModsIn} ${curSet.setName}:\n';
                                                               }
                                                               if (!filesUnapplied.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
                                                                 filesUnapplied += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
                                                               }
                                                             }
-                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                             appliedItemList = await appliedListBuilder(moddedItemsList);
                                                             if (appliedItemList.isEmpty) {
@@ -3548,7 +3548,7 @@ class _HomePageState extends State<HomePage> {
                                                 Visibility(
                                                   visible: !isModViewModsApplying,
                                                   child: ModManTooltip(
-                                                    message: 'Apply all mods in ${curSet.setName} to the game',
+                                                    message: '${curLangText!.uiApplyAllModsIn} ${curSet.setName} ${curLangText!.uiToTheGame}',
                                                     child: InkWell(
                                                       onTap: () async {
                                                         isModViewModsApplying = true;
@@ -3568,7 +3568,7 @@ class _HomePageState extends State<HomePage> {
                                                           modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                           if (modFile.ogLocations.isEmpty) {
                                                             ScaffoldMessenger.of(context)
-                                                                .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                             allOGFilesFound = false;
                                                             break;
                                                           }
@@ -3597,13 +3597,13 @@ class _HomePageState extends State<HomePage> {
 
                                                               for (var element in appliedModFiles.where((e) => e.applyStatus)) {
                                                                 if (fileAppliedText.isEmpty) {
-                                                                  fileAppliedText = 'Sucessfully applied all mods in ${curSet.setName}:\n';
+                                                                  fileAppliedText = '${curLangText!.uiSuccessfullyAppliedAllModsIn} ${curSet.setName}:\n';
                                                                 }
                                                                 if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
                                                                   fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
                                                                 }
                                                               }
-                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                             }
                                                             isModViewModsApplying = false;
@@ -3621,7 +3621,7 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                             ),
                                           ModManTooltip(
-                                            message: 'Add to this set',
+                                            message: curLangText!.uiAddToThisSet,
                                             child: InkWell(
                                                 onTap: !isModSetAdding
                                                     ? null
@@ -3641,7 +3641,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           //Delete
                                           ModManTooltip(
-                                            message: 'Hold to remove ${curSet.setName} from Mod Manager',
+                                            message: '${curLangText!.uiHoldToRemove} ${curSet.setName} ${curLangText!.uiFromMM}',
                                             child: InkWell(
                                               onLongPress: curSet.setItems.where((element) => element.applyStatus).isNotEmpty
                                                   ? null
@@ -3652,7 +3652,7 @@ class _HomePageState extends State<HomePage> {
                                                       modViewItem = null;
                                                       saveSetListToJson();
                                                       saveModdedItemListToJson();
-                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, 'Success!', 'Succesfully removed $tempSetName from Mod Manager', 3000));
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $tempSetName ${curLangText!.uiFromMM}', 3000));
                                                       setState(() {});
                                                     },
                                               child: Icon(
@@ -3780,14 +3780,14 @@ class _HomePageState extends State<HomePage> {
                                                                   children: [
                                                                     //open
                                                                     ModManTooltip(
-                                                                        message: '${curLangText!.openBtnTooltipText}${curItem.itemName}${curLangText!.inExplorerBtnTootipText}',
+                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
                                                                         child: InkWell(
                                                                           child: const Icon(Icons.folder_open),
                                                                           onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                         )),
                                                                     //delete
                                                                     ModManTooltip(
-                                                                        message: 'Hold to remove ${curItem.itemName} from this set',
+                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromThisSet}',
                                                                         child: InkWell(
                                                                           onLongPress: curItem.applyStatus
                                                                               ? null
@@ -3799,7 +3799,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   saveSetListToJson();
                                                                                   saveModdedItemListToJson();
                                                                                   ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      snackBarMessage(context, 'Success!', 'Succesfully removed $tempItemName from ${curSet.setName}', 3000));
+                                                                                      snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $tempItemName ${curLangText!.uiFrom} ${curSet.setName}', 3000));
                                                                                   setState(() {});
                                                                                 },
                                                                           child: Icon(Icons.delete_forever_outlined, color: curItem.applyStatus ? Theme.of(context).disabledColor : null),
@@ -3834,7 +3834,7 @@ class _HomePageState extends State<HomePage> {
                                                                     children: [
                                                                       if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
                                                                         ModManTooltip(
-                                                                          message: 'Remove ${applyingModNames[m]} from the game',
+                                                                          message: '${curLangText!.uiRemove} ${applyingModNames[m]} ${curLangText!.uiFromTheGame}',
                                                                           child: InkWell(
                                                                             child: const Icon(
                                                                               FontAwesomeIcons.squareMinus,
@@ -3849,7 +3849,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (!File(bkFile).existsSync()) {
                                                                                     allBkFilesFound = false;
                                                                                     ScaffoldMessenger.of(context)
-                                                                                        .showSnackBar(snackBarMessage(context, 'Error', 'Could not find backup file for ${modFile.modFileName}', 3000));
+                                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
                                                                                     break;
                                                                                   }
@@ -3884,12 +3884,12 @@ class _HomePageState extends State<HomePage> {
                                                                                   }
                                                                                   for (var element in unappliedModFiles) {
                                                                                     if (filesUnapplied.isEmpty) {
-                                                                                      filesUnapplied = 'Sucessfully removed ${applyingModNames[m]}:\n';
+                                                                                      filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${applyingModNames[m]}:\n';
                                                                                     }
                                                                                     filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                   }
                                                                                   ScaffoldMessenger.of(context)
-                                                                                      .showSnackBar(snackBarMessage(context, 'Success!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
 
                                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   if (appliedItemList.isEmpty) {
@@ -3908,7 +3908,7 @@ class _HomePageState extends State<HomePage> {
                                                                       //Apply button in submod
                                                                       if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
                                                                         ModManTooltip(
-                                                                          message: 'Apply ${applyingModNames[m]} to the game',
+                                                                          message: '${curLangText!.uiApply} ${applyingModNames[m]} ${curLangText!.uiToTheGame}',
                                                                           child: InkWell(
                                                                             onTap: () async {
                                                                               bool allOGFilesFound = true;
@@ -3917,7 +3917,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
                                                                                 if (modFile.ogLocations.isEmpty) {
                                                                                   ScaffoldMessenger.of(context)
-                                                                                      .showSnackBar(snackBarMessage(context, 'Error', 'Could not find original file for ${modFile.modFileName}', 3000));
+                                                                                      .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                                   allOGFilesFound = false;
                                                                                   break;
                                                                                 }
@@ -3943,12 +3943,12 @@ class _HomePageState extends State<HomePage> {
                                                                                     String fileAppliedText = '';
                                                                                     for (var element in appliedModFiles) {
                                                                                       if (fileAppliedText.isEmpty) {
-                                                                                        fileAppliedText = 'Sucessfully applied ${applyingModNames[m]}:\n';
+                                                                                        fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${applyingModNames[m]}:\n';
                                                                                       }
                                                                                       fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                     }
                                                                                     ScaffoldMessenger.of(context)
-                                                                                        .showSnackBar(snackBarMessage(context, 'Success!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   }
 
@@ -3968,7 +3968,7 @@ class _HomePageState extends State<HomePage> {
                                                               ],
                                                             ),
                                                           Text(
-                                                            '$totalAppliedModFiles / $totalModFiles Files applied',
+                                                            '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
                                                             //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                           ),
                                                         ],
