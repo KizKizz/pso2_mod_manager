@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/modfile_applied_dup.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   List<ModFile> alreadyAppliedModFiles = [];
@@ -53,8 +54,8 @@ Future<bool> duplicateAppliedDialog(context, String fileList) async {
       context: context,
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-              title: const Center(
-                child: Text('Duplicate(s) in applied mods found', style: TextStyle(fontWeight: FontWeight.w700)),
+              title: Center(
+                child: Text(curLangText!.uiDuplicatesInAppliedModsFound, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
               content: Padding(
@@ -64,9 +65,9 @@ Future<bool> duplicateAppliedDialog(context, String fileList) async {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Applying this mod would replace these applied mod files:',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    Text(
+                      '${curLangText!.uiApplyingWouldReplaceModFiles}:',
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -77,7 +78,7 @@ Future<bool> duplicateAppliedDialog(context, String fileList) async {
               ),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('Return'),
+                    child: Text(curLangText!.uiReturn),
                     onPressed: () async {
                       Navigator.pop(context, false);
                     }),
@@ -85,6 +86,6 @@ Future<bool> duplicateAppliedDialog(context, String fileList) async {
                     onPressed: () async {
                       Navigator.pop(context, true);
                     },
-                    child: const Text('Sure'))
+                    child: Text(curLangText!.uiSure))
               ]));
 }

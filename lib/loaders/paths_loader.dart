@@ -190,7 +190,7 @@ Future<String?> pso2binPathGet(context) async {
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                'pso2_bin folder not found. Select it now?\nSelecting "Exit" will close the app',
+                curLangText!.uiPso2binFolderNotFoundSelect,
               ),
               actions: <Widget>[
                 ElevatedButton(
@@ -204,11 +204,11 @@ Future<String?> pso2binPathGet(context) async {
                       Navigator.pop(
                           context,
                           await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select \'pso2_bin\' folder path',
+                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                             lockParentWindow: true,
                           ));
                     },
-                    child: const Text('Yes'))
+                    child: Text(curLangText!.uiYes))
               ]));
 }
 
@@ -219,15 +219,15 @@ Future<String?> modManDirPathGet(context) async {
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
-                child: Text('Mod Manager Folder not found', style: const TextStyle(fontWeight: FontWeight.w700)),
+                child: Text(curLangText!.uiMMFolderNotFound, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                'Select a path to store your mods?\nSelecting "No" will create a folder inside "pso2_bin" folder\nNote: This folder stores mods and backups',
+                curLangText!.uiSelectPathToStoreMMFolder,
               ),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('No'),
+                    child: Text(curLangText!.uiNo),
                     onPressed: () async {
                       Navigator.pop(context, null);
                     }),
@@ -236,11 +236,11 @@ Future<String?> modManDirPathGet(context) async {
                       Navigator.pop(
                           context,
                           await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select a folder to store Mod Manager folder',
+                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                             lockParentWindow: true,
                           ));
                     },
-                    child: const Text('Yes'))
+                    child: Text(curLangText!.uiYes))
               ]));
 }
 
@@ -310,14 +310,14 @@ Future<String?> pso2binPathReselect(context) async {
       context: context,
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-              title: const Center(
-                child: Text('Reselect pso2_bin path', style: TextStyle(fontWeight: FontWeight.w700)),
+              title: Center(
+                child: Text(curLangText!.uiReselectPso2binPath, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
-              content: Text('Current path:\n$modManPso2binPath'),
+              content: Text('${curLangText!.uiCurrentPath}:\n$modManPso2binPath'),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('Return'),
+                    child: Text(curLangText!.uiReturn),
                     onPressed: () async {
                       Navigator.pop(context, null);
                     }),
@@ -326,11 +326,11 @@ Future<String?> pso2binPathReselect(context) async {
                       Navigator.pop(
                           context,
                           await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select \'pso2_bin\' folder path',
+                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                             lockParentWindow: true,
                           ));
                     },
-                    child: const Text('Reselect'))
+                    child: Text(curLangText!.uiReselect))
               ]));
 }
 
@@ -423,14 +423,14 @@ Future<String?> modManDirPathReselect(context) async {
       context: context,
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-              title: const Center(
-                child: Text('Reselect Mod Manager Folder Path', style: TextStyle(fontWeight: FontWeight.w700)),
+              title: Center(
+                child: Text(curLangText!.uiReselectModManFolderPath, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
-              content: Text('Note: This folder stores mods and backups\n\nCurrent path:\n$modManDirPath'),
+              content: Text('${curLangText!.uiMMPathReselectNoteCurrentPath}\n$modManDirPath'),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('Return'),
+                    child: Text(curLangText!.uiReturn),
                     onPressed: () async {
                       Navigator.pop(context, null);
                     }),
@@ -439,10 +439,10 @@ Future<String?> modManDirPathReselect(context) async {
                       Navigator.pop(
                           context,
                           await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: 'Select a folder to store Mod Manager folder',
+                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                             lockParentWindow: true,
                           ));
                     },
-                    child: const Text('Reselect'))
+                    child: Text(curLangText!.uiReselect))
               ]));
 }

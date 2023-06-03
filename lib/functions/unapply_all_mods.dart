@@ -5,6 +5,7 @@ import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 Future<List<String>> unapplyAllMods(context) async {
   String unappliedFileNames = '';
@@ -30,7 +31,7 @@ Future<List<String>> unapplyAllMods(context) async {
                   }
                 }
                 if (!allBkFilesFound) {
-                  return ['Error', 'Could not find backup file for:\n${bkNotFoundFileNames.trim()}'];
+                  return ['${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor}\n${bkNotFoundFileNames.trim()}'];
                 }
 
                 if (allBkFilesFound) {
@@ -43,7 +44,7 @@ Future<List<String>> unapplyAllMods(context) async {
                   previewImages.clear();
                   videoPlayer.remove(0);
                   previewModName = '';
-                  
+
                   if (mod.submods.where((element) => element.applyStatus).isEmpty) {
                     mod.applyStatus = false;
                     mod.applyDate = DateTime(0);
@@ -64,5 +65,5 @@ Future<List<String>> unapplyAllMods(context) async {
     }
   }
 
-  return ['Success!', 'Succesfully removed these mods from the game:\n${unappliedFileNames.trim()}'];
+  return ['${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemovedTheseMods}}\n${unappliedFileNames.trim()}'];
 }

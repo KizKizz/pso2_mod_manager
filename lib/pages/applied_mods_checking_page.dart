@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 
 class AppliedModsCheckingPage extends StatefulWidget {
@@ -21,19 +22,19 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Checking Applied Mods',
-                    style: TextStyle(fontSize: 20),
+                    curLangText!.uiCheckingAppliedMods,
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                 ],
               ),
             );
@@ -45,7 +46,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when checking applied mod files',
+                      curLangText!.uiErrorWhenCheckingAppliedMods,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -59,19 +60,19 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Checking Applied Mods',
-                      style: TextStyle(fontSize: 20),
+                      curLangText!.uiCheckingAppliedMods,
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               );
@@ -88,11 +89,11 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Text(
-                            'The mod(s) below have been automatically re-applied to the game:',
-                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                            '${curLangText!.uiReappliedModsAfterChecking}:',
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                         ),
                         ScrollbarTheme(
@@ -126,7 +127,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                 const ModSetsLoadingPage();
                                 setState(() {});
                               },
-                              child: const Text('OK')),
+                              child: Text(curLangText!.uiGotIt)),
                         ),
                       ],
                     ),

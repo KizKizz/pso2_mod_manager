@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
@@ -13,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -240,12 +238,4 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   }
 }
 
-class UpperCaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    return TextEditingValue(
-      text: newValue.text.toUpperCase(),
-      selection: newValue.selection,
-    );
-  }
-}
+

@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 Future<String> categoryGroupAdder(context) async {
   TextEditingController newCateGroupName = TextEditingController();
@@ -16,7 +17,7 @@ Future<String> categoryGroupAdder(context) async {
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('New Category Group', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiNewCateGroup, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: Form(
                   key: nameFormKey,
@@ -27,12 +28,12 @@ Future<String> categoryGroupAdder(context) async {
                     inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                     validator: (value) {
                       if (moddedItemsList.where((element) => element.groupName == value).isNotEmpty) {
-                        return 'Name already existed!';
+                        return curLangText!.uiNameAlreadyExisted;
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                        labelText: 'New Category Group name',
+                        labelText: curLangText!.uiNewCateGroupName,
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
                           borderRadius: BorderRadius.circular(2),
@@ -64,7 +65,7 @@ Future<String> categoryGroupAdder(context) async {
                 ),
                 actions: <Widget>[
                   ElevatedButton(
-                      child: const Text('Return'),
+                      child: Text(curLangText!.uiReturn),
                       onPressed: () async {
                         Navigator.pop(context, '');
                       }),
@@ -76,7 +77,7 @@ Future<String> categoryGroupAdder(context) async {
                                 Navigator.pop(context, newCateGroupName.text);
                               }
                             },
-                      child: const Text('Add'))
+                      child: Text(curLangText!.uiAdd))
                 ]);
           }));
 }
@@ -90,7 +91,7 @@ Future<String> categoryAdder(context) async {
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('New Category', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiNewCate, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: Form(
                   key: nameFormKey,
@@ -101,12 +102,12 @@ Future<String> categoryAdder(context) async {
                     inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                     validator: (value) {
                       if (moddedItemsList.where((group) => group.categories.where((element) => element.categoryName.contains(value!)).isNotEmpty).isNotEmpty) {
-                        return 'Name already existed!';
+                        return curLangText!.uiNameAlreadyExisted;
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                        labelText: 'New Category name',
+                        labelText: curLangText!.uiNewCateName,
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
                           borderRadius: BorderRadius.circular(2),
@@ -138,7 +139,7 @@ Future<String> categoryAdder(context) async {
                 ),
                 actions: <Widget>[
                   ElevatedButton(
-                      child: const Text('Return'),
+                      child: Text(curLangText!.uiReturn),
                       onPressed: () async {
                         Navigator.pop(context, '');
                       }),
@@ -150,7 +151,7 @@ Future<String> categoryAdder(context) async {
                                 Navigator.pop(context, newCateName.text);
                               }
                             },
-                      child: const Text('Add'))
+                      child: Text(curLangText!.uiAdd))
                 ]);
           }));
 }
@@ -162,19 +163,19 @@ void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('Removing Category Group', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiRemovingCateGroup, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: Text(cateTypeToDel.categories.length < 2
-                    ? 'There is a Category in this group. Would you like to move it to Others Group?'
-                    : 'There are ${cateTypeToDel.categories.length} Categories in this group. Would you like to move them to Others Group?'),
+                    ? curLangText!.uiCateFoundWhenDeletingGroup
+                    : '${curLangText!.uiThereAre} ${cateTypeToDel.categories.length} ${curLangText!.uiCatesFoundWhenDeletingGroup}'),
                 actions: <Widget>[
                   ElevatedButton(
-                      child: const Text('Return'),
+                      child: Text(curLangText!.uiReturn),
                       onPressed: () {
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
-                      child: const Text('Move to Others'),
+                      child: Text(curLangText!.uiMoveEverythingToOthers),
                       onPressed: () {
                         modViewItem = null;
                         //copy to Others
@@ -202,7 +203,7 @@ void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
                         saveModdedItemListToJson();
                         Navigator.pop(context);
                       },
-                      child: const Text('No, Delete All'))
+                      child: Text(curLangText!.uiNoDeleteAll))
                 ]);
           }));
 }
@@ -214,14 +215,14 @@ void categoryRemover(context, CategoryType cateTypeToDel, Category cateToDel) as
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('Removing Category', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiRemovingCate, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: Text(cateToDel.items.length < 2
-                    ? 'There is an Item in this Category. Remove this Category would delete all its Items.\nContinue?'
-                    : 'There are ${cateToDel.items.length} Items in this Category. Remove this Category would delete all its Items.\nContinue?'),
+                    ? curLangText!.uiItemFoundWhenDeletingCate
+                    : '${curLangText!.uiThereAre} ${cateToDel.items.length} ${curLangText!.uiItemsFoundWhenDeletingCate}'),
                 actions: <Widget>[
                   ElevatedButton(
-                      child: const Text('Return'),
+                      child: Text(curLangText!.uiReturn),
                       onPressed: () {
                         Navigator.pop(context);
                       }),
@@ -236,7 +237,7 @@ void categoryRemover(context, CategoryType cateTypeToDel, Category cateToDel) as
                         saveModdedItemListToJson();
                         Navigator.pop(context);
                       },
-                      child: const Text('Sure'))
+                      child: Text(curLangText!.uiSure))
                 ]);
           }));
 }

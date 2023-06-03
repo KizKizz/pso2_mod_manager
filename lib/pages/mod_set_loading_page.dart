@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
 
 class ModSetsLoadingPage extends StatefulWidget {
@@ -20,19 +21,19 @@ class _ModSetsLoadingPageState extends State<ModSetsLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Loading Mod Sets',
-                    style: TextStyle(fontSize: 20),
+                    curLangText!.uiLoadingModSets,
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                 ],
               ),
             );
@@ -44,7 +45,7 @@ class _ModSetsLoadingPageState extends State<ModSetsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading Mod Sets',
+                      curLangText!.uiErrorWhenLoadingModSets,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -58,19 +59,19 @@ class _ModSetsLoadingPageState extends State<ModSetsLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Loading Mod Sets',
-                      style: TextStyle(fontSize: 20),
+                      curLangText!.uiLoadingModSets,
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               );

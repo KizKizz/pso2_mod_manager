@@ -354,7 +354,7 @@ void modAddHandler(context) {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Preparing',
+                                    curLangText!.uiPreparing,
                                     style: const TextStyle(fontSize: 20),
                                   ),
                                   const SizedBox(
@@ -438,7 +438,7 @@ void modAddHandler(context) {
                                                     if (_newModDragDropList.isEmpty)
                                                       Center(
                                                           child: Text(
-                                                        'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+                                                        curLangText!.uiDragDropFiles,
                                                         style: const TextStyle(fontSize: 20),
                                                         textAlign: TextAlign.center,
                                                       )),
@@ -461,7 +461,7 @@ void modAddHandler(context) {
                                                                         trailing: SizedBox(
                                                                           width: 40,
                                                                           child: ModManTooltip(
-                                                                            message: 'Remove',
+                                                                            message: curLangText!.uiRemove,
                                                                             child: MaterialButton(
                                                                               child: const Icon(Icons.remove_circle),
                                                                               onPressed: () {
@@ -501,7 +501,7 @@ void modAddHandler(context) {
                                                   padding: const EdgeInsets.all(5.0),
                                                   child: Center(
                                                       child: Text(
-                                                    'currently not supported. Open the archive file then drag the content in here instead',
+                                                    curLangText!.uiAchiveCurrentlyNotSupported,
                                                     textAlign: TextAlign.center,
                                                   )),
                                                 ),
@@ -511,7 +511,7 @@ void modAddHandler(context) {
                                                 Padding(
                                                   padding: const EdgeInsets.only(bottom: 5),
                                                   child: ElevatedButton(
-                                                    child: Text('Close'),
+                                                    child: Text(curLangText!.uiClose),
                                                     onPressed: () {
                                                       _nonSupportedFileNames.clear();
                                                       setState(
@@ -544,7 +544,7 @@ void modAddHandler(context) {
                                                           );
                                                         })
                                                       : null,
-                                                  child: Text('Clear All')),
+                                                  child: Text(curLangText!.uiClearAll)),
                                             ),
                                             const SizedBox(
                                               width: 5,
@@ -589,7 +589,7 @@ void modAddHandler(context) {
                                                           );
                                                         })
                                                       : null,
-                                                  child: Text('Progress')),
+                                                  child: Text(curLangText!.uiProgress)),
                                             ),
                                           ],
                                         ),
@@ -628,7 +628,7 @@ void modAddHandler(context) {
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            'Waiting for data',
+                                                            curLangText!.uiWaitingForData,
                                                             style: const TextStyle(fontSize: 20),
                                                           ),
                                                           const SizedBox(
@@ -646,26 +646,26 @@ void modAddHandler(context) {
                                                           crossAxisAlignment: CrossAxisAlignment.center,
                                                           children: [
                                                             Text(
-                                                              'Error when loading data. Please restart the app.',
+                                                              curLangText!.uiErrorWhenLoadingAddModsData,
                                                               style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                             ),
                                                           ],
                                                         ),
                                                       );
                                                     } else if (!snapshot.hasData) {
-                                                      return const Center(
+                                                      return Center(
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           crossAxisAlignment: CrossAxisAlignment.center,
                                                           children: [
                                                             Text(
-                                                              'Loading Data',
-                                                              style: TextStyle(fontSize: 20),
+                                                              curLangText!.uiLoadingModsAdderData,
+                                                              style: const TextStyle(fontSize: 20),
                                                             ),
-                                                            SizedBox(
+                                                            const SizedBox(
                                                               height: 20,
                                                             ),
-                                                            CircularProgressIndicator(),
+                                                            const CircularProgressIndicator(),
                                                           ],
                                                         ),
                                                       );
@@ -789,7 +789,7 @@ void modAddHandler(context) {
                                                                                     height: 40,
                                                                                     child: sortedModsList[index][0] == 'Misc'
                                                                                         ? DropdownButton2(
-                                                                                            hint: Text('Select a Category'),
+                                                                                            hint: Text(curLangText!.uiSelectACategory),
                                                                                             buttonStyleData: ButtonStyleData(
                                                                                               decoration: BoxDecoration(
                                                                                                 borderRadius: BorderRadius.circular(3),
@@ -986,7 +986,7 @@ void modAddHandler(context) {
                                                                                             SizedBox(
                                                                                               width: 40,
                                                                                               child: Tooltip(
-                                                                                                message: 'Edit name',
+                                                                                                message: curLangText!.uiEditName,
                                                                                                 height: 25,
                                                                                                 textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                                 waitDuration: const Duration(seconds: 1),
@@ -1020,7 +1020,7 @@ void modAddHandler(context) {
                                                                                               SizedBox(
                                                                                                 width: 40,
                                                                                                 child: ModManTooltip(
-                                                                                                  message: 'Mark this item to not be added',
+                                                                                                  message: curLangText!.uiMarkThisNotToBeAdded,
                                                                                                   child: MaterialButton(
                                                                                                     onPressed: () {
                                                                                                       sortedModsList[index][1] += ':[TOREMOVE]';
@@ -1078,7 +1078,7 @@ void modAddHandler(context) {
                                                                                               SizedBox(
                                                                                                 width: 40,
                                                                                                 child: ModManTooltip(
-                                                                                                  message: 'Mark this item to be added',
+                                                                                                  message: curLangText!.uiMarkThisToBeAdded,
                                                                                                   child: MaterialButton(
                                                                                                     onPressed: () {
                                                                                                       sortedModsList[index][1] = sortedModsList[index][1].replaceAll(':[TOREMOVE]', '');
@@ -1307,7 +1307,7 @@ void modAddHandler(context) {
                                                                                       SizedBox(
                                                                                         width: 40,
                                                                                         child: ModManTooltip(
-                                                                                          message: 'Edit name',
+                                                                                          message: curLangText!.uiEditName,
                                                                                           child: MaterialButton(
                                                                                             onPressed: !_isNameEditing && sortedModsList[index][4].split('|')[ex].split(':').last != '[TOREMOVE]'
                                                                                                 ? () {
@@ -1334,7 +1334,7 @@ void modAddHandler(context) {
                                                                                         SizedBox(
                                                                                           width: 40,
                                                                                           child: Tooltip(
-                                                                                            message: 'Mark this item to not be added',
+                                                                                            message: curLangText!.uiMarkThisNotToBeAdded,
                                                                                             height: 25,
                                                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                             waitDuration: const Duration(seconds: 1),
@@ -1396,7 +1396,7 @@ void modAddHandler(context) {
                                                                                         SizedBox(
                                                                                           width: 40,
                                                                                           child: Tooltip(
-                                                                                            message: 'Mark this item to be added',
+                                                                                            message: curLangText!.uiMarkThisToBeAdded,
                                                                                             height: 25,
                                                                                             textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                             waitDuration: const Duration(seconds: 1),
@@ -1468,7 +1468,7 @@ void modAddHandler(context) {
                                                                                                       validator: (value) {
                                                                                                         if (value == null || value.isEmpty) {
                                                                                                           Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                          return 'Name cannot be empty';
+                                                                                                          return curLangText!.uiNameCannotBeEmpty;
                                                                                                         }
                                                                                                         final List<String> subDirList = sortedModsList[index][5]
                                                                                                             .split('|')
@@ -1483,7 +1483,7 @@ void modAddHandler(context) {
                                                                                                         for (var name in subDirNames) {
                                                                                                           if (name.toLowerCase() == value.toLowerCase()) {
                                                                                                             Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                            return 'Name already existed';
+                                                                                                            return curLangText!.uiNameAlreadyExisted;
                                                                                                           }
                                                                                                         }
 
@@ -1652,7 +1652,7 @@ void modAddHandler(context) {
                                                                                               SizedBox(
                                                                                                 width: 40,
                                                                                                 child: Tooltip(
-                                                                                                  message: 'Edit name',
+                                                                                                  message: curLangText!.uiEditName,
                                                                                                   height: 25,
                                                                                                   textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                                   waitDuration: const Duration(seconds: 1),
@@ -1683,7 +1683,7 @@ void modAddHandler(context) {
                                                                                                 SizedBox(
                                                                                                   width: 40,
                                                                                                   child: Tooltip(
-                                                                                                    message: 'Mark this item to not be added',
+                                                                                                    message: curLangText!.uiMarkThisNotToBeAdded,
                                                                                                     height: 25,
                                                                                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                                     waitDuration: const Duration(seconds: 1),
@@ -1783,7 +1783,7 @@ void modAddHandler(context) {
                                                                                                 SizedBox(
                                                                                                   width: 40,
                                                                                                   child: Tooltip(
-                                                                                                    message: 'Mark this item to be added',
+                                                                                                    message: curLangText!.uiMarkThisToBeAdded,
                                                                                                     height: 25,
                                                                                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                                     waitDuration: const Duration(seconds: 1),
@@ -1905,11 +1905,11 @@ void modAddHandler(context) {
                                                       child: Center(
                                                           child: _duplicateModNames.isNotEmpty
                                                               ? Text(
-                                                                  'Reanme $_duplicateModNames before adding',
+                                                                  '${curLangText!.uiRename} $_duplicateModNames ${curLangText!.uiBeforeAdding}',
                                                                   textAlign: TextAlign.center,
                                                                 )
                                                               : Text(
-                                                                  'There are still mods in the list waiting to be added',
+                                                                  curLangText!.uiThereAreStillModsThatWaitingToBeAdded,
                                                                   textAlign: TextAlign.center,
                                                                 )),
                                                     ),
@@ -1919,7 +1919,7 @@ void modAddHandler(context) {
                                                     Padding(
                                                       padding: const EdgeInsets.only(bottom: 5),
                                                       child: ElevatedButton(
-                                                        child: Text('Return'),
+                                                        child: Text(curLangText!.uiReturn),
                                                         onPressed: () {
                                                           _exitConfirmDialog = false;
                                                           _duplicateModNames.clear();
@@ -1945,7 +1945,7 @@ void modAddHandler(context) {
                                                 ),
                                                 child: Center(
                                                   child: Text(
-                                                    'Mods added successfully!',
+                                                    curLangText!.uiModsAddedSuccessfully,
                                                     style: const TextStyle(color: Colors.white),
                                                   ),
                                                 )),
@@ -1989,7 +1989,7 @@ void modAddHandler(context) {
                                                             );
                                                           })
                                                         : null,
-                                                    child: Text('Clear All')),
+                                                    child: Text(curLangText!.uiClearAll)),
                                               ),
                                             ),
                                             Expanded(
@@ -2040,7 +2040,7 @@ void modAddHandler(context) {
                                                       Navigator.of(context).pop();
                                                     }
                                                   }),
-                                                  child: Text('Close')),
+                                                  child: Text(curLangText!.uiClose)),
                                             ),
                                             Visibility(
                                               visible: !dropZoneMax,
@@ -2149,7 +2149,7 @@ void modAddHandler(context) {
                                                             );
                                                           })
                                                         : null,
-                                                    child: Text('Add All')),
+                                                    child: Text(curLangText!.uiAddAll)),
                                               ),
                                             ),
                                           ],

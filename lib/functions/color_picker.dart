@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 Color pickerColor = const Color(0x001759c2);
 Color currentColor = const Color(0xff443a49);
@@ -55,8 +58,8 @@ Future<void> getColor(context) async {
                         pickerColor = value;
                       },
                     ),
-                    const Text(
-                      'Pick a color',
+                    Text(
+                      curLangText!.uiPickAColor,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Padding(
@@ -66,19 +69,19 @@ Future<void> getColor(context) async {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
-                            child: const Text('Close'),
+                            child: Text(curLangText!.uiClose),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
                           ElevatedButton(
-                            child: const Text('Reset'),
+                            child: Text(curLangText!.uiReset),
                             onPressed: () {
                               setState(() => pickerColor = currentColor);
                             },
                           ),
                           ElevatedButton(
-                            child: const Text('Got it'),
+                            child: Text(curLangText!.uiGotIt),
                             onPressed: () {
                               setState(() {
                                 selectedColor = pickerColor;

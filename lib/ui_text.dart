@@ -18,7 +18,20 @@ class TranslationLanguage {
 class TranslationText {
   TranslationText();
   //General elements
-  String uiCancel = 'Cancel', uiAdd = 'Add', uiDismiss = 'Dismiss', uiBack = 'Back', uiError = 'Error', uiApply = 'Apply';
+  String uiCancel = 'Cancel',
+      uiAdd = 'Add',
+      uiDismiss = 'Dismiss',
+      uiBack = 'Back',
+      uiError = 'Error',
+      uiApply = 'Apply',
+      uiClose = 'Close',
+      uiReset = 'Reset',
+      uiGotIt = 'Got it',
+      uiReturn = 'Return',
+      uiSure = 'Sure',
+      uiYes = 'Yes',
+      uiNo = 'No',
+      uiClearAll = 'Clear All';
 
   //main page
   String uiSettings = 'Settings',
@@ -89,8 +102,8 @@ class TranslationText {
       uiDownloadUpdate = 'Download Update',
       uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their orginals before applying mods to the game';
 
-      //homepage
-      String uiItemList = 'Item List',
+  //homepage
+  String uiItemList = 'Item List',
       uiLoadingUILanguage = 'Loading UI Language',
       uiReloadingMods = 'Reloading Mods',
       uiShowFavList = 'Show Favorite List',
@@ -147,8 +160,78 @@ class TranslationText {
       uiApplyAllModsIn = 'Apply all mods in',
       uiSuccessfullyAppliedAllModsIn = 'Sucessfully applied all mods in',
       uiAddToThisSet = 'Add to this set',
-      uiFromThisSet = 'from this set',
+      uiFromThisSet = 'from this set';
 
+  //mod_add_handler
+  String uiPreparing = 'Preparing',
+      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+      uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
+      uiProgress = 'Progress',
+      uiWaitingForData = 'Waiting for data',
+      uiErrorWhenLoadingAddModsData = 'Error when loading data for Mods Adder. Please restart the app.',
+      uiLoadingModsAdderData = 'Loading data for Mods Adder',
+      uiSelectACategory = 'Select a Category',
+      uiEditName = 'Edit Name',
+      uiMarkThisNotToBeAdded = 'Mark this not to be added',
+      uiMarkThisToBeAdded = 'Mark this to be added',
+      uiNameCannotBeEmpty = 'Name cannot be empty',
+      uiRename = 'Rename',
+      uiBeforeAdding = 'before adding',
+      uiThereAreStillModsThatWaitingToBeAdded = 'There are still mods in the list waiting to be added',
+      uiModsAddedSuccessfully = 'Mods added successfully!',
+      uiAddAll = 'Add All';
+
+  //color_picker
+  String uiPickAColor = 'Pick a color';
+
+  //modfiles_apply
+  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files';
+
+  //new_cate_adder
+  String uiNewCateGroup = 'New Category Group',
+      uiNameAlreadyExisted = 'Name already existed!',
+      uiNewCateGroupName = 'New Category Group name',
+      uiNewCate = 'New Category',
+      uiNewCateName = 'New Category name',
+      uiRemovingCateGroup = 'Removing Category Group',
+      uiCateFoundWhenDeletingGroup = 'There is a Category in this group. Would you like to move it to "Others" Group?',
+      uiThereAre = 'There are',
+      uiCatesFoundWhenDeletingGroup = 'Categories in this group. Would you like to move them to Others Group?',
+      uiMoveEverythingToOthers = 'Move everything to "Others"',
+      uiNoDeleteAll = 'No, Delete All',
+      uiRemovingCate = 'Removing Category',
+      uiItemFoundWhenDeletingCate = 'There is an Item in this Category. Remove this Category would delete all its Items.\nContinue?',
+      uiItemsFoundWhenDeletingCate = 'Items in this Category. Remove this Category would delete all its Items.\nContinue?';
+
+  //unapply_all_mods
+  String uiSuccessfullyRemovedTheseMods = 'Succesfully removed these mods from the game';
+
+  //paths_loader
+  String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" will close the app',
+      uiSelectPso2binFolderPath = 'Select \'pso2_bin\' folder path',
+      uiMMFolderNotFound = 'Mod Manager Folder not found',
+      uiSelectPathToStoreMMFolder = 'Select a path to store your mods?\nSelecting "No" will create a folder inside "pso2_bin" folder\nNote: This folder stores mods and backups',
+      uiSelectAFolderToStoreMMFolder = 'Select a folder to store Mod Manager folder',
+      uiCurrentPath = 'Current path',
+      uiReselect = 'Reselect',
+      uiMMPathReselectNoteCurrentPath = 'Note: This folder stores mods and backups\n\nCurrent path:';
+
+  //applied_mods_checking_page
+  String uiCheckingAppliedMods = 'Checking Applied Mods',
+      uiErrorWhenCheckingAppliedMods = 'Error when checking applied mod files',
+      uiReappliedModsAfterChecking = 'The mod(s) below have been automatically re-applied to the game';
+
+  //applied_mods_loading_page
+  String uiLoadingAppliedMods = 'Loading Applied Mods', uiErrorWhenLoadingAppliedMods = 'Error when loading applied mod files';
+
+  //mod_set_loading_page
+  String uiLoadingModSets = 'Loading Mod Sets', uiErrorWhenLoadingModSets = 'Error when loading Mod Sets';
+
+  //mod_loading_page
+  String uiLoadingMods = 'Loading Mods', uiErrorWhenLoadingMods = 'Error when loading mod files';
+
+  //path_loading_page
+  String uiLoadingPaths = 'Loading Paths', uiErrorWhenLoadingPaths = 'Error when loading paths';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

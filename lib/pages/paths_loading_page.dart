@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
 // ignore: depend_on_referenced_packages
@@ -22,19 +23,19 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Loading Paths',
-                    style: TextStyle(fontSize: 20),
+                    curLangText!.uiLoadingPaths,
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                 ],
               ),
             );
@@ -46,7 +47,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading paths',
+                      curLangText!.uiErrorWhenLoadingPaths,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -60,19 +61,19 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Loading Paths',
-                      style: TextStyle(fontSize: 20),
+                      curLangText!.uiLoadingPaths,
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               );

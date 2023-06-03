@@ -1,6 +1,9 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_mods_checking_page.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 
@@ -21,19 +24,19 @@ class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Loading Applied Mods',
-                    style: TextStyle(fontSize: 20),
+                    curLangText!.uiLoadingAppliedMods,
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                 ],
               ),
             );
@@ -45,7 +48,7 @@ class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Error when loading applied mod files',
+                      curLangText!.uiErrorWhenLoadingAppliedMods,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -59,19 +62,19 @@ class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Loading Applied Mods',
-                      style: TextStyle(fontSize: 20),
+                      curLangText!.uiLoadingAppliedMods,
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               );

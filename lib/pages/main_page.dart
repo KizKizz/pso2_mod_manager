@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
@@ -283,14 +284,14 @@ class _MainPageState extends State<MainPage> {
                         }),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.folder_copy_outlined,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               curLangText!.uiReselectPso2binPath,
-                              style: TextStyle(fontWeight: FontWeight.normal),
+                              style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
@@ -307,12 +308,12 @@ class _MainPageState extends State<MainPage> {
                         }),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.folder_copy_outlined,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
-                            Text(curLangText!.uiReselectModManFolderPath, style: TextStyle(fontWeight: FontWeight.normal)),
+                            const SizedBox(width: 10),
+                            Text(curLangText!.uiReselectModManFolderPath, style: const TextStyle(fontWeight: FontWeight.normal)),
                           ],
                         ),
                       ),
@@ -340,14 +341,14 @@ class _MainPageState extends State<MainPage> {
                         }),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.folder_open_outlined,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenModsFolder,
-                              style: TextStyle(fontWeight: FontWeight.normal),
+                              style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
@@ -364,14 +365,14 @@ class _MainPageState extends State<MainPage> {
                         }),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.folder_open_outlined,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenBackupFolder,
-                              style: TextStyle(fontWeight: FontWeight.normal),
+                              style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
@@ -388,14 +389,14 @@ class _MainPageState extends State<MainPage> {
                         }),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.folder_open_outlined,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenDeletedItemsFolder,
-                              style: TextStyle(fontWeight: FontWeight.normal),
+                              style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
@@ -413,10 +414,10 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         child: Text(
                           '${curLangText!.uiTheme}:',
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
 
@@ -475,14 +476,14 @@ class _MainPageState extends State<MainPage> {
 
                       //Opacity slider
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 7),
+                        padding: const EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.opacity_outlined,
                               size: 18,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Text('${curLangText!.uiUIOpacity}:'),
@@ -503,14 +504,14 @@ class _MainPageState extends State<MainPage> {
                       ),
                       //Theme color picker
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 7),
+                        padding: const EdgeInsets.symmetric(horizontal: 7),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.color_lens,
                               size: 18,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Text('${curLangText!.uiUIColors}:'),
@@ -843,14 +844,14 @@ class _MainPageState extends State<MainPage> {
 
                               //Background Image
                               Padding(
-                                padding: EdgeInsets.only(left: 7, right: 7, top: 10),
+                                padding: const EdgeInsets.only(left: 7, right: 7, top: 10),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.image,
                                       size: 18,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Text('${curLangText!.uiBackgroundImage}:'),
@@ -1109,12 +1110,12 @@ class _MainPageState extends State<MainPage> {
                               }),
                               child: Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.refresh,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 2.5),
-                                  Text(curLangText!.uiRefresh, style: TextStyle(fontWeight: FontWeight.w400)),
+                                  const SizedBox(width: 2.5),
+                                  Text(curLangText!.uiRefresh, style: const TextStyle(fontWeight: FontWeight.w400)),
                                 ],
                               ),
                             ),
@@ -1249,12 +1250,12 @@ class _MainPageState extends State<MainPage> {
                                 }),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.settings,
                                       size: 18,
                                     ),
-                                    SizedBox(width: 2.5),
-                                    Text(curLangText!.uiSettings, style: TextStyle(fontWeight: FontWeight.w400))
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiSettings, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),

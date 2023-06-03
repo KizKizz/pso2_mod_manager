@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
@@ -141,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                 if (listsReloading)
                   Text(
                     curLangText!.uiReloadingMods,
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 const SizedBox(
                   height: 20,
@@ -3232,7 +3231,7 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(color: Theme.of(context).canvasColor.withOpacity(0.8), borderRadius: const BorderRadius.all(Radius.circular(2))),
                 child: Text(
                   curLangText!.uiNoPreViewAvailable,
-                  style: TextStyle(fontSize: 15),
+                  style: const TextStyle(fontSize: 15),
                 ),
               ),
             ],
@@ -3296,7 +3295,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 5, bottom: 5, right: 5),
+              padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
               child: Text(curLangText!.uiModSets),
             ),
             //Search
