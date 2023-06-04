@@ -110,7 +110,7 @@ Future<TranslationText?> uiTextLoader() async {
         curLangJsonTextLines.insert(0, '{');
         curLangJsonTextLines.add('}');
         String curLangTextFinal = curLangJsonTextLines.join('\n');
-        File(lang.langFilePath).writeAsString(curLangTextFinal);
+        File(lang.langFilePath).writeAsStringSync(curLangTextFinal);
       }
     }
   }

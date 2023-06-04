@@ -112,6 +112,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiRefSheetsDownloadingCount'] as String
       ..uiDownloadUpdate = json['uiDownloadUpdate'] as String
       ..uiNewUserNotice = json['uiNewUserNotice'] as String
+      ..uiUpdateNow = json['uiUpdateNow'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -332,6 +333,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiRefSheetsDownloadingCount': instance.uiRefSheetsDownloadingCount,
       'uiDownloadUpdate': instance.uiDownloadUpdate,
       'uiNewUserNotice': instance.uiNewUserNotice,
+      'uiUpdateNow': instance.uiUpdateNow,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

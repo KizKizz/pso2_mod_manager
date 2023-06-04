@@ -100,7 +100,8 @@ class TranslationText {
       uiOf = 'of',
       uiRefSheetsDownloadingCount = 'of the required item reference sheets. (Important for Add Mods function to work correctly)',
       uiDownloadUpdate = 'Download Update',
-      uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their originals before applying mods to the game';
+      uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their originals before applying mods to the game',
+      uiUpdateNow = 'Update Now';
 
   //homepage
   String uiItemList = 'Item List',

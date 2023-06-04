@@ -878,7 +878,10 @@ class _MainPageState extends State<MainPage> {
                                                       backgroundImage,
                                                       fit: BoxFit.cover,
                                                     ),
-                                                    Container(width: double.infinity, color: Theme.of(context).canvasColor.withOpacity(0.5), child: Center(child: Text(curLangText!.uiClicktoChangeBackgroundImage)))
+                                                    Container(
+                                                        width: double.infinity,
+                                                        color: Theme.of(context).canvasColor.withOpacity(0.5),
+                                                        child: Center(child: Text(curLangText!.uiClicktoChangeBackgroundImage)))
                                                   ],
                                                 )
                                               : Center(child: Text(curLangText!.uiNoBackgroundImageFound)),
@@ -974,13 +977,14 @@ class _MainPageState extends State<MainPage> {
             child: Container(
               color: Theme.of(context).canvasColor,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: MoveWindow(
                         child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 5, top: 2),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -996,21 +1000,21 @@ class _MainPageState extends State<MainPage> {
                           ),
                           if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
-                              padding: const EdgeInsets.only(left: 5),
+                              padding: const EdgeInsets.only(left: 10, top: 1),
                               child: ModManTooltip(
                                 message: curLangText!.uiNewUpdateAvailableClickToDownload,
-                                child: MaterialButton(
-                                    visualDensity: VisualDensity.compact,
-                                    height: 20,
-                                    minWidth: 10,
-                                    onPressed: () {
-                                      launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
-                                    },
-                                    child: Icon(
-                                      Icons.download,
-                                      size: 25,
-                                      color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber,
-                                    )),
+                                child: InkWell(
+                                  onTap: () {
+                                    launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                                  },
+                                  child: Container(
+                                      padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber),
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                      ),
+                                      child: Text(curLangText!.uiUpdateNow, style: TextStyle(fontSize: 13, color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.red : Colors.amber))),
+                                ),
                               ),
                             ),
                         ],
@@ -1021,14 +1025,14 @@ class _MainPageState extends State<MainPage> {
                   //Buttons
                   if (curLangText != null)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 0),
+                      padding: const EdgeInsets.only(top: 1.5),
                       child: Row(
                         children: [
                           //Add Items/Mods
                           ModManTooltip(
                             message: curLangText!.uiAddNewModsToMM,
                             child: SizedBox(
-                              width: curActiveLang == 'JP' ? 110 : 105,
+                              //width: curActiveLang == 'JP' ? 110 : 105,
                               child: MaterialButton(
                                 color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
                                 //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
@@ -1059,7 +1063,7 @@ class _MainPageState extends State<MainPage> {
                           ModManTooltip(
                             message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                             child: SizedBox(
-                              width: 99,
+                              //width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
                                   if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
