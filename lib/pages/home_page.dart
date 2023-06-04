@@ -45,7 +45,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
+  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.28), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
@@ -102,7 +102,6 @@ class _HomePageState extends State<HomePage> {
         if (context.watch<StateProvider>().setsWindowVisible) setList(),
         //if (!context.watch<StateProvider>().setsWindowVisible)
         modsView(),
-
         //if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
         if (!context.watch<StateProvider>().previewWindowVisible) appliedModsView(),
         if (context.watch<StateProvider>().previewWindowVisible)
@@ -3258,9 +3257,11 @@ class _HomePageState extends State<HomePage> {
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
-                                                              Text(
-                                                                curItem.itemName,
-                                                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  curItem.itemName,
+                                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                                ),
                                                               ),
                                                               Padding(
                                                                 padding: const EdgeInsets.only(left: 5),
@@ -4039,9 +4040,11 @@ class _HomePageState extends State<HomePage> {
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
-                                                              Text(
-                                                                curItem.itemName,
-                                                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  curItem.itemName,
+                                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                                ),
                                                               ),
                                                               Padding(
                                                                 padding: const EdgeInsets.only(left: 5),

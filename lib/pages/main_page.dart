@@ -982,7 +982,7 @@ class _MainPageState extends State<MainPage> {
                   Expanded(
                     child: MoveWindow(
                         child: Padding(
-                      padding: const EdgeInsets.only(left: 5, top: 2),
+                      padding: const EdgeInsets.only(left: 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -1000,7 +1000,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                           if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
-                              padding: const EdgeInsets.only(left: 10, top: 1),
+                              padding: const EdgeInsets.only(left: 10, top: 3),
                               child: ModManTooltip(
                                 message: curLangText!.uiNewUpdateAvailableClickToDownload,
                                 child: InkWell(
