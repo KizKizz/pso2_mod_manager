@@ -589,7 +589,7 @@ void modAddHandler(context) {
                                                           );
                                                         })
                                                       : null,
-                                                  child: Text(curLangText!.uiProgress)),
+                                                  child: Text(curLangText!.uiProcess)),
                                             ),
                                           ],
                                         ),

@@ -179,7 +179,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
           json['uiAchiveCurrentlyNotSupported'] as String
-      ..uiProgress = json['uiProgress'] as String
+      ..uiProcess = json['uiProcess'] as String
       ..uiWaitingForData = json['uiWaitingForData'] as String
       ..uiErrorWhenLoadingAddModsData =
           json['uiErrorWhenLoadingAddModsData'] as String
@@ -393,7 +393,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
-      'uiProgress': instance.uiProgress,
+      'uiProcess': instance.uiProcess,
       'uiWaitingForData': instance.uiWaitingForData,
       'uiErrorWhenLoadingAddModsData': instance.uiErrorWhenLoadingAddModsData,
       'uiLoadingModsAdderData': instance.uiLoadingModsAdderData,

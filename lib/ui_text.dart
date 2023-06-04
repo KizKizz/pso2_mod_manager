@@ -100,7 +100,7 @@ class TranslationText {
       uiOf = 'of',
       uiRefSheetsDownloadingCount = 'of the required item reference sheets. (Important for Add Mods function to work correctly)',
       uiDownloadUpdate = 'Download Update',
-      uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their orginals before applying mods to the game';
+      uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their originals before applying mods to the game';
 
   //homepage
   String uiItemList = 'Item List',
@@ -113,7 +113,7 @@ class TranslationText {
       uiTurnOnAutoHideEmptyCate = 'Turn on auto hide empty categories',
       uiShowHideCate = 'Show/Hide categories',
       uiHiddenItemList = 'Hidden Item List',
-      uiSortByNameDescen = 'Sort by name decending',
+      uiSortByNameDescen = 'Sort by name descending',
       uiSortByNameAscen = 'Sort by name ascending',
       uiSortItemList = 'Sort Item List',
       uiAddNewCateGroup = 'Add new Category Group',
@@ -156,7 +156,7 @@ class TranslationText {
       uiCreateNewModSet = 'Create new Mod Set',
       uiEnterNewModSetName = 'Enter new Mod Set name',
       uiRemoveAllModsIn = 'Remove all mods in',
-      uiSuccessfullyRemoveAllModsIn = 'Sucessfully removed all mods in',
+      uiSuccessfullyRemoveAllModsIn = 'Successfully removed all mods in',
       uiApplyAllModsIn = 'Apply all mods in',
       uiSuccessfullyAppliedAllModsIn = 'Sucessfully applied all mods in',
       uiAddToThisSet = 'Add to this set',
@@ -166,7 +166,7 @@ class TranslationText {
   String uiPreparing = 'Preparing',
       uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
-      uiProgress = 'Progress',
+      uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
       uiErrorWhenLoadingAddModsData = 'Error when loading data for Mods Adder. Please restart the app.',
       uiLoadingModsAdderData = 'Loading data for Mods Adder',
@@ -204,7 +204,7 @@ class TranslationText {
       uiItemsFoundWhenDeletingCate = 'Items in this Category. Remove this Category would delete all its Items.\nContinue?';
 
   //unapply_all_mods
-  String uiSuccessfullyRemovedTheseMods = 'Succesfully removed these mods from the game';
+  String uiSuccessfullyRemovedTheseMods = 'Successfully removed these mods from the game';
 
   //paths_loader
   String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" will close the app',
