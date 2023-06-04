@@ -185,8 +185,8 @@ Future<String?> pso2binPathGet(context) async {
       context: context,
       builder: (context) => AlertDialog(
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-              title: const Center(
-                child: Text('Error', style: TextStyle(fontWeight: FontWeight.w700)),
+              title: Center(
+                child: Text(curLangText!.uiError, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
@@ -194,7 +194,7 @@ Future<String?> pso2binPathGet(context) async {
               ),
               actions: <Widget>[
                 ElevatedButton(
-                    child: const Text('Exit'),
+                    child: Text(curLangText!.uiExit),
                     onPressed: () async {
                       Navigator.pop(context, null);
                       await windowManager.destroy();

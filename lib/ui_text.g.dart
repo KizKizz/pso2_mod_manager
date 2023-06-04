@@ -37,6 +37,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiYes = json['uiYes'] as String
       ..uiNo = json['uiNo'] as String
       ..uiClearAll = json['uiClearAll'] as String
+      ..uiExit = json['uiExit'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -264,6 +265,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiYes': instance.uiYes,
       'uiNo': instance.uiNo,
       'uiClearAll': instance.uiClearAll,
+      'uiExit': instance.uiExit,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,

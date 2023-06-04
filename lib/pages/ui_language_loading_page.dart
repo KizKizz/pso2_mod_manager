@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/paths_loading_page.dart';
+import 'package:window_manager/window_manager.dart';
 
 class UILanguageLoadingPage extends StatefulWidget {
   const UILanguageLoadingPage({Key? key}) : super(key: key);
@@ -46,13 +47,11 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                       'Error when loading UI',
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                    )
+                    ),
+                    ElevatedButton(onPressed: () {windowManager.destroy();}, child: const Text('Exit'))
                   ],
                 ),
               );

@@ -31,7 +31,8 @@ class TranslationText {
       uiSure = 'Sure',
       uiYes = 'Yes',
       uiNo = 'No',
-      uiClearAll = 'Clear All';
+      uiClearAll = 'Clear All',
+      uiExit = 'Exit';
 
   //main page
   String uiSettings = 'Settings',
