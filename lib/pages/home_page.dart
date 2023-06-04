@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
+  CarouselController previewCarouselController = CarouselController();
 
   String itemListAppBarName = curLangText!.uiItemList;
   bool hoveringOnSubmod = false;
@@ -3508,6 +3509,7 @@ class _HomePageState extends State<HomePage> {
       if ((previewImages.isNotEmpty && !hoveringOnSubmod) || (previewImages.isNotEmpty && hoveringOnSubmod))
         Expanded(
           child: CarouselSlider(
+            carouselController: previewCarouselController,
             options: CarouselOptions(
               aspectRatio: 2.0,
               viewportFraction: 1,
@@ -3515,7 +3517,7 @@ class _HomePageState extends State<HomePage> {
               scrollDirection: Axis.vertical,
               enlargeStrategy: CenterPageEnlargeStrategy.scale,
               reverse: true,
-              autoPlayInterval: videoPlayer.state.tracks.video.isNotEmpty ? const Duration(seconds: 3) : const Duration(seconds: 1),
+              autoPlayInterval: previewImages.where((element) => element.toString().contains('PreviewVideoStack')).isNotEmpty ? const Duration(seconds: 5) : const Duration(seconds: 1),
               autoPlay: previewImages.length > 1 ? true : false,
             ),
             items: previewImages,
