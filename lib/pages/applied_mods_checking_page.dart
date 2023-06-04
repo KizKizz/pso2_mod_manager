@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
+import 'package:window_manager/window_manager.dart';
 
 class AppliedModsCheckingPage extends StatefulWidget {
   const AppliedModsCheckingPage({Key? key}) : super(key: key);
@@ -53,9 +54,14 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                       height: 10,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                    )
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          windowManager.destroy();
+                        },
+                        child: Text(curLangText!.uiExit))
                   ],
                 ),
               );

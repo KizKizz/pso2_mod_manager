@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/home_page.dart';
+import 'package:window_manager/window_manager.dart';
 
 class ModSetsLoadingPage extends StatefulWidget {
   const ModSetsLoadingPage({Key? key}) : super(key: key);
@@ -52,9 +53,14 @@ class _ModSetsLoadingPageState extends State<ModSetsLoadingPage> {
                       height: 10,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                    )
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          windowManager.destroy();
+                        },
+                        child: Text(curLangText!.uiExit))
                   ],
                 ),
               );
@@ -78,7 +84,7 @@ class _ModSetsLoadingPageState extends State<ModSetsLoadingPage> {
             } else {
               //Applied Item list
               modSetList = snapshot.data;
-              
+
               return const HomePage();
             }
           }

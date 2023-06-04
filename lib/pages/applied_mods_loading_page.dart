@@ -6,6 +6,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_mods_checking_page.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
+import 'package:window_manager/window_manager.dart';
 
 class AppliedModsLoadingPage extends StatefulWidget {
   const AppliedModsLoadingPage({Key? key}) : super(key: key);
@@ -55,9 +56,14 @@ class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
                       height: 10,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                    )
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          windowManager.destroy();
+                        },
+                        child: Text(curLangText!.uiExit))
                   ],
                 ),
               );
@@ -81,7 +87,7 @@ class _AppliedModsLoadingPageState extends State<AppliedModsLoadingPage> {
             } else {
               //Applied Item list
               appliedItemList = snapshot.data;
-              
+
               return const AppliedModsCheckingPage();
             }
           }
