@@ -2,11 +2,11 @@
   {
     "langInitial": "EN",
     "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\EN.json",
-    "selected": true
+    "selected": false
   },
   {
     "langInitial": "JP",
     "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\JP.json",
-    "selected": false
+    "selected": true
   }
 ]
