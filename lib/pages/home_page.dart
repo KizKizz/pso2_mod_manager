@@ -1949,21 +1949,33 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {},
                               onHover: (hovering) {
                                 if (hovering && previewWindowVisible) {
-                                  hoveringOnSubmod = true;
-                                  previewModName = curMod.modName;
-                                  for (var path in curMod.previewImages) {
-                                    previewImages.add(PreviewImageStack(
-                                        imagePath: path,
-                                        overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
-                                            ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
-                                            : curMod.modName));
-                                  }
-                                  for (var path in curMod.previewVideos) {
-                                    previewImages.add(PreviewVideoStack(
-                                        videoPath: path,
-                                        overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
-                                            ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
-                                            : curMod.modName));
+                                  if (modViewModSetSubModIndex != -1) {
+                                    hoveringOnSubmod = true;
+                                    previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
+                                    hoveringOnSubmod = true;
+                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewImages) {
+                                      previewImages.add(PreviewImageStack(imagePath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
+                                    }
+                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewVideos) {
+                                      previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
+                                    }
+                                  } else {
+                                    hoveringOnSubmod = true;
+                                    previewModName = curMod.modName;
+                                    for (var path in curMod.previewImages) {
+                                      previewImages.add(PreviewImageStack(
+                                          imagePath: path,
+                                          overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                              : curMod.modName));
+                                    }
+                                    for (var path in curMod.previewVideos) {
+                                      previewImages.add(PreviewVideoStack(
+                                          videoPath: path,
+                                          overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
+                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
+                                              : curMod.modName));
+                                    }
                                   }
                                 } else {
                                   hoveringOnSubmod = false;
