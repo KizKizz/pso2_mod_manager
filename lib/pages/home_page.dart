@@ -45,7 +45,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.28), Area(weight: 0.335)]);
+  final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
