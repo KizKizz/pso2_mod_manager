@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -1308,7 +1309,7 @@ class _MainPageState extends State<MainPage> {
                           TextButton(
                               onPressed: (() {
                                 setState(() {
-                                  //patchNotesDialog(context);
+                                  patchNotesDialog(context);
                                 });
                               }),
                               child: Text(curLangText!.uiPatchNote)),

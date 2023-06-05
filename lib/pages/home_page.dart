@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    videoPlayer.dispose();
+    //videoPlayer.dispose();
     super.dispose();
   }
 
@@ -1947,12 +1947,13 @@ class _HomePageState extends State<HomePage> {
                                         : true,
                             child: InkWell(
                               //Hover for preview
-                              onTap: () {
-                                
-                              },
+                              onTap: () {},
                               onSecondaryTapCancel: () {
-                                previewDialogImages = previewImages.toList();
-                                previewDialog(context);
+                                if (previewImages.isNotEmpty) {
+                                  previewDialogImages = previewImages.toList();
+                                  previewDialogModName = previewModName;
+                                  previewDialog(context);
+                                }
                               },
                               onHover: (hovering) {
                                 if (hovering && previewWindowVisible) {
@@ -1988,7 +1989,7 @@ class _HomePageState extends State<HomePage> {
                                   hoveringOnSubmod = false;
                                   previewModName = '';
                                   previewImages.clear();
-                                  videoPlayer.remove(0);
+                                  // videoPlayer.remove(0);
                                 }
                                 setState(() {});
                               },
@@ -2544,7 +2545,7 @@ class _HomePageState extends State<HomePage> {
                                                     hoveringOnSubmod = true;
                                                     previewModName = curSubmod.submodName;
                                                     previewImages.clear();
-                                                    videoPlayer.remove(0);
+                                                    // videoPlayer.remove(0);
                                                     for (var path in curSubmod.previewImages) {
                                                       previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
                                                     }
@@ -3212,7 +3213,7 @@ class _HomePageState extends State<HomePage> {
                                                   hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
-                                                  videoPlayer.remove(0);
+                                                  // videoPlayer.remove(0);
                                                 }
                                                 setState(() {});
                                               },
@@ -3337,7 +3338,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                   List<ModFile> unappliedModFiles = value;
                                                                                   previewImages.clear();
-                                                                                  videoPlayer.remove(0);
+                                                                                  // videoPlayer.remove(0);
                                                                                   for (var mod in curMods) {
                                                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                                       if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
@@ -3377,7 +3378,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (appliedItemList.isEmpty) {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
-                                                                                    videoPlayer.remove(0);
+                                                                                    // videoPlayer.remove(0);
                                                                                   }
 
                                                                                   setState(() {});
@@ -3754,7 +3755,7 @@ class _HomePageState extends State<HomePage> {
                                                           modFilesUnapply(context, allAppliedModFiles).then((value) async {
                                                             List<ModFile> unappliedModFiles = value;
                                                             previewImages.clear();
-                                                            videoPlayer.remove(0);
+                                                            // videoPlayer.remove(0);
                                                             for (var item in curSet.setItems) {
                                                               for (var mod in item.mods) {
                                                                 for (var submod in mod.submods.where((element) => element.applyStatus)) {
@@ -3797,7 +3798,7 @@ class _HomePageState extends State<HomePage> {
                                                             if (appliedItemList.isEmpty) {
                                                               previewModName = '';
                                                               previewImages.clear();
-                                                              videoPlayer.remove(0);
+                                                              // videoPlayer.remove(0);
                                                             }
                                                             isModViewModsRemoving = false;
                                                             saveModdedItemListToJson();
@@ -3994,7 +3995,7 @@ class _HomePageState extends State<HomePage> {
                                                   hoveringOnSubmod = false;
                                                   previewModName = '';
                                                   previewImages.clear();
-                                                  videoPlayer.remove(0);
+                                                  // videoPlayer.remove(0);
                                                 }
                                                 setState(() {});
                                               },
@@ -4141,7 +4142,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                   List<ModFile> unappliedModFiles = value;
                                                                                   previewImages.clear();
-                                                                                  videoPlayer.remove(0);
+                                                                                  // videoPlayer.remove(0);
                                                                                   for (var mod in curMods) {
                                                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                                       if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
@@ -4177,7 +4178,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   if (appliedItemList.isEmpty) {
                                                                                     previewModName = '';
                                                                                     previewImages.clear();
-                                                                                    videoPlayer.remove(0);
+                                                                                    // videoPlayer.remove(0);
                                                                                   }
 
                                                                                   saveModdedItemListToJson();

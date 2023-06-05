@@ -42,7 +42,7 @@ Future<List<String>> unapplyAllMods(context) async {
                   submod.applyStatus = false;
                   submod.applyDate = DateTime(0);
                   previewImages.clear();
-                  videoPlayer.remove(0);
+                  //videoPlayer.remove(0);
                   previewModName = '';
 
                   if (mod.submods.where((element) => element.applyStatus).isEmpty) {
