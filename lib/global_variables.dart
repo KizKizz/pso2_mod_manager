@@ -57,3 +57,4 @@ final VideoController vidPlayercontroller = VideoController(videoPlayer);
 bool isModViewModsApplying = false;
 bool isModViewModsRemoving = false;
 List<ModFile> startupReappliedModFiles = [];
+List<Widget> previewDialogImages = [];

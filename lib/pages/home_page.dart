@@ -21,6 +21,7 @@ import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/preview_dialog.dart';
 import 'package:pso2_mod_manager/functions/search_list_builder.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/functions/unapply_all_mods.dart';
@@ -1946,7 +1947,13 @@ class _HomePageState extends State<HomePage> {
                                         : true,
                             child: InkWell(
                               //Hover for preview
-                              onTap: () {},
+                              onTap: () {
+                                
+                              },
+                              onSecondaryTapCancel: () {
+                                previewDialogImages = previewImages.toList();
+                                previewDialog(context);
+                              },
                               onHover: (hovering) {
                                 if (hovering && previewWindowVisible) {
                                   if (modViewModSetSubModIndex != -1) {
