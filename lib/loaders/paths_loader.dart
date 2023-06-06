@@ -43,27 +43,6 @@ String modManRefSheetListFilePath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 
-//Default Mod Caterories
-List<String> defaultCateforyDirs = [
-  'Accessories',
-  'Basewears',
-  'Body Paints',
-  'Cast Arm Parts',
-  'Cast Body Parts',
-  'Cast Leg Parts',
-  'Costumes',
-  'Emotes',
-  'Eyes',
-  'Face Paints',
-  'Hairs',
-  'Innerwears',
-  'Mags',
-  'Misc',
-  'Motions',
-  'Outerwears',
-  'Setwears'
-];
-
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
   //pso2_bin path
@@ -172,7 +151,6 @@ Future<bool> pathsLoader(context) async {
 
   //ref sheets check
   ApplicationConfig().checkRefSheetsForUpdates(context);
-    
 
   //Return true if all paths loaded
   return true;
@@ -184,6 +162,8 @@ Future<String?> pso2binPathGet(context) async {
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
                 child: Text(curLangText!.uiError, style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -217,6 +197,8 @@ Future<String?> modManDirPathGet(context) async {
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
                 child: Text(curLangText!.uiMMFolderNotFound, style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -309,6 +291,8 @@ Future<String?> pso2binPathReselect(context) async {
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
                 child: Text(curLangText!.uiReselectPso2binPath, style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -422,6 +406,8 @@ Future<String?> modManDirPathReselect(context) async {
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
                 child: Text(curLangText!.uiReselectModManFolderPath, style: const TextStyle(fontWeight: FontWeight.w700)),

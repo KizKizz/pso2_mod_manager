@@ -9,12 +9,13 @@ import 'package:path/path.dart' as p;
 Future<ModFile> modFileBackup(ModFile modFile) async {
   for (var ogPath in modFile.ogLocations) {
     final newBackupPath = ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManBackupsDirPath);
-    if (!File(newBackupPath).existsSync() || !modFile.ogMd5s.contains(await getFileHash(newBackupPath))) {
+    String newOGMD5 = await getFileHash(ogPath);
+    if (!File(newBackupPath).existsSync() || (!modFile.ogMd5s.contains(newOGMD5) && newOGMD5 != modFile.md5)) {
       Directory(p.dirname(newBackupPath)).createSync(recursive: true);
       File(ogPath).copySync(
         newBackupPath,
       );
-      modFile.ogMd5s.add(await getFileHash(ogPath));
+      modFile.ogMd5s.add(newOGMD5);
       modFile.bkLocations.add(newBackupPath);
     }
   }

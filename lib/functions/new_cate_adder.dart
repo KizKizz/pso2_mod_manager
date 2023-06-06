@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+
+import '../state_provider.dart';
 
 Future<String> categoryGroupAdder(context) async {
   TextEditingController newCateGroupName = TextEditingController();
@@ -16,6 +19,8 @@ Future<String> categoryGroupAdder(context) async {
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiNewCateGroup, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),

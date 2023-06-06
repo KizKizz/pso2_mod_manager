@@ -29,6 +29,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
 import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
@@ -2221,6 +2222,16 @@ class _HomePageState extends State<HomePage> {
                                                     },
                                                   ),
                                                 ),
+                                                //Swap
+                                                ModManTooltip(
+                                                  message: 'Swap',
+                                                  child: InkWell(
+                                                    child: const Icon(
+                                                      Icons.swap_horizontal_circle_outlined,
+                                                    ),
+                                                    onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                  ),
+                                                ),
                                                 //Open folder
                                                 ModManTooltip(
                                                   message: '${curLangText!.uiOpen} ${curMod.submods.first.submodName} ${curLangText!.uiInFileExplorer}',
@@ -2540,6 +2551,13 @@ class _HomePageState extends State<HomePage> {
                                               child: InkWell(
                                                 //submod preview images
                                                 onTap: () {},
+                                                onSecondaryTapCancel: () {
+                                                  if (previewImages.isNotEmpty) {
+                                                    previewDialogImages = previewImages.toList();
+                                                    previewDialogModName = previewModName;
+                                                    previewDialog(context);
+                                                  }
+                                                },
                                                 onHover: (hovering) {
                                                   if (hovering && previewWindowVisible) {
                                                     hoveringOnSubmod = true;
@@ -2763,6 +2781,16 @@ class _HomePageState extends State<HomePage> {
                                                                   saveModdedItemListToJson();
                                                                   setState(() {});
                                                                 },
+                                                              ),
+                                                            ),
+                                                            //Swap
+                                                            ModManTooltip(
+                                                              message: 'Swap',
+                                                              child: InkWell(
+                                                                child: const Icon(
+                                                                  Icons.swap_horizontal_circle_outlined,
+                                                                ),
+                                                                onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                               ),
                                                             ),
                                                             //Open folder
@@ -3191,6 +3219,13 @@ class _HomePageState extends State<HomePage> {
                                             return InkResponse(
                                               highlightShape: BoxShape.rectangle,
                                               onTap: () => '',
+                                              onSecondaryTapCancel: () {
+                                                if (previewImages.isNotEmpty) {
+                                                  previewDialogImages = previewImages.toList();
+                                                  previewDialogModName = previewModName;
+                                                  previewDialog(context);
+                                                }
+                                              },
                                               onHover: (hovering) {
                                                 if (hovering) {
                                                   previewModName = curItem.itemName;
@@ -3973,6 +4008,13 @@ class _HomePageState extends State<HomePage> {
                                             return InkResponse(
                                               highlightShape: BoxShape.rectangle,
                                               onTap: () => '',
+                                              onSecondaryTapCancel: () {
+                                                if (previewImages.isNotEmpty) {
+                                                  previewDialogImages = previewImages.toList();
+                                                  previewDialogModName = previewModName;
+                                                  previewDialog(context);
+                                                }
+                                              },
                                               onHover: (hovering) {
                                                 if (hovering && previewWindowVisible) {
                                                   hoveringOnSubmod = true;
