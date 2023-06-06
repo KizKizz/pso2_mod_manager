@@ -3303,7 +3303,7 @@ class _HomePageState extends State<HomePage> {
                                                               Expanded(
                                                                 child: Text(
                                                                   curItem.itemName,
-                                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                 ),
                                                               ),
                                                               Padding(
@@ -3712,7 +3712,7 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Row(
                                           children: [
-                                            Text(curSet.setName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                            Text(curSet.setName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                                             Padding(
                                               padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                               child: Container(
@@ -3724,11 +3724,11 @@ class _HomePageState extends State<HomePage> {
                                                   child: curSet.setItems.length < 2
                                                       ? Text('${curSet.setItems.length} ${curLangText!.uiItem}',
                                                           style: const TextStyle(
-                                                            fontSize: 15,
+                                                            fontSize: 13,
                                                           ))
                                                       : Text('${curSet.setItems.length} ${curLangText!.uiItems}',
                                                           style: const TextStyle(
-                                                            fontSize: 15,
+                                                            fontSize: 13,
                                                           ))),
                                             ),
                                           ],
@@ -4093,7 +4093,7 @@ class _HomePageState extends State<HomePage> {
                                                               Expanded(
                                                                 child: Text(
                                                                   curItem.itemName,
-                                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                 ),
                                                               ),
                                                               Padding(

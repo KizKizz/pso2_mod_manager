@@ -23,3 +23,23 @@ List<String> motionCsv = [
   'SubstituteMotionStandby.csv',
   'SubstituteMotionSwim.csv'
 ];
+
+List<List<String>> csvFileList = [
+  accessoriesCsv,
+  basewearCsv,
+  bodyPaintCsv,
+  castArmCsv,
+  castBodyCsv,
+  castLegCsv,
+  costumeCsv,
+  emoteCsv,
+  eyeCsv,
+  facePaintCsv,
+  hairCsv,
+  innerwearCsv,
+  magsCsv,
+  [],
+  motionCsv,
+  outerwearCsv,
+  basewearCsv
+];
