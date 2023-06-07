@@ -67,7 +67,7 @@ void previewDialog(context) async {
                                 () {},
                               );
                             },
-                      child: const Text('Previous'),
+                      child: Text(curLangText!.uiPrevious),
                     ),
                   ),
                   SizedBox(
@@ -81,7 +81,7 @@ void previewDialog(context) async {
                                 () {},
                               );
                             },
-                      child: const Text('Next'),
+                      child: Text(curLangText!.uiNext),
                     ),
                   ),
                   const VerticalDivider(
@@ -106,7 +106,7 @@ void previewDialog(context) async {
                               () {},
                             );
                           },
-                    child: Text(isAutoPlay ? 'Stop Auto Play' : 'Auto Play'),
+                    child: Text(isAutoPlay ? curLangText!.uiStopAutoPlay : curLangText!.uiAutoPlay),
                   ),
                 ],
               ),

@@ -235,6 +235,9 @@ class TranslationText {
   //path_loading_page
   String uiLoadingPaths = 'Loading Paths', uiErrorWhenLoadingPaths = 'Error when loading paths';
 
+  //preview Image diaglog
+  String uiPrevious = 'Previous', uiNext = 'Next', uiAutoPlay = 'Auto Play', uiStopAutoPlay = 'Stop Auto Play';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

@@ -247,7 +247,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiLoadingMods = json['uiLoadingMods'] as String
       ..uiErrorWhenLoadingMods = json['uiErrorWhenLoadingMods'] as String
       ..uiLoadingPaths = json['uiLoadingPaths'] as String
-      ..uiErrorWhenLoadingPaths = json['uiErrorWhenLoadingPaths'] as String;
+      ..uiErrorWhenLoadingPaths = json['uiErrorWhenLoadingPaths'] as String
+      ..uiPrevious = json['uiPrevious'] as String
+      ..uiNext = json['uiNext'] as String
+      ..uiAutoPlay = json['uiAutoPlay'] as String
+      ..uiStopAutoPlay = json['uiStopAutoPlay'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -450,4 +454,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiErrorWhenLoadingMods': instance.uiErrorWhenLoadingMods,
       'uiLoadingPaths': instance.uiLoadingPaths,
       'uiErrorWhenLoadingPaths': instance.uiErrorWhenLoadingPaths,
+      'uiPrevious': instance.uiPrevious,
+      'uiNext': instance.uiNext,
+      'uiAutoPlay': instance.uiAutoPlay,
+      'uiStopAutoPlay': instance.uiStopAutoPlay,
     };
