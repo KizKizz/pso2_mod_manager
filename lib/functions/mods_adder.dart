@@ -108,16 +108,16 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
 //Helpers
 Future<Item> newItemsFetcher(String catePath, String itemPath) async {
   //Get item icon
-  String itemIcon = '';
+  List<String> itemIcons = [];
   final filesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>();
   final imagesFoundInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
   if (imagesFoundInItemDir.isNotEmpty) {
-    itemIcon = imagesFoundInItemDir.first.path;
+    itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
   } else {
-    itemIcon = 'assets/img/placeholdersquare.png';
+    itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(p.basename(itemPath), itemIcon, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {

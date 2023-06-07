@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
 
 class PreviewVideoStack extends StatefulWidget {
   const PreviewVideoStack({super.key, required this.videoPath, required this.overlayText});

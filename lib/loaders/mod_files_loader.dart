@@ -199,13 +199,13 @@ Future<List<Item>> itemsFetcher(String catePath) async {
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
   for (var dir in itemInCategory) {
     //Get item icon
-    String itemIcon = '';
+    List<String> itemIcons = [];
     final filesInItemDir = Directory(dir.path).listSync(recursive: false).whereType<File>();
     final imagesFoundInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
     if (imagesFoundInItemDir.isNotEmpty) {
-      itemIcon = imagesFoundInItemDir.first.path;
+      itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
     } else if (cateToIgnoreScan.contains(p.basename(dir.path))) {
-      itemIcon = 'assets/img/placeholdersquare.png';
+      itemIcons = ['assets/img/placeholdersquare.png'];
     } else {
       List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       if (iceFilesInCurItem.isEmpty) {
@@ -213,28 +213,27 @@ Future<List<Item>> itemsFetcher(String catePath) async {
         iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       }
 
-      String tempItemIconPath = '';
+      List<String> tempItemIconPaths = [];
       for (var element in iceFilesInCurItem) {
-        if (tempItemIconPath.isEmpty) {
-          tempItemIconPath = await itemIconFetch(XFile(element.path));
-        } else {
-          break;
-        }
+        tempItemIconPaths.add(await itemIconFetch(XFile(element.path)));
       }
 
-      if (tempItemIconPath.isNotEmpty) {
-        File(tempItemIconPath).copySync(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-        itemIcon = Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath();
+      if (tempItemIconPaths.isNotEmpty) {
+        for (var tempItemIconPath in tempItemIconPaths) {
+          File(tempItemIconPath).copySync(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+          itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+        }
         //clear temp dir
-        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-          element.deleteSync(recursive: true);
-        });
+          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+            element.deleteSync(recursive: true);
+          });
       } else {
-        itemIcon = 'assets/img/placeholdersquare.png';
+        itemIcons = ['assets/img/placeholdersquare.png'];
       }
     }
 
-    items.add(Item(p.basename(dir.path), itemIcon, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modsFetcher(dir.path, p.basename(catePath))));
+    items.add(
+        Item(p.basename(dir.path), [], itemIcons, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modsFetcher(dir.path, p.basename(catePath))));
   }
 
   return items;

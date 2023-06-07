@@ -67,7 +67,7 @@ void previewDialog(context) async {
                                 () {},
                               );
                             },
-                      child: Text('Previous'),
+                      child: const Text('Previous'),
                     ),
                   ),
                   SizedBox(
@@ -81,7 +81,7 @@ void previewDialog(context) async {
                                 () {},
                               );
                             },
-                      child: Text('Next'),
+                      child: const Text('Next'),
                     ),
                   ),
                   const VerticalDivider(

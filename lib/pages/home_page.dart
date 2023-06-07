@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart' as f;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -807,14 +808,14 @@ class _HomePageState extends State<HomePage> {
                                                                                                   : Theme.of(context).hintColor,
                                                                                           width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                     ),
-                                                                                    child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                    child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                         ? Image.asset(
                                                                                             'assets/img/placeholdersquare.png',
                                                                                             filterQuality: FilterQuality.none,
                                                                                             fit: BoxFit.fitWidth,
                                                                                           )
                                                                                         : Image.file(
-                                                                                            File(curItem.icon),
+                                                                                            File(curItem.icons.first),
                                                                                             filterQuality: FilterQuality.none,
                                                                                             fit: BoxFit.fitWidth,
                                                                                           )),
@@ -1101,14 +1102,14 @@ class _HomePageState extends State<HomePage> {
                                                                                                     : Theme.of(context).hintColor,
                                                                                             width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                       ),
-                                                                                      child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                      child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                           ? Image.asset(
                                                                                               'assets/img/placeholdersquare.png',
                                                                                               filterQuality: FilterQuality.none,
                                                                                               fit: BoxFit.fitWidth,
                                                                                             )
                                                                                           : Image.file(
-                                                                                              File(curItem.icon),
+                                                                                              File(curItem.icons.first),
                                                                                               filterQuality: FilterQuality.none,
                                                                                               fit: BoxFit.fitWidth,
                                                                                             )),
@@ -1603,14 +1604,14 @@ class _HomePageState extends State<HomePage> {
                                                                                                         : Theme.of(context).hintColor,
                                                                                                 width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                                                           ),
-                                                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                                                          child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                               ? Image.asset(
                                                                                                   'assets/img/placeholdersquare.png',
                                                                                                   filterQuality: FilterQuality.none,
                                                                                                   fit: BoxFit.fitWidth,
                                                                                                 )
                                                                                               : Image.file(
-                                                                                                  File(curItem.icon),
+                                                                                                  File(curItem.icons.first),
                                                                                                   filterQuality: FilterQuality.none,
                                                                                                   fit: BoxFit.fitWidth,
                                                                                                 )),
@@ -1817,14 +1818,14 @@ class _HomePageState extends State<HomePage> {
                                     : Theme.of(context).hintColor,
                             width: modViewItem!.isNew || modViewItem!.applyStatus ? 3 : 1),
                       ),
-                      child: modViewItem!.icon.contains('assets/img/placeholdersquare.png')
+                      child: modViewItem!.icons.first.contains('assets/img/placeholdersquare.png')
                           ? Image.asset(
                               'assets/img/placeholdersquare.png',
                               filterQuality: FilterQuality.none,
                               fit: BoxFit.fitWidth,
                             )
                           : Image.file(
-                              File(modViewItem!.icon),
+                              File(modViewItem!.icons.first),
                               filterQuality: FilterQuality.none,
                               fit: BoxFit.fitWidth,
                             )),
@@ -2223,13 +2224,16 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 //Swap
-                                                ModManTooltip(
-                                                  message: 'Swap',
-                                                  child: InkWell(
-                                                    child: const Icon(
-                                                      Icons.swap_horizontal_circle_outlined,
+                                                Visibility(
+                                                  visible: f.kDebugMode,
+                                                  child: ModManTooltip(
+                                                    message: 'Swap',
+                                                    child: InkWell(
+                                                      child: const Icon(
+                                                        Icons.swap_horizontal_circle_outlined,
+                                                      ),
+                                                      onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                     ),
-                                                    onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                   ),
                                                 ),
                                                 //Open folder
@@ -2784,13 +2788,16 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ),
                                                             //Swap
-                                                            ModManTooltip(
-                                                              message: 'Swap',
-                                                              child: InkWell(
-                                                                child: const Icon(
-                                                                  Icons.swap_horizontal_circle_outlined,
+                                                            Visibility(
+                                                              visible: f.kDebugMode,
+                                                              child: ModManTooltip(
+                                                                message: 'Swap',
+                                                                child: InkWell(
+                                                                  child: const Icon(
+                                                                    Icons.swap_horizontal_circle_outlined,
+                                                                  ),
+                                                                  onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                 ),
-                                                                onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                               ),
                                                             ),
                                                             //Open folder
@@ -3279,14 +3286,14 @@ class _HomePageState extends State<HomePage> {
                                                                         : Theme.of(context).hintColor,
                                                                 width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                           ),
-                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                          child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                               ? Image.asset(
                                                                   'assets/img/placeholdersquare.png',
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
                                                               : Image.file(
-                                                                  File(curItem.icon),
+                                                                  File(curItem.icons.first),
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )),
@@ -4069,14 +4076,14 @@ class _HomePageState extends State<HomePage> {
                                                                         : Theme.of(context).hintColor,
                                                                 width: curItem.isNew || curItem.applyStatus ? 3 : 1),
                                                           ),
-                                                          child: curItem.icon.contains('assets/img/placeholdersquare.png')
+                                                          child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                               ? Image.asset(
                                                                   'assets/img/placeholdersquare.png',
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
                                                               : Image.file(
-                                                                  File(curItem.icon),
+                                                                  File(curItem.icons.first),
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )),

@@ -8,7 +8,8 @@ part of 'item_class.dart';
 
 Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       json['itemName'] as String,
-      json['icon'] as String,
+      (json['variantNames'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['icons'] as List<dynamic>).map((e) => e as String).toList(),
       json['category'] as String,
       json['location'] as String,
       json['applyStatus'] as bool,
@@ -25,7 +26,8 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'itemName': instance.itemName,
-      'icon': instance.icon,
+      'variantNames': instance.variantNames,
+      'icons': instance.icons,
       'category': instance.category,
       'location': instance.location,
       'applyStatus': instance.applyStatus,

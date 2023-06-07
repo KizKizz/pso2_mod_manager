@@ -119,12 +119,14 @@ Future<TranslationText?> uiTextLoader() async {
   int selectedIndex = languageList.indexWhere((element) => element.selected);
   if (selectedIndex != -1) {
     langDropDownSelected = languageList[selectedIndex].langInitial;
+    curActiveLang = languageList[selectedIndex].langInitial;
     var jsonData = jsonDecode(File(languageList[selectedIndex].langFilePath).readAsStringSync());
     return TranslationText.fromJson(jsonData);
   } else {
     int enIndex = languageList.indexWhere((element) => element.langInitial == 'EN');
     languageList[enIndex].selected = true;
     langDropDownSelected = languageList[enIndex].langInitial;
+    curActiveLang = languageList[selectedIndex].langInitial;
     var jsonData = jsonDecode(File(languageList[enIndex].langFilePath).readAsStringSync());
     return TranslationText.fromJson(jsonData);
   }
