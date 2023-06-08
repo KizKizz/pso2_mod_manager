@@ -68,9 +68,9 @@ Future<void> main() async {
   //Background image path from prefs
   backgroundImage = File(prefs.getString('backgroundImagePath') ?? '');
 
-
   //video init
   WidgetsFlutterBinding.ensureInitialized();
+
   /// [MediaKit.ensureInitialized] must be called before using the library.
   MediaKit.ensureInitialized();
 
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     windowManager.addListener(this);
     miscCheck();
     getAppVer();
-    
+
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
@@ -169,7 +169,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
   }
-
 
   Future<void> getRefSheetsVersion() async {
     final prefs = await SharedPreferences.getInstance();
@@ -198,6 +197,17 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
       //Empty categories hide
       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
+
+      //auto fetching icon
+      isAutoFetchingIconsOnStartup = (prefs.getBool('isAutoFetchingIconsOnStartup') ?? true);
+
+      //Sliding item icons
+      bool isSlidingItemIcons = (prefs.getBool('isSlidingItemIcons') ?? true);
+      if (isSlidingItemIcons) {
+        Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsTrue();
+      } else {
+        Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
+      }
 
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
@@ -237,5 +247,3 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     );
   }
 }
-
-

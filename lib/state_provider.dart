@@ -23,6 +23,7 @@ class StateProvider with ChangeNotifier {
   bool _backgroundImageTrigger = false;
   int _uiBackgroundColorValue = 0;
   bool _reloadSplashScreen = false;
+  bool _isSlidingItemIcons = true;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -45,6 +46,18 @@ class StateProvider with ChangeNotifier {
   bool get backgroundImageTrigger => _backgroundImageTrigger;
   int get uiBackgroundColorValue => _uiBackgroundColorValue;
   bool get reloadSplashScreen => _reloadSplashScreen;
+  bool get isSlidingItemIcons => _isSlidingItemIcons;
+
+
+  void isSlidingItemIconsTrue() {
+    _isSlidingItemIcons = true;
+    notifyListeners();
+  }
+
+  void isSlidingItemIconsFalse() {
+    _isSlidingItemIcons = false;
+    notifyListeners();
+  }
 
   void reloadSplashScreenTrue() {
     _reloadSplashScreen = true;

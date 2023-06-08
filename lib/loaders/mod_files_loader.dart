@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -16,6 +17,7 @@ import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 
 Future<List<CategoryType>> modFileStructureLoader() async {
   ogModFilesLoader();
@@ -66,7 +68,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     if (typeIndex != -1) {
       type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
-      type.visible = structureFromJson[typeIndex].visible;
+      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).length > 1 ? true : structureFromJson[typeIndex].visible;
       //Settings for categories
       for (var cate in type.categories) {
         int cateIndex = structureFromJson[typeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
@@ -74,7 +76,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
           cate.group = structureFromJson[typeIndex].categories[cateIndex].group;
           cate.position = cateIndex;
           //cate.location = structureFromJson[typeIndex].categories[cateIndex].location;
-          cate.visible = structureFromJson[typeIndex].categories[cateIndex].visible;
+          cate.visible = isEmptyCatesHide && cate.items.isNotEmpty ? true : structureFromJson[typeIndex].categories[cateIndex].visible;
           //Settings for items
           final curJsonItemsList = structureFromJson[typeIndex].categories[cateIndex].items;
           for (var item in cate.items) {
@@ -202,21 +204,26 @@ Future<List<Item>> itemsFetcher(String catePath) async {
   for (var dir in itemInCategory) {
     //Get item icon
     List<String> itemIcons = [];
-    final filesInItemDir = Directory(dir.path).listSync(recursive: false).whereType<File>();
-    final imagesFoundInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+    final imagesFoundInItemDir =
+        Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
     if (imagesFoundInItemDir.isNotEmpty) {
       itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-    } else if (cateToIgnoreScan.contains(p.basename(catePath))) {
+    } else if (!isAutoFetchingIconsOnStartup || cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
     } else {
       List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+      List<File> iceFilesInCurItemNoDup = [];
+      for (var file in iceFilesInCurItem) {
+        if (iceFilesInCurItemNoDup.where((element) => p.basename(element.path) == p.basename(file.path)).isEmpty) {
+          iceFilesInCurItemNoDup.add(file);
+        }
+      }
       // if (iceFilesInCurItem.isEmpty) {
       //   Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
       //   iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       // }
 
-      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItem);
-        
+      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItemNoDup);
 
       if (tempItemIconPaths.isNotEmpty) {
         for (var tempItemIconPath in tempItemIconPaths) {

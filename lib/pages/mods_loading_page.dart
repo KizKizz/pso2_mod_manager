@@ -38,7 +38,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 ],
               ),
             );
-          } else {
+          } else if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasError) {
               return Center(
                 child: Column(
@@ -82,11 +82,29 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                 ),
               );
             } else {
-              //Item list
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      curLangText!.uiLoadingMods,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const CircularProgressIndicator(),
+                    Text(snapshot.data)
+                  ],
+                ),
+              );
+            }
+          } else {
+            //Item list
               moddedItemsList = snapshot.data;
 
               return const AppliedModsLoadingPage();
-            }
           }
         });
   }

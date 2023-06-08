@@ -402,6 +402,84 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                       ),
+
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      const Divider(
+                        indent: 5,
+                        endIndent: 5,
+                        height: 1,
+                        thickness: 1,
+                        //color: Theme.of(context).textTheme.headlineMedium?.color,
+                      ),
+
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Other options
+                      //Auto fetching item icon on startup
+                      ModManTooltip(
+                        message: isAutoFetchingIconsOnStartup ? 'Turn off startup item icons fetching' : 'Turn on startup item icons fetching',
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (isAutoFetchingIconsOnStartup) {
+                              prefs.setBool('isAutoFetchingIconsOnStartup', false);
+                              isAutoFetchingIconsOnStartup = false;
+                            } else {
+                              prefs.setBool('isAutoFetchingIconsOnStartup', true);
+                              isAutoFetchingIconsOnStartup = true;
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.auto_awesome_motion,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(isAutoFetchingIconsOnStartup ? 'Startup Item Icons Fetching: ON' : 'Startup Item Icons Fetching: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Sliding item icons
+                      ModManTooltip(
+                        message: Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? 'Turn off sliding item icons' : 'Turn on sliding icons',
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons) {
+                              prefs.setBool('isSlidingItemIcons', false);
+                              Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
+                            } else {
+                              prefs.setBool('isSlidingItemIcons', true);
+                              Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.slideshow_rounded,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? 'Sliding Item Icons: ON' : 'Sliding Item Icons: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(
                         height: 5,
                       ),

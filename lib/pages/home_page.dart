@@ -815,8 +815,13 @@ class _HomePageState extends State<HomePage> {
                                                                                             filterQuality: FilterQuality.none,
                                                                                             fit: BoxFit.fitWidth,
                                                                                           )
-                                                                                        : ItemIconsCarousel(iconPaths: curItem.icons)
-                                                                                        ),
+                                                                                        : curItem.icons.length > 1
+                                                                                            ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                                            : Image.file(
+                                                                                                File(curItem.icons.first),
+                                                                                                filterQuality: FilterQuality.none,
+                                                                                                fit: BoxFit.cover,
+                                                                                              )),
                                                                               ),
                                                                               Expanded(
                                                                                 child: Column(
@@ -1106,7 +1111,13 @@ class _HomePageState extends State<HomePage> {
                                                                                               filterQuality: FilterQuality.none,
                                                                                               fit: BoxFit.fitWidth,
                                                                                             )
-                                                                                          : ItemIconsCarousel(iconPaths: curItem.icons)),
+                                                                                          : curItem.icons.length > 1
+                                                                                              ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                                              : Image.file(
+                                                                                                  File(curItem.icons.first),
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.cover,
+                                                                                                )),
                                                                                 ),
                                                                                 Expanded(
                                                                                   child: Column(
@@ -1604,7 +1615,13 @@ class _HomePageState extends State<HomePage> {
                                                                                                   filterQuality: FilterQuality.none,
                                                                                                   fit: BoxFit.fitWidth,
                                                                                                 )
-                                                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
+                                                                                              : curItem.icons.length > 1
+                                                                                                  ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                                                  : Image.file(
+                                                                                                      File(curItem.icons.first),
+                                                                                                      filterQuality: FilterQuality.none,
+                                                                                                      fit: BoxFit.cover,
+                                                                                                    )),
                                                                                     ),
                                                                                     Expanded(
                                                                                       child: Column(
@@ -3278,7 +3295,13 @@ class _HomePageState extends State<HomePage> {
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
-                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
+                                                              : curItem.icons.length > 1
+                                                                  ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                  : Image.file(
+                                                                      File(curItem.icons.first),
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.cover,
+                                                                    )),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -4064,7 +4087,13 @@ class _HomePageState extends State<HomePage> {
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
-                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
+                                                              : curItem.icons.length > 1
+                                                                  ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                  : Image.file(
+                                                                      File(curItem.icons.first),
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.cover,
+                                                                    )),
                                                     ),
                                                     Expanded(
                                                       child: Column(
