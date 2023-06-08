@@ -46,32 +46,6 @@ List<String> _selectedCategories = [];
 final _subItemFormValidate = GlobalKey<FormState>();
 bool dropZoneMax = true;
 
-//Csv lists
-// List<String> _accessoriesCsv = ['Accessories.csv'];
-// List<String> _emoteCsv = ['LobbyActionsNGS_HandPoses.csv', 'LobbyActions.csv'];
-// List<String> _basewearCsv = ['GenderlessNGSBasewear.csv', 'FemaleNGSBasewear.csv', 'MaleNGSBasewear.csv', 'FemaleBasewear.csv', 'MaleBasewear.csv'];
-// List<String> _magsCsv = ['Mags.csv', 'MagsNGS.csv'];
-// List<String> _stickersCsv = ['Stickers.csv'];
-// List<String> _innerwearCsv = ['FemaleNGSInnerwear.csv', 'MaleNGSInnerwear.csv', 'MaleInnerwear.csv', 'FemaleInnerwear.csv'];
-// List<String> _outerwearCsv = ['FemaleNGSOuters.csv', 'MaleNGSOuters.csv', 'FemaleOuters.csv', 'MaleOuters.csv'];
-// List<String> _bodyPaintCsv = ['GenderlessNGSBodyPaint.csv', 'FemaleNGSBodyPaint.csv', 'MaleNGSBodyPaint.csv', 'FemaleBodyPaint.csv', 'MaleBodyPaint.csv'];
-// List<String> _facePaintCsv = ['FacePaintNGS.csv', 'FacePaint.csv'];
-// List<String> _hairCsv = ['CasealHair.csv', 'FemaleHair.csv', 'MaleHair.csv', 'AllHairNGS.csv'];
-// List<String> _castBodyCsv = ['CastBodies.csv', 'CasealBodies.csv', 'CastNGSBodies.csv', 'CasealNGSBodies.csv'];
-// List<String> _castArmCsv = ['CastArms.csv', 'CastArms.csv', 'CasealArmsNGS.csv', 'CastArmsNGS.csv'];
-// List<String> _castLegCsv = ['CasealLegs.csv', 'CastLegs.csv', 'CastLegsNGS.csv', 'CasealLegsNGS.csv'];
-// List<String> _eyeCsv = ['EyesNGS.csv', 'EyelashesNGS.csv', 'EyebrowsNGS.csv', 'Eyes.csv', 'Eyelashes.csv', 'Eyebrows.csv'];
-// List<String> _costumeCsv = ['FemaleCostumes.csv', 'MaleCostumes.csv'];
-// List<String> _motionCsv = [
-//   'SubstituteMotionGlide.csv',
-//   'SubstituteMotionJump.csv',
-//   'SubstituteMotionLanding.csv',
-//   'SubstituteMotionPhotonDash.csv',
-//   'SubstituteMotionRun.csv',
-//   'SubstituteMotionStandby.csv',
-//   'SubstituteMotionSwim.csv'
-// ];
-
 void modAddHandler(context) {
   Future<String> getIconPath(String iceName, String itemNameJP, String itemNameEN) async {
     String ogIcePath = '';
@@ -328,6 +302,15 @@ void modAddHandler(context) {
 
     return filesList;
   }
+
+  // Future<List<Item>> toAddItemsFetch(List<XFile> iceFiles) async {
+  //   final itemCsvList = await itemCsvFetcher(modManRefSheetsDirPath);
+  //   final modFileCsvList = modFileCsvFetcher(itemCsvList, iceFiles.map((e) => File(e.path)).toList());
+  //   for (var element in modFileCsvList) {
+  //   }
+
+  //   return [];
+  // }
 
   //Main popup
   showDialog(

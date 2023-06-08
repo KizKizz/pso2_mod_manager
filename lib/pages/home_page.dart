@@ -32,6 +32,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
 import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
@@ -814,11 +815,8 @@ class _HomePageState extends State<HomePage> {
                                                                                             filterQuality: FilterQuality.none,
                                                                                             fit: BoxFit.fitWidth,
                                                                                           )
-                                                                                        : Image.file(
-                                                                                            File(curItem.icons.first),
-                                                                                            filterQuality: FilterQuality.none,
-                                                                                            fit: BoxFit.fitWidth,
-                                                                                          )),
+                                                                                        : ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                                        ),
                                                                               ),
                                                                               Expanded(
                                                                                 child: Column(
@@ -1108,11 +1106,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               filterQuality: FilterQuality.none,
                                                                                               fit: BoxFit.fitWidth,
                                                                                             )
-                                                                                          : Image.file(
-                                                                                              File(curItem.icons.first),
-                                                                                              filterQuality: FilterQuality.none,
-                                                                                              fit: BoxFit.fitWidth,
-                                                                                            )),
+                                                                                          : ItemIconsCarousel(iconPaths: curItem.icons)),
                                                                                 ),
                                                                                 Expanded(
                                                                                   child: Column(
@@ -1610,11 +1604,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   filterQuality: FilterQuality.none,
                                                                                                   fit: BoxFit.fitWidth,
                                                                                                 )
-                                                                                              : Image.file(
-                                                                                                  File(curItem.icons.first),
-                                                                                                  filterQuality: FilterQuality.none,
-                                                                                                  fit: BoxFit.fitWidth,
-                                                                                                )),
+                                                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
                                                                                     ),
                                                                                     Expanded(
                                                                                       child: Column(
@@ -1824,11 +1814,7 @@ class _HomePageState extends State<HomePage> {
                               filterQuality: FilterQuality.none,
                               fit: BoxFit.fitWidth,
                             )
-                          : Image.file(
-                              File(modViewItem!.icons.first),
-                              filterQuality: FilterQuality.none,
-                              fit: BoxFit.fitWidth,
-                            )),
+                          : ItemIconsCarousel(iconPaths: modViewItem!.icons)),
                 ),
               Expanded(
                 child: SizedBox(
@@ -3292,11 +3278,7 @@ class _HomePageState extends State<HomePage> {
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
-                                                              : Image.file(
-                                                                  File(curItem.icons.first),
-                                                                  filterQuality: FilterQuality.none,
-                                                                  fit: BoxFit.fitWidth,
-                                                                )),
+                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -4082,11 +4064,7 @@ class _HomePageState extends State<HomePage> {
                                                                   filterQuality: FilterQuality.none,
                                                                   fit: BoxFit.fitWidth,
                                                                 )
-                                                              : Image.file(
-                                                                  File(curItem.icons.first),
-                                                                  filterQuality: FilterQuality.none,
-                                                                  fit: BoxFit.fitWidth,
-                                                                )),
+                                                              : ItemIconsCarousel(iconPaths: curItem.icons)),
                                                     ),
                                                     Expanded(
                                                       child: Column(

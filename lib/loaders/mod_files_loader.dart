@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -204,19 +206,17 @@ Future<List<Item>> itemsFetcher(String catePath) async {
     final imagesFoundInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
     if (imagesFoundInItemDir.isNotEmpty) {
       itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-    } else if (cateToIgnoreScan.contains(p.basename(dir.path))) {
-      itemIcons = ['assets/img/placeholdersquare.png'];
+    } else if (cateToIgnoreScan.contains(p.basename(catePath))) {
+      itemIcons.add('assets/img/placeholdersquare.png');
     } else {
-      List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      if (iceFilesInCurItem.isEmpty) {
-        Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
-        iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      }
+      List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+      // if (iceFilesInCurItem.isEmpty) {
+      //   Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
+      //   iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+      // }
 
-      List<String> tempItemIconPaths = [];
-      for (var element in iceFilesInCurItem) {
-        tempItemIconPaths.add(await itemIconFetch(XFile(element.path)));
-      }
+      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItem);
+        
 
       if (tempItemIconPaths.isNotEmpty) {
         for (var tempItemIconPath in tempItemIconPaths) {
@@ -224,11 +224,11 @@ Future<List<Item>> itemsFetcher(String catePath) async {
           itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
         }
         //clear temp dir
-          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-            element.deleteSync(recursive: true);
-          });
+        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+          element.deleteSync(recursive: true);
+        });
       } else {
-        itemIcons = ['assets/img/placeholdersquare.png'];
+        itemIcons.add('assets/img/placeholdersquare.png');
       }
     }
 

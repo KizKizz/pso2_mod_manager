@@ -193,5 +193,9 @@
   "uiLoadingMods": "MODの読み込み",
   "uiErrorWhenLoadingMods": "MODファイル読み込み時のエラー",
   "uiLoadingPaths": "ロードパス",
-  "uiErrorWhenLoadingPaths": "パスの読み込み時にエラーが発生する"
+  "uiErrorWhenLoadingPaths": "パスの読み込み時にエラーが発生する",
+  "uiPrevious": "前へ",
+  "uiNext": "次へ",
+  "uiAutoPlay": "オートプレイ",
+  "uiStopAutoPlay": "オートプレイを停止する"
 }

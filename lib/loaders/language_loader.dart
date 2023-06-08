@@ -102,6 +102,9 @@ Future<TranslationText?> uiTextLoader() async {
       bool isChanged = false;
       for (var enLine in enLangJsonTextLines) {
         if (curLangJsonTextLines.where((element) => element.split(':').first == enLine.split(':').first).isEmpty) {
+          if (enLangJsonTextLines.indexOf(enLine) >= curLangJsonTextLines.length && curLangJsonTextLines.last[curLangJsonTextLines.last.length - 1] != ',') {
+            curLangJsonTextLines.last += ',';
+          }
           curLangJsonTextLines.insert(enLangJsonTextLines.indexOf(enLine), enLine);
           isChanged = true;
         }
