@@ -38,6 +38,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiNo = json['uiNo'] as String
       ..uiClearAll = json['uiClearAll'] as String
       ..uiExit = json['uiExit'] as String
+      ..uiON = json['uiON'] as String
+      ..uiOFF = json['uiOFF'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -114,6 +116,15 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiDownloadUpdate = json['uiDownloadUpdate'] as String
       ..uiNewUserNotice = json['uiNewUserNotice'] as String
       ..uiUpdateNow = json['uiUpdateNow'] as String
+      ..uiTurnOffStartupIconsFetching =
+          json['uiTurnOffStartupIconsFetching'] as String
+      ..uiTurnOnStartupIconsFetching =
+          json['uiTurnOnStartupIconsFetching'] as String
+      ..uiStartupItemIconsFetching =
+          json['uiStartupItemIconsFetching'] as String
+      ..uiTurnOffSlidingItemIcons = json['uiTurnOffSlidingItemIcons'] as String
+      ..uiTurnOnSlidingItemIcons = json['uiTurnOnSlidingItemIcons'] as String
+      ..uiSlidingItemIcons = json['uiSlidingItemIcons'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -246,6 +257,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiErrorWhenLoadingModSets = json['uiErrorWhenLoadingModSets'] as String
       ..uiLoadingMods = json['uiLoadingMods'] as String
       ..uiErrorWhenLoadingMods = json['uiErrorWhenLoadingMods'] as String
+      ..uiSkipStartupIconFectching =
+          json['uiSkipStartupIconFectching'] as String
       ..uiLoadingPaths = json['uiLoadingPaths'] as String
       ..uiErrorWhenLoadingPaths = json['uiErrorWhenLoadingPaths'] as String
       ..uiPrevious = json['uiPrevious'] as String
@@ -270,6 +283,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiNo': instance.uiNo,
       'uiClearAll': instance.uiClearAll,
       'uiExit': instance.uiExit,
+      'uiON': instance.uiON,
+      'uiOFF': instance.uiOFF,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,
@@ -340,6 +355,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiDownloadUpdate': instance.uiDownloadUpdate,
       'uiNewUserNotice': instance.uiNewUserNotice,
       'uiUpdateNow': instance.uiUpdateNow,
+      'uiTurnOffStartupIconsFetching': instance.uiTurnOffStartupIconsFetching,
+      'uiTurnOnStartupIconsFetching': instance.uiTurnOnStartupIconsFetching,
+      'uiStartupItemIconsFetching': instance.uiStartupItemIconsFetching,
+      'uiTurnOffSlidingItemIcons': instance.uiTurnOffSlidingItemIcons,
+      'uiTurnOnSlidingItemIcons': instance.uiTurnOnSlidingItemIcons,
+      'uiSlidingItemIcons': instance.uiSlidingItemIcons,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -452,6 +473,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiErrorWhenLoadingModSets': instance.uiErrorWhenLoadingModSets,
       'uiLoadingMods': instance.uiLoadingMods,
       'uiErrorWhenLoadingMods': instance.uiErrorWhenLoadingMods,
+      'uiSkipStartupIconFectching': instance.uiSkipStartupIconFectching,
       'uiLoadingPaths': instance.uiLoadingPaths,
       'uiErrorWhenLoadingPaths': instance.uiErrorWhenLoadingPaths,
       'uiPrevious': instance.uiPrevious,

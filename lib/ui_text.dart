@@ -32,7 +32,9 @@ class TranslationText {
       uiYes = 'Yes',
       uiNo = 'No',
       uiClearAll = 'Clear All',
-      uiExit = 'Exit';
+      uiExit = 'Exit',
+      uiON = 'ON',
+      uiOFF = 'OFF';
 
   //main page
   String uiSettings = 'Settings',
@@ -102,7 +104,13 @@ class TranslationText {
       uiRefSheetsDownloadingCount = 'of the required item reference sheets. (Important for Add Mods function to work correctly)',
       uiDownloadUpdate = 'Download Update',
       uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their originals before applying mods to the game',
-      uiUpdateNow = 'Update Now';
+      uiUpdateNow = 'Update Now',
+      uiTurnOffStartupIconsFetching = 'Turn off startup item icons fetching',
+      uiTurnOnStartupIconsFetching = 'Turn on startup item icons fetching',
+      uiStartupItemIconsFetching = 'Startup Item Icons Fetching',
+      uiTurnOffSlidingItemIcons = 'Turn off sliding item icons',
+      uiTurnOnSlidingItemIcons = 'Turn on sliding item icons',
+      uiSlidingItemIcons = 'Sliding Item Icons';
 
   //homepage
   String uiItemList = 'Item List',
@@ -231,6 +239,7 @@ class TranslationText {
 
   //mod_loading_page
   String uiLoadingMods = 'Loading Mods', uiErrorWhenLoadingMods = 'Error when loading mod files';
+  String uiSkipStartupIconFectching = 'Skip startup item icons fetching';
 
   //path_loading_page
   String uiLoadingPaths = 'Loading Paths', uiErrorWhenLoadingPaths = 'Error when loading paths';

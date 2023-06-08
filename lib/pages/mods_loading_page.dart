@@ -35,6 +35,14 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                     height: 20,
                   ),
                   const CircularProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: TextButton(
+                        onPressed: () {
+                          isAutoFetchingIconsOnStartup = false;
+                        },
+                        child: Text(curLangText!.uiSkipStartupIconFectching)),
+                  )
                 ],
               ),
             );
@@ -95,16 +103,15 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                       height: 20,
                     ),
                     const CircularProgressIndicator(),
-                    Text(snapshot.data)
                   ],
                 ),
               );
             }
           } else {
             //Item list
-              moddedItemsList = snapshot.data;
+            moddedItemsList = snapshot.data;
 
-              return const AppliedModsLoadingPage();
+            return const AppliedModsLoadingPage();
           }
         });
   }

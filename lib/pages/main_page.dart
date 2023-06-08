@@ -422,7 +422,7 @@ class _MainPageState extends State<MainPage> {
                       //Other options
                       //Auto fetching item icon on startup
                       ModManTooltip(
-                        message: isAutoFetchingIconsOnStartup ? 'Turn off startup item icons fetching' : 'Turn on startup item icons fetching',
+                        message: isAutoFetchingIconsOnStartup ? curLangText!.uiTurnOffStartupIconsFetching : curLangText!.uiTurnOnStartupIconsFetching,
                         child: MaterialButton(
                           height: 40,
                           onPressed: (() async {
@@ -443,7 +443,7 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(isAutoFetchingIconsOnStartup ? 'Startup Item Icons Fetching: ON' : 'Startup Item Icons Fetching: OFF',
+                              Text(isAutoFetchingIconsOnStartup ? '${curLangText!.uiStartupItemIconsFetching}: ON' : '${curLangText!.uiStartupItemIconsFetching}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
@@ -452,7 +452,7 @@ class _MainPageState extends State<MainPage> {
 
                       //Sliding item icons
                       ModManTooltip(
-                        message: Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? 'Turn off sliding item icons' : 'Turn on sliding icons',
+                        message: Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? curLangText!.uiTurnOffSlidingItemIcons : curLangText!.uiTurnOnSlidingItemIcons,
                         child: MaterialButton(
                           height: 40,
                           onPressed: (() async {
@@ -473,7 +473,7 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? 'Sliding Item Icons: ON' : 'Sliding Item Icons: OFF',
+                              Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? '${curLangText!.uiSlidingItemIcons}: ON' : '${curLangText!.uiSlidingItemIcons}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
