@@ -10,7 +10,7 @@
         "Added an option to hide any Category or hide all empty Categories",
         "Added an option to skip Item Icons fetching on startup (faster loading time)",
         "Improved Categories sorting (drag and drop)",
-        "Improved Checksum detection",
+        "Improved Checksum detection (auto re-apply checksum to the game if missing on startup)",
         "Improved Mods Adder logics",
         "Improved Mod Sets logics and new way to add applied mods to sets",
         "Improved Preview windows (a new way to show preview images and videos)",
@@ -19,7 +19,8 @@
         "Removed initial Item reference sheets to reduce app download size (will auto download upon running instead)",
         "Mod Manager will now check if applied mods being unapplied on startup and re-apply them",
         "Mod Manager will now check backup files if there is a updated version of them during re-applying mods on startup",
-        "Fixed some other minor bugs"
+        "Fixed some other minor bugs",
+        "And more.."
     ],
     "windows_file": "",
     "linux_file": ""
