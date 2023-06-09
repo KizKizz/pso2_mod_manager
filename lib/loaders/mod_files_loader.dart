@@ -206,7 +206,9 @@ Future<List<CategoryType>> modFileStructureLoader() async {
   cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
 
   //Save to json
-  saveModdedItemListToJson();
+  cateTypes.map((cateType) => cateType.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(modManModsListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
 
   //Clear refsheets
   if (itemIconRefSheetsList.isNotEmpty) {
