@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
+import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -59,6 +60,33 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     } else {
       int index = cateTypes.indexWhere((element) => element.groupName == group);
       cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(dir.path)));
+    }
+  }
+
+  //Create missing cate types
+  for (var jsonCateType in structureFromJson) {
+    if (cateTypes.indexWhere((element) => element.groupName == jsonCateType.groupName) == -1) {
+      cateTypes.add(CategoryType(jsonCateType.groupName, jsonCateType.position, jsonCateType.visible, jsonCateType.expanded, []));
+    }
+  }
+
+  //Sort categories
+  for (var type in structureFromJson) {
+    int cateTypeIndex = cateTypes.indexWhere((element) => element.groupName == type.groupName);
+    for (var cate in type.categories) {
+      int cateIndex = cateTypes[cateTypeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
+      if (cateIndex == -1) {
+        //print(cate.categoryName);
+        int mainCateTypeIndex = cateTypes.indexWhere((element) => element.categories.indexWhere((e) => e.categoryName == cate.categoryName) != -1);
+        if (mainCateTypeIndex != -1) {
+          int mainCateIndex = cateTypes[mainCateTypeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
+          if (mainCateIndex != -1) {
+            Category cateToMove = cateTypes[mainCateTypeIndex].categories[mainCateIndex];
+            cateTypes[cateTypeIndex].categories.insert(cate.position, cateToMove);
+            cateTypes[mainCateTypeIndex].categories.remove(cateToMove);
+          }
+        }
+      }
     }
   }
 
@@ -178,9 +206,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
   cateTypes.sort(((a, b) => a.position.compareTo(b.position)));
 
   //Save to json
-  cateTypes.map((cateType) => cateType.toJson()).toList();
-  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  File(modManModsListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
+  saveModdedItemListToJson();
 
   //Clear refsheets
   if (itemIconRefSheetsList.isNotEmpty) {

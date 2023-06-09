@@ -16,6 +16,7 @@
   "uiExit": "Exit",
   "uiON": "ON",
   "uiOFF": "OFF",
+  "uiMove": "Move",
   "uiSettings": "Settings",
   "uiLanguage": "Language",
   "uiAddANewLanguage": "Add a new language",
@@ -122,7 +123,7 @@
   "uiHoldToDelete": "Hold to delete",
   "uiSortCateInThisGroup": "Sort categories in this group",
   "uiAddANewCateTo": "Add a new Category to",
-  "uiHide": "Hide",
+  "uiHoldToHide": "Hold to hide",
   "uiFromItemList": "from Item List",
   "uiFrom": "from",
   "uiClearAvailableModsView": "Clear Available Mods view",
@@ -206,5 +207,9 @@
   "uiPrevious": "Previous",
   "uiNext": "Next",
   "uiAutoPlay": "Auto Play",
-  "uiStopAutoPlay": "Stop Auto Play"
+  "uiStopAutoPlay": "Stop Auto Play",
+  "uiMovingCategory": "Moving Category",
+  "uiSelectACategoryGroupBelowToMove": "Select a Category Group below to move",
+  "uiCategory": "Category",
+  "uiCategories": "Categories"
 }

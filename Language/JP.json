@@ -16,6 +16,7 @@
   "uiExit": "退出",
   "uiON": "ON",
   "uiOFF": "OFF",
+  "uiMove": "Move",
   "uiSettings": "設定方法",
   "uiLanguage": "言語",
   "uiAddANewLanguage": "新しい言語を追加する",
@@ -122,7 +123,7 @@
   "uiHoldToDelete": "ホールドして削除",
   "uiSortCateInThisGroup": "このグループのカテゴリを並べ替える",
   "uiAddANewCateTo": "に新しいカテゴリーを追加します。",
-  "uiHide": "ヒデ",
+  "uiHoldToHide": "ホールドして隠す",
   "uiFromItemList": "アイテムリストより",
   "uiFrom": "からして",
   "uiClearAvailableModsView": "使用可能なMODの表示を消去する",
@@ -206,5 +207,9 @@
   "uiPrevious": "前へ",
   "uiNext": "次へ",
   "uiAutoPlay": "オートプレイ",
-  "uiStopAutoPlay": "オートプレイを停止する"
+  "uiStopAutoPlay": "オートプレイを停止する",
+  "uiMovingCategory": "ムービングカテゴリー",
+  "uiSelectACategoryGroupBelowToMove": "下のカテゴリーグループを選択すると移動します",
+  "uiCategory": "カテゴリー",
+  "uiCategories": "カテゴリー"
 }

@@ -40,6 +40,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiExit = json['uiExit'] as String
       ..uiON = json['uiON'] as String
       ..uiOFF = json['uiOFF'] as String
+      ..uiMove = json['uiMove'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -158,7 +159,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiHoldToDelete = json['uiHoldToDelete'] as String
       ..uiSortCateInThisGroup = json['uiSortCateInThisGroup'] as String
       ..uiAddANewCateTo = json['uiAddANewCateTo'] as String
-      ..uiHide = json['uiHide'] as String
+      ..uiHoldToHide = json['uiHoldToHide'] as String
       ..uiFromItemList = json['uiFromItemList'] as String
       ..uiFrom = json['uiFrom'] as String
       ..uiClearAvailableModsView = json['uiClearAvailableModsView'] as String
@@ -264,7 +265,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiPrevious = json['uiPrevious'] as String
       ..uiNext = json['uiNext'] as String
       ..uiAutoPlay = json['uiAutoPlay'] as String
-      ..uiStopAutoPlay = json['uiStopAutoPlay'] as String;
+      ..uiStopAutoPlay = json['uiStopAutoPlay'] as String
+      ..uiMovingCategory = json['uiMovingCategory'] as String
+      ..uiSelectACategoryGroupBelowToMove =
+          json['uiSelectACategoryGroupBelowToMove'] as String
+      ..uiCategory = json['uiCategory'] as String
+      ..uiCategories = json['uiCategories'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -285,6 +291,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiExit': instance.uiExit,
       'uiON': instance.uiON,
       'uiOFF': instance.uiOFF,
+      'uiMove': instance.uiMove,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,
@@ -393,7 +400,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiHoldToDelete': instance.uiHoldToDelete,
       'uiSortCateInThisGroup': instance.uiSortCateInThisGroup,
       'uiAddANewCateTo': instance.uiAddANewCateTo,
-      'uiHide': instance.uiHide,
+      'uiHoldToHide': instance.uiHoldToHide,
       'uiFromItemList': instance.uiFromItemList,
       'uiFrom': instance.uiFrom,
       'uiClearAvailableModsView': instance.uiClearAvailableModsView,
@@ -480,4 +487,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiNext': instance.uiNext,
       'uiAutoPlay': instance.uiAutoPlay,
       'uiStopAutoPlay': instance.uiStopAutoPlay,
+      'uiMovingCategory': instance.uiMovingCategory,
+      'uiSelectACategoryGroupBelowToMove':
+          instance.uiSelectACategoryGroupBelowToMove,
+      'uiCategory': instance.uiCategory,
+      'uiCategories': instance.uiCategories,
     };

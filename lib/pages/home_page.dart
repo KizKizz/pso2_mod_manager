@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
@@ -1530,8 +1531,21 @@ class _HomePageState extends State<HomePage> {
                                                                           runAlignment: WrapAlignment.center,
                                                                           spacing: 10,
                                                                           children: [
+                                                                            //Move cate
                                                                             ModManTooltip(
-                                                                              message: '${curLangText!.uiHide} ${curCategory.categoryName} ${curLangText!.uiFromItemList}',
+                                                                              message: 'Move ${curCategory.categoryName} to another Category Group',
+                                                                              child: InkWell(
+                                                                                  onTap: () async {
+                                                                                    await categoryMover(context, moddedItemsList[groupIndex], curCategory);
+                                                                                    setState(() {});
+                                                                                  },
+                                                                                  child: const Icon(
+                                                                                    Icons.move_down_rounded
+                                                                                  )),
+                                                                            ),
+                                                                            //Hide cate
+                                                                            ModManTooltip(
+                                                                              message: '${curLangText!.uiHoldToHide} ${curCategory.categoryName} ${curLangText!.uiFromItemList}',
                                                                               child: InkWell(
                                                                                   onLongPress: () async {
                                                                                     hideCategory(moddedItemsList[groupIndex], curCategory);

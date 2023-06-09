@@ -34,7 +34,8 @@ class TranslationText {
       uiClearAll = 'Clear All',
       uiExit = 'Exit',
       uiON = 'ON',
-      uiOFF = 'OFF';
+      uiOFF = 'OFF',
+      uiMove = 'Move';
 
   //main page
   String uiSettings = 'Settings',
@@ -145,7 +146,7 @@ class TranslationText {
       uiHoldToDelete = 'Hold to delete',
       uiSortCateInThisGroup = 'Sort categories in this group',
       uiAddANewCateTo = 'Add a new Category to',
-      uiHide = 'Hide',
+      uiHoldToHide = 'Hold to hide',
       uiFromItemList = 'from Item List',
       uiFrom = 'from',
       uiClearAvailableModsView = 'Clear Available Mods view',
@@ -246,6 +247,9 @@ class TranslationText {
 
   //preview Image diaglog
   String uiPrevious = 'Previous', uiNext = 'Next', uiAutoPlay = 'Auto Play', uiStopAutoPlay = 'Stop Auto Play';
+
+  //cate_mover
+  String uiMovingCategory = 'Moving Category', uiSelectACategoryGroupBelowToMove = 'Select a Category Group below to move', uiCategory = 'Category', uiCategories = 'Categories';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
