@@ -91,6 +91,11 @@
   "uiTurnOffSlidingItemIcons": "Turn off sliding item icons",
   "uiTurnOnSlidingItemIcons": "Turn on sliding item icons",
   "uiSlidingItemIcons": "Sliding Item Icons",
+  "uiWillNotFetchItemIcon": "Will not fetch item icons on startup",
+  "uiOnlyFetchOneIcon": "Only fetch one icon for each item",
+  "uiFetchAllMissingItemIcons": "Fetch all missing icons that included in each mods",
+  "uiMinimal": "Minimal",
+  "uiAll": "All",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -211,5 +216,9 @@
   "uiMovingCategory": "Moving Category",
   "uiSelectACategoryGroupBelowToMove": "Select a Category Group below to move",
   "uiCategory": "Category",
-  "uiCategories": "Categories"
+  "uiCategories": "Categories",
+  "uiModsLoader": "Mods Loader",
+  "uiAutoFetchItemIcons": "Automatically fetch missing item icons on startup?",
+  "uiOneIconEachItem": "One icon for each item",
+  "uiFetchAll": "Fetch All"
 }

@@ -16,7 +16,7 @@
   "uiExit": "退出",
   "uiON": "ON",
   "uiOFF": "OFF",
-  "uiMove": "Move",
+  "uiMove": "移動",
   "uiSettings": "設定方法",
   "uiLanguage": "言語",
   "uiAddANewLanguage": "新しい言語を追加する",
@@ -91,6 +91,11 @@
   "uiTurnOffSlidingItemIcons": "スライド式アイテムアイコンをオフにする",
   "uiTurnOnSlidingItemIcons": "スライド式アイテムアイコンをオンにする",
   "uiSlidingItemIcons": "スライド式アイテムアイコン",
+  "uiWillNotFetchItemIcon": "起動時にアイテムアイコンを取得しない",
+  "uiOnlyFetchOneIcon": "各アイテムのアイコンを1つだけ取得する",
+  "uiFetchAllMissingItemIcons": "各MODに含まれる不足するアイコンをすべて取得する。",
+  "uiMinimal": "ミニマム",
+  "uiAll": "Aすべて",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -211,5 +216,9 @@
   "uiMovingCategory": "ムービングカテゴリー",
   "uiSelectACategoryGroupBelowToMove": "下のカテゴリーグループを選択すると移動します",
   "uiCategory": "カテゴリー",
-  "uiCategories": "カテゴリー"
+  "uiCategories": "カテゴリー",
+  "uiModsLoader": "MODローダー",
+  "uiAutoFetchItemIcons": "起動時に欠落しているアイテムのアイコンを自動で取得する？",
+  "uiOneIconEachItem": "各アイテムに1つずつアイコンが付いています",
+  "uiFetchAll": "すべて取得する"
 }

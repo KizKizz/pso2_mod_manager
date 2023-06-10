@@ -126,6 +126,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiTurnOffSlidingItemIcons = json['uiTurnOffSlidingItemIcons'] as String
       ..uiTurnOnSlidingItemIcons = json['uiTurnOnSlidingItemIcons'] as String
       ..uiSlidingItemIcons = json['uiSlidingItemIcons'] as String
+      ..uiWillNotFetchItemIcon = json['uiWillNotFetchItemIcon'] as String
+      ..uiOnlyFetchOneIcon = json['uiOnlyFetchOneIcon'] as String
+      ..uiFetchAllMissingItemIcons =
+          json['uiFetchAllMissingItemIcons'] as String
+      ..uiMinimal = json['uiMinimal'] as String
+      ..uiAll = json['uiAll'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -270,7 +276,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSelectACategoryGroupBelowToMove =
           json['uiSelectACategoryGroupBelowToMove'] as String
       ..uiCategory = json['uiCategory'] as String
-      ..uiCategories = json['uiCategories'] as String;
+      ..uiCategories = json['uiCategories'] as String
+      ..uiModsLoader = json['uiModsLoader'] as String
+      ..uiAutoFetchItemIcons = json['uiAutoFetchItemIcons'] as String
+      ..uiOneIconEachItem = json['uiOneIconEachItem'] as String
+      ..uiFetchAll = json['uiFetchAll'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -368,6 +378,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiTurnOffSlidingItemIcons': instance.uiTurnOffSlidingItemIcons,
       'uiTurnOnSlidingItemIcons': instance.uiTurnOnSlidingItemIcons,
       'uiSlidingItemIcons': instance.uiSlidingItemIcons,
+      'uiWillNotFetchItemIcon': instance.uiWillNotFetchItemIcon,
+      'uiOnlyFetchOneIcon': instance.uiOnlyFetchOneIcon,
+      'uiFetchAllMissingItemIcons': instance.uiFetchAllMissingItemIcons,
+      'uiMinimal': instance.uiMinimal,
+      'uiAll': instance.uiAll,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -492,4 +507,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiSelectACategoryGroupBelowToMove,
       'uiCategory': instance.uiCategory,
       'uiCategories': instance.uiCategories,
+      'uiModsLoader': instance.uiModsLoader,
+      'uiAutoFetchItemIcons': instance.uiAutoFetchItemIcons,
+      'uiOneIconEachItem': instance.uiOneIconEachItem,
+      'uiFetchAll': instance.uiFetchAll,
     };

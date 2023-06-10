@@ -153,10 +153,11 @@ Future<bool> pathsLoader(context) async {
   //ref sheets check
   ApplicationConfig().checkRefSheetsForUpdates(context);
 
-
   //startup icons loader
-  isAutoFetchingIconsOnStartup = await startupItemIconDialog(context);
-  prefs.setString('isAutoFetchingIconsOnStartup', isAutoFetchingIconsOnStartup);
+  if (firstTimeUser) {
+    isAutoFetchingIconsOnStartup = await startupItemIconDialog(context);
+    prefs.setString('isAutoFetchingIconsOnStartup', isAutoFetchingIconsOnStartup);
+  }
 
   //Return true if all paths loaded
   return true;

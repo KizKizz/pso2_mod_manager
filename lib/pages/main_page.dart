@@ -1571,7 +1571,7 @@ class _MainPageState extends State<MainPage> {
                       ElevatedButton(
                           onPressed: () async {
                             final prefs = await SharedPreferences.getInstance();
-                            prefs.setBool('isFirstTimeLoad', false);
+                            prefs.setBool('isFirstTimeLoadV2', false);
                             firstTimeUser = false;
                             setState(() {});
                           },
