@@ -16,7 +16,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: modFileStructureLoader(),
+        future: modFileStructureLoader(context),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -35,14 +35,14 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                     height: 20,
                   ),
                   const CircularProgressIndicator(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: TextButton(
-                        onPressed: () {
-                          isAutoFetchingIconsOnStartup = false;
-                        },
-                        child: Text(curLangText!.uiSkipStartupIconFectching)),
-                  )
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 20),
+                  //   child: TextButton(
+                  //       onPressed: () {
+                  //         isAutoFetchingIconsOnStartup = false;
+                  //       },
+                  //       child: Text(curLangText!.uiSkipStartupIconFectching)),
+                  // )
                 ],
               ),
             );

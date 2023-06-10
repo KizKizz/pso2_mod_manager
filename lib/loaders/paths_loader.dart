@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/startup_icons_loader_popup.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
@@ -151,6 +152,11 @@ Future<bool> pathsLoader(context) async {
 
   //ref sheets check
   ApplicationConfig().checkRefSheetsForUpdates(context);
+
+
+  //startup icons loader
+  isAutoFetchingIconsOnStartup = await startupItemIconDialog(context);
+  prefs.setString('isAutoFetchingIconsOnStartup', isAutoFetchingIconsOnStartup);
 
   //Return true if all paths loaded
   return true;
@@ -391,7 +397,7 @@ Future<bool> modManPathReloader(context) async {
 
   listsReloading = true;
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-  modFileStructureLoader().then((value) {
+  modFileStructureLoader(context).then((value) {
     moddedItemsList = value;
     listsReloading = false;
     Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();

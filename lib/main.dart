@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
 
       //auto fetching icon
-      isAutoFetchingIconsOnStartup = (prefs.getBool('isAutoFetchingIconsOnStartup') ?? true);
+      isAutoFetchingIconsOnStartup = (prefs.getString('isAutoFetchingIconsOnStartup') ?? 'minimal');
 
       //Sliding item icons
       bool isSlidingItemIcons = (prefs.getBool('isSlidingItemIcons') ?? true);
@@ -236,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       // First time user load
-      firstTimeUser = (prefs.getBool('isFirstTimeLoad') ?? true);
+      firstTimeUser = (prefs.getBool('isFirstTimeLoadV2') ?? true);
 
       // Check version to skip update
       versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');

@@ -20,6 +20,14 @@ class Item {
   List<String> setNames;
   List<Mod> mods;
 
+  List<String> getDistinctModFilePaths() {
+    List<String> paths = [];
+    for (var mod in mods) {
+      paths.addAll(mod.getDistinctModFilePaths());
+    }
+    return paths;
+  }
+
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 }

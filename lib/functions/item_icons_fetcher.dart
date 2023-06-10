@@ -10,22 +10,17 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 List<String> itemIconRefSheetsList = [];
 
-Future<List<String>> itemIconFetch(List<File> moddedIceList) async {
+Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {
   //CLear temp dir
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
     element.deleteSync(recursive: true);
   });
 
-  //populate sheets
-  if (itemIconRefSheetsList.isEmpty) {
-    itemIconRefSheetsList = await itemCsvFetcher(modManRefSheetsDirPath);
-  }
-
   List<CsvAccessoryIceFile> csvAccFiles = [];
   List<CsvIceFile> csvGenFiles = [];
 
   //Find item in csv
-  List<String> itemInCsv = await modFileCsvFetcher(itemIconRefSheetsList, moddedIceList);
+
   for (var csvLine in itemInCsv) {
     final lineToList = csvLine.split(',');
     if (lineToList[0] != 'Emotes' && lineToList[0] != 'Motions' && lineToList[0] != 'Unknown' && lineToList[0] != '未知') {
@@ -33,6 +28,82 @@ Future<List<String>> itemIconFetch(List<File> moddedIceList) async {
         csvAccFiles.add(CsvAccessoryIceFile.fromList(lineToList));
       } else {
         csvGenFiles.add(CsvIceFile.fromList(lineToList));
+      }
+    }
+  }
+
+  List<String> iconImagePaths = [];
+
+  for (var file in csvAccFiles) {
+    List<String> iconIcePaths = [];
+    final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
+    if (iconPaths.isNotEmpty) {
+      iconIcePaths.addAll(iconPaths);
+    } else {
+      iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
+    }
+    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+    String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
+    for (var char in charToReplace) {
+      itemName = itemName.replaceAll(char, '_');
+    }
+    for (var path in iconIcePaths) {
+      iconImagePaths.add(await getIconFromIceFile(itemName, path));
+    }
+  }
+
+  for (var file in csvGenFiles) {
+    List<String> iconIcePaths = [];
+    final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
+    if (iconPaths.isNotEmpty) {
+      iconIcePaths.addAll(iconPaths);
+    } else {
+      iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
+    }
+    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+    String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
+    for (var char in charToReplace) {
+      itemName = itemName.replaceAll(char, '_');
+    }
+    for (var path in iconIcePaths) {
+      iconImagePaths.add(await getIconFromIceFile(itemName, path));
+    }
+  }
+
+  return iconImagePaths;
+}
+
+Future<List<String>> itemIconFetch(List<File> moddedIceList, String category) async {
+  //CLear temp dir
+  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+    element.deleteSync(recursive: true);
+  });
+
+  //populate sheets
+  // if (itemIconRefSheetsList.isEmpty) {
+  //   itemIconRefSheetsList = await itemCsvFetcher(modManRefSheetsDirPath);
+  // }
+
+  //load sheets
+  if (csvInfosFromSheets.isEmpty) {
+    csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+  }
+
+  List<CsvAccessoryIceFile> csvAccFiles = [];
+  List<CsvIceFile> csvGenFiles = [];
+
+  //Find item in csv
+  int defaultCateIndex = defaultCateforyDirs.indexOf(category);
+  if (defaultCateIndex != -1) {
+    List<String> itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], moddedIceList);
+    for (var csvLine in itemInCsv) {
+      final lineToList = csvLine.split(',');
+      if (lineToList[0] != 'Emotes' && lineToList[0] != 'Motions' && lineToList[0] != 'Unknown' && lineToList[0] != '未知') {
+        if (lineToList[0] == 'Accessories') {
+          csvAccFiles.add(CsvAccessoryIceFile.fromList(lineToList));
+        } else {
+          csvGenFiles.add(CsvIceFile.fromList(lineToList));
+        }
       }
     }
   }

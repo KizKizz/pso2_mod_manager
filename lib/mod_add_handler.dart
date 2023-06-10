@@ -120,13 +120,13 @@ void modAddHandler(context) {
           }
           //[0 Category, 1 JP name, 2 EN name, 3 icon]
           if (emoteCsv.indexWhere((element) => file.first == element) != -1) {
-            String jpEmoteName = lineSplit[1];
-            String enEmoteName = lineSplit[2];
-            for (var char in charToReplace) {
-              jpEmoteName = jpEmoteName.replaceAll(char, '_');
-              enEmoteName = enEmoteName.replaceAll(char, '_');
-            }
-            return (['Emotes', jpEmoteName, enEmoteName, '']);
+            // String jpEmoteName = lineSplit[0];
+            // String enEmoteName = lineSplit[1];
+            // for (var char in charToReplace) {
+            //   jpEmoteName = jpEmoteName.replaceAll(char, '_');
+            //   enEmoteName = enEmoteName.replaceAll(char, '_');
+            // }
+            return (['Emotes', jpItemName, enItemName, '']);
           } else if (basewearCsv.indexWhere((element) => element == file.first) != -1) {
             if (lineSplit[0].contains('[Ba]') || lineSplit[1].contains('[Ba]')) {
               return (['Basewears', jpItemName, enItemName, await getIconPath(lineSplit[4], jpItemName, enItemName)]);

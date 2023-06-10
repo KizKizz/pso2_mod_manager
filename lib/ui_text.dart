@@ -111,7 +111,12 @@ class TranslationText {
       uiStartupItemIconsFetching = 'Startup Item Icons Fetching',
       uiTurnOffSlidingItemIcons = 'Turn off sliding item icons',
       uiTurnOnSlidingItemIcons = 'Turn on sliding item icons',
-      uiSlidingItemIcons = 'Sliding Item Icons';
+      uiSlidingItemIcons = 'Sliding Item Icons',
+      uiWillNotFetchItemIcon = 'Will not fetch item icons on startup',
+      uiOnlyFetchOneIcon = 'Only fetch one icon for each item',
+      uiFetchAllMissingItemIcons = 'Fetch all missing icons that included in each mods',
+      uiMinimal = 'Minimal',
+      uiAll = 'All';
 
   //homepage
   String uiItemList = 'Item List',
@@ -250,6 +255,9 @@ class TranslationText {
 
   //cate_mover
   String uiMovingCategory = 'Moving Category', uiSelectACategoryGroupBelowToMove = 'Select a Category Group below to move', uiCategory = 'Category', uiCategories = 'Categories';
+
+  //startup item icons popup
+  String uiModsLoader = 'Mods Loader', uiAutoFetchItemIcons = 'Automatically fetch missing item icons on startup?', uiOneIconEachItem = 'One icon for each item', uiFetchAll = 'Fetch All';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

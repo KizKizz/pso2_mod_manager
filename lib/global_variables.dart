@@ -78,5 +78,5 @@ bool isModViewModsRemoving = false;
 List<ModFile> startupReappliedModFiles = [];
 List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
-bool isAutoFetchingIconsOnStartup = true;
-
+String isAutoFetchingIconsOnStartup = 'minimal';
+List<List<String>> csvInfosFromSheets = [];

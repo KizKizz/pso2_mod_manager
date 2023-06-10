@@ -11,18 +11,37 @@ List<CsvAccessoryIceFile> csvAccessoryIndexFiles = [];
 List<CsvEmoteIceFile> csvEmoteIndexFiles = [];
 List<CsvIceFile> csvGeneralIndexFiles = [];
 
-Future<List<String>> itemCsvFetcher(String refSheetsPath) async {
-  List<String> csvReturnList = [];
+// Future<List<String>> itemCsvFetcher(String refSheetsPath) async {
+//   List<String> csvReturnList = [];
+//   final csvFilesFromPath = Directory(refSheetsPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv');
+//   for (var csvFile in csvFilesFromPath) {
+//     await csvFile.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
+//       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(csvFile.path)).isNotEmpty);
+//       if (categoryIndex != -1) {
+//         line = '${defaultCateforyDirs[categoryIndex]},$line';
+//       } else {
+//         line = curActiveLang == 'JP' ? '未知,$line' :'Unknown,$line';
+//       }
+//       csvReturnList.add(line);
+//     });
+//   }
+//   return csvReturnList;
+// }
+
+Future<List<List<String>>> itemCsvFetcher(String refSheetsPath) async {
+  List<List<String>> csvReturnList = List.generate(defaultCateforyDirs.length, (index) => []);
   final csvFilesFromPath = Directory(refSheetsPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv');
   for (var csvFile in csvFilesFromPath) {
     await csvFile.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(csvFile.path)).isNotEmpty);
       if (categoryIndex != -1) {
         line = '${defaultCateforyDirs[categoryIndex]},$line';
-      } else {
-        line = curActiveLang == 'JP' ? '未知,$line' :'Unknown,$line';
-      }
-      csvReturnList.add(line);
+        csvReturnList[categoryIndex].add(line);
+      } 
+      // else {
+      //   line = curActiveLang == 'JP' ? '未知,$line' :'Unknown,$line';
+      // }
+      
     });
   }
   return csvReturnList;

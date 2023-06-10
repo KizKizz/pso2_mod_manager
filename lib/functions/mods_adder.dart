@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
@@ -107,17 +108,33 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
 
 //Helpers
 Future<Item> newItemsFetcher(String catePath, String itemPath) async {
-  //Get item icon
+  //Get item icons
+  List<Mod> modListToAdd = newModsFetcher(itemPath, p.basename(catePath), []);
+  List<File> iceFilesInCurItemNoDup = [];
+
+  for (var toAddMod in modListToAdd) {
+        iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
+      }
+      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItemNoDup, p.basename(catePath));
+
+      if (tempItemIconPaths.isNotEmpty) {
+        for (var tempItemIconPath in tempItemIconPaths) {
+          File(tempItemIconPath).copySync(Uri.file('$itemPath/${p.basename(tempItemIconPath)}').toFilePath());
+          //itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+        }
+      }
+
+  //Get icons from dir
   List<String> itemIcons = [];
-  final filesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>();
-  final imagesFoundInItemDir = filesInItemDir.where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+  final imagesFoundInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
   if (imagesFoundInItemDir.isNotEmpty) {
     itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
   } else {
     itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(
+      p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {

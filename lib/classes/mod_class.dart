@@ -26,15 +26,17 @@ class Mod {
   List<String> getModFileNames() {
     List<String> names = [];
     for (var submod in submods) {
-      List<String> modFileNames = [];
-      for (var modFile in submod.modFiles) {
-        if (!modFileNames.contains(modFile.modFileName)) {
-          modFileNames.add(modFile.modFileName);
-        }
-      }
-      names.addAll(modFileNames);
+      names.addAll(submod.getModFileNames());
     }
     return names;
+  }
+
+  List<String> getDistinctModFilePaths() {
+    List<String> paths = [];
+    for (var submod in submods) {
+      paths.addAll(submod.getDistinctModFilePaths());
+    }
+    return paths;
   }
 
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);

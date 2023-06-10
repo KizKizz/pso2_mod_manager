@@ -30,9 +30,12 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-bool firstTimeUser = false;
 bool _checksumDownloading = false;
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+List<String> saveValues = ['off', 'minimal', 'all'];
+
+List<bool> _selectedIconLoaderSwitches = <bool>[false, false, false];
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -42,6 +45,17 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List<Widget> iconLoaderSwitches = <Widget>[
+    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)), 
+    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)), 
+    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))];
+
+  @override
+  void initState() {
+    _selectedIconLoaderSwitches[saveValues.indexWhere((element) => element == isAutoFetchingIconsOnStartup)] = true;
+    super.initState();
+  }
+
   void changeColor(Color color) {
     setState(() => pickerColor = color);
   }
@@ -421,32 +435,77 @@ class _MainPageState extends State<MainPage> {
 
                       //Other options
                       //Auto fetching item icon on startup
-                      ModManTooltip(
-                        message: isAutoFetchingIconsOnStartup ? curLangText!.uiTurnOffStartupIconsFetching : curLangText!.uiTurnOnStartupIconsFetching,
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            final prefs = await SharedPreferences.getInstance();
-                            if (isAutoFetchingIconsOnStartup) {
-                              prefs.setBool('isAutoFetchingIconsOnStartup', false);
-                              isAutoFetchingIconsOnStartup = false;
-                            } else {
-                              prefs.setBool('isAutoFetchingIconsOnStartup', true);
-                              isAutoFetchingIconsOnStartup = true;
-                            }
-                            setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.auto_awesome_motion,
-                                size: 18,
+                      // ModManTooltip(
+                      //   message: isAutoFetchingIconsOnStartup ? curLangText!.uiTurnOffStartupIconsFetching : curLangText!.uiTurnOnStartupIconsFetching,
+                      //   child: MaterialButton(
+                      //     height: 40,
+                      //     onPressed: (() async {
+                      //       final prefs = await SharedPreferences.getInstance();
+                      //       if (isAutoFetchingIconsOnStartup) {
+                      //         prefs.setBool('isAutoFetchingIconsOnStartup', false);
+                      //         isAutoFetchingIconsOnStartup = false;
+                      //       } else {
+                      //         prefs.setBool('isAutoFetchingIconsOnStartup', true);
+                      //         isAutoFetchingIconsOnStartup = true;
+                      //       }
+                      //       setState(() {});
+                      //     }),
+                      //     child: Row(
+                      //       children: [
+                      //         const Icon(
+                      //           Icons.auto_awesome_motion,
+                      //           size: 18,
+                      //         ),
+                      //         const SizedBox(width: 10),
+                      //         Text(isAutoFetchingIconsOnStartup ? '${curLangText!.uiStartupItemIconsFetching}: ON' : '${curLangText!.uiStartupItemIconsFetching}: OFF',
+                      //             style: const TextStyle(fontWeight: FontWeight.w400))
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.auto_awesome_motion,
+                                  size: 18,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('Startup Item Icons Fetching'),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5, left: 25, bottom: 5),
+                              child: ToggleButtons(
+                                onPressed: (int index) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  setState(() {
+                                    for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
+                                      _selectedIconLoaderSwitches[i] = i == index;
+                                      prefs.setString('isAutoFetchingIconsOnStartup', saveValues[i]);
+                                      isAutoFetchingIconsOnStartup = saveValues[i];
+                                    }
+                                  });
+                                },
+                                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                selectedBorderColor: Theme.of(context).colorScheme.primary,
+                                constraints: const BoxConstraints(
+                                  minHeight: 25.0,
+                                  minWidth: 60.0,
+                                ),
+                                isSelected: _selectedIconLoaderSwitches,
+                                children: iconLoaderSwitches,
                               ),
-                              const SizedBox(width: 10),
-                              Text(isAutoFetchingIconsOnStartup ? '${curLangText!.uiStartupItemIconsFetching}: ON' : '${curLangText!.uiStartupItemIconsFetching}: OFF',
-                                  style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -1184,7 +1243,7 @@ class _MainPageState extends State<MainPage> {
                               onPressed: (() async {
                                 listsReloading = true;
                                 Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-                                modFileStructureLoader().then((value) {
+                                modFileStructureLoader(context).then((value) {
                                   moddedItemsList = value;
                                   listsReloading = false;
                                   modViewItem = null;

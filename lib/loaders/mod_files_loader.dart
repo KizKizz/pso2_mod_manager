@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
@@ -19,10 +20,12 @@ import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-Future<List<CategoryType>> modFileStructureLoader() async {
+Future<List<CategoryType>> modFileStructureLoader(context) async {
   ogModFilesLoader();
 
   List<CategoryType> structureFromJson = [];
@@ -213,8 +216,11 @@ Future<List<CategoryType>> modFileStructureLoader() async {
   File(modManModsListJsonPath).writeAsStringSync(encoder.convert(cateTypes));
 
   //Clear refsheets
-  if (itemIconRefSheetsList.isNotEmpty) {
-    itemIconRefSheetsList.clear();
+  // if (itemIconRefSheetsList.isNotEmpty) {
+  //   itemIconRefSheetsList.clear();
+  // }
+  if (csvInfosFromSheets.isNotEmpty) {
+    csvInfosFromSheets.clear();
   }
 
   //Get hidden catetypes and cates
@@ -229,31 +235,98 @@ Future<List<CategoryType>> modFileStructureLoader() async {
 Future<List<Item>> itemsFetcher(String catePath) async {
   final itemInCategory = Directory(catePath).listSync(recursive: false).whereType<Directory>();
   List<Item> items = [];
-
+  List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
   for (var dir in itemInCategory) {
+    List<Mod> modList = modsFetcher(dir.path, p.basename(catePath));
+
     //Get item icon
     List<String> itemIcons = [];
-    final imagesFoundInItemDir =
-        Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
-    if (imagesFoundInItemDir.isNotEmpty) {
-      itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-    } else if (!isAutoFetchingIconsOnStartup || cateToIgnoreScan.contains(p.basename(catePath))) {
+    List<String> nameVariants = [];
+
+    if (cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
     } else {
-      List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+      // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       List<File> iceFilesInCurItemNoDup = [];
-      for (var file in iceFilesInCurItem) {
-        if (iceFilesInCurItemNoDup.where((element) => p.basename(element.path) == p.basename(file.path)).isEmpty) {
-          iceFilesInCurItemNoDup.add(file);
-        }
-      }
+      // for (var file in iceFilesInCurItem) {
+      //   if (iceFilesInCurItemNoDup.where((element) => p.basename(element.path) == p.basename(file.path)).isEmpty) {
+      //     iceFilesInCurItemNoDup.add(file);
+      //   }
+      // }
       // if (iceFilesInCurItem.isEmpty) {
       //   Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
       //   iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      // }
+      // }itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
+      final imagesFoundInItemDir =
+          Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+      itemIcons.addAll(imagesFoundInItemDir.map((e) => e.path));
 
-      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItemNoDup);
+      //loading icon images
+      List<String> tempItemIconPaths = [];
+
+      if (isAutoFetchingIconsOnStartup == 'full') {
+        //load sheets
+        if (csvInfosFromSheets.isEmpty) {
+          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+        }
+
+        for (var toAddMod in modList) {
+          iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
+        }
+        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
+        List<String> itemInCsv = [];
+        List<String> itemCsvMissingIcons = [];
+
+        if (defaultCateIndex != -1) {
+          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
+          for (var line in itemInCsv) {
+            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
+            if (csvItemIconName.isNotEmpty) {
+              for (var char in charToReplace) {
+                csvItemIconName = csvItemIconName.replaceAll(char, '_');
+              }
+              if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
+                itemCsvMissingIcons.add(line);
+                //print(csvItemIconName);
+              }
+            }
+          }
+
+          if (itemCsvMissingIcons.isNotEmpty) {
+            tempItemIconPaths = await modLoaderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
+          }
+        }
+      } else if (isAutoFetchingIconsOnStartup == 'minimal') {
+        //load sheets
+        if (csvInfosFromSheets.isEmpty) {
+          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+        }
+        //get ices from first mod
+        iceFilesInCurItemNoDup.addAll(modList.first.getDistinctModFilePaths().map((e) => File(e)));
+
+        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
+        List<String> itemInCsv = [];
+        List<String> itemCsvMissingIcons = [];
+
+        if (defaultCateIndex != -1) {
+          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
+          for (var line in itemInCsv) {
+            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
+            for (var char in charToReplace) {
+              csvItemIconName = csvItemIconName.replaceAll(char, '_');
+            }
+            if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty && csvItemIconName == p.basename(dir.path)) {
+              itemCsvMissingIcons.add(line);
+              //print(csvItemIconName);
+            }
+          }
+
+          if (itemCsvMissingIcons.isNotEmpty) {
+            tempItemIconPaths = await modLoaderItemIconFetch([itemCsvMissingIcons.first], p.basename(catePath));
+          }
+        }
+      }
 
       if (tempItemIconPaths.isNotEmpty) {
         for (var tempItemIconPath in tempItemIconPaths) {
@@ -265,19 +338,20 @@ Future<List<Item>> itemsFetcher(String catePath) async {
           element.deleteSync(recursive: true);
         });
       } else {
-        itemIcons.add('assets/img/placeholdersquare.png');
+        if (imagesFoundInItemDir.isEmpty && itemIcons.isEmpty) {
+          itemIcons.add('assets/img/placeholdersquare.png');
+        }
       }
+
+      //Get variants names
+      //populate sheets
+
+      // if (!cateToIgnoreScan.contains(p.basename(catePath))) {
+      //   nameVariants = await itemVariantsFetch(modList, p.basename(catePath), p.basename(dir.path));
+      // }
     }
-
-    List<Mod> modList = modsFetcher(dir.path, p.basename(catePath));
-    //Get variants names
-    //populate sheets
-   
-
-    items.add(
-        Item(p.basename(dir.path), await itemVariantsFetch(modList, p.basename(dir.path)), itemIcons, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
+    items.add(Item(p.basename(dir.path), nameVariants, itemIcons, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
   }
-
   return items;
 }
 
@@ -413,3 +487,4 @@ void ogModFilesLoader() {
         .toList();
   }
 }
+

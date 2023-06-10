@@ -34,6 +34,16 @@ class SubMod {
     return names;
   }
 
+  List<String> getDistinctModFilePaths() {
+    List<String> paths = [];
+    for (var modFile in modFiles) {
+      if (!paths.contains(modFile.location)) {
+        paths.add(modFile.location);
+      }
+    }
+    return paths;
+  }
+
   factory SubMod.fromJson(Map<String, dynamic> json) => _$SubModFromJson(json);
   Map<String, dynamic> toJson() => _$SubModToJson(this);
 }

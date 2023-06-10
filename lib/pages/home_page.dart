@@ -830,13 +830,13 @@ class _HomePageState extends State<HomePage> {
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
                                                                                     Text(
-                                                                                      curItem.itemName,
+                                                                                      curItem.itemName.replaceAll('_', '/'),
                                                                                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                     ),
-                                                                                    Text(
-                                                                                      curItem.variantNames.join(' | '),
-                                                                                      style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                    ),
+                                                                                    // Text(
+                                                                                    //   curItem.variantNames.join(' | '),
+                                                                                    //   style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                    // ),
                                                                                     Padding(
                                                                                       padding: const EdgeInsets.only(top: 5),
                                                                                       child: Wrap(
@@ -884,7 +884,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     spacing: 5,
                                                                                     children: [
                                                                                       ModManTooltip(
-                                                                                        message: '${curLangText!.uiRemove} ${curItem.itemName} ${curLangText!.uiFromFavList}',
+                                                                                        message: '${curLangText!.uiRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromFavList}',
                                                                                         child: InkWell(
                                                                                             onTap: () async {
                                                                                               removeItemFromFav(curItem);
@@ -899,20 +899,20 @@ class _HomePageState extends State<HomePage> {
                                                                                       ),
                                                                                       //Open Buttons
                                                                                       ModManTooltip(
-                                                                                          message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
+                                                                                          message: '${curLangText!.uiOpen} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiInFileExplorer}',
                                                                                           child: InkWell(
                                                                                             child: const Icon(Icons.folder_open),
                                                                                             onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                                           )),
                                                                                       //Delete
                                                                                       ModManTooltip(
-                                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
+                                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromMM}',
                                                                                         child: InkWell(
                                                                                           onLongPress: curItem.applyStatus
                                                                                               ? null
                                                                                               : () async {
                                                                                                   deleteItemFromModMan(curItem.location).then((value) {
-                                                                                                    String removedName = '${curCategory.categoryName} > ${curItem.itemName}';
+                                                                                                    String removedName = '${curCategory.categoryName} > ${curItem.itemName.replaceAll('_', '/')}';
                                                                                                     if (modViewItem == curItem) {
                                                                                                       modViewItem = null;
                                                                                                     }
@@ -1154,13 +1154,13 @@ class _HomePageState extends State<HomePage> {
                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                     children: [
                                                                                       Text(
-                                                                                        curItem.itemName,
+                                                                                        curItem.itemName.replaceAll('_', '/'),
                                                                                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                       ),
-                                                                                      Text(
-                                                                                        curItem.variantNames.join(' | '),
-                                                                                        style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                      ),
+                                                                                      // Text(
+                                                                                      //   curItem.variantNames.join(' | '),
+                                                                                      //   style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                      // ),
                                                                                       Padding(
                                                                                         padding: const EdgeInsets.only(top: 5),
                                                                                         child: Wrap(
@@ -1175,23 +1175,20 @@ class _HomePageState extends State<HomePage> {
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                               ),
                                                                                               child: Text(
-                                                                                                curItem.mods.where((element) => element.isFavorite).length < 2
-                                                                                                    ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
-                                                                                                    : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
-                                                                                                style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                modMatchingNum < 2 ? '$modMatchingNum ${curLangText!.uiMod}' : '$modMatchingNum ${curLangText!.uiMods}',
+                                                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               ),
                                                                                             ),
                                                                                             Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                                              decoration: BoxDecoration(
-                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                                              ),
-                                                                                              child: Text(
-                                                                                                '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
-                                                                                                style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                              ),
-                                                                                            ),
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                ),
+                                                                                                child: Text(
+                                                                                                  '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiApplied}',
+                                                                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                )),
                                                                                           ],
                                                                                         ),
                                                                                       )
@@ -1209,20 +1206,20 @@ class _HomePageState extends State<HomePage> {
                                                                                       children: [
                                                                                         //Open Buttons
                                                                                         ModManTooltip(
-                                                                                            message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
+                                                                                            message: '${curLangText!.uiOpen} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiInFileExplorer}',
                                                                                             child: InkWell(
                                                                                               child: const Icon(Icons.folder_open),
                                                                                               onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                                             )),
                                                                                         //Delete
                                                                                         ModManTooltip(
-                                                                                          message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
+                                                                                          message: '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromMM}',
                                                                                           child: InkWell(
                                                                                             onLongPress: curItem.applyStatus
                                                                                                 ? null
                                                                                                 : () async {
                                                                                                     deleteItemFromModMan(curItem.location).then((value) {
-                                                                                                      String removedName = '${curCategory.categoryName} > ${curItem.itemName}';
+                                                                                                      String removedName = '${curCategory.categoryName} > ${curItem.itemName.replaceAll('_', '/')}';
                                                                                                       if (modViewItem == curItem) {
                                                                                                         modViewItem = null;
                                                                                                       }
@@ -1699,13 +1696,13 @@ class _HomePageState extends State<HomePage> {
                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
                                                                                           Text(
-                                                                                            curItem.itemName,
+                                                                                            curItem.itemName.replaceAll('_', '/'),
                                                                                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                           ),
-                                                                                          Text(
-                                                                                            curItem.variantNames.join(' | '),
-                                                                                            style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                          ),
+                                                                                          // Text(
+                                                                                          //   curItem.variantNames.join(' | '),
+                                                                                          //   style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                          // ),
                                                                                           Padding(
                                                                                             padding: const EdgeInsets.only(top: 5),
                                                                                             child: Wrap(
@@ -1720,10 +1717,10 @@ class _HomePageState extends State<HomePage> {
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                   ),
                                                                                                   child: Text(
-                                                                                                    curItem.mods.where((element) => element.isFavorite).length < 2
-                                                                                                        ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
-                                                                                                        : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
-                                                                                                    style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                    curItem.mods.length < 2
+                                                                                                        ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                        : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                                   ),
                                                                                                 ),
                                                                                                 Container(
@@ -1733,8 +1730,8 @@ class _HomePageState extends State<HomePage> {
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                   ),
                                                                                                   child: Text(
-                                                                                                    '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
-                                                                                                    style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                    '${curItem.mods.where((element) => element.applyStatus == true).length} ${curLangText!.uiApplied}',
+                                                                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                                   ),
                                                                                                 ),
                                                                                               ],
@@ -1752,7 +1749,8 @@ class _HomePageState extends State<HomePage> {
                                                                                           children: [
                                                                                             //Buttons
                                                                                             ModManTooltip(
-                                                                                                message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
+                                                                                                message:
+                                                                                                    '${curLangText!.uiOpen} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiInFileExplorer}',
                                                                                                 child: InkWell(
                                                                                                   child: const Icon(Icons.folder_open),
                                                                                                   onTap: () async => await launchUrl(Uri.file(curItem.location)),
@@ -1761,13 +1759,15 @@ class _HomePageState extends State<HomePage> {
                                                                                             Padding(
                                                                                               padding: const EdgeInsets.only(left: 5),
                                                                                               child: ModManTooltip(
-                                                                                                message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromMM}',
+                                                                                                message:
+                                                                                                    '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromMM}',
                                                                                                 child: InkWell(
                                                                                                   onLongPress: curItem.applyStatus
                                                                                                       ? null
                                                                                                       : () async {
                                                                                                           deleteItemFromModMan(curItem.location).then((value) {
-                                                                                                            String removedName = '${curCategory.categoryName} > ${curItem.itemName}';
+                                                                                                            String removedName =
+                                                                                                                '${curCategory.categoryName} > ${curItem.itemName.replaceAll('_', '/')}';
                                                                                                             if (modViewItem == curItem) {
                                                                                                               modViewItem = null;
                                                                                                             }
@@ -1953,7 +1953,7 @@ class _HomePageState extends State<HomePage> {
                       physics: modViewItem == null ? const NeverScrollableScrollPhysics() : null,
                       child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
                         !isModViewListHidden && modViewItem != null
-                            ? Text(modViewItem!.itemName)
+                            ? Text(modViewItem!.itemName.replaceAll('_', '/'))
                             : Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(curLangText!.uiAvailableMods),
@@ -3357,7 +3357,7 @@ class _HomePageState extends State<HomePage> {
                                               },
                                               onHover: (hovering) {
                                                 if (hovering) {
-                                                  previewModName = curItem.itemName;
+                                                  previewModName = curItem.itemName.replaceAll('_', '/');
                                                   hoveringOnSubmod = true;
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
@@ -3433,7 +3433,7 @@ class _HomePageState extends State<HomePage> {
                                                             children: [
                                                               Expanded(
                                                                 child: Text(
-                                                                  curItem.itemName,
+                                                                  curItem.itemName.replaceAll('_', '/'),
                                                                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                 ),
                                                               ),
@@ -3444,7 +3444,7 @@ class _HomePageState extends State<HomePage> {
                                                                   runAlignment: WrapAlignment.center,
                                                                   children: [
                                                                     ModManTooltip(
-                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
+                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiInFileExplorer}',
                                                                         child: InkWell(
                                                                           child: const Icon(Icons.folder_open),
                                                                           onTap: () async => await launchUrl(Uri.file(curItem.location)),
@@ -4149,7 +4149,7 @@ class _HomePageState extends State<HomePage> {
                                               onHover: (hovering) {
                                                 if (hovering && previewWindowVisible) {
                                                   hoveringOnSubmod = true;
-                                                  previewModName = curItem.itemName;
+                                                  previewModName = curItem.itemName.replaceAll('_', '/');
                                                   for (var mod in curMods) {
                                                     for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                       for (var path in submod.previewImages) {
@@ -4225,7 +4225,7 @@ class _HomePageState extends State<HomePage> {
                                                             children: [
                                                               Expanded(
                                                                 child: Text(
-                                                                  curItem.itemName,
+                                                                  curItem.itemName.replaceAll('_', '/'),
                                                                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                 ),
                                                               ),
@@ -4238,19 +4238,19 @@ class _HomePageState extends State<HomePage> {
                                                                   children: [
                                                                     //open
                                                                     ModManTooltip(
-                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName} ${curLangText!.uiInFileExplorer}',
+                                                                        message: '${curLangText!.uiOpen} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiInFileExplorer}',
                                                                         child: InkWell(
                                                                           child: const Icon(Icons.folder_open),
                                                                           onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                         )),
                                                                     //delete
                                                                     ModManTooltip(
-                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName} ${curLangText!.uiFromThisSet}',
+                                                                        message: '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromThisSet}',
                                                                         child: InkWell(
                                                                           onLongPress: curItem.applyStatus
                                                                               ? null
                                                                               : () {
-                                                                                  String tempItemName = curItem.itemName;
+                                                                                  String tempItemName = curItem.itemName.replaceAll('_', '/');
                                                                                   removeModSetNameFromItems(curSet.setName, [curItem]);
                                                                                   modViewItem = null;
                                                                                   curSet.setItems.remove(curItem);
