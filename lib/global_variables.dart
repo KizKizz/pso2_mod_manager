@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
@@ -78,3 +79,4 @@ List<ModFile> startupReappliedModFiles = [];
 List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
 bool isAutoFetchingIconsOnStartup = true;
+

@@ -27,7 +27,9 @@ class SubMod {
   List<String> getModFileNames() {
     List<String> names = [];
     for (var modFile in modFiles) {
-      names.add(modFile.modFileName);
+      if (!names.contains(modFile.modFileName)) {
+        names.add(modFile.modFileName);
+      }
     }
     return names;
   }

@@ -834,15 +834,43 @@ class _HomePageState extends State<HomePage> {
                                                                                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                     ),
                                                                                     Text(
-                                                                                      curItem.mods.where((element) => element.isFavorite).length < 2
-                                                                                          ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
-                                                                                          : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
-                                                                                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                      curItem.variantNames.join(' | '),
+                                                                                      style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                     ),
-                                                                                    Text(
-                                                                                      '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
-                                                                                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(top: 5),
+                                                                                      child: Wrap(
+                                                                                        runAlignment: WrapAlignment.center,
+                                                                                        alignment: WrapAlignment.center,
+                                                                                        spacing: 5,
+                                                                                        children: [
+                                                                                          Container(
+                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                            decoration: BoxDecoration(
+                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                            ),
+                                                                                            child: Text(
+                                                                                              curItem.mods.where((element) => element.isFavorite).length < 2
+                                                                                                  ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                                                                                  : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
+                                                                                              style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                            ),
+                                                                                          ),
+                                                                                          Container(
+                                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                            decoration: BoxDecoration(
+                                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                            ),
+                                                                                            child: Text(
+                                                                                              '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
+                                                                                              style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    )
                                                                                   ],
                                                                                 ),
                                                                               ),
@@ -1130,13 +1158,43 @@ class _HomePageState extends State<HomePage> {
                                                                                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                       ),
                                                                                       Text(
-                                                                                        modMatchingNum < 2 ? '$modMatchingNum ${curLangText!.uiMod}' : '$modMatchingNum ${curLangText!.uiMods}',
-                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                        curItem.variantNames.join(' | '),
+                                                                                        style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                       ),
-                                                                                      Text(
-                                                                                        '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiApplied}',
-                                                                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(top: 5),
+                                                                                        child: Wrap(
+                                                                                          runAlignment: WrapAlignment.center,
+                                                                                          alignment: WrapAlignment.center,
+                                                                                          spacing: 5,
+                                                                                          children: [
+                                                                                            Container(
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                              ),
+                                                                                              child: Text(
+                                                                                                curItem.mods.where((element) => element.isFavorite).length < 2
+                                                                                                    ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                                                                                    : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
+                                                                                                style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Container(
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                              ),
+                                                                                              child: Text(
+                                                                                                '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
+                                                                                                style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      )
                                                                                     ],
                                                                                   ),
                                                                                 ),
@@ -1539,9 +1597,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     await categoryMover(context, moddedItemsList[groupIndex], curCategory);
                                                                                     setState(() {});
                                                                                   },
-                                                                                  child: const Icon(
-                                                                                    Icons.move_down_rounded
-                                                                                  )),
+                                                                                  child: const Icon(Icons.move_down_rounded)),
                                                                             ),
                                                                             //Hide cate
                                                                             ModManTooltip(
@@ -1647,15 +1703,43 @@ class _HomePageState extends State<HomePage> {
                                                                                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                                           ),
                                                                                           Text(
-                                                                                            curItem.mods.length < 2
-                                                                                                ? '${curItem.mods.length} ${curLangText!.uiMod}'
-                                                                                                : '${curItem.mods.length} ${curLangText!.uiMods}',
-                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                            curItem.variantNames.join(' | '),
+                                                                                            style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                           ),
-                                                                                          Text(
-                                                                                            '${curItem.mods.where((element) => element.applyStatus == true).length} ${curLangText!.uiApplied}',
-                                                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                                                                          ),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(top: 5),
+                                                                                            child: Wrap(
+                                                                                              runAlignment: WrapAlignment.center,
+                                                                                              alignment: WrapAlignment.center,
+                                                                                              spacing: 5,
+                                                                                              children: [
+                                                                                                Container(
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                  ),
+                                                                                                  child: Text(
+                                                                                                    curItem.mods.where((element) => element.isFavorite).length < 2
+                                                                                                        ? '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                                                                                        : '${curItem.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
+                                                                                                    style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Container(
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                  ),
+                                                                                                  child: Text(
+                                                                                                    '${curItem.mods.where((element) => element.applyStatus && element.isFavorite).length} ${curLangText!.uiApplied}',
+                                                                                                    style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          )
                                                                                         ],
                                                                                       ),
                                                                                     ),
@@ -1882,25 +1966,46 @@ class _HomePageState extends State<HomePage> {
                           ),
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
-                          Text(
-                            modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          Container(
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Text(
+                              modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                            ),
                           ),
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
-                          Text(
-                            modViewItem!.mods.where((element) => element.isFavorite).length < 2
-                                ? '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
-                                : '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          Container(
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Text(
+                              modViewItem!.mods.where((element) => element.isFavorite).length < 2
+                                  ? '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMod}'
+                                  : '${modViewItem!.mods.where((element) => element.isFavorite).length} ${curLangText!.uiMods}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                            ),
                           ),
                         //searching
                         if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
-                          Text(
-                            itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
-                                ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMod}'
-                                : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMods}',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                          Container(
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Text(
+                              itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) < 2
+                                  ? '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMod}'
+                                  : '${itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text)} ${curLangText!.uiMods}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                            ),
                           ),
                         if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
                           for (int i = 0; i < appBarAppliedModNames.length; i++)
