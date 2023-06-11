@@ -49,10 +49,9 @@ and more..
 
 **Adding mods:**
 
-Note: 
-
-Supporting .zip files, folders, .ice files, drag and drop to add
-Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
+**Note**: 
+- Supporting .zip files, folders, .ice files, drag and drop to add
+- Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
 
 [addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
 
