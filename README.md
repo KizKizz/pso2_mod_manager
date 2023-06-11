@@ -43,6 +43,8 @@ and more..
 - Click to auto download checksum, or hold to manually select 
 
    ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836423-3b2b0ed6-b6b1-401c-9b71-2c7cb911db82.png)
+   
+
 
 **Adding mods:**
 
@@ -52,8 +54,6 @@ and more..
 
 [addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
 
-
-# Guides
 **Applying - unapplying mod(s):**
 
 https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-901d-aeccdff65818
