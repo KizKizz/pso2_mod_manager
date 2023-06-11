@@ -53,6 +53,7 @@ and more..
 [addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
 
 
+# Guides
 **Applying - unapplying mod(s):**
 
 https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-901d-aeccdff65818
