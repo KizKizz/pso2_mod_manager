@@ -1,7 +1,7 @@
 # PSO2NGS Mod Manager ver.2
  An app to manage and apply mod files to Phantasy Star Online 2 New Genesis  
  
-![Screenshot 2023-02-09 202346](https://user-images.githubusercontent.com/101075148/218000260-af778197-8d57-4b68-ae6b-08043cc995cc.png)
+![Screenshot 2023-06-10 193951](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/ad00a918-200d-4f71-b972-5f03d230f0ca)
 
 # Download
 
@@ -33,9 +33,6 @@ and more..
 
   ```Right click on PSO2NGSModManager.exe > Properties > Compatibility tab > Check the box under Compatibility mode > Apply```
   
-  ![Screenshot 2023-06-10 193951](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/d2dcbbdd-3136-4379-a19c-fe691435fec3)
-
-
 **First time setup:**
 
 - Locate pso2_bin folder
