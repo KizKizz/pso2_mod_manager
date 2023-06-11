@@ -1,0 +1,58 @@
+{
+  "name": "name",
+  "location": "location",
+  "visible": true,
+  "items": [
+    {
+      "name": "name",
+      "icon": "",
+      "category": "category",
+      "location": "location",
+      "isFavorite": false,
+      "isNew": true,
+      "mods": [
+        {
+          "name": "Test Mod",
+          "category": "category",
+          "itemName": "itemName",
+          "applyStatus": false,
+          "applyDate": "2023-04-18T23:13:55.046547",
+          "appliedSubMods": [],
+          "isNew": true,
+          "isFavorite": false,
+          "previewImages": [],
+          "previewVideos": [],
+          "subMods": [
+            {
+              "name": "Test Sub Mod",
+              "category": "category",
+              "itemName": "itemName",
+              "applyStatus": false,
+              "applyDate": "2023-04-18T23:13:55.046547",
+              "appliedModFiles": [],
+              "isNew": true,
+              "isFavorite": false,
+              "previewImages": [],
+              "previewVideos": [],
+              "modFiles": [
+                {
+                  "name": "name",
+                  "modName": "modName",
+                  "itemName": "itemName",
+                  "md5": "md5",
+                  "location": "location",
+                  "ogLocation": "ogLocation",
+                  "bkLocation": "bkLocation",
+                  "applyDate": "2023-04-18T23:13:55.046547",
+                  "applyStatus": false,
+                  "isNew": true,
+                  "isFavorite": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

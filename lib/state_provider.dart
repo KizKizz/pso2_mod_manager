@@ -19,6 +19,11 @@ class StateProvider with ChangeNotifier {
   String _newModDropDisplay = '';
   double _itemAdderSubItemETHeight = 40;
   bool _isChecksumMD5Match = true;
+  double _uiOpacityValue = 0.6;
+  bool _backgroundImageTrigger = false;
+  int _uiBackgroundColorValue = 0;
+  bool _reloadSplashScreen = false;
+  bool _isSlidingItemIcons = true;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -37,6 +42,52 @@ class StateProvider with ChangeNotifier {
   String get newModDropDisplay => _newModDropDisplay;
   double get itemAdderSubItemETHeight => _itemAdderSubItemETHeight;
   bool get isChecksumMD5Match => _isChecksumMD5Match;
+  double get uiOpacityValue => _uiOpacityValue;
+  bool get backgroundImageTrigger => _backgroundImageTrigger;
+  int get uiBackgroundColorValue => _uiBackgroundColorValue;
+  bool get reloadSplashScreen => _reloadSplashScreen;
+  bool get isSlidingItemIcons => _isSlidingItemIcons;
+
+
+  void isSlidingItemIconsTrue() {
+    _isSlidingItemIcons = true;
+    notifyListeners();
+  }
+
+  void isSlidingItemIconsFalse() {
+    _isSlidingItemIcons = false;
+    notifyListeners();
+  }
+
+  void reloadSplashScreenTrue() {
+    _reloadSplashScreen = true;
+    notifyListeners();
+  }
+
+  void reloadSplashScreenFalse() {
+    _reloadSplashScreen = false;
+    notifyListeners();
+  }
+
+  void uiBackgroundColorValueSet(int value) {
+    _uiBackgroundColorValue = value;
+    notifyListeners();
+  }
+
+  void backgroundImageTriggerTrue() {
+    _backgroundImageTrigger = true;
+    notifyListeners();
+  }
+
+  void backgroundImageTriggerFalse() {
+    _backgroundImageTrigger = false;
+    notifyListeners();
+  }
+
+  void uiOpacityValueSet(double value) {
+    _uiOpacityValue = value;
+    notifyListeners();
+  }
 
   void checksumMD5MatchTrue() {
     _isChecksumMD5Match = true;

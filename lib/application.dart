@@ -5,9 +5,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/file_functions.dart';
-import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/functions/hash_generator.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/item_ref.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 
 String newVersion = '';
 String patchNotes = '';
@@ -20,16 +25,34 @@ String netChecksumFileMD5 = '';
 class ApplicationConfig {
   //App version Check
   static List<String> currentVersionValues = appVersion.split('.');
-
   Future<void> checkForUpdates(context) async {
     final jsonVal = await loadJsonFromGithub();
     if (jsonVal.entries.first.key != 'null') {
+      int curMajor = int.parse(currentVersionValues[0]);
+      int curMinor = int.parse(currentVersionValues[1]);
+      int curPatch = int.parse(currentVersionValues[2]);
+
       String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
       List<String> newVersionValues = newVersionValue.split('.');
-      int major = int.parse(newVersionValues[0]);
-      int minor = int.parse(newVersionValues[1]);
-      int patch = int.parse(newVersionValues[2]);
-      if (major > int.parse(currentVersionValues[0]) || minor > int.parse(currentVersionValues[1]) || patch > int.parse(currentVersionValues[2])) {
+      int newMajor = int.parse(newVersionValues[0]);
+      int newMinor = int.parse(newVersionValues[1]);
+      int newPatch = int.parse(newVersionValues[2]);
+
+      if (newPatch > curPatch && newMinor >= curMinor && newMajor >= curMajor) {
+        newVersion = newVersionValue;
+        String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
+        patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
+        patchNoteSplit = patchNotes.split(', ');
+        //debugPrint('Response: ${patchNotes.first}');
+        Provider.of<StateProvider>(context, listen: false).isUpdateAvailableTrue();
+      } else if (newPatch <= curPatch && newMinor > curMinor && newMajor >= curMajor) {
+        newVersion = newVersionValue;
+        String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
+        patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
+        patchNoteSplit = patchNotes.split(', ');
+        //debugPrint('Response: ${patchNotes.first}');
+        Provider.of<StateProvider>(context, listen: false).isUpdateAvailableTrue();
+      } else if (newPatch <= curPatch && newMinor <= curMinor && newMajor > curMajor) {
         newVersion = newVersionValue;
         String tempPatchNote = jsonVal.entries.firstWhere((element) => element.key == 'description').value.toString();
         patchNotes = tempPatchNote.replaceFirst('[', '', 0).replaceFirst(']', '', patchNotes.length);
@@ -42,9 +65,8 @@ class ApplicationConfig {
 
   Future<Map<String, dynamic>> loadJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 10;
     try {
-      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json')).timeout(Duration(seconds: timeout));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/app_version.json'));
       }
@@ -60,22 +82,38 @@ class ApplicationConfig {
 
   //Ref Sheets version check
   Future<void> checkRefSheetsForUpdates(context) async {
-    final jsonVal = await loadRefSheetsJsonFromGithub();
-    if (jsonVal.entries.first.key != 'null') {
-      String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
-      if (refSheetsVersion < int.parse(newVersionValue)) {
+    final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
+    if (!Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync() || sheetFiles.isEmpty) {
+      final jsonVal = await loadRefSheetsJsonFromGithub();
+      if (jsonVal.entries.first.key != 'null') {
+        String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
         refSheetsNewVersion = int.parse(newVersionValue);
-        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+      }
+      Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+      //auto download
+      downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+        //print('complete');
+        Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+        Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+      });
+    } else {
+      final jsonVal = await loadRefSheetsJsonFromGithub();
+      if (jsonVal.entries.first.key != 'null') {
+        String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
+        if (refSheetsVersion < int.parse(newVersionValue)) {
+          refSheetsNewVersion = int.parse(newVersionValue);
+          Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+        }
       }
     }
   }
 
   Future<Map<String, dynamic>> loadRefSheetsJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 5;
     try {
-      http.Response response =
-          await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json')).timeout(Duration(seconds: timeout));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/ref_sheets_version.json'));
       }
@@ -97,8 +135,8 @@ class ApplicationConfig {
       netChecksumFileLink = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileLink').value;
       netChecksumFileMD5 = jsonVal.entries.firstWhere((element) => element.key == 'checksumFileMD5').value;
 
-      if (checkSumFilePath != null) {
-        String? checksumMD5 = await getFileHash(checkSumFilePath!);
+      if (modManChecksumFilePath.isNotEmpty) {
+        String? checksumMD5 = await getFileHash(modManChecksumFilePath);
         if (checksumMD5.toString() != netChecksumFileMD5) {
           Provider.of<StateProvider>(context, listen: false).checksumMD5MatchFalse();
         }
@@ -108,9 +146,8 @@ class ApplicationConfig {
 
   Future<Map<String, dynamic>> loadChecksumFileJsonFromGithub() async {
     String jsonResponse = '{"null": "null"}';
-    int timeout = 5;
     try {
-      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json')).timeout(Duration(seconds: timeout));
+      http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
       if (response.statusCode == 200) {
         jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
       }
