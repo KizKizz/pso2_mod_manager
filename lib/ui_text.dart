@@ -195,7 +195,11 @@ class TranslationText {
       uiBeforeAdding = 'before adding',
       uiThereAreStillModsThatWaitingToBeAdded = 'There are still mods in the list waiting to be added',
       uiModsAddedSuccessfully = 'Mods added successfully!',
-      uiAddAll = 'Add All';
+      uiAddAll = 'Add All',
+      uiDuplicateNamesFound = 'Duplicate mod name(s) found',
+      uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
+      uiDuplicateModsIn = 'in',
+      uiRenameForMe = 'Rename for me!';
 
   //color_picker
   String uiPickAColor = 'Pick a color';

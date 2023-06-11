@@ -215,6 +215,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiThereAreStillModsThatWaitingToBeAdded'] as String
       ..uiModsAddedSuccessfully = json['uiModsAddedSuccessfully'] as String
       ..uiAddAll = json['uiAddAll'] as String
+      ..uiDuplicateNamesFound = json['uiDuplicateNamesFound'] as String
+      ..uiRenameTheModsBelowBeforeAdding =
+          json['uiRenameTheModsBelowBeforeAdding'] as String
+      ..uiDuplicateModsIn = json['uiDuplicateModsIn'] as String
+      ..uiRenameForMe = json['uiRenameForMe'] as String
       ..uiPickAColor = json['uiPickAColor'] as String
       ..uiDuplicatesInAppliedModsFound =
           json['uiDuplicatesInAppliedModsFound'] as String
@@ -459,6 +464,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiThereAreStillModsThatWaitingToBeAdded,
       'uiModsAddedSuccessfully': instance.uiModsAddedSuccessfully,
       'uiAddAll': instance.uiAddAll,
+      'uiDuplicateNamesFound': instance.uiDuplicateNamesFound,
+      'uiRenameTheModsBelowBeforeAdding':
+          instance.uiRenameTheModsBelowBeforeAdding,
+      'uiDuplicateModsIn': instance.uiDuplicateModsIn,
+      'uiRenameForMe': instance.uiRenameForMe,
       'uiPickAColor': instance.uiPickAColor,
       'uiDuplicatesInAppliedModsFound': instance.uiDuplicatesInAppliedModsFound,
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,

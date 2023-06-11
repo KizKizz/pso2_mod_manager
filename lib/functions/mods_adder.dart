@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -15,7 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 
 //Auto Files adder
-Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
+Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
   //List<List<String>> addedItems = [];
   //print(sortedList);
   for (var sortedLine in sortedList) {
@@ -104,25 +105,58 @@ Future<void> modFilesAdder(context, List<List<String>> sortedList) async {
   moddedItemsList.map((cateType) => cateType.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   File(modManModsListJsonPath).writeAsStringSync(encoder.convert(moddedItemsList));
+
+  //clear sheets
+  if (csvInfosFromSheets.isNotEmpty) {
+    csvInfosFromSheets.clear();
+  }
+
+  return true;
 }
 
 //Helpers
 Future<Item> newItemsFetcher(String catePath, String itemPath) async {
+  //load sheets
+  if (csvInfosFromSheets.isEmpty) {
+    csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+  }
   //Get item icons
   List<Mod> modListToAdd = newModsFetcher(itemPath, p.basename(catePath), []);
   List<File> iceFilesInCurItemNoDup = [];
 
+  int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
+  List<String> itemInCsv = [];
+  List<String> itemCsvMissingIcons = [];
   for (var toAddMod in modListToAdd) {
-        iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
-      }
-      List<String> tempItemIconPaths = await itemIconFetch(iceFilesInCurItemNoDup, p.basename(catePath));
-
-      if (tempItemIconPaths.isNotEmpty) {
-        for (var tempItemIconPath in tempItemIconPaths) {
-          File(tempItemIconPath).copySync(Uri.file('$itemPath/${p.basename(tempItemIconPath)}').toFilePath());
-          //itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+    iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
+  }
+  if (defaultCateIndex != -1) {
+    itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
+    for (var line in itemInCsv) {
+      String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
+      List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+      if (csvItemIconName.isNotEmpty) {
+        for (var char in charToReplace) {
+          csvItemIconName = csvItemIconName.replaceAll(char, '_');
+        }
+        final imagesFoundInItemDir =
+            Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+        if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
+          itemCsvMissingIcons.add(line);
+          //print(csvItemIconName);
         }
       }
+    }
+  }
+
+  List<String> tempItemIconPaths = await modAdderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
+
+  if (tempItemIconPaths.isNotEmpty) {
+    for (var tempItemIconPath in tempItemIconPaths) {
+      File(tempItemIconPath).copySync(Uri.file('$itemPath/${p.basename(tempItemIconPath)}').toFilePath());
+      //itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+    }
+  }
 
   //Get icons from dir
   List<String> itemIcons = [];

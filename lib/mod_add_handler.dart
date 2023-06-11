@@ -740,20 +740,13 @@ void modAddHandler(context) {
                                                             }
                                                           }
                                                           //get catelist
-                                                          // if (_dropdownCategories.isEmpty) {
-                                                          //   for (var category in cateList) {
-                                                          //     if (category.categoryName != 'Favorites') {
-                                                          //       _dropdownCategories.add(category.categoryName);
-                                                          //     }
-                                                          //   }
-                                                          // } else if (dropdownCategories.isNotEmpty && _dropdownCategories.length < cateList.length) {
-                                                          //   _dropdownCategories.clear();
-                                                          //   for (var category in cateList) {
-                                                          //     if (category.categoryName != 'Favorites') {
-                                                          //       _dropdownCategories.add(category.categoryName);
-                                                          //     }
-                                                          //   }
-                                                          // }
+                                                          if (_dropdownCategories.isEmpty) {
+                                                            for (var cateType in moddedItemsList) {
+                                                              for (var category in cateType.categories) {
+                                                                _dropdownCategories.add(category.categoryName);
+                                                              }
+                                                            }
+                                                          }
 
                                                           if (_selectedCategories.isEmpty) {
                                                             for (var element in sortedModsList) {
@@ -816,77 +809,74 @@ void modAddHandler(context) {
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
-                                                                                    SizedBox(
+                                                                                    if (sortedModsList[index][0] == 'Misc')
+                                                                                      DropdownButton2(
+                                                                                        hint: Text(curLangText!.uiSelectACategory),
+                                                                                        underline: const SizedBox(),
+                                                                                        buttonStyleData: ButtonStyleData(
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(3),
+                                                                                            border: Border.all(color: Theme.of(context).hintColor),
+                                                                                          ),
+                                                                                          width: 200,
+                                                                                          height: 35,
+                                                                                        ),
+                                                                                        dropdownStyleData: DropdownStyleData(
+                                                                                          decoration: BoxDecoration(
+                                                                                            color: Theme.of(context).primaryColorLight,
+                                                                                            borderRadius: BorderRadius.circular(2),
+                                                                                          ),
+                                                                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                                                                          elevation: 3,
+                                                                                          maxHeight: constraints.maxHeight * 0.5,
+                                                                                        ),
+                                                                                        iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down), iconSize: 30),
+                                                                                        menuItemStyleData: const MenuItemStyleData(
+                                                                                          height: 30,
+                                                                                        ),
+                                                                                        items: _dropdownCategories
+                                                                                            .map((item) => DropdownMenuItem<String>(
+                                                                                                value: item,
+                                                                                                child: Row(
+                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                  children: [
+                                                                                                    Container(
+                                                                                                      padding: const EdgeInsets.only(bottom: 3),
+                                                                                                      child: Text(
+                                                                                                        item,
+                                                                                                        style: const TextStyle(
+                                                                                                            //fontSize: 14,
+                                                                                                            //fontWeight: FontWeight.bold,
+                                                                                                            //color: Colors.white,
+                                                                                                            ),
+                                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  ],
+                                                                                                )))
+                                                                                            .toList(),
+                                                                                        value: _selectedCategories[index],
+                                                                                        onChanged: (value) {
+                                                                                          setState(() {
+                                                                                            _selectedCategories[index] = value.toString();
+                                                                                            sortedModsList[index][0] = value.toString();
+                                                                                          });
+                                                                                        },
+                                                                                      ),
+                                                                                    if (sortedModsList[index][0] != 'Misc')
+                                                                                      SizedBox(
+                                                                                        width: 150,
                                                                                         height: 40,
-                                                                                        child: sortedModsList[index][0] == 'Misc'
-                                                                                            ? DropdownButton2(
-                                                                                                hint: Text(curLangText!.uiSelectACategory),
-                                                                                                buttonStyleData: ButtonStyleData(
-                                                                                                  decoration: BoxDecoration(
-                                                                                                    borderRadius: BorderRadius.circular(3),
-                                                                                                    border: Border.all(color: Theme.of(context).hintColor),
-                                                                                                  ),
-                                                                                                  width: 150,
-                                                                                                  height: 35,
-                                                                                                ),
-                                                                                                dropdownStyleData: DropdownStyleData(
-                                                                                                  decoration: BoxDecoration(
-                                                                                                    borderRadius: BorderRadius.circular(3),
-                                                                                                    color: MyApp.themeNotifier.value == ThemeMode.light
-                                                                                                        ? Theme.of(context).cardColor
-                                                                                                        : Theme.of(context).primaryColor,
-                                                                                                  ),
-                                                                                                  elevation: 3,
-
-                                                                                                  //dropdownWidth: 361,
-                                                                                                  maxHeight: constraints.maxHeight * 0.5,
-                                                                                                ),
-                                                                                                iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down), iconSize: 30),
-                                                                                                menuItemStyleData: const MenuItemStyleData(
-                                                                                                  height: 40,
-                                                                                                ),
-                                                                                                items: _dropdownCategories
-                                                                                                    .map((item) => DropdownMenuItem<String>(
-                                                                                                        value: item,
-                                                                                                        child: Row(
-                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                          children: [
-                                                                                                            Container(
-                                                                                                              padding: const EdgeInsets.only(bottom: 3),
-                                                                                                              child: Text(
-                                                                                                                item,
-                                                                                                                style: const TextStyle(
-                                                                                                                    //fontSize: 14,
-                                                                                                                    //fontWeight: FontWeight.bold,
-                                                                                                                    //color: Colors.white,
-                                                                                                                    ),
-                                                                                                                overflow: TextOverflow.ellipsis,
-                                                                                                              ),
-                                                                                                            )
-                                                                                                          ],
-                                                                                                        )))
-                                                                                                    .toList(),
-                                                                                                value: _selectedCategories[index],
-                                                                                                onChanged: (value) {
-                                                                                                  setState(() {
-                                                                                                    _selectedCategories[index] = value.toString();
-                                                                                                    sortedModsList[index][0] = value.toString();
-                                                                                                  });
-                                                                                                },
-                                                                                              )
-                                                                                            : SizedBox(
-                                                                                                width: 150,
-                                                                                                height: 35,
-                                                                                                child: Padding(
-                                                                                                  padding: const EdgeInsets.only(top: 10),
-                                                                                                  child: Text(sortedModsList[index].first,
-                                                                                                      style: TextStyle(
-                                                                                                          fontWeight: FontWeight.w600,
-                                                                                                          color: sortedModsList[index][1].split(':').last.toString() == '[TOREMOVE]'
-                                                                                                              ? Theme.of(context).disabledColor
-                                                                                                              : Theme.of(context).textTheme.bodyMedium!.color)),
-                                                                                                ),
-                                                                                              )),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.only(top: 10),
+                                                                                          child: Text(sortedModsList[index].first,
+                                                                                              style: TextStyle(
+                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                  color: sortedModsList[index][1].split(':').last.toString() == '[TOREMOVE]'
+                                                                                                      ? Theme.of(context).disabledColor
+                                                                                                      : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                                        ),
+                                                                                      ),
                                                                                     SizedBox(
                                                                                       height: 40,
                                                                                       child: _itemNameRenameIndex[index]
@@ -1929,7 +1919,7 @@ void modAddHandler(context) {
                                                     }),
                                               ),
                                             ),
-                                            if (_exitConfirmDialog)
+                                            if (_exitConfirmDialog && _duplicateModNames.isEmpty)
                                               Padding(
                                                 padding: const EdgeInsets.only(right: 5),
                                                 child: Container(
@@ -1944,15 +1934,10 @@ void modAddHandler(context) {
                                                         Padding(
                                                           padding: const EdgeInsets.all(5.0),
                                                           child: Center(
-                                                              child: _duplicateModNames.isNotEmpty
-                                                                  ? Text(
-                                                                      '${curLangText!.uiRename} $_duplicateModNames ${curLangText!.uiBeforeAdding}',
-                                                                      textAlign: TextAlign.center,
-                                                                    )
-                                                                  : Text(
-                                                                      curLangText!.uiThereAreStillModsThatWaitingToBeAdded,
-                                                                      textAlign: TextAlign.center,
-                                                                    )),
+                                                              child: Text(
+                                                            curLangText!.uiThereAreStillModsThatWaitingToBeAdded,
+                                                            textAlign: TextAlign.center,
+                                                          )),
                                                         ),
                                                         const SizedBox(
                                                           height: 5,
@@ -1963,7 +1948,6 @@ void modAddHandler(context) {
                                                             child: Text(curLangText!.uiReturn),
                                                             onPressed: () {
                                                               _exitConfirmDialog = false;
-                                                              _duplicateModNames.clear();
                                                               setState(
                                                                 () {},
                                                               );
@@ -2141,7 +2125,7 @@ void modAddHandler(context) {
                                                                                 .listSync(recursive: false)
                                                                                 .indexWhere((element) => p.basename(element.path) == mainName) !=
                                                                             -1) {
-                                                                          _duplicateModNames.add(' "$mainName" in $itemName ');
+                                                                          _duplicateModNames.add('"$mainName" ${curLangText!.uiDuplicateModsIn} $itemName');
                                                                         }
                                                                       }
                                                                     }
@@ -2149,41 +2133,46 @@ void modAddHandler(context) {
                                                                 }
                                                                 //Add mods
                                                                 if (_duplicateModNames.isEmpty) {
-                                                                  modFilesAdder(context, sortedModsList).then((_) {
-                                                                    //clear lists and delete temp
-                                                                    _isAddedSuccess = true;
-                                                                    setState(
-                                                                      () {},
-                                                                    );
-                                                                    _mainFolderRenameIndex.clear();
-                                                                    _newModMainFolderList.clear();
-                                                                    _selectedCategories.clear();
-                                                                    _exitConfirmDialog = false;
-                                                                    Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                                    //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
-                                                                    _duplicateModNames.clear();
-                                                                    sortedModsList.clear();
-                                                                    _newModDragDropList.clear();
-                                                                    modsToAddList.clear();
-                                                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                      element.deleteSync(recursive: true);
-                                                                    });
-                                                                    Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                      element.deleteSync(recursive: true);
-                                                                    });
-                                                                    setState(
-                                                                      () {},
-                                                                    );
-                                                                    Future.delayed(const Duration(seconds: 1)).then((value) {
-                                                                      _isAddedSuccess = false;
-                                                                      dropZoneMax = true;
+                                                                  modFilesAdder(context, sortedModsList).then((value) {
+                                                                    if (value) {
+                                                                      //clear lists and delete temp
+                                                                      _isAddedSuccess = true;
                                                                       setState(
                                                                         () {},
                                                                       );
-                                                                    });
+                                                                      _mainFolderRenameIndex.clear();
+                                                                      _newModMainFolderList.clear();
+                                                                      _selectedCategories.clear();
+                                                                      _exitConfirmDialog = false;
+                                                                      Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                                      //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
+                                                                      _duplicateModNames.clear();
+                                                                      sortedModsList.clear();
+                                                                      _newModDragDropList.clear();
+                                                                      modsToAddList.clear();
+                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                        element.deleteSync(recursive: true);
+                                                                      });
+                                                                      Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                                        element.deleteSync(recursive: true);
+                                                                      });
+                                                                      setState(
+                                                                        () {},
+                                                                      );
+                                                                      Future.delayed(const Duration(seconds: 1)).then((value) {
+                                                                        _isAddedSuccess = false;
+                                                                        dropZoneMax = true;
+                                                                        setState(
+                                                                          () {},
+                                                                        );
+                                                                      });
+                                                                    }
                                                                   });
                                                                 } else {
                                                                   _exitConfirmDialog = true;
+                                                                  if (_exitConfirmDialog && _duplicateModNames.isNotEmpty) {
+                                                                    await duplicateNamesDialog(context);
+                                                                  }
                                                                 }
                                                                 setState(
                                                                   () {},
@@ -2210,4 +2199,126 @@ void modAddHandler(context) {
                   )));
         });
       });
+}
+
+Future<void> duplicateNamesDialog(context) async {
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(curLangText!.uiDuplicateNamesFound, style: const TextStyle(fontWeight: FontWeight.w700)),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        curLangText!.uiRenameTheModsBelowBeforeAdding,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+                content: ScrollbarTheme(
+                    data: ScrollbarThemeData(
+                      thumbColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.hovered)) {
+                          return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                        }
+                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                      }),
+                    ),
+                    child: SingleChildScrollView(
+                        child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (int i = 0; i < _duplicateModNames.length; i++) Padding(padding: const EdgeInsets.symmetric(vertical: 2.5), child: Text(_duplicateModNames[i])),
+                      ],
+                    ))),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () {
+                        _exitConfirmDialog = false;
+                        _duplicateModNames.clear();
+                        Navigator.pop(context);
+                      }),
+                  ElevatedButton(
+                      child: Text(curLangText!.uiRenameForMe),
+                      onPressed: () {
+                        for (var itemLine in _duplicateModNames) {
+                          String dupItemName = itemLine.split(' ${curLangText!.uiDuplicateModsIn} ').last;
+                          String newModName = '${itemLine.split(' ${curLangText!.uiDuplicateModsIn} ').first.replaceAll('"', '').trim()} - DUP';
+                          int index = sortedModsList.indexWhere((element) => element[1] == dupItemName || element[2] == dupItemName);
+                          if (index != -1) {
+                            for (int ex = 0; ex < sortedModsList[index][4].split('|').length; ex++) {
+                              for (int sub = 0; sub < sortedModsList[index][5].split('|').length; sub++) {
+                                //print('OLD: $sortedModsList');
+                                String oldMainDirName = sortedModsList[index][4].split('|')[ex];
+                                // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
+                                //     .renameSync('$modManAddModsTempDirPath$s${newModName}');
+                                List<FileSystemEntity> curFilesInMainDir = Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath()).listSync(recursive: true);
+                                for (var element in curFilesInMainDir) {
+                                  //print(curFilesInMainDir);
+                                  String newMainPath = element.path.replaceFirst(
+                                      Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
+                                  if (!File(element.path).existsSync()) {
+                                    Directory(newMainPath).createSync(recursive: true);
+                                  }
+                                  if (sortedModsList[index][5].isEmpty) {
+                                    Directory(Uri.file('$modManAddModsTempDirPath/$newModName').toFilePath()).createSync(recursive: true);
+                                  }
+                                }
+                                for (var element in curFilesInMainDir) {
+                                  String newMainPath = element.path.replaceFirst(
+                                      Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
+                                  if (File(element.path).existsSync()) {
+                                    File(element.path).copySync(newMainPath);
+                                  }
+                                }
+
+                                //Itemlist
+                                //Item name replace
+                                List<String> mainDirsString = sortedModsList[index][4].split('|');
+                                mainDirsString[mainDirsString.indexOf(oldMainDirName)] = newModName;
+                                sortedModsList[index][4] = mainDirsString.join('|');
+
+                                //Subitem Item name replace
+                                List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
+                                for (var element in mainDirsInSubItemString) {
+                                  List<String> split = element.split((':'));
+                                  if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                    split[split.indexOf(oldMainDirName)] = newModName;
+                                    mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
+                                  }
+                                }
+                                sortedModsList[index][5] = mainDirsInSubItemString.join('|');
+
+                                //icefile Item name replace
+                                List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
+                                for (var element in mainDirsInItemString) {
+                                  List<String> split = element.split((':'));
+                                  if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                    split[split.indexOf(oldMainDirName)] = newModName;
+                                    mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
+                                  }
+                                }
+                                sortedModsList[index][6] = mainDirsInItemString.join('|');
+                              }
+                            }
+                          }
+                        }
+
+                        Navigator.pop(context);
+                      }),
+                ]);
+          }));
 }
