@@ -398,10 +398,12 @@ Future<bool> modManPathReloader(context) async {
 
   listsReloading = true;
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-  modFileStructureLoader(context).then((value) {
-    moddedItemsList = value;
-    listsReloading = false;
-    Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+  Future.delayed(const Duration(milliseconds: 500), () {
+    modFileStructureLoader().then((value) {
+      moddedItemsList = value;
+      listsReloading = false;
+      Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+    });
   });
 
   //Return true if all paths loaded

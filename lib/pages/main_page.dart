@@ -46,9 +46,10 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<Widget> iconLoaderSwitches = <Widget>[
-    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)), 
-    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)), 
-    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))];
+    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
+    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
+    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
+  ];
 
   @override
   void initState() {
@@ -1243,11 +1244,13 @@ class _MainPageState extends State<MainPage> {
                               onPressed: (() async {
                                 listsReloading = true;
                                 Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-                                modFileStructureLoader(context).then((value) {
-                                  moddedItemsList = value;
-                                  listsReloading = false;
-                                  modViewItem = null;
-                                  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                Future.delayed(const Duration(milliseconds: 500), () {
+                                  modFileStructureLoader().then((value) {
+                                    moddedItemsList = value;
+                                    listsReloading = false;
+                                    modViewItem = null;
+                                    Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                  });
                                 });
                               }),
                               child: Row(

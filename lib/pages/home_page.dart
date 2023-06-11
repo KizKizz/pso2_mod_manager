@@ -83,11 +83,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    //videoPlayer.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
