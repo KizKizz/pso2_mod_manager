@@ -1,26 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": [
-        "Reworked overall system and UI",
-        "Added customizable background (image) and UI colors",
-        "Added Settings sidebar",
-        "Added Category Groups",
-        "Added an option to move Categories between groups",
-        "Added an option to hide any Category or hide all empty Categories",
-        "Added an option to skip Item Icons fetching on startup (faster loading time)",
-        "Improved Categories sorting (drag and drop)",
-        "Improved Checksum detection (auto re-apply checksum to the game if missing on startup)",
-        "Improved Mods Adder logics",
-        "Improved Mod Sets logics and new way to add applied mods to sets",
-        "Improved Preview windows (a new way to show preview images and videos)",
-        "Item List will now show multiple icons if there are multiple items inside a mod",
-        "Separated Favorite List from Item List",
-        "Removed initial Item reference sheets to reduce app download size (will auto download upon running instead)",
-        "Mod Manager will now check if applied mods being unapplied on startup and re-apply them",
-        "Mod Manager will now check backup files if there is a updated version of them during re-applying mods on startup",
-        "Fixed some other minor bugs",
-        "And more.."
+        "Fixed some bugs in Mods Adder"
     ],
     "windows_file": "",
     "linux_file": ""
