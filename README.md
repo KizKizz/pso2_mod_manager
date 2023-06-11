@@ -50,6 +50,7 @@ and more..
 **Adding mods:**
 
 Note: 
+
 Supporting .zip files, folders, .ice files, drag and drop to add
 Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
 
