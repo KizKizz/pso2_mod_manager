@@ -55,9 +55,8 @@ class SubMod {
 
   bool getModFilesIsNewState() {
     if (modFiles.where((element) => element.isNew).isEmpty) {
-      print('ModFile: false');
       return false;
-    } else {print('ModFile: true');
+    } else {
       return true;
       
     }

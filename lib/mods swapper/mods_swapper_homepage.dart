@@ -167,7 +167,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                       color: Colors.transparent,
                       child: Column(
                         children: [
-                          Text('Select an item to swap'),
+                          const Text('Select an item to swap'),
                           const Divider(
                             height: 5,
                             thickness: 1,

@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
+import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -30,7 +31,6 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-bool _checksumDownloading = false;
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
 List<String> saveValues = ['off', 'minimal', 'all'];
@@ -436,34 +436,6 @@ class _MainPageState extends State<MainPage> {
 
                       //Other options
                       //Auto fetching item icon on startup
-                      // ModManTooltip(
-                      //   message: isAutoFetchingIconsOnStartup ? curLangText!.uiTurnOffStartupIconsFetching : curLangText!.uiTurnOnStartupIconsFetching,
-                      //   child: MaterialButton(
-                      //     height: 40,
-                      //     onPressed: (() async {
-                      //       final prefs = await SharedPreferences.getInstance();
-                      //       if (isAutoFetchingIconsOnStartup) {
-                      //         prefs.setBool('isAutoFetchingIconsOnStartup', false);
-                      //         isAutoFetchingIconsOnStartup = false;
-                      //       } else {
-                      //         prefs.setBool('isAutoFetchingIconsOnStartup', true);
-                      //         isAutoFetchingIconsOnStartup = true;
-                      //       }
-                      //       setState(() {});
-                      //     }),
-                      //     child: Row(
-                      //       children: [
-                      //         const Icon(
-                      //           Icons.auto_awesome_motion,
-                      //           size: 18,
-                      //         ),
-                      //         const SizedBox(width: 10),
-                      //         Text(isAutoFetchingIconsOnStartup ? '${curLangText!.uiStartupItemIconsFetching}: ON' : '${curLangText!.uiStartupItemIconsFetching}: OFF',
-                      //             style: const TextStyle(fontWeight: FontWeight.w400))
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
                         child: Column(
@@ -488,11 +460,11 @@ class _MainPageState extends State<MainPage> {
                               child: ToggleButtons(
                                 onPressed: (int index) async {
                                   final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('isAutoFetchingIconsOnStartup', saveValues[index]);
+                                  isAutoFetchingIconsOnStartup = saveValues[index];
                                   setState(() {
                                     for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
                                       _selectedIconLoaderSwitches[i] = i == index;
-                                      prefs.setString('isAutoFetchingIconsOnStartup', saveValues[i]);
-                                      isAutoFetchingIconsOnStartup = saveValues[i];
                                     }
                                   });
                                 },
@@ -1296,12 +1268,11 @@ class _MainPageState extends State<MainPage> {
                               },
                               onPressed: (() async {
                                 if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
-                                  _checksumDownloading = true;
+                                  Provider.of<StateProvider>(context, listen: false).checksumDownloadingTrue();
                                   setState(() {});
                                   await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
-                                    _checksumDownloading = false;
-                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
-                                    File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
+                                    Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
+                                    checksumChecker();
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
@@ -1333,11 +1304,12 @@ class _MainPageState extends State<MainPage> {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        if (!_checksumDownloading && modManChecksumFilePath.isEmpty)
+                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty)
                                           Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (!_checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
+                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
                                           Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (_checksumDownloading) Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        if (Provider.of<StateProvider>(context, listen: false).checksumDownloading)
+                                          Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
                                       ],
                                     ),
                             ),
