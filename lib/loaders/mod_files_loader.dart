@@ -101,7 +101,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     if (typeIndex != -1) {
       type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
-      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).length > 1 ? true : structureFromJson[typeIndex].visible;
+      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty? true : structureFromJson[typeIndex].visible;
       //Settings for categories
       for (var cate in type.categories) {
         int cateIndex = structureFromJson[typeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
@@ -358,6 +358,45 @@ Future<List<Item>> itemsFetcher(String catePath) async {
 List<Mod> modsFetcher(String itemPath, String cateName) {
   final foldersInItemPath = Directory(itemPath).listSync(recursive: false).whereType<Directory>().toList();
   List<Mod> mods = [];
+  //Get modfiles in item folder
+  List<ModFile> modFilesInItemDir = [];
+  List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
+  if (iceFilesInItemDir.isNotEmpty) {
+    for (var iceFile in iceFilesInItemDir) {
+      modFilesInItemDir.add(
+          ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, false, [], [], []));
+    }
+    //Get preview images;
+    List<String> modPreviewImages = [];
+    final imagesInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where(((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png'));
+    for (var element in imagesInModDir) {
+      bool isIconImage = false;
+      for (var part in p.basenameWithoutExtension(itemPath).split(' ')) {
+        if (p.basenameWithoutExtension(element.path).contains(part)) {
+          isIconImage = true;
+          break;
+        }
+      }
+      if (!isIconImage) {
+        modPreviewImages.add(Uri.file(element.path).toFilePath());
+      }
+    }
+    //Get preview videos;
+    List<String> modPreviewVideos = [];
+    final videosInModDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    }
+
+    //add to submod
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], modPreviewImages,
+        modPreviewVideos, [], modFilesInItemDir);
+
+    //add to mod
+    mods.add(Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));
+  }
+
+  //Get modfiles in mod folders
   for (var dir in foldersInItemPath) {
     //Get preview images;
     List<String> modPreviewImages = [];
@@ -414,7 +453,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     }
   }
 
-  //ices in sub dirs
+  //ices in submod dirs
   final foldersInModDir = Directory(modPath).listSync(recursive: true).whereType<Directory>().toList();
   for (var dir in foldersInModDir) {
     //Get preview images;
@@ -487,4 +526,3 @@ void ogModFilesLoader() {
         .toList();
   }
 }
-

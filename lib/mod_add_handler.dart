@@ -2268,8 +2268,8 @@ Future<void> duplicateNamesDialog(context) async {
                                 List<FileSystemEntity> curFilesInMainDir = Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath()).listSync(recursive: true);
                                 for (var element in curFilesInMainDir) {
                                   //print(curFilesInMainDir);
-                                  String newMainPath = element.path.replaceFirst(
-                                      Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
+                                  String newMainPath =
+                                      element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
                                   if (!File(element.path).existsSync()) {
                                     Directory(newMainPath).createSync(recursive: true);
                                   }
@@ -2278,8 +2278,8 @@ Future<void> duplicateNamesDialog(context) async {
                                   }
                                 }
                                 for (var element in curFilesInMainDir) {
-                                  String newMainPath = element.path.replaceFirst(
-                                      Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
+                                  String newMainPath =
+                                      element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
                                   if (File(element.path).existsSync()) {
                                     File(element.path).copySync(newMainPath);
                                   }
@@ -2317,6 +2317,8 @@ Future<void> duplicateNamesDialog(context) async {
                           }
                         }
 
+                        _exitConfirmDialog = false;
+                        _duplicateModNames.clear();
                         Navigator.pop(context);
                       }),
                 ]);
