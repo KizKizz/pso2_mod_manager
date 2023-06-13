@@ -27,7 +27,7 @@ and more..
 - App's settings (light\dark mode, pso2_bin path, ect) are stored in:  
   ```C:\Users\YourUserName\AppData\Roaming\PSO2NGS Mod Manager\shared_preferences.json```
 - Mod files settings are stored in:  
-  ```...\PSO2 Mod Manager\PSO2ModManSettings.json```
+  ```...\PSO2 Mod Manager\PSO2ModManModsList.json```
 - If the app started as a blank white screen, resizing it would fix this issue.
 - If the app wont start or crashing on start:
 
