@@ -84,9 +84,14 @@ Future<void> main() async {
     appWindow.alignment = Alignment.center;
     appWindow.title = 'PSO2NGS Mod Manager';
     appWindow.show();
-    Size mySize = appWindow.size;
-        appWindow.size = Size(mySize.width, mySize.height + 0.001);
-        appWindow.size = Size(mySize.width, mySize.height);
+
+    if (Platform.isWindows) {
+      WidgetsBinding.instance.scheduleFrameCallback((timeStamp) {
+        appWindow.size = initialSize + const Offset(0, 1);
+      });
+    } else {
+      appWindow.size = initialSize;
+    }
   });
 
   // windowManager.waitUntilReadyToShow(windowOptions, () async {

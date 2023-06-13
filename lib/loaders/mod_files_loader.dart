@@ -265,7 +265,7 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       //loading icon images
       List<String> tempItemIconPaths = [];
 
-      if (isAutoFetchingIconsOnStartup == 'full') {
+      if (isAutoFetchingIconsOnStartup == 'all') {
         //load sheets
         if (csvInfosFromSheets.isEmpty) {
           csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);

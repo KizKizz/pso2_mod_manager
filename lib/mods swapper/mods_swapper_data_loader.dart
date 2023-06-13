@@ -24,19 +24,19 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
           AsyncSnapshot snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Loading item sheets data',
-                    style: const TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
-                  const CircularProgressIndicator(),
+                  CircularProgressIndicator(),
                 ],
               ),
             );
@@ -62,19 +62,19 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                 ),
               );
             } else if (!snapshot.hasData) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Loading item sheets data',
-                      style: const TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
-                    const CircularProgressIndicator(),
+                    CircularProgressIndicator(),
                   ],
                 ),
               );
@@ -89,19 +89,19 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                     AsyncSnapshot snapshot,
                   ) {
                     if (snapshot.connectionState == ConnectionState.waiting && availableItemsCsvData.isEmpty) {
-                      return Center(
+                      return const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               'Loading',
-                              style: const TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 20),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 20,
                             ),
-                            const CircularProgressIndicator(),
+                            CircularProgressIndicator(),
                           ],
                         ),
                       );
@@ -127,19 +127,19 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           ),
                         );
                       } else if (!snapshot.hasData) {
-                        return Center(
+                        return const Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                 'Loading',
-                                style: const TextStyle(fontSize: 20),
+                                style: TextStyle(fontSize: 20),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 height: 20,
                               ),
-                              const CircularProgressIndicator(),
+                              CircularProgressIndicator(),
                             ],
                           ),
                         );

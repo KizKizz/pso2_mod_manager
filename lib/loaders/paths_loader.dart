@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
+import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/startup_icons_loader_popup.dart';
@@ -34,8 +37,10 @@ String modManAddModsUnpackDirPath = '';
 String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
 String modManWin32CheckSumFilePath = '';
+String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
+String modManWin32NaChecksumMD5 = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -118,8 +123,8 @@ Future<bool> pathsLoader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
-  modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
-  File(modManModSettingsJsonPath).createSync();
+  // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
   //Create log file
@@ -127,21 +132,7 @@ Future<bool> pathsLoader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  if (modManChecksumFilePath.isEmpty) {
-    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
-    for (var file in filesInCSFolder) {
-      if (p.extension(file.path) == '') {
-        modManChecksumFilePath = file.path;
-        modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
-      }
-    }
-  }
-  if (modManChecksumFilePath.isNotEmpty) {
-    modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
-  }
-  if (modManWin32CheckSumFilePath.isNotEmpty) {
-    modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
-  }
+  await checksumChecker();
 
   //ref sheets check load files
   if (kDebugMode) {
@@ -248,22 +239,7 @@ Future<bool> pso2PathsReloader(context) async {
   }
 
   //Checksum
-  if (modManChecksumFilePath.isEmpty) {
-    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
-    for (var file in filesInCSFolder) {
-      if (p.extension(file.path) == '') {
-        modManChecksumFilePath = file.path;
-        modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
-        File(modManChecksumFilePath).copySync(modManWin32CheckSumFilePath);
-      }
-    }
-  }
-  if (modManChecksumFilePath.isNotEmpty) {
-    modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
-  }
-  if (modManWin32CheckSumFilePath.isNotEmpty) {
-    modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
-  }
+  await checksumChecker();
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -371,8 +347,8 @@ Future<bool> modManPathReloader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
-  modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
-  File(modManModSettingsJsonPath).createSync();
+  // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
   //Create log file
@@ -380,21 +356,7 @@ Future<bool> modManPathReloader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  if (modManChecksumFilePath.isEmpty) {
-    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
-    for (var file in filesInCSFolder) {
-      if (p.extension(file.path) == '') {
-        modManChecksumFilePath = file.path;
-        modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
-      }
-    }
-  }
-  if (modManChecksumFilePath.isNotEmpty) {
-    modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
-  }
-  if (modManWin32CheckSumFilePath.isNotEmpty) {
-    modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
-  }
+  await checksumChecker();
 
   listsReloading = true;
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
