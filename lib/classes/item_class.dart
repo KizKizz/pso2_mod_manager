@@ -28,6 +28,22 @@ class Item {
     return paths;
   }
 
+  bool getModsAppliedState() {
+    if (mods.where((element) => element.getSubmodsAppliedState()).isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool getModsIsNewState() {
+    if (mods.where((element) => element.getSubmodsIsNewState()).isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 }

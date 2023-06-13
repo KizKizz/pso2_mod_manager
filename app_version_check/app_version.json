@@ -1,8 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": [
-        "Fixed some bugs in Mods Adder"
+        "Fixed mod files in root item folder not displaying in Mod List",
+        "Tweaked show/hide empty mod categories to work correctly"
     ],
     "windows_file": "",
     "linux_file": ""

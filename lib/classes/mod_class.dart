@@ -39,6 +39,22 @@ class Mod {
     return paths;
   }
 
+  bool getSubmodsAppliedState() {
+    if (submods.where((element) => element.getModFilesAppliedState()).isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool getSubmodsIsNewState() {
+    if (submods.where((element) => element.getModFilesIsNewState()).isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   factory Mod.fromJson(Map<String, dynamic> json) => _$ModFromJson(json);
   Map<String, dynamic> toJson() => _$ModToJson(this);
 }
