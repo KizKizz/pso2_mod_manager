@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.0.2",
     "description": [
-        "Fixed some bugs in Mods Adder"
+        "Fixed mod files in root item folder not displaying in Mod List"
     ],
     "windows_file": "",
     "linux_file": ""

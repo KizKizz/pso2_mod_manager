@@ -453,7 +453,7 @@ class _HomePageState extends State<HomePage> {
                   //Hidden List
                   ? ListView.builder(
                       shrinkWrap: true,
-                      physics: const ScrollPhysics(),
+                      physics: const PageScrollPhysics(),
                       padding: const EdgeInsets.only(left: 2),
                       itemCount: hiddenItemCategories.length,
                       itemBuilder: (context, groupIndex) {
@@ -557,7 +557,7 @@ class _HomePageState extends State<HomePage> {
                       ? ReorderableListView.builder(
                           padding: const EdgeInsets.only(left: 2, right: 1),
                           shrinkWrap: true,
-                          physics: const ScrollPhysics(),
+                          physics: const PageScrollPhysics(),
                           buildDefaultDragHandles: false,
                           onReorder: (int oldIndex, int newIndex) {
                             setState(() {
@@ -596,7 +596,7 @@ class _HomePageState extends State<HomePage> {
                       : isFavListVisible
                           ? ListView.builder(
                               shrinkWrap: true,
-                              physics: const ScrollPhysics(),
+                              physics: const PageScrollPhysics(),
                               padding: const EdgeInsets.only(left: 2),
                               itemCount: moddedItemsList.length,
                               itemBuilder: (context, groupIndex) {
@@ -949,7 +949,7 @@ class _HomePageState extends State<HomePage> {
                               //Search Item List
                               ? ListView.builder(
                                   shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
+                                  physics: const PageScrollPhysics(),
                                   padding: const EdgeInsets.only(left: 2),
                                   itemCount: searchedItemList.length,
                                   itemBuilder: (context, groupIndex) {
@@ -1255,7 +1255,7 @@ class _HomePageState extends State<HomePage> {
                               //Normal Catetype List
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
+                                  physics:const PageScrollPhysics(),
                                   padding: const EdgeInsets.only(left: 2),
                                   itemCount: moddedItemsList.length,
                                   itemBuilder: (context, groupIndex) {
@@ -2015,7 +2015,7 @@ class _HomePageState extends State<HomePage> {
                 child: SingleChildScrollView(
                     child: ListView.builder(
                         shrinkWrap: true,
-                        physics: const ScrollPhysics(),
+                        physics: const PageScrollPhysics(),
                         //padding: const EdgeInsets.symmetric(horizontal: 1),
                         itemCount: modViewItem!.mods.length,
                         itemBuilder: (context, modIndex) {
@@ -2317,7 +2317,7 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 //Swap
                                                 Visibility(
-                                                  //visible: f.kDebugMode,
+                                                  visible: f.kDebugMode,
                                                   child: ModManTooltip(
                                                     message: 'Swap',
                                                     child: InkWell(
@@ -2885,7 +2885,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                             //Swap
                                                             Visibility(
-                                                              //visible: f.kDebugMode,
+                                                              visible: f.kDebugMode,
                                                               child: ModManTooltip(
                                                                 message: 'Swap',
                                                                 child: InkWell(
@@ -3226,7 +3226,7 @@ class _HomePageState extends State<HomePage> {
             child: SingleChildScrollView(
               child: ListView.builder(
                 shrinkWrap: true,
-                physics: const ScrollPhysics(),
+                physics: const PageScrollPhysics(),
                 padding: const EdgeInsets.only(right: 2),
                 itemCount: appliedItemList.length,
                 itemBuilder: (context, groupIndex) {
@@ -3790,7 +3790,7 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                   child: ListView.builder(
                       shrinkWrap: true,
-                      physics: const ScrollPhysics(),
+                      physics: const PageScrollPhysics(),
                       padding: const EdgeInsets.only(left: 2),
                       itemCount: modSetList.length,
                       itemBuilder: (context, setIndex) {
