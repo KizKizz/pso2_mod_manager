@@ -1012,6 +1012,7 @@ class _HomePageState extends State<HomePage> {
                                                       visible: curCategory.visible && (curCategory.categoryName.contains(searchTextController.value.text.toLowerCase()) || itemMatchingNum > 0),
                                                       child: InkResponse(
                                                         highlightShape: BoxShape.rectangle,
+                                                        hoverColor: Colors.transparent,
                                                         onTap: () {},
                                                         onHover: (value) {
                                                           if (value) {
