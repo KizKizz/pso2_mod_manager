@@ -1295,6 +1295,7 @@ class _HomePageState extends State<HomePage> {
                                               color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                                               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                               child: InkWell(
+                                                hoverColor: Colors.transparent,
                                                 onTap: () {},
                                                 onHover: (value) {
                                                   if (value) {
@@ -1421,7 +1422,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //Save to json
                                                                 saveModdedItemListToJson();
                                                                 isCatesReordering[groupIndex] = false;
-
+                                            
                                                                 setState(() {});
                                                               }),
                                                         ),
@@ -1487,7 +1488,7 @@ class _HomePageState extends State<HomePage> {
                                                             );
                                                           }),
                                                     ),
-
+                                            
                                                     //Main Normal Cate=========================================================
                                                     Visibility(
                                                       visible: !isCatesReordering[groupIndex],
@@ -1507,6 +1508,7 @@ class _HomePageState extends State<HomePage> {
                                                             visible: curCategory.visible,
                                                             child: InkResponse(
                                                               highlightShape: BoxShape.rectangle,
+                                                              hoverColor: Colors.transparent,
                                                               onTap: () {},
                                                               onHover: (value) {
                                                                 if (value) {
@@ -1623,7 +1625,7 @@ class _HomePageState extends State<HomePage> {
                                                                               itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
                                                                             itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                           }
-
+                                            
                                                                           return SizedBox(
                                                                             height: 84,
                                                                             child: Container(
