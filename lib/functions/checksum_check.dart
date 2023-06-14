@@ -18,7 +18,9 @@ Future<void> checksumChecker() async {
   if (modManChecksumFilePath.isNotEmpty && File(modManChecksumFilePath).existsSync()) {
     modManLocalChecksumMD5 = await getFileHash(modManChecksumFilePath.toString());
     modManWin32CheckSumFilePath = Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath();
-    modManWin32NaCheckSumFilePath = Uri.file('$modManPso2binPath/data/win32_na/${p.basename(modManChecksumFilePath)}').toFilePath();
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+      modManWin32NaCheckSumFilePath = Uri.file('$modManPso2binPath/data/win32_na/${p.basename(modManChecksumFilePath)}').toFilePath();
+    }
 
     //win32
     if (modManWin32CheckSumFilePath.isNotEmpty && File(modManWin32CheckSumFilePath).existsSync()) {
@@ -33,15 +35,17 @@ Future<void> checksumChecker() async {
     }
 
     //win32_na
-    if (modManWin32NaCheckSumFilePath.isNotEmpty && File(modManWin32NaCheckSumFilePath).existsSync()) {
-      modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
-    } else if (!File(modManWin32NaCheckSumFilePath).existsSync()) {
-      File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
-      modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
-    }
-    if (modManWin32NaChecksumMD5 != modManLocalChecksumMD5) {
-      File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
-      modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+      if (modManWin32NaCheckSumFilePath.isNotEmpty && File(modManWin32NaCheckSumFilePath).existsSync()) {
+        modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
+      } else if (!File(modManWin32NaCheckSumFilePath).existsSync()) {
+        File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
+        modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
+      }
+      if (modManWin32NaChecksumMD5 != modManLocalChecksumMD5) {
+        File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
+        modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
+      }
     }
   }
 }
@@ -64,10 +68,12 @@ Future<void> applyModsChecksumChecker(context) async {
       modManWin32ChecksumMD5 = modManLocalChecksumMD5;
     }
     //win32na
-    modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
-    if (modManWin32NaChecksumMD5 != modManLocalChecksumMD5) {
-      File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
-      modManWin32NaChecksumMD5 = modManLocalChecksumMD5;
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+      modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
+      if (modManWin32NaChecksumMD5 != modManLocalChecksumMD5) {
+        File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
+        modManWin32NaChecksumMD5 = modManLocalChecksumMD5;
+      }
     }
   }
 }
