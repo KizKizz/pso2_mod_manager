@@ -1,10 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": [
-        "Ensure checksum to be placed correctly inside game data folders",
-        "Double check checksum when applying mods",
-        "Fixed a bug where startup Item icons fetcher always fetching all icons which reducing loading time (can be adjusted inside Settings)"
+        "Fixed an issue where unselecting mods to add not working correctly in Mods Adder"
     ],
     "windows_file": "",
     "linux_file": ""
