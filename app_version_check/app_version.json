@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "description": [
-        "Fixed an issue where unselecting mods to add not working correctly in Mods Adder"
+        "Fixed an issue with detecting appropriate data folders in checksum patcher"
     ],
     "windows_file": "",
     "linux_file": ""
