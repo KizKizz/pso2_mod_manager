@@ -59,12 +59,12 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
               ),
               //from
               Expanded(
-                  child: Card(
-                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                color: Colors.transparent,
-                child: Column(
-                  children: [
-                    ListTile(
+                  child: Column(
+                children: [
+                  Card(
+                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                    color: Colors.transparent,
+                    child: ListTile(
                       title: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,13 +104,17 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                         ],
                       ),
                     ),
-                    const Divider(
-                      height: 5,
-                      thickness: 1,
-                      indent: 5,
-                      endIndent: 5,
-                    ),
-                    Expanded(
+                  ),
+                  const Divider(
+                    height: 5,
+                    thickness: 1,
+                    indent: 5,
+                    endIndent: 5,
+                  ),
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                      color: Colors.transparent,
                       child: ScrollbarTheme(
                           data: ScrollbarThemeData(
                             thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -120,38 +124,53 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
                             }),
                           ),
-                          child: SingleChildScrollView(
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             const Padding(
                               padding: EdgeInsets.all(5),
                               child: Text('Item variant found in current mod files'),
                             ),
-                            for (int i = 0; i < fromItemCsvData.length; i++)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                                child: RadioListTile(
-                                  shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                  value: fromItemCsvData[i],
-                                  groupValue: selectedFromCsvFile,
-                                  title: Text(fromItemCsvData[i].enName),
-                                  subtitle: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
-                                  ),
-                                  onChanged: (CsvIceFile? currentItem) {
-                                    //print("Current ${moddedItemsList[i].groupName}");
-                                    selectedFromCsvFile = currentItem!;
-                                    setState(
-                                      () {},
-                                    );
-                                  },
-                                ),
+                            ScrollbarTheme(
+                              data: ScrollbarThemeData(
+                                thumbColor: MaterialStateProperty.resolveWith((states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                  }
+                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                }),
                               ),
-                          ]))),
+                              child: ListView.builder(
+                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                  shrinkWrap: true,
+                                  //physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: fromItemCsvData.length,
+                                  itemBuilder: (context, i) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2),
+                                      child: RadioListTile(
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                        value: fromItemCsvData[i],
+                                        groupValue: selectedFromCsvFile,
+                                        title: Text(fromItemCsvData[i].enName),
+                                        subtitle: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
+                                        ),
+                                        onChanged: (CsvIceFile? currentItem) {
+                                          //print("Current ${moddedItemsList[i].groupName}");
+                                          selectedFromCsvFile = currentItem!;
+                                          setState(
+                                            () {},
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }),
+                            )
+                          ])),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               )),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 0),
@@ -162,51 +181,59 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
               ),
               //to
               Expanded(
-                  child: Card(
-                      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                      color: Colors.transparent,
-                      child: Column(
-                        children: [
-                          const Text('Select an item to swap'),
-                          const Divider(
-                            height: 5,
-                            thickness: 1,
-                            indent: 5,
-                            endIndent: 5,
-                          ),
-                          Expanded(
-                            child: ScrollbarTheme(
-                                data: ScrollbarThemeData(
-                                  thumbColor: MaterialStateProperty.resolveWith((states) {
-                                    if (states.contains(MaterialState.hovered)) {
-                                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                    }
-                                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                                  }),
-                                ),
-                                child: ListView.builder(
-                                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                                    shrinkWrap: true,
-                                    //physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: availableItemsCsvData.length,
-                                    itemBuilder: (context, i) {
-                                      return RadioListTile(
-                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                        value: availableItemsCsvData[i],
-                                        groupValue: selectedToCsvFile,
-                                        title: Text(availableItemsCsvData[i].enName),
-                                        onChanged: (CsvIceFile? currentItem) {
-                                          //print("Current ${moddedItemsList[i].groupName}");
-                                          selectedToCsvFile = currentItem!;
-                                          setState(
-                                            () {},
-                                          );
-                                        },
+                  child: Column(
+                children: [
+                  Card(
+                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                    color: Colors.transparent,
+                    child: const SizedBox(
+                        height: 90,
+                        child: ListTile(
+                          title: Text('Choose an item below to swap'),
+                        )),
+                  ),
+                  const Divider(
+                    height: 5,
+                    thickness: 1,
+                    indent: 5,
+                    endIndent: 5,
+                  ),
+                  Expanded(
+                    child: Card(
+                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                        color: Colors.transparent,
+                        child: ScrollbarTheme(
+                            data: ScrollbarThemeData(
+                              thumbColor: MaterialStateProperty.resolveWith((states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                }
+                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                              }),
+                            ),
+                            child: ListView.builder(
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                shrinkWrap: true,
+                                //physics: const NeverScrollableScrollPhysics(),
+                                itemCount: availableItemsCsvData.length,
+                                itemBuilder: (context, i) {
+                                  return RadioListTile(
+                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    value: availableItemsCsvData[i],
+                                    groupValue: selectedToCsvFile,
+                                    title: Text(availableItemsCsvData[i].enName),
+                                    onChanged: (CsvIceFile? currentItem) {
+                                      //print("Current ${moddedItemsList[i].groupName}");
+                                      selectedToCsvFile = currentItem!;
+                                      setState(
+                                        () {},
                                       );
-                                    })),
-                          ),
-                        ],
-                      )))
+                                    },
+                                  );
+                                }))),
+                  ),
+                ],
+              ))
             ],
           );
         }));
