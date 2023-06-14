@@ -18,7 +18,6 @@ import 'package:pso2_mod_manager/state_provider.dart';
 //Auto Files adder
 Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
   //List<List<String>> addedItems = [];
-  //print(sortedList);
   for (var sortedLine in sortedList) {
     if (sortedLine[4].isNotEmpty) {
       //Get mods info
@@ -30,6 +29,15 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
         itemName = sortedLine[2];
       }
 
+      List<String> mainNames = [];
+      if (sortedLine[4].isNotEmpty) {
+        for (var name in sortedLine[4].split('|')) {
+          if (name.isNotEmpty) {
+            mainNames.addAll(name.split(':'));
+          }
+        }
+      }
+
       List<String> subNames = [];
       if (sortedLine[5].isNotEmpty) {
         for (var name in sortedLine[5].split('|')) {
@@ -39,7 +47,15 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
         }
       }
 
-      List<String> fileInfos = sortedLine[6].split('|');
+      List<String> fileInfos = [];
+      for (var line in sortedLine[6].split('|')) {
+        List<String> names = line.split(':');
+        if (mainNames.contains(names[0])) {
+          if (subNames.contains(names[1]) || names[1] == '') {
+            fileInfos.add(line);
+          }
+        }
+      }
 
       List<String> modFolders = [];
       for (var fileInfo in fileInfos) {

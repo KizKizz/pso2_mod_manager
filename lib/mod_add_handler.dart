@@ -1742,7 +1742,8 @@ void modAddHandler(context) {
                                                                                                             //check sub to disable or able main if all or one disabled
                                                                                                             bool allSubRemoving = true;
                                                                                                             for (var element in sortedModsList[index][5].split('|')) {
-                                                                                                              if (sortedModsList[index][5].split('|').length > 1) {
+                                                                                                              if (sortedModsList[index][5].split('|').length > 1 &&
+                                                                                                                  sub < sortedModsList[index][5].split('|').length) {
                                                                                                                 if (element.split(':').first ==
                                                                                                                             sortedModsList[index][5].split('|')[sub].split(':')[0] &&
                                                                                                                         element.split(':').last != '[TOREMOVE]' ||
@@ -2075,37 +2076,9 @@ void modAddHandler(context) {
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                         onPressed: sortedModsList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
                                                             ? (() async {
-                                                                //Remove 'TOREMOVE' lines from list
-                                                                List<List<String>> removingItems = [];
-                                                                for (var line in sortedModsList) {
-                                                                  if (line[1].split(':').last != '[TOREMOVE]' && line[2].split(':').last != '[TOREMOVE]') {
-                                                                    List<String> mainLine = [];
-                                                                    for (var main in line[4].split('|')) {
-                                                                      if (main.split(':').last != '[TOREMOVE]') {
-                                                                        mainLine.add(main);
-                                                                      }
-                                                                    }
-                                                                    line[4] = mainLine.join('|');
-
-                                                                    List<String> subLine = [];
-                                                                    for (var sub in line[5].split('|')) {
-                                                                      if (sub.split(':').last != '[TOREMOVE]') {
-                                                                        subLine.add(sub);
-                                                                      }
-                                                                    }
-                                                                    line[5] = subLine.join('|');
-                                                                  } else {
-                                                                    removingItems.add(line);
-                                                                  }
-                                                                }
-                                                                for (var item in removingItems) {
-                                                                  sortedModsList.remove(item);
-                                                                }
-                                                                //print(sortedModsList);
-
                                                                 //Check for dub mods
                                                                 _duplicateModNames.clear();
-                                                                for (var sortedLine in sortedModsList) {
+                                                                for (var sortedLine in sortedModsList.where((element) => !element[1].contains('[TOREMOVE]') || !element[2].contains('[TOREMOVE]'))) {
                                                                   String category = sortedLine[0];
                                                                   String itemName = '';
                                                                   if (curActiveLang == 'JP') {
@@ -2113,7 +2086,7 @@ void modAddHandler(context) {
                                                                   } else {
                                                                     itemName = sortedLine[2];
                                                                   }
-                                                                  List<String> mainNames = sortedLine[4].split('|');
+                                                                  List<String> mainNames = sortedLine[4].split('|').where((element) => element.split(':').last != '[TOREMOVE]').toList();
 
                                                                   if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath()).existsSync()) {
                                                                     if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
@@ -2131,8 +2104,37 @@ void modAddHandler(context) {
                                                                     }
                                                                   }
                                                                 }
+
                                                                 //Add mods
                                                                 if (_duplicateModNames.isEmpty) {
+                                                                  //Remove 'TOREMOVE' lines from list
+                                                                  List<List<String>> removingItems = [];
+                                                                  for (var line in sortedModsList) {
+                                                                    if (line[1].split(':').last != '[TOREMOVE]' && line[2].split(':').last != '[TOREMOVE]') {
+                                                                      List<String> mainLine = [];
+                                                                      for (var main in line[4].split('|')) {
+                                                                        if (main.split(':').last != '[TOREMOVE]') {
+                                                                          mainLine.add(main);
+                                                                        }
+                                                                      }
+                                                                      line[4] = mainLine.join('|');
+
+                                                                      List<String> subLine = [];
+                                                                      for (var sub in line[5].split('|')) {
+                                                                        if (sub.split(':').last != '[TOREMOVE]') {
+                                                                          subLine.add(sub);
+                                                                        }
+                                                                      }
+                                                                      line[5] = subLine.join('|');
+                                                                    } else {
+                                                                      removingItems.add(line);
+                                                                    }
+                                                                  }
+                                                                  for (var item in removingItems) {
+                                                                    sortedModsList.remove(item);
+                                                                  }
+                                                                  //print(sortedModsList);
+                                                                  //add
                                                                   modFilesAdder(context, sortedModsList).then((value) {
                                                                     if (value) {
                                                                       //clear lists and delete temp
