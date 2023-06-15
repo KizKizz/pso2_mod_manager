@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_homepage.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
 
@@ -146,8 +147,20 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                       } else {
                         //Applied Item list
                         availableItemsCsvData = snapshot.data;
+                        if (curActiveLang == 'JP') {
+                          availableItemsCsvData.sort(
+                            (a, b) => a.jpName.compareTo(b.jpName),
+                          );
+                        } else {
+                          availableItemsCsvData.sort(
+                            (a, b) => a.enName.compareTo(b.enName),
+                          );
+                        }
 
-                        return ModsSwapperHomePage(fromItem: widget.fromItem, fromSubmod: widget.fromSubmod,);
+                        return ModsSwapperHomePage(
+                          fromItem: widget.fromItem,
+                          fromSubmod: widget.fromSubmod,
+                        );
                       }
                     }
                   });
