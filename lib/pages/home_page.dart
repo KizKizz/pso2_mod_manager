@@ -2141,7 +2141,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         //normal
-                                        if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible)
+                                        if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                            isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
                                           Padding(
                                             padding: const EdgeInsets.only(left: 5),
                                             child: Wrap(
@@ -2322,14 +2323,17 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 //Swap
                                                 Visibility(
-                                                  visible: f.kDebugMode,
-                                                  child: ModManTooltip(
-                                                    message: 'Swap',
-                                                    child: InkWell(
-                                                      child: const Icon(
-                                                        Icons.swap_horizontal_circle_outlined,
+                                                  //visible: f.kDebugMode,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 2),
+                                                    child: ModManTooltip(
+                                                      message: 'Swap ${curMod.submods.first.submodName} to another item',
+                                                      child: InkWell(
+                                                        child: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                       ),
-                                                      onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                     ),
                                                   ),
                                                 ),
@@ -2575,6 +2579,22 @@ class _HomePageState extends State<HomePage> {
                                                       saveModdedItemListToJson();
                                                       setState(() {});
                                                     },
+                                                  ),
+                                                ),
+                                                //Swap
+                                                Visibility(
+                                                  //visible: f.kDebugMode,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 2),
+                                                    child: ModManTooltip(
+                                                      message: 'Swap ${curMod.submods[modViewModSetSubModIndex].submodName} to another item',
+                                                      child: InkWell(
+                                                        child: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                                 //Open folder
@@ -2890,14 +2910,17 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                             //Swap
                                                             Visibility(
-                                                              visible: f.kDebugMode,
-                                                              child: ModManTooltip(
-                                                                message: 'Swap',
-                                                                child: InkWell(
-                                                                  child: const Icon(
-                                                                    Icons.swap_horizontal_circle_outlined,
+                                                              //visible: f.kDebugMode,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.only(left: 2),
+                                                                child: ModManTooltip(
+                                                                  message: 'Swap ${curSubmod.submodName} to another item',
+                                                                  child: InkWell(
+                                                                    child: const Icon(
+                                                                      Icons.swap_horizontal_circle_outlined,
+                                                                    ),
+                                                                    onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                   ),
-                                                                  onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                 ),
                                                               ),
                                                             ),

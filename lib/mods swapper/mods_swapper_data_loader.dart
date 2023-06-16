@@ -19,7 +19,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category)),
+        future: csvData.isEmpty ? sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category)) : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -84,7 +84,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
               csvData = snapshot.data;
 
               return FutureBuilder(
-                  future: getSwapToCsvList(csvData, widget.fromItem),
+                  future: availableItemsCsvData.isEmpty ? getSwapToCsvList(csvData, widget.fromItem) : null,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot snapshot,

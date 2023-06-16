@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvIceFile> toItemSearchResults = [];
@@ -340,33 +341,83 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                         ],
                       ),
                     ),
-                    Wrap(
-                      runAlignment: WrapAlignment.center,
-                      alignment: WrapAlignment.center,
-                      spacing: 5,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              swapperSearchTextController.clear();
-                              selectedFromCsvFile = null;
-                              selectedToCsvFile = null;
-                              availableItemsCsvData.clear();
-                              fromItemIds.clear();
-                              toItemIds.clear();
-                              fromItemAvailableIces.clear();
-                              toItemAvailableIces.clear();
-                              Navigator.pop(context);
-                            },
-                            child: Text(curLangText!.uiClose)),
-                        ElevatedButton(
-                            onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
-                                ? null
-                                : () {
-                                    if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                      swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
-                                    }
-                                  },
-                            child: Text(curLangText!.uiNext))
+                        Wrap(
+                          runAlignment: WrapAlignment.center,
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 5,
+                          children: [
+                            Checkbox(
+                              splashRadius: 2,
+                              value: isReplacingNQWithHQ,
+                              onChanged: (value) async {
+                                final prefs = await SharedPreferences.getInstance();
+                                isReplacingNQWithHQ = value!;
+                                prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
+                                setState(() {});
+                              },
+                            ),
+                            const Text('Replace NQ files with HQ'),
+                            Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
+                            Checkbox(
+                              splashRadius: 2,
+                              value: isCopyAll,
+                              onChanged: (value) async {
+                                final prefs = await SharedPreferences.getInstance();
+                                isCopyAll = value!;
+                                prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
+                                setState(() {});
+                              },
+                            ),
+                            const Text('Swap all files inside ices'),
+                            Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
+                            Checkbox(
+                              splashRadius: 2,
+                              value: isRemoveExtras,
+                              onChanged: (value) async {
+                                final prefs = await SharedPreferences.getInstance();
+                                isRemoveExtras = value!;
+                                prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
+                                setState(() {});
+                              },
+                            ),
+                            const Text('Remove unmatching files in destination ices'),
+                          ],
+                        ),
+                        Wrap(
+                          runAlignment: WrapAlignment.center,
+                          alignment: WrapAlignment.center,
+                          spacing: 5,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  swapperSearchTextController.clear();
+                                  selectedFromCsvFile = null;
+                                  selectedToCsvFile = null;
+                                  availableItemsCsvData.clear();
+                                  fromItemIds.clear();
+                                  toItemIds.clear();
+                                  fromItemAvailableIces.clear();
+                                  toItemAvailableIces.clear();
+                                  csvData.clear();
+                                  availableItemsCsvData.clear();
+                                  Navigator.pop(context);
+                                },
+                                child: Text(curLangText!.uiClose)),
+                            ElevatedButton(
+                                onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
+                                    ? null
+                                    : () {
+                                        if (selectedFromCsvFile != null && selectedToCsvFile != null) {
+                                          swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                        }
+                                      },
+                                child: Text(curLangText!.uiNext))
+                          ],
+                        ),
                       ],
                     )
                   ],

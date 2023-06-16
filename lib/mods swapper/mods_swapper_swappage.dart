@@ -141,7 +141,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: modsSwapperIceFilesGet(context, fromSubmod),
+                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, fromSubmod) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
