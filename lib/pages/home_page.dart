@@ -391,14 +391,16 @@ class _HomePageState extends State<HomePage> {
                       contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
                       suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                       suffixIcon: InkWell(
-                        onTap: () {
-                          searchTextController.clear();
-                          searchedItemList.clear();
-                          modViewItem = null;
-                          setState(() {});
-                        },
+                        onTap: searchTextController.text.isEmpty
+                            ? null
+                            : () {
+                                searchTextController.clear();
+                                searchedItemList.clear();
+                                modViewItem = null;
+                                setState(() {});
+                              },
                         child: Icon(
-                          Icons.close,
+                          searchTextController.text.isEmpty ? Icons.search : Icons.close,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
@@ -1256,7 +1258,7 @@ class _HomePageState extends State<HomePage> {
                               //Normal Catetype List
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  physics:const PageScrollPhysics(),
+                                  physics: const PageScrollPhysics(),
                                   padding: const EdgeInsets.only(left: 2),
                                   itemCount: moddedItemsList.length,
                                   itemBuilder: (context, groupIndex) {
@@ -1423,7 +1425,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //Save to json
                                                                 saveModdedItemListToJson();
                                                                 isCatesReordering[groupIndex] = false;
-                                            
+
                                                                 setState(() {});
                                                               }),
                                                         ),
@@ -1489,7 +1491,7 @@ class _HomePageState extends State<HomePage> {
                                                             );
                                                           }),
                                                     ),
-                                            
+
                                                     //Main Normal Cate=========================================================
                                                     Visibility(
                                                       visible: !isCatesReordering[groupIndex],
@@ -1626,7 +1628,7 @@ class _HomePageState extends State<HomePage> {
                                                                               itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
                                                                             itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                           }
-                                            
+
                                                                           return SizedBox(
                                                                             height: 84,
                                                                             child: Container(
