@@ -8,14 +8,14 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_homepage.dart';
+import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
+Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   //create
   Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
@@ -23,21 +23,21 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName}').toFilePath();
   String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();
 
-  toItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
-  if (toItemAvailableIces.isEmpty) {
+  toAccItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
+  if (toAccItemAvailableIces.isEmpty) {
     return curLangText!.uiNoMatchingIceFoundToSwap;
   }
   //get ice files
-  for (var line in toItemAvailableIces) {
+  for (var line in toAccItemAvailableIces) {
     //get from ice
     int fromLineIndex = -1;
     if (isReplacingNQWithHQ) {
-      fromLineIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first.replaceAll('Normal Quality', 'High Quality'));
+      fromLineIndex = fromAccItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first.replaceAll('Normal Quality', 'High Quality'));
     } else {
-      fromLineIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first);
+      fromLineIndex = fromAccItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first);
     }
     if (fromLineIndex != -1) {
-      final fromModFile = fromSubmod.modFiles.where((element) => element.modFileName == fromItemAvailableIces[fromLineIndex].split(': ').last);
+      final fromModFile = fromSubmod.modFiles.where((element) => element.modFileName == fromAccItemAvailableIces[fromLineIndex].split(': ').last);
       if (fromModFile.isNotEmpty) {
         final copiedFIceFile = await File(fromModFile.first.location).copy(Uri.file('$modManSwapperFromItemDirPath/${p.basename(fromModFile.first.location)}').toFilePath());
         await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [copiedFIceFile.path]);
@@ -66,23 +66,13 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
 
       //change from files ids -> to files ids
-      for (var file in Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
+      for (var file in Directory(Uri.file('$tempSubmodPathF/${fromAccItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
         String newFilePath = '';
-        if (file.path.contains(fromItemIds[0])) {
-          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
-            newFilePath = file.path.replaceFirst(fromItemIds[0], toItemIds[1]);
+        if (file.path.contains(fromAccItemId)) {
+            newFilePath = file.path.replaceFirst(fromAccItemId, toAccItemId);
           } else {
-            newFilePath = file.path.replaceFirst(fromItemIds[0], toItemIds[0]);
+            newFilePath = file.path;
           }
-        } else if (file.path.contains(fromItemIds[1])) {
-          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
-            newFilePath = file.path.replaceFirst(fromItemIds[1], toItemIds[1]);
-          } else {
-            newFilePath = file.path.replaceFirst(fromItemIds[1], toItemIds[0]);
-          }
-        } else {
-          newFilePath = file.path;
-        }
 
         //copy file
         File renamedFile = await file.rename(Uri.file(newFilePath).toFilePath());
@@ -104,7 +94,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
 
       if (isRemoveExtras) {
         for (var file in Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
-          if (Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath())
+          if (Directory(Uri.file('$tempSubmodPathF/${fromAccItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath())
               .listSync(recursive: true)
               .whereType<File>()
               .where((element) => p.basename(element.path) == p.basename(file.path))
@@ -146,7 +136,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
+Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -157,7 +147,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, fromSubmod) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperAccIceFilesGet(context, fromSubmod) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -237,7 +227,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Row(
+                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [

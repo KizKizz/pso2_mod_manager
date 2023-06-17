@@ -268,7 +268,7 @@ class TranslationText {
       uiChooseAnItemBellowToSwap = 'Choose an item below to swap',
       uiSearchSwapItems = 'Search items',
       uiReplaceNQwithHQ = 'Replace NQ ices with HQ',
-      uiSwapAllFilesInsideIce = 'Swap all files inside ices',
+      uiSwapAllFilesInsideIce = 'Copy all files to destination ices',
       uiRemoveUnmatchingFiles = 'Remove unmatching files in destination ices',
       uiSwap = 'Swap';
 
