@@ -277,7 +277,9 @@ class TranslationText {
       uiSwappingItem = 'Swapping Item',
       uiErrorWhenSwapping = 'Error when swapping item',
       uiSuccessfullySwapped = 'Successfully Swapped',
-      uiAddToModManager = 'Add to Mod Manager';
+      uiAddToModManager = 'Add to Mod Manager',
+      uiFailedToSwap = 'Failed To Swap',
+      uiUnableToSwapTheseFilesBelow = 'Unable to swap these files below';
 
   //mods_swapper_data_loader
   String uiLoadingItemRefSheetsData = 'Loading item reference sheets data',

@@ -301,6 +301,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiErrorWhenSwapping = json['uiErrorWhenSwapping'] as String
       ..uiSuccessfullySwapped = json['uiSuccessfullySwapped'] as String
       ..uiAddToModManager = json['uiAddToModManager'] as String
+      ..uiFailedToSwap = json['uiFailedToSwap'] as String
+      ..uiUnableToSwapTheseFilesBelow =
+          json['uiUnableToSwapTheseFilesBelow'] as String
       ..uiLoadingItemRefSheetsData =
           json['uiLoadingItemRefSheetsData'] as String
       ..uiErrorWhenLoadingItemRefSheets =
@@ -555,6 +558,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,
       'uiSuccessfullySwapped': instance.uiSuccessfullySwapped,
       'uiAddToModManager': instance.uiAddToModManager,
+      'uiFailedToSwap': instance.uiFailedToSwap,
+      'uiUnableToSwapTheseFilesBelow': instance.uiUnableToSwapTheseFilesBelow,
       'uiLoadingItemRefSheetsData': instance.uiLoadingItemRefSheetsData,
       'uiErrorWhenLoadingItemRefSheets':
           instance.uiErrorWhenLoadingItemRefSheets,

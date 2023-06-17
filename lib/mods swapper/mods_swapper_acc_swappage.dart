@@ -27,6 +27,8 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   if (toAccItemAvailableIces.isEmpty) {
     return curLangText!.uiNoMatchingIceFoundToSwap;
   }
+
+  List<String> unableToSwapIceFiles = [];
   //get ice files
   for (var line in toAccItemAvailableIces) {
     //get from ice
@@ -66,18 +68,20 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
       }
 
       //change from files ids -> to files ids
+      int copiedFilesCounter = 0;
       for (var file in Directory(Uri.file('$tempSubmodPathF/${fromAccItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
         String newFilePath = '';
         if (file.path.contains(fromAccItemId)) {
-            newFilePath = file.path.replaceFirst(fromAccItemId, toAccItemId);
-          } else {
-            newFilePath = file.path;
-          }
+          newFilePath = file.path.replaceFirst(fromAccItemId, toAccItemId);
+        } else {
+          newFilePath = file.path;
+        }
 
         //copy file
         File renamedFile = await file.rename(Uri.file(newFilePath).toFilePath());
         if (isCopyAll) {
           renamedFile.copySync(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext/${p.basename(renamedFile.path)}').toFilePath());
+          copiedFilesCounter++;
         } else {
           final extractedFilesInTItem = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
           File matchingTFile = extractedFilesInTItem
@@ -86,6 +90,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
           });
           if (matchingTFile.path.isNotEmpty) {
             renamedFile.copySync(matchingTFile.path);
+            copiedFilesCounter++;
           }
         }
       }
@@ -105,32 +110,40 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
       }
 
       //pack
-      List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-      for (var char in charToReplace) {
-        toItemName = toItemName.replaceAll(char, '_');
-      }
-      String packDirPath = '';
-      if (fromSubmod.modName == fromSubmod.submodName) {
-        packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
+      if (copiedFilesCounter > 0) {
+        List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+        for (var char in charToReplace) {
+          toItemName = toItemName.replaceAll(char, '_');
+        }
+        String packDirPath = '';
+        if (fromSubmod.modName == fromSubmod.submodName) {
+          packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
+        } else {
+          packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
+        }
+        Directory(packDirPath).createSync(recursive: true);
+        await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()]);
+        File(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/${line.split(': ').last}').toFilePath());
+        //image
+        for (var imagePath in fromSubmod.previewImages) {
+          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+            File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+          }
+        }
+        //video
+        for (var videoPath in fromSubmod.previewVideos) {
+          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+            File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+          }
+        }
       } else {
-        packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
-      }
-      Directory(packDirPath).createSync(recursive: true);
-      await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()]);
-      File(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/${line.split(': ').last}').toFilePath());
-      //image
-      for (var imagePath in fromSubmod.previewImages) {
-        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
-          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
-        }
-      }
-      //video
-      for (var videoPath in fromSubmod.previewVideos) {
-        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
-          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
-        }
+        unableToSwapIceFiles.add('"${fromAccItemAvailableIces[fromLineIndex].split(': ').last}" > "${line.split(': ').last}"');
       }
     }
+  }
+
+  if (unableToSwapIceFiles.isNotEmpty) {
+    return unableToSwapIceFiles.join('\n');
   }
 
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
@@ -227,76 +240,101 @@ Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                               Row(
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    curLangText!.uiSuccessfullySwapped,
+                                    swappedModPath.contains(modManSwapperOutputDirPath) ? curLangText!.uiSuccessfullySwapped : curLangText!.uiFailedToSwap,
                                     style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: Card(
-                                        margin: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                fromSubmod.itemName,
-                                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                  padding: const EdgeInsets.symmetric(vertical: 15),
+                                  child: swappedModPath.contains(modManSwapperOutputDirPath)
+                                      ? Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Card(
+                                                margin: EdgeInsets.zero,
+                                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                                color: Colors.transparent,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(5.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        fromSubmod.itemName,
+                                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                      ),
+                                                      Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
-                                              Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 5),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 5),
-                                        child: Icon(Icons.arrow_forward_ios_rounded),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Card(
-                                        margin: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                toItemName,
-                                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 5),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                                child: Icon(Icons.arrow_forward_ios_rounded),
                                               ),
-                                              Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
-                                            ],
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Card(
+                                                margin: EdgeInsets.zero,
+                                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                                color: Colors.transparent,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(5.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        toItemName,
+                                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                      ),
+                                                      Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : ScrollbarTheme(
+                                          data: ScrollbarThemeData(
+                                            thumbColor: MaterialStateProperty.resolveWith((states) {
+                                              if (states.contains(MaterialState.hovered)) {
+                                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                              }
+                                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                            }),
                                           ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 10),
+                                                  child: Text(
+                                                    curLangText!.uiUnableToSwapTheseFilesBelow,
+                                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Text(swappedModPath)
+                                              ],
+                                            ),
+                                          ),
+                                        )),
                               Container(
                                 constraints: const BoxConstraints(minWidth: 450),
                                 child: Row(
@@ -320,16 +358,20 @@ Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
                                               Navigator.pop(context);
                                             }),
                                         ElevatedButton(
-                                            onPressed: () async {
-                                              await launchUrl(Uri.file(swappedModPath));
-                                            },
+                                            onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
+                                                ? null
+                                                : () async {
+                                                    await launchUrl(Uri.file(swappedModPath));
+                                                  },
                                             child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),
                                         ElevatedButton(
-                                            onPressed: () {
-                                              newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                              newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                              modAddHandler(context);
-                                            },
+                                            onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
+                                                ? null
+                                                : () {
+                                                    newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    modAddHandler(context);
+                                                  },
                                             child: Text(curLangText!.uiAddToModManager))
                                       ],
                                     ),
