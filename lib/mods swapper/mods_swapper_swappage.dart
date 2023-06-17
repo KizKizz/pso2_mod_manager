@@ -24,7 +24,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
 
   toItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
   if (toItemAvailableIces.isEmpty) {
-    return 'No matching ice files found in swap to item';
+    return curLangText!.uiNoMatchingIceFoundToSwap;
   }
   //get ice files
   for (var line in toItemAvailableIces) {
@@ -36,20 +36,27 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       fromLineIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first);
     }
     if (fromLineIndex != -1) {
-      final fromModFile = fromSubmod.modFiles.firstWhere((element) => element.modFileName == fromItemAvailableIces[fromLineIndex].split(': ').last);
-      final copiedFIceFile = await File(fromModFile.location).copy(Uri.file('$modManSwapperFromItemDirPath/${p.basename(fromModFile.location)}').toFilePath());
-      await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [copiedFIceFile.path]);
+      final fromModFile = fromSubmod.modFiles.where((element) => element.modFileName == fromItemAvailableIces[fromLineIndex].split(': ').last);
+      if (fromModFile.isNotEmpty) {
+        final copiedFIceFile = await File(fromModFile.first.location).copy(Uri.file('$modManSwapperFromItemDirPath/${p.basename(fromModFile.first.location)}').toFilePath());
+        await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [copiedFIceFile.path]);
+      }
 
       //get to ices
       String toIcePathFromOgData = '';
       for (var loc in ogDataFilePaths) {
-        toIcePathFromOgData = loc.firstWhere((element) => line.split(': ').last == p.basename(element));
+        toIcePathFromOgData = loc.firstWhere(
+          (element) => line.split(': ').last == p.basename(element),
+          orElse: () => '',
+        );
         if (toIcePathFromOgData.isNotEmpty) {
           break;
         }
       }
-      final copiedTIceFile = await File(toIcePathFromOgData).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(toIcePathFromOgData)}').toFilePath());
-      await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathT"', [copiedTIceFile.path]);
+      if (toIcePathFromOgData.isNotEmpty) {
+        final copiedTIceFile = await File(toIcePathFromOgData).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(toIcePathFromOgData)}').toFilePath());
+        await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathT"', [copiedTIceFile.path]);
+      }
 
       //clean To dirs if copy all
       if (isCopyAll) {
@@ -147,7 +154,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                       AsyncSnapshot snapshot,
                     ) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
+                        return SizedBox(
                           width: 250,
                           height: 250,
                           child: Center(
@@ -157,43 +164,45 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Swapping item',
-                                  style: TextStyle(fontSize: 20),
+                                  curLangText!.uiSwappingItem,
+                                  style: const TextStyle(fontSize: 20),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
-                                CircularProgressIndicator(),
+                                const CircularProgressIndicator(),
                               ],
                             ),
                           ),
                         );
                       } else {
                         if (snapshot.hasError) {
-                          return SizedBox(
-                            child: Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Error when swapping item',
-                                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                    child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                                  ),
-                                ],
-                              ),
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  curLangText!.uiErrorWhenSwapping,
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                  child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                                ),
+                                ElevatedButton(
+                                    child: Text(curLangText!.uiReturn),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ],
                             ),
                           );
                         } else if (!snapshot.hasData) {
-                          return const SizedBox(
+                          return SizedBox(
                             width: 250,
                             height: 250,
                             child: Center(
@@ -203,13 +212,13 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Swapping item',
-                                    style: TextStyle(fontSize: 20),
+                                    curLangText!.uiSwappingItem,
+                                    style: const TextStyle(fontSize: 20),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
-                                  CircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                                 ],
                               ),
                             ),
@@ -219,11 +228,14 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Row(
+                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text('Successfully swapped', style: Theme.of(context).textTheme.headlineSmall),
+                                  Text(
+                                    curLangText!.uiSuccessfullySwapped,
+                                    style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
                                 ],
                               ),
                               Padding(
@@ -234,16 +246,24 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                                   children: [
                                     Expanded(
                                       flex: 1,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            fromSubmod.itemName,
-                                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                        color: Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                fromSubmod.itemName,
+                                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                              ),
+                                              Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                            ],
                                           ),
-                                          Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                     const Padding(
@@ -255,44 +275,67 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                                     ),
                                     Expanded(
                                       flex: 1,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            toItemName,
-                                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                        color: Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                toItemName,
+                                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                              ),
+                                              Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                            ],
                                           ),
-                                          Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
-                                        ],
+                                        ),
                                       ),
                                     )
                                   ],
                                 ),
                               ),
-                              Wrap(
-                                runAlignment: WrapAlignment.center,
-                                alignment: WrapAlignment.center,
-                                spacing: 5,
-                                children: [
-                                  ElevatedButton(
-                                      child: Text(curLangText!.uiReturn),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      }),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        await launchUrl(Uri.file(swappedModPath));
-                                      },
-                                      child: const Text('Open in File Explorer')),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                        newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                        modAddHandler(context);
-                                      },
-                                      child: const Text('Add to Mod Manager'))
-                                ],
+                              Container(
+                                constraints: const BoxConstraints(minWidth: 300),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Wrap(
+                                      runAlignment: WrapAlignment.center,
+                                      alignment: WrapAlignment.center,
+                                      spacing: 5,
+                                      children: [
+                                        ElevatedButton(
+                                            child: Text(curLangText!.uiReturn),
+                                            onPressed: () {
+                                              //clear
+                                              if (Directory(modManSwapperFromItemDirPath).existsSync()) {
+                                                Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+                                              }
+                                              if (Directory(modManSwapperToItemDirPath).existsSync()) {
+                                                Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
+                                              }
+                                              Navigator.pop(context);
+                                            }),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              await launchUrl(Uri.file(swappedModPath));
+                                            },
+                                            child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                              newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                              modAddHandler(context);
+                                            },
+                                            child: Text(curLangText!.uiAddToModManager))
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           );

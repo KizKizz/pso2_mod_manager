@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart' as f;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';

@@ -263,6 +263,28 @@ class TranslationText {
   //startup item icons popup
   String uiModsLoader = 'Mods Loader', uiAutoFetchItemIcons = 'Automatically fetch missing item icons on startup?', uiOneIconEachItem = 'One icon for each item', uiFetchAll = 'Fetch All';
 
+//mods_swapper_homepage
+  String uiChooseAVariantFoundBellow = 'Choose a variant found bellow',
+      uiChooseAnItemBellowToSwap = 'Choose an item below to swap',
+      uiSearchSwapItems = 'Search items',
+      uiReplaceNQwithHQ = 'Replace NQ ices with HQ',
+      uiSwapAllFilesInsideIce = 'Swap all files inside ices',
+      uiRemoveUnmatchingFiles = 'Remove unmatching files in destination ices',
+      uiSwap = 'Swap';
+
+  //mod_swapper_swappage
+  String uiNoMatchingIceFoundToSwap = 'No matching ice files found to swap item',
+      uiSwappingItem = 'Swapping Item',
+      uiErrorWhenSwapping = 'Error when swapping item',
+      uiSuccessfullySwapped = 'Successfully Swapped',
+      uiAddToModManager = 'Add to Mod Manager';
+
+  //mods_swapper_data_loader
+  String uiLoadingItemRefSheetsData = 'Loading item reference sheets data',
+      uiErrorWhenLoadingItemRefSheets = 'Error when loading item reference sheets data',
+      uiFetchingItemInfo = 'Fetching item info',
+      uiErrorWhenFetchingItemInfo = 'Error when fetching item info';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

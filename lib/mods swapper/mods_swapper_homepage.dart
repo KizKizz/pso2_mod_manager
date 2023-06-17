@@ -27,9 +27,7 @@ class ModsSwapperHomePage extends StatefulWidget {
 
 class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
   @override
-  Widget build(BuildContext context) {
-    //create temp dirs
-    Directory(modManSwapperDirPath).createSync(recursive: true);
+  void initState() {
     //clear
     if (Directory(modManSwapperFromItemDirPath).existsSync()) {
       Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
@@ -37,6 +35,14 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
     if (Directory(modManSwapperToItemDirPath).existsSync()) {
       Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
     }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //create temp dirs
+    Directory(modManSwapperDirPath).createSync(recursive: true);
+
     //create
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
@@ -144,9 +150,9 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   color: Colors.transparent,
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: Text('Choose a variant found bellow'),
+                                    Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
                                     ),
                                     ScrollbarTheme(
                                       data: ScrollbarThemeData(
@@ -222,7 +228,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                     height: 90,
                                     child: ListTile(
                                       minVerticalPadding: 15,
-                                      title: const Text('Choose an item below to swap'),
+                                      title: Text(curLangText!.uiChooseAnItemBellowToSwap),
                                       subtitle: Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: SizedBox(
@@ -233,7 +239,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                             maxLines: 1,
                                             textAlignVertical: TextAlignVertical.center,
                                             decoration: InputDecoration(
-                                                hintText: 'Search for items',
+                                                hintText: curLangText!.uiSearchSwapItems,
                                                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                                                 isCollapsed: true,
                                                 isDense: true,
@@ -360,7 +366,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                 setState(() {});
                               },
                             ),
-                            const Text('Replace NQ files with HQ'),
+                            Text(curLangText!.uiReplaceNQwithHQ),
                             Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
                             Checkbox(
                               splashRadius: 2,
@@ -372,7 +378,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                 setState(() {});
                               },
                             ),
-                            const Text('Swap all files inside ices'),
+                            Text(curLangText!.uiSwapAllFilesInsideIce),
                             Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
                             Checkbox(
                               splashRadius: 2,
@@ -384,7 +390,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                 setState(() {});
                               },
                             ),
-                            const Text('Remove unmatching files in destination ices'),
+                            Text(curLangText!.uiRemoveUnmatchingFiles),
                           ],
                         ),
                         Wrap(
@@ -456,14 +462,22 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                       children: [
                         Expanded(
                           flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('Item ID: ${fromItemIds[0]}'),
-                              Text('Adjusted ID: ${fromItemIds[1]}'),
-                              for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])
-                            ],
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                            color: Colors.transparent,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Item ID: ${fromItemIds[0]}'),
+                                  Text('Adjusted ID: ${fromItemIds[1]}'),
+                                  for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         const Padding(
@@ -475,10 +489,18 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                         ),
                         Expanded(
                           flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [Text('Item ID: ${toItemIds[0]}'), Text('Adjusted ID: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                            color: Colors.transparent,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [Text('Item ID: ${toItemIds[0]}'), Text('Adjusted ID: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
+                              ),
+                            ),
                           ),
                         )
                       ],
@@ -496,7 +518,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                         Navigator.pop(context);
                         swapperSwappingDialog(context, fromSubmod);
                       },
-                      child: const Text('Swap'))
+                      child: Text(curLangText!.uiSwap))
                 ]);
           }));
 }

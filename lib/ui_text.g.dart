@@ -285,7 +285,29 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiModsLoader = json['uiModsLoader'] as String
       ..uiAutoFetchItemIcons = json['uiAutoFetchItemIcons'] as String
       ..uiOneIconEachItem = json['uiOneIconEachItem'] as String
-      ..uiFetchAll = json['uiFetchAll'] as String;
+      ..uiFetchAll = json['uiFetchAll'] as String
+      ..uiChooseAVariantFoundBellow =
+          json['uiChooseAVariantFoundBellow'] as String
+      ..uiChooseAnItemBellowToSwap =
+          json['uiChooseAnItemBellowToSwap'] as String
+      ..uiSearchSwapItems = json['uiSearchSwapItems'] as String
+      ..uiReplaceNQwithHQ = json['uiReplaceNQwithHQ'] as String
+      ..uiSwapAllFilesInsideIce = json['uiSwapAllFilesInsideIce'] as String
+      ..uiRemoveUnmatchingFiles = json['uiRemoveUnmatchingFiles'] as String
+      ..uiSwap = json['uiSwap'] as String
+      ..uiNoMatchingIceFoundToSwap =
+          json['uiNoMatchingIceFoundToSwap'] as String
+      ..uiSwappingItem = json['uiSwappingItem'] as String
+      ..uiErrorWhenSwapping = json['uiErrorWhenSwapping'] as String
+      ..uiSuccessfullySwapped = json['uiSuccessfullySwapped'] as String
+      ..uiAddToModManager = json['uiAddToModManager'] as String
+      ..uiLoadingItemRefSheetsData =
+          json['uiLoadingItemRefSheetsData'] as String
+      ..uiErrorWhenLoadingItemRefSheets =
+          json['uiErrorWhenLoadingItemRefSheets'] as String
+      ..uiFetchingItemInfo = json['uiFetchingItemInfo'] as String
+      ..uiErrorWhenFetchingItemInfo =
+          json['uiErrorWhenFetchingItemInfo'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -521,4 +543,21 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAutoFetchItemIcons': instance.uiAutoFetchItemIcons,
       'uiOneIconEachItem': instance.uiOneIconEachItem,
       'uiFetchAll': instance.uiFetchAll,
+      'uiChooseAVariantFoundBellow': instance.uiChooseAVariantFoundBellow,
+      'uiChooseAnItemBellowToSwap': instance.uiChooseAnItemBellowToSwap,
+      'uiSearchSwapItems': instance.uiSearchSwapItems,
+      'uiReplaceNQwithHQ': instance.uiReplaceNQwithHQ,
+      'uiSwapAllFilesInsideIce': instance.uiSwapAllFilesInsideIce,
+      'uiRemoveUnmatchingFiles': instance.uiRemoveUnmatchingFiles,
+      'uiSwap': instance.uiSwap,
+      'uiNoMatchingIceFoundToSwap': instance.uiNoMatchingIceFoundToSwap,
+      'uiSwappingItem': instance.uiSwappingItem,
+      'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,
+      'uiSuccessfullySwapped': instance.uiSuccessfullySwapped,
+      'uiAddToModManager': instance.uiAddToModManager,
+      'uiLoadingItemRefSheetsData': instance.uiLoadingItemRefSheetsData,
+      'uiErrorWhenLoadingItemRefSheets':
+          instance.uiErrorWhenLoadingItemRefSheets,
+      'uiFetchingItemInfo': instance.uiFetchingItemInfo,
+      'uiErrorWhenFetchingItemInfo': instance.uiErrorWhenFetchingItemInfo,
     };
