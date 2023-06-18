@@ -168,7 +168,6 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
       if (aqpInDirT.path.isNotEmpty) {
         var aqpBytes = await aqpInDirT.readAsBytes();
         String aqpBytesString = String.fromCharCodes(aqpBytes);
-        print(aqpBytesString);
         for (var ddsFileF in ddsFileNamesF) {
           int ddsIndex = ddsFileNamesF.indexOf(ddsFileF);
           aqpBytesString = aqpBytesString.replaceFirst(ddsFileF, ddsFileNamesT[ddsIndex]);
