@@ -84,13 +84,51 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
             newFilePath = file.path.replaceFirst(fromItemIds[1], toItemIds[0]);
           }
         } else {
-          newFilePath = file.path;
+          //find ids that arent listed
+          final fileNameFExtraId = p.basename(file.path).split('_').where((element) => element.length > 4 && int.tryParse(element) != null);
+          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
+            newFilePath = file.path.replaceFirst(fileNameFExtraId.first, toItemIds[1]);
+          } else {
+            newFilePath = file.path.replaceFirst(fileNameFExtraId.first, toItemIds[0]);
+          }
+        }
+
+        //check group dirs in T files
+        final groupDirsInExtractedFIce =
+            Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
+        final groupDirsInExtractedTIce = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
+
+        bool removeGeneratedGroupDir = false;
+        for (var groupDirT in groupDirsInExtractedTIce) {
+          if (groupDirsInExtractedFIce.where((element) => p.basename(element.path) == p.basename(groupDirT.path)).isEmpty) {
+            newFilePath = newFilePath.replaceFirst(p.basename(file.parent.path), p.basename(groupDirT.path));
+            Directory(p.dirname(newFilePath)).createSync(recursive: true);
+            removeGeneratedGroupDir = true;
+            break;
+          }
+        }
+
+        //get T file name to match F file
+        final filesInExtractedDirT = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
+        File matchingFileFromDirT = File('');
+        for (var fileT in filesInExtractedDirT) {
+          final curFileFSplit = p.basename(newFilePath).split('_');
+          final curFileTSplit = p.basename(fileT.path).split('_');
+          if (curFileFSplit.length > 4 && curFileTSplit.length > 4 && curFileFSplit[0] == curFileTSplit[0] && curFileFSplit[1] == curFileTSplit[1] && curFileFSplit[2] == curFileTSplit[2] && curFileFSplit[3] == curFileTSplit[3]) {
+            matchingFileFromDirT = fileT;
+            break;
+          }
+        }
+        if (matchingFileFromDirT.path.isNotEmpty) {
+          newFilePath = newFilePath.replaceFirst(p.basenameWithoutExtension(newFilePath), p.basenameWithoutExtension(matchingFileFromDirT.path));
         }
 
         //copy file
         File renamedFile = await file.rename(Uri.file(newFilePath).toFilePath());
+
         if (isCopyAll) {
           renamedFile.copySync(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext/${p.basename(renamedFile.path)}').toFilePath());
+          copiedFilesCounter++;
         } else {
           final extractedFilesInTItem = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
           File matchingTFile = extractedFilesInTItem
@@ -98,9 +136,13 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
             return File('');
           });
           if (matchingTFile.path.isNotEmpty) {
-            renamedFile.copySync(matchingTFile.path);
+            await renamedFile.copy(matchingTFile.path);
             copiedFilesCounter++;
           }
+        }
+        if (removeGeneratedGroupDir) {
+          removeGeneratedGroupDir = false;
+          Directory(p.dirname(newFilePath)).deleteSync(recursive: true);
         }
       }
 
@@ -185,7 +227,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  swappedModPath.contains(modManSwapperOutputDirPath) ? curLangText!.uiSuccessfullySwapped : curLangText!.uiFailedToSwap,
+                                  curLangText!.uiSwappingItem,
                                   style: const TextStyle(fontSize: 20),
                                 ),
                                 const SizedBox(
@@ -254,7 +296,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    curLangText!.uiSuccessfullySwapped,
+                                    swappedModPath.contains(modManSwapperOutputDirPath) ? curLangText!.uiSuccessfullySwapped : curLangText!.uiFailedToSwap,
                                     style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                                   ),
                                 ],

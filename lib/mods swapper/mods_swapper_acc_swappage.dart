@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
@@ -45,6 +46,9 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [copiedFIceFile.path]);
       }
 
+      List<String> ddsFileNamesF = [];
+      List<String> ddsFileNamesT = [];
+
       //get to ices
       String toIcePathFromOgData = '';
       for (var loc in ogDataFilePaths) {
@@ -74,7 +78,51 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         if (file.path.contains(fromAccItemId)) {
           newFilePath = file.path.replaceFirst(fromAccItemId, toAccItemId);
         } else {
-          newFilePath = file.path;
+          //find ids that arent listed
+          final fileNameFExtraId = p.basename(file.path).split('_').where((element) => element.length >= 4 && int.tryParse(element) != null);
+          if (toAccItemId.isNotEmpty && toAccItemId != '0') {
+            newFilePath = file.path.replaceFirst(fileNameFExtraId.first, toAccItemId);
+          }
+        }
+
+        //check group dirs in T files
+        final groupDirsInExtractedFIce =
+            Directory(Uri.file('$tempSubmodPathF/${fromAccItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
+        final groupDirsInExtractedTIce = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
+
+        bool removeGeneratedGroupDir = false;
+        for (var groupDirT in groupDirsInExtractedTIce) {
+          if (groupDirsInExtractedFIce.where((element) => p.basename(element.path) == p.basename(groupDirT.path)).isEmpty) {
+            newFilePath = newFilePath.replaceFirst(p.basename(file.parent.path), p.basename(groupDirT.path));
+            Directory(p.dirname(newFilePath)).createSync(recursive: true);
+            removeGeneratedGroupDir = true;
+            break;
+          }
+        }
+
+        //get T file name to match F file
+        final filesInExtractedDirT = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
+        File matchingFileFromDirT = File('');
+        for (var fileT in filesInExtractedDirT) {
+          final curFileFSplit = p.basename(newFilePath).split('_');
+          final curFileTSplit = p.basename(fileT.path).split('_');
+          if (curFileFSplit[0] == curFileTSplit[0] && curFileFSplit[1] == curFileTSplit[1] && curFileFSplit[2] == curFileTSplit[2] && curFileFSplit[3] == curFileTSplit[3]) {
+            matchingFileFromDirT = fileT;
+            break;
+          }
+        }
+        if (matchingFileFromDirT.path.isNotEmpty) {
+          newFilePath = newFilePath.replaceFirst(p.basenameWithoutExtension(newFilePath), p.basenameWithoutExtension(matchingFileFromDirT.path));
+        }
+
+        //get dds names
+        if (p.extension(file.path) == '.dds') {
+          ddsFileNamesF.add(p.basename(file.path));
+          //print(file.path);
+        }
+        if (p.extension(newFilePath) == '.dds') {
+          ddsFileNamesT.add(p.basename(newFilePath));
+          //print(newFilePath+'\n');
         }
 
         //copy file
@@ -93,10 +141,13 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             copiedFilesCounter++;
           }
         }
+        if (removeGeneratedGroupDir) {
+          removeGeneratedGroupDir = false;
+          Directory(p.dirname(newFilePath)).deleteSync(recursive: true);
+        }
       }
 
       //remove extra file in To dir
-
       if (isRemoveExtras) {
         for (var file in Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
           if (Directory(Uri.file('$tempSubmodPathF/${fromAccItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath())
@@ -107,6 +158,23 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             file.deleteSync();
           }
         }
+      }
+
+      //rename texture in aqp
+      File aqpInDirT = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>().firstWhere(
+            (element) => p.extension(element.path) == '.aqp',
+            orElse: () => File(''),
+          );
+      if (aqpInDirT.path.isNotEmpty) {
+        var aqpBytes = await aqpInDirT.readAsBytes();
+        String aqpBytesString = String.fromCharCodes(aqpBytes);
+        print(aqpBytesString);
+        for (var ddsFileF in ddsFileNamesF) {
+          int ddsIndex = ddsFileNamesF.indexOf(ddsFileF);
+          aqpBytesString = aqpBytesString.replaceFirst(ddsFileF, ddsFileNamesT[ddsIndex]);
+        }
+        Uint8List ddsFileTBytes = Uint8List.fromList(aqpBytesString.codeUnits);
+        aqpInDirT.writeAsBytesSync(ddsFileTBytes);
       }
 
       //pack
