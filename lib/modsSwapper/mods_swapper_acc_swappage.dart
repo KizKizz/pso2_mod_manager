@@ -167,15 +167,12 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
       //get renamed dds in F
       final renamedDdsFilesF = Directory(group2ExtractedItemPathF).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.dds');
       final renamedDdsNamesF = renamedDdsFilesF.map((e) => p.basename(e.path)).toList();
-      renamedDdsNamesF.sort((a, b) => a.compareTo(b));
       //get old dds in F
       List<String> ogDdsNamesF = [];
       if (extractedGroup2FilesF.isNotEmpty) {
         ogDdsNamesF = extractedGroup2FilesF.where((element) => p.extension(element.path) == '.dds').map((e) => p.basename(e.path)).toList();
-        ogDdsNamesF.sort((a, b) => a.compareTo(b));
       } else {
         ogDdsNamesF = extractedGroup1FilesF.where((element) => p.extension(element.path) == '.dds').map((e) => p.basename(e.path)).toList();
-        ogDdsNamesF.sort((a, b) => a.compareTo(b));
       }
       //get .aqp
       File aqpInDirF = Directory(group2ExtractedItemPathF).listSync(recursive: true).whereType<File>().firstWhere(

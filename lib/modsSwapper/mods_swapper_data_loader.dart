@@ -13,11 +13,14 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
 
 List<CsvIceFile> csvData = [];
 List<CsvIceFile> availableItemsCsvData = [];
 List<CsvAccessoryIceFile> csvAccData = [];
 List<CsvAccessoryIceFile> availableAccCsvData = [];
+List<CsvEmoteIceFile> csvEmotesData = [];
+List<CsvEmoteIceFile> availableEmotesCsvData = [];
 
 List<File> getCsvFiles(String categoryName) {
   List<File> csvFiles = [];
@@ -49,6 +52,10 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
     for (var item in line) {
       if (item.split(',').first == defaultCateforyDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
+      } else if (item.split(',').first == defaultCateforyDirs[7]) {
+        csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
+      } else if (item.split(',').first == defaultCateforyDirs[14]) {
+        csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
       } else if (item.split(',').first == defaultCateforyDirs[10]) {
         csvData.add(CsvIceFile.fromListHairs(item.split(',')));
       } else {
@@ -82,6 +89,10 @@ Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> 
   return cvsAccDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
 }
 
+Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsAccDataInput, Item swapFromItem) async {
+  return csvEmotesData.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+}
+
 class ModsSwapperDataLoader extends StatefulWidget {
   const ModsSwapperDataLoader({super.key, required this.fromItem, required this.fromSubmod});
 
@@ -96,7 +107,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: csvData.isEmpty && csvAccData.isEmpty ? sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category)) : null,
+        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category)) : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -167,7 +178,9 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                       ? getSwapToCsvList(csvData, widget.fromItem)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
                           ? getAccSwapToCsvList(csvAccData, widget.fromItem)
-                          : null,
+                          : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
+                              ? getEmotesSwapToCsvList(csvEmotesData, widget.fromItem)
+                              : null,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot snapshot,
@@ -246,6 +259,21 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                             );
                           }
                           return ModsSwapperAccHomePage(
+                            fromItem: widget.fromItem,
+                            fromSubmod: widget.fromSubmod,
+                          );
+                        } else if (csvEmotesData.isNotEmpty) {
+                          availableEmotesCsvData = snapshot.data;
+                          if (curActiveLang == 'JP') {
+                            availableItemsCsvData.sort(
+                              (a, b) => a.jpName.compareTo(b.jpName),
+                            );
+                          } else {
+                            availableItemsCsvData.sort(
+                              (a, b) => a.enName.compareTo(b.enName),
+                            );
+                          }
+                          return ModsSwapperEmotesHomePage(
                             fromItem: widget.fromItem,
                             fromSubmod: widget.fromSubmod,
                           );
