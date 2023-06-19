@@ -8,8 +8,9 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_homepage.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -22,179 +23,134 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
 
   String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName}').toFilePath();
   String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();
+  List<List<String>> iceSwappingList = [];
 
   toItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
   if (toItemAvailableIces.isEmpty) {
     return curLangText!.uiNoMatchingIceFoundToSwap;
   }
 
-  List<String> unableToSwapIceFiles = [];
-  //get ice files
-  for (var line in toItemAvailableIces) {
-    //get from ice
-    int fromLineIndex = -1;
+  //map coresponding files to swap
+  for (var itemT in toItemAvailableIces) {
+    String curIceType = '';
+    //change T ices to HD types
     if (isReplacingNQWithHQ) {
-      fromLineIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first.replaceAll('Normal Quality', 'High Quality'));
+      String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
+      curIceType = tempIceTypeT.split(': ').first;
     } else {
-      fromLineIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == line.split(': ').first);
+      curIceType = itemT.split(': ').first;
     }
-    if (fromLineIndex != -1) {
-      final fromModFile = fromSubmod.modFiles.where((element) => element.modFileName == fromItemAvailableIces[fromLineIndex].split(': ').last);
-      if (fromModFile.isNotEmpty) {
-        final copiedFIceFile = await File(fromModFile.first.location).copy(Uri.file('$modManSwapperFromItemDirPath/${p.basename(fromModFile.first.location)}').toFilePath());
-        await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [copiedFIceFile.path]);
-      }
-
-      //get to ices
-      String toIcePathFromOgData = '';
-      for (var loc in ogDataFilePaths) {
-        toIcePathFromOgData = loc.firstWhere(
-          (element) => line.split(': ').last == p.basename(element),
-          orElse: () => '',
-        );
-        if (toIcePathFromOgData.isNotEmpty) {
-          break;
-        }
-      }
-      if (toIcePathFromOgData.isNotEmpty) {
-        final copiedTIceFile = await File(toIcePathFromOgData).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(toIcePathFromOgData)}').toFilePath());
-        await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathT"', [copiedTIceFile.path]);
-      }
-
-      //clean To dirs if copy all
-      if (isCopyAll) {
-        Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).deleteSync(recursive: true);
-        Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).createSync(recursive: true);
-      }
-
-      //change from files ids -> to files ids
-      int copiedFilesCounter = 0;
-      for (var file in Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
-        String newFilePath = '';
-        if (file.path.contains(fromItemIds[0])) {
-          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
-            newFilePath = file.path.replaceFirst(fromItemIds[0], toItemIds[1]);
-          } else {
-            newFilePath = file.path.replaceFirst(fromItemIds[0], toItemIds[0]);
-          }
-        } else if (file.path.contains(fromItemIds[1])) {
-          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
-            newFilePath = file.path.replaceFirst(fromItemIds[1], toItemIds[1]);
-          } else {
-            newFilePath = file.path.replaceFirst(fromItemIds[1], toItemIds[0]);
-          }
-        } else {
-          //find ids that arent listed
-          final fileNameFExtraId = p.basename(file.path).split('_').where((element) => element.length > 4 && int.tryParse(element) != null);
-          if (toItemIds[1].isNotEmpty && toItemIds[1] != '0') {
-            newFilePath = file.path.replaceFirst(fileNameFExtraId.first, toItemIds[1]);
-          } else {
-            newFilePath = file.path.replaceFirst(fileNameFExtraId.first, toItemIds[0]);
-          }
-        }
-
-        //check group dirs in T files
-        final groupDirsInExtractedFIce =
-            Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
-        final groupDirsInExtractedTIce = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: false).whereType<Directory>();
-
-        bool removeGeneratedGroupDir = false;
-        for (var groupDirT in groupDirsInExtractedTIce) {
-          if (groupDirsInExtractedFIce.where((element) => p.basename(element.path) == p.basename(groupDirT.path)).isEmpty) {
-            newFilePath = newFilePath.replaceFirst(p.basename(file.parent.path), p.basename(groupDirT.path));
-            Directory(p.dirname(newFilePath)).createSync(recursive: true);
-            removeGeneratedGroupDir = true;
-            break;
-          }
-        }
-
-        //get T file name to match F file
-        final filesInExtractedDirT = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
-        File matchingFileFromDirT = File('');
-        for (var fileT in filesInExtractedDirT) {
-          final curFileFSplit = p.basename(newFilePath).split('_');
-          final curFileTSplit = p.basename(fileT.path).split('_');
-          if (curFileFSplit.length > 4 && curFileTSplit.length > 4 && curFileFSplit[0] == curFileTSplit[0] && curFileFSplit[1] == curFileTSplit[1] && curFileFSplit[2] == curFileTSplit[2] && curFileFSplit[3] == curFileTSplit[3]) {
-            matchingFileFromDirT = fileT;
-            break;
-          }
-        }
-        if (matchingFileFromDirT.path.isNotEmpty) {
-          newFilePath = newFilePath.replaceFirst(p.basenameWithoutExtension(newFilePath), p.basenameWithoutExtension(matchingFileFromDirT.path));
-        }
-
-        //copy file
-        File renamedFile = await file.rename(Uri.file(newFilePath).toFilePath());
-
-        if (isCopyAll) {
-          renamedFile.copySync(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext/${p.basename(renamedFile.path)}').toFilePath());
-          copiedFilesCounter++;
-        } else {
-          final extractedFilesInTItem = Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>();
-          File matchingTFile = extractedFilesInTItem
-              .firstWhere((element) => p.basename(element.parent.path) == p.basename(renamedFile.parent.path) && p.basename(element.path) == p.basename(renamedFile.path), orElse: () {
-            return File('');
-          });
-          if (matchingTFile.path.isNotEmpty) {
-            await renamedFile.copy(matchingTFile.path);
-            copiedFilesCounter++;
-          }
-        }
-        if (removeGeneratedGroupDir) {
-          removeGeneratedGroupDir = false;
-          Directory(p.dirname(newFilePath)).deleteSync(recursive: true);
-        }
-      }
-
-      //remove extra file in To dir
-
-      if (isRemoveExtras) {
-        for (var file in Directory(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()).listSync(recursive: true).whereType<File>()) {
-          if (Directory(Uri.file('$tempSubmodPathF/${fromItemAvailableIces[fromLineIndex].split(': ').last}_ext').toFilePath())
-              .listSync(recursive: true)
-              .whereType<File>()
-              .where((element) => p.basename(element.path) == p.basename(file.path))
-              .isEmpty) {
-            file.deleteSync();
-          }
-        }
-      }
-
-      //pack
-      if (copiedFilesCounter > 0) {
-        List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-        for (var char in charToReplace) {
-          toItemName = toItemName.replaceAll(char, '_');
-        }
-        String packDirPath = '';
-        if (fromSubmod.modName == fromSubmod.submodName) {
-          packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
-        } else {
-          packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
-        }
-        Directory(packDirPath).createSync(recursive: true);
-        await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext').toFilePath()]);
-        File(Uri.file('$tempSubmodPathT/${line.split(': ').last}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/${line.split(': ').last}').toFilePath());
-        //image
-        for (var imagePath in fromSubmod.previewImages) {
-          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
-            File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
-          }
-        }
-        //video
-        for (var videoPath in fromSubmod.previewVideos) {
-          if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
-            File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
-          }
-        }
-      } else {
-        unableToSwapIceFiles.add('"${fromItemAvailableIces[fromLineIndex].split(': ').last}" > "${line.split(': ').last}"');
-      }
+    int matchingItemFIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
+    if (matchingItemFIndex != -1) {
+      iceSwappingList.add([fromItemAvailableIces[matchingItemFIndex].split(': ').last, itemT.split(': ').last]);
     }
   }
 
-  if (unableToSwapIceFiles.isNotEmpty) {
-    return unableToSwapIceFiles.join('\n');
+  for (var pair in iceSwappingList) {
+    //F ice prep
+    String iceNameF = pair[0];
+    String iceNameT = pair[1];
+    List<File> extractedGroup1FilesF = [];
+    List<File> extractedGroup2FilesF = [];
+    List<File> extractedGroup1FilesT = [];
+    List<File> extractedGroup2FilesT = [];
+
+    //copy to temp fromitem dir
+    int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == iceNameF);
+    if (modFileIndexF != -1) {
+      final modFileF = fromSubmod.modFiles[modFileIndexF];
+      final iceFileInTempF = await File(modFileF.location).copy(Uri.file('$modManSwapperFromItemDirPath/$iceNameF').toFilePath());
+      //extract F ice to
+      await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [iceFileInTempF.path]);
+      String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
+      if (Directory(extractedGroup1PathF).existsSync()) {
+        extractedGroup1FilesF = Directory(extractedGroup1PathF).listSync(recursive: true).whereType<File>().toList();
+      }
+      String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
+      if (Directory(extractedGroup2PathF).existsSync()) {
+        extractedGroup2FilesF = Directory(extractedGroup2PathF).listSync(recursive: true).whereType<File>().toList();
+      }
+    }
+
+    //copy to temp toitem dir
+    String icePathFromOgDataT = '';
+    for (var type in ogDataFilePaths) {
+      icePathFromOgDataT = type.firstWhere(
+        (element) => p.basename(element) == iceNameT,
+        orElse: () => '',
+      );
+      if (icePathFromOgDataT.isNotEmpty) {
+        break;
+      }
+    }
+    if (icePathFromOgDataT.isNotEmpty) {
+      final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
+      await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
+      String extractedGroup1PathT = Uri.file('$tempSubmodPathT/${iceNameT}_ext/group1').toFilePath();
+      if (Directory(extractedGroup1PathT).existsSync()) {
+        extractedGroup1FilesT = Directory(extractedGroup1PathT).listSync(recursive: true).whereType<File>().toList();
+      }
+      String extractedGroup2PathT = Uri.file('$tempSubmodPathT/${iceNameT}_ext/group2').toFilePath();
+      if (Directory(extractedGroup2PathT).existsSync()) {
+        extractedGroup2FilesT = Directory(extractedGroup2PathT).listSync(recursive: true).whereType<File>().toList();
+      }
+    }
+
+    //group2 > group2
+    List<File> renamedExtractedGroup2Files = [];
+    if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
+      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup2FilesT);
+    } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
+      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
+    } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
+      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
+      String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
+      Directory(extractedGroup1PathF).createSync();
+      for (var file in renamedExtractedGroup2Files) {
+        file.renameSync(Uri.file('$extractedGroup1PathF/${p.basename(file.path)}').toFilePath());
+      }
+    }
+    //group1 > group1
+    List<File> renamedExtractedGroup1Files = [];
+    if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup1FilesT);
+    } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
+    } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
+      String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
+      Directory(extractedGroup2PathF).createSync();
+      for (var file in renamedExtractedGroup1Files) {
+        file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+      }
+    }
+
+    //pack
+    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+    for (var char in charToReplace) {
+      toItemName = toItemName.replaceAll(char, '_');
+    }
+    String packDirPath = '';
+    if (fromSubmod.modName == fromSubmod.submodName) {
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
+    } else {
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
+    }
+    Directory(packDirPath).createSync(recursive: true);
+    await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);
+    File(Uri.file('$tempSubmodPathF/${iceNameF}_ext.ice').toFilePath()).renameSync(Uri.file('$packDirPath/$iceNameT').toFilePath());
+    //image
+    for (var imagePath in fromSubmod.previewImages) {
+      if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+        File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+      }
+    }
+    //video
+    for (var videoPath in fromSubmod.previewVideos) {
+      if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+        File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+      }
+    }
   }
 
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();

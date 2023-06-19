@@ -7,32 +7,32 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_acc_swappage.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_data_loader.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
-List<CsvAccessoryIceFile> toAccSearchResults = [];
-CsvAccessoryIceFile? selectedFromAccCsvFile;
-CsvAccessoryIceFile? selectedToAccCsvFile;
-String fromAccItemId = '';
-String toAccItemId = '';
-List<String> fromAccItemAvailableIces = [];
-List<String> toAccItemAvailableIces = [];
+List<CsvIceFile> toItemSearchResults = [];
+CsvIceFile? selectedFromCsvFile;
+CsvIceFile? selectedToCsvFile;
+List<String> fromItemIds = [];
+List<String> toItemIds = [];
+List<String> fromItemAvailableIces = [];
+List<String> toItemAvailableIces = [];
 
-class ModsSwapperAccHomePage extends StatefulWidget {
-  const ModsSwapperAccHomePage({super.key, required this.fromItem, required this.fromSubmod});
+class ModsSwapperHomePage extends StatefulWidget {
+  const ModsSwapperHomePage({super.key, required this.fromItem, required this.fromSubmod});
 
   final Item fromItem;
   final SubMod fromSubmod;
 
   @override
-  State<ModsSwapperAccHomePage> createState() => _ModsSwapperAccHomePageState();
+  State<ModsSwapperHomePage> createState() => _ModsSwapperHomePageState();
 }
 
-class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
+class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
   @override
   void initState() {
     //clear
@@ -53,14 +53,41 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
     //create
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-    //fetch icons
+    //fetch
     final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
-    final fromItemCsvData = csvAccData.where((element) => iceNamesFromSubmod.contains(element.hqIceName) || iceNamesFromSubmod.contains(element.nqIceName)).toList();
+    final fromItemCsvData = csvData
+        .where((element) =>
+            iceNamesFromSubmod.contains(element.hqIceName) ||
+            iceNamesFromSubmod.contains(element.nqIceName) ||
+            iceNamesFromSubmod.contains(element.nqLiIceName) ||
+            iceNamesFromSubmod.contains(element.hqLiIceName))
+        .toList();
     List<List<String>> csvInfos = [];
+    bool includeHqLiIceOnly = false;
+    bool includeNqLiIceOnly = false;
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last)).toList();
       csvInfos.add(availableModFileData);
+      //filter link inner items
+      for (var line in availableModFileData) {
+        if (!includeHqLiIceOnly && line.split(': ').first.contains('High Quality Linked Inner Ice')) {
+          includeHqLiIceOnly = true;
+        }
+        if (!includeNqLiIceOnly && line.split(': ').first.contains('Normal Quality Linked Inner Ice')) {
+          includeNqLiIceOnly = true;
+        }
+        if (includeHqLiIceOnly && includeNqLiIceOnly) {
+          break;
+        }
+      }
+    }
+
+    if (includeHqLiIceOnly) {
+      availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
+    }
+    if (includeNqLiIceOnly) {
+      availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
     }
 
     return Scaffold(
@@ -132,7 +159,11 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                                             ),
                                             Text(widget.fromItem.itemName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                            Text('${widget.fromSubmod.modName} > ${widget.fromSubmod.submodName}')
+                                            Text('${widget.fromSubmod.modName} > ${widget.fromSubmod.submodName}'),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 10),
+                                              child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                            ),
                                           ],
                                         ),
                                       )
@@ -150,62 +181,57 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                 child: Card(
                                   shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                   color: Colors.transparent,
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                  child: ScrollbarTheme(
+                                    data: ScrollbarThemeData(
+                                      thumbColor: MaterialStateProperty.resolveWith((states) {
+                                        if (states.contains(MaterialState.hovered)) {
+                                          return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                        }
+                                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                      }),
                                     ),
-                                    ScrollbarTheme(
-                                      data: ScrollbarThemeData(
-                                        thumbColor: MaterialStateProperty.resolveWith((states) {
-                                          if (states.contains(MaterialState.hovered)) {
-                                            return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                          }
-                                          return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                                        }),
-                                      ),
-                                      child: ListView.builder(
-                                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                                          shrinkWrap: true,
-                                          //physics: const PageScrollPhysics(),
-                                          itemCount: fromItemCsvData.length,
-                                          itemBuilder: (context, i) {
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 2),
-                                              child: RadioListTile(
-                                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                value: fromItemCsvData[i],
-                                                groupValue: selectedFromAccCsvFile,
-                                                title: Text(fromItemCsvData[i].enName),
-                                                subtitle: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
-                                                ),
-                                                onChanged: (CsvAccessoryIceFile? currentItem) {
-                                                  //print("Current ${moddedItemsList[i].groupName}");
-                                                  selectedFromAccCsvFile = currentItem!;
-                                                  fromAccItemAvailableIces = csvInfos[i];
-                                                  fromAccItemId = selectedFromAccCsvFile!.id.toString();
-                                                  //set infos
-                                                  if (selectedToAccCsvFile != null) {
-                                                    toAccItemAvailableIces.clear();
-                                                    List<String> selectedToItemIceList = selectedToAccCsvFile!.getDetailedList();
-                                                    for (var line in selectedToItemIceList) {
-                                                      if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                        toAccItemAvailableIces.add(line);
-                                                      }
+                                    child: ListView.builder(
+                                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                        shrinkWrap: true,
+                                        physics: const PageScrollPhysics(),
+                                        itemCount: fromItemCsvData.length,
+                                        itemBuilder: (context, i) {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 2),
+                                            child: RadioListTile(
+                                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                              value: fromItemCsvData[i],
+                                              groupValue: selectedFromCsvFile,
+                                              title: Text(fromItemCsvData[i].enName),
+                                              subtitle: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
+                                              ),
+                                              onChanged: (CsvIceFile? currentItem) {
+                                                //print("Current ${moddedItemsList[i].groupName}");
+                                                selectedFromCsvFile = currentItem!;
+                                                fromItemAvailableIces = csvInfos[i];
+                                                fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
+                                                //set infos
+                                                if (selectedToCsvFile != null) {
+                                                  toItemAvailableIces.clear();
+                                                  List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
+                                                  for (var line in selectedToItemIceList) {
+                                                    if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                      toItemAvailableIces.add(line);
                                                     }
                                                   }
-                                                  setState(
-                                                    () {},
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          }),
-                                    )
-                                  ]),
+                                                }
+
+                                                setState(
+                                                  () {},
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }),
+                                  ),
                                 ),
                               ),
                             ],
@@ -269,7 +295,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                   borderRadius: BorderRadius.circular(10),
                                                 )),
                                             onChanged: (value) async {
-                                              toAccSearchResults = availableAccCsvData
+                                              toItemSearchResults = availableItemsCsvData
                                                   .where((element) => curActiveLang == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
                                                       : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
@@ -304,34 +330,34 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                                             shrinkWrap: true,
                                             //physics: const BouncingScrollPhysics(),
-                                            itemCount: swapperSearchTextController.text.isEmpty ? availableAccCsvData.length : toAccSearchResults.length,
+                                            itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
                                             itemBuilder: (context, i) {
                                               return RadioListTile(
                                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                value: swapperSearchTextController.text.isEmpty ? availableAccCsvData[i] : toAccSearchResults[i],
-                                                groupValue: selectedToAccCsvFile,
+                                                value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
+                                                groupValue: selectedToCsvFile,
                                                 title: curActiveLang == 'JP'
                                                     ? swapperSearchTextController.text.isEmpty
-                                                        ? Text(availableAccCsvData[i].jpName)
-                                                        : Text(toAccSearchResults[i].jpName)
+                                                        ? Text(availableItemsCsvData[i].jpName)
+                                                        : Text(toItemSearchResults[i].jpName)
                                                     : swapperSearchTextController.text.isEmpty
-                                                        ? Text(availableAccCsvData[i].enName)
-                                                        : Text(toAccSearchResults[i].enName),
-                                                onChanged: (CsvAccessoryIceFile? currentItem) {
+                                                        ? Text(availableItemsCsvData[i].enName)
+                                                        : Text(toItemSearchResults[i].enName),
+                                                onChanged: (CsvIceFile? currentItem) {
                                                   //print("Current ${moddedItemsList[i].groupName}");
-                                                  selectedToAccCsvFile = currentItem!;
-                                                  toItemName = curActiveLang == 'JP' ? selectedToAccCsvFile!.jpName : selectedToAccCsvFile!.enName;
-                                                  toAccItemId = selectedToAccCsvFile!.id.toString();
-                                                  if (fromAccItemAvailableIces.isNotEmpty) {
-                                                    toAccItemAvailableIces.clear();
-                                                    List<String> selectedToItemIceList = selectedToAccCsvFile!.getDetailedList();
+                                                  selectedToCsvFile = currentItem!;
+                                                  toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
+                                                  toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
+                                                  if (fromItemAvailableIces.isNotEmpty) {
+                                                    toItemAvailableIces.clear();
+                                                    List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
                                                     for (var line in selectedToItemIceList) {
-                                                      if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                        toAccItemAvailableIces.add(line);
+                                                      if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                        toItemAvailableIces.add(line);
                                                       }
 
                                                       if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                        toAccItemAvailableIces.add(line);
+                                                        toItemAvailableIces.add(line);
                                                       }
                                                     }
                                                   }
@@ -401,24 +427,24 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                             ElevatedButton(
                                 onPressed: () {
                                   swapperSearchTextController.clear();
-                                  selectedFromAccCsvFile = null;
-                                  selectedToAccCsvFile = null;
-                                  availableAccCsvData.clear();
-                                  fromAccItemId = '';
-                                  toAccItemId = '';
-                                  fromAccItemAvailableIces.clear();
-                                  toAccItemAvailableIces.clear();
-                                  csvAccData.clear();
-                                  availableAccCsvData.clear();
+                                  selectedFromCsvFile = null;
+                                  selectedToCsvFile = null;
+                                  availableItemsCsvData.clear();
+                                  fromItemIds.clear();
+                                  toItemIds.clear();
+                                  fromItemAvailableIces.clear();
+                                  toItemAvailableIces.clear();
+                                  csvData.clear();
+                                  availableItemsCsvData.clear();
                                   Navigator.pop(context);
                                 },
                                 child: Text(curLangText!.uiClose)),
                             ElevatedButton(
-                                onPressed: selectedFromAccCsvFile == null || selectedToAccCsvFile == null
+                                onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
                                     ? null
                                     : () {
-                                        if (selectedFromAccCsvFile != null && selectedToAccCsvFile != null) {
-                                          swapperConfirmDialog(context, widget.fromSubmod, fromAccItemId, fromAccItemAvailableIces, toAccItemId, toAccItemAvailableIces);
+                                        if (selectedFromCsvFile != null && selectedToCsvFile != null) {
+                                          swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
                                         }
                                       },
                                 child: Text(curLangText!.uiNext))
@@ -435,7 +461,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItemId, List<String> fromAccItemAvailableIces, String toAccItemId, List<String> toAccItemAvailableIces) async {
+Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromItemIds, List<String> fromItemAvailableIces, List<String> toItemIds, List<String> toItemAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -471,7 +497,11 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: $fromAccItemId'), for (int i = 0; i < fromAccItemAvailableIces.length; i++) Text(fromAccItemAvailableIces[i])],
+                                children: [
+                                  Text('Item ID: ${fromItemIds[0]}'),
+                                  Text('Adjusted ID: ${fromItemIds[1]}'),
+                                  for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])
+                                ],
                               ),
                             ),
                           ),
@@ -494,7 +524,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: $toAccItemId'), for (int i = 0; i < toAccItemAvailableIces.length; i++) Text(toAccItemAvailableIces[i])],
+                                children: [Text('Item ID: ${toItemIds[0]}'), Text('Adjusted ID: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -512,7 +542,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperAccSwappingDialog(context, fromSubmod);
+                        swapperSwappingDialog(context, fromSubmod);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

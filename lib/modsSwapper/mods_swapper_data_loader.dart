@@ -9,8 +9,8 @@ import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_acc_homepage.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
@@ -49,6 +49,8 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
     for (var item in line) {
       if (item.split(',').first == defaultCateforyDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
+      } else if (item.split(',').first == defaultCateforyDirs[10]) {
+        csvData.add(CsvIceFile.fromListHairs(item.split(',')));
       } else {
         csvData.add(CsvIceFile.fromList(item.split(',')));
       }
@@ -160,7 +162,6 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                 ),
               );
             } else {
-
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
                       ? getSwapToCsvList(csvData, widget.fromItem)

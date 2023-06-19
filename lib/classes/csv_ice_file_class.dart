@@ -23,6 +23,27 @@ class CsvIceFile {
           items[16],
           items[17],
         );
+  CsvIceFile.fromListHairs(List<String> items)
+      : this(
+          items[0],
+          items[1],
+          items[2],
+          items[3].isNotEmpty ? int.parse(items[3]) : -1,
+          items[4].isNotEmpty ? int.parse(items[4]) : -1,
+          items[5],
+          items[8],
+          items[9],
+          items[10],
+          items[11],
+          items[12],
+          items[13],
+          items[14],
+          items[15],
+          items[16],
+          items[17],
+          items[18],
+          items[19],
+        );
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
   String jpName;
