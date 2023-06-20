@@ -17,9 +17,14 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
+  //clean
+  if (Directory(modManSwapperOutputDirPath).existsSync()) {
+      Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+    }
   //create
   Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
+  Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
   String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName}').toFilePath();
   String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();

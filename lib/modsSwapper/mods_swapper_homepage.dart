@@ -42,6 +42,9 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
     if (Directory(modManSwapperToItemDirPath).existsSync()) {
       Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
     }
+    if (Directory(modManSwapperOutputDirPath).existsSync()) {
+      Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+    }
     super.initState();
   }
 
