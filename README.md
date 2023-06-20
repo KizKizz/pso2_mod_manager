@@ -62,6 +62,10 @@ https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-
 
 [addsets.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/3d49c2c1-452e-4779-802b-f07cd6061d11)
 
+**Add Mods from 1 item to another:**
+
+[swapmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/1f273e73-f5b6-4179-bc4a-9f4a8f1529e8)
+
 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
