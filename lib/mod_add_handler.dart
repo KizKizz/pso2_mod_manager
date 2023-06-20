@@ -27,8 +27,8 @@ List<String> _pathsToRemove = ['win32', 'win32reboot', 'win32_na', 'win32reboot_
 bool _newModDragging = false;
 bool _exitConfirmDialog = false;
 List<String> _duplicateModNames = [];
-final List<XFile> _newModDragDropList = [];
-List<XFile> _newModMainFolderList = [];
+final List<XFile> newModDragDropList = [];
+List<XFile> newModMainFolderList = [];
 List<XFile> modsToAddList = [];
 Future? sortedModsListLoad;
 List<List<String>> sortedModsList = [];
@@ -177,7 +177,7 @@ void modAddHandler(context) {
     List<List<String>> filesList = [];
     //getting main dirs
     List<String> mainDirPaths = [];
-    for (var file in _newModMainFolderList) {
+    for (var file in newModMainFolderList) {
       if (p.extension(file.path) == '.zip') {
         final ext = file.name.substring(file.name.lastIndexOf('.'));
         String nameAfterExtract = file.name.replaceAll(ext, '');
@@ -415,7 +415,7 @@ void modAddHandler(context) {
                                   SizedBox(
                                     width: dropZoneMax
                                         ? constraints.maxWidth * 0.7
-                                        : _newModDragDropList.isEmpty
+                                        : newModDragDropList.isEmpty
                                             ? constraints.maxWidth * 0.3
                                             : constraints.maxWidth * 0.45,
                                     child: Column(
@@ -431,9 +431,9 @@ void modAddHandler(context) {
                                                     if (_nonSupportedFileNames.indexWhere((e) => e == element.name) == -1) {
                                                       _nonSupportedFileNames.add(element.name);
                                                     }
-                                                  } else if (_newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
-                                                    _newModDragDropList.add(element);
-                                                    _newModMainFolderList.add(element);
+                                                  } else if (newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
+                                                    newModDragDropList.add(element);
+                                                    newModMainFolderList.add(element);
                                                   }
                                                 }
                                                 setState(
@@ -464,14 +464,14 @@ void modAddHandler(context) {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        if (_newModDragDropList.isEmpty)
+                                                        if (newModDragDropList.isEmpty)
                                                           Center(
                                                               child: Text(
                                                             curLangText!.uiDragDropFiles,
                                                             style: const TextStyle(fontSize: 20),
                                                             textAlign: TextAlign.center,
                                                           )),
-                                                        if (_newModDragDropList.isNotEmpty)
+                                                        if (newModDragDropList.isNotEmpty)
                                                           Expanded(
                                                             child: Padding(
                                                               padding: const EdgeInsets.only(right: 5),
@@ -481,7 +481,7 @@ void modAddHandler(context) {
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.symmetric(horizontal: 0),
                                                                     child: ListView.builder(
-                                                                        itemCount: _newModDragDropList.length,
+                                                                        itemCount: newModDragDropList.length,
                                                                         itemBuilder: (BuildContext context, int index) {
                                                                           return ListTile(
                                                                             //dense: true,
@@ -494,7 +494,7 @@ void modAddHandler(context) {
                                                                                 child: MaterialButton(
                                                                                   child: const Icon(Icons.remove_circle),
                                                                                   onPressed: () {
-                                                                                    _newModDragDropList.removeAt(index);
+                                                                                    newModDragDropList.removeAt(index);
                                                                                     setState(
                                                                                       () {},
                                                                                     );
@@ -502,9 +502,9 @@ void modAddHandler(context) {
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            title: Text(_newModDragDropList[index].name),
+                                                                            title: Text(newModDragDropList[index].name),
                                                                             subtitle: Text(
-                                                                              _newModDragDropList[index].path,
+                                                                              newModDragDropList[index].path,
                                                                               maxLines: 1,
                                                                               overflow: TextOverflow.ellipsis,
                                                                               softWrap: false,
@@ -566,10 +566,10 @@ void modAddHandler(context) {
                                               children: [
                                                 Expanded(
                                                   child: ElevatedButton(
-                                                      onPressed: _newModDragDropList.isNotEmpty
+                                                      onPressed: newModDragDropList.isNotEmpty
                                                           ? (() {
-                                                              _newModDragDropList.clear();
-                                                              _newModMainFolderList.clear();
+                                                              newModDragDropList.clear();
+                                                              newModMainFolderList.clear();
                                                               setState(
                                                                 () {},
                                                               );
@@ -582,9 +582,9 @@ void modAddHandler(context) {
                                                 ),
                                                 Expanded(
                                                   child: ElevatedButton(
-                                                      onPressed: _newModDragDropList.isNotEmpty
+                                                      onPressed: newModDragDropList.isNotEmpty
                                                           ? (() async {
-                                                              for (var file in _newModDragDropList) {
+                                                              for (var file in newModDragDropList) {
                                                                 if (p.extension(file.path) == '.zip') {
                                                                   await extractFileToDisk(file.path, Uri.file('unpack/${file.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true)
                                                                       .then((_) => setState(
@@ -613,7 +613,7 @@ void modAddHandler(context) {
 
                                                               //clear lists
                                                               sortedModsListLoad = fetchItemName(modsToAddList);
-                                                              _newModDragDropList.clear();
+                                                              newModDragDropList.clear();
                                                               dropZoneMax = false;
                                                               setState(
                                                                 () {},
@@ -2000,13 +2000,13 @@ void modAddHandler(context) {
                                                                   element.deleteSync(recursive: true);
                                                                 });
                                                                 _mainFolderRenameIndex.clear();
-                                                                _newModMainFolderList.clear();
+                                                                newModMainFolderList.clear();
                                                                 _selectedCategories.clear();
                                                                 _exitConfirmDialog = false;
                                                                 Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                                 _duplicateModNames.clear();
                                                                 sortedModsList.clear();
-                                                                _newModDragDropList.clear();
+                                                                newModDragDropList.clear();
                                                                 modsToAddList.clear();
                                                                 _isNameEditing = false;
                                                                 dropZoneMax = true;
@@ -2030,21 +2030,21 @@ void modAddHandler(context) {
                                                           });
 
                                                           _mainFolderRenameIndex.clear();
-                                                          _newModMainFolderList.clear();
+                                                          newModMainFolderList.clear();
                                                           _selectedCategories.clear();
                                                           Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                           _exitConfirmDialog = false;
                                                           _duplicateModNames.clear();
                                                           itemRefSheetsList.clear();
                                                           sortedModsList.clear();
-                                                          _newModDragDropList.clear();
+                                                          newModDragDropList.clear();
                                                           modsToAddList.clear();
                                                           setState(
                                                             () {},
                                                           );
                                                           dropZoneMax = true;
                                                           Navigator.of(context).pop();
-                                                        } else if (sortedModsList.isNotEmpty || modsToAddList.isNotEmpty || _newModDragDropList.isNotEmpty) {
+                                                        } else if (sortedModsList.isNotEmpty || modsToAddList.isNotEmpty || newModDragDropList.isNotEmpty) {
                                                           _exitConfirmDialog = true;
                                                           setState(
                                                             () {},
@@ -2052,12 +2052,12 @@ void modAddHandler(context) {
                                                         } else {
                                                           //clear lists
                                                           _mainFolderRenameIndex.clear();
-                                                          _newModMainFolderList.clear();
+                                                          newModMainFolderList.clear();
                                                           Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                           _selectedCategories.clear();
                                                           itemRefSheetsList.clear();
                                                           sortedModsList.clear();
-                                                          _newModDragDropList.clear();
+                                                          newModDragDropList.clear();
                                                           modsToAddList.clear();
                                                           setState(
                                                             () {},
@@ -2143,14 +2143,14 @@ void modAddHandler(context) {
                                                                         () {},
                                                                       );
                                                                       _mainFolderRenameIndex.clear();
-                                                                      _newModMainFolderList.clear();
+                                                                      newModMainFolderList.clear();
                                                                       _selectedCategories.clear();
                                                                       _exitConfirmDialog = false;
                                                                       Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                                       //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
                                                                       _duplicateModNames.clear();
                                                                       sortedModsList.clear();
-                                                                      _newModDragDropList.clear();
+                                                                      newModDragDropList.clear();
                                                                       modsToAddList.clear();
                                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                         element.deleteSync(recursive: true);

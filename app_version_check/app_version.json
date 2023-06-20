@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.0.5",
+    "version": "2.1.0",
     "description": [
-        "Fixed an issue with detecting appropriate data folders in checksum patcher"
+        "Added mods swapping feature (experimental) where mods can be swapped between items. Works for almost any item, except emotes and motions"
     ],
     "windows_file": "",
     "linux_file": ""

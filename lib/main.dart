@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -194,6 +195,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //mods swapper check
+      isReplacingNQWithHQ = (prefs.getBool('modsSwapperIsReplacingNQWithHQ') ?? false);
+      isCopyAll = (prefs.getBool('modsSwapperIsCopyAll') ?? false);
+      isRemoveExtras = (prefs.getBool('modsSwapperIsRemoveExtras') ?? false);
+
       //Background Image check
       showBackgroundImage = (prefs.getBool('showBgImage') ?? true);
       if (backgroundImage.path.isNotEmpty) {
@@ -203,6 +209,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
         }
       }
+      
       //Empty categories hide
       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
 

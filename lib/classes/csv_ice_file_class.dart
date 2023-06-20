@@ -23,6 +23,27 @@ class CsvIceFile {
           items[16],
           items[17],
         );
+  CsvIceFile.fromListHairs(List<String> items)
+      : this(
+          items[0],
+          items[1],
+          items[2],
+          items[3].isNotEmpty ? int.parse(items[3]) : -1,
+          items[4].isNotEmpty ? int.parse(items[4]) : -1,
+          items[5],
+          items[8],
+          items[9],
+          items[10],
+          items[11],
+          items[12],
+          items[13],
+          items[14],
+          items[15],
+          items[16],
+          items[17],
+          items[18],
+          items[19],
+        );
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
   String jpName;
@@ -105,20 +126,20 @@ class CsvAccessoryIceFile {
 class CsvEmoteIceFile {
   CsvEmoteIceFile(this.category, this.jpName, this.enName, this.command, this.pso2HashIceName, this.rbHumanHashIceName, this.rbCastMaleHashIceName, this.rbCastFemaleHashIceName, this.rbFigHashIceName, this.pso2VfxHashIceName, this.rbVfxHashIceName,
       this.gender);
-  CsvEmoteIceFile.fromList(List<String> items)
+  CsvEmoteIceFile.fromListPso2(List<String> items)
       : this(
           items[0],
           items[1],
           items[2],
           items[3],
-          items[5],
-          items[7],
-          items[9],
-          items[11],
-          items[13],
-          items[15],
-          items[17],
-          items[18]
+          items[5].split('\\').last,
+          items[7].split('\\').last,
+          items[9].split('\\').last,
+          items[11].split('\\').last,
+          items[13].split('\\').last,
+          items[15].split('\\').last,
+          items[17].split('\\').last,
+          items[18].isNotEmpty ? items[18] : 'Both'
         );
   CsvEmoteIceFile.fromListNgs(List<String> items)
       : this(
@@ -127,13 +148,13 @@ class CsvEmoteIceFile {
           items[2],
           items[3],
           '',
-          items[5],
-          items[7],
-          items[9],
-          items[11],
+          items[5].split('\\').last,
+          items[7].split('\\').last,
+          items[9].split('\\').last,
+          items[11].split('\\').last,
           '',
-          items[13],
-          items[14]
+          items[13].split('\\').last,
+          items[14].isNotEmpty ? items[14] : 'Both'
         );
   CsvEmoteIceFile.fromListMotion(List<String> items)
       : this(
@@ -141,11 +162,11 @@ class CsvEmoteIceFile {
           items[1],
           items[2],
           '',
-          items[3],
-          items[4],
-          items[5],
-          items[6],
-          items[7],
+          items[3].split('\\').last,
+          items[4].split('\\').last,
+          items[5].split('\\').last,
+          items[6].split('\\').last,
+          items[7].split('\\').last,
           '',
           '',
           '',

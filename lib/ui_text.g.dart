@@ -195,6 +195,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiSuccessfullyAppliedAllModsIn'] as String
       ..uiAddToThisSet = json['uiAddToThisSet'] as String
       ..uiFromThisSet = json['uiFromThisSet'] as String
+      ..uiToAnotherItem = json['uiToAnotherItem'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -285,7 +286,37 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiModsLoader = json['uiModsLoader'] as String
       ..uiAutoFetchItemIcons = json['uiAutoFetchItemIcons'] as String
       ..uiOneIconEachItem = json['uiOneIconEachItem'] as String
-      ..uiFetchAll = json['uiFetchAll'] as String;
+      ..uiFetchAll = json['uiFetchAll'] as String
+      ..uiChooseAVariantFoundBellow =
+          json['uiChooseAVariantFoundBellow'] as String
+      ..uiChooseAnItemBellowToSwap =
+          json['uiChooseAnItemBellowToSwap'] as String
+      ..uiSearchSwapItems = json['uiSearchSwapItems'] as String
+      ..uiReplaceNQwithHQ = json['uiReplaceNQwithHQ'] as String
+      ..uiSwapAllFilesInsideIce = json['uiSwapAllFilesInsideIce'] as String
+      ..uiRemoveUnmatchingFiles = json['uiRemoveUnmatchingFiles'] as String
+      ..uiSwap = json['uiSwap'] as String
+      ..uiNoteModsMightNotWokAfterSwapping =
+          json['uiNoteModsMightNotWokAfterSwapping'] as String
+      ..uiItemID = json['uiItemID'] as String
+      ..uiAdjustedID = json['uiAdjustedID'] as String
+      ..uiNoMatchingIceFoundToSwap =
+          json['uiNoMatchingIceFoundToSwap'] as String
+      ..uiSwappingItem = json['uiSwappingItem'] as String
+      ..uiErrorWhenSwapping = json['uiErrorWhenSwapping'] as String
+      ..uiSuccessfullySwapped = json['uiSuccessfullySwapped'] as String
+      ..uiAddToModManager = json['uiAddToModManager'] as String
+      ..uiFailedToSwap = json['uiFailedToSwap'] as String
+      ..uiUnableToSwapTheseFilesBelow =
+          json['uiUnableToSwapTheseFilesBelow'] as String
+      ..uiLoadingItemRefSheetsData =
+          json['uiLoadingItemRefSheetsData'] as String
+      ..uiErrorWhenLoadingItemRefSheets =
+          json['uiErrorWhenLoadingItemRefSheets'] as String
+      ..uiFetchingItemInfo = json['uiFetchingItemInfo'] as String
+      ..uiErrorWhenFetchingItemInfo =
+          json['uiErrorWhenFetchingItemInfo'] as String
+      ..uiExperimental = json['uiExperimental'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -446,6 +477,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSuccessfullyAppliedAllModsIn': instance.uiSuccessfullyAppliedAllModsIn,
       'uiAddToThisSet': instance.uiAddToThisSet,
       'uiFromThisSet': instance.uiFromThisSet,
+      'uiToAnotherItem': instance.uiToAnotherItem,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -521,4 +553,28 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAutoFetchItemIcons': instance.uiAutoFetchItemIcons,
       'uiOneIconEachItem': instance.uiOneIconEachItem,
       'uiFetchAll': instance.uiFetchAll,
+      'uiChooseAVariantFoundBellow': instance.uiChooseAVariantFoundBellow,
+      'uiChooseAnItemBellowToSwap': instance.uiChooseAnItemBellowToSwap,
+      'uiSearchSwapItems': instance.uiSearchSwapItems,
+      'uiReplaceNQwithHQ': instance.uiReplaceNQwithHQ,
+      'uiSwapAllFilesInsideIce': instance.uiSwapAllFilesInsideIce,
+      'uiRemoveUnmatchingFiles': instance.uiRemoveUnmatchingFiles,
+      'uiSwap': instance.uiSwap,
+      'uiNoteModsMightNotWokAfterSwapping':
+          instance.uiNoteModsMightNotWokAfterSwapping,
+      'uiItemID': instance.uiItemID,
+      'uiAdjustedID': instance.uiAdjustedID,
+      'uiNoMatchingIceFoundToSwap': instance.uiNoMatchingIceFoundToSwap,
+      'uiSwappingItem': instance.uiSwappingItem,
+      'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,
+      'uiSuccessfullySwapped': instance.uiSuccessfullySwapped,
+      'uiAddToModManager': instance.uiAddToModManager,
+      'uiFailedToSwap': instance.uiFailedToSwap,
+      'uiUnableToSwapTheseFilesBelow': instance.uiUnableToSwapTheseFilesBelow,
+      'uiLoadingItemRefSheetsData': instance.uiLoadingItemRefSheetsData,
+      'uiErrorWhenLoadingItemRefSheets':
+          instance.uiErrorWhenLoadingItemRefSheets,
+      'uiFetchingItemInfo': instance.uiFetchingItemInfo,
+      'uiErrorWhenFetchingItemInfo': instance.uiErrorWhenFetchingItemInfo,
+      'uiExperimental': instance.uiExperimental,
     };

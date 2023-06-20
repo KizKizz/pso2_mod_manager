@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart' as f;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -31,7 +30,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mods%20swapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
@@ -391,14 +390,16 @@ class _HomePageState extends State<HomePage> {
                       contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
                       suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
                       suffixIcon: InkWell(
-                        onTap: () {
-                          searchTextController.clear();
-                          searchedItemList.clear();
-                          modViewItem = null;
-                          setState(() {});
-                        },
+                        onTap: searchTextController.text.isEmpty
+                            ? null
+                            : () {
+                                searchTextController.clear();
+                                searchedItemList.clear();
+                                modViewItem = null;
+                                setState(() {});
+                              },
                         child: Icon(
-                          Icons.close,
+                          searchTextController.text.isEmpty ? Icons.search : Icons.close,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
@@ -1256,7 +1257,7 @@ class _HomePageState extends State<HomePage> {
                               //Normal Catetype List
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  physics:const PageScrollPhysics(),
+                                  physics: const PageScrollPhysics(),
                                   padding: const EdgeInsets.only(left: 2),
                                   itemCount: moddedItemsList.length,
                                   itemBuilder: (context, groupIndex) {
@@ -1423,7 +1424,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //Save to json
                                                                 saveModdedItemListToJson();
                                                                 isCatesReordering[groupIndex] = false;
-                                            
+
                                                                 setState(() {});
                                                               }),
                                                         ),
@@ -1489,7 +1490,7 @@ class _HomePageState extends State<HomePage> {
                                                             );
                                                           }),
                                                     ),
-                                            
+
                                                     //Main Normal Cate=========================================================
                                                     Visibility(
                                                       visible: !isCatesReordering[groupIndex],
@@ -1626,7 +1627,7 @@ class _HomePageState extends State<HomePage> {
                                                                               itemButtonsVisible[groupIndex][categoryIndex].length != curCategory.items.length) {
                                                                             itemButtonsVisible[groupIndex][categoryIndex] = List.generate(curCategory.items.length, (index) => false);
                                                                           }
-                                            
+
                                                                           return SizedBox(
                                                                             height: 84,
                                                                             child: Container(
@@ -2139,7 +2140,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         //normal
-                                        if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible)
+                                        if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                            isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
                                           Padding(
                                             padding: const EdgeInsets.only(left: 5),
                                             child: Wrap(
@@ -2320,14 +2322,17 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 //Swap
                                                 Visibility(
-                                                  visible: f.kDebugMode,
-                                                  child: ModManTooltip(
-                                                    message: 'Swap',
-                                                    child: InkWell(
-                                                      child: const Icon(
-                                                        Icons.swap_horizontal_circle_outlined,
+                                                  //visible: f.kDebugMode,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 2),
+                                                    child: ModManTooltip(
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}',
+                                                      child: InkWell(
+                                                        child: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                       ),
-                                                      onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                     ),
                                                   ),
                                                 ),
@@ -2573,6 +2578,22 @@ class _HomePageState extends State<HomePage> {
                                                       saveModdedItemListToJson();
                                                       setState(() {});
                                                     },
+                                                  ),
+                                                ),
+                                                //Swap
+                                                Visibility(
+                                                  //visible: f.kDebugMode,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 2),
+                                                    child: ModManTooltip(
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}',
+                                                      child: InkWell(
+                                                        child: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                                 //Open folder
@@ -2888,14 +2909,17 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                             //Swap
                                                             Visibility(
-                                                              visible: f.kDebugMode,
-                                                              child: ModManTooltip(
-                                                                message: 'Swap',
-                                                                child: InkWell(
-                                                                  child: const Icon(
-                                                                    Icons.swap_horizontal_circle_outlined,
+                                                              //visible: f.kDebugMode,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.only(left: 2),
+                                                                child: ModManTooltip(
+                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}',
+                                                                  child: InkWell(
+                                                                    child: const Icon(
+                                                                      Icons.swap_horizontal_circle_outlined,
+                                                                    ),
+                                                                    onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                   ),
-                                                                  onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                 ),
                                                               ),
                                                             ),

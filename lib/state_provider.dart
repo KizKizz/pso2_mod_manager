@@ -25,6 +25,7 @@ class StateProvider with ChangeNotifier {
   bool _reloadSplashScreen = false;
   bool _isSlidingItemIcons = true;
   bool _checksumDownloading = false;
+  bool _modsSwapperSwitchToSwapPage = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -49,6 +50,17 @@ class StateProvider with ChangeNotifier {
   bool get reloadSplashScreen => _reloadSplashScreen;
   bool get isSlidingItemIcons => _isSlidingItemIcons;
   bool get checksumDownloading => _checksumDownloading;
+  bool get modsSwapperSwitchToSwapPage => _modsSwapperSwitchToSwapPage;
+
+  void modsSwapperSwitchToSwapPageTrue() {
+    _modsSwapperSwitchToSwapPage = true;
+    notifyListeners();
+  }
+
+  void modsSwapperSwitchToSwapPageFalse() {
+    _modsSwapperSwitchToSwapPage = false;
+    notifyListeners();
+  }
 
   void checksumDownloadingTrue() {
     _checksumDownloading = true;
