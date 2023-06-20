@@ -439,7 +439,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Note: Some items might work right after swapping, some might not, some might require cmx editing'),
+                          Text(curLangText!.uiNoteModsMightNotWokAfterSwapping),
                           Wrap(
                             runAlignment: WrapAlignment.center,
                             alignment: WrapAlignment.center,

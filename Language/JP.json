@@ -154,6 +154,7 @@
   "uiSuccessfullyAppliedAllModsIn": "すべてのMODを正常に適用しました",
   "uiAddToThisSet": "このセットに追加する",
   "uiFromThisSet": "この中から",
+  "uiToAnotherItem": "別項目へ",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",
@@ -228,10 +229,13 @@
   "uiChooseAVariantFoundBellow": "以下のバリエーションからお選びください。",
   "uiChooseAnItemBellowToSwap": "以下の項目から交換したいものを選んでください",
   "uiSearchSwapItems": "検索項目",
-  "uiReplaceNQwithHQ": "NQアイスをHQに置き換える",
+  "uiReplaceNQwithHQ": "LQアイスをHQに置き換える",
   "uiSwapAllFilesInsideIce": "アイスの中のファイルを全部入れ替える",
   "uiRemoveUnmatchingFiles": "デスティネーションIceで一致しないファイルを削除する",
   "uiSwap": "スワップ",
+  "uiNoteModsMightNotWokAfterSwapping": "注意: 交換後すぐに動作するもの、しないもの、cmxの編集が必要なものがあります。自己責任でご利用ください。",
+  "uiItemID": "アイテムID",
+  "uiAdjustedID": "調整済みID",
   "uiNoMatchingIceFoundToSwap": "スワップアイテムに一致する氷のファイルは見つかりませんでした。",
   "uiSwappingItem": "スワッピングアイテム",
   "uiErrorWhenSwapping": "アイテムの入れ替え時にエラーが発生する",
@@ -242,5 +246,6 @@
   "uiLoadingItemRefSheetsData": "読み込み項目参照シートデータ",
   "uiErrorWhenLoadingItemRefSheets": "アイテム参照シートデータを読み込むとエラーになる",
   "uiFetchingItemInfo": "アイテム情報を取得する",
-  "uiErrorWhenFetchingItemInfo": "アイテム情報取得時のエラー"
+  "uiErrorWhenFetchingItemInfo": "アイテム情報取得時のエラー",
+  "uiExperimental": "実験的"
 }

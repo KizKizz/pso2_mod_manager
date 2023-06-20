@@ -176,7 +176,8 @@ class TranslationText {
       uiApplyAllModsIn = 'Apply all mods in',
       uiSuccessfullyAppliedAllModsIn = 'Sucessfully applied all mods in',
       uiAddToThisSet = 'Add to this set',
-      uiFromThisSet = 'from this set';
+      uiFromThisSet = 'from this set',
+      uiToAnotherItem = 'to another item';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -267,10 +268,13 @@ class TranslationText {
   String uiChooseAVariantFoundBellow = 'Choose a variant found bellow',
       uiChooseAnItemBellowToSwap = 'Choose an item below to swap',
       uiSearchSwapItems = 'Search items',
-      uiReplaceNQwithHQ = 'Replace NQ ices with HQ',
+      uiReplaceNQwithHQ = 'Replace LQ ices with HQ',
       uiSwapAllFilesInsideIce = 'Copy all files to destination ices',
       uiRemoveUnmatchingFiles = 'Remove unmatching files in destination ices',
-      uiSwap = 'Swap';
+      uiSwap = 'Swap',
+      uiNoteModsMightNotWokAfterSwapping = 'Note: Some items might work right after swapping, some might not, some might require cmx editing. Use at your own risk',
+      uiItemID = 'Item ID',
+      uiAdjustedID = 'Adjusted ID';
 
   //mod_swapper_swappage
   String uiNoMatchingIceFoundToSwap = 'No matching ice files found to swap item',
@@ -286,6 +290,9 @@ class TranslationText {
       uiErrorWhenLoadingItemRefSheets = 'Error when loading item reference sheets data',
       uiFetchingItemInfo = 'Fetching item info',
       uiErrorWhenFetchingItemInfo = 'Error when fetching item info';
+
+  //mods_swapper_popup
+  String uiExperimental = 'Experimental';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

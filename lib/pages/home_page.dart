@@ -2326,7 +2326,7 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: 'Swap ${curMod.submods.first.submodName} to another item',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
@@ -2586,7 +2586,7 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: 'Swap ${curMod.submods[modViewModSetSubModIndex].submodName} to another item',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
@@ -2913,7 +2913,7 @@ class _HomePageState extends State<HomePage> {
                                                               child: Padding(
                                                                 padding: const EdgeInsets.only(left: 2),
                                                                 child: ModManTooltip(
-                                                                  message: 'Swap ${curSubmod.submodName} to another item',
+                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}',
                                                                   child: InkWell(
                                                                     child: const Icon(
                                                                       Icons.swap_horizontal_circle_outlined,

@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.1.0",
     "description": [
-        "Added mods swapping feature where mods can be swapped between items. Works for almost any item, except emotes and motions"
+        "Added mods swapping feature (experimental) where mods can be swapped between items. Works for almost any item, except emotes and motions"
     ],
     "windows_file": "",
     "linux_file": ""

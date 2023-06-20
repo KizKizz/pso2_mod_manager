@@ -437,7 +437,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Note: Some items might work right after swapping, some might not, some might require cmx editing'),
+                          Text(curLangText!.uiNoteModsMightNotWokAfterSwapping),
                           Wrap(
                             runAlignment: WrapAlignment.center,
                             alignment: WrapAlignment.center,
@@ -518,8 +518,8 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Item ID: ${fromItemIds[0]}'),
-                                  Text('Adjusted ID: ${fromItemIds[1]}'),
+                                  Text('${curLangText!.uiItemID}: ${fromItemIds[0]}'),
+                                  Text('${curLangText!.uiAdjustedID}: ${fromItemIds[1]}'),
                                   for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])
                                 ],
                               ),
@@ -544,7 +544,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: ${toItemIds[0]}'), Text('Adjusted ID: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
+                                children: [Text('${curLangText!.uiItemID}: ${toItemIds[0]}'), Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
                               ),
                             ),
                           ),

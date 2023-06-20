@@ -415,7 +415,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Note: Some items might work right after swapping, some might not, some might require cmx editing'),
+                          Text(curLangText!.uiNoteModsMightNotWokAfterSwapping),
                           Wrap(
                             runAlignment: WrapAlignment.center,
                             alignment: WrapAlignment.center,
@@ -495,7 +495,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: $fromAccItemId'), for (int i = 0; i < fromAccItemAvailableIces.length; i++) Text(fromAccItemAvailableIces[i])],
+                                children: [Text('${curLangText!.uiItemID}: $fromAccItemId'), for (int i = 0; i < fromAccItemAvailableIces.length; i++) Text(fromAccItemAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -518,7 +518,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: $toAccItemId'), for (int i = 0; i < toAccItemAvailableIces.length; i++) Text(toAccItemAvailableIces[i])],
+                                children: [Text('${curLangText!.uiItemID}: $toAccItemId'), for (int i = 0; i < toAccItemAvailableIces.length; i++) Text(toAccItemAvailableIces[i])],
                               ),
                             ),
                           ),

@@ -195,6 +195,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiSuccessfullyAppliedAllModsIn'] as String
       ..uiAddToThisSet = json['uiAddToThisSet'] as String
       ..uiFromThisSet = json['uiFromThisSet'] as String
+      ..uiToAnotherItem = json['uiToAnotherItem'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -295,6 +296,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSwapAllFilesInsideIce = json['uiSwapAllFilesInsideIce'] as String
       ..uiRemoveUnmatchingFiles = json['uiRemoveUnmatchingFiles'] as String
       ..uiSwap = json['uiSwap'] as String
+      ..uiNoteModsMightNotWokAfterSwapping =
+          json['uiNoteModsMightNotWokAfterSwapping'] as String
+      ..uiItemID = json['uiItemID'] as String
+      ..uiAdjustedID = json['uiAdjustedID'] as String
       ..uiNoMatchingIceFoundToSwap =
           json['uiNoMatchingIceFoundToSwap'] as String
       ..uiSwappingItem = json['uiSwappingItem'] as String
@@ -310,7 +315,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiErrorWhenLoadingItemRefSheets'] as String
       ..uiFetchingItemInfo = json['uiFetchingItemInfo'] as String
       ..uiErrorWhenFetchingItemInfo =
-          json['uiErrorWhenFetchingItemInfo'] as String;
+          json['uiErrorWhenFetchingItemInfo'] as String
+      ..uiExperimental = json['uiExperimental'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -471,6 +477,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSuccessfullyAppliedAllModsIn': instance.uiSuccessfullyAppliedAllModsIn,
       'uiAddToThisSet': instance.uiAddToThisSet,
       'uiFromThisSet': instance.uiFromThisSet,
+      'uiToAnotherItem': instance.uiToAnotherItem,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -553,6 +560,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSwapAllFilesInsideIce': instance.uiSwapAllFilesInsideIce,
       'uiRemoveUnmatchingFiles': instance.uiRemoveUnmatchingFiles,
       'uiSwap': instance.uiSwap,
+      'uiNoteModsMightNotWokAfterSwapping':
+          instance.uiNoteModsMightNotWokAfterSwapping,
+      'uiItemID': instance.uiItemID,
+      'uiAdjustedID': instance.uiAdjustedID,
       'uiNoMatchingIceFoundToSwap': instance.uiNoMatchingIceFoundToSwap,
       'uiSwappingItem': instance.uiSwappingItem,
       'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,
@@ -565,4 +576,5 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiErrorWhenLoadingItemRefSheets,
       'uiFetchingItemInfo': instance.uiFetchingItemInfo,
       'uiErrorWhenFetchingItemInfo': instance.uiErrorWhenFetchingItemInfo,
+      'uiExperimental': instance.uiExperimental,
     };
