@@ -59,7 +59,8 @@ dependencies:
   #media_kit_libs_ios_video: ^1.0.4               # iOS package for video native libraries.
   media_kit_libs_linux: ^1.0.2                   # GNU/Linux dependency package.
   advance_expansion_tile: ^1.0.2
-  flutter_colorpicker: ^1.0.3 
+  flutter_colorpicker: ^1.0.3
+  card_banner: ^0.0.1+2
   
 
   # The following adds the Cupertino Icons font to your application.

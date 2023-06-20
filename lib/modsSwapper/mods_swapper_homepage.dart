@@ -322,143 +322,155 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                 endIndent: 5,
                               ),
                               Expanded(
-                                child: Card(
-                                    shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                    color: Colors.transparent,
-                                    child: ScrollbarTheme(
-                                        data: ScrollbarThemeData(
-                                          thumbColor: MaterialStateProperty.resolveWith((states) {
-                                            if (states.contains(MaterialState.hovered)) {
-                                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                            }
-                                            return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                                          }),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Wrap(
+                                      runAlignment: WrapAlignment.center,
+                                      alignment: WrapAlignment.center,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      spacing: 5,
+                                      children: [
+                                        Checkbox(
+                                          splashRadius: 2,
+                                          value: isReplacingNQWithHQ,
+                                          onChanged: (value) async {
+                                            final prefs = await SharedPreferences.getInstance();
+                                            isReplacingNQWithHQ = value!;
+                                            prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
+                                            setState(() {});
+                                          },
                                         ),
-                                        child: ListView.builder(
-                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                            shrinkWrap: true,
-                                            //physics: const BouncingScrollPhysics(),
-                                            itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
-                                            itemBuilder: (context, i) {
-                                              return RadioListTile(
-                                                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
-                                                groupValue: selectedToCsvFile,
-                                                title: curActiveLang == 'JP'
-                                                    ? swapperSearchTextController.text.isEmpty
-                                                        ? Text(availableItemsCsvData[i].jpName)
-                                                        : Text(toItemSearchResults[i].jpName)
-                                                    : swapperSearchTextController.text.isEmpty
-                                                        ? Text(availableItemsCsvData[i].enName)
-                                                        : Text(toItemSearchResults[i].enName),
-                                                onChanged: (CsvIceFile? currentItem) {
-                                                  //print("Current ${moddedItemsList[i].groupName}");
-                                                  selectedToCsvFile = currentItem!;
-                                                  toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
-                                                  toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
-                                                  if (fromItemAvailableIces.isNotEmpty) {
-                                                    toItemAvailableIces.clear();
-                                                    List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
-                                                    for (var line in selectedToItemIceList) {
-                                                      if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                        toItemAvailableIces.add(line);
-                                                      }
-
-                                                      if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                        toItemAvailableIces.add(line);
-                                                      }
-                                                    }
+                                        Text(curLangText!.uiReplaceNQwithHQ),
+                                        // Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
+                                        // Checkbox(
+                                        //   splashRadius: 2,
+                                        //   value: isCopyAll,
+                                        //   onChanged: (value) async {
+                                        //     final prefs = await SharedPreferences.getInstance();
+                                        //     isCopyAll = value!;
+                                        //     prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
+                                        //     setState(() {});
+                                        //   },
+                                        // ),
+                                        // Text(curLangText!.uiSwapAllFilesInsideIce),
+                                        // Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
+                                        // Checkbox(
+                                        //   splashRadius: 2,
+                                        //   value: isRemoveExtras,
+                                        //   onChanged: (value) async {
+                                        //     final prefs = await SharedPreferences.getInstance();
+                                        //     isRemoveExtras = value!;
+                                        //     prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
+                                        //     setState(() {});
+                                        //   },
+                                        // ),
+                                        // Text(curLangText!.uiRemoveUnmatchingFiles),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: Card(
+                                          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          color: Colors.transparent,
+                                          child: ScrollbarTheme(
+                                              data: ScrollbarThemeData(
+                                                thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                  if (states.contains(MaterialState.hovered)) {
+                                                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                   }
-                                                  setState(
-                                                    () {},
-                                                  );
-                                                },
-                                              );
-                                            }))),
+                                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                                }),
+                                              ),
+                                              child: ListView.builder(
+                                                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                  shrinkWrap: true,
+                                                  //physics: const BouncingScrollPhysics(),
+                                                  itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
+                                                  itemBuilder: (context, i) {
+                                                    return RadioListTile(
+                                                      shape: RoundedRectangleBorder(
+                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                      value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
+                                                      groupValue: selectedToCsvFile,
+                                                      title: curActiveLang == 'JP'
+                                                          ? swapperSearchTextController.text.isEmpty
+                                                              ? Text(availableItemsCsvData[i].jpName)
+                                                              : Text(toItemSearchResults[i].jpName)
+                                                          : swapperSearchTextController.text.isEmpty
+                                                              ? Text(availableItemsCsvData[i].enName)
+                                                              : Text(toItemSearchResults[i].enName),
+                                                      onChanged: (CsvIceFile? currentItem) {
+                                                        //print("Current ${moddedItemsList[i].groupName}");
+                                                        selectedToCsvFile = currentItem!;
+                                                        toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
+                                                        toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
+                                                        if (fromItemAvailableIces.isNotEmpty) {
+                                                          toItemAvailableIces.clear();
+                                                          List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
+                                                          for (var line in selectedToItemIceList) {
+                                                            if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                              toItemAvailableIces.add(line);
+                                                            }
+
+                                                            if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
+                                                              toItemAvailableIces.add(line);
+                                                            }
+                                                          }
+                                                        }
+                                                        setState(
+                                                          () {},
+                                                        );
+                                                      },
+                                                    );
+                                                  }))),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ))
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Wrap(
-                          runAlignment: WrapAlignment.center,
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 5,
-                          children: [
-                            Checkbox(
-                              splashRadius: 2,
-                              value: isReplacingNQWithHQ,
-                              onChanged: (value) async {
-                                final prefs = await SharedPreferences.getInstance();
-                                isReplacingNQWithHQ = value!;
-                                prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
-                                setState(() {});
-                              },
-                            ),
-                            Text(curLangText!.uiReplaceNQwithHQ),
-                            Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
-                            Checkbox(
-                              splashRadius: 2,
-                              value: isCopyAll,
-                              onChanged: (value) async {
-                                final prefs = await SharedPreferences.getInstance();
-                                isCopyAll = value!;
-                                prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
-                                setState(() {});
-                              },
-                            ),
-                            Text(curLangText!.uiSwapAllFilesInsideIce),
-                            Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
-                            Checkbox(
-                              splashRadius: 2,
-                              value: isRemoveExtras,
-                              onChanged: (value) async {
-                                final prefs = await SharedPreferences.getInstance();
-                                isRemoveExtras = value!;
-                                prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                setState(() {});
-                              },
-                            ),
-                            Text(curLangText!.uiRemoveUnmatchingFiles),
-                          ],
-                        ),
-                        Wrap(
-                          runAlignment: WrapAlignment.center,
-                          alignment: WrapAlignment.center,
-                          spacing: 5,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  swapperSearchTextController.clear();
-                                  selectedFromCsvFile = null;
-                                  selectedToCsvFile = null;
-                                  availableItemsCsvData.clear();
-                                  fromItemIds.clear();
-                                  toItemIds.clear();
-                                  fromItemAvailableIces.clear();
-                                  toItemAvailableIces.clear();
-                                  csvData.clear();
-                                  availableItemsCsvData.clear();
-                                  Navigator.pop(context);
-                                },
-                                child: Text(curLangText!.uiClose)),
-                            ElevatedButton(
-                                onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
-                                    ? null
-                                    : () {
-                                        if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                          swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
-                                        }
-                                      },
-                                child: Text(curLangText!.uiNext))
-                          ],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Note: Some items might work right after swapping, some might not, some might require cmx editing'),
+                          Wrap(
+                            runAlignment: WrapAlignment.center,
+                            alignment: WrapAlignment.center,
+                            spacing: 5,
+                            children: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    swapperSearchTextController.clear();
+                                    selectedFromCsvFile = null;
+                                    selectedToCsvFile = null;
+                                    availableItemsCsvData.clear();
+                                    fromItemIds.clear();
+                                    toItemIds.clear();
+                                    fromItemAvailableIces.clear();
+                                    toItemAvailableIces.clear();
+                                    csvData.clear();
+                                    availableItemsCsvData.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(curLangText!.uiClose)),
+                              ElevatedButton(
+                                  onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
+                                      ? null
+                                      : () {
+                                          if (selectedFromCsvFile != null && selectedToCsvFile != null) {
+                                            swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                          }
+                                        },
+                                  child: Text(curLangText!.uiNext))
+                            ],
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),
