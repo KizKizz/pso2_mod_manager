@@ -350,8 +350,9 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                         ? Text(availableEmotesCsvData[i].jpName)
                                                         : Text(toIEmotesSearchResults[i].jpName)
                                                     : swapperSearchTextController.text.isEmpty
-                                                        ? Text(availableEmotesCsvData[i].enName + availableEmotesCsvData[i].gender)
+                                                        ? Text(availableEmotesCsvData[i].enName)
                                                         : Text(toIEmotesSearchResults[i].enName),
+                                                subtitle: swapperSearchTextController.text.isEmpty ? Text(availableEmotesCsvData[i].gender) : Text(toIEmotesSearchResults[i].gender),
                                                 onChanged: (CsvEmoteIceFile? currentItem) {
                                                   //print("Current ${moddedItemsList[i].groupName}");
                                                   selectedToEmotesCsvFile = currentItem!;
@@ -533,7 +534,11 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('Item ID: ${toItemIds[0]}'), Text('Adjusted ID: ${toItemIds[1]}'), for (int i = 0; i < toEmotesAvailableIces.length; i++) Text(toEmotesAvailableIces[i])],
+                                children: [
+                                  Text('Item ID: ${toItemIds[0]}'),
+                                  Text('Adjusted ID: ${toItemIds[1]}'),
+                                  for (int i = 0; i < toEmotesAvailableIces.length; i++) Text(toEmotesAvailableIces[i])
+                                ],
                               ),
                             ),
                           ),

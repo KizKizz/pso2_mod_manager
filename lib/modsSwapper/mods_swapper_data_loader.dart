@@ -53,7 +53,12 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
       if (item.split(',').first == defaultCateforyDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
       } else if (item.split(',').first == defaultCateforyDirs[7]) {
-        csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
+        if (item.split(',').length == 14) {
+          csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
+          
+        } else if (item.split(',').length == 19){
+          csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
+        }
       } else if (item.split(',').first == defaultCateforyDirs[14]) {
         csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
       } else if (item.split(',').first == defaultCateforyDirs[10]) {
@@ -265,11 +270,11 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                         } else if (csvEmotesData.isNotEmpty) {
                           availableEmotesCsvData = snapshot.data;
                           if (curActiveLang == 'JP') {
-                            availableItemsCsvData.sort(
+                            availableEmotesCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );
                           } else {
-                            availableItemsCsvData.sort(
+                            availableEmotesCsvData.sort(
                               (a, b) => a.enName.compareTo(b.enName),
                             );
                           }
