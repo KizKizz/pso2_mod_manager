@@ -12,6 +12,7 @@ Check back for latest releases
 
 - Organize, keep track of available and applied mods
 - Add, remove single/multiple items or mods
+- Swapping mods to another items (excludes emotes. motions)
 - Apply entire mod, or single .ice file
 - Mod sets, save mods into sets to apply later 
 - Backup originals from the game, restore when unapplying mods
