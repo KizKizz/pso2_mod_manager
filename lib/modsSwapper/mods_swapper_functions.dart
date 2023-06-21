@@ -63,9 +63,10 @@ extension IndexOfElements<T> on List<T> {
     var pos = start;
     while (true) {
       pos = indexOf(first, pos);
-      if (pos < 0 || pos > end) return -1;
+      if (pos < 0 || pos >= end) return -1;
       for (var i = 1; i < elements.length; i++) {
         if (this[pos + i] != elements[i]) {
+          if (pos < 0 || pos >= end) return -1;
           pos++;
           i = 1;
           continue;

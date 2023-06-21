@@ -151,19 +151,24 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             orElse: () => File(''),
           );
       if (aqpInDirF.path.isNotEmpty) {
-        var aqpBytes = await aqpInDirF.readAsBytes();
-        String aqpBytesString = String.fromCharCodes(aqpBytes);
+        Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
+        List<int> aqpBytes = [];
+        aqpBytes.addAll(aqpBytesRead);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           if (ddsIndex != -1) {
-            aqpBytesString = aqpBytesString.replaceFirst(ddsF, renamedDdsNamesF[ddsIndex]);
+            Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
+            Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
+            int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
+            if (firstMatchingIndex != -1) {
+              aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+              aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            }
           }
         }
-        Uint8List ddsFileTBytes = Uint8List.fromList(aqpBytesString.codeUnits);
-        aqpInDirF.writeAsBytesSync(ddsFileTBytes);
       }
     }
     //group2
@@ -188,8 +193,6 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
         List<int> aqpBytes = [];
         aqpBytes.addAll(aqpBytesRead);
-
-        //String aqpBytesString0 = String.fromCharCodes(aqpBytes);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
@@ -199,12 +202,10 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
-            //aqpBytes.insertAll(firstMatchingIndex, ddsTBytes);
-            //String aqpBytesString = String.fromCharCodes(aqpBytes);
-            //print(aqpBytesString);
-            aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
-            //aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, 'pl_ah_66667_s_uu_xx.dds'.codeUnits);
+            if (firstMatchingIndex != -1) {
+              aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+              aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            }
           }
         }
 
