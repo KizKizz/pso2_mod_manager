@@ -2098,7 +2098,26 @@ void modAddHandler(context) {
                                                                                 .listSync(recursive: false)
                                                                                 .indexWhere((element) => p.basename(element.path) == mainName) !=
                                                                             -1) {
-                                                                          _duplicateModNames.add('"$mainName" ${curLangText!.uiDuplicateModsIn} $itemName');
+                                                                          //check submod dirs
+                                                                          final subDirsInCurMainDir =
+                                                                              Directory(Uri.file('$modManModsDirPath/$category/$itemName/$mainName').toFilePath()).listSync().whereType<Directory>();
+                                                                          List<String> subNames = sortedLine[5]
+                                                                              .split('|')
+                                                                              .where((element) => element.split(':').last != '[TOREMOVE]' && element.split(':').first == mainName)
+                                                                              .toList();
+                                                                          if (subNames.isNotEmpty) {
+                                                                            for (var subName in subNames) {
+                                                                              String name = subName.split(':')[1];
+                                                                              final matchingSubDirs = subDirsInCurMainDir.where((element) => p.basename(element.path) == name);
+                                                                              if (matchingSubDirs.isNotEmpty) {
+                                                                                for (var matchingSubName in matchingSubDirs) {
+                                                                                  _duplicateModNames.add('$itemName > $mainName > ${p.basename(matchingSubName.path)}');
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          } else {
+                                                                            _duplicateModNames.add('$itemName > $mainName');
+                                                                          }
                                                                         }
                                                                       }
                                                                     }
@@ -2257,64 +2276,112 @@ Future<void> duplicateNamesDialog(context) async {
                       child: Text(curLangText!.uiRenameForMe),
                       onPressed: () {
                         for (var itemLine in _duplicateModNames) {
-                          String dupItemName = itemLine.split(' ${curLangText!.uiDuplicateModsIn} ').last;
-                          String newModName = '${itemLine.split(' ${curLangText!.uiDuplicateModsIn} ').first.replaceAll('"', '').trim()} - DUP';
+                          String dupItemName = itemLine.split(' > ').first;
+                          String newName = '${itemLine.split(' > ').last.trim()} - DUP';
                           int index = sortedModsList.indexWhere((element) => element[1] == dupItemName || element[2] == dupItemName);
                           if (index != -1) {
-                            for (int ex = 0; ex < sortedModsList[index][4].split('|').length; ex++) {
-                              for (int sub = 0; sub < sortedModsList[index][5].split('|').length; sub++) {
-                                //print('OLD: $sortedModsList');
-                                String oldMainDirName = sortedModsList[index][4].split('|')[ex];
-                                // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
-                                //     .renameSync('$modManAddModsTempDirPath$s${newModName}');
-                                List<FileSystemEntity> curFilesInMainDir = Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath()).listSync(recursive: true);
-                                for (var element in curFilesInMainDir) {
-                                  //print(curFilesInMainDir);
-                                  String newMainPath =
-                                      element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
-                                  if (!File(element.path).existsSync()) {
-                                    Directory(newMainPath).createSync(recursive: true);
-                                  }
-                                  if (sortedModsList[index][5].isEmpty) {
-                                    Directory(Uri.file('$modManAddModsTempDirPath/$newModName').toFilePath()).createSync(recursive: true);
-                                  }
+                            //print('OLD: $sortedModsList');
+                            if (itemLine.split(' > ').length < 3) {
+                              String oldMainDirName = itemLine.split(' > ').last;
+                              List<FileSystemEntity> curFilesInMainDir = Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath()).listSync(recursive: true);
+                              for (var element in curFilesInMainDir) {
+                                //print(curFilesInMainDir);
+                                String newMainPath =
+                                    element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newName/').toFilePath());
+                                if (!File(element.path).existsSync()) {
+                                  Directory(newMainPath).createSync(recursive: true);
                                 }
-                                for (var element in curFilesInMainDir) {
-                                  String newMainPath =
-                                      element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newModName/').toFilePath());
-                                  if (File(element.path).existsSync()) {
-                                    File(element.path).copySync(newMainPath);
-                                  }
+                                if (sortedModsList[index][5].isEmpty) {
+                                  Directory(Uri.file('$modManAddModsTempDirPath/$newName').toFilePath()).createSync(recursive: true);
                                 }
-
-                                //Itemlist
-                                //Item name replace
-                                List<String> mainDirsString = sortedModsList[index][4].split('|');
-                                mainDirsString[mainDirsString.indexOf(oldMainDirName)] = newModName;
-                                sortedModsList[index][4] = mainDirsString.join('|');
-
-                                //Subitem Item name replace
-                                List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
-                                for (var element in mainDirsInSubItemString) {
-                                  List<String> split = element.split((':'));
-                                  if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                    split[split.indexOf(oldMainDirName)] = newModName;
-                                    mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
-                                  }
-                                }
-                                sortedModsList[index][5] = mainDirsInSubItemString.join('|');
-
-                                //icefile Item name replace
-                                List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
-                                for (var element in mainDirsInItemString) {
-                                  List<String> split = element.split((':'));
-                                  if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                    split[split.indexOf(oldMainDirName)] = newModName;
-                                    mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
-                                  }
-                                }
-                                sortedModsList[index][6] = mainDirsInItemString.join('|');
                               }
+                              for (var element in curFilesInMainDir) {
+                                String newMainPath =
+                                    element.path.replaceFirst(Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(), Uri.file('$modManAddModsTempDirPath/$newName/').toFilePath());
+                                if (File(element.path).existsSync()) {
+                                  File(element.path).copySync(newMainPath);
+                                }
+                              }
+
+                              //Itemlist
+                              //Item name replace
+                              List<String> mainDirsString = sortedModsList[index][4].split('|');
+                              mainDirsString[mainDirsString.indexOf(oldMainDirName)] = newName;
+                              sortedModsList[index][4] = mainDirsString.join('|');
+
+                              //Subitem Item name replace
+                              List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
+                              for (var element in mainDirsInSubItemString) {
+                                List<String> split = element.split((':'));
+                                if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                  split[split.indexOf(oldMainDirName)] = newName;
+                                  mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
+                                }
+                              }
+                              sortedModsList[index][5] = mainDirsInSubItemString.join('|');
+
+                              //icefile Item name replace
+                              List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
+                              for (var element in mainDirsInItemString) {
+                                List<String> split = element.split((':'));
+                                if (split.indexWhere((element) => element == oldMainDirName) != -1) {
+                                  split[split.indexOf(oldMainDirName)] = newName;
+                                  mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
+                                }
+                              }
+                              sortedModsList[index][6] = mainDirsInItemString.join('|');
+
+                              //submods fix
+                            } else {
+                              String mainDirName = itemLine.split(' > ')[1];
+                              String oldSubDirName = itemLine.split(' > ').last;
+                              List<FileSystemEntity> curFilesInSubDir = Directory(Uri.file('$modManAddModsTempDirPath/$mainDirName/$oldSubDirName').toFilePath()).listSync(recursive: true);
+                              for (var element in curFilesInSubDir) {
+                                //print(curFilesInMainDir);
+                                String newSubPath = element.path.replaceFirst(
+                                    Uri.file('$modManAddModsTempDirPath/$mainDirName/$oldSubDirName').toFilePath(), Uri.file('$modManAddModsTempDirPath/$mainDirName/$newName').toFilePath());
+                                if (!File(element.path).existsSync()) {
+                                  Directory(newSubPath).createSync(recursive: true);
+                                }
+                                if (sortedModsList[index][5].isEmpty) {
+                                  Directory(Uri.file('$modManAddModsTempDirPath/$mainDirName').toFilePath()).createSync(recursive: true);
+                                } else {
+                                  Directory(Uri.file('$modManAddModsTempDirPath/$mainDirName/$newName').toFilePath()).createSync(recursive: true);
+                                }
+                              }
+                              for (var element in curFilesInSubDir) {
+                                String newSubPath = element.path.replaceFirst(
+                                    Uri.file('$modManAddModsTempDirPath/$mainDirName/$oldSubDirName').toFilePath(), Uri.file('$modManAddModsTempDirPath/$mainDirName/$newName').toFilePath());
+                                if (File(element.path).existsSync()) {
+                                  File(element.path).copySync(newSubPath);
+                                }
+                              }
+
+                              //Itemlist
+                              //Item name replace
+                              // List<String> subDirsString = sortedModsList[index][5].split('|');
+                              // subDirsString[subDirsString.indexOf(oldSubDirName)].split(':').last = newName;
+                              // sortedModsList[index][5] = subDirsString.join('|');
+
+                              //Subitem Item name replace
+                              List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
+                              int curSubModLineIndex = mainDirsInSubItemString.indexWhere((element) => element.split(':').first == mainDirName && element.split(':').last == oldSubDirName);
+                              if (curSubModLineIndex != -1) {
+                                mainDirsInSubItemString[curSubModLineIndex] = '$mainDirName:$newName';
+                                sortedModsList[index][5] = mainDirsInSubItemString.join('|');
+                              }
+
+                              //icefile Item name replace
+                              List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
+
+                              for (var line in mainDirsInItemString) {
+                                List<String> split = line.split((':'));
+                                if (split.first == mainDirName && split[1] == oldSubDirName) {
+                                  split[split.indexOf(oldSubDirName)] = newName;
+                                  mainDirsInItemString[mainDirsInItemString.indexOf(line)] = split.join(':');
+                                }
+                              }
+                              sortedModsList[index][6] = mainDirsInItemString.join('|');
                             }
                           }
                         }

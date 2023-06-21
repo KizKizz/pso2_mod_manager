@@ -101,10 +101,22 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
           if (itemInListIndex == -1) {
             cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
           } else {
-            cateInList.items[itemInListIndex].mods.addAll(newModsFetcher(cateInList.items[itemInListIndex].location, cateInList.categoryName, foldersInNewItemPath));
-            cateInList.items[itemInListIndex].isNew = true;
+            Item itemInList = cateInList.items[itemInListIndex];
+            int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.contains(element.modName));
+            if (modInListIndex != -1) {
+              Mod modInList = itemInList.mods[modInListIndex];
+              List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName);
+              for (var subModInCurMod in modInList.submods) {
+                extraSubmods.removeWhere((element) => element.submodName == subModInCurMod.submodName);
+              }
+              modInList.submods.addAll(extraSubmods);
+              modInList.isNew = true;
+            } else {
+              itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath));
+            }
+            itemInList.isNew = true;
             //Sort alpha
-            cateInList.items[itemInListIndex].mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+            itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
           }
           //Sort alpha
           cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
