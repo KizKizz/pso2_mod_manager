@@ -263,7 +263,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                 color: Colors.transparent,
                                 child: SizedBox(
-                                    height: 90,
+                                    height: 92,
                                     child: ListTile(
                                       minVerticalPadding: 15,
                                       title: Text(curLangText!.uiChooseAnItemBellowToSwap),
@@ -329,48 +329,65 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Wrap(
-                                      runAlignment: WrapAlignment.center,
-                                      alignment: WrapAlignment.center,
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      spacing: 5,
-                                      children: [
-                                        Checkbox(
-                                          splashRadius: 2,
-                                          value: isReplacingNQWithHQ,
-                                          onChanged: (value) async {
-                                            final prefs = await SharedPreferences.getInstance();
-                                            isReplacingNQWithHQ = value!;
-                                            prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
-                                            setState(() {});
-                                          },
-                                        ),
-                                        Text(curLangText!.uiReplaceNQwithHQ),
-                                        // Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
-                                        // Checkbox(
-                                        //   splashRadius: 2,
-                                        //   value: isCopyAll,
-                                        //   onChanged: (value) async {
-                                        //     final prefs = await SharedPreferences.getInstance();
-                                        //     isCopyAll = value!;
-                                        //     prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
-                                        //     setState(() {});
-                                        //   },
-                                        // ),
-                                        // Text(curLangText!.uiSwapAllFilesInsideIce),
-                                        // Container(width: 2, height: 20, color: Theme.of(context).primaryColorLight),
-                                        // Checkbox(
-                                        //   splashRadius: 2,
-                                        //   value: isRemoveExtras,
-                                        //   onChanged: (value) async {
-                                        //     final prefs = await SharedPreferences.getInstance();
-                                        //     isRemoveExtras = value!;
-                                        //     prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                        //     setState(() {});
-                                        //   },
-                                        // ),
-                                        // Text(curLangText!.uiRemoveUnmatchingFiles),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          MaterialButton(
+                                            height: 29,
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () async {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              isReplacingNQWithHQ ? isReplacingNQWithHQ = false : isReplacingNQWithHQ = true;
+                                              prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
+                                              setState(() {});
+                                            },
+                                            child: Wrap(
+                                              alignment: WrapAlignment.center,
+                                              runAlignment: WrapAlignment.center,
+                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                              spacing: 5,
+                                              children: [Icon(isReplacingNQWithHQ ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiReplaceNQwithHQ)],
+                                            ),
+                                          ),
+                                          // MaterialButton(
+                                          //   height: 29,
+                                          //   padding: EdgeInsets.zero,
+                                          //   onPressed: () async {
+                                          //     final prefs = await SharedPreferences.getInstance();
+                                          //     isCopyAll ? isCopyAll = false : isCopyAll = true;
+                                          //     prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
+                                          //     setState(() {});
+                                          //   },
+                                          //   child: Wrap(
+                                          //     alignment: WrapAlignment.center,
+                                          //     runAlignment: WrapAlignment.center,
+                                          //     crossAxisAlignment: WrapCrossAlignment.center,
+                                          //     spacing: 5,
+                                          //     children: [Icon(isCopyAll ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapAllFilesInsideIce)],
+                                          //   ),
+                                          // ),
+                                          MaterialButton(
+                                            height: 29,
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () async {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
+                                              prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
+                                              setState(() {});
+                                            },
+                                            child: Wrap(
+                                              alignment: WrapAlignment.center,
+                                              runAlignment: WrapAlignment.center,
+                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                              spacing: 5,
+                                              children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     Expanded(
                                       child: Card(
