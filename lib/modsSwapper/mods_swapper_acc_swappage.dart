@@ -102,6 +102,21 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
       }
     }
 
+    //group1 > group1
+    List<File> renamedExtractedGroup1Files = [];
+    if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup1FilesT);
+    } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
+    } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
+      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
+      String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
+      Directory(extractedGroup2PathF).createSync();
+      for (var file in renamedExtractedGroup1Files) {
+        file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+      }
+    }
+
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
@@ -116,18 +131,20 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         file.renameSync(Uri.file('$extractedGroup1PathF/${p.basename(file.path)}').toFilePath());
       }
     }
-    //group1 > group1
-    List<File> renamedExtractedGroup1Files = [];
-    if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup1FilesT);
-    } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
-    } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
-      String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
-      Directory(extractedGroup2PathF).createSync();
-      for (var file in renamedExtractedGroup1Files) {
-        file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+
+    //copy extra files
+    if (renamedExtractedGroup1Files.isNotEmpty && !isRemoveExtras) {
+      for (var extractedFileT in extractedGroup1FilesT) {
+        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
+    }
+    if (renamedExtractedGroup2Files.isNotEmpty && !isRemoveExtras) {
+      for (var extractedFileT in extractedGroup2FilesT) {
+        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
       }
     }
 
@@ -151,19 +168,35 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             orElse: () => File(''),
           );
       if (aqpInDirF.path.isNotEmpty) {
-        var aqpBytes = await aqpInDirF.readAsBytes();
-        String aqpBytesString = String.fromCharCodes(aqpBytes);
+        Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
+        List<int> aqpBytes = [];
+        aqpBytes.addAll(aqpBytesRead);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
-          int ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
+          int ddsIndex = -1;
+          if (renamedDdsNamesF.where((element) => element.split('_')[1] == 'rac').isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
+          }
           if (ddsIndex != -1) {
-            aqpBytesString = aqpBytesString.replaceFirst(ddsF, renamedDdsNamesF[ddsIndex]);
+            Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
+            Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
+            int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
+            if (firstMatchingIndex != -1) {
+              if (ddsFBytes.length > ddsTBytes.length) {
+                List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+                Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+                aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+              } else {
+                aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+              }
+              aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            }
           }
         }
-        Uint8List ddsFileTBytes = Uint8List.fromList(aqpBytesString.codeUnits);
-        aqpInDirF.writeAsBytesSync(ddsFileTBytes);
       }
     }
     //group2
@@ -188,40 +221,32 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         Uint8List aqpBytesRead = await aqpInDirF.readAsBytes();
         List<int> aqpBytes = [];
         aqpBytes.addAll(aqpBytesRead);
-
-        //String aqpBytesString0 = String.fromCharCodes(aqpBytes);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
-          int ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
+          int ddsIndex = -1;
+          if (renamedDdsNamesF.where((element) => element.split('_')[1] == 'rac').isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
+          }
           if (ddsIndex != -1) {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
-            //aqpBytes.insertAll(firstMatchingIndex, ddsTBytes);
-            //String aqpBytesString = String.fromCharCodes(aqpBytes);
-            //print(aqpBytesString);
-            aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
-            //aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, 'pl_ah_66667_s_uu_xx.dds'.codeUnits);
+            if (firstMatchingIndex != -1) {
+              if (ddsFBytes.length > ddsTBytes.length) {
+                List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+                Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+                aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+              } else {
+                aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+              }
+              aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            }
           }
         }
-
-        // String aqpBytesString = String.fromCharCodes(aqpBytes);
-        // //print(aqpBytesString);
-        // for (var ddsF in ogDdsNamesF) {
-        //   List<String> ddsFParts = ddsF.split('_');
-        //   String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
-        //   List<String> ddsWoId = ddsF.split(ddsFId);
-        //   int ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
-        //   if (ddsIndex != -1) {
-        //     aqpBytesString = aqpBytesString.replaceFirst(ddsF, 'pl_ah_666_s_uu_xx.ddS ');
-        //   }
-        // }
-        // print(aqpBytesString);
-        // Uint8List ddsFileTBytes = Uint8List.fromList(aqpBytesString.codeUnits);
-        // aqpInDirF.writeAsBytesSync(Uint8List.fromList(ddsFileTBytes));
       }
     }
 

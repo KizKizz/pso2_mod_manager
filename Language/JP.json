@@ -230,7 +230,7 @@
   "uiChooseAnItemBellowToSwap": "以下の項目から交換したいものを選んでください",
   "uiSearchSwapItems": "検索項目",
   "uiReplaceNQwithHQ": "LQアイスをHQに置き換える",
-  "uiSwapAllFilesInsideIce": "アイスの中のファイルを全部入れ替える",
+  "uiSwapAllFilesInsideIce": "余分なファイルを削除する",
   "uiRemoveUnmatchingFiles": "デスティネーションIceで一致しないファイルを削除する",
   "uiSwap": "スワップ",
   "uiNoteModsMightNotWokAfterSwapping": "注意: 交換後すぐに動作するもの、しないもの、cmxの編集が必要なものがあります。自己責任でご利用ください。",

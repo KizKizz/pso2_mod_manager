@@ -2725,7 +2725,7 @@ class _HomePageState extends State<HomePage> {
                                                       Expanded(
                                                           child: Text(
                                                         curSubmod.submodName,
-                                                        style: TextStyle(color: curSubmod.applyStatus ? Theme.of(context).colorScheme.primary : null),
+                                                        style: TextStyle(color: curSubmod.applyStatus ? Theme.of(context).colorScheme.primary : curSubmod.isNew ? Colors.amber : null),
                                                       )),
                                                       Padding(
                                                         padding: const EdgeInsets.only(left: 5),

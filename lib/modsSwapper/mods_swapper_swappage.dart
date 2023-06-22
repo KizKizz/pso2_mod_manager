@@ -130,6 +130,22 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
     }
 
+    //copy extra files
+    if (renamedExtractedGroup1Files.isNotEmpty && !isRemoveExtras) {
+      for (var extractedFileT in extractedGroup1FilesT) {
+        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
+    }
+    if (renamedExtractedGroup2Files.isNotEmpty && !isRemoveExtras) {
+      for (var extractedFileT in extractedGroup2FilesT) {
+        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
+          extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
+    }
+
     //pack
     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var char in charToReplace) {
