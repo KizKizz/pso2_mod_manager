@@ -71,6 +71,25 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
   return renamedFiles;
 }
 
+Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
+  List<File> renamedFiles = [];
+  for (var fileF in fFiles) {
+    List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
+    final matchingFileT = tFiles.firstWhere(
+        (element) =>
+            p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+            p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+            p.extension(element.path) == p.extension(fileF.path),
+        orElse: () => File(''));
+    if (matchingFileT.path.isNotEmpty) {
+      String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
+      renamedFiles.add(await fileF.rename(newPath));
+    }
+  }
+
+  return renamedFiles;
+}
+
 extension IndexOfElements<T> on List<T> {
   int indexOfElements(List<T> elements, [int start = 0]) {
     if (elements.isEmpty) return start;
