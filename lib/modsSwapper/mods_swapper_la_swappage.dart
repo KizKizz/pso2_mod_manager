@@ -9,7 +9,6 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages

@@ -71,10 +71,14 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
     List<List<String>> csvInfos = [];
     bool isPso2HashFound = false;
     bool isPso2VfxHashFound = false;
+    String subCategory = '';
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
       csvInfos.add(availableModFileData);
+      if (subCategory.isEmpty) {
+        subCategory = csvItemData.subCategory;
+      }
       //filter pso2 only emotes
       for (var line in availableModFileData) {
         if (!isPso2HashFound && line.split(': ').first.contains('PSO2 Hash Ice')) {
@@ -87,6 +91,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
           break;
         }
       }
+    }
+
+    if (subCategory.isNotEmpty) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == subCategory).toList();
     }
 
     if (isPso2HashFound) {

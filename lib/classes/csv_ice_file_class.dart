@@ -1,4 +1,3 @@
-
 class CsvIceFile {
   CsvIceFile(this.category, this.jpName, this.enName, this.id, this.adjustedId, this.iconIceName, this.nqIceName, this.hqIceName, this.nqRpIceName, this.hqRpIceName, this.nqLiIceName,
       this.hqLiIceName, this.soundIceName, this.castSoundIceName, this.maIceName, this.maExIceName, this.handTextureIceName, this.hqhandTextureIceName);
@@ -110,69 +109,38 @@ class CsvAccessoryIceFile {
   String hqIceName;
 
   List<String> getDetailedList() {
-    return [
-      'Category: $category',
-      'JP Name: $jpName',
-      'EN Name: $enName',
-      'ID: $id',
-      'Icon Ice: $iconIceName',
-      'Normal Quality Ice: $nqIceName',
-      'High Quality Ice: $hqIceName'
-    ];
+    return ['Category: $category', 'JP Name: $jpName', 'EN Name: $enName', 'ID: $id', 'Icon Ice: $iconIceName', 'Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
   }
 }
 
-
 class CsvEmoteIceFile {
-  CsvEmoteIceFile(this.category, this.jpName, this.enName, this.command, this.pso2HashIceName, this.rbHumanHashIceName, this.rbCastMaleHashIceName, this.rbCastFemaleHashIceName, this.rbFigHashIceName, this.pso2VfxHashIceName, this.rbVfxHashIceName,
-      this.gender);
+  CsvEmoteIceFile(this.category, this.subCategory, this.jpName, this.enName, this.command, this.pso2HashIceName, this.rbHumanHashIceName, this.rbCastMaleHashIceName, this.rbCastFemaleHashIceName, this.rbFigHashIceName,
+      this.pso2VfxHashIceName, this.rbVfxHashIceName, this.gender);
   CsvEmoteIceFile.fromListPso2(List<String> items)
-      : this(
-          items[0],
-          items[1],
-          items[2],
-          items[3],
-          items[5].split('\\').last,
-          items[7].split('\\').last,
-          items[9].split('\\').last,
-          items[11].split('\\').last,
-          items[13].split('\\').last,
-          items[15].split('\\').last,
-          items[17].split('\\').last,
-          items[18].isNotEmpty ? items[18] : 'Both'
-        );
+      : this(items[0], '', items[1], items[2], items[3], items[5].split('\\').last, items[7].split('\\').last, items[9].split('\\').last, items[11].split('\\').last, items[13].split('\\').last,
+            items[15].split('\\').last, items[17].split('\\').last, items[18].isNotEmpty ? items[18] : 'Both');
   CsvEmoteIceFile.fromListNgs(List<String> items)
-      : this(
-          items[0],
-          items[1],
-          items[2],
-          items[3],
-          '',
-          items[5].split('\\').last,
-          items[7].split('\\').last,
-          items[9].split('\\').last,
-          items[11].split('\\').last,
-          '',
-          items[13].split('\\').last,
-          items[14].isNotEmpty ? items[14] : 'Both'
-        );
+      : this(items[0], '', items[1], items[2], items[3], '', items[5].split('\\').last, items[7].split('\\').last, items[9].split('\\').last, items[11].split('\\').last, '', items[13].split('\\').last,
+            items[14].isNotEmpty ? items[14] : 'Both');
   CsvEmoteIceFile.fromListMotion(List<String> items)
       : this(
           items[0],
           items[1],
           items[2],
+          items[3],
           '',
-          items[3].split('\\').last,
           items[4].split('\\').last,
           items[5].split('\\').last,
           items[6].split('\\').last,
           items[7].split('\\').last,
+          items[8].split('\\').last,
           '',
           '',
           '',
         );
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
+  String subCategory;
   String jpName;
   String enName;
   String command;
