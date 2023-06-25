@@ -15,11 +15,13 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
     List<File> renamedFilesF = [];
     for (var fFile in fFiles) {
       List<String> namePartsF = p.basenameWithoutExtension(fFile.path).split('_');
-      namePartsF[1] == 'ah' ? namePartsF[1] = 'rac' : null;
-      namePartsF[3] == 'x' ? namePartsF.removeRange(3, namePartsF.length) : namePartsF.removeRange(4, namePartsF.length);
-      String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
-      String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
-      renamedFilesF.add(fFile.renameSync(newFilePathF));
+      if (namePartsF.length > 3) {
+        namePartsF[1] == 'ah' ? namePartsF[1] = 'rac' : null;
+        namePartsF[3] == 'x' ? namePartsF.removeRange(3, namePartsF.length) : namePartsF.removeRange(4, namePartsF.length);
+        String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
+        String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
+        renamedFilesF.add(fFile.renameSync(newFilePathF));
+      }
     }
     fFiles = renamedFilesF;
   }
