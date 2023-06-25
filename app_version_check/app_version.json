@@ -2,8 +2,9 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.1.2",
     "description": [
-        "Improved accessories swapping from pso2 classic to NGS items",
-        "Mods Adder now separates mods by sub folders inside mod folders instead of main mod folders"
+        "Enable swapping Emmotes to Emotes, Motions to Motions, and Emotes to Idle Motions (But why? Decoys in Creative Space) ",
+        "Fixed some bugs when swapping accessories",
+        "Minor bugs fixes"
     ],
     "windows_file": "",
     "linux_file": ""
