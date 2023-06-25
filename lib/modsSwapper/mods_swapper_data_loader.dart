@@ -109,8 +109,12 @@ Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> 
   return cvsAccDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
 }
 
-Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsAccDataInput, Item swapFromItem) async {
-  return csvEmotesData.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, Item swapFromItem) async {
+  return cvsEmoteDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+}
+
+Future<List<CsvEmoteIceFile>> getEmotesToMotionsSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, String itemCategory) async {
+  return cvsEmoteDataInput.where((element) => element.category == itemCategory).toList();
 }
 
 class ModsSwapperDataLoader extends StatefulWidget {

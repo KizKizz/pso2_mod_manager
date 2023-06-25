@@ -129,7 +129,7 @@ class CsvEmoteIceFile {
           items[2],
           items[3],
           '',
-          items[4].split('\\').last,
+          '',
           items[5].split('\\').last,
           items[6].split('\\').last,
           items[7].split('\\').last,

@@ -139,11 +139,23 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
           extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }
+    } else if (renamedExtractedGroup1Files.isEmpty) {
+      for (var extractedFileT in extractedGroup1FilesT) {
+        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath()).existsSync()) {
+          extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
     }
     if (renamedExtractedGroup2Files.isNotEmpty && !isRemoveExtras) {
       for (var extractedFileT in extractedGroup2FilesT) {
         if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
           extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
+    } else if (renamedExtractedGroup2Files.isEmpty) {
+      for (var extractedFileT in extractedGroup2FilesT) {
+        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath()).existsSync()) {
+          extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }
     }

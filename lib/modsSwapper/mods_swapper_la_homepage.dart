@@ -11,7 +11,6 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
@@ -21,6 +20,8 @@ CsvEmoteIceFile? selectedToEmotesCsvFile;
 //List<String> toItemIds = [];
 List<String> fromEmotesAvailableIces = [];
 List<String> toEmotesAvailableIces = [];
+String selectedLaGender = '';
+List<CsvEmoteIceFile> fromItemCsvData = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -58,26 +59,28 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
 
     //fetch
     final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
-    final fromItemCsvData = csvEmotesData
-        .where((element) =>
-            iceNamesFromSubmod.contains(element.pso2HashIceName) ||
-            iceNamesFromSubmod.contains(element.pso2VfxHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbCastFemaleHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbCastMaleHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbFigHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbHumanHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbVfxHashIceName))
-        .toList();
+    if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
+      fromItemCsvData = csvEmotesData
+          .where((element) =>
+              iceNamesFromSubmod.contains(element.pso2HashIceName) ||
+              iceNamesFromSubmod.contains(element.pso2VfxHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbCastFemaleHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbCastMaleHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbFigHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbHumanHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbVfxHashIceName))
+          .toList();
+    }
     List<List<String>> csvInfos = [];
     bool isPso2HashFound = false;
     bool isPso2VfxHashFound = false;
-    String subCategory = '';
+    String selectedMotionType = '';
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
       csvInfos.add(availableModFileData);
-      if (subCategory.isEmpty) {
-        subCategory = csvItemData.subCategory;
+      if (selectedMotionType.isEmpty) {
+        selectedMotionType = csvItemData.subCategory;
       }
       //filter pso2 only emotes
       for (var line in availableModFileData) {
@@ -93,8 +96,8 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
       }
     }
 
-    if (subCategory.isNotEmpty) {
-      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == subCategory).toList();
+    if (selectedMotionType.isNotEmpty) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
     }
 
     if (isPso2HashFound) {
@@ -102,6 +105,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
     }
     if (isPso2VfxHashFound) {
       availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+    }
+
+    if (isEmotesToStandbyMotions) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == 'Standby Motion').toList();
     }
 
     return Scaffold(
@@ -379,21 +386,67 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           //     children: [Icon(isCopyAll ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapAllFilesInsideIce)],
                                           //   ),
                                           // ),
+                                          // MaterialButton(
+                                          //   height: 29,
+                                          //   padding: EdgeInsets.zero,
+                                          //   onPressed: () async {
+                                          //     final prefs = await SharedPreferences.getInstance();
+                                          //     isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
+                                          //     prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
+                                          //     setState(() {});
+                                          //   },
+                                          //   child: Wrap(
+                                          //     alignment: WrapAlignment.center,
+                                          //     runAlignment: WrapAlignment.center,
+                                          //     crossAxisAlignment: WrapCrossAlignment.center,
+                                          //     spacing: 5,
+                                          //     children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                          //   ),
+                                          // ),
                                           MaterialButton(
                                             height: 29,
                                             padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
-                                              prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                              setState(() {});
-                                            },
+                                            onPressed: selectedMotionType.isNotEmpty
+                                                ? null
+                                                : () async {
+                                                    //final prefs = await SharedPreferences.getInstance();
+                                                    csvEmotesData.clear();
+                                                    if (!isEmotesToStandbyMotions) {
+                                                      isEmotesToStandbyMotions = true;
+                                                      await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
+                                                      availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                    } else {
+                                                      isEmotesToStandbyMotions = false;
+                                                      await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
+                                                      availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
+                                                      if (selectedMotionType.isNotEmpty) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
+                                                      }
+                                                      if (isPso2HashFound) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+                                                      }
+                                                      if (isPso2VfxHashFound) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+                                                      }
+                                                    }
+                                                    if (curActiveLang == 'JP') {
+                                                      availableEmotesCsvData.sort(
+                                                        (a, b) => a.jpName.compareTo(b.jpName),
+                                                      );
+                                                    } else {
+                                                      availableEmotesCsvData.sort(
+                                                        (a, b) => a.enName.compareTo(b.enName),
+                                                      );
+                                                    }
+                                                    //prefs.setBool('isEmotesToStandbyMotions', isEmotesToStandbyMotions);
+                                                    setState(() {});
+                                                  },
                                             child: Wrap(
                                               alignment: WrapAlignment.center,
                                               runAlignment: WrapAlignment.center,
                                               crossAxisAlignment: WrapCrossAlignment.center,
                                               spacing: 5,
-                                              children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                              children: [Icon(isEmotesToStandbyMotions ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapToIdleMotion)],
                                             ),
                                           ),
                                         ],
@@ -430,7 +483,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           : swapperSearchTextController.text.isEmpty
                                                               ? Text(availableEmotesCsvData[i].enName)
                                                               : Text(toIEmotesSearchResults[i].enName),
-                                                      subtitle: swapperSearchTextController.text.isEmpty ? Text(availableEmotesCsvData[i].gender) : Text(toIEmotesSearchResults[i].gender),
+                                                      subtitle: isEmotesToStandbyMotions
+                                                          ? null
+                                                          : swapperSearchTextController.text.isEmpty
+                                                              ? Text(availableEmotesCsvData[i].gender)
+                                                              : Text(toIEmotesSearchResults[i].gender),
                                                       onChanged: (CsvEmoteIceFile? currentItem) {
                                                         //print("Current ${moddedItemsList[i].groupName}");
                                                         selectedToEmotesCsvFile = currentItem!;
@@ -481,12 +538,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     selectedFromEmotesCsvFile = null;
                                     selectedToEmotesCsvFile = null;
                                     availableEmotesCsvData.clear();
-                                    //fromItemIds.clear();
-                                    //toItemIds.clear();
                                     fromEmotesAvailableIces.clear();
                                     toEmotesAvailableIces.clear();
                                     csvEmotesData.clear();
                                     availableEmotesCsvData.clear();
+                                    isEmotesToStandbyMotions = false;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -549,11 +605,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromE
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Text('Item ID: ${fromItemIds[0]}'),
-                                  // Text('Adjusted ID: ${fromItemIds[1]}'),
-                                  for (int i = 0; i < fromEmotesAvailableIces.length; i++) Text(fromEmotesAvailableIces[i])
-                                ],
+                                children: [for (int i = 0; i < fromEmotesAvailableIces.length; i++) Text(fromEmotesAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -577,9 +629,8 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromE
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Text('Item ID: ${toItemIds[0]}'),
-                                  // Text('Adjusted ID: ${toItemIds[1]}'),
-                                  for (int i = 0; i < toEmotesAvailableIces.length; i++) Text(toEmotesAvailableIces[i])
+                                  for (int i = 0; i < toEmotesAvailableIces.length; i++)
+                                    if (toEmotesAvailableIces[i].split(': ').last.isNotEmpty) Text(toEmotesAvailableIces[i])
                                 ],
                               ),
                             ),

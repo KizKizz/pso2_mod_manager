@@ -196,6 +196,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       //mods swapper check
+      // isEmotesToStandbyMotions = (prefs.getBool('isEmotesToStandbyMotions') ?? false);
       isReplacingNQWithHQ = (prefs.getBool('modsSwapperIsReplacingNQWithHQ') ?? false);
       isCopyAll = (prefs.getBool('modsSwapperIsCopyAll') ?? false);
       isRemoveExtras = (prefs.getBool('modsSwapperIsRemoveExtras') ?? false);
