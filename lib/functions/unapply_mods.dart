@@ -35,7 +35,7 @@ Future<ModFile> modFileUnapply(ModFile modFile) async {
       }
     }
     if (!dontRemoveList.contains(bkPath)) {
-      File(bkPath).deleteSync(recursive: true);
+      File(bkPath).deleteSync(recursive: false);
     }
   }
   return modFile;
