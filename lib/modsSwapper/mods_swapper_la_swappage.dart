@@ -81,13 +81,23 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
 
     //copy to temp toitem dir
     String icePathFromOgDataT = '';
-    for (var type in ogDataFilePaths) {
-      icePathFromOgDataT = type.firstWhere(
-        (element) => p.basename(element) == iceNameT,
-        orElse: () => '',
-      );
-      if (icePathFromOgDataT.isNotEmpty) {
-        break;
+    final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
+    icePathFromOgDataT = backupFiles
+        .firstWhere(
+          (element) => p.basename(element.path) == iceNameT,
+          orElse: () => File(''),
+        )
+        .path;
+    //look for og file if backup is not found
+    if (icePathFromOgDataT.isEmpty) {
+      for (var type in ogDataFilePaths) {
+        icePathFromOgDataT = type.firstWhere(
+          (element) => p.basename(element) == iceNameT,
+          orElse: () => '',
+        );
+        if (icePathFromOgDataT.isNotEmpty) {
+          break;
+        }
       }
     }
     if (icePathFromOgDataT.isNotEmpty) {
@@ -141,7 +151,8 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
     } else if (renamedExtractedGroup1Files.isEmpty) {
       for (var extractedFileT in extractedGroup1FilesT) {
-        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath()).existsSync()) {
+        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty &&
+            Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath()).existsSync()) {
           extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }
@@ -154,7 +165,8 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
     } else if (renamedExtractedGroup2Files.isEmpty) {
       for (var extractedFileT in extractedGroup2FilesT) {
-        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath()).existsSync()) {
+        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty &&
+            Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath()).existsSync()) {
           extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }

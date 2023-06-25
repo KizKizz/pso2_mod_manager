@@ -19,8 +19,8 @@ import 'package:url_launcher/url_launcher.dart';
 Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
-      Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
-    }
+    Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+  }
   //create
   Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
@@ -79,13 +79,23 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
 
     //copy to temp toitem dir
     String icePathFromOgDataT = '';
-    for (var type in ogDataFilePaths) {
-      icePathFromOgDataT = type.firstWhere(
-        (element) => p.basename(element) == iceNameT,
-        orElse: () => '',
-      );
-      if (icePathFromOgDataT.isNotEmpty) {
-        break;
+    final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
+    icePathFromOgDataT = backupFiles
+        .firstWhere(
+          (element) => p.basename(element.path) == iceNameT,
+          orElse: () => File(''),
+        )
+        .path;
+    //look for og file if backup is not found
+    if (icePathFromOgDataT.isEmpty) {
+      for (var type in ogDataFilePaths) {
+        icePathFromOgDataT = type.firstWhere(
+          (element) => p.basename(element) == iceNameT,
+          orElse: () => '',
+        );
+        if (icePathFromOgDataT.isNotEmpty) {
+          break;
+        }
       }
     }
     if (icePathFromOgDataT.isNotEmpty) {

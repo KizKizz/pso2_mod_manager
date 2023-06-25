@@ -118,7 +118,7 @@ Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
-    } else if (isEmotesToStandbyMotions && fileNamePartsF[0] == 'pl' && p.extension(fileF.path) == '.aqm' && p.basenameWithoutExtension(fileF.path).contains('_std_')) {
+    } else if (isEmotesToStandbyMotions && fileNamePartsF[0] == 'pl' && p.extension(fileF.path) == '.aqm' && (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
       //emotes to motions
       File aqmFile = tFiles.firstWhere(
           (element) =>

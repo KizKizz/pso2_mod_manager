@@ -1,10 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "description": [
-        "Enable swapping modded emotes to other emotes, modded motions to other motions, and modded emotes to idle motions (But why? Decoys in Creative Space) ",
-        "Fixed some bugs when swapping accessories",
-        "Minor bugs fixes"
+        "Fixed a bug where backup files would not restored correctly in some cases",
+        "Other minor bugs fixes"
     ],
     "windows_file": "",
     "linux_file": ""

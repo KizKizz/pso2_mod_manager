@@ -80,13 +80,23 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
 
     //copy to temp toitem dir
     String icePathFromOgDataT = '';
-    for (var type in ogDataFilePaths) {
-      icePathFromOgDataT = type.firstWhere(
-        (element) => p.basename(element) == iceNameT,
-        orElse: () => '',
-      );
-      if (icePathFromOgDataT.isNotEmpty) {
-        break;
+    final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
+    icePathFromOgDataT = backupFiles
+        .firstWhere(
+          (element) => p.basename(element.path) == iceNameT,
+          orElse: () => File(''),
+        )
+        .path;
+    //look for og file if backup is not found
+    if (icePathFromOgDataT.isEmpty) {
+      for (var type in ogDataFilePaths) {
+        icePathFromOgDataT = type.firstWhere(
+          (element) => p.basename(element) == iceNameT,
+          orElse: () => '',
+        );
+        if (icePathFromOgDataT.isNotEmpty) {
+          break;
+        }
       }
     }
     if (icePathFromOgDataT.isNotEmpty) {
@@ -223,10 +233,13 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         aqpBytes.addAll(aqpBytesRead);
         for (var ddsF in ogDdsNamesF) {
           List<String> ddsFParts = ddsF.split('_');
-          String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
+          String ddsFId = ddsFParts.firstWhere(
+            (element) => element.length > 3 && int.tryParse(element) != null,
+            orElse: () => '',
+          );
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          if (renamedDdsNamesF.where((element) => element.split('_')[1] == 'rac').isNotEmpty) {
+          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac').isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
