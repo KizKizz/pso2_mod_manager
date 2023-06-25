@@ -410,6 +410,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                 ? null
                                                 : () async {
                                                     //final prefs = await SharedPreferences.getInstance();
+                                                    swapperSearchTextController.clear();
                                                     csvEmotesData.clear();
                                                     if (!isEmotesToStandbyMotions) {
                                                       isEmotesToStandbyMotions = true;
