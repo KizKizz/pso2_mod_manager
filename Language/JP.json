@@ -236,6 +236,7 @@
   "uiNoteModsMightNotWokAfterSwapping": "注意: 交換後すぐに動作するもの、しないもの、cmxの編集が必要なものがあります。自己責任でご利用ください。",
   "uiItemID": "アイテムID",
   "uiAdjustedID": "調整済みID",
+  "uiSwapToIdleMotion": "アイドルモーションへの切り替え",
   "uiNoMatchingIceFoundToSwap": "スワップアイテムに一致する氷のファイルは見つかりませんでした。",
   "uiSwappingItem": "スワッピングアイテム",
   "uiErrorWhenSwapping": "アイテムの入れ替え時にエラーが発生する",

@@ -192,6 +192,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
               }
             }
           }
+          cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
         }
       }
       //sort cates in catetype

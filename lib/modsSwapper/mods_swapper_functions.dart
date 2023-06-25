@@ -4,6 +4,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 
 Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
   List<File> renamedFiles = [];
@@ -14,11 +15,13 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
     List<File> renamedFilesF = [];
     for (var fFile in fFiles) {
       List<String> namePartsF = p.basenameWithoutExtension(fFile.path).split('_');
-      namePartsF[1] == 'ah' ? namePartsF[1] = 'rac' : null;
-      namePartsF[3] == 'x' ? namePartsF.removeRange(3, namePartsF.length) : namePartsF.removeRange(4, namePartsF.length);
-      String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
-      String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
-      renamedFilesF.add(fFile.renameSync(newFilePathF));
+      if (namePartsF.length > 3) {
+        namePartsF[1] == 'ah' ? namePartsF[1] = 'rac' : null;
+        namePartsF[3] == 'x' ? namePartsF.removeRange(3, namePartsF.length) : namePartsF.removeRange(4, namePartsF.length);
+        String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
+        String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
+        renamedFilesF.add(fFile.renameSync(newFilePathF));
+      }
     }
     fFiles = renamedFilesF;
   }
@@ -65,6 +68,78 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
           }
         }
       }
+    }
+  }
+
+  return renamedFiles;
+}
+
+Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
+  List<File> renamedFiles = [];
+  for (var fileF in fFiles) {
+    List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
+    File matchingFileT = File('');
+    if (p.extension(fileF.path) == '.bti') {
+      matchingFileT = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+              p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+              (p.extension(element.path) == '.aqm' || p.extension(element.path) == '.bti'),
+          orElse: () => File(''));
+    } else if (fileNamePartsF.length > 3 && fileNamePartsF[1] == 'std') {
+      matchingFileT = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+              p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
+              p.extension(element.path) == p.extension(fileF.path),
+          orElse: () => File(''));
+    } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'sb') {
+      //copy .fig file over instead of rename
+      File figFile = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+              p.basenameWithoutExtension(element.path).split('_')[2] == fileNamePartsF[2] &&
+              p.extension(element.path) == p.extension(fileF.path),
+          orElse: () => File(''));
+      if (figFile.path.isNotEmpty) {
+        figFile.copySync(fileF.path);
+      }
+    } else if (fileNamePartsF.length > 2 && fileNamePartsF[1] == 'la' && p.extension(fileF.path) == '.fig') {
+      //copy .fig file over instead of rename
+      File figFile = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+              p.extension(element.path) == p.extension(fileF.path),
+          orElse: () => File(''));
+      if (figFile.path.isNotEmpty) {
+        figFile.copySync(fileF.path);
+      }
+    } else if (isEmotesToStandbyMotions && fileNamePartsF[0] == 'pl' && p.extension(fileF.path) == '.aqm' && p.basenameWithoutExtension(fileF.path).contains('_std_')) {
+      //emotes to motions
+      File aqmFile = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[3] == '00120' &&
+              p.extension(element.path) == p.extension(fileF.path),
+          orElse: () => File(''));
+      if (aqmFile.path.isNotEmpty) {
+        renamedFiles.add(await fileF.rename(Uri.file('${fileF.parent.path}/${p.basename(aqmFile.path)}').toFilePath()));
+      }
+    } else if (fileNamePartsF.length > 2) {
+      matchingFileT = tFiles.firstWhere(
+          (element) =>
+              p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
+              p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
+              p.extension(element.path) == p.extension(fileF.path),
+          orElse: () => File(''));
+    }
+    if (matchingFileT.path.isNotEmpty) {
+      String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
+      renamedFiles.add(await fileF.rename(newPath));
     }
   }
 

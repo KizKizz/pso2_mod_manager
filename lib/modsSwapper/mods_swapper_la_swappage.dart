@@ -9,7 +9,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -19,8 +19,8 @@ import 'package:url_launcher/url_launcher.dart';
 Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
-      Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
-    }
+    Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+  }
   //create
   Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
@@ -30,13 +30,15 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();
   List<List<String>> iceSwappingList = [];
 
-  toItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
-  if (toItemAvailableIces.isEmpty) {
+  toEmotesAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
+  fromEmotesAvailableIces.removeWhere((element) => element.split(': ').first == 'Gender');
+  toEmotesAvailableIces.removeWhere((element) => element.split(': ').first == 'Gender');
+  if (toEmotesAvailableIces.isEmpty) {
     return curLangText!.uiNoMatchingIceFoundToSwap;
   }
 
   //map coresponding files to swap
-  for (var itemT in toItemAvailableIces) {
+  for (var itemT in toEmotesAvailableIces) {
     String curIceType = '';
     //change T ices to HD types
     if (isReplacingNQWithHQ) {
@@ -45,9 +47,9 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
     } else {
       curIceType = itemT.split(': ').first;
     }
-    int matchingItemFIndex = fromItemAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
+    int matchingItemFIndex = fromEmotesAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
     if (matchingItemFIndex != -1) {
-      iceSwappingList.add([fromItemAvailableIces[matchingItemFIndex].split(': ').last, itemT.split(': ').last]);
+      iceSwappingList.add([fromEmotesAvailableIces[matchingItemFIndex].split(': ').last, itemT.split(': ').last]);
     }
   }
 
@@ -104,11 +106,11 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
     //group2 > group2
     List<File> renamedExtractedGroup2Files = [];
     if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup2FilesT);
+      renamedExtractedGroup2Files = await lasSwapRename(extractedGroup2FilesF, extractedGroup2FilesT);
     } else if (extractedGroup2FilesF.isEmpty && extractedGroup2FilesT.isNotEmpty) {
-      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
+      renamedExtractedGroup2Files = await lasSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
-      renamedExtractedGroup2Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
+      renamedExtractedGroup2Files = await lasSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
       Directory(extractedGroup1PathF).createSync();
       for (var file in renamedExtractedGroup2Files) {
@@ -118,11 +120,11 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup1FilesT);
+      renamedExtractedGroup1Files = await lasSwapRename(extractedGroup1FilesF, extractedGroup1FilesT);
     } else if (extractedGroup1FilesF.isEmpty && extractedGroup1FilesT.isNotEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
+      renamedExtractedGroup1Files = await lasSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
-      renamedExtractedGroup1Files = await modsSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
+      renamedExtractedGroup1Files = await lasSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
       Directory(extractedGroup2PathF).createSync();
       for (var file in renamedExtractedGroup1Files) {
@@ -137,11 +139,23 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
           extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup1Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }
+    } else if (renamedExtractedGroup1Files.isEmpty) {
+      for (var extractedFileT in extractedGroup1FilesT) {
+        if (renamedExtractedGroup1Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath()).existsSync()) {
+          extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
     }
     if (renamedExtractedGroup2Files.isNotEmpty && !isRemoveExtras) {
       for (var extractedFileT in extractedGroup2FilesT) {
         if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty) {
           extractedFileT.copySync(Uri.file('${p.dirname(renamedExtractedGroup2Files.first.path)}/${p.basename(extractedFileT.path)}').toFilePath());
+        }
+      }
+    } else if (renamedExtractedGroup2Files.isEmpty) {
+      for (var extractedFileT in extractedGroup2FilesT) {
+        if (renamedExtractedGroup2Files.where((element) => p.basename(element.path) == p.basename(extractedFileT.path)).isEmpty && Directory(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath()).existsSync()) {
+          extractedFileT.copySync(Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2/${p.basename(extractedFileT.path)}').toFilePath());
         }
       }
     }
@@ -177,7 +191,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperSwappingDialog(context, SubMod fromSubmod) async {
+Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,

@@ -8,10 +8,9 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
@@ -21,6 +20,8 @@ CsvEmoteIceFile? selectedToEmotesCsvFile;
 //List<String> toItemIds = [];
 List<String> fromEmotesAvailableIces = [];
 List<String> toEmotesAvailableIces = [];
+String selectedLaGender = '';
+List<CsvEmoteIceFile> fromItemCsvData = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -58,41 +59,57 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
 
     //fetch
     final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
-    final fromItemCsvData = csvEmotesData
-        .where((element) =>
-            iceNamesFromSubmod.contains(element.pso2HashIceName) ||
-            iceNamesFromSubmod.contains(element.pso2VfxHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbCastFemaleHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbCastMaleHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbFigHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbHumanHashIceName) ||
-            iceNamesFromSubmod.contains(element.rbVfxHashIceName))
-        .toList();
+    if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
+      fromItemCsvData = csvEmotesData
+          .where((element) =>
+              iceNamesFromSubmod.contains(element.pso2HashIceName) ||
+              iceNamesFromSubmod.contains(element.pso2VfxHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbCastFemaleHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbCastMaleHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbFigHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbHumanHashIceName) ||
+              iceNamesFromSubmod.contains(element.rbVfxHashIceName))
+          .toList();
+    }
     List<List<String>> csvInfos = [];
+    bool isPso2HashFound = false;
+    bool isPso2VfxHashFound = false;
+    String selectedMotionType = '';
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
-      final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last)).toList();
+      final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
       csvInfos.add(availableModFileData);
-      //filter link inner items
-      // for (var line in availableModFileData) {
-      //   if (!includeHqLiIceOnly && line.split(': ').first.contains('High Quality Linked Inner Ice')) {
-      //     includeHqLiIceOnly = true;
-      //   }
-      //   if (!includeNqLiIceOnly && line.split(': ').first.contains('Normal Quality Linked Inner Ice')) {
-      //     includeNqLiIceOnly = true;
-      //   }
-      //   if (includeHqLiIceOnly && includeNqLiIceOnly) {
-      //     break;
-      //   }
-      // }
+      if (selectedMotionType.isEmpty) {
+        selectedMotionType = csvItemData.subCategory;
+      }
+      //filter pso2 only emotes
+      for (var line in availableModFileData) {
+        if (!isPso2HashFound && line.split(': ').first.contains('PSO2 Hash Ice')) {
+          isPso2HashFound = true;
+        }
+        if (!isPso2VfxHashFound && line.split(': ').first.contains('PSO2 VFX Hash Ice')) {
+          isPso2VfxHashFound = true;
+        }
+        if (isPso2HashFound && isPso2VfxHashFound) {
+          break;
+        }
+      }
     }
 
-    // if (includeHqLiIceOnly) {
-    //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
-    // }
-    // if (includeNqLiIceOnly) {
-    //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
-    // }
+    if (selectedMotionType.isNotEmpty) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
+    }
+
+    if (isPso2HashFound) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+    }
+    if (isPso2VfxHashFound) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+    }
+
+    if (isEmotesToStandbyMotions) {
+      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == 'Standby Motion').toList();
+    }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -335,23 +352,23 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          MaterialButton(
-                                            height: 29,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              isReplacingNQWithHQ ? isReplacingNQWithHQ = false : isReplacingNQWithHQ = true;
-                                              prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
-                                              setState(() {});
-                                            },
-                                            child: Wrap(
-                                              alignment: WrapAlignment.center,
-                                              runAlignment: WrapAlignment.center,
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              spacing: 5,
-                                              children: [Icon(isReplacingNQWithHQ ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiReplaceNQwithHQ)],
-                                            ),
-                                          ),
+                                          // MaterialButton(
+                                          //   height: 29,
+                                          //   padding: EdgeInsets.zero,
+                                          //   onPressed: () async {
+                                          //     final prefs = await SharedPreferences.getInstance();
+                                          //     isReplacingNQWithHQ ? isReplacingNQWithHQ = false : isReplacingNQWithHQ = true;
+                                          //     prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
+                                          //     setState(() {});
+                                          //   },
+                                          //   child: Wrap(
+                                          //     alignment: WrapAlignment.center,
+                                          //     runAlignment: WrapAlignment.center,
+                                          //     crossAxisAlignment: WrapCrossAlignment.center,
+                                          //     spacing: 5,
+                                          //     children: [Icon(isReplacingNQWithHQ ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiReplaceNQwithHQ)],
+                                          //   ),
+                                          // ),
                                           // MaterialButton(
                                           //   height: 29,
                                           //   padding: EdgeInsets.zero,
@@ -369,21 +386,67 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           //     children: [Icon(isCopyAll ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapAllFilesInsideIce)],
                                           //   ),
                                           // ),
+                                          // MaterialButton(
+                                          //   height: 29,
+                                          //   padding: EdgeInsets.zero,
+                                          //   onPressed: () async {
+                                          //     final prefs = await SharedPreferences.getInstance();
+                                          //     isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
+                                          //     prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
+                                          //     setState(() {});
+                                          //   },
+                                          //   child: Wrap(
+                                          //     alignment: WrapAlignment.center,
+                                          //     runAlignment: WrapAlignment.center,
+                                          //     crossAxisAlignment: WrapCrossAlignment.center,
+                                          //     spacing: 5,
+                                          //     children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                          //   ),
+                                          // ),
                                           MaterialButton(
                                             height: 29,
                                             padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
-                                              prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                              setState(() {});
-                                            },
+                                            onPressed: selectedMotionType.isNotEmpty
+                                                ? null
+                                                : () async {
+                                                    //final prefs = await SharedPreferences.getInstance();
+                                                    csvEmotesData.clear();
+                                                    if (!isEmotesToStandbyMotions) {
+                                                      isEmotesToStandbyMotions = true;
+                                                      await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
+                                                      availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                    } else {
+                                                      isEmotesToStandbyMotions = false;
+                                                      await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
+                                                      availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
+                                                      if (selectedMotionType.isNotEmpty) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
+                                                      }
+                                                      if (isPso2HashFound) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+                                                      }
+                                                      if (isPso2VfxHashFound) {
+                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+                                                      }
+                                                    }
+                                                    if (curActiveLang == 'JP') {
+                                                      availableEmotesCsvData.sort(
+                                                        (a, b) => a.jpName.compareTo(b.jpName),
+                                                      );
+                                                    } else {
+                                                      availableEmotesCsvData.sort(
+                                                        (a, b) => a.enName.compareTo(b.enName),
+                                                      );
+                                                    }
+                                                    //prefs.setBool('isEmotesToStandbyMotions', isEmotesToStandbyMotions);
+                                                    setState(() {});
+                                                  },
                                             child: Wrap(
                                               alignment: WrapAlignment.center,
                                               runAlignment: WrapAlignment.center,
                                               crossAxisAlignment: WrapCrossAlignment.center,
                                               spacing: 5,
-                                              children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                              children: [Icon(isEmotesToStandbyMotions ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapToIdleMotion)],
                                             ),
                                           ),
                                         ],
@@ -420,7 +483,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           : swapperSearchTextController.text.isEmpty
                                                               ? Text(availableEmotesCsvData[i].enName)
                                                               : Text(toIEmotesSearchResults[i].enName),
-                                                      subtitle: swapperSearchTextController.text.isEmpty ? Text(availableEmotesCsvData[i].gender) : Text(toIEmotesSearchResults[i].gender),
+                                                      subtitle: isEmotesToStandbyMotions
+                                                          ? null
+                                                          : swapperSearchTextController.text.isEmpty
+                                                              ? Text(availableEmotesCsvData[i].gender)
+                                                              : Text(toIEmotesSearchResults[i].gender),
                                                       onChanged: (CsvEmoteIceFile? currentItem) {
                                                         //print("Current ${moddedItemsList[i].groupName}");
                                                         selectedToEmotesCsvFile = currentItem!;
@@ -434,9 +501,9 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                               toEmotesAvailableIces.add(line);
                                                             }
 
-                                                            if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                              toEmotesAvailableIces.add(line);
-                                                            }
+                                                            // if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
+                                                            //   toEmotesAvailableIces.add(line);
+                                                            // }
                                                           }
                                                         }
                                                         setState(
@@ -471,12 +538,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     selectedFromEmotesCsvFile = null;
                                     selectedToEmotesCsvFile = null;
                                     availableEmotesCsvData.clear();
-                                    //fromItemIds.clear();
-                                    //toItemIds.clear();
                                     fromEmotesAvailableIces.clear();
                                     toEmotesAvailableIces.clear();
                                     csvEmotesData.clear();
                                     availableEmotesCsvData.clear();
+                                    isEmotesToStandbyMotions = false;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -485,7 +551,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
-                                            //swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromEmotesAvailableIces, toItemIds, toEmotesAvailableIces);
+                                            swapperConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -503,7 +569,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromItemIds, List<String> fromEmotesAvailableIces, List<String> toItemIds, List<String> toEmotesAvailableIces) async {
+Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -539,11 +605,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('Item ID: ${fromItemIds[0]}'),
-                                  Text('Adjusted ID: ${fromItemIds[1]}'),
-                                  for (int i = 0; i < fromEmotesAvailableIces.length; i++) Text(fromEmotesAvailableIces[i])
-                                ],
+                                children: [for (int i = 0; i < fromEmotesAvailableIces.length; i++) Text(fromEmotesAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -567,9 +629,8 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Item ID: ${toItemIds[0]}'),
-                                  Text('Adjusted ID: ${toItemIds[1]}'),
-                                  for (int i = 0; i < toEmotesAvailableIces.length; i++) Text(toEmotesAvailableIces[i])
+                                  for (int i = 0; i < toEmotesAvailableIces.length; i++)
+                                    if (toEmotesAvailableIces[i].split(': ').last.isNotEmpty) Text(toEmotesAvailableIces[i])
                                 ],
                               ),
                             ),
@@ -588,7 +649,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperSwappingDialog(context, fromSubmod);
+                        swapperLaSwappingDialog(context, fromSubmod);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

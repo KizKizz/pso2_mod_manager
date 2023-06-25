@@ -42,7 +42,23 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
     await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
       if (categoryIndex != -1) {
-        line = '${defaultCateforyDirs[categoryIndex]},$line';
+        if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Glide Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Jump Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Landing Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Dash Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Run Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Standby Motion,$line';
+        } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
+          line = '${defaultCateforyDirs[categoryIndex]},Swim Motion,$line';
+        } else {
+          line = '${defaultCateforyDirs[categoryIndex]},$line';
+        }
       }
       csvList.last.add(line);
     });
@@ -55,8 +71,7 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
       } else if (item.split(',').first == defaultCateforyDirs[7]) {
         if (item.split(',').length == 14) {
           csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
-          
-        } else if (item.split(',').length == 19){
+        } else if (item.split(',').length == 19) {
           csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
         }
       } else if (item.split(',').first == defaultCateforyDirs[14]) {
@@ -94,8 +109,12 @@ Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> 
   return cvsAccDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
 }
 
-Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsAccDataInput, Item swapFromItem) async {
-  return csvEmotesData.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, Item swapFromItem) async {
+  return cvsEmoteDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+}
+
+Future<List<CsvEmoteIceFile>> getEmotesToMotionsSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, String itemCategory) async {
+  return cvsEmoteDataInput.where((element) => element.category == itemCategory).toList();
 }
 
 class ModsSwapperDataLoader extends StatefulWidget {

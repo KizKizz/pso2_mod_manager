@@ -236,6 +236,7 @@
   "uiNoteModsMightNotWokAfterSwapping": "Note: Some items might work right after swapping, some might not, some might require cmx editing. Use at your own risk",
   "uiItemID": "Item ID",
   "uiAdjustedID": "Adjusted ID",
+  "uiSwapToIdleMotion": "Swap to Idle Motion",
   "uiNoMatchingIceFoundToSwap": "No matching ice files found to swap item",
   "uiSwappingItem": "Swapping Item",
   "uiErrorWhenSwapping": "Error when swapping item",

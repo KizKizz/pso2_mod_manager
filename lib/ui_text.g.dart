@@ -300,6 +300,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiNoteModsMightNotWokAfterSwapping'] as String
       ..uiItemID = json['uiItemID'] as String
       ..uiAdjustedID = json['uiAdjustedID'] as String
+      ..uiSwapToIdleMotion = json['uiSwapToIdleMotion'] as String
       ..uiNoMatchingIceFoundToSwap =
           json['uiNoMatchingIceFoundToSwap'] as String
       ..uiSwappingItem = json['uiSwappingItem'] as String
@@ -564,6 +565,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiNoteModsMightNotWokAfterSwapping,
       'uiItemID': instance.uiItemID,
       'uiAdjustedID': instance.uiAdjustedID,
+      'uiSwapToIdleMotion': instance.uiSwapToIdleMotion,
       'uiNoMatchingIceFoundToSwap': instance.uiNoMatchingIceFoundToSwap,
       'uiSwappingItem': instance.uiSwappingItem,
       'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,
