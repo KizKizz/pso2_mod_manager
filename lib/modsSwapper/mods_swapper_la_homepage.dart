@@ -16,8 +16,6 @@ TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
 CsvEmoteIceFile? selectedFromEmotesCsvFile;
 CsvEmoteIceFile? selectedToEmotesCsvFile;
-//List<String> fromItemIds = [];
-//List<String> toItemIds = [];
 List<String> fromEmotesAvailableIces = [];
 List<String> toEmotesAvailableIces = [];
 String selectedLaGender = '';
@@ -406,11 +404,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           MaterialButton(
                                             height: 29,
                                             padding: EdgeInsets.zero,
-                                            onPressed: selectedMotionType.isNotEmpty
+                                            onPressed: selectedMotionType.isNotEmpty || swapperSearchTextController.text.isNotEmpty
                                                 ? null
                                                 : () async {
                                                     //final prefs = await SharedPreferences.getInstance();
-                                                    swapperSearchTextController.clear();
+                                                    //swapperSearchTextController.clear();
                                                     csvEmotesData.clear();
                                                     if (!isEmotesToStandbyMotions) {
                                                       isEmotesToStandbyMotions = true;

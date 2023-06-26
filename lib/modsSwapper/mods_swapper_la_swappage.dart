@@ -16,7 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
+Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -172,6 +172,43 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
     }
 
+    //extra step for swapping LAs to Idles
+    if (isEmotesToStandbyMotions && pair == iceSwappingList.last) {
+      String rebootFigHashIceNameF = fromEmotesAvailableIces
+          .firstWhere(
+            (element) => element.split(': ').first == 'Reboot Fig Hash Ice',
+            orElse: () => '',
+          )
+          .split(': ')
+          .last;
+      String rebootHumanHashIceNameF = fromEmotesAvailableIces
+          .firstWhere(
+            (element) => element.split(': ').first == 'Reboot Human Hash Ice',
+            orElse: () => '',
+          )
+          .split(': ')
+          .last;
+
+      if (rebootFigHashIceNameF.isNotEmpty) {
+        String rebootFigHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootFigHashIceNameF}_ext/group1').toFilePath();
+        File rebootFigGroup1Bti = Directory(rebootFigHashGroup1PathF).listSync().whereType<File>().firstWhere((element) => p.extension(element.path) == '.bti', orElse: () => File(''));
+        String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
+
+        //get new name for bti from aqm
+        String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
+        File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF)
+            .listSync()
+            .whereType<File>()
+            .firstWhere((element) => p.extension(element.path) == '.aqm' && p.basenameWithoutExtension(element.path).contains('_00120_'), orElse: () => File(''));
+
+        //copy bti from fig to human
+        Directory(rebootHumanHashGroup1PathF).createSync(recursive: true);
+        if (rebootFigGroup1Bti.path.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
+          await rebootFigGroup1Bti.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+        }
+      }
+    }
+
     //pack
     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var char in charToReplace) {
@@ -214,7 +251,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, fromSubmod) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
