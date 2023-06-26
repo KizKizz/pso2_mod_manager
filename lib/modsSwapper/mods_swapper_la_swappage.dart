@@ -173,7 +173,7 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
     }
 
     //extra step for swapping LAs to Idles
-    if (isEmotesToStandbyMotions && pair == iceSwappingList.last) {
+    if (isEmotesToStandbyMotions) {
       String rebootFigHashIceNameF = fromEmotesAvailableIces
           .firstWhere(
             (element) => element.split(': ').first == 'Reboot Fig Hash Ice',
@@ -189,22 +189,46 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
           .split(': ')
           .last;
 
-      if (rebootFigHashIceNameF.isNotEmpty) {
-        String rebootFigHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootFigHashIceNameF}_ext/group1').toFilePath();
-        File rebootFigGroup1Bti = Directory(rebootFigHashGroup1PathF).listSync().whereType<File>().firstWhere((element) => p.extension(element.path) == '.bti', orElse: () => File(''));
+      // if bti file in reboot human
+      if (Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath()).existsSync() && 
+      Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath()).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').isNotEmpty) {
+        //bti in group 1 human hash
         String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
+        if (Directory(rebootHumanHashGroup1PathF).existsSync()) {
+          File rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF).listSync().whereType<File>().firstWhere((element) => p.extension(element.path) == '.bti', orElse: () => File(''));
+          //get new name for bti from aqm
+          String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
+          File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF)
+              .listSync()
+              .whereType<File>()
+              .firstWhere((element) => p.extension(element.path) == '.aqm' && p.basenameWithoutExtension(element.path).contains('_00120_'), orElse: () => File(''));
+          //rename bti in human group1
+          if (rebootHumanGroup1Bti.path.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
+            await rebootHumanGroup1Bti.rename(Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+          }
+        }
 
-        //get new name for bti from aqm
-        String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
-        File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF)
-            .listSync()
-            .whereType<File>()
-            .firstWhere((element) => p.extension(element.path) == '.aqm' && p.basenameWithoutExtension(element.path).contains('_00120_'), orElse: () => File(''));
+      } else if (pair == iceSwappingList.last) {
+        if (rebootFigHashIceNameF.isNotEmpty) {
+          // bti in group1 fig hash
+          String rebootFigHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootFigHashIceNameF}_ext/group1').toFilePath();
+          if (Directory(rebootFigHashGroup1PathF).existsSync()) {
+            File rebootFigGroup1Bti = Directory(rebootFigHashGroup1PathF).listSync().whereType<File>().firstWhere((element) => p.extension(element.path) == '.bti', orElse: () => File(''));
+            String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
 
-        //copy bti from fig to human
-        Directory(rebootHumanHashGroup1PathF).createSync(recursive: true);
-        if (rebootFigGroup1Bti.path.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
-          await rebootFigGroup1Bti.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+            //get new name for bti from aqm
+            String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
+            File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF)
+                .listSync()
+                .whereType<File>()
+                .firstWhere((element) => p.extension(element.path) == '.aqm' && p.basenameWithoutExtension(element.path).contains('_00120_'), orElse: () => File(''));
+
+            //copy bti from fig to human
+            Directory(rebootHumanHashGroup1PathF).createSync(recursive: true);
+            if (rebootFigGroup1Bti.path.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
+              await rebootFigGroup1Bti.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+            }
+          }
         }
       }
     }
