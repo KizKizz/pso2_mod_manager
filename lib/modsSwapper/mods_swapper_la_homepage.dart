@@ -20,6 +20,7 @@ List<String> fromEmotesAvailableIces = [];
 List<String> toEmotesAvailableIces = [];
 String selectedLaGender = '';
 List<CsvEmoteIceFile> fromItemCsvData = [];
+String selectedMotionType = '';
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -72,7 +73,6 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
     List<List<String>> csvInfos = [];
     bool isPso2HashFound = false;
     bool isPso2VfxHashFound = false;
-    String selectedMotionType = '';
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
@@ -534,6 +534,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    selectedMotionType = '';
                                     selectedFromEmotesCsvFile = null;
                                     selectedToEmotesCsvFile = null;
                                     availableEmotesCsvData.clear();
