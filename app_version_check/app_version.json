@@ -2,8 +2,9 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.1.4",
     "description": [
-        "Improved emotes to idle motions swapping to include extra objects",
-        "Other minor bugs fixes"
+        "More improvments to emotes and motions swapping with extra objects",
+        "Applying mods buttons now enter loading phrase immediately after clicking to prevent double clicking which creates errors in applying process",
+        "Some other minor bugs fixes"
     ],
     "windows_file": "",
     "linux_file": ""
