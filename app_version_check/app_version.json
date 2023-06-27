@@ -3,7 +3,7 @@
     "version": "2.1.4",
     "description": [
         "More improvments to emotes and motions swapping with extra objects",
-        "Applying mods buttons now enter loading phrase immediately after clicking to prevent double clicking which creates errors in applying process",
+        "Applying mods buttons now enter loading phrase immediately right after clicking to prevent double clicking which potentially creates errors in applying process",
         "Some other minor bugs fixes"
     ],
     "windows_file": "",
