@@ -18,7 +18,8 @@ Check back for latest releases
 - Backup originals from the game, restore when unapplying mods
 - Auto apply checksum and reapply mods if they are being unapply after game update
 - Preview mods by hovering mouse cursor on them, and right click to zoom on an image (if there are images [.jpg, .png] or videos [.mp4, .webm] included inside the mod)
-- Search (literally any keyword, even .ice file), favorites list
+- Search (any keyword, even .ice file names)
+- Organize mods into Favorite, Set List
 
 and more..
 
