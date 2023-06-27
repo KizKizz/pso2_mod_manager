@@ -16,7 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
+Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -172,6 +172,85 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
       }
     }
 
+    //extra step for swapping LAs to Idles
+    //if (selectedMotionType.isEmpty) {
+    String rebootFigHashIceNameF = fromEmotesAvailableIces
+        .firstWhere(
+          (element) => element.split(': ').first == 'Reboot Fig Hash Ice',
+          orElse: () => '',
+        )
+        .split(': ')
+        .last;
+    String rebootHumanHashIceNameF = fromEmotesAvailableIces
+        .firstWhere(
+          (element) => element.split(': ').first == 'Reboot Human Hash Ice',
+          orElse: () => '',
+        )
+        .split(': ')
+        .last;
+
+    // if bti file in reboot human
+    if (Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath()).existsSync() &&
+        Directory(Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath()).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').isNotEmpty) {
+      //bti in group 1 human hash
+      String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
+      if (Directory(rebootHumanHashGroup1PathF).existsSync()) {
+        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').toList();
+
+        //get new name for bti from aqm
+        String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
+        File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
+            (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || p.basenameWithoutExtension(element.path).contains('pl_hum')),
+            orElse: () => File(''));
+        if (rebootHumanGroup1Bti.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
+          for (var group1BtiFileF in rebootHumanGroup1Bti) {
+            if (p.basenameWithoutExtension(group1BtiFileF.path).contains('_00110_')) {
+              //rename bti in human group1
+              await group1BtiFileF.rename(
+                  Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath());
+            } else if (p.basenameWithoutExtension(group1BtiFileF.path).contains('_00120_')) {
+              await group1BtiFileF.rename(Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+            } else if (p.basenameWithoutExtension(group1BtiFileF.path).contains('pl_hum') || p.basenameWithoutExtension(group1BtiFileF.path).contains('pl_la')) {
+              await group1BtiFileF.rename(Uri.file('$rebootHumanHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+            }
+          }
+        }
+      }
+    } else if (pair == iceSwappingList.last) {
+      if (rebootFigHashIceNameF.isNotEmpty) {
+        // bti in group1 fig hash
+        String rebootFigHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootFigHashIceNameF}_ext/group1').toFilePath();
+        if (Directory(rebootFigHashGroup1PathF).existsSync()) {
+          List<File> rebootFigGroup1Bti = Directory(rebootFigHashGroup1PathF).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').toList();
+          //String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
+
+          //get new name for bti from aqm
+          String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
+          File rebootHumanGroup2Aqm = Directory(rebootHumanHashGroup2PathF).listSync().whereType<File>().firstWhere(
+              (element) => p.extension(element.path) == '.aqm' && (p.basenameWithoutExtension(element.path).contains('_00120_') || (p.basenameWithoutExtension(element.path).contains('pl_hum'))),
+              orElse: () => File(''));
+
+          //copy bti from fig to human
+          //Directory(rebootHumanHashGroup1PathF).createSync(recursive: true);
+          if (rebootFigGroup1Bti.isNotEmpty && rebootHumanGroup2Aqm.path.isNotEmpty) {
+            for (var rebootFigGroup1BtiFileF in rebootFigGroup1Bti) {
+              if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('_00110_')) {
+                //rename bti in human group1
+                await rebootFigGroup1BtiFileF.rename(
+                    Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path).replaceFirst('_00120_', '_00110_').replaceFirst('_lp', '_st')}.bti').toFilePath());
+              } else if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('_00120_')) {
+                await rebootFigGroup1BtiFileF.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+              } else if (p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('pl_hum') || p.basenameWithoutExtension(rebootFigGroup1BtiFileF.path).contains('pl_la')) {
+                await rebootFigGroup1BtiFileF.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+              }
+            }
+            // await rebootFigGroup1Bti.rename(Uri.file('$rebootFigHashGroup1PathF/${p.basenameWithoutExtension(rebootHumanGroup2Aqm.path)}.bti').toFilePath());
+          }
+        }
+      }
+    }
+    //}
+
     //pack
     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var char in charToReplace) {
@@ -214,7 +293,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, fromSubmod) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,

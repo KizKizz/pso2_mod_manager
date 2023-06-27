@@ -16,12 +16,11 @@ TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
 CsvEmoteIceFile? selectedFromEmotesCsvFile;
 CsvEmoteIceFile? selectedToEmotesCsvFile;
-//List<String> fromItemIds = [];
-//List<String> toItemIds = [];
 List<String> fromEmotesAvailableIces = [];
 List<String> toEmotesAvailableIces = [];
 String selectedLaGender = '';
 List<CsvEmoteIceFile> fromItemCsvData = [];
+String selectedMotionType = '';
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -74,7 +73,6 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
     List<List<String>> csvInfos = [];
     bool isPso2HashFound = false;
     bool isPso2VfxHashFound = false;
-    String selectedMotionType = '';
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
@@ -406,11 +404,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           MaterialButton(
                                             height: 29,
                                             padding: EdgeInsets.zero,
-                                            onPressed: selectedMotionType.isNotEmpty
+                                            onPressed: selectedMotionType.isNotEmpty || swapperSearchTextController.text.isNotEmpty
                                                 ? null
                                                 : () async {
                                                     //final prefs = await SharedPreferences.getInstance();
-                                                    swapperSearchTextController.clear();
+                                                    //swapperSearchTextController.clear();
                                                     csvEmotesData.clear();
                                                     if (!isEmotesToStandbyMotions) {
                                                       isEmotesToStandbyMotions = true;
@@ -536,6 +534,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    selectedMotionType = '';
                                     selectedFromEmotesCsvFile = null;
                                     selectedToEmotesCsvFile = null;
                                     availableEmotesCsvData.clear();

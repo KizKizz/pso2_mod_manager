@@ -85,7 +85,7 @@ Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
               p.basenameWithoutExtension(element.path).split('_')[0] == fileNamePartsF[0] &&
               p.basenameWithoutExtension(element.path).split('_')[1] == fileNamePartsF[1] &&
               p.basenameWithoutExtension(element.path).split('_')[3] == fileNamePartsF[3] &&
-              (p.extension(element.path) == '.aqm' || p.extension(element.path) == '.bti'),
+              p.extension(element.path) == '.bti',
           orElse: () => File(''));
     } else if (fileNamePartsF.length > 3 && fileNamePartsF[1] == 'std') {
       matchingFileT = tFiles.firstWhere(
