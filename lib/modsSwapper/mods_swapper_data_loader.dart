@@ -88,15 +88,19 @@ Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
 
 Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, Item swapFromItem) async {
   String categorySymbol = '';
-  if (swapFromItem.category == 'Basewears') {
-    categorySymbol = '[Ba]';
-  } else if (swapFromItem.category == 'Setwears') {
-    categorySymbol = '[Se]';
-  } else if (swapFromItem.category == 'Innerwears') {
+  // if (swapFromItem.category == 'Basewears') {
+  //   categorySymbol = '[Ba]';
+  // } else if (swapFromItem.category == 'Setwears') {
+  //   categorySymbol = '[Se]';
+  // } else 
+  if (swapFromItem.category == 'Innerwears') {
     categorySymbol = '[In]';
   }
-  if (swapFromItem.category == 'Setwears') {
-    return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
+  // if (swapFromItem.category == 'Setwears') {
+  //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
+  // }
+  if (swapFromItem.category == 'Setwears' || swapFromItem.category == 'Basewears') {
+    return cvsDataInput.where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]'))).toList();
   }
   if (categorySymbol.isNotEmpty) {
     return cvsDataInput.where((element) => element.category == swapFromItem.category && element.enName.contains(categorySymbol) && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
