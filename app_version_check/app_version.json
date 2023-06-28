@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "description": [
-        "More improvements to emotes and motions swapping with extra objects",
-        "Applying mods buttons now enter loading phrase immediately right after clicking to prevent double clicking which potentially creates errors in applying process",
+        "Enable swapping between modded [Ba] to [Se] and modded [Se] to [Ba]",
         "Some other minor bugs fixes"
     ],
     "windows_file": "",

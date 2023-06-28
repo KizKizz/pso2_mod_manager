@@ -985,7 +985,7 @@ void modAddHandler(context) {
                                                                                                   child: curActiveLang == 'JP'
                                                                                                       ? Padding(
                                                                                                           padding: const EdgeInsets.only(bottom: 3),
-                                                                                                          child: Text(sortedModsList[index][1].split(':').first,
+                                                                                                          child: Text(sortedModsList[index][1].split(':').first.replaceAll('_', '/'),
                                                                                                               style: TextStyle(
                                                                                                                   fontWeight: FontWeight.w600,
                                                                                                                   color: sortedModsList[index][1].split(':').last.toString() == '[TOREMOVE]'
@@ -994,7 +994,7 @@ void modAddHandler(context) {
                                                                                                         )
                                                                                                       : Padding(
                                                                                                           padding: const EdgeInsets.only(bottom: 3),
-                                                                                                          child: Text(sortedModsList[index][2].split(':').first,
+                                                                                                          child: Text(sortedModsList[index][2].split(':').first.replaceAll('_', '/'),
                                                                                                               style: TextStyle(
                                                                                                                   fontWeight: FontWeight.w600,
                                                                                                                   color: sortedModsList[index][1].split(':').last.toString() == '[TOREMOVE]'
