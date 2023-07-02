@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.5",
+    "version": "2.1.6",
     "description": [
-        "Enable swapping between modded [Ba] to [Se] and modded [Se] to [Ba]",
-        "Some other minor bugs fixes"
+        "Fixed a bug where Mods Adders creates duplicate items when adding mods to existing items"
     ],
     "windows_file": "",
     "linux_file": ""

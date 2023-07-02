@@ -233,7 +233,7 @@
   "uiSwapAllFilesInsideIce": "余分なファイルを削除する",
   "uiRemoveUnmatchingFiles": "デスティネーションIceで一致しないファイルを削除する",
   "uiSwap": "スワップ",
-  "uiNoteModsMightNotWokAfterSwapping": "注意: 交換後すぐに動作するもの、しないもの、cmxの編集が必要なものがあります。自己責任でご利用ください。",
+  "uiNoteModsMightNotWokAfterSwapping": "注:いくつかのアイテムは交換後すぐに動作しないかもしれません、いくつかはcmxの編集が必要かもしれません。自己責任で使用してください。",
   "uiItemID": "アイテムID",
   "uiAdjustedID": "調整済みID",
   "uiSwapToIdleMotion": "アイドルモーションへの切り替え",

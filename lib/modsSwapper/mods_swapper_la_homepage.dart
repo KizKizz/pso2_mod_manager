@@ -21,6 +21,8 @@ List<String> toEmotesAvailableIces = [];
 String selectedLaGender = '';
 List<CsvEmoteIceFile> fromItemCsvData = [];
 String selectedMotionType = '';
+List<CsvEmoteIceFile> queueFromEmoteCsvFiles = [];
+List<CsvEmoteIceFile> queueToEmoteCsvFiles = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -261,6 +263,41 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                   ],
                                 ),
                               ),
+                              //queue
+                              // SizedBox(
+                              //     height: constraints.maxHeight * 0.3,
+                              //     width: double.infinity,
+                              //     child: Card(
+                              //         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                              //         color: Colors.transparent,
+                              //         child: ScrollbarTheme(
+                              //             data: ScrollbarThemeData(
+                              //               thumbColor: MaterialStateProperty.resolveWith((states) {
+                              //                 if (states.contains(MaterialState.hovered)) {
+                              //                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                              //                 }
+                              //                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                              //               }),
+                              //             ),
+                              //             child: ListView.builder(
+                              //                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                              //                 shrinkWrap: true,
+                              //                 //physics: const BouncingScrollPhysics(),
+                              //                 itemCount: queueFromEmoteCsvFiles.length,
+                              //                 itemBuilder: (context, i) {
+                              //                   return Wrap(
+                              //                     children: [
+                              //                       //from tile
+                              //                       ListTile(
+                              //                         shape: RoundedRectangleBorder(
+                              //                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                              //                         tileColor: Colors.transparent,
+                              //                         title: Text(queueFromEmoteCsvFiles[i].enName),
+                              //                         subtitle: Text(queueFromEmoteCsvFiles[i].gender),
+                              //                       ),
+                              //                     ],
+                              //                   );
+                              //                 })))),
                             ],
                           )),
                           const Padding(
@@ -546,6 +583,15 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
+                              // ElevatedButton(
+                              //     onPressed: selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null || selectedMotionType.isNotEmpty
+                              //         ? null
+                              //         : () {
+                              //             queueFromEmoteCsvFiles.add(selectedFromEmotesCsvFile!);
+                              //             queueToEmoteCsvFiles.add(selectedToEmotesCsvFile!);
+                              //             setState(() {});
+                              //           },
+                              //     child: const Text('Add To Queue')),
                               ElevatedButton(
                                   onPressed: selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null
                                       ? null
