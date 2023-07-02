@@ -2180,7 +2180,7 @@ void modAddHandler(context) {
                                                                       setState(
                                                                         () {},
                                                                       );
-                                                                      Future.delayed(const Duration(seconds: 1)).then((value) {
+                                                                      Future.delayed(const Duration(milliseconds: 500)).then((value) {
                                                                         _isAddedSuccess = false;
                                                                         dropZoneMax = true;
                                                                         setState(

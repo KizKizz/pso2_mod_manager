@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
@@ -14,6 +13,8 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
+
+import 'json_write.dart';
 
 //Auto Files adder
 Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
@@ -57,12 +58,12 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
         }
       }
 
-      List<String> modFolders = [];
-      for (var fileInfo in fileInfos) {
-        List<String> temp = fileInfo.split(':');
-        modFolders.add('${temp.first}:${temp[1]}');
-      }
-      //final finalModFolders = modFolders.toSet();
+      // List<String> modFolders = [];
+      // for (var fileInfo in fileInfos) {
+      //   List<String> temp = fileInfo.split(':');
+      //   modFolders.add('${temp.first}:${temp[1]}');
+      // }
+      // final finalModFolders = modFolders.toSet();
 
       String newItemPath = Uri.file('$modManModsDirPath/$category/$itemName').toFilePath();
       List<Directory> foldersInNewItemPath = [];
@@ -78,7 +79,7 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
         String curMainName = field.split(':')[0];
         String curSubName = field.split(':')[1];
         String curFile = field.split(':')[2];
-        if (subNames.isEmpty) {
+        if (curSubName.isEmpty) {
           Directory(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName').toFilePath()).createSync(recursive: true);
           File(Uri.file('$modManAddModsTempDirPath/$curMainName/$curFile').toFilePath()).copySync(Uri.file('$modManModsDirPath/$category/$itemName/$curMainName/$curFile').toFilePath());
         } else {
@@ -97,17 +98,17 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
         int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == category);
         if (cateIndex != -1) {
           Category cateInList = cateType.categories[cateIndex];
-          int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName == itemName);
+          int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
           if (itemInListIndex == -1) {
             cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
           } else {
             Item itemInList = cateInList.items[itemInListIndex];
-            int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.contains(element.modName));
+            int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
             if (modInListIndex != -1) {
               Mod modInList = itemInList.mods[modInListIndex];
               List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName);
               for (var subModInCurMod in modInList.submods) {
-                extraSubmods.removeWhere((element) => element.submodName == subModInCurMod.submodName);
+                extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
               }
               modInList.submods.addAll(extraSubmods);
               modInList.isNew = true;
@@ -132,9 +133,7 @@ Future<bool> modFilesAdder(context, List<List<String>> sortedList) async {
   }
 
   //Save to json
-  moddedItemsList.map((cateType) => cateType.toJson()).toList();
-  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  File(modManModsListJsonPath).writeAsStringSync(encoder.convert(moddedItemsList));
+  saveModdedItemListToJson();
 
   //clear sheets
   if (csvInfosFromSheets.isNotEmpty) {
