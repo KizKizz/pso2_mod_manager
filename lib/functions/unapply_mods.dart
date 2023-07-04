@@ -6,9 +6,20 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<ModFile> modFileUnapply(ModFile modFile) async {
   for (var bkPath in modFile.bkLocations) {
-    final ogPath = bkPath.replaceFirst(modManBackupsDirPath, Uri.file('$modManPso2binPath/data').toFilePath());
-    //restore
-    File(bkPath).copySync(ogPath);
+    //final ogPath = bkPath.replaceFirst(modManBackupsDirPath, Uri.file('$modManPso2binPath/data').toFilePath());
+    final ogPathInModFile = modFile.ogLocations.firstWhere(
+      (element) => element.contains(bkPath.replaceFirst(modManBackupsDirPath, '')),
+      orElse: () => '',
+    );
+    if (ogPathInModFile.isNotEmpty) {
+      //restore
+      await File(bkPath).copy(ogPathInModFile);
+    } else {
+      final ogPath = bkPath.replaceFirst(modManBackupsDirPath, Uri.file('$modManPso2binPath/data').toFilePath());
+      //restore
+      await File(bkPath).copy(ogPath);
+    }
+
     //remove bk if no file needs it
     List<String> dontRemoveList = [];
     for (var type in appliedItemList) {
