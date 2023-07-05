@@ -23,6 +23,8 @@ List<CsvEmoteIceFile> fromItemCsvData = [];
 String selectedMotionType = '';
 List<CsvEmoteIceFile> queueFromEmoteCsvFiles = [];
 List<CsvEmoteIceFile> queueToEmoteCsvFiles = [];
+List<List<String>> queueFromEmotesAvailableIces = [];
+List<List<String>> queueToEmotesAvailableIces = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -141,6 +143,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                           //from
                           Expanded(
                               child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
@@ -216,7 +219,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                             }),
                                           ),
                                           child: ListView.builder(
-                                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
                                               physics: const PageScrollPhysics(),
                                               itemCount: fromItemCsvData.length,
@@ -234,26 +237,28 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
                                                     ),
-                                                    onChanged: (CsvEmoteIceFile? currentItem) {
-                                                      //print("Current ${moddedItemsList[i].groupName}");
-                                                      selectedFromEmotesCsvFile = currentItem!;
-                                                      fromEmotesAvailableIces = csvInfos[i];
-                                                      //fromItemIds = [selectedFromEmotesCsvFile!.id.toString(), selectedFromEmotesCsvFile!.adjustedId.toString()];
-                                                      //set infos
-                                                      if (selectedToEmotesCsvFile != null) {
-                                                        toEmotesAvailableIces.clear();
-                                                        List<String> selectedToItemIceList = selectedToEmotesCsvFile!.getDetailedList();
-                                                        for (var line in selectedToItemIceList) {
-                                                          if (fromEmotesAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                            toEmotesAvailableIces.add(line);
-                                                          }
-                                                        }
-                                                      }
+                                                    onChanged: queueFromEmoteCsvFiles.contains(fromItemCsvData[i])
+                                                        ? null
+                                                        : (CsvEmoteIceFile? currentItem) {
+                                                            //print("Current ${moddedItemsList[i].groupName}");
+                                                            selectedFromEmotesCsvFile = currentItem!;
+                                                            fromEmotesAvailableIces = csvInfos[i];
+                                                            //fromItemIds = [selectedFromEmotesCsvFile!.id.toString(), selectedFromEmotesCsvFile!.adjustedId.toString()];
+                                                            //set infos
+                                                            if (selectedToEmotesCsvFile != null) {
+                                                              toEmotesAvailableIces.clear();
+                                                              List<String> selectedToItemIceList = selectedToEmotesCsvFile!.getDetailedList();
+                                                              for (var line in selectedToItemIceList) {
+                                                                if (fromEmotesAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                                  toEmotesAvailableIces.add(line);
+                                                                }
+                                                              }
+                                                            }
 
-                                                      setState(
-                                                        () {},
-                                                      );
-                                                    },
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          },
                                                   ),
                                                 );
                                               }),
@@ -263,41 +268,105 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                   ],
                                 ),
                               ),
+                              Visibility(
+                                  visible: queueFromEmoteCsvFiles.isNotEmpty,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Swapping Queue',
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              queueFromEmoteCsvFiles.clear();
+                                              queueToEmoteCsvFiles.clear();
+                                              queueFromEmotesAvailableIces.clear();
+                                              queueToEmotesAvailableIces.clear();
+                                              setState(() {});
+                                            },
+                                            child: const Text('Clear Queue'))
+                                      ],
+                                    ),
+                                  )),
                               //queue
-                              // SizedBox(
-                              //     height: constraints.maxHeight * 0.3,
-                              //     width: double.infinity,
-                              //     child: Card(
-                              //         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                              //         color: Colors.transparent,
-                              //         child: ScrollbarTheme(
-                              //             data: ScrollbarThemeData(
-                              //               thumbColor: MaterialStateProperty.resolveWith((states) {
-                              //                 if (states.contains(MaterialState.hovered)) {
-                              //                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                              //                 }
-                              //                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                              //               }),
-                              //             ),
-                              //             child: ListView.builder(
-                              //                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                              //                 shrinkWrap: true,
-                              //                 //physics: const BouncingScrollPhysics(),
-                              //                 itemCount: queueFromEmoteCsvFiles.length,
-                              //                 itemBuilder: (context, i) {
-                              //                   return Wrap(
-                              //                     children: [
-                              //                       //from tile
-                              //                       ListTile(
-                              //                         shape: RoundedRectangleBorder(
-                              //                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                              //                         tileColor: Colors.transparent,
-                              //                         title: Text(queueFromEmoteCsvFiles[i].enName),
-                              //                         subtitle: Text(queueFromEmoteCsvFiles[i].gender),
-                              //                       ),
-                              //                     ],
-                              //                   );
-                              //                 })))),
+                              Visibility(
+                                visible: queueFromEmoteCsvFiles.isNotEmpty,
+                                child: SizedBox(
+                                    height: constraints.maxHeight * 0.35,
+                                    width: double.infinity,
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                        color: Colors.transparent,
+                                        child: ScrollbarTheme(
+                                            data: ScrollbarThemeData(
+                                              thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                if (states.contains(MaterialState.hovered)) {
+                                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                                }
+                                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                              }),
+                                            ),
+                                            child: ListView.builder(
+                                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                                                shrinkWrap: true,
+                                                //physics: const BouncingScrollPhysics(),
+                                                itemCount: queueFromEmoteCsvFiles.length,
+                                                itemBuilder: (context, i) {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 2),
+                                                    child: ListTile(
+                                                      shape: RoundedRectangleBorder(
+                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                      tileColor: Colors.transparent,
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(queueFromEmoteCsvFiles[i].enName),
+                                                              // for (int line = 0;
+                                                              //     line < csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first)).length;
+                                                              //     line++)
+                                                              //   Text(csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first))[line].split(': ').last,
+                                                              //       style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor))
+                                                              for (int line = 0; line < queueFromEmotesAvailableIces[i].length; line++)
+                                                                Text(queueFromEmotesAvailableIces[i][line].split(': ').last,
+                                                                    style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor))
+                                                            ],
+                                                          ),
+                                                          const Icon(Icons.arrow_forward_ios),
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            children: [
+                                                              Text(queueToEmoteCsvFiles[i].enName),
+                                                              Text(queueToEmoteCsvFiles[i].gender,
+                                                                  style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      trailing: SizedBox(
+                                                        width: 25,
+                                                        child: MaterialButton(
+                                                            visualDensity: VisualDensity.compact,
+                                                            padding: EdgeInsets.zero,
+                                                            onPressed: () {
+                                                              queueFromEmoteCsvFiles.removeAt(i);
+                                                              queueToEmoteCsvFiles.removeAt(i);
+                                                              queueFromEmotesAvailableIces.removeAt(i);
+                                                              queueToEmotesAvailableIces.removeAt(i);
+                                                              setState(() {});
+                                                            },
+                                                            child: const SizedBox(width: 25, child: Icon(Icons.clear))),
+                                                      ),
+                                                    ),
+                                                  );
+                                                })))),
+                              ),
                             ],
                           )),
                           const Padding(
@@ -438,45 +507,47 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           //     children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
                                           //   ),
                                           // ),
+                                          //swap to idle motion
                                           MaterialButton(
                                             height: 29,
                                             padding: EdgeInsets.zero,
-                                            onPressed: selectedMotionType.isNotEmpty || swapperSearchTextController.text.isNotEmpty
-                                                ? null
-                                                : () async {
-                                                    //final prefs = await SharedPreferences.getInstance();
-                                                    //swapperSearchTextController.clear();
-                                                    csvEmotesData.clear();
-                                                    if (!isEmotesToStandbyMotions) {
-                                                      isEmotesToStandbyMotions = true;
-                                                      await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
-                                                      availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
-                                                    } else {
-                                                      isEmotesToStandbyMotions = false;
-                                                      await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
-                                                      availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
-                                                      if (selectedMotionType.isNotEmpty) {
-                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
-                                                      }
-                                                      if (isPso2HashFound) {
-                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
-                                                      }
-                                                      if (isPso2VfxHashFound) {
-                                                        availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
-                                                      }
-                                                    }
-                                                    if (curActiveLang == 'JP') {
-                                                      availableEmotesCsvData.sort(
-                                                        (a, b) => a.jpName.compareTo(b.jpName),
-                                                      );
-                                                    } else {
-                                                      availableEmotesCsvData.sort(
-                                                        (a, b) => a.enName.compareTo(b.enName),
-                                                      );
-                                                    }
-                                                    //prefs.setBool('isEmotesToStandbyMotions', isEmotesToStandbyMotions);
-                                                    setState(() {});
-                                                  },
+                                            onPressed:
+                                                selectedMotionType.isNotEmpty || swapperSearchTextController.text.isNotEmpty || queueFromEmoteCsvFiles.isNotEmpty || queueToEmoteCsvFiles.isNotEmpty
+                                                    ? null
+                                                    : () async {
+                                                        selectedFromEmotesCsvFile = null;
+                                                        selectedToEmotesCsvFile = null;
+                                                        csvEmotesData.clear();
+                                                        if (!isEmotesToStandbyMotions) {
+                                                          isEmotesToStandbyMotions = true;
+                                                          await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
+                                                          availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                        } else {
+                                                          isEmotesToStandbyMotions = false;
+                                                          await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
+                                                          availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
+                                                          if (selectedMotionType.isNotEmpty) {
+                                                            availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
+                                                          }
+                                                          if (isPso2HashFound) {
+                                                            availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+                                                          }
+                                                          if (isPso2VfxHashFound) {
+                                                            availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+                                                          }
+                                                        }
+                                                        if (curActiveLang == 'JP') {
+                                                          availableEmotesCsvData.sort(
+                                                            (a, b) => a.jpName.compareTo(b.jpName),
+                                                          );
+                                                        } else {
+                                                          availableEmotesCsvData.sort(
+                                                            (a, b) => a.enName.compareTo(b.enName),
+                                                          );
+                                                        }
+                                                        //prefs.setBool('isEmotesToStandbyMotions', isEmotesToStandbyMotions);
+                                                        setState(() {});
+                                                      },
                                             child: Wrap(
                                               alignment: WrapAlignment.center,
                                               runAlignment: WrapAlignment.center,
@@ -502,50 +573,56 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                 }),
                                               ),
                                               child: ListView.builder(
-                                                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                                   shrinkWrap: true,
                                                   //physics: const BouncingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData.length : toIEmotesSearchResults.length,
                                                   itemBuilder: (context, i) {
-                                                    return RadioListTile(
-                                                      shape: RoundedRectangleBorder(
-                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                      value: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData[i] : toIEmotesSearchResults[i],
-                                                      groupValue: selectedToEmotesCsvFile,
-                                                      title: curActiveLang == 'JP'
-                                                          ? swapperSearchTextController.text.isEmpty
-                                                              ? Text(availableEmotesCsvData[i].jpName)
-                                                              : Text(toIEmotesSearchResults[i].jpName)
-                                                          : swapperSearchTextController.text.isEmpty
-                                                              ? Text(availableEmotesCsvData[i].enName)
-                                                              : Text(toIEmotesSearchResults[i].enName),
-                                                      subtitle: isEmotesToStandbyMotions
-                                                          ? null
-                                                          : swapperSearchTextController.text.isEmpty
-                                                              ? Text(availableEmotesCsvData[i].gender)
-                                                              : Text(toIEmotesSearchResults[i].gender),
-                                                      onChanged: (CsvEmoteIceFile? currentItem) {
-                                                        //print("Current ${moddedItemsList[i].groupName}");
-                                                        selectedToEmotesCsvFile = currentItem!;
-                                                        toItemName = curActiveLang == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
-                                                        //toItemIds = [selectedToEmotesCsvFile!.id.toString(), selectedToEmotesCsvFile!.adjustedId.toString()];
-                                                        if (fromEmotesAvailableIces.isNotEmpty) {
-                                                          toEmotesAvailableIces.clear();
-                                                          List<String> selectedToItemIceList = selectedToEmotesCsvFile!.getDetailedList();
-                                                          for (var line in selectedToItemIceList) {
-                                                            if (fromEmotesAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                              toEmotesAvailableIces.add(line);
-                                                            }
+                                                    return Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 2),
+                                                      child: RadioListTile(
+                                                        shape: RoundedRectangleBorder(
+                                                            side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                        value: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData[i] : toIEmotesSearchResults[i],
+                                                        groupValue: selectedToEmotesCsvFile,
+                                                        title: curActiveLang == 'JP'
+                                                            ? swapperSearchTextController.text.isEmpty
+                                                                ? Text(availableEmotesCsvData[i].jpName)
+                                                                : Text(toIEmotesSearchResults[i].jpName)
+                                                            : swapperSearchTextController.text.isEmpty
+                                                                ? Text(availableEmotesCsvData[i].enName)
+                                                                : Text(toIEmotesSearchResults[i].enName),
+                                                        subtitle: isEmotesToStandbyMotions || selectedMotionType.isNotEmpty
+                                                            ? null
+                                                            : swapperSearchTextController.text.isEmpty
+                                                                ? Text(availableEmotesCsvData[i].gender)
+                                                                : Text(toIEmotesSearchResults[i].gender),
+                                                        onChanged: (toIEmotesSearchResults.isNotEmpty && queueToEmoteCsvFiles.contains(toIEmotesSearchResults[i])) ||
+                                                                (availableEmotesCsvData.isNotEmpty && queueToEmoteCsvFiles.contains(availableEmotesCsvData[i]))
+                                                            ? null
+                                                            : (CsvEmoteIceFile? currentItem) {
+                                                                //print("Current ${moddedItemsList[i].groupName}");
+                                                                selectedToEmotesCsvFile = currentItem!;
+                                                                toItemName = curActiveLang == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
+                                                                //toItemIds = [selectedToEmotesCsvFile!.id.toString(), selectedToEmotesCsvFile!.adjustedId.toString()];
+                                                                if (fromEmotesAvailableIces.isNotEmpty) {
+                                                                  toEmotesAvailableIces.clear();
+                                                                  List<String> selectedToItemIceList = selectedToEmotesCsvFile!.getDetailedList();
+                                                                  for (var line in selectedToItemIceList) {
+                                                                    if (fromEmotesAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                                      toEmotesAvailableIces.add(line);
+                                                                    }
 
-                                                            // if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                            //   toEmotesAvailableIces.add(line);
-                                                            // }
-                                                          }
-                                                        }
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      },
+                                                                    // if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
+                                                                    //   toEmotesAvailableIces.add(line);
+                                                                    // }
+                                                                  }
+                                                                }
+                                                                setState(
+                                                                  () {},
+                                                                );
+                                                              },
+                                                      ),
                                                     );
                                                   }))),
                                     ),
@@ -579,25 +656,40 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     toEmotesAvailableIces.clear();
                                     csvEmotesData.clear();
                                     availableEmotesCsvData.clear();
+                                    queueFromEmoteCsvFiles.clear();
+                                    queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
-                              // ElevatedButton(
-                              //     onPressed: selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null || selectedMotionType.isNotEmpty
-                              //         ? null
-                              //         : () {
-                              //             queueFromEmoteCsvFiles.add(selectedFromEmotesCsvFile!);
-                              //             queueToEmoteCsvFiles.add(selectedToEmotesCsvFile!);
-                              //             setState(() {});
-                              //           },
-                              //     child: const Text('Add To Queue')),
                               ElevatedButton(
-                                  onPressed: selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null
+                                  onPressed:
+                                      selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null || selectedMotionType.isNotEmpty || isEmotesToStandbyMotions || fromItemCsvData.length < 2
+                                          ? null
+                                          : () {
+                                              queueFromEmoteCsvFiles.add(selectedFromEmotesCsvFile!);
+                                              queueToEmoteCsvFiles.add(selectedToEmotesCsvFile!);
+                                              if (fromEmotesAvailableIces.isNotEmpty) {
+                                                queueFromEmotesAvailableIces.add(fromEmotesAvailableIces);
+                                              }
+                                              if (toEmotesAvailableIces.isNotEmpty) {
+                                                queueToEmotesAvailableIces.add(toEmotesAvailableIces.toList());
+                                              }
+                                              selectedFromEmotesCsvFile = null;
+                                              selectedToEmotesCsvFile = null;
+                                              setState(() {});
+                                            },
+                                  child: const Text('Add To Queue')),
+                              ElevatedButton(
+                                  onPressed: (selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null) && queueFromEmoteCsvFiles.isEmpty
                                       ? null
                                       : () {
-                                          if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
-                                            swapperConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces);
+                                          if (queueFromEmoteCsvFiles.isEmpty) {
+                                            if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
+                                              swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces);
+                                            }
+                                          } else {
+                                            swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -615,7 +707,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces) async {
+Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -686,6 +778,125 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromE
                     ),
                   ],
                 ),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        swapperLaSwappingDialog(context, fromSubmod);
+                      },
+                      child: Text(curLangText!.uiSwap))
+                ]);
+          }));
+}
+
+Future<void> swapperLaQueueConfirmDialog(context, SubMod fromSubmod, List<List<String>> queueFromEmotesAvailableIceList, List<List<String>> queueToEmotesAvailableIceList) async {
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                title: const Text('Items To Swap'),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                content: ScrollbarTheme(
+                  data: ScrollbarThemeData(
+                    thumbColor: MaterialStateProperty.resolveWith((states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                      }
+                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                    }),
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const PageScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (int i = 0; i < queueFromEmoteCsvFiles.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          queueFromEmoteCsvFiles[i].enName,
+                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        )),
+                                    const SizedBox(
+                                      width: 30,
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          queueToEmoteCsvFiles[i].enName,
+                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        )),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                        color: Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [for (int line = 0; line < queueFromEmotesAvailableIceList[i].length; line++) Text(queueFromEmotesAvailableIceList[i][line])],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 5),
+                                      child: Icon(Icons.arrow_forward_ios_rounded),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                        color: Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              for (int line = 0; line < queueToEmotesAvailableIceList[i].length; line++) Text(queueToEmotesAvailableIceList[i][line])
+                                              //if (queueToEmotesAvailableIceList[i][line].split(': ').last.isNotEmpty) Text(queueToEmotesAvailableIceList[i][line])
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                actionsPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
                 actions: <Widget>[
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),

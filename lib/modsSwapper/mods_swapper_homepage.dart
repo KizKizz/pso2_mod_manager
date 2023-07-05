@@ -198,7 +198,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                             }),
                                           ),
                                           child: ListView.builder(
-                                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
                                               physics: const PageScrollPhysics(),
                                               itemCount: fromItemCsvData.length,
@@ -402,45 +402,48 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                 }),
                                               ),
                                               child: ListView.builder(
-                                                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                                                   shrinkWrap: true,
                                                   //physics: const BouncingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
                                                   itemBuilder: (context, i) {
-                                                    return RadioListTile(
-                                                      shape: RoundedRectangleBorder(
-                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                      value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
-                                                      groupValue: selectedToCsvFile,
-                                                      title: curActiveLang == 'JP'
-                                                          ? swapperSearchTextController.text.isEmpty
-                                                              ? Text(availableItemsCsvData[i].jpName)
-                                                              : Text(toItemSearchResults[i].jpName)
-                                                          : swapperSearchTextController.text.isEmpty
-                                                              ? Text(availableItemsCsvData[i].enName)
-                                                              : Text(toItemSearchResults[i].enName),
-                                                      onChanged: (CsvIceFile? currentItem) {
-                                                        //print("Current ${moddedItemsList[i].groupName}");
-                                                        selectedToCsvFile = currentItem!;
-                                                        toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
-                                                        toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
-                                                        if (fromItemAvailableIces.isNotEmpty) {
-                                                          toItemAvailableIces.clear();
-                                                          List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
-                                                          for (var line in selectedToItemIceList) {
-                                                            if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                              toItemAvailableIces.add(line);
-                                                            }
-
-                                                            if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                              toItemAvailableIces.add(line);
+                                                    return Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 2),
+                                                      child: RadioListTile(
+                                                        shape: RoundedRectangleBorder(
+                                                            side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                        value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
+                                                        groupValue: selectedToCsvFile,
+                                                        title: curActiveLang == 'JP'
+                                                            ? swapperSearchTextController.text.isEmpty
+                                                                ? Text(availableItemsCsvData[i].jpName)
+                                                                : Text(toItemSearchResults[i].jpName)
+                                                            : swapperSearchTextController.text.isEmpty
+                                                                ? Text(availableItemsCsvData[i].enName)
+                                                                : Text(toItemSearchResults[i].enName),
+                                                        onChanged: (CsvIceFile? currentItem) {
+                                                          //print("Current ${moddedItemsList[i].groupName}");
+                                                          selectedToCsvFile = currentItem!;
+                                                          toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
+                                                          toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
+                                                          if (fromItemAvailableIces.isNotEmpty) {
+                                                            toItemAvailableIces.clear();
+                                                            List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
+                                                            for (var line in selectedToItemIceList) {
+                                                              if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                                toItemAvailableIces.add(line);
+                                                              }
+                                                    
+                                                              if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
+                                                                toItemAvailableIces.add(line);
+                                                              }
                                                             }
                                                           }
-                                                        }
-                                                        setState(
-                                                          () {},
-                                                        );
-                                                      },
+                                                          setState(
+                                                            () {},
+                                                          );
+                                                        },
+                                                      ),
                                                     );
                                                   }))),
                                     ),
