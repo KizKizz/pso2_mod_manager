@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
@@ -7,10 +8,14 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
@@ -25,6 +30,8 @@ List<CsvEmoteIceFile> queueFromEmoteCsvFiles = [];
 List<CsvEmoteIceFile> queueToEmoteCsvFiles = [];
 List<List<String>> queueFromEmotesAvailableIces = [];
 List<List<String>> queueToEmotesAvailableIces = [];
+List<String> queueSwappedLaPaths = [];
+List<String> queueToItemNames = [];
 
 class ModsSwapperEmotesHomePage extends StatefulWidget {
   const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -221,7 +228,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           child: ListView.builder(
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
-                                              physics: const PageScrollPhysics(),
+                                              //physics: const PageScrollPhysics(),
                                               itemCount: fromItemCsvData.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
@@ -669,6 +676,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                           : () {
                                               queueFromEmoteCsvFiles.add(selectedFromEmotesCsvFile!);
                                               queueToEmoteCsvFiles.add(selectedToEmotesCsvFile!);
+                                              queueToItemNames.add(toItemName.toString());
                                               if (fromEmotesAvailableIces.isNotEmpty) {
                                                 queueFromEmotesAvailableIces.add(fromEmotesAvailableIces);
                                               }
@@ -686,10 +694,10 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                       : () {
                                           if (queueFromEmoteCsvFiles.isEmpty) {
                                             if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
-                                              swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces);
+                                              swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
                                             }
                                           } else {
-                                            swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces);
+                                            swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -707,7 +715,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
   }
 }
 
-Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces) async {
+Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, String toSelectedItemName) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -787,14 +795,15 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperLaSwappingDialog(context, fromSubmod);
+                        swapperLaSwappingDialog(context, fromSubmod, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
           }));
 }
 
-Future<void> swapperLaQueueConfirmDialog(context, SubMod fromSubmod, List<List<String>> queueFromEmotesAvailableIceList, List<List<String>> queueToEmotesAvailableIceList) async {
+Future<void> swapperLaQueueConfirmDialog(
+    context, SubMod fromSubmod, List<List<String>> queueFromEmotesAvailableIceList, List<List<String>> queueToEmotesAvailableIceList, List<String> queueToItemNameList) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -864,9 +873,20 @@ Future<void> swapperLaQueueConfirmDialog(context, SubMod fromSubmod, List<List<S
                                         ),
                                       ),
                                     ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 5),
-                                      child: Icon(Icons.arrow_forward_ios_rounded),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: queueSwappedLaPaths.length - 1 >= i &&
+                                                Directory(queueSwappedLaPaths[i]).existsSync() &&
+                                                Directory(queueSwappedLaPaths[i])
+                                                    .listSync(recursive: true)
+                                                    .whereType<File>()
+                                                    .where((element) => queueToEmotesAvailableIceList[i].where((line) => line.contains(p.basenameWithoutExtension(element.path))).isNotEmpty)
+                                                    .isNotEmpty
+                                            ? Colors.green
+                                            : null,
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 1,
@@ -896,19 +916,54 @@ Future<void> swapperLaQueueConfirmDialog(context, SubMod fromSubmod, List<List<S
                     ),
                   ),
                 ),
-                actionsPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
+                //actionsPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
                 actions: <Widget>[
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
                       onPressed: () {
+                        queueToItemNames.clear();
+                        queueSwappedLaPaths.clear();
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        swapperLaSwappingDialog(context, fromSubmod);
-                      },
-                      child: Text(curLangText!.uiSwap))
+                      onPressed: queueSwappedLaPaths.isEmpty
+                          ? null
+                          : () async {
+                              if (queueSwappedLaPaths.length == 1) {
+                                await launchUrl(Uri.file(queueSwappedLaPaths.first));
+                              } else {
+                                await launchUrl(Uri.file(p.dirname(queueSwappedLaPaths.first)));
+                              }
+                            },
+                      child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),
+                  ElevatedButton(
+                      onPressed: queueSwappedLaPaths.isEmpty
+                          ? null
+                          : () {
+                              for (var swappedModPath in queueSwappedLaPaths) {
+                                newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                              }
+
+                              modAddHandler(context);
+                            },
+                      child: Text(curLangText!.uiAddToModManager)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          for (int i = 0; i < queueFromEmotesAvailableIceList.length; i++) {
+                            fromEmotesAvailableIces = queueFromEmotesAvailableIceList[i].toList();
+                            toEmotesAvailableIces = queueToEmotesAvailableIceList[i].toList();
+                            await swapperLaQueueSwappingDialog(context, fromSubmod, queueToItemNameList[i]);
+                            setState(
+                              () {},
+                            );
+                          }
+                          print(queueSwappedLaPaths);
+                        },
+                        child: Text(curLangText!.uiSwap)),
+                  )
                 ]);
           }));
 }
