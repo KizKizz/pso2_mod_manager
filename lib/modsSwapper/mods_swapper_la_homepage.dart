@@ -923,6 +923,13 @@ Future<void> swapperLaQueueConfirmDialog(
                       onPressed: () {
                         queueToItemNames.clear();
                         queueSwappedLaPaths.clear();
+                        //clear
+                        if (Directory(modManSwapperFromItemDirPath).existsSync()) {
+                          Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+                        }
+                        if (Directory(modManSwapperToItemDirPath).existsSync()) {
+                          Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
+                        }
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
@@ -944,7 +951,6 @@ Future<void> swapperLaQueueConfirmDialog(
                                 newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                 newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                               }
-
                               modAddHandler(context);
                             },
                       child: Text(curLangText!.uiAddToModManager)),
@@ -960,7 +966,6 @@ Future<void> swapperLaQueueConfirmDialog(
                               () {},
                             );
                           }
-                          print(queueSwappedLaPaths);
                         },
                         child: Text(curLangText!.uiSwap)),
                   )

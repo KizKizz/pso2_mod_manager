@@ -610,7 +610,7 @@ Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toS
                         } else {
                           queueSwappedLaPaths.add(snapshot.data);
                           Navigator.pop(context);
-                          return const SizedBox(
+                          return SizedBox(
                             width: 250,
                             height: 250,
                             child: Center(
@@ -620,13 +620,13 @@ Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toS
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Success',
-                                    style: TextStyle(fontSize: 20),
+                                    curLangText!.uiSuccess,
+                                    style: const TextStyle(fontSize: 20),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
-                                  CircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                                 ],
                               ),
                             ),
