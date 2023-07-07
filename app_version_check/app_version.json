@@ -1,8 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.6",
+    "version": "2.1.7",
     "description": [
-        "Fixed a bug where Mods Adders creates duplicate items when adding mods to existing items"
+        "Added a queue to swap multiple poses of an emote at the same time",
+        "Added a check during backups restore process to make sure files are being restored correctly to their original locations",
+        "Fixed a bug with Mod Adder"
     ],
     "windows_file": "",
     "linux_file": ""

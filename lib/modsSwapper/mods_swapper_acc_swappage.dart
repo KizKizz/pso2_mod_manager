@@ -500,6 +500,9 @@ Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
                                               if (Directory(modManSwapperToItemDirPath).existsSync()) {
                                                 Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
                                               }
+                                              if (Directory(modManSwapperOutputDirPath).existsSync()) {
+                                                Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+                                              }
                                               Navigator.pop(context);
                                             }),
                                         ElevatedButton(

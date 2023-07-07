@@ -282,9 +282,9 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
-                                          'Swapping Queue',
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                        Text(
+                                          curLangText!.uiSwappingQueue,
+                                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                         ),
                                         ElevatedButton(
                                             onPressed: () {
@@ -294,7 +294,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                               queueToEmotesAvailableIces.clear();
                                               setState(() {});
                                             },
-                                            child: const Text('Clear Queue'))
+                                            child: Text(curLangText!.uiClearQueue))
                                       ],
                                     ),
                                   )),
@@ -463,57 +463,6 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          // MaterialButton(
-                                          //   height: 29,
-                                          //   padding: EdgeInsets.zero,
-                                          //   onPressed: () async {
-                                          //     final prefs = await SharedPreferences.getInstance();
-                                          //     isReplacingNQWithHQ ? isReplacingNQWithHQ = false : isReplacingNQWithHQ = true;
-                                          //     prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
-                                          //     setState(() {});
-                                          //   },
-                                          //   child: Wrap(
-                                          //     alignment: WrapAlignment.center,
-                                          //     runAlignment: WrapAlignment.center,
-                                          //     crossAxisAlignment: WrapCrossAlignment.center,
-                                          //     spacing: 5,
-                                          //     children: [Icon(isReplacingNQWithHQ ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiReplaceNQwithHQ)],
-                                          //   ),
-                                          // ),
-                                          // MaterialButton(
-                                          //   height: 29,
-                                          //   padding: EdgeInsets.zero,
-                                          //   onPressed: () async {
-                                          //     final prefs = await SharedPreferences.getInstance();
-                                          //     isCopyAll ? isCopyAll = false : isCopyAll = true;
-                                          //     prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
-                                          //     setState(() {});
-                                          //   },
-                                          //   child: Wrap(
-                                          //     alignment: WrapAlignment.center,
-                                          //     runAlignment: WrapAlignment.center,
-                                          //     crossAxisAlignment: WrapCrossAlignment.center,
-                                          //     spacing: 5,
-                                          //     children: [Icon(isCopyAll ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapAllFilesInsideIce)],
-                                          //   ),
-                                          // ),
-                                          // MaterialButton(
-                                          //   height: 29,
-                                          //   padding: EdgeInsets.zero,
-                                          //   onPressed: () async {
-                                          //     final prefs = await SharedPreferences.getInstance();
-                                          //     isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
-                                          //     prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                          //     setState(() {});
-                                          //   },
-                                          //   child: Wrap(
-                                          //     alignment: WrapAlignment.center,
-                                          //     runAlignment: WrapAlignment.center,
-                                          //     crossAxisAlignment: WrapCrossAlignment.center,
-                                          //     spacing: 5,
-                                          //     children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
-                                          //   ),
-                                          // ),
                                           //swap to idle motion
                                           MaterialButton(
                                             height: 29,
@@ -687,17 +636,18 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                               selectedToEmotesCsvFile = null;
                                               setState(() {});
                                             },
-                                  child: const Text('Add To Queue')),
+                                  child: Text(curLangText!.uiAddToQueue)),
                               ElevatedButton(
                                   onPressed: (selectedFromEmotesCsvFile == null || selectedToEmotesCsvFile == null) && queueFromEmoteCsvFiles.isEmpty
                                       ? null
-                                      : () {
+                                      : () async {
                                           if (queueFromEmoteCsvFiles.isEmpty) {
                                             if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
                                               swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
                                             }
                                           } else {
-                                            swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
+                                            await swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
+                                            setState(() {});
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -812,7 +762,7 @@ Future<void> swapperLaQueueConfirmDialog(
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('Items To Swap'),
+                title: Text(curLangText!.uiItemsToSwap),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 content: ScrollbarTheme(
                   data: ScrollbarThemeData(
@@ -921,15 +871,29 @@ Future<void> swapperLaQueueConfirmDialog(
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
                       onPressed: () {
-                        queueToItemNames.clear();
-                        queueSwappedLaPaths.clear();
-                        //clear
-                        if (Directory(modManSwapperFromItemDirPath).existsSync()) {
-                          Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+                        if (queueSwappedLaPaths.isNotEmpty) {
+                          queueToItemNames.clear();
+                          queueFromEmotesAvailableIceList.clear();
+                          queueToEmotesAvailableIceList.clear();
+                          queueToItemNameList.clear();
+                          queueToEmoteCsvFiles.clear();
+                          queueFromEmoteCsvFiles.clear();
+                          queueSwappedLaPaths.clear();
+                          setState(
+                            () {},
+                          );
+                          //clear
+                          if (Directory(modManSwapperFromItemDirPath).existsSync()) {
+                            Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+                          }
+                          if (Directory(modManSwapperToItemDirPath).existsSync()) {
+                            Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
+                          }
+                          if (Directory(modManSwapperOutputDirPath).existsSync()) {
+                            Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+                          }
                         }
-                        if (Directory(modManSwapperToItemDirPath).existsSync()) {
-                          Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
-                        }
+
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
