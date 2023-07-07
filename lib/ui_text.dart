@@ -275,7 +275,11 @@ class TranslationText {
       uiNoteModsMightNotWokAfterSwapping = 'Note: Some items might not work right after swapping, some might require cmx editing. Use at your own risk',
       uiItemID = 'Item ID',
       uiAdjustedID = 'Adjusted ID',
-      uiSwapToIdleMotion = 'Swap to Idle Motions';
+      uiSwapToIdleMotion = 'Swap to Idle Motions',
+      uiSwappingQueue = 'Swapping Queue',
+      uiClearQueue = 'Clear Queue',
+      uiAddToQueue = 'Add To Queue',
+      uiItemsToSwap = 'Items To Swap';
 
   //mod_swapper_swappage
   String uiNoMatchingIceFoundToSwap = 'No matching ice files found to swap item',

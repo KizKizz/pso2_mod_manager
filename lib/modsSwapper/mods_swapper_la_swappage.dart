@@ -16,9 +16,10 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
+Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSelectedItemName) async {
+  String newToSelectedItemName = toSelectedItemName;
   //clean
-  if (Directory(modManSwapperOutputDirPath).existsSync()) {
+  if (Directory(modManSwapperOutputDirPath).existsSync() && queueSwappedLaPaths.isEmpty) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
   }
   //create
@@ -254,13 +255,13 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
     //pack
     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var char in charToReplace) {
-      toItemName = toItemName.replaceAll(char, '_');
+      newToSelectedItemName = newToSelectedItemName.replaceAll(char, '_');
     }
     String packDirPath = '';
     if (fromSubmod.modName == fromSubmod.submodName) {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);
@@ -279,10 +280,10 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod) async {
     }
   }
 
-  return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
+  return Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName').toFilePath();
 }
 
-Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
+Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -293,7 +294,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -489,6 +490,9 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
                                               if (Directory(modManSwapperToItemDirPath).existsSync()) {
                                                 Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
                                               }
+                                              if (Directory(modManSwapperOutputDirPath).existsSync()) {
+                                                Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+                                              }
                                               Navigator.pop(context);
                                             }),
                                         ElevatedButton(
@@ -513,6 +517,122 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod) async {
                                 ),
                               )
                             ],
+                          );
+                        }
+                      }
+                    }));
+          }));
+}
+
+Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName) async {
+  //String swappedModPath = '';
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                contentPadding: const EdgeInsets.all(16),
+                content: FutureBuilder(
+                    future: modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot snapshot,
+                    ) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                          width: 250,
+                          height: 250,
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  curLangText!.uiSwappingItem,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const CircularProgressIndicator(),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  curLangText!.uiErrorWhenSwapping,
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                  child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                                ),
+                                ElevatedButton(
+                                    child: Text(curLangText!.uiReturn),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ],
+                            ),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return SizedBox(
+                            width: 250,
+                            height: 250,
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    curLangText!.uiSwappingItem,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  const CircularProgressIndicator(),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          queueSwappedLaPaths.add(snapshot.data);
+                          Navigator.pop(context);
+                          return SizedBox(
+                            width: 250,
+                            height: 250,
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    curLangText!.uiSuccess,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  const CircularProgressIndicator(),
+                                ],
+                              ),
+                            ),
                           );
                         }
                       }

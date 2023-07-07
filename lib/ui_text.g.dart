@@ -301,6 +301,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiItemID = json['uiItemID'] as String
       ..uiAdjustedID = json['uiAdjustedID'] as String
       ..uiSwapToIdleMotion = json['uiSwapToIdleMotion'] as String
+      ..uiSwappingQueue = json['uiSwappingQueue'] as String
+      ..uiClearQueue = json['uiClearQueue'] as String
+      ..uiAddToQueue = json['uiAddToQueue'] as String
+      ..uiItemsToSwap = json['uiItemsToSwap'] as String
       ..uiNoMatchingIceFoundToSwap =
           json['uiNoMatchingIceFoundToSwap'] as String
       ..uiSwappingItem = json['uiSwappingItem'] as String
@@ -566,6 +570,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiItemID': instance.uiItemID,
       'uiAdjustedID': instance.uiAdjustedID,
       'uiSwapToIdleMotion': instance.uiSwapToIdleMotion,
+      'uiSwappingQueue': instance.uiSwappingQueue,
+      'uiClearQueue': instance.uiClearQueue,
+      'uiAddToQueue': instance.uiAddToQueue,
+      'uiItemsToSwap': instance.uiItemsToSwap,
       'uiNoMatchingIceFoundToSwap': instance.uiNoMatchingIceFoundToSwap,
       'uiSwappingItem': instance.uiSwappingItem,
       'uiErrorWhenSwapping': instance.uiErrorWhenSwapping,

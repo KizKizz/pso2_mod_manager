@@ -277,9 +277,13 @@ void modAddHandler(context) {
               }
             } else {
               if (subDirName.isNotEmpty) {
-                extraFiles.add(['', '', '', '', mainDirName, '$mainDirName:$subDirName', '$mainDirName:$subDirName:${inputFile.name}']);
+                if (extraFiles.where((element) => element.last == '$mainDirName:$subDirName:${inputFile.name}').isEmpty) {
+                  extraFiles.add(['', '', '', '', mainDirName, '$mainDirName:$subDirName', '$mainDirName:$subDirName:${inputFile.name}']);
+                }
               } else {
-                extraFiles.add(['', '', '', '', mainDirName, '', '$mainDirName:$subDirName:${inputFile.name}']);
+                if (extraFiles.where((element) => element.last == '$mainDirName:$subDirName:${inputFile.name}').isEmpty) {
+                  extraFiles.add(['', '', '', '', mainDirName, '', '$mainDirName:$subDirName:${inputFile.name}']);
+                }
               }
             }
 
