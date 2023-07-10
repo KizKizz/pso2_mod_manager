@@ -29,7 +29,7 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
   }
 
   for (var fileF in fFiles) {
-    List<String> fileNamePartsF = p.basename(fileF.path).split('_');
+    List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
     String fileIdF = fileNamePartsF.firstWhere(
       (element) => int.tryParse(element) != null,
       orElse: () => '',
@@ -68,6 +68,17 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
             String newPath = fileF.path.replaceFirst(fileIdF, toAccItemId);
             renamedFiles.add(await fileF.rename(newPath));
           }
+        }
+      } else if (p.extension(fileF.path) == '.dds') {
+        final ddsFilesT = tFiles.where((element) => p.extension(element.path) == '.dds');
+        if (ddsFilesT.isNotEmpty) {
+          final ddsFilePartsF = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
+          String matchingDdsFileIdT = ddsFilePartsF.firstWhere(
+            (element) => int.tryParse(element) != null,
+            orElse: () => '',
+          );
+          String newPath = fileF.path.replaceFirst(fileIdF, matchingDdsFileIdT);
+          renamedFiles.add(await fileF.rename(newPath));
         }
       }
     }

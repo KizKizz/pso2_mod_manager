@@ -255,7 +255,17 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            if (firstMatchingIndex != -1) {
+            // if (firstMatchingIndex != -1) {
+            //   if (ddsFBytes.length > ddsTBytes.length) {
+            //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+            //     Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+            //   } else {
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+            //   }
+            //   aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            // }
+            while (firstMatchingIndex != -1) {
               if (ddsFBytes.length > ddsTBytes.length) {
                 List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
                 Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
@@ -264,6 +274,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
                 aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
               }
               aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              firstMatchingIndex = aqpBytes.indexOfElements(ddsFBytes);
             }
           }
         }
