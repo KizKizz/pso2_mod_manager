@@ -27,8 +27,8 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
   Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName}').toFilePath();
-  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();
+  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
   List<List<String>> iceSwappingList = [];
 
   toEmotesAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
@@ -261,7 +261,7 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);
