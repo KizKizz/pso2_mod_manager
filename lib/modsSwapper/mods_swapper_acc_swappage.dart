@@ -186,8 +186,11 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          if (renamedDdsNamesF.where((element) => element.split('_')[1] == 'rac').isNotEmpty) {
+          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
+          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }
@@ -209,6 +212,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
         }
       }
     }
+
     //group2
     String group2ExtractedItemPathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
     if (Directory(group2ExtractedItemPathF).existsSync()) {
@@ -239,8 +243,11 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
           );
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac').isNotEmpty) {
+          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
+          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }

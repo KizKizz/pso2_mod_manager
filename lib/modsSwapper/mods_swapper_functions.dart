@@ -21,6 +21,8 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
         String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
         String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
         renamedFilesF.add(fFile.renameSync(newFilePathF));
+      } else if (namePartsF[0] == 'pl' && namePartsF.length <= 3) {
+        renamedFilesF.add(fFile);
       }
     }
     fFiles = renamedFilesF;
@@ -118,7 +120,10 @@ Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
-    } else if (isEmotesToStandbyMotions && fileNamePartsF[0] == 'pl' && p.extension(fileF.path) == '.aqm' && (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
+    } else if (isEmotesToStandbyMotions &&
+        fileNamePartsF[0] == 'pl' &&
+        p.extension(fileF.path) == '.aqm' &&
+        (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
       //emotes to motions
       File aqmFile = tFiles.firstWhere(
           (element) =>
