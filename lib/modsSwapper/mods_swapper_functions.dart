@@ -21,20 +21,34 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
         String newFileNameF = namePartsF.join('_') + p.extension(fFile.path);
         String newFilePathF = Uri.file('${p.dirname(fFile.path)}/$newFileNameF').toFilePath();
         renamedFilesF.add(fFile.renameSync(newFilePathF));
+      } else if (namePartsF[0] == 'pl' && namePartsF.length <= 3) {
+        renamedFilesF.add(fFile);
       }
     }
     fFiles = renamedFilesF;
   }
 
   for (var fileF in fFiles) {
-    List<String> fileNamePartsF = p.basename(fileF.path).split('_');
+    List<String> fileNamePartsF = p.basenameWithoutExtension(fileF.path).split('_');
     String fileIdF = fileNamePartsF.firstWhere(
       (element) => int.tryParse(element) != null,
       orElse: () => '',
     );
     final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
-    final matchingFileT =
-        tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).contains(fileNamePartsWoId.last), orElse: () => File(''));
+    // final matchingFileT =
+    //     tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
+    File matchingFileT = File('');
+    for (var fileT in tFiles) {
+      String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
+            (element) => int.tryParse(element) != null,
+            orElse: () => '',
+          );
+      final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
+      if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
+        matchingFileT = fileT;
+        break;
+      }
+    }
     if (matchingFileT.path.isNotEmpty) {
       String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
       renamedFiles.add(await fileF.rename(newPath));
@@ -66,6 +80,17 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
             String newPath = fileF.path.replaceFirst(fileIdF, toAccItemId);
             renamedFiles.add(await fileF.rename(newPath));
           }
+        }
+      } else if (p.extension(fileF.path) == '.dds') {
+        final ddsFilesT = tFiles.where((element) => p.extension(element.path) == '.dds');
+        if (ddsFilesT.isNotEmpty) {
+          final ddsFilePartsF = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
+          String matchingDdsFileIdT = ddsFilePartsF.firstWhere(
+            (element) => int.tryParse(element) != null,
+            orElse: () => '',
+          );
+          String newPath = fileF.path.replaceFirst(fileIdF, matchingDdsFileIdT);
+          renamedFiles.add(await fileF.rename(newPath));
         }
       }
     }
@@ -118,7 +143,10 @@ Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
       if (figFile.path.isNotEmpty) {
         figFile.copySync(fileF.path);
       }
-    } else if (isEmotesToStandbyMotions && fileNamePartsF[0] == 'pl' && p.extension(fileF.path) == '.aqm' && (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
+    } else if (isEmotesToStandbyMotions &&
+        fileNamePartsF[0] == 'pl' &&
+        p.extension(fileF.path) == '.aqm' &&
+        (p.basenameWithoutExtension(fileF.path).contains('_std_') || p.basenameWithoutExtension(fileF.path).contains('_hum_'))) {
       //emotes to motions
       File aqmFile = tFiles.firstWhere(
           (element) =>

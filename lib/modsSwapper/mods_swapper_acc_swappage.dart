@@ -27,8 +27,8 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
   Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName}').toFilePath();
-  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName}').toFilePath();
+  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
   List<List<String>> iceSwappingList = [];
 
   toAccItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
@@ -40,7 +40,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   for (var itemT in toAccItemAvailableIces) {
     String curIceType = '';
     //change T ices to HD types
-    if (isReplacingNQWithHQ) {
+    if (fromAccItemAvailableIces.where((element) => element.contains('High Quality')).isNotEmpty && isReplacingNQWithHQ) {
       String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
       curIceType = tempIceTypeT.split(': ').first;
     } else {
@@ -186,8 +186,15 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
           String ddsFId = ddsFParts.firstWhere((element) => element.length > 3 && int.tryParse(element) != null);
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          if (renamedDdsNamesF.where((element) => element.split('_')[1] == 'rac').isNotEmpty) {
+          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
+          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
+            //pso2 textures to ngs texture in aqp
+            if (ddsIndex == -1 && renamedDdsNamesF.where((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first).isNotEmpty) {
+              ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first);
+            }
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }
@@ -195,7 +202,17 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            if (firstMatchingIndex != -1) {
+            // if (firstMatchingIndex != -1) {
+            //   if (ddsFBytes.length > ddsTBytes.length) {
+            //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+            //     Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+            //   } else {
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+            //   }
+            //   aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            // }
+            while (firstMatchingIndex != -1) {
               if (ddsFBytes.length > ddsTBytes.length) {
                 List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
                 Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
@@ -204,11 +221,13 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
                 aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
               }
               aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              firstMatchingIndex = aqpBytes.indexOfElements(ddsFBytes);
             }
           }
         }
       }
     }
+
     //group2
     String group2ExtractedItemPathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
     if (Directory(group2ExtractedItemPathF).existsSync()) {
@@ -239,8 +258,15 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
           );
           List<String> ddsWoId = ddsF.split(ddsFId);
           int ddsIndex = -1;
-          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac').isNotEmpty) {
+          List<String> ddsTypes = ['d.dds', 'm.dds', 'n.dds', 's.dds'];
+          if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && !ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
+          } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
+            ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
+            //pso2 textures to ngs texture in aqp
+            if (ddsIndex == -1 && renamedDdsNamesF.where((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first).isNotEmpty) {
+              ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first);
+            }
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }
@@ -248,7 +274,17 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            if (firstMatchingIndex != -1) {
+            // if (firstMatchingIndex != -1) {
+            //   if (ddsFBytes.length > ddsTBytes.length) {
+            //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+            //     Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+            //   } else {
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+            //   }
+            //   aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            // }
+            while (firstMatchingIndex != -1) {
               if (ddsFBytes.length > ddsTBytes.length) {
                 List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
                 Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
@@ -257,6 +293,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
                 aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
               }
               aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              firstMatchingIndex = aqpBytes.indexOfElements(ddsFBytes);
             }
           }
         }
@@ -272,7 +309,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);

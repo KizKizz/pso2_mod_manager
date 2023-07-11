@@ -1,10 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.7",
+    "version": "2.1.8",
     "description": [
-        "Added a queue to swap multiple poses of an emote at the same time",
-        "Added a check during backups restore process to make sure files are being restored correctly to their original locations",
-        "Fixed a bug with Mod Adder"
+        "More improvement to accessories swapping function (from pso2 accessories to NGS, and some animated items)",
+        "Some minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
