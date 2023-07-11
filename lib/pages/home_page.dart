@@ -3222,6 +3222,7 @@ class _HomePageState extends State<HomePage> {
                               ? null
                               : () {
                                   isModViewModsRemoving = true;
+                                  setState(() {});
                                   Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
                                     unapplyAllMods(context).then((value) {
                                       isModViewModsRemoving = false;
