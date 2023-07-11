@@ -40,7 +40,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   for (var itemT in toAccItemAvailableIces) {
     String curIceType = '';
     //change T ices to HD types
-    if (isReplacingNQWithHQ) {
+    if (fromAccItemAvailableIces.where((element) => element.contains('High Quality')).isNotEmpty && isReplacingNQWithHQ) {
       String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
       curIceType = tempIceTypeT.split(': ').first;
     } else {
@@ -191,6 +191,10 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
           } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
+            //pso2 textures to ngs texture in aqp
+            if (ddsIndex == -1 && renamedDdsNamesF.where((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first).isNotEmpty) {
+              ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first);
+            }
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }
@@ -198,7 +202,17 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             Uint8List ddsFBytes = Uint8List.fromList(ddsF.codeUnits);
             Uint8List ddsTBytes = Uint8List.fromList(renamedDdsNamesF[ddsIndex].codeUnits);
             int firstMatchingIndex = aqpBytesRead.indexOfElements(ddsFBytes);
-            if (firstMatchingIndex != -1) {
+            // if (firstMatchingIndex != -1) {
+            //   if (ddsFBytes.length > ddsTBytes.length) {
+            //     List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
+            //     Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsFBytes.length, ddsTBytes + paddingText);
+            //   } else {
+            //     aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
+            //   }
+            //   aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+            // }
+            while (firstMatchingIndex != -1) {
               if (ddsFBytes.length > ddsTBytes.length) {
                 List<String> paddingTextList = List.filled(ddsFBytes.length - ddsTBytes.length, String.fromCharCode(aqpBytes[firstMatchingIndex + ddsFBytes.length + 1]));
                 Uint8List paddingText = Uint8List.fromList(paddingTextList.join().codeUnits);
@@ -207,6 +221,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
                 aqpBytes.replaceRange(firstMatchingIndex, firstMatchingIndex + ddsTBytes.length, ddsTBytes);
               }
               aqpInDirF.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              firstMatchingIndex = aqpBytes.indexOfElements(ddsFBytes);
             }
           }
         }
@@ -248,6 +263,10 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').split('_').first);
           } else if (renamedDdsNamesF.where((element) => element.split('_').length > 1 && element.split('_')[1] == 'rac' && ddsTypes.contains(element.split('_').last)).isNotEmpty) {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basename(element).contains(ddsWoId.last));
+            //pso2 textures to ngs texture in aqp
+            if (ddsIndex == -1 && renamedDdsNamesF.where((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first).isNotEmpty) {
+              ddsIndex = renamedDdsNamesF.indexWhere((element) => p.basenameWithoutExtension(element).split('_').last == ddsWoId.last.replaceFirst('_', '').trim().split('_').first);
+            }
           } else {
             ddsIndex = renamedDdsNamesF.indexWhere((element) => element.contains(ddsWoId.first) && element.contains(ddsWoId.last));
           }

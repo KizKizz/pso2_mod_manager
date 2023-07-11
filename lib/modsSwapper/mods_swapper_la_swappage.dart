@@ -42,12 +42,12 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
   for (var itemT in toEmotesAvailableIces) {
     String curIceType = '';
     //change T ices to HD types
-    if (isReplacingNQWithHQ) {
-      String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
-      curIceType = tempIceTypeT.split(': ').first;
-    } else {
+    // if (isReplacingNQWithHQ) {
+    //   String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
+    //   curIceType = tempIceTypeT.split(': ').first;
+    // } else {
       curIceType = itemT.split(': ').first;
-    }
+    // }
     int matchingItemFIndex = fromEmotesAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
     if (matchingItemFIndex != -1) {
       iceSwappingList.add([fromEmotesAvailableIces[matchingItemFIndex].split(': ').last, itemT.split(': ').last]);

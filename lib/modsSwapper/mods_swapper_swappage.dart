@@ -39,7 +39,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod) async {
   for (var itemT in toItemAvailableIces) {
     String curIceType = '';
     //change T ices to HD types
-    if (isReplacingNQWithHQ) {
+    if (fromItemAvailableIces.where((element) => element.contains('High Quality')).isNotEmpty && isReplacingNQWithHQ) {
       String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
       curIceType = tempIceTypeT.split(': ').first;
     } else {

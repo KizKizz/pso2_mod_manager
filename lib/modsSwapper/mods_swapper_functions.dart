@@ -35,8 +35,20 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
       orElse: () => '',
     );
     final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
-    final matchingFileT =
-        tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).contains(fileNamePartsWoId.last), orElse: () => File(''));
+    // final matchingFileT =
+    //     tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
+    File matchingFileT = File('');
+    for (var fileT in tFiles) {
+      String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
+            (element) => int.tryParse(element) != null,
+            orElse: () => '',
+          );
+      final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
+      if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
+        matchingFileT = fileT;
+        break;
+      }
+    }
     if (matchingFileT.path.isNotEmpty) {
       String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
       renamedFiles.add(await fileF.rename(newPath));
