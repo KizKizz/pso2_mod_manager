@@ -85,6 +85,24 @@ class CsvIceFile {
       'High Quality Hand Texture Ice: $hqhandTextureIceName'
     ];
   }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return [
+      'Icon Ice: $iconIceName',
+      'Normal Quality Ice: $nqIceName',
+      'High Quality Ice: $hqIceName',
+      'Normal Quality RP Ice: $nqRpIceName',
+      'High Quality RP Ice: $hqRpIceName',
+      'Normal Quality Linked Inner Ice: $nqLiIceName',
+      'High Quality Linked Inner Ice: $hqLiIceName',
+      'Sound Ice: $soundIceName',
+      'Cast Sound Ice: $castSoundIceName',
+      'Material Animation Ice: $maIceName',
+      'Material Animation EX Ice: $maExIceName',
+      'Normal Quality Hand Texture Ice: $handTextureIceName',
+      'High Quality Hand Texture Ice: $hqhandTextureIceName'
+    ];
+  }
 }
 
 class CsvAccessoryIceFile {

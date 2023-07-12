@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
@@ -1202,6 +1203,29 @@ class _MainPageState extends State<MainPage> {
                                     const SizedBox(width: 2.5),
                                     if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
                                     if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Mod sets
+                          ModManTooltip(
+                            message: 'Items Swapper',
+                            child: SizedBox(
+                              //width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  itemsSwapperDialog(context);
+                                }),
+                                child: const Row(
+                                  children: [
+                                      Icon(
+                                        Icons.swap_horizontal_circle_outlined,
+                                        size: 18,
+                                      ),
+                                    SizedBox(width: 2.5),
+                                    Text('Items Swap', style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),
