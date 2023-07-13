@@ -81,3 +81,14 @@ List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
 String isAutoFetchingIconsOnStartup = 'minimal';
 List<List<String>> csvInfosFromSheets = [];
+//swapper
+bool isReplacingNQWithHQ = false;
+bool isCopyAll = false;
+bool isRemoveExtras = false;
+bool isEmotesToStandbyMotions = false;
+List<CsvIceFile> csvData = [];
+List<CsvIceFile> availableItemsCsvData = [];
+List<CsvAccessoryIceFile> csvAccData = [];
+List<CsvAccessoryIceFile> availableAccCsvData = [];
+List<CsvEmoteIceFile> csvEmotesData = [];
+List<CsvEmoteIceFile> availableEmotesCsvData = [];

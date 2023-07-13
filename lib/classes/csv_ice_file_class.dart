@@ -88,7 +88,6 @@ class CsvIceFile {
 
   List<String> getDetailedListIceInfosOnly() {
     return [
-      'Icon Ice: $iconIceName',
       'Normal Quality Ice: $nqIceName',
       'High Quality Ice: $hqIceName',
       'Normal Quality RP Ice: $nqRpIceName',

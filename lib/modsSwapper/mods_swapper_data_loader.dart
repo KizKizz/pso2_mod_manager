@@ -15,12 +15,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
 
-List<CsvIceFile> csvData = [];
-List<CsvIceFile> availableItemsCsvData = [];
-List<CsvAccessoryIceFile> csvAccData = [];
-List<CsvAccessoryIceFile> availableAccCsvData = [];
-List<CsvEmoteIceFile> csvEmotesData = [];
-List<CsvEmoteIceFile> availableEmotesCsvData = [];
+
 
 List<File> getCsvFiles(String categoryName) {
   List<File> csvFiles = [];

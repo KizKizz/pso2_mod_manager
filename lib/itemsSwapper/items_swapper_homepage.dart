@@ -1,22 +1,23 @@
-// ignore_for_file: unused_import
-
 import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
-import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart' as mss;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
+TextEditingController swapperFromItemsSearchTextController = TextEditingController();
 List<CsvIceFile> toItemSearchResults = [];
+List<CsvIceFile> fromItemSearchResults = [];
 CsvIceFile? selectedFromCsvFile;
 CsvIceFile? selectedToCsvFile;
 List<String> fromItemIds = [];
@@ -56,8 +57,13 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
     //fetch
-    List<String> iceNamesFromSubmod = [];
-    final fromItemCsvData = csvData.where((element) => element.jpName.isNotEmpty && element.hqIceName.isNotEmpty && element.nqIceName.isNotEmpty && element.jpName.contains('[Ba]')).toList();
+    List<CsvIceFile> fromItemCsvData =
+        csvData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && element.hqIceName.isNotEmpty && element.nqIceName.isNotEmpty && element.jpName.contains('[Ba]')).toList();
+    if (curActiveLang == 'JP') {
+      fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+    } else {
+      fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+    }
     List<List<String>> csvInfos = [];
     bool includeHqLiIceOnly = false;
     bool includeNqLiIceOnly = false;
@@ -78,12 +84,12 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
       }
     }
 
-    if (includeHqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
-    }
-    if (includeNqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
-    }
+    // if (includeHqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
+    // }
+    // if (includeNqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
+    // }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -123,92 +129,56 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                   height: 92,
                                   child: ListTile(
                                     minVerticalPadding: 15,
-                                    title: const Text('Select a category below:'),
+                                    title: const Text('Choose an item below:'),
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 10),
-                                      child: DropdownButtonHideUnderline(
-                                          child: DropdownButton2(
-                                        // customButton: AbsorbPointer(
-                                        //   absorbing: true,
-                                        //   child: MaterialButton(
-                                        //     onPressed: (() {}),
-                                        //     child: Row(
-                                        //       children: [
-                                        //         // const Icon(
-                                        //         //   Icons.language,
-                                        //         //   size: 18,
-                                        //         // ),
-                                        //         // const SizedBox(
-                                        //         //   width: 10,
-                                        //         // ),
-                                        //         Expanded(
-                                        //           child: Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        //             children: [
-                                        //               Text(
-                                        //                 '${curLangText!.uiCurrentLanguage}: $langDropDownSelected',
-                                        //                 style: const TextStyle(fontWeight: FontWeight.normal),
-                                        //               ),
-                                        //               const Icon(Icons.arrow_drop_down)
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        buttonStyleData: ButtonStyleData(
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              width: 1,
-                                              color: Theme.of(context).hintColor,
-                                            ),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
+                                      child: SizedBox(
+                                        height: 30,
+                                        width: double.infinity,
+                                        child: TextField(
+                                          controller: swapperFromItemsSearchTextController,
+                                          maxLines: 1,
+                                          textAlignVertical: TextAlignVertical.center,
+                                          decoration: InputDecoration(
+                                              hintText: curLangText!.uiSearchSwapItems,
+                                              hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                              isCollapsed: true,
+                                              isDense: true,
+                                              contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                                              suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
+                                              suffixIcon: InkWell(
+                                                onTap: swapperFromItemsSearchTextController.text.isEmpty
+                                                    ? null
+                                                    : () {
+                                                        swapperFromItemsSearchTextController.clear();
+                                                        setState(() {});
+                                                      },
+                                                child: Icon(
+                                                  swapperFromItemsSearchTextController.text.isEmpty ? Icons.search : Icons.close,
+                                                  color: Theme.of(context).hintColor,
+                                                ),
+                                              ),
+                                              constraints: BoxConstraints.tight(const Size.fromHeight(26)),
+                                              // Set border for enabled state (default)
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              // Set border for focused state
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                                                borderRadius: BorderRadius.circular(10),
+                                              )),
+                                          onChanged: (value) async {
+                                            fromItemSearchResults = fromItemCsvData
+                                                .where((element) => curActiveLang == 'JP'
+                                                    ? element.jpName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase())
+                                                    : element.enName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase()))
+                                                .toList();
+                                            setState(() {});
+                                          },
                                         ),
-                                        dropdownStyleData: DropdownStyleData(
-                                          elevation: 3,
-                                          padding: const EdgeInsets.symmetric(vertical: 2),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(3),
-                                            color: Theme.of(context).cardColor,
-                                          ),
-                                        ),
-                                        iconStyleData: const IconStyleData(iconSize: 15),
-                                        menuItemStyleData: const MenuItemStyleData(
-                                          height: 25,
-                                          padding: EdgeInsets.symmetric(horizontal: 5),
-                                        ),
-                                        isDense: true,
-                                        items: swapCategoriesF
-                                            .map((item) => DropdownMenuItem<String>(
-                                                value: item,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      padding: const EdgeInsets.only(bottom: 3),
-                                                      child: Text(
-                                                        item,
-                                                        style: const TextStyle(
-                                                            //fontSize: 14,
-                                                            //fontWeight: FontWeight.bold,
-                                                            //color: Colors.white,
-                                                            ),
-                                                        overflow: TextOverflow.ellipsis,
-                                                      ),
-                                                    )
-                                                  ],
-                                                )))
-                                            .toList(),
-                                        value: selectedCategoryF,
-                                        onChanged: (value) async {
-                                          selectedCategoryF = value.toString();
-
-                                          setState(() {});
-                                        },
-                                      )),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -244,27 +214,51 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
                                               //physics: const PageScrollPhysics(),
-                                              itemCount: fromItemCsvData.length,
+                                              itemCount: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData.length : fromItemSearchResults.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 2),
                                                   child: RadioListTile(
                                                     shape:
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                    value: fromItemCsvData[i],
+                                                    value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromCsvFile,
-                                                    title: Text(fromItemCsvData[i].enName),
-                                                    subtitle: selectedFromCsvFile == fromItemCsvData[i]
-                                                   ? Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
-                                                    ) : null,
+                                                    title: curActiveLang == 'JP'
+                                                        ? swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].jpName)
+                                                            : Text(fromItemSearchResults[i].jpName)
+                                                        : swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].enName)
+                                                            : Text(fromItemSearchResults[i].enName),
+                                                    subtitle: swapperFromItemsSearchTextController.text.isEmpty
+                                                        ? selectedFromCsvFile == fromItemCsvData[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null
+                                                        : selectedFromCsvFile == fromItemSearchResults[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null,
                                                     onChanged: (CsvIceFile? currentItem) {
-                                                      //print("Current ${moddedItemsList[i].groupName}");
                                                       selectedFromCsvFile = currentItem!;
-                                                      iceNamesFromSubmod = selectedFromCsvFile!.getDetailedListIceInfosOnly();
                                                       fromItemAvailableIces = csvInfos[i];
+                                                      fromItemName = curActiveLang == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
                                                       fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
                                                       //set infos
                                                       if (selectedToCsvFile != null) {
@@ -531,7 +525,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                            //swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                            swapperConfirmDialog(context, fromItemSubmodGet(fromItemAvailableIces), fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -634,7 +628,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        //swapperSwappingDialog(context, fromSubmod);
+                        mss.swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

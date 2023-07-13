@@ -1216,7 +1216,7 @@ class _MainPageState extends State<MainPage> {
                               //width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
-                                  itemsSwapperDialog(context);
+                                  itemsSwapperCategorySelect(context);
                                 }),
                                 child: const Row(
                                   children: [

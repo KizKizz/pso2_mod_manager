@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:card_banner/card_banner.dart';
 import 'package:flutter/material.dart';
@@ -9,17 +8,10 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-String modManSwapperDirPath = Uri.file('${Directory.current.path}/swapper').toFilePath();
-String modManSwapperFromItemDirPath = Uri.file('${Directory.current.path}/swapper/fromitem').toFilePath();
-String modManSwapperToItemDirPath = Uri.file('${Directory.current.path}/swapper/toitem').toFilePath();
-String modManSwapperOutputDirPath = Uri.file('${Directory.current.path}/swapper/Swapped Items').toFilePath();
+
 
 String toItemName = '';
 
-bool isReplacingNQWithHQ = false;
-bool isCopyAll = false;
-bool isRemoveExtras = false;
-bool isEmotesToStandbyMotions = false;
 
 void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
   showDialog(

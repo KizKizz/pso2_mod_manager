@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 
 Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
   List<File> renamedFiles = [];

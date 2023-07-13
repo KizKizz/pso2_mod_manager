@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
@@ -585,7 +586,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperSwappingDialog(context, fromSubmod);
+                        swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
