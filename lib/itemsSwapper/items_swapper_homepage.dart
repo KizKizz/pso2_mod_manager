@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -67,8 +66,9 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
     } else if (selectedCategoryF == 'Innerwears') {
       curCategorySymbol = '[In]';
     }
-    List<CsvIceFile> fromItemCsvData =
-        csvData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol)).toList();
+    List<CsvIceFile> fromItemCsvData = csvData
+        .where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol))
+        .toList();
     if (curActiveLang == 'JP') {
       fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
     } else {
@@ -518,6 +518,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    swapperFromItemsSearchTextController.clear();
                                     selectedFromCsvFile = null;
                                     selectedToCsvFile = null;
                                     availableItemsCsvData.clear();

@@ -481,6 +481,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    swapperFromItemsSearchTextController.clear();
                                     selectedFromAccCsvFile = null;
                                     selectedToAccCsvFile = null;
                                     availableAccCsvData.clear();

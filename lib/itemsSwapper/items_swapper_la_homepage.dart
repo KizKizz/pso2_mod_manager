@@ -652,6 +652,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    swapperFromItemsSearchTextController.clear();
                                     selectedMotionType = '';
                                     selectedFromEmotesCsvFile = null;
                                     selectedToEmotesCsvFile = null;
