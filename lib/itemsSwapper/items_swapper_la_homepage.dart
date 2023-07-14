@@ -83,10 +83,15 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                   element.rbHumanHashIceName.isNotEmpty ||
                   element.rbVfxHashIceName.isNotEmpty))
           .toList();
+      if (curActiveLang == 'JP') {
+        fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+      } else {
+        fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+      }
     }
     //List<List<String>> csvInfos = [];
-    bool isPso2HashFound = false;
-    bool isPso2VfxHashFound = false;
+    // bool isPso2HashFound = false;
+    // bool isPso2VfxHashFound = false;
     // for (var csvItemData in fromItemCsvData) {
     //   final availableModFileData = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
     //   // csvInfos.add(availableModFileData);
