@@ -166,9 +166,9 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                    const Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: Text(''),
                                     ),
                                     Expanded(
                                       child: Card(
