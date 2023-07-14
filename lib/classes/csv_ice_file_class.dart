@@ -128,6 +128,10 @@ class CsvAccessoryIceFile {
   List<String> getDetailedList() {
     return ['Category: $category', 'JP Name: $jpName', 'EN Name: $enName', 'ID: $id', 'Icon Ice: $iconIceName', 'Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
   }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return ['Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
+  }
 }
 
 class CsvEmoteIceFile {
@@ -175,6 +179,19 @@ class CsvEmoteIceFile {
       'Category: $category',
       'JP Name: $jpName',
       'EN Name: $enName',
+      'PSO2 Hash Ice: $pso2HashIceName',
+      'Reboot Human Hash Ice: $rbHumanHashIceName',
+      'Reboot Cast Male Hash Ice: $rbCastMaleHashIceName',
+      'Reboot Cast Female Hash Ice: $rbCastFemaleHashIceName',
+      'Reboot Fig Hash Ice: $rbFigHashIceName',
+      'PSO2 VFX Hash Ice: $pso2VfxHashIceName',
+      'Reboot VFX Hash Ice: $rbVfxHashIceName',
+      'Gender: $gender'
+    ];
+  }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return [
       'PSO2 Hash Ice: $pso2HashIceName',
       'Reboot Human Hash Ice: $rbHumanHashIceName',
       'Reboot Cast Male Hash Ice: $rbCastMaleHashIceName',

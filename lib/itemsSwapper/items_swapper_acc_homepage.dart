@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,29 +9,29 @@ import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart' as mss;
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_swappage.dart' as msas;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 TextEditingController swapperFromItemsSearchTextController = TextEditingController();
-List<CsvIceFile> toItemSearchResults = [];
-List<CsvIceFile> fromItemSearchResults = [];
-CsvIceFile? selectedFromCsvFile;
-CsvIceFile? selectedToCsvFile;
-List<String> fromItemIds = [];
-List<String> toItemIds = [];
-List<String> fromItemAvailableIces = [];
-List<String> toItemAvailableIces = [];
+List<CsvAccessoryIceFile> fromItemSearchResults = [];
+List<CsvAccessoryIceFile> toAccSearchResults = [];
+CsvAccessoryIceFile? selectedFromAccCsvFile;
+CsvAccessoryIceFile? selectedToAccCsvFile;
+String fromAccItemId = '';
+String toAccItemId = '';
+List<String> fromAccItemAvailableIces = [];
+List<String> toAccItemAvailableIces = [];
 
-class ItemsSwapperHomePage extends StatefulWidget {
-  const ItemsSwapperHomePage({super.key});
+class ItemsSwapperAccHomePage extends StatefulWidget {
+  const ItemsSwapperAccHomePage({super.key});
 
   @override
-  State<ItemsSwapperHomePage> createState() => _ItemsSwapperHomePageState();
+  State<ItemsSwapperAccHomePage> createState() => _ItemsSwapperAccHomePageState();
 }
 
-class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
+class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
   @override
   void initState() {
     //clear
@@ -56,50 +55,15 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
     //create
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-    //fetch
-    String curCategorySymbol = '';
-    if (selectedCategoryF == 'Basewears') {
-      curCategorySymbol = '[Ba]';
-    } else if (selectedCategoryF == 'Setwears') {
-      curCategorySymbol = '[Se]';
-    } else if (selectedCategoryF == 'Outerwears') {
-      curCategorySymbol = '[Ou]';
-    } else if (selectedCategoryF == 'Innerwears') {
-      curCategorySymbol = '[In]';
-    }
-    List<CsvIceFile> fromItemCsvData =
-        csvData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol)).toList();
+    //fetch icons
+    List<CsvAccessoryIceFile> fromItemCsvData =
+        csvAccData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty)).toList();
     if (curActiveLang == 'JP') {
       fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
     } else {
       fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
     }
-    List<List<String>> csvInfos = [];
-    bool includeHqLiIceOnly = false;
-    bool includeNqLiIceOnly = false;
-    for (var csvItemData in fromItemCsvData) {
-      final availableModFileData = csvItemData.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
-      csvInfos.add(availableModFileData);
-      //filter link inner items
-      for (var line in availableModFileData) {
-        if (!includeHqLiIceOnly && line.split(': ').first.contains('High Quality Linked Inner Ice')) {
-          includeHqLiIceOnly = true;
-        }
-        if (!includeNqLiIceOnly && line.split(': ').first.contains('Normal Quality Linked Inner Ice')) {
-          includeNqLiIceOnly = true;
-        }
-        if (includeHqLiIceOnly && includeNqLiIceOnly) {
-          break;
-        }
-      }
-    }
-
-    // if (includeHqLiIceOnly) {
-    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
-    // }
-    // if (includeNqLiIceOnly) {
-    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
-    // }
+    //availableAccCsvData = availableAccCsvData.where((element) => element.id.toString().length == itemIdLength).toList();
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -138,7 +102,6 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                 child: SizedBox(
                                   height: 92,
                                   child: ListTile(
-                                    minVerticalPadding: 15,
                                     title: const Text('Choose an item below:'),
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 10),
@@ -204,7 +167,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                      padding: const EdgeInsets.all(5),
                                       child: Text(curLangText!.uiChooseAVariantFoundBellow),
                                     ),
                                     Expanded(
@@ -232,7 +195,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                     shape:
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
-                                                    groupValue: selectedFromCsvFile,
+                                                    groupValue: selectedFromAccCsvFile,
                                                     title: curActiveLang == 'JP'
                                                         ? swapperFromItemsSearchTextController.text.isEmpty
                                                             ? Text(fromItemCsvData[i].jpName)
@@ -241,46 +204,46 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                             ? Text(fromItemCsvData[i].enName)
                                                             : Text(fromItemSearchResults[i].enName),
                                                     subtitle: swapperFromItemsSearchTextController.text.isEmpty
-                                                        ? selectedFromCsvFile == fromItemCsvData[i]
+                                                        ? selectedFromAccCsvFile == fromItemCsvData[i]
                                                             ? Column(
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
                                                                   for (int line = 0;
-                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line < selectedFromAccCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
                                                                       line++)
-                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                    Text(selectedFromAccCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
                                                                 ],
                                                               )
                                                             : null
-                                                        : selectedFromCsvFile == fromItemSearchResults[i]
+                                                        : selectedFromAccCsvFile == fromItemSearchResults[i]
                                                             ? Column(
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
                                                                   for (int line = 0;
-                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line < selectedFromAccCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
                                                                       line++)
-                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                    Text(selectedFromAccCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
                                                                 ],
                                                               )
                                                             : null,
-                                                    onChanged: (CsvIceFile? currentItem) {
-                                                      selectedFromCsvFile = currentItem!;
-                                                      fromItemAvailableIces = selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
-                                                      fromItemName = curActiveLang == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
-                                                      fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
+                                                    onChanged: (CsvAccessoryIceFile? currentItem) {
+                                                      //print("Current ${moddedItemsList[i].groupName}");
+                                                      selectedFromAccCsvFile = currentItem!;
+                                                      fromAccItemAvailableIces = selectedFromAccCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
+                                                      fromItemName = curActiveLang == 'JP' ? selectedFromAccCsvFile!.jpName : selectedFromAccCsvFile!.enName;
+                                                      fromAccItemId = selectedFromAccCsvFile!.id.toString();
                                                       //set infos
-                                                      if (selectedToCsvFile != null) {
-                                                        toItemAvailableIces.clear();
-                                                        List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
+                                                      if (selectedToAccCsvFile != null) {
+                                                        toAccItemAvailableIces.clear();
+                                                        List<String> selectedToItemIceList = selectedToAccCsvFile!.getDetailedList();
                                                         for (var line in selectedToItemIceList) {
-                                                          if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                            toItemAvailableIces.add(line);
+                                                          if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                            toAccItemAvailableIces.add(line);
                                                           }
                                                         }
                                                       }
-
                                                       setState(
                                                         () {},
                                                       );
@@ -355,7 +318,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                   borderRadius: BorderRadius.circular(10),
                                                 )),
                                             onChanged: (value) async {
-                                              toItemSearchResults = availableItemsCsvData
+                                              toAccSearchResults = availableAccCsvData
                                                   .where((element) => curActiveLang == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
                                                       : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
@@ -451,40 +414,40 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                 }),
                                               ),
                                               child: ListView.builder(
-                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                                   shrinkWrap: true,
                                                   //physics: const BouncingScrollPhysics(),
-                                                  itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
+                                                  itemCount: swapperSearchTextController.text.isEmpty ? availableAccCsvData.length : toAccSearchResults.length,
                                                   itemBuilder: (context, i) {
                                                     return Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 2),
                                                       child: RadioListTile(
                                                         shape: RoundedRectangleBorder(
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                        value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
-                                                        groupValue: selectedToCsvFile,
+                                                        value: swapperSearchTextController.text.isEmpty ? availableAccCsvData[i] : toAccSearchResults[i],
+                                                        groupValue: selectedToAccCsvFile,
                                                         title: curActiveLang == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName)
-                                                                : Text(toItemSearchResults[i].jpName)
+                                                                ? Text(availableAccCsvData[i].jpName)
+                                                                : Text(toAccSearchResults[i].jpName)
                                                             : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName)
-                                                                : Text(toItemSearchResults[i].enName),
-                                                        onChanged: (CsvIceFile? currentItem) {
+                                                                ? Text(availableAccCsvData[i].enName)
+                                                                : Text(toAccSearchResults[i].enName),
+                                                        onChanged: (CsvAccessoryIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
-                                                          selectedToCsvFile = currentItem!;
-                                                          toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
-                                                          toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
-                                                          if (fromItemAvailableIces.isNotEmpty) {
-                                                            toItemAvailableIces.clear();
-                                                            List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
+                                                          selectedToAccCsvFile = currentItem!;
+                                                          toItemName = curActiveLang == 'JP' ? selectedToAccCsvFile!.jpName : selectedToAccCsvFile!.enName;
+                                                          toAccItemId = selectedToAccCsvFile!.id.toString();
+                                                          if (fromAccItemAvailableIces.isNotEmpty) {
+                                                            toAccItemAvailableIces.clear();
+                                                            List<String> selectedToItemIceList = selectedToAccCsvFile!.getDetailedList();
                                                             for (var line in selectedToItemIceList) {
-                                                              if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                                toItemAvailableIces.add(line);
+                                                              if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                                toAccItemAvailableIces.add(line);
                                                               }
 
                                                               if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                                toItemAvailableIces.add(line);
+                                                                toAccItemAvailableIces.add(line);
                                                               }
                                                             }
                                                           }
@@ -518,24 +481,24 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
-                                    selectedFromCsvFile = null;
-                                    selectedToCsvFile = null;
-                                    availableItemsCsvData.clear();
-                                    fromItemIds.clear();
-                                    toItemIds.clear();
-                                    fromItemAvailableIces.clear();
-                                    toItemAvailableIces.clear();
-                                    csvData.clear();
-                                    availableItemsCsvData.clear();
+                                    selectedFromAccCsvFile = null;
+                                    selectedToAccCsvFile = null;
+                                    availableAccCsvData.clear();
+                                    fromAccItemId = '';
+                                    toAccItemId = '';
+                                    fromAccItemAvailableIces.clear();
+                                    toAccItemAvailableIces.clear();
+                                    csvAccData.clear();
+                                    availableAccCsvData.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
                               ElevatedButton(
-                                  onPressed: selectedFromCsvFile == null || selectedToCsvFile == null
+                                  onPressed: selectedFromAccCsvFile == null || selectedToAccCsvFile == null
                                       ? null
                                       : () {
-                                          if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                            swapperConfirmDialog(context, fromItemSubmodGet(fromItemAvailableIces), fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                          if (selectedFromAccCsvFile != null && selectedToAccCsvFile != null) {
+                                            swapperConfirmDialog(context, fromItemSubmodGet(fromAccItemAvailableIces), fromAccItemId, fromAccItemAvailableIces, toAccItemId, toAccItemAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -553,7 +516,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromItemIds, List<String> fromItemAvailableIces, List<String> toItemIds, List<String> toItemAvailableIces) async {
+Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItemId, List<String> fromAccItemAvailableIces, String toAccItemId, List<String> toAccItemAvailableIces) async {
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -589,11 +552,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('${curLangText!.uiItemID}: ${fromItemIds[0]}'),
-                                  Text('${curLangText!.uiAdjustedID}: ${fromItemIds[1]}'),
-                                  for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])
-                                ],
+                                children: [Text('${curLangText!.uiItemID}: $fromAccItemId'), for (int i = 0; i < fromAccItemAvailableIces.length; i++) Text(fromAccItemAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -616,11 +575,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('${curLangText!.uiItemID}: ${toItemIds[0]}'),
-                                  Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'),
-                                  for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])
-                                ],
+                                children: [Text('${curLangText!.uiItemID}: $toAccItemId'), for (int i = 0; i < toAccItemAvailableIces.length; i++) Text(toAccItemAvailableIces[i])],
                               ),
                             ),
                           ),
@@ -638,7 +593,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        mss.swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
+                        msas.swapperAccSwappingDialog(context, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

@@ -559,7 +559,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperAccSwappingDialog(context, fromSubmod);
+                        swapperAccSwappingDialog(context, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

@@ -49,19 +49,28 @@ List<Item> itemsFromAppliedListFetch(List<CategoryType> appliedList) {
 void setModSetNameToItems(String modSetName, List<Item> items) {
   for (var item in items) {
     if (item.applyStatus) {
-      item.setNames.add(modSetName);
+      item.isSet = true;
+      if (!item.setNames.contains(modSetName)) {
+        item.setNames.add(modSetName);
+      }
       for (var mod in item.mods) {
         if (mod.applyStatus) {
           mod.isSet = true;
-          mod.setNames.add(modSetName);
+          if (!mod.setNames.contains(modSetName)) {
+            mod.setNames.add(modSetName);
+          }
           for (var submod in mod.submods) {
             if (submod.applyStatus) {
               submod.isSet = true;
-              submod.setNames.add(modSetName);
+              if (!submod.setNames.contains(modSetName)) {
+                submod.setNames.add(modSetName);
+              }
               for (var modFile in submod.modFiles) {
                 if (modFile.applyStatus) {
                   modFile.isSet = true;
-                  modFile.setNames.add(modSetName);
+                  if (!modFile.setNames.contains(modSetName)) {
+                    modFile.setNames.add(modSetName);
+                  }
                 }
               }
             }
@@ -75,20 +84,36 @@ void setModSetNameToItems(String modSetName, List<Item> items) {
 void removeModSetNameFromItems(String modSetName, List<Item> items) {
   for (var item in items) {
     if (item.isSet) {
-      item.isSet = false;
-      item.setNames.remove(modSetName);
+      item.setNames.removeWhere(
+        (element) => element == modSetName,
+      );
+      if (item.setNames.isEmpty) {
+        item.isSet = false;
+      }
       for (var mod in item.mods) {
         if (mod.isSet) {
-          mod.isSet = false;
-          mod.setNames.remove(modSetName);
+          mod.setNames.removeWhere(
+            (element) => element == modSetName,
+          );
+          if (mod.setNames.isEmpty) {
+            mod.isSet = false;
+          }
           for (var submod in mod.submods) {
             if (submod.isSet) {
-              submod.isSet = false;
-              submod.setNames.remove(modSetName);
+              submod.setNames.removeWhere(
+                (element) => element == modSetName,
+              );
+              if (submod.setNames.isEmpty) {
+                submod.isSet = false;
+              }
               for (var modFile in submod.modFiles) {
                 if (modFile.isSet) {
-                  modFile.isSet = false;
-                  modFile.setNames.remove(modSetName);
+                  modFile.setNames.removeWhere(
+                    (element) => element == modSetName,
+                  );
+                  if (modFile.setNames.isEmpty) {
+                    modFile.isSet = false;
+                  }
                 }
               }
             }

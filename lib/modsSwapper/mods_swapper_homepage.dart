@@ -8,7 +8,6 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/state_provider.dart';

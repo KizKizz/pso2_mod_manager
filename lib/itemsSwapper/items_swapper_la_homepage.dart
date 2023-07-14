@@ -7,18 +7,21 @@ import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as msdl;
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart' as msls;
 import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
+TextEditingController swapperFromItemsSearchTextController = TextEditingController();
+List<CsvEmoteIceFile> fromItemSearchResults = [];
 List<CsvEmoteIceFile> toIEmotesSearchResults = [];
 CsvEmoteIceFile? selectedFromEmotesCsvFile;
 CsvEmoteIceFile? selectedToEmotesCsvFile;
@@ -33,18 +36,16 @@ List<List<String>> queueFromEmotesAvailableIces = [];
 List<List<String>> queueToEmotesAvailableIces = [];
 List<String> queueSwappedLaPaths = [];
 List<String> queueToItemNames = [];
+//String fromItemSelectedName = '';
 
-class ModsSwapperEmotesHomePage extends StatefulWidget {
-  const ModsSwapperEmotesHomePage({super.key, required this.fromItem, required this.fromSubmod});
-
-  final Item fromItem;
-  final SubMod fromSubmod;
+class ItemsSwapperEmotesHomePage extends StatefulWidget {
+  const ItemsSwapperEmotesHomePage({super.key});
 
   @override
-  State<ModsSwapperEmotesHomePage> createState() => _ModsSwapperEmotesHomePageState();
+  State<ItemsSwapperEmotesHomePage> createState() => _ItemsSwapperEmotesHomePageState();
 }
 
-class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
+class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage> {
   @override
   void initState() {
     //clear
@@ -69,53 +70,53 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
     //fetch
-    final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
     if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
       fromItemCsvData = csvEmotesData
           .where((element) =>
-              iceNamesFromSubmod.contains(element.pso2HashIceName) ||
-              iceNamesFromSubmod.contains(element.pso2VfxHashIceName) ||
-              iceNamesFromSubmod.contains(element.rbCastFemaleHashIceName) ||
-              iceNamesFromSubmod.contains(element.rbCastMaleHashIceName) ||
-              iceNamesFromSubmod.contains(element.rbFigHashIceName) ||
-              iceNamesFromSubmod.contains(element.rbHumanHashIceName) ||
-              iceNamesFromSubmod.contains(element.rbVfxHashIceName))
+              element.jpName.isNotEmpty &&
+              element.enName.isNotEmpty &&
+              (element.pso2HashIceName.isNotEmpty ||
+                  element.pso2VfxHashIceName.isNotEmpty ||
+                  element.rbCastFemaleHashIceName.isNotEmpty ||
+                  element.rbCastMaleHashIceName.isNotEmpty ||
+                  element.rbFigHashIceName.isNotEmpty ||
+                  element.rbHumanHashIceName.isNotEmpty ||
+                  element.rbVfxHashIceName.isNotEmpty))
           .toList();
     }
-    List<List<String>> csvInfos = [];
+    //List<List<String>> csvInfos = [];
     bool isPso2HashFound = false;
     bool isPso2VfxHashFound = false;
-    for (var csvItemData in fromItemCsvData) {
-      final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
-      final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last) || element.split(': ').first == 'Gender').toList();
-      csvInfos.add(availableModFileData);
-      if (selectedMotionType.isEmpty) {
-        selectedMotionType = csvItemData.subCategory;
-      }
-      //filter pso2 only emotes
-      for (var line in availableModFileData) {
-        if (!isPso2HashFound && line.split(': ').first.contains('PSO2 Hash Ice')) {
-          isPso2HashFound = true;
-        }
-        if (!isPso2VfxHashFound && line.split(': ').first.contains('PSO2 VFX Hash Ice')) {
-          isPso2VfxHashFound = true;
-        }
-        if (isPso2HashFound && isPso2VfxHashFound) {
-          break;
-        }
-      }
-    }
+    // for (var csvItemData in fromItemCsvData) {
+    //   final availableModFileData = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
+    //   // csvInfos.add(availableModFileData);
+    //   // if (selectedMotionType.isEmpty) {
+    //   //   selectedMotionType = csvItemData.subCategory;
+    //   // }
+    //   //filter pso2 only emotes
+    //   // for (var line in availableModFileData) {
+    //   //   if (!isPso2HashFound && line.split(': ').first.contains('PSO2 Hash Ice')) {
+    //   //     isPso2HashFound = true;
+    //   //   }
+    //   //   if (!isPso2VfxHashFound && line.split(': ').first.contains('PSO2 VFX Hash Ice')) {
+    //   //     isPso2VfxHashFound = true;
+    //   //   }
+    //   //   if (isPso2HashFound && isPso2VfxHashFound) {
+    //   //     break;
+    //   //   }
+    //   // }
+    // }
 
     if (selectedMotionType.isNotEmpty) {
       availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
     }
 
-    if (isPso2HashFound) {
-      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
-    }
-    if (isPso2VfxHashFound) {
-      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
-    }
+    // if (isPso2HashFound) {
+    //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+    // }
+    // if (isPso2VfxHashFound) {
+    //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+    // }
 
     if (isEmotesToStandbyMotions) {
       availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == 'Standby Motion').toList();
@@ -129,8 +130,8 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
               RotatedBox(
                   quarterTurns: -1,
                   child: Text(
-                    'MODS SWAP',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 12),
+                    'ITEMS SWAP',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 14),
                   )),
               VerticalDivider(
                 width: 10,
@@ -156,46 +157,60 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                 color: Colors.transparent,
-                                child: ListTile(
-                                  title: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                        child: Container(
-                                            width: 80,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(3),
-                                              border: Border.all(color: Theme.of(context).hintColor, width: 1),
-                                            ),
-                                            child: widget.fromItem.icons.first.contains('assets/img/placeholdersquare.png')
-                                                ? Image.asset(
-                                                    'assets/img/placeholdersquare.png',
-                                                    filterQuality: FilterQuality.none,
-                                                    fit: BoxFit.fitWidth,
-                                                  )
-                                                : Image.file(
-                                                    File(widget.fromItem.icons.first),
-                                                    filterQuality: FilterQuality.none,
-                                                    fit: BoxFit.fitWidth,
-                                                  )),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              widget.fromItem.category,
-                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(widget.fromItem.itemName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                            Text('${widget.fromSubmod.modName} > ${widget.fromSubmod.submodName}'),
-                                          ],
+                                child: SizedBox(
+                                  height: 92,
+                                  child: ListTile(
+                                    title: const Text('Choose an item below:'),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: SizedBox(
+                                        height: 30,
+                                        width: double.infinity,
+                                        child: TextField(
+                                          controller: swapperFromItemsSearchTextController,
+                                          maxLines: 1,
+                                          textAlignVertical: TextAlignVertical.center,
+                                          decoration: InputDecoration(
+                                              hintText: curLangText!.uiSearchSwapItems,
+                                              hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                              isCollapsed: true,
+                                              isDense: true,
+                                              contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                                              suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
+                                              suffixIcon: InkWell(
+                                                onTap: swapperFromItemsSearchTextController.text.isEmpty
+                                                    ? null
+                                                    : () {
+                                                        swapperFromItemsSearchTextController.clear();
+                                                        setState(() {});
+                                                      },
+                                                child: Icon(
+                                                  swapperFromItemsSearchTextController.text.isEmpty ? Icons.search : Icons.close,
+                                                  color: Theme.of(context).hintColor,
+                                                ),
+                                              ),
+                                              constraints: BoxConstraints.tight(const Size.fromHeight(26)),
+                                              // Set border for enabled state (default)
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              // Set border for focused state
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                                                borderRadius: BorderRadius.circular(10),
+                                              )),
+                                          onChanged: (value) async {
+                                            fromItemSearchResults = fromItemCsvData
+                                                .where((element) => curActiveLang == 'JP'
+                                                    ? element.jpName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase())
+                                                    : element.enName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase()))
+                                                .toList();
+                                            setState(() {});
+                                          },
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -230,27 +245,57 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
                                               //physics: const PageScrollPhysics(),
-                                              itemCount: fromItemCsvData.length,
+                                              itemCount: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData.length : fromItemSearchResults.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 2),
                                                   child: RadioListTile(
                                                     shape:
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                    value: fromItemCsvData[i],
+                                                    value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromEmotesCsvFile,
-                                                    title: Text(fromItemCsvData[i].enName),
-                                                    subtitle: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
-                                                    ),
+                                                    title: curActiveLang == 'JP'
+                                                        ? swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].jpName)
+                                                            : Text(fromItemSearchResults[i].jpName)
+                                                        : swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].enName)
+                                                            : Text(fromItemSearchResults[i].enName),
+                                                    subtitle: swapperFromItemsSearchTextController.text.isEmpty
+                                                        ? selectedFromEmotesCsvFile == fromItemCsvData[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(
+                                                                        selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null
+                                                        : selectedFromEmotesCsvFile == fromItemSearchResults[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(
+                                                                        selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null,
                                                     onChanged: queueFromEmoteCsvFiles.contains(fromItemCsvData[i])
                                                         ? null
                                                         : (CsvEmoteIceFile? currentItem) {
                                                             //print("Current ${moddedItemsList[i].groupName}");
                                                             selectedFromEmotesCsvFile = currentItem!;
-                                                            fromEmotesAvailableIces = csvInfos[i];
+                                                            fromItemName = curActiveLang == 'JP' ? selectedFromEmotesCsvFile!.jpName : selectedFromEmotesCsvFile!.enName;
+                                                            fromEmotesAvailableIces =
+                                                                selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
                                                             //fromItemIds = [selectedFromEmotesCsvFile!.id.toString(), selectedFromEmotesCsvFile!.adjustedId.toString()];
                                                             //set infos
                                                             if (selectedToEmotesCsvFile != null) {
@@ -477,21 +522,23 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                         csvEmotesData.clear();
                                                         if (!isEmotesToStandbyMotions) {
                                                           isEmotesToStandbyMotions = true;
-                                                          await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
-                                                          availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                          await msdl.sheetListFetchFromFiles(msdl.getCsvFiles(defaultCateforyDirs[14]));
+                                                          availableEmotesCsvData = await msdl.getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
                                                         } else {
                                                           isEmotesToStandbyMotions = false;
-                                                          await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
-                                                          availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
+                                                          await msdl.sheetListFetchFromFiles(msdl.getCsvFiles(selectedCategoryF!));
+                                                          //shell Item
+                                                          Item tempItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
+                                                          availableEmotesCsvData = await msdl.getEmotesSwapToCsvList(csvEmotesData, tempItem);
                                                           if (selectedMotionType.isNotEmpty) {
                                                             availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
                                                           }
-                                                          if (isPso2HashFound) {
-                                                            availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
-                                                          }
-                                                          if (isPso2VfxHashFound) {
-                                                            availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
-                                                          }
+                                                          // if (isPso2HashFound) {
+                                                          //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
+                                                          // }
+                                                          // if (isPso2VfxHashFound) {
+                                                          //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
+                                                          // }
                                                         }
                                                         if (curActiveLang == 'JP') {
                                                           availableEmotesCsvData.sort(
@@ -644,10 +691,11 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                       : () async {
                                           if (queueFromEmoteCsvFiles.isEmpty) {
                                             if (selectedFromEmotesCsvFile != null && selectedToEmotesCsvFile != null) {
-                                              swapperLaConfirmDialog(context, widget.fromSubmod, fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
+                                              swapperLaConfirmDialog(context, fromItemSubmodGet(fromEmotesAvailableIces), fromEmotesAvailableIces, toEmotesAvailableIces, toItemName);
                                             }
                                           } else {
-                                            await swapperLaQueueConfirmDialog(context, widget.fromSubmod, queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
+                                            await swapperLaQueueConfirmDialog(
+                                                context, fromItemSubmodGet(fromEmotesAvailableIces), queueFromEmotesAvailableIces, queueToEmotesAvailableIces, queueToItemNames);
                                             setState(() {});
                                           }
                                         },
@@ -679,7 +727,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: Text(fromSubmod.itemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
+                    Expanded(flex: 1, child: Center(child: Text(fromItemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
                     Expanded(flex: 1, child: Center(child: Text(toItemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
                   ],
                 ),
@@ -746,7 +794,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperLaSwappingDialog(context, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                        msls.swapperLaSwappingDialog(context, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
@@ -926,7 +974,7 @@ Future<void> swapperLaQueueConfirmDialog(
                           for (int i = 0; i < queueFromEmotesAvailableIceList.length; i++) {
                             fromEmotesAvailableIces = queueFromEmotesAvailableIceList[i].toList();
                             toEmotesAvailableIces = queueToEmotesAvailableIceList[i].toList();
-                            await swapperLaQueueSwappingDialog(context, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                            await msls.swapperLaQueueSwappingDialog(context, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                             setState(
                               () {},
                             );

@@ -1173,6 +1173,29 @@ class _MainPageState extends State<MainPage> {
 
                           //Mod sets
                           ModManTooltip(
+                            message: 'Items Swapper',
+                            child: SizedBox(
+                              //width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  itemsSwapperCategorySelect(context);
+                                }),
+                                child: const Row(
+                                  children: [
+                                      Icon(
+                                        Icons.swap_horizontal_circle_outlined,
+                                        size: 18,
+                                      ),
+                                    SizedBox(width: 2.5),
+                                    Text('Items Swap', style: TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Mod sets
+                          ModManTooltip(
                             message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                             child: SizedBox(
                               //width: 99,
@@ -1203,29 +1226,6 @@ class _MainPageState extends State<MainPage> {
                                     const SizedBox(width: 2.5),
                                     if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
                                     if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //Mod sets
-                          ModManTooltip(
-                            message: 'Items Swapper',
-                            child: SizedBox(
-                              //width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  itemsSwapperCategorySelect(context);
-                                }),
-                                child: const Row(
-                                  children: [
-                                      Icon(
-                                        Icons.swap_horizontal_circle_outlined,
-                                        size: 18,
-                                      ),
-                                    SizedBox(width: 2.5),
-                                    Text('Items Swap', style: TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),

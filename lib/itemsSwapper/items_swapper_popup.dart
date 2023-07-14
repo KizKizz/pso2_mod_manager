@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:card_banner/card_banner.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -29,7 +28,7 @@ List<String> swapCategoriesF = [
   'Setwears'
 ];
 
-String selectedCategoryF = swapCategoriesF[1];
+String? selectedCategoryF;
 
 void itemsSwapperDialog(context) {
   showDialog(
@@ -64,9 +63,10 @@ Future<void> itemsSwapperCategorySelect(context) async {
                 title: const Text('Select a category', style: TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: SizedBox(
-                  width: 400,
+                  width: 200,
                   child: DropdownButtonHideUnderline(
                       child: DropdownButton2(
+                        hint: const Text('Item categories'),
                     buttonStyleData: ButtonStyleData(
                       height: 30,
                       decoration: BoxDecoration(
@@ -78,6 +78,7 @@ Future<void> itemsSwapperCategorySelect(context) async {
                       ),
                     ),
                     dropdownStyleData: DropdownStyleData(
+                      maxHeight: windowsHeight * 0.5,
                       elevation: 3,
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       decoration: BoxDecoration(
@@ -95,7 +96,7 @@ Future<void> itemsSwapperCategorySelect(context) async {
                         .map((item) => DropdownMenuItem<String>(
                             value: item,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
                                   padding: const EdgeInsets.only(bottom: 3),
@@ -127,10 +128,12 @@ Future<void> itemsSwapperCategorySelect(context) async {
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        itemsSwapperDialog(context);
-                      },
+                      onPressed: selectedCategoryF == null
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                              itemsSwapperDialog(context);
+                            },
                       child: Text(curLangText!.uiNext))
                 ]);
           }));
