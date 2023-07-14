@@ -601,7 +601,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                             : swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].enName)
                                                                 : Text(toIEmotesSearchResults[i].enName),
-                                                        subtitle: isEmotesToStandbyMotions || selectedMotionType.isNotEmpty
+                                                        subtitle: isEmotesToStandbyMotions || selectedMotionType.isNotEmpty || availableEmotesCsvData[i].gender.isEmpty || (toIEmotesSearchResults.isNotEmpty && toIEmotesSearchResults[i].gender.isEmpty)
                                                             ? null
                                                             : swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].gender)
