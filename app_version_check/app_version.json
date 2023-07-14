@@ -3,7 +3,7 @@
     "version": "2.2.0",
     "description": [
         "Added items swapping function (swapping between unmodded items, emotes, motions)",
-        "Fixed some bugs with Mod Sets",
+        "Fixed some bugs in Mod Sets",
         "Some other minor bug fixes"
     ],
     "windows_file": "",
