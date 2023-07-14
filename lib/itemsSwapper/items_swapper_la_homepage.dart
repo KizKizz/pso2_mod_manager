@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
@@ -36,7 +37,8 @@ List<List<String>> queueFromEmotesAvailableIces = [];
 List<List<String>> queueToEmotesAvailableIces = [];
 List<String> queueSwappedLaPaths = [];
 List<String> queueToItemNames = [];
-//String fromItemSelectedName = '';
+List<String> motionTypes = ['All', 'Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+String dropDownSelectedMotionType = motionTypes.first;
 
 class ItemsSwapperEmotesHomePage extends StatefulWidget {
   const ItemsSwapperEmotesHomePage({super.key});
@@ -71,22 +73,56 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
 
     //fetch
     if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
-      fromItemCsvData = csvEmotesData
-          .where((element) =>
-              element.jpName.isNotEmpty &&
-              element.enName.isNotEmpty &&
-              (element.pso2HashIceName.isNotEmpty ||
-                  element.pso2VfxHashIceName.isNotEmpty ||
-                  element.rbCastFemaleHashIceName.isNotEmpty ||
-                  element.rbCastMaleHashIceName.isNotEmpty ||
-                  element.rbFigHashIceName.isNotEmpty ||
-                  element.rbHumanHashIceName.isNotEmpty ||
-                  element.rbVfxHashIceName.isNotEmpty))
-          .toList();
+      // fromItemCsvData = csvEmotesData
+      //     .where((element) =>
+      //         element.jpName.isNotEmpty &&
+      //         element.enName.isNotEmpty &&
+      //         (element.pso2HashIceName.isNotEmpty ||
+      //             element.pso2VfxHashIceName.isNotEmpty ||
+      //             element.rbCastFemaleHashIceName.isNotEmpty ||
+      //             element.rbCastMaleHashIceName.isNotEmpty ||
+      //             element.rbFigHashIceName.isNotEmpty ||
+      //             element.rbHumanHashIceName.isNotEmpty ||
+      //             element.rbVfxHashIceName.isNotEmpty))
+      //     .toList();
+      if (dropDownSelectedMotionType == motionTypes.first || selectedMotionType.isEmpty) {
+        fromItemCsvData = csvEmotesData
+            .where((element) =>
+                element.jpName.isNotEmpty &&
+                element.enName.isNotEmpty &&
+                (element.pso2HashIceName.isNotEmpty ||
+                    element.pso2VfxHashIceName.isNotEmpty ||
+                    element.rbCastFemaleHashIceName.isNotEmpty ||
+                    element.rbCastMaleHashIceName.isNotEmpty ||
+                    element.rbFigHashIceName.isNotEmpty ||
+                    element.rbHumanHashIceName.isNotEmpty ||
+                    element.rbVfxHashIceName.isNotEmpty))
+            .toList();
+      } else {
+        fromItemCsvData = csvEmotesData
+            .where((element) =>
+                element.jpName.isNotEmpty &&
+                element.enName.isNotEmpty &&
+                element.subCategory == dropDownSelectedMotionType &&
+                (element.pso2HashIceName.isNotEmpty ||
+                    element.pso2VfxHashIceName.isNotEmpty ||
+                    element.rbCastFemaleHashIceName.isNotEmpty ||
+                    element.rbCastMaleHashIceName.isNotEmpty ||
+                    element.rbFigHashIceName.isNotEmpty ||
+                    element.rbHumanHashIceName.isNotEmpty ||
+                    element.rbVfxHashIceName.isNotEmpty))
+            .toList();
+      }
       if (curActiveLang == 'JP') {
         fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
       } else {
         fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+      }
+      for (var data in fromItemCsvData) {
+        if (selectedMotionType.isEmpty && data.subCategory.isNotEmpty) {
+          selectedMotionType = data.subCategory;
+          break;
+        }
       }
     }
     //List<List<String>> csvInfos = [];
@@ -112,9 +148,9 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
     //   // }
     // }
 
-    if (selectedMotionType.isNotEmpty) {
-      availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
-    }
+    // if (selectedMotionType.isNotEmpty && dropDownSelectedMotionType != motionTypes.first) {
+    //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == dropDownSelectedMotionType).toList();
+    // }
 
     // if (isPso2HashFound) {
     //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2HashIceName.isNotEmpty).toList();
@@ -165,7 +201,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                 child: SizedBox(
                                   height: 92,
                                   child: ListTile(
-                                    title: const Text('Choose an item below:'),
+                                    minVerticalPadding: 15,
+                                    title: Text(curLangText!.uiChooseAnItemBelow),
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 10),
                                       child: SizedBox(
@@ -230,8 +267,78 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                                      child: SizedBox(
+                                        width: 200,
+                                        child: DropdownButtonHideUnderline(
+                                            child: DropdownButton2(
+                                          buttonStyleData: ButtonStyleData(
+                                            height: 28.5,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 1,
+                                                color: Theme.of(context).hintColor,
+                                              ),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          dropdownStyleData: DropdownStyleData(
+                                            maxHeight: windowsHeight * 0.5,
+                                            elevation: 3,
+                                            padding: const EdgeInsets.symmetric(vertical: 2),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(3),
+                                              color: Theme.of(context).cardColor,
+                                            ),
+                                          ),
+                                          iconStyleData: const IconStyleData(iconSize: 15),
+                                          menuItemStyleData: const MenuItemStyleData(
+                                            height: 25,
+                                            padding: EdgeInsets.symmetric(horizontal: 5),
+                                          ),
+                                          isDense: true,
+                                          items: motionTypes
+                                              .map((item) => DropdownMenuItem<String>(
+                                                  value: item,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        padding: const EdgeInsets.only(bottom: 3),
+                                                        child: Text(
+                                                          item,
+                                                          style: const TextStyle(
+                                                              //fontSize: 14,
+                                                              //fontWeight: FontWeight.bold,
+                                                              //color: Colors.white,
+                                                              ),
+                                                          overflow: TextOverflow.ellipsis,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )))
+                                              .toList(),
+                                          value: dropDownSelectedMotionType,
+                                          onChanged: selectedMotionType.isEmpty
+                                              ? null
+                                              : (value) async {
+                                                  dropDownSelectedMotionType = value.toString();
+                                                  selectedFromEmotesCsvFile = null;
+                                                  fromItemCsvData.clear();
+                                                  if (dropDownSelectedMotionType == motionTypes.first) {
+                                                    availableEmotesCsvData = csvEmotesData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty).toList();
+                                                  } else {
+                                                    availableEmotesCsvData = csvEmotesData.where((element) => element.subCategory == dropDownSelectedMotionType).toList();
+                                                  }
+                                                  if (curActiveLang == 'JP') {
+                                                    availableEmotesCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+                                                  } else {
+                                                    availableEmotesCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+                                                  }
+                                                  setState(() {});
+                                                },
+                                        )),
+                                      ),
                                     ),
                                     Expanded(
                                       child: Card(
@@ -601,7 +708,10 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                             : swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].enName)
                                                                 : Text(toIEmotesSearchResults[i].enName),
-                                                        subtitle: isEmotesToStandbyMotions || selectedMotionType.isNotEmpty || availableEmotesCsvData[i].gender.isEmpty || (toIEmotesSearchResults.isNotEmpty && toIEmotesSearchResults[i].gender.isEmpty)
+                                                        subtitle: isEmotesToStandbyMotions ||
+                                                                selectedMotionType.isNotEmpty ||
+                                                                availableEmotesCsvData[i].gender.isEmpty ||
+                                                                (toIEmotesSearchResults.isNotEmpty && toIEmotesSearchResults[i].gender.isEmpty)
                                                             ? null
                                                             : swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].gender)
@@ -669,6 +779,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     queueFromEmoteCsvFiles.clear();
                                     queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
+                                    dropDownSelectedMotionType = motionTypes.first;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

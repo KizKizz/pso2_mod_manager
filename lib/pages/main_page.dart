@@ -1173,21 +1173,21 @@ class _MainPageState extends State<MainPage> {
 
                           //Mod sets
                           ModManTooltip(
-                            message: 'Items Swapper',
+                            message: curLangText!.uiSwapAnItemToAnotherItem,
                             child: SizedBox(
                               //width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
                                   itemsSwapperCategorySelect(context);
                                 }),
-                                child: const Row(
+                                child: Row(
                                   children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.swap_horizontal_circle_outlined,
                                         size: 18,
                                       ),
-                                    SizedBox(width: 2.5),
-                                    Text('Items Swap', style: TextStyle(fontWeight: FontWeight.w400))
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),

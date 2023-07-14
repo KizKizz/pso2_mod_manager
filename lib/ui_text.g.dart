@@ -132,6 +132,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiFetchAllMissingItemIcons'] as String
       ..uiMinimal = json['uiMinimal'] as String
       ..uiAll = json['uiAll'] as String
+      ..uiSwapItems = json['uiSwapItems'] as String
+      ..uiSwapAnItemToAnotherItem = json['uiSwapAnItemToAnotherItem'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -321,7 +323,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiFetchingItemInfo = json['uiFetchingItemInfo'] as String
       ..uiErrorWhenFetchingItemInfo =
           json['uiErrorWhenFetchingItemInfo'] as String
-      ..uiExperimental = json['uiExperimental'] as String;
+      ..uiExperimental = json['uiExperimental'] as String
+      ..uiChooseAnItemBelow = json['uiChooseAnItemBelow'] as String
+      ..uiItemCategories = json['uiItemCategories'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -424,6 +428,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiFetchAllMissingItemIcons': instance.uiFetchAllMissingItemIcons,
       'uiMinimal': instance.uiMinimal,
       'uiAll': instance.uiAll,
+      'uiSwapItems': instance.uiSwapItems,
+      'uiSwapAnItemToAnotherItem': instance.uiSwapAnItemToAnotherItem,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -587,4 +593,6 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiFetchingItemInfo': instance.uiFetchingItemInfo,
       'uiErrorWhenFetchingItemInfo': instance.uiErrorWhenFetchingItemInfo,
       'uiExperimental': instance.uiExperimental,
+      'uiChooseAnItemBelow': instance.uiChooseAnItemBelow,
+      'uiItemCategories': instance.uiItemCategories,
     };

@@ -221,10 +221,6 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                             );
                           }
                           return const ItemsSwapperAccHomePage();
-                          // return ModsSwapperAccHomePage(
-                          //   fromItem: widget.fromItem,
-                          //   fromSubmod: widget.fromSubmod,
-                          // );
                         } else if (csvEmotesData.isNotEmpty) {
                           availableEmotesCsvData = snapshot.data;
                           if (curActiveLang == 'JP') {
@@ -237,10 +233,6 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                             );
                           }
                           return const ItemsSwapperEmotesHomePage();
-                          // return ModsSwapperEmotesHomePage(
-                          //   fromItem: widget.fromItem,
-                          //   fromSubmod: widget.fromSubmod,
-                          // );
                         } else {
                           availableItemsCsvData = snapshot.data;
                           if (curActiveLang == 'JP') {

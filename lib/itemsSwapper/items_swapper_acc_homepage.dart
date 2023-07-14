@@ -102,7 +102,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                 child: SizedBox(
                                   height: 92,
                                   child: ListTile(
-                                    title: const Text('Choose an item below:'),
+                                    title: Text(curLangText!.uiChooseAnItemBelow),
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 10),
                                       child: SizedBox(

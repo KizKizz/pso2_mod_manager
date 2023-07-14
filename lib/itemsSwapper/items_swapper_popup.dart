@@ -10,6 +10,23 @@ import 'package:pso2_mod_manager/state_provider.dart';
 String fromItemName = '';
 String toItemName = '';
 
+// List<String> swapCategoriesF = [
+//   'Accessories',
+//   'Basewears',
+//   'Body Paints',
+//   'Cast Arm Parts',
+//   'Cast Body Parts',
+//   'Cast Leg Parts',
+//   'Costumes',
+//   'Emotes',
+//   'Eyes',
+//   'Face Paints',
+//   'Hairs',
+//   'Innerwears',
+//   'Motions',
+//   'Outerwears',
+//   'Setwears'
+// ];
 List<String> swapCategoriesF = [
   'Accessories',
   'Basewears',
@@ -17,7 +34,6 @@ List<String> swapCategoriesF = [
   'Cast Arm Parts',
   'Cast Body Parts',
   'Cast Leg Parts',
-  'Costumes',
   'Emotes',
   'Eyes',
   'Face Paints',
@@ -60,13 +76,13 @@ Future<void> itemsSwapperCategorySelect(context) async {
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: const Text('Select a category', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiSelectACategory, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: SizedBox(
                   width: 200,
                   child: DropdownButtonHideUnderline(
                       child: DropdownButton2(
-                        hint: const Text('Item categories'),
+                        hint: Text(curLangText!.uiItemCategories),
                     buttonStyleData: ButtonStyleData(
                       height: 30,
                       decoration: BoxDecoration(

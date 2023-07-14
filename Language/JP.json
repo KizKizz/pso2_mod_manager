@@ -96,6 +96,8 @@
   "uiFetchAllMissingItemIcons": "各MODに含まれる不足するアイコンをすべて取得する。",
   "uiMinimal": "ミニマム",
   "uiAll": "Aすべて",
+  "uiSwapItems": "Swap Items",
+  "uiSwapAnItemToAnotherItem": "Swap an item to another item",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -252,5 +254,7 @@
   "uiErrorWhenLoadingItemRefSheets": "アイテム参照シートデータを読み込むとエラーになる",
   "uiFetchingItemInfo": "アイテム情報を取得する",
   "uiErrorWhenFetchingItemInfo": "アイテム情報取得時のエラー",
-  "uiExperimental": "実験的"
+  "uiExperimental": "実験的",
+  "uiChooseAnItemBelow": "以下から商品をお選びください",
+  "uiItemCategories": "カテゴリー"
 }
