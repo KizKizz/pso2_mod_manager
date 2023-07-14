@@ -46,11 +46,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Widget> iconLoaderSwitches = <Widget>[
-    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
-    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
-    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
-  ];
+  
 
   @override
   void initState() {
@@ -66,6 +62,11 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> iconLoaderSwitches = <Widget>[
+    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
+    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
+    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
+  ];
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -442,18 +443,18 @@ class _MainPageState extends State<MainPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.auto_awesome_motion,
                                   size: 18,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Text('Startup Item Icons Fetching'),
+                                Text(curLangText!.uiStartupItemIconsFetching),
                               ],
                             ),
                             Padding(
