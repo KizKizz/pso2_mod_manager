@@ -96,6 +96,8 @@
   "uiFetchAllMissingItemIcons": "Fetch all missing icons that included in each mods",
   "uiMinimal": "Minimal",
   "uiAll": "All",
+  "uiSwapItems": "Swap Items",
+  "uiSwapAnItemToAnotherItem": "Swap an item to another item",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -252,5 +254,7 @@
   "uiErrorWhenLoadingItemRefSheets": "Error when loading item reference sheets data",
   "uiFetchingItemInfo": "Fetching item info",
   "uiErrorWhenFetchingItemInfo": "Error when fetching item info",
-  "uiExperimental": "Experimental"
+  "uiExperimental": "Experimental",
+  "uiChooseAnItemBelow": "Choose an item below",
+  "uiItemCategories": "Item categories"
 }

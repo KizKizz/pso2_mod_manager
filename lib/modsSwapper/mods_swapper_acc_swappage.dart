@@ -9,15 +9,13 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
+Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -331,7 +329,7 @@ Future<String> modsSwapperAccIceFilesGet(context, SubMod fromSubmod) async {
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
+Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod, List<String> fromAccItemAvailableIces, List<String> toAccItemAvailableIces, String toItemName) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -342,7 +340,7 @@ Future<void> swapperAccSwappingDialog(context, SubMod fromSubmod) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperAccIceFilesGet(context, fromSubmod) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperAccIceFilesGet(context, fromSubmod, fromAccItemAvailableIces, toAccItemAvailableIces, toItemName) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,

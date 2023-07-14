@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
@@ -45,11 +46,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Widget> iconLoaderSwitches = <Widget>[
-    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
-    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
-    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
-  ];
+  
 
   @override
   void initState() {
@@ -65,6 +62,11 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> iconLoaderSwitches = <Widget>[
+    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
+    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
+    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
+  ];
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -441,18 +443,18 @@ class _MainPageState extends State<MainPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.auto_awesome_motion,
                                   size: 18,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Text('Startup Item Icons Fetching'),
+                                Text(curLangText!.uiStartupItemIconsFetching),
                               ],
                             ),
                             Padding(
@@ -1164,6 +1166,29 @@ class _MainPageState extends State<MainPage> {
                                     ),
                                     const SizedBox(width: 2.5),
                                     Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Mod sets
+                          ModManTooltip(
+                            message: curLangText!.uiSwapAnItemToAnotherItem,
+                            child: SizedBox(
+                              //width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  itemsSwapperCategorySelect(context);
+                                }),
+                                child: Row(
+                                  children: [
+                                      const Icon(
+                                        Icons.swap_horizontal_circle_outlined,
+                                        size: 18,
+                                      ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
                                 ),
                               ),

@@ -116,7 +116,9 @@ class TranslationText {
       uiOnlyFetchOneIcon = 'Only fetch one icon for each item',
       uiFetchAllMissingItemIcons = 'Fetch all missing icons that included in each mods',
       uiMinimal = 'Minimal',
-      uiAll = 'All';
+      uiAll = 'All',
+      uiSwapItems = 'Swap Items',
+      uiSwapAnItemToAnotherItem = 'Swap an item to another item';
 
   //homepage
   String uiItemList = 'Item List',
@@ -298,6 +300,12 @@ class TranslationText {
 
   //mods_swapper_popup
   String uiExperimental = 'Experimental';
+
+  //items_swapper_homepage
+  String uiChooseAnItemBelow = 'Choose an item below';
+
+  //items_swapper_popup
+  String uiItemCategories = 'Item categories';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

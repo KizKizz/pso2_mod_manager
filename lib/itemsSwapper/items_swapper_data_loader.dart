@@ -1,136 +1,74 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_acc_homepage.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_homepage.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_la_homepage.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as ms;
 
+SubMod fromItemSubmodGet(List<String> iceFileNames) {
+  List<ModFile> modFileList = [];
+  String fromItemNameSwap = curActiveLang == 'JP' ? '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}' : '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}';
+  for (var iceNameWithType in iceFileNames) {
+    String iceName = iceNameWithType.split(': ').last;
 
-
-List<File> getCsvFiles(String categoryName) {
-  List<File> csvFiles = [];
-  int categoryIndex = defaultCateforyDirs.indexOf(categoryName);
-  for (var csvFileName in csvFileList[categoryIndex]) {
-    final csvFilesFromPath = Directory(modManRefSheetsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.basename(element.path) == csvFileName);
-    for (var file in csvFilesFromPath) {
-      csvFiles.add(file);
-    }
-  }
-  return csvFiles;
-}
-
-Future<bool> sheetListFetchFromFiles(List<File> csvFiles) async {
-  List<List<String>> csvList = [];
-  for (var file in csvFiles) {
-    csvList.add([]);
-    //csvList.last.add(p.basename(file.path));
-    await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
-      int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
-      if (categoryIndex != -1) {
-        if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Glide Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Jump Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Landing Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Dash Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Run Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Standby Motion,$line';
-        } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Swim Motion,$line';
-        } else {
-          line = '${defaultCateforyDirs[categoryIndex]},$line';
+    //look in backupDir first
+    final iceFileInBackupDir =
+        Directory(Uri.file(modManBackupsDirPath).toFilePath()).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '', orElse: () => File(''));
+    if (p.basename(iceFileInBackupDir.path) == iceName) {
+      modFileList
+          .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], iceFileInBackupDir.path, false, DateTime(0), 0, false, false, false, [], [], []));
+    } else {
+      for (var type in ogDataFilePaths) {
+        String icePathFromOgData = type.firstWhere(
+          (element) => p.basename(element) == iceName,
+          orElse: () => '',
+        );
+        if (p.basename(icePathFromOgData) == iceName) {
+          modFileList
+              .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], []));
         }
-      }
-      csvList.last.add(line);
-    });
-  }
-
-  for (var line in csvList) {
-    for (var item in line) {
-      if (item.split(',').first == defaultCateforyDirs[0]) {
-        csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
-      } else if (item.split(',').first == defaultCateforyDirs[7]) {
-        if (item.split(',').length == 14) {
-          csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
-        } else if (item.split(',').length == 19) {
-          csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
-        }
-      } else if (item.split(',').first == defaultCateforyDirs[14]) {
-        csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
-      } else if (item.split(',').first == defaultCateforyDirs[10]) {
-        csvData.add(CsvIceFile.fromListHairs(item.split(',')));
-      } else {
-        csvData.add(CsvIceFile.fromList(item.split(',')));
       }
     }
   }
-  return true;
+
+  return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], [], [], [], modFileList);
 }
 
-Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, Item swapFromItem) async {
-  String categorySymbol = '';
-  // if (swapFromItem.category == 'Basewears') {
-  //   categorySymbol = '[Ba]';
-  // } else if (swapFromItem.category == 'Setwears') {
-  //   categorySymbol = '[Se]';
-  // } else 
-  if (swapFromItem.category == 'Innerwears') {
-    categorySymbol = '[In]';
-  }
-  // if (swapFromItem.category == 'Setwears') {
-  //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
-  // }
-  if (swapFromItem.category == 'Setwears' || swapFromItem.category == 'Basewears') {
-    return cvsDataInput.where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]'))).toList();
-  }
-  if (categorySymbol.isNotEmpty) {
-    return cvsDataInput.where((element) => element.category == swapFromItem.category && element.enName.contains(categorySymbol) && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
-  } else {
-    return cvsDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
-  }
+Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> cvsAccDataInput, String category) async {
+  return cvsAccDataInput.where((element) => element.category == category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
 }
 
-Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> cvsAccDataInput, Item swapFromItem) async {
-  return cvsAccDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
-}
-
-Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, Item swapFromItem) async {
-  return cvsEmoteDataInput.where((element) => element.category == swapFromItem.category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
+Future<List<CsvEmoteIceFile>> getEmotesSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, String category) async {
+  return cvsEmoteDataInput.where((element) => element.category == category && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
 }
 
 Future<List<CsvEmoteIceFile>> getEmotesToMotionsSwapToCsvList(List<CsvEmoteIceFile> cvsEmoteDataInput, String itemCategory) async {
   return cvsEmoteDataInput.where((element) => element.category == itemCategory).toList();
 }
 
-class ModsSwapperDataLoader extends StatefulWidget {
-  const ModsSwapperDataLoader({super.key, required this.fromItem, required this.fromSubmod});
-
-  final Item fromItem;
-  final SubMod fromSubmod;
+class ItemsSwapperDataLoader extends StatefulWidget {
+  const ItemsSwapperDataLoader({super.key});
 
   @override
-  State<ModsSwapperDataLoader> createState() => _ModsSwapperDataLoaderState();
+  State<ItemsSwapperDataLoader> createState() => _ItemsSwapperDataLoaderState();
 }
 
-class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
+class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category)) : null,
+        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? ms.sheetListFetchFromFiles(ms.getCsvFiles(selectedCategoryF!)) : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -196,13 +134,14 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                 ),
               );
             } else {
+              Item fromItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
-                      ? getSwapToCsvList(csvData, widget.fromItem)
+                      ? ms.getSwapToCsvList(csvData, fromItem)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
-                          ? getAccSwapToCsvList(csvAccData, widget.fromItem)
+                          ? getAccSwapToCsvList(csvAccData, selectedCategoryF!)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
-                              ? getEmotesSwapToCsvList(csvEmotesData, widget.fromItem)
+                              ? getEmotesSwapToCsvList(csvEmotesData, selectedCategoryF!)
                               : null,
                   builder: (
                     BuildContext context,
@@ -281,10 +220,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                               (a, b) => a.enName.compareTo(b.enName),
                             );
                           }
-                          return ModsSwapperAccHomePage(
-                            fromItem: widget.fromItem,
-                            fromSubmod: widget.fromSubmod,
-                          );
+                          return const ItemsSwapperAccHomePage();
                         } else if (csvEmotesData.isNotEmpty) {
                           availableEmotesCsvData = snapshot.data;
                           if (curActiveLang == 'JP') {
@@ -296,10 +232,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                               (a, b) => a.enName.compareTo(b.enName),
                             );
                           }
-                          return ModsSwapperEmotesHomePage(
-                            fromItem: widget.fromItem,
-                            fromSubmod: widget.fromSubmod,
-                          );
+                          return const ItemsSwapperEmotesHomePage();
                         } else {
                           availableItemsCsvData = snapshot.data;
                           if (curActiveLang == 'JP') {
@@ -311,10 +244,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                               (a, b) => a.enName.compareTo(b.enName),
                             );
                           }
-                          return ModsSwapperHomePage(
-                            fromItem: widget.fromItem,
-                            fromSubmod: widget.fromSubmod,
-                          );
+                          return const ItemsSwapperHomePage();
                         }
                       }
                     }

@@ -3,18 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
-import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart' as mss;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
+TextEditingController swapperFromItemsSearchTextController = TextEditingController();
 List<CsvIceFile> toItemSearchResults = [];
+List<CsvIceFile> fromItemSearchResults = [];
 CsvIceFile? selectedFromCsvFile;
 CsvIceFile? selectedToCsvFile;
 List<String> fromItemIds = [];
@@ -22,17 +24,14 @@ List<String> toItemIds = [];
 List<String> fromItemAvailableIces = [];
 List<String> toItemAvailableIces = [];
 
-class ModsSwapperHomePage extends StatefulWidget {
-  const ModsSwapperHomePage({super.key, required this.fromItem, required this.fromSubmod});
-
-  final Item fromItem;
-  final SubMod fromSubmod;
+class ItemsSwapperHomePage extends StatefulWidget {
+  const ItemsSwapperHomePage({super.key});
 
   @override
-  State<ModsSwapperHomePage> createState() => _ModsSwapperHomePageState();
+  State<ItemsSwapperHomePage> createState() => _ItemsSwapperHomePageState();
 }
 
-class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
+class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
   @override
   void initState() {
     //clear
@@ -57,20 +56,29 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
     Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
     //fetch
-    final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
-    final fromItemCsvData = csvData
-        .where((element) =>
-            iceNamesFromSubmod.contains(element.hqIceName) ||
-            iceNamesFromSubmod.contains(element.nqIceName) ||
-            iceNamesFromSubmod.contains(element.nqLiIceName) ||
-            iceNamesFromSubmod.contains(element.hqLiIceName))
+    String curCategorySymbol = '';
+    if (selectedCategoryF == 'Basewears') {
+      curCategorySymbol = '[Ba]';
+    } else if (selectedCategoryF == 'Setwears') {
+      curCategorySymbol = '[Se]';
+    } else if (selectedCategoryF == 'Outerwears') {
+      curCategorySymbol = '[Ou]';
+    } else if (selectedCategoryF == 'Innerwears') {
+      curCategorySymbol = '[In]';
+    }
+    List<CsvIceFile> fromItemCsvData = csvData
+        .where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol))
         .toList();
+    if (curActiveLang == 'JP') {
+      fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+    } else {
+      fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+    }
     List<List<String>> csvInfos = [];
     bool includeHqLiIceOnly = false;
     bool includeNqLiIceOnly = false;
     for (var csvItemData in fromItemCsvData) {
-      final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
-      final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last)).toList();
+      final availableModFileData = csvItemData.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
       csvInfos.add(availableModFileData);
       //filter link inner items
       for (var line in availableModFileData) {
@@ -86,12 +94,12 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
       }
     }
 
-    if (includeHqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
-    }
-    if (includeNqLiIceOnly) {
-      availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
-    }
+    // if (includeHqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.hqLiIceName.isNotEmpty).toList();
+    // }
+    // if (includeNqLiIceOnly) {
+    //   availableItemsCsvData = availableItemsCsvData.where((element) => element.nqLiIceName.isNotEmpty).toList();
+    // }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -101,8 +109,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
               RotatedBox(
                   quarterTurns: -1,
                   child: Text(
-                    'MODS SWAP',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 12),
+                    'ITEMS SWAP',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 14),
                   )),
               VerticalDivider(
                 width: 10,
@@ -127,46 +135,61 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                 color: Colors.transparent,
-                                child: ListTile(
-                                  title: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                        child: Container(
-                                            width: 80,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(3),
-                                              border: Border.all(color: Theme.of(context).hintColor, width: 1),
-                                            ),
-                                            child: widget.fromItem.icons.first.contains('assets/img/placeholdersquare.png')
-                                                ? Image.asset(
-                                                    'assets/img/placeholdersquare.png',
-                                                    filterQuality: FilterQuality.none,
-                                                    fit: BoxFit.fitWidth,
-                                                  )
-                                                : Image.file(
-                                                    File(widget.fromItem.icons.first),
-                                                    filterQuality: FilterQuality.none,
-                                                    fit: BoxFit.fitWidth,
-                                                  )),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              widget.fromItem.category,
-                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(widget.fromItem.itemName, style: const TextStyle(fontWeight: FontWeight.w500)),
-                                            Text('${widget.fromSubmod.modName} > ${widget.fromSubmod.submodName}'),
-                                          ],
+                                child: SizedBox(
+                                  height: 92,
+                                  child: ListTile(
+                                    minVerticalPadding: 15,
+                                    title: Text(curLangText!.uiChooseAnItemBelow),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: SizedBox(
+                                        height: 30,
+                                        width: double.infinity,
+                                        child: TextField(
+                                          controller: swapperFromItemsSearchTextController,
+                                          maxLines: 1,
+                                          textAlignVertical: TextAlignVertical.center,
+                                          decoration: InputDecoration(
+                                              hintText: curLangText!.uiSearchSwapItems,
+                                              hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                              isCollapsed: true,
+                                              isDense: true,
+                                              contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                                              suffixIconConstraints: const BoxConstraints(minWidth: 20, minHeight: 28),
+                                              suffixIcon: InkWell(
+                                                onTap: swapperFromItemsSearchTextController.text.isEmpty
+                                                    ? null
+                                                    : () {
+                                                        swapperFromItemsSearchTextController.clear();
+                                                        setState(() {});
+                                                      },
+                                                child: Icon(
+                                                  swapperFromItemsSearchTextController.text.isEmpty ? Icons.search : Icons.close,
+                                                  color: Theme.of(context).hintColor,
+                                                ),
+                                              ),
+                                              constraints: BoxConstraints.tight(const Size.fromHeight(26)),
+                                              // Set border for enabled state (default)
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              // Set border for focused state
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                                                borderRadius: BorderRadius.circular(10),
+                                              )),
+                                          onChanged: (value) async {
+                                            fromItemSearchResults = fromItemCsvData
+                                                .where((element) => curActiveLang == 'JP'
+                                                    ? element.jpName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase())
+                                                    : element.enName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase()))
+                                                .toList();
+                                            setState(() {});
+                                          },
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -180,9 +203,9 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                      child: Text(''),
                                     ),
                                     Expanded(
                                       child: Card(
@@ -200,26 +223,52 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                           child: ListView.builder(
                                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                                               shrinkWrap: true,
-                                              physics: const PageScrollPhysics(),
-                                              itemCount: fromItemCsvData.length,
+                                              //physics: const PageScrollPhysics(),
+                                              itemCount: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData.length : fromItemSearchResults.length,
                                               itemBuilder: (context, i) {
                                                 return Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 2),
                                                   child: RadioListTile(
                                                     shape:
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                    value: fromItemCsvData[i],
+                                                    value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromCsvFile,
-                                                    title: Text(fromItemCsvData[i].enName),
-                                                    subtitle: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [for (int line = 0; line < csvInfos[i].length; line++) Text(csvInfos[i][line])],
-                                                    ),
+                                                    title: curActiveLang == 'JP'
+                                                        ? swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].jpName)
+                                                            : Text(fromItemSearchResults[i].jpName)
+                                                        : swapperFromItemsSearchTextController.text.isEmpty
+                                                            ? Text(fromItemCsvData[i].enName)
+                                                            : Text(fromItemSearchResults[i].enName),
+                                                    subtitle: swapperFromItemsSearchTextController.text.isEmpty
+                                                        ? selectedFromCsvFile == fromItemCsvData[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null
+                                                        : selectedFromCsvFile == fromItemSearchResults[i]
+                                                            ? Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int line = 0;
+                                                                      line < selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).length;
+                                                                      line++)
+                                                                    Text(selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
+                                                                ],
+                                                              )
+                                                            : null,
                                                     onChanged: (CsvIceFile? currentItem) {
-                                                      //print("Current ${moddedItemsList[i].groupName}");
                                                       selectedFromCsvFile = currentItem!;
-                                                      fromItemAvailableIces = csvInfos[i];
+                                                      fromItemAvailableIces = selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
+                                                      fromItemName = curActiveLang == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
                                                       fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
                                                       //set infos
                                                       if (selectedToCsvFile != null) {
@@ -433,7 +482,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                               if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
                                                                 toItemAvailableIces.add(line);
                                                               }
-                                                    
+
                                                               if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
                                                                 toItemAvailableIces.add(line);
                                                               }
@@ -469,6 +518,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                               ElevatedButton(
                                   onPressed: () {
                                     swapperSearchTextController.clear();
+                                    swapperFromItemsSearchTextController.clear();
                                     selectedFromCsvFile = null;
                                     selectedToCsvFile = null;
                                     availableItemsCsvData.clear();
@@ -486,7 +536,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                            swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
+                                            swapperConfirmDialog(context, fromItemSubmodGet(fromItemAvailableIces), fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -567,7 +617,11 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('${curLangText!.uiItemID}: ${toItemIds[0]}'), Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
+                                children: [
+                                  Text('${curLangText!.uiItemID}: ${toItemIds[0]}'),
+                                  Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'),
+                                  for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])
+                                ],
                               ),
                             ),
                           ),
@@ -585,7 +639,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
+                        mss.swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

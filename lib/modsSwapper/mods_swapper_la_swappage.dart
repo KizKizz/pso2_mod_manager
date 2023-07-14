@@ -9,14 +9,13 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSelectedItemName) async {
+Future<String> modsSwapperLaIceFilesGet(
+    context, SubMod fromSubmod, String toSelectedItemName, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, List<String> queueSwappedLaPaths) async {
   String newToSelectedItemName = toSelectedItemName;
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync() && queueSwappedLaPaths.isEmpty) {
@@ -34,6 +33,7 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
   toEmotesAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
   fromEmotesAvailableIces.removeWhere((element) => element.split(': ').first == 'Gender');
   toEmotesAvailableIces.removeWhere((element) => element.split(': ').first == 'Gender');
+  fromEmotesAvailableIces.removeWhere((element) => !fromSubmod.getModFileNames().contains(element.split(': ').last));
   if (toEmotesAvailableIces.isEmpty) {
     return curLangText!.uiNoMatchingIceFoundToSwap;
   }
@@ -46,7 +46,7 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
     //   String tempIceTypeT = itemT.replaceFirst('Normal Quality', 'High Quality');
     //   curIceType = tempIceTypeT.split(': ').first;
     // } else {
-      curIceType = itemT.split(': ').first;
+    curIceType = itemT.split(': ').first;
     // }
     int matchingItemFIndex = fromEmotesAvailableIces.indexWhere((element) => element.split(': ').first == curIceType);
     if (matchingItemFIndex != -1) {
@@ -283,7 +283,7 @@ Future<String> modsSwapperLaIceFilesGet(context, SubMod fromSubmod, String toSel
   return Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName').toFilePath();
 }
 
-Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName) async {
+Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -294,7 +294,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelect
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -433,7 +433,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelect
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      toItemName,
+                                                      toSelectedItemName,
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
@@ -524,7 +524,7 @@ Future<void> swapperLaSwappingDialog(context, SubMod fromSubmod, String toSelect
           }));
 }
 
-Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName) async {
+Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths) async {
   //String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -535,7 +535,7 @@ Future<void> swapperLaQueueSwappingDialog(context, SubMod fromSubmod, String toS
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName),
+                    future: modsSwapperLaIceFilesGet(context, fromSubmod, toSelectedItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths),
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,

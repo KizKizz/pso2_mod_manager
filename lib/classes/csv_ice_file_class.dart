@@ -85,6 +85,23 @@ class CsvIceFile {
       'High Quality Hand Texture Ice: $hqhandTextureIceName'
     ];
   }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return [
+      'Normal Quality Ice: $nqIceName',
+      'High Quality Ice: $hqIceName',
+      'Normal Quality RP Ice: $nqRpIceName',
+      'High Quality RP Ice: $hqRpIceName',
+      'Normal Quality Linked Inner Ice: $nqLiIceName',
+      'High Quality Linked Inner Ice: $hqLiIceName',
+      'Sound Ice: $soundIceName',
+      'Cast Sound Ice: $castSoundIceName',
+      'Material Animation Ice: $maIceName',
+      'Material Animation EX Ice: $maExIceName',
+      'Normal Quality Hand Texture Ice: $handTextureIceName',
+      'High Quality Hand Texture Ice: $hqhandTextureIceName'
+    ];
+  }
 }
 
 class CsvAccessoryIceFile {
@@ -110,6 +127,10 @@ class CsvAccessoryIceFile {
 
   List<String> getDetailedList() {
     return ['Category: $category', 'JP Name: $jpName', 'EN Name: $enName', 'ID: $id', 'Icon Ice: $iconIceName', 'Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
+  }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return ['Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
   }
 }
 
@@ -158,6 +179,19 @@ class CsvEmoteIceFile {
       'Category: $category',
       'JP Name: $jpName',
       'EN Name: $enName',
+      'PSO2 Hash Ice: $pso2HashIceName',
+      'Reboot Human Hash Ice: $rbHumanHashIceName',
+      'Reboot Cast Male Hash Ice: $rbCastMaleHashIceName',
+      'Reboot Cast Female Hash Ice: $rbCastFemaleHashIceName',
+      'Reboot Fig Hash Ice: $rbFigHashIceName',
+      'PSO2 VFX Hash Ice: $pso2VfxHashIceName',
+      'Reboot VFX Hash Ice: $rbVfxHashIceName',
+      'Gender: $gender'
+    ];
+  }
+
+  List<String> getDetailedListIceInfosOnly() {
+    return [
       'PSO2 Hash Ice: $pso2HashIceName',
       'Reboot Human Hash Ice: $rbHumanHashIceName',
       'Reboot Cast Male Hash Ice: $rbCastMaleHashIceName',

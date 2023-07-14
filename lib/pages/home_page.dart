@@ -1942,7 +1942,7 @@ class _HomePageState extends State<HomePage> {
                             thickness: 1,
                           ),
                         //normal
-                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty)
+                        if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
                           Container(
                             padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
                             decoration: BoxDecoration(
@@ -1984,6 +1984,22 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                             ),
                           ),
+                        //set
+                        if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
+                          Container(
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Text(
+                              modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                  ? '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMod}'
+                                  : '${modViewItem!.mods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiMods}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                            ),
+                          ),
+                        //Applied text
                         if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
                           for (int i = 0; i < appBarAppliedModNames.length; i++)
                             Text(
@@ -3933,7 +3949,7 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                           Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 5, children: [
-                                            if (curSet.setItems.indexWhere((element) => element.applyStatus == true) != -1)
+                                            if (curSet.setItems.indexWhere((element) => element.mods.where((e) => e.isSet && e.setNames.contains(curSet.setName) && e.applyStatus).isNotEmpty) != -1)
                                               Stack(
                                                 children: [
                                                   Visibility(
@@ -4049,7 +4065,9 @@ class _HomePageState extends State<HomePage> {
                                               ),
 
                                             //Apply button in submod
-                                            if (curSet.setItems.indexWhere((element) => element.applyStatus == false) != -1)
+                                            if (curSet.setItems
+                                                    .indexWhere((element) => element.mods.where((e) => e.isSet && e.setNames.contains(curSet.setName) && e.applyStatus == false).isNotEmpty) !=
+                                                -1)
                                               Stack(
                                                 children: [
                                                   Visibility(
@@ -4144,11 +4162,12 @@ class _HomePageState extends State<HomePage> {
                                                   onTap: !isModSetAdding
                                                       ? null
                                                       : () {
+                                                          removeModSetNameFromItems(curSet.setName, curSet.setItems);
                                                           curSet.setItems = itemsFromAppliedListFetch(appliedItemList);
                                                           setModSetNameToItems(curSet.setName, curSet.setItems);
                                                           isModSetAdding = false;
-                                                          saveModdedItemListToJson();
                                                           saveSetListToJson();
+                                                          saveModdedItemListToJson();
                                                           setState(() {});
                                                         },
                                                   child: Icon(
@@ -4192,7 +4211,7 @@ class _HomePageState extends State<HomePage> {
                                             itemCount: curSet.setItems.length,
                                             itemBuilder: (context, itemIndex) {
                                               var curItem = curSet.setItems[itemIndex];
-                                              List<Mod> curMods = curItem.mods.where((element) => element.applyStatus).toList();
+                                              List<Mod> curMods = curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName) && element.applyStatus).toList();
                                               List<List<ModFile>> allAppliedModFiles = [];
                                               List<String> applyingModNames = [];
                                               List<String> allPreviewImages = [];

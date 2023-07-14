@@ -48,6 +48,11 @@ String modManModSettingsJsonPath = '';
 String modManRefSheetListFilePath = '';
 //Log file path
 String modManOpLogsFilePath = '';
+//Swapper paths
+String modManSwapperDirPath = Uri.file('${Directory.current.path}/swapper').toFilePath();
+String modManSwapperFromItemDirPath = Uri.file('${Directory.current.path}/swapper/fromitem').toFilePath();
+String modManSwapperToItemDirPath = Uri.file('${Directory.current.path}/swapper/toitem').toFilePath();
+String modManSwapperOutputDirPath = Uri.file('${Directory.current.path}/swapper/Swapped Items').toFilePath();
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();

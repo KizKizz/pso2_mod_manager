@@ -1,9 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.1.8",
+    "version": "2.2.0",
     "description": [
-        "More improvement to accessories swapping function (from pso2 accessories to NGS, and some animated items)",
-        "Some minor bug fixes"
+        "Added items swapping function (swapping between unmodded items, emotes, motions)",
+        "Fixed some bugs in Mod Sets",
+        "Some other minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
