@@ -36,8 +36,8 @@
 アークマミ,Arkumami,item/mag/it_mg_00036.ice,f82e921cf74ee64c72d46b03000eb3a9
 Debug,item/mag/it_mg_00999.ice,b4b40f45f04060853902dc787cb9ddcc
 アンブラ,Umbra,item/mag/it_mg_00037.ice,9812c27369b181190723785c852228b3
-トロ,Toro,item/mag/it_mg_00038.ice,dc37b8d207f5892e1726e82aeb29ea68,(Not found)
-クロ,Kuro,item/mag/it_mg_00039.ice,8d1efa15ac2a539bf14aaba30248006c,(Not found)
+トロ,Toro,item/mag/it_mg_00038.ice,dc37b8d207f5892e1726e82aeb29ea68
+クロ,Kuro,item/mag/it_mg_00039.ice,8d1efa15ac2a539bf14aaba30248006c
 ハンプティ,Humpty,item/mag/it_mg_00040.ice,d5f5b16d70b728caf485c9d083cbbdf0
 チャムライ,Chamurai,item/mag/it_mg_00041.ice,83b992865e450afe47fce3363513fd64
 ソニチ,Sonichi,item/mag/it_mg_00045.ice,918b1c106a2bbaa1cab0a2aac25b3ddf
@@ -47,8 +47,8 @@ Debug,item/mag/it_mg_00999.ice,b4b40f45f04060853902dc787cb9ddcc
 チャーク,Chark,item/mag/it_mg_00042.ice,9bb92be988a17c2a7b04073756a394c2
 リリーパ,Lillipan,item/mag/it_mg_00043.ice,846e1cacf8c1f2cb3dd99ee7fe2a18c9
 ゴストン,Ghoston,item/mag/it_mg_00044.ice,f51e6e43082e4988d05cd1bd2054dff1
-キュゥべえ,Kyubey,item/mag/it_mg_00050.ice,9032890b30fdaf5b2bf83b2879c3a2d5,(Not found)
-ポリタン,Polytan,item/mag/it_mg_00051.ice,3a458d32081934e600a2183ac5bf4892,(Not found)
+キュゥべえ,Kyubey,item/mag/it_mg_00050.ice,9032890b30fdaf5b2bf83b2879c3a2d5
+ポリタン,Polytan,item/mag/it_mg_00051.ice,3a458d32081934e600a2183ac5bf4892
 キャリブー,Caribou,item/mag/it_mg_00055.ice,b04d2524ea59dc14591199a08a4bd540
 ,Unidentified Black Bear,item/mag/it_mg_00056.ice,2b43a06941a83d7400c5e1188f791bdd
 カガミミ,Kagamimi,item/mag/it_mg_00052.ice,134349dd948f80b132ac84f3e6d8b510
@@ -68,7 +68,7 @@ Debug,item/mag/it_mg_00999.ice,b4b40f45f04060853902dc787cb9ddcc
 赤ぷよ,Red Puyo,item/mag/it_mg_00072.ice,bfdd062f8e5bc71e663660114f6f4f74
 SFC妖精,SFC Fairy,item/mag/it_mg_00071.ice,3ab67f144687e25784dc87aa0a667e2f
 ジャクラン,Jack Lan,item/mag/it_mg_00068.ice,3fbc336fb28650bbfc7fab5d8ce030c2
-ダンボー,Danboard,item/mag/it_mg_00073.ice,524c076f89f1c6b103dab0c93f1ef481,(Not found)
+ダンボー,Danboard,item/mag/it_mg_00073.ice,524c076f89f1c6b103dab0c93f1ef481
 テルクゥ,Teruku,item/mag/it_mg_00069.ice,f218c3657a0f15c181d0dc2026ce940b
 ニャウ,Nyau,item/mag/it_mg_00067.ice,0861c3473d69a554f5926f0d3d5857a9
 キリゾー,Girizoo,item/mag/it_mg_00070.ice,2437ea541da80f3f22a31f7cb7763bc9
@@ -78,14 +78,14 @@ SFC妖精,SFC Fairy,item/mag/it_mg_00071.ice,3ab67f144687e25784dc87aa0a667e2f
 セガサターン,Sega Saturn,item/mag/it_mg_00080.ice,23375a4b6db74ffbfc3b6999199074ed
 メガドラ,Mega Drive,item/mag/it_mg_00081.ice,a74016d34fcebd7838c718c25459a820
 アナライザー,Analyzer,item/mag/it_mg_00082.ice,1d1338c0ebbc039ed5f8efefa1871e36
-お団子ヘア,Dumpling Hair,item/mag/it_mg_00076.ice,0901d6dc634eb31891bc6069c4773e9d,(Not found)
+お団子ヘア,Dumpling Hair,item/mag/it_mg_00076.ice,0901d6dc634eb31891bc6069c4773e9d
 ラブリーパ,LoveLipa,item/mag/it_mg_00077.ice,803a14cbbff1825139aa2a86f0a9ab75
 ラヴィリー,LoveLi,item/mag/it_mg_00078.ice,0b4150d136dc59b5862e3a1f0102773b
 ホヌホヌ,Honuhonu,item/mag/it_mg_00083.ice,ef812264153b4049b2a7c101ba84172e
 小梅,Xiaomei,item/mag/it_mg_00084.ice,4361082c0c299ceaa14652a6ed42bf8a
 ニャンドリオン（ニャンD）,Nyandorion (NyanD),item/mag/it_mg_00085.ice,cf95e84d8a364a6a51807882727d8640
 ジーツター,Jiitsuter,item/mag/it_mg_00088.ice,c5b9ed36e4fe4256470e59eb3272358b
-ネッキー,Necky,item/mag/it_mg_00091.ice,39e4961fb60c44c2e475fb254af817a4,(Not found)
+ネッキー,Necky,item/mag/it_mg_00091.ice,39e4961fb60c44c2e475fb254af817a4
 ルクミン,Rukmin,item/mag/it_mg_00090.ice,9a782341c898f1806d765f5d37b7ecbb
 レイニャン,Rainyan,item/mag/it_mg_00089.ice,36ac92d476ed25e0e0832bfceca62819
 リンクスR,Lynx R,item/mag/it_mg_00092.ice,c660953d08695f18adddae1f217d37fd
@@ -99,14 +99,14 @@ A.I.S,A.I.S,item/mag/it_mg_00086.ice,e9fcb1ef1c73cc6cc1217820d1c94476
 青ぷよ,Blue Puyo,item/mag/it_mg_00111.ice,550f50d599740504ef713f3a172c7baf
 波乗ニャウ,Wave Riding Nyau,item/mag/it_mg_00100.ice,86099bd4dfa0ab24ce747d638fd6958d
 オパオパ,Opa-Opa,item/mag/it_mg_00108.ice,450cc87e04593f5bf1b4ef35c9557cb7
-テムジン,Temjin,item/mag/it_mg_00110.ice,8a35253fdc9cc48ca9a87b0f8e39467f,(Not found)
+テムジン,Temjin,item/mag/it_mg_00110.ice,8a35253fdc9cc48ca9a87b0f8e39467f
 RRリコ,RR Rico,item/mag/it_mg_00102.ice,5879d0b878f2eee905c3d704d8dbd6e5
 プチアンガ,Petit Anga,item/mag/it_mg_00105.ice,4b0f8ad7cb9e8f9fcc890859443f6f15
 ウサノヤ,Usanoya,item/mag/it_mg_00106.ice,59d0a4fe91ea518a46dffe229821625f
 リリダイコ,Lilidaigo,item/mag/it_mg_00101.ice,7cefd516c55c1dfe91f0a4de67d4f4f4
 モチュゴヤ,Mochugoya,item/mag/it_mg_00107.ice,197b4edf61c15840f8cec2d613805756
 ルーシャー,Luther,item/mag/it_mg_00112.ice,6683ef2a5ea752763398ec4d5c163867
-ハッピー,Happy,item/mag/it_mg_00115.ice,088184b4569b9c0ba373efe60fd847f2,(Not found)
+ハッピー,Happy,item/mag/it_mg_00115.ice,088184b4569b9c0ba373efe60fd847f2
 ナガミミ,Nagamimi,item/mag/it_mg_00116.ice,471e0845693d042ffc70179af9dd6429
 バットリー,Batreat,item/mag/it_mg_00113.ice,3509e58357f94c2fbf19ad4978fc29e3
 シャノルン,Chanolun,item/mag/it_mg_00114.ice,a1464902161bf404e106c4f5a8857c09
@@ -115,22 +115,22 @@ RRリコ,RR Rico,item/mag/it_mg_00102.ice,5879d0b878f2eee905c3d704d8dbd6e5
 ラブクマミ,Lovekumami,item/mag/it_mg_00119.ice,94934367d580451186db9e6fa0eb7c1e
 ラヴィクマ,LoveyKuma,item/mag/it_mg_00120.ice,abc4c9299eb3a5038da5d1c234d895eb
 チェリシュ,Cherish,item/mag/it_mg_00121.ice,ed6d1a42166da6a80cc80af5479a5f95
-モーグリ,Moogle,item/mag/it_mg_00123.ice,f27ec86019e04a92628394c15a7bca63,(Not found)
-ケツカッチン,Ketsukacchin,item/mag/it_mg_00131.ice,80c463397bc4a84c370e061ab83c329b,(Not found)
-オーディン,Odin,item/mag/it_mg_00122.ice,c2cfea8afc319d3d7acb21307c4eb452,(Not found)
-東京タワーラッピー,Tokyo Tower Rappy,item/mag/it_mg_00125.ice,fb89de43df2c573f1709dcbbeed6391f,(Not found)
-金シャチラッピー,Golden Whale Rappy,item/mag/it_mg_00126.ice,f7ad639dd3ce6d0946f6bfa73f7e1f44,(Not found)
-屋台ラッピー,Food Cart Rappy,item/mag/it_mg_00127.ice,f8ec67d66280e5afb603643b2fdaeba5,(Not found)
-プリニー,Prinny,item/mag/it_mg_00124.ice,2bf82157f8f266df2df88cf9c3e1d878,(Not found)
-通天閣(R)ラッピー,Tsutenkaku (R) Rappy,item/mag/it_mg_00129.ice,4a3da99a279d7e534a966b9c47aef0a0,(Not found)
-ジンギスカンラッピー,Jingisukan Rappy,item/mag/it_mg_00128.ice,705381337b9e7a5a29b1f2b52dbd9603,(Not found)
+モーグリ,Moogle,item/mag/it_mg_00123.ice,f27ec86019e04a92628394c15a7bca63
+ケツカッチン,Ketsukacchin,item/mag/it_mg_00131.ice,80c463397bc4a84c370e061ab83c329b
+オーディン,Odin,item/mag/it_mg_00122.ice,c2cfea8afc319d3d7acb21307c4eb452
+東京タワーラッピー,Tokyo Tower Rappy,item/mag/it_mg_00125.ice,fb89de43df2c573f1709dcbbeed6391f
+金シャチラッピー,Golden Whale Rappy,item/mag/it_mg_00126.ice,f7ad639dd3ce6d0946f6bfa73f7e1f44
+屋台ラッピー,Food Cart Rappy,item/mag/it_mg_00127.ice,f8ec67d66280e5afb603643b2fdaeba5
+プリニー,Prinny,item/mag/it_mg_00124.ice,2bf82157f8f266df2df88cf9c3e1d878
+通天閣(R)ラッピー,Tsutenkaku (R) Rappy,item/mag/it_mg_00129.ice,4a3da99a279d7e534a966b9c47aef0a0
+ジンギスカンラッピー,Jingisukan Rappy,item/mag/it_mg_00128.ice,705381337b9e7a5a29b1f2b52dbd9603
 エスカくん,Eska-kun,item/mag/it_mg_00132.ice,9216c34383d42eadd51121cbd607d1cf
 プリュミー,Plumii,item/mag/it_mg_00133.ice,be68e5d00ddff2ce7370d33d61126ef0
 光武二式（さくら機）,Koubu MK II (SM),item/mag/it_mg_00135.ice,dab171708085ea502b8f96783ddc6a15
 光武二式（大神機）,Koubu MK II (OM),item/mag/it_mg_00134.ice,a057a959b646e55d66839c921e7d1124
 パティエンティア,Patty & Tiea,item/mag/it_mg_00136.ice,784bcd2938d15622ce9e6a3abdbda205
 ピートR,Pete R,item/mag/it_mg_00139.ice,f6fe1146d61f416ccec1518bc6c0b9ee
-ミニゴジラ,Mini Godzilla,item/mag/it_mg_00138.ice,941a1d8795e01d830ccf4f28cf850ead,(Not found)
+ミニゴジラ,Mini Godzilla,item/mag/it_mg_00138.ice,941a1d8795e01d830ccf4f28cf850ead
 ワンダラー,Wanderer,item/mag/it_mg_00137.ice,6961d31d65dd85044f7c317ad62552a2
 ブラナート,Brownart,item/mag/it_mg_00140.ice,eaaed965a7032486df78daaa0bb5871e
 ,Unknown 141,item/mag/it_mg_00141.ice,2243ceee250eccb3ddbc25536e445da4,(Not found)
@@ -145,7 +145,7 @@ RRリコ,RR Rico,item/mag/it_mg_00102.ice,5879d0b878f2eee905c3d704d8dbd6e5
 スティレットＧ,Stylet G,item/mag/it_mg_00149.ice,ac3155d32b9c5ad99e343be1c3a1e407
 エンペ・ラッピー,Empe Rappy,item/mag/it_mg_00150.ice,947d13585bcc61addd165ff993de6404
 ヤミガラス,Yamigarasu,item/mag/it_mg_00151.ice,39240f75190e88779075fff420c93fcb
-プラフタ,Plachta,item/mag/it_mg_00152.ice,3801a32e548d24062f544d5098a55b2c,(Not found)
+プラフタ,Plachta,item/mag/it_mg_00152.ice,3801a32e548d24062f544d5098a55b2c
 ラタン・エンペ,Rotten Empe,item/mag/it_mg_00153.ice,90879fe2096ae8608d97f9148ed691a4
 アクス・ラッピー,ARKS Rappy,item/mag/it_mg_00154.ice,cfebfe3efc13a7cc72d664b7ac22cd9e
 フェザーキャロル,Feather Carole,item/mag/it_mg_00155.ice,97a12248083f600e2396251b54165280
@@ -155,13 +155,13 @@ RRリコ,RR Rico,item/mag/it_mg_00102.ice,5879d0b878f2eee905c3d704d8dbd6e5
 ラブ・エンペ,Love Empe,item/mag/it_mg_00164.ice,f59b64096821998357862e04bb92c385
 ダークラッピー,Dark Rappy,item/mag/it_mg_00166.ice,3bc48efbc4905e17944a7b1b1c324e4d
 エグ・ラッピー,Egg Rappy,item/mag/it_mg_00159.ice,4198693307c8767b2499a079e8aeaace
-パック,Puck,item/mag/it_mg_00162.ice,e4e51238a35af871df48531867595a5d,(Not found)
+パック,Puck,item/mag/it_mg_00162.ice,e4e51238a35af871df48531867595a5d
 モルガナ,Morgana,item/mag/it_mg_00168.ice,eb260d01c2638cca6b39fdf0874cdfb7
 バーゼラルドＧ,Baselard G,item/mag/it_mg_00169.ice,76c5b13600656bc0c78f7c6d3d5db3dd
 轟雷Ｇ,Gourai G,item/mag/it_mg_00170.ice,6d9dd8c590eb20f364e99527d480671c
 テルテルラッピー,Tell Tell Rappy,item/mag/it_mg_00167.ice,bb0e9279b935ac4652ad25d4485ad806
-プーギー,Poogie,item/mag/it_mg_00172.ice,6b66fc039f6c5d9f94cfeccce2adc1ea,(Not found)
-パートニャー,Partnya,item/mag/it_mg_00171.ice,f611dca84efaf7b503a0f23406df661d,(Not found)
+プーギー,Poogie,item/mag/it_mg_00172.ice,6b66fc039f6c5d9f94cfeccce2adc1ea
+パートニャー,Partnya,item/mag/it_mg_00171.ice,f611dca84efaf7b503a0f23406df661d
 ,Unknown 157,item/mag/it_mg_00157.ice,283b326a6333ffecd7ba0c53cebc8981,(Not found)
 レイチュ,Reichu,item/mag/it_mg_00173.ice,52e5c28391673d39c73cf3263e8ee4dc
 ,Unknown 165,item/mag/it_mg_00165.ice,51e50d8be2d5d812567393bd90608252,(Not found)
@@ -195,5 +195,5 @@ Vハンター,V Hunter,item/mag/it_mg_00188.ice,ea33269943bd56bf3bc42342eee450c6
 ,Unknown 201,item/mag/it_mg_00201.ice,c429c5c617c2a47665160614b2548861
 ,Unknown 202,item/mag/it_mg_00202.ice,0b4d46e282f9f121de413afd5e9a30ea
 ,Unknown 161,item/mag/it_mg_00161.ice,b2af4ba2fde1d1355919895094d40542
-,Unknown 204,item/mag/it_mg_00204.ice,1c6d25cfe7b5a176e2a66c35356cb407,(Not found)
+,Unknown 204,item/mag/it_mg_00204.ice,1c6d25cfe7b5a176e2a66c35356cb407
 ,Unknown 203,item/mag/it_mg_00203.ice,422ee2bccdd12b7760cc5f7dfc2c77e2
