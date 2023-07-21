@@ -68,7 +68,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? ms.sheetListFetchFromFiles(ms.getCsvFiles(selectedCategoryF!)) : null,
+        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? ms.sheetListFetchFromFiles(context, selectedCategoryF!, []) : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -137,7 +137,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
               Item fromItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
-                      ? ms.getSwapToCsvList(csvData, fromItem)
+                      ? ms.getSwapToCsvList(csvData, fromItem.category)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
                           ? getAccSwapToCsvList(csvAccData, selectedCategoryF!)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty

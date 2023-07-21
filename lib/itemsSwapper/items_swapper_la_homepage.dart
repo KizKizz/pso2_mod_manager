@@ -634,14 +634,14 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                         csvEmotesData.clear();
                                                         if (!isEmotesToStandbyMotions) {
                                                           isEmotesToStandbyMotions = true;
-                                                          await msdl.sheetListFetchFromFiles(msdl.getCsvFiles(defaultCateforyDirs[14]));
+                                                          await msdl.sheetListFetchFromFiles(context, defaultCateforyDirs[14], []);
                                                           availableEmotesCsvData = await msdl.getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
                                                         } else {
                                                           isEmotesToStandbyMotions = false;
-                                                          await msdl.sheetListFetchFromFiles(msdl.getCsvFiles(selectedCategoryF!));
+                                                          await msdl.sheetListFetchFromFiles(context, selectedCategoryF!, []);
                                                           //shell Item
                                                           Item tempItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
-                                                          availableEmotesCsvData = await msdl.getEmotesSwapToCsvList(csvEmotesData, tempItem);
+                                                          availableEmotesCsvData = await msdl.getEmotesSwapToCsvList(csvEmotesData, tempItem.category);
                                                           if (selectedMotionType.isNotEmpty) {
                                                             availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
                                                           }

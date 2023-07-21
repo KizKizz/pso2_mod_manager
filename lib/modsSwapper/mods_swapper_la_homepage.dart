@@ -477,12 +477,12 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                         csvEmotesData.clear();
                                                         if (!isEmotesToStandbyMotions) {
                                                           isEmotesToStandbyMotions = true;
-                                                          await sheetListFetchFromFiles(getCsvFiles(defaultCateforyDirs[14]));
+                                                          await sheetListFetchFromFiles(context, defaultCateforyDirs[14], widget.fromSubmod.getDistinctModFilePaths());
                                                           availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
                                                         } else {
                                                           isEmotesToStandbyMotions = false;
-                                                          await sheetListFetchFromFiles(getCsvFiles(widget.fromItem.category));
-                                                          availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem);
+                                                          await sheetListFetchFromFiles(context, widget.fromItem.category, widget.fromSubmod.getDistinctModFilePaths());
+                                                          availableEmotesCsvData = await getEmotesSwapToCsvList(csvEmotesData, widget.fromItem.category);
                                                           if (selectedMotionType.isNotEmpty) {
                                                             availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();
                                                           }
