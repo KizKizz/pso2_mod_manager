@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": [
-        "Added items swapping function (swapping between unmodded items, emotes, motions)",
-        "Fixed some bugs in Mod Sets",
+        "Fixed a bug where uncategorized items were unable to swap",
+        "Fixed some errors in item reference sheets which caused when doing item swaps",
         "Some other minor bug fixes"
     ],
     "windows_file": "",

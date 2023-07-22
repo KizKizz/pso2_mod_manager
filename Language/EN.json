@@ -254,6 +254,7 @@
   "uiErrorWhenLoadingItemRefSheets": "Error when loading item reference sheets data",
   "uiFetchingItemInfo": "Fetching item info",
   "uiErrorWhenFetchingItemInfo": "Error when fetching item info",
+  "uiItemCategoryNotFound": "Item Category Not Found",
   "uiExperimental": "Experimental",
   "uiChooseAnItemBelow": "Choose an item below",
   "uiItemCategories": "Item categories"

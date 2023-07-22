@@ -323,6 +323,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiFetchingItemInfo = json['uiFetchingItemInfo'] as String
       ..uiErrorWhenFetchingItemInfo =
           json['uiErrorWhenFetchingItemInfo'] as String
+      ..uiItemCategoryNotFound = json['uiItemCategoryNotFound'] as String
       ..uiExperimental = json['uiExperimental'] as String
       ..uiChooseAnItemBelow = json['uiChooseAnItemBelow'] as String
       ..uiItemCategories = json['uiItemCategories'] as String;
@@ -592,6 +593,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiErrorWhenLoadingItemRefSheets,
       'uiFetchingItemInfo': instance.uiFetchingItemInfo,
       'uiErrorWhenFetchingItemInfo': instance.uiErrorWhenFetchingItemInfo,
+      'uiItemCategoryNotFound': instance.uiItemCategoryNotFound,
       'uiExperimental': instance.uiExperimental,
       'uiChooseAnItemBelow': instance.uiChooseAnItemBelow,
       'uiItemCategories': instance.uiItemCategories,

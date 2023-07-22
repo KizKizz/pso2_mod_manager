@@ -479,6 +479,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           isEmotesToStandbyMotions = true;
                                                           await sheetListFetchFromFiles(context, defaultCateforyDirs[14], widget.fromSubmod.getDistinctModFilePaths());
                                                           availableEmotesCsvData = await getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                          availableEmotesCsvData = availableEmotesCsvData.where((element) => element.enName.isNotEmpty).toList();
                                                         } else {
                                                           isEmotesToStandbyMotions = false;
                                                           await sheetListFetchFromFiles(context, widget.fromItem.category, widget.fromSubmod.getDistinctModFilePaths());

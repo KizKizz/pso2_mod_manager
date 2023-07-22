@@ -110,6 +110,7 @@ void modAddHandler(context) {
     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
     for (var file in itemRefSheetsList) {
       for (var line in file) {
+        line = line.replaceAll('"', '');
         if (p.extension(inputFile.path) == '' && line.contains(inputFile.name)) {
           var lineSplit = line.split(',');
           String jpItemName = lineSplit[0];

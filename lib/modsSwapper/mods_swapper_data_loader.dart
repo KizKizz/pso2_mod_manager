@@ -101,13 +101,13 @@ Future<String> modsSwapperCategorySelect(context) async {
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: Text(curLangText!.uiSelectACategory, style: const TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(curLangText!.uiItemCategoryNotFound, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
                 content: SizedBox(
                   width: 200,
                   child: DropdownButtonHideUnderline(
                       child: DropdownButton2(
-                    hint: Text(curLangText!.uiItemCategories),
+                    hint: Text(curLangText!.uiSelectACategory),
                     buttonStyleData: ButtonStyleData(
                       height: 30,
                       decoration: BoxDecoration(
@@ -187,6 +187,7 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
     csvList.add([]);
     //csvList.last.add(p.basename(file.path));
     await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
+      line = line.replaceAll('"', '');
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
       if (categoryIndex != -1) {
         if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
@@ -222,7 +223,9 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
           csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
         }
       } else if (item.split(',').first == defaultCateforyDirs[14]) {
-        csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
+        if (item.split(',').length == 9) {
+          csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
+        }
       } else if (item.split(',').first == defaultCateforyDirs[10]) {
         csvData.add(CsvIceFile.fromListHairs(item.split(',')));
       } else {
@@ -352,9 +355,11 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
                       ? getSwapToCsvList(csvData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
-                          ? getAccSwapToCsvList(csvAccData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
+                          ? getAccSwapToCsvList(
+                              csvAccData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
-                              ? getEmotesSwapToCsvList(csvEmotesData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
+                              ? getEmotesSwapToCsvList(
+                                  csvEmotesData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
                               : null,
                   builder: (
                     BuildContext context,
