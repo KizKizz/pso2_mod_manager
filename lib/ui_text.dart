@@ -296,7 +296,8 @@ class TranslationText {
   String uiLoadingItemRefSheetsData = 'Loading item reference sheets data',
       uiErrorWhenLoadingItemRefSheets = 'Error when loading item reference sheets data',
       uiFetchingItemInfo = 'Fetching item info',
-      uiErrorWhenFetchingItemInfo = 'Error when fetching item info';
+      uiErrorWhenFetchingItemInfo = 'Error when fetching item info',
+      uiItemCategoryNotFound = 'Item Category Not Found';
 
   //mods_swapper_popup
   String uiExperimental = 'Experimental';
