@@ -3,7 +3,7 @@
     "version": "2.2.1",
     "description": [
         "Fixed a bug where uncategorized items were unable to swap",
-        "Fixed some errors in item reference sheets which caused when doing item swaps",
+        "Fixed some errors in item reference sheets which causing freezes when doing item swaps",
         "Some other minor bug fixes"
     ],
     "windows_file": "",
