@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.2.2",
     "description": [
-        "Fixed a bug where searching for items in swapper would cause item swapping list to not load"
+        "Fixed a bug where searching for items in swapper would prevent item swapping lists from loading"
     ],
     "windows_file": "",
     "linux_file": ""
