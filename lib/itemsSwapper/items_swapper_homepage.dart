@@ -528,6 +528,8 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                     toItemAvailableIces.clear();
                                     csvData.clear();
                                     availableItemsCsvData.clear();
+                                    fromItemSearchResults.clear();
+                                    toItemSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

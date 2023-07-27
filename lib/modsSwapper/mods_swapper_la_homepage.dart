@@ -617,6 +617,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                     queueFromEmoteCsvFiles.clear();
                                     queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
+                                    toIEmotesSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -881,6 +882,7 @@ Future<void> swapperLaQueueConfirmDialog(
                           queueToEmoteCsvFiles.clear();
                           queueFromEmoteCsvFiles.clear();
                           queueSwappedLaPaths.clear();
+                          toIEmotesSearchResults.clear();
                           setState(
                             () {},
                           );

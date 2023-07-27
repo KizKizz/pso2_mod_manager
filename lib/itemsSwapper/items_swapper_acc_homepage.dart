@@ -491,6 +491,8 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                     toAccItemAvailableIces.clear();
                                     csvAccData.clear();
                                     availableAccCsvData.clear();
+                                    fromItemSearchResults.clear();
+                                    toAccSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

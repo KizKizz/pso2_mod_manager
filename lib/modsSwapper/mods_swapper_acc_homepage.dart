@@ -411,7 +411,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                               if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
                                                                 toAccItemAvailableIces.add(line);
                                                               }
-                                                    
+
                                                               if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
                                                                 toAccItemAvailableIces.add(line);
                                                               }
@@ -456,6 +456,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                     toAccItemAvailableIces.clear();
                                     csvAccData.clear();
                                     availableAccCsvData.clear();
+                                    toAccSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

@@ -433,7 +433,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                               if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
                                                                 toItemAvailableIces.add(line);
                                                               }
-                                                    
+
                                                               if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
                                                                 toItemAvailableIces.add(line);
                                                               }
@@ -478,6 +478,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                     toItemAvailableIces.clear();
                                     csvData.clear();
                                     availableItemsCsvData.clear();
+                                    toItemSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -567,7 +568,11 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [Text('${curLangText!.uiItemID}: ${toItemIds[0]}'), Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'), for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
+                                children: [
+                                  Text('${curLangText!.uiItemID}: ${toItemIds[0]}'),
+                                  Text('${curLangText!.uiAdjustedID}: ${toItemIds[1]}'),
+                                  for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])
+                                ],
                               ),
                             ),
                           ),

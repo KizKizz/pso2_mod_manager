@@ -780,6 +780,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
                                     dropDownSelectedMotionType = motionTypes.first;
+                                    toIEmotesSearchResults.clear();
+                                    fromItemSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
