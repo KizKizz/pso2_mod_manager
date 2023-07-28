@@ -42,7 +42,7 @@ dependencies:
   intl: ^0.18.0
   window_manager: ^0.3.0
   font_awesome_flutter: ^10.1.0
-  package_info_plus: ^3.0.2
+  package_info_plus: ^4.0.2
   http: ^0.13.4
   path_provider: ^2.0.11
   archive: ^3.3.5
@@ -51,7 +51,7 @@ dependencies:
   #rework
   json_annotation: ^4.8.0
   media_kit: ^1.1.0                              # Primary package.
-  media_kit_video: ^1.0.2                        # For video rendering.
+  media_kit_video: ^1.1.0                        # For video rendering.
   media_kit_native_event_loop: ^1.0.3            # Support for higher number of concurrent instances & better performance.
   media_kit_libs_windows_video: ^1.0.2           # Windows package for video native libraries.
   #media_kit_libs_android_video: ^1.0.0           # Android package for video native libraries.
@@ -67,8 +67,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-# dependency_overrides:
-#  ffi: ^2.0.0
+dependency_overrides:
+  win32: ^5.0.5
 
 dev_dependencies:
   flutter_test:
