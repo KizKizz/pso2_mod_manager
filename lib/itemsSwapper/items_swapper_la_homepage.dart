@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/itemsSwapper/items_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as msdl;
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart' as msls;
@@ -197,7 +198,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                             children: [
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                color: Colors.transparent,
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                 child: SizedBox(
                                   height: 92,
                                   child: ListTile(
@@ -343,7 +344,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     Expanded(
                                       child: Card(
                                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                        color: Colors.transparent,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                           data: ScrollbarThemeData(
                                             thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -464,7 +465,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     width: double.infinity,
                                     child: Card(
                                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                        color: Colors.transparent,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                             data: ScrollbarThemeData(
                                               thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -485,7 +486,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                     child: ListTile(
                                                       shape: RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                      tileColor: Colors.transparent,
+                                                      tileColor: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                                       title: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
@@ -547,7 +548,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                             children: [
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                color: Colors.transparent,
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                 child: SizedBox(
                                     height: 92,
                                     child: ListTile(
@@ -678,7 +679,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     Expanded(
                                       child: Card(
                                           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                          color: Colors.transparent,
+                                          color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                           child: ScrollbarTheme(
                                               data: ScrollbarThemeData(
                                                 thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -780,6 +781,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                     queueToEmoteCsvFiles.clear();
                                     isEmotesToStandbyMotions = false;
                                     dropDownSelectedMotionType = motionTypes.first;
+                                    toIEmotesSearchResults.clear();
+                                    fromItemSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -861,7 +864,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                           child: Card(
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                            color: Colors.transparent,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Column(
@@ -884,7 +887,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                           child: Card(
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                            color: Colors.transparent,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Column(
@@ -978,7 +981,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                       child: Card(
                                         margin: EdgeInsets.zero,
                                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                        color: Colors.transparent,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Column(
@@ -1009,7 +1012,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                       child: Card(
                                         margin: EdgeInsets.zero,
                                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                        color: Colors.transparent,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Column(

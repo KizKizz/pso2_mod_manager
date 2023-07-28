@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "description": [
-        "Fixed a bug where uncategorized items were unable to swap",
-        "Fixed some errors in item reference sheets which causing freezes when doing item swaps",
-        "Some other minor bug fixes"
+        "Fixed a bug where searching for items in swapper would prevent item swapping lists from loading", 
+        "Fixed an out of range bug due to md5 of original files is empty when checking for applied mods when startup",
+        "Upgraded backend framework"
     ],
     "windows_file": "",
     "linux_file": ""

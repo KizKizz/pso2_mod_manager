@@ -8,6 +8,7 @@ import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_swappage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -105,7 +106,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                             children: [
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                color: Colors.transparent,
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                 child: ListTile(
                                   title: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -166,7 +167,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                     Expanded(
                                       child: Card(
                                         shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                        color: Colors.transparent,
+                                        color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                           data: ScrollbarThemeData(
                                             thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -238,7 +239,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                             children: [
                               Card(
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                color: Colors.transparent,
+                                color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                 child: SizedBox(
                                     height: 92,
                                     child: ListTile(
@@ -369,7 +370,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                     Expanded(
                                       child: Card(
                                           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                          color: Colors.transparent,
+                                          color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                           child: ScrollbarTheme(
                                               data: ScrollbarThemeData(
                                                 thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -411,7 +412,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                               if (fromAccItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
                                                                 toAccItemAvailableIces.add(line);
                                                               }
-                                                    
+
                                                               if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
                                                                 toAccItemAvailableIces.add(line);
                                                               }
@@ -456,6 +457,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                     toAccItemAvailableIces.clear();
                                     csvAccData.clear();
                                     availableAccCsvData.clear();
+                                    toAccSearchResults.clear();
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),
@@ -512,7 +514,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                           child: Card(
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                            color: Colors.transparent,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Column(
@@ -535,7 +537,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromAccItem
                           child: Card(
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                            color: Colors.transparent,
+                            color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Column(

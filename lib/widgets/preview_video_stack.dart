@@ -27,7 +27,7 @@ class _PreviewVideoStackState extends State<PreviewVideoStack> {
     final VideoController vidPlayercontroller = VideoController(videoPlayer);
     videoPlayer.open(Media(widget.videoPath));
     videoPlayer.setVolume(0);
-    videoPlayer.streams.completed.listen((event) {
+    videoPlayer.stream.completed.listen((event) {
       if (event) {
         //videoPlayer.pause();
         videoPlayer.play();
