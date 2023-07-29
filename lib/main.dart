@@ -10,6 +10,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
@@ -170,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
+    downloadFile();
 
     super.initState();
   }
@@ -210,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerFalse();
         }
       }
-      
+
       //Empty categories hide
       isEmptyCatesHide = (prefs.getBool('isShowHideEmptyCategories') ?? false);
 
