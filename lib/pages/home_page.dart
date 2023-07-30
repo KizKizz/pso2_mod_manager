@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
   List<CategoryType> searchedItemList = [];
   TextEditingController newSetTextController = TextEditingController();
   String selectedModSetName = '';
-  final int applyButtonsDelay = 250;
+  final int applyButtonsDelay = 100;
 
   @override
   void initState() {
