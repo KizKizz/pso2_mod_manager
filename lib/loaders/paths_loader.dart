@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';

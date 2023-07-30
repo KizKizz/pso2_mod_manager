@@ -25,10 +25,10 @@ Future<List<ModFile>> appliedFileCheck(List<CategoryType> appliedList) async {
                         String curDataMD5 = await getFileHash(ogPath);
                         if (curDataMD5 != modFileMD5) {
                           if (ogFileMD5.isEmpty || ogFileMD5.length != modFile.ogLocations.length) {
-                            String newOGMD5 = await getFileHash(ogPath);
-                            if (!modFile.ogMd5s.contains(newOGMD5)) {
-                              modFile.ogMd5s.add(newOGMD5);
-                            }
+                            // String newOGMD5 = await getFileHash(ogPath);
+                            // if (!modFile.ogMd5s.contains(newOGMD5)) {
+                            //   modFile.ogMd5s.add(newOGMD5);
+                            // }
                             //reapply with backup
                             filesToApplyAndBackup.add(modFile);
                           } else if (curDataMD5 != ogFileMD5[modFile.ogLocations.indexOf(ogPath)]) {

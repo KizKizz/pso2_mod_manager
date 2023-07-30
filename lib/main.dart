@@ -171,7 +171,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     ApplicationConfig().checkChecksumFileForUpdates(context);
-    downloadFile();
+    //downloadFile();
+    
 
     super.initState();
   }
