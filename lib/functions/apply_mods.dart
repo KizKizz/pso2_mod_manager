@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/functions/backup_mods.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 
