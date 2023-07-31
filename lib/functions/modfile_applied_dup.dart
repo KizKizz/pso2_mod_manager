@@ -10,7 +10,7 @@ Future<ModFile?> modFileAppliedDupRestore(List<CategoryType> moddedList, ModFile
             int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
             if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location == modFile.location) {
               //submod.modFiles[modFileIndex].applyStatus = false;
-              //removed for downloading backup
+              //removed for downloading backups from sega
               //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
               submod.modFiles[modFileIndex].applyStatus = false;
               submod.modFiles[modFileIndex].ogMd5s.clear();

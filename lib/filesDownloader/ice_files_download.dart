@@ -36,12 +36,6 @@ Future<List<String>> getPatchServerList() async {
 }
 
 Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
-  final patchLinks = await getPatchServerList();
-  String masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
-  String patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
-  String backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
-  String backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
-
   Dio dio = Dio();
   dio.options.headers = {"User-Agent": "AQUA_HTTP"};
 
@@ -51,7 +45,7 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
     String webLinkPath = path.replaceAll('\\', '/');
     try {
       await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-      debugPrint('$modManPso2binPath\\$path');
+      //debugPrint('$modManPso2binPath\\$path');
       downloadedIceList.add(path);
     } catch (e) {
       try {

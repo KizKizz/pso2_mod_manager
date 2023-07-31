@@ -77,7 +77,8 @@ class _HomePageState extends State<HomePage> {
   List<CategoryType> searchedItemList = [];
   TextEditingController newSetTextController = TextEditingController();
   String selectedModSetName = '';
-  final int applyButtonsDelay = 100;
+  final int applyButtonsDelay = 250;
+  final int unapplyButtonsDelay = 50;
 
   @override
   void initState() {
@@ -2193,7 +2194,7 @@ class _HomePageState extends State<HomePage> {
                                                                 setState(() {});
                                                                 //status
 
-                                                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                   String filesUnapplied = '';
                                                                   //check backups
                                                                   bool allBkFilesFound = true;
@@ -2455,7 +2456,7 @@ class _HomePageState extends State<HomePage> {
                                                                 isModViewModsRemoving = true;
                                                                 setState(() {});
 
-                                                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                   //status
                                                                   String filesUnapplied = '';
                                                                   //check backups
@@ -2793,7 +2794,7 @@ class _HomePageState extends State<HomePage> {
                                                                           isModViewModsRemoving = true;
                                                                           setState(() {});
 
-                                                                          Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                          Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                             //status
                                                                             String filesUnapplied = '';
                                                                             //check backups
@@ -3248,7 +3249,7 @@ class _HomePageState extends State<HomePage> {
                               : () {
                                   isModViewModsRemoving = true;
                                   setState(() {});
-                                  Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                  Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                     unapplyAllMods(context).then((value) {
                                       isModViewModsRemoving = false;
                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
@@ -3563,7 +3564,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     onTap: () async {
                                                                                       isModViewModsRemoving = true;
                                                                                       setState(() {});
-                                                                                      Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                                      Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                                         //status
                                                                                         String filesUnapplied = '';
                                                                                         //check backups
@@ -3971,7 +3972,7 @@ class _HomePageState extends State<HomePage> {
                                                         onTap: () async {
                                                           isModViewModsRemoving = true;
                                                           setState(() {});
-                                                          Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                          Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                             //status
                                                             String filesUnapplied = '';
                                                             //check backups
@@ -4403,7 +4404,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     onTap: () async {
                                                                                       isModViewModsRemoving = true;
                                                                                       setState(() {});
-                                                                                      Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                                      Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                                         //status
                                                                                         String filesUnapplied = '';
                                                                                         //check backups
