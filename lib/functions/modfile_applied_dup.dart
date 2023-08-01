@@ -1,6 +1,5 @@
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/functions/unapply_mods.dart';
 
 Future<ModFile?> modFileAppliedDupRestore(List<CategoryType> moddedList, ModFile modFile) async {
   for (var cateType in moddedList) {
@@ -11,7 +10,8 @@ Future<ModFile?> modFileAppliedDupRestore(List<CategoryType> moddedList, ModFile
             int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
             if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location == modFile.location) {
               //submod.modFiles[modFileIndex].applyStatus = false;
-              submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
+              //removed for downloading backups from sega
+              //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
               submod.modFiles[modFileIndex].applyStatus = false;
               submod.modFiles[modFileIndex].ogMd5s.clear();
               submod.modFiles[modFileIndex].bkLocations.clear();

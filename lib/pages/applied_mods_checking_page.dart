@@ -102,26 +102,28 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                         ),
-                        ScrollbarTheme(
-                          data: ScrollbarThemeData(
-                            thumbColor: MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.hovered)) {
-                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                              }
-                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                            }),
-                          ),
-                          child: SingleChildScrollView(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.all(2),
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: result.length,
-                                itemBuilder: (context, i) {
-                                  return ListTile(
-                                    title: Center(child: Text('${result[i].category} > ${result[i].itemName} > ${result[i].modName} > ${result[i].submodName} > ${result[i].modFileName}')),
-                                  );
-                                }),
+                        Expanded(
+                          child: ScrollbarTheme(
+                            data: ScrollbarThemeData(
+                              thumbColor: MaterialStateProperty.resolveWith((states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                }
+                                return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                              }),
+                            ),
+                            child: SingleChildScrollView(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(2),
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: result.length,
+                                  itemBuilder: (context, i) {
+                                    return ListTile(
+                                      title: Center(child: Text('${result[i].category} > ${result[i].itemName} > ${result[i].modName} > ${result[i].submodName} > ${result[i].modFileName}')),
+                                    );
+                                  }),
+                            ),
                           ),
                         ),
 

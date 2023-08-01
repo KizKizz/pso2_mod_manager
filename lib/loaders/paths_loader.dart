@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
@@ -27,7 +28,7 @@ String modManPso2binPath = '';
 String modManDirParentDirPath = '';
 String modManDirPath = '';
 String modManModsDirPath = '';
-String modManBackupsDirPath = '';
+//String modManBackupsDirPath = '';
 String modManChecksumDirPath = '';
 String modManDeletedItemsDirPath = '';
 String modManChecksumFilePath = '';
@@ -53,6 +54,11 @@ String modManSwapperDirPath = Uri.file('${Directory.current.path}/swapper').toFi
 String modManSwapperFromItemDirPath = Uri.file('${Directory.current.path}/swapper/fromitem').toFilePath();
 String modManSwapperToItemDirPath = Uri.file('${Directory.current.path}/swapper/toitem').toFilePath();
 String modManSwapperOutputDirPath = Uri.file('${Directory.current.path}/swapper/Swapped Items').toFilePath();
+//sega patch server links
+String masterURL = '';
+String patchURL = '';
+String backupMasterURL = '';
+String backupPatchURL = '';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
@@ -105,12 +111,17 @@ Future<bool> pathsLoader(context) async {
   for (var name in defaultCateforyDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
+  //Backup folders removed since downloading backups from sega
   //Create Backups folder
-  modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
-  Directory(modManBackupsDirPath).createSync();
-  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  for (var name in dataFolders) {
-    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  // modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
+  // Directory(modManBackupsDirPath).createSync();
+  // List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  // for (var name in dataFolders) {
+  //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  // }
+  //Remove backup folder if existing
+  if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
+    Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
   }
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -154,6 +165,13 @@ Future<bool> pathsLoader(context) async {
     isAutoFetchingIconsOnStartup = await startupItemIconDialog(context);
     prefs.setString('isAutoFetchingIconsOnStartup', isAutoFetchingIconsOnStartup);
   }
+
+  //sega patch server loader
+  final patchLinks = await getPatchServerList();
+  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
 
   //Return true if all paths loaded
   return true;
@@ -329,13 +347,14 @@ Future<bool> modManPathReloader(context) async {
   for (var name in defaultCateforyDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
+  //Backup folders removed since downloading backups from sega
   //Create Backups folder
-  modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
-  Directory(modManBackupsDirPath).createSync();
-  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  for (var name in dataFolders) {
-    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
-  }
+  // modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
+  // Directory(modManBackupsDirPath).createSync();
+  // List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  // for (var name in dataFolders) {
+  //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  // }
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
@@ -11,7 +10,6 @@ import 'package:pso2_mod_manager/itemsSwapper/items_swapper_homepage.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_la_homepage.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as ms;
@@ -23,23 +21,22 @@ SubMod fromItemSubmodGet(List<String> iceFileNames) {
     String iceName = iceNameWithType.split(': ').last;
 
     //look in backupDir first
-    final iceFileInBackupDir =
-        Directory(Uri.file(modManBackupsDirPath).toFilePath()).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '', orElse: () => File(''));
-    if (p.basename(iceFileInBackupDir.path) == iceName) {
-      modFileList
-          .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], iceFileInBackupDir.path, false, DateTime(0), 0, false, false, false, [], [], []));
-    } else {
-      for (var type in ogDataFilePaths) {
-        String icePathFromOgData = type.firstWhere(
-          (element) => p.basename(element) == iceName,
-          orElse: () => '',
-        );
-        if (p.basename(icePathFromOgData) == iceName) {
-          modFileList
-              .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], []));
-        }
+    // final iceFileInBackupDir =
+    //     Directory(Uri.file(modManBackupsDirPath).toFilePath()).listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '', orElse: () => File(''));
+    // if (p.basename(iceFileInBackupDir.path) == iceName) {
+    //   modFileList
+    //       .add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], iceFileInBackupDir.path, false, DateTime(0), 0, false, false, false, [], [], []));
+    // } else {
+    for (var type in ogDataFilePaths) {
+      String icePathFromOgData = type.firstWhere(
+        (element) => p.basename(element) == iceName,
+        orElse: () => '',
+      );
+      if (p.basename(icePathFromOgData) == iceName) {
+        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], []));
       }
     }
+    //}
   }
 
   return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], [], [], [], modFileList);

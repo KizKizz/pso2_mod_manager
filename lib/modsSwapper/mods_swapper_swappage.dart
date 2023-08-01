@@ -4,6 +4,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -78,13 +79,13 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod, List<String> f
 
     //copy to temp toitem dir
     String icePathFromOgDataT = '';
-    final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
-    icePathFromOgDataT = backupFiles
-        .firstWhere(
-          (element) => p.basename(element.path) == iceNameT,
-          orElse: () => File(''),
-        )
-        .path;
+    // final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
+    // icePathFromOgDataT = backupFiles
+    //     .firstWhere(
+    //       (element) => p.basename(element.path) == iceNameT,
+    //       orElse: () => File(''),
+    //     )
+    //     .path;
     //look for og file if backup is not found
     if (icePathFromOgDataT.isEmpty) {
       for (var type in ogDataFilePaths) {
@@ -98,7 +99,9 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod, List<String> f
       }
     }
     if (icePathFromOgDataT.isNotEmpty) {
-      final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
+      //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
+      //download from file from server
+      final iceFileInTempT = await swapperIceFileDownload(icePathFromOgDataT, modManSwapperToItemDirPath);
       await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathT"', [iceFileInTempT.path]);
       String extractedGroup1PathT = Uri.file('$tempSubmodPathT/${iceNameT}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathT).existsSync()) {
@@ -311,7 +314,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod, List<String> from
                                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                     if (!fromSubmod.modName.contains('_${curLangText!.uiSwap}') && !fromSubmod.submodName.contains('_${curLangText!.uiSwap}'))
-                                                    Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                                      Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
                                                   ],
                                                 ),
                                               ),
