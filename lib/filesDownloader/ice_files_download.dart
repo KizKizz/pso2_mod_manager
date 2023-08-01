@@ -77,7 +77,7 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
   Dio dio = Dio();
   dio.options.headers = {"User-Agent": "AQUA_HTTP"};
 
-  String webLinkPath = dataIcePath.replaceFirst(modManPso2binPath, '').replaceAll('\\', '/').trim();
+  String webLinkPath = dataIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/').trim();
   String saveToPath = Uri.file('$saveToDirPath/${p.basenameWithoutExtension(dataIcePath)}').toFilePath();
   try {
     await dio.download('$masterURL$webLinkPath.pat', saveToPath);
