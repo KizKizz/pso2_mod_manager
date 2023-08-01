@@ -21,7 +21,7 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
                 for (var submod in mod.submods) {
                   if (submod.applyStatus) {
                     for (var file in submod.modFiles) {
-                      if (file.applyStatus == true) {
+                      if (file.applyStatus) {
                         if (file.modFileName == modFile.modFileName && file.location != modFile.location) {
                           sameModFileFound = true;
                           break;
