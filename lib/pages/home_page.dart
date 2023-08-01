@@ -2197,19 +2197,19 @@ class _HomePageState extends State<HomePage> {
                                                                 Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                   String filesUnapplied = '';
                                                                   //check backups
-                                                                  bool allBkFilesFound = true;
-                                                                  for (var modFile in curMod.submods.first.modFiles) {
-                                                                    for (var bkFile in modFile.bkLocations) {
-                                                                      if (!File(bkFile).existsSync()) {
-                                                                        allBkFilesFound = false;
-                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                            context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                                  // bool allBkFilesFound = true;
+                                                                  // for (var modFile in curMod.submods.first.modFiles) {
+                                                                  //   for (var bkFile in modFile.bkLocations) {
+                                                                  //     if (!File(bkFile).existsSync()) {
+                                                                  //       allBkFilesFound = false;
+                                                                  //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                  //           context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                        break;
-                                                                      }
-                                                                    }
-                                                                  }
-                                                                  if (allBkFilesFound) {
+                                                                  //       break;
+                                                                  //     }
+                                                                  //   }
+                                                                  // }
+                                                                  //if (allBkFilesFound) {
                                                                     modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
                                                                       List<ModFile> unappliedModFiles = value;
                                                                       if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
@@ -2237,7 +2237,7 @@ class _HomePageState extends State<HomePage> {
                                                                       saveModdedItemListToJson();
                                                                       setState(() {});
                                                                     });
-                                                                  }
+                                                                  //}
                                                                 });
                                                               }),
                                                         ),
@@ -2460,19 +2460,19 @@ class _HomePageState extends State<HomePage> {
                                                                   //status
                                                                   String filesUnapplied = '';
                                                                   //check backups
-                                                                  bool allBkFilesFound = true;
-                                                                  for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
-                                                                    for (var bkFile in modFile.bkLocations) {
-                                                                      if (!File(bkFile).existsSync()) {
-                                                                        allBkFilesFound = false;
-                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                            context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                                  // bool allBkFilesFound = true;
+                                                                  // for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
+                                                                  //   for (var bkFile in modFile.bkLocations) {
+                                                                  //     if (!File(bkFile).existsSync()) {
+                                                                  //       allBkFilesFound = false;
+                                                                  //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                  //           context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                        break;
-                                                                      }
-                                                                    }
-                                                                  }
-                                                                  if (allBkFilesFound) {
+                                                                  //       break;
+                                                                  //     }
+                                                                  //   }
+                                                                  // }
+                                                                  //if (allBkFilesFound) {
                                                                     modFilesUnapply(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
                                                                       List<ModFile> unappliedModFiles = value;
                                                                       if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
@@ -2501,7 +2501,7 @@ class _HomePageState extends State<HomePage> {
                                                                       saveModdedItemListToJson();
                                                                       setState(() {});
                                                                     });
-                                                                  }
+                                                                  //}
                                                                 });
                                                               }),
                                                         ),
@@ -2798,19 +2798,19 @@ class _HomePageState extends State<HomePage> {
                                                                             //status
                                                                             String filesUnapplied = '';
                                                                             //check backups
-                                                                            bool allBkFilesFound = true;
-                                                                            for (var modFile in curSubmod.modFiles) {
-                                                                              for (var bkFile in modFile.bkLocations) {
-                                                                                if (!File(bkFile).existsSync()) {
-                                                                                  allBkFilesFound = false;
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                      context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                                            // bool allBkFilesFound = true;
+                                                                            // for (var modFile in curSubmod.modFiles) {
+                                                                            //   for (var bkFile in modFile.bkLocations) {
+                                                                            //     if (!File(bkFile).existsSync()) {
+                                                                            //       allBkFilesFound = false;
+                                                                            //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                            //           context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                                  break;
-                                                                                }
-                                                                              }
-                                                                            }
-                                                                            if (allBkFilesFound) {
+                                                                            //       break;
+                                                                            //     }
+                                                                            //   }
+                                                                            // }
+                                                                            //if (allBkFilesFound) {
                                                                               modFilesUnapply(context, curSubmod.modFiles).then((value) async {
                                                                                 List<ModFile> unappliedModFiles = value;
                                                                                 if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
@@ -2837,7 +2837,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 saveModdedItemListToJson();
                                                                                 setState(() {});
                                                                               });
-                                                                            }
+                                                                            //}
                                                                           });
                                                                         },
                                                                       ),
@@ -3568,19 +3568,19 @@ class _HomePageState extends State<HomePage> {
                                                                                         //status
                                                                                         String filesUnapplied = '';
                                                                                         //check backups
-                                                                                        bool allBkFilesFound = true;
-                                                                                        for (var modFile in allAppliedModFiles[m]) {
-                                                                                          for (var bkFile in modFile.bkLocations) {
-                                                                                            if (!File(bkFile).existsSync()) {
-                                                                                              allBkFilesFound = false;
-                                                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!',
-                                                                                                  '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                                                        // bool allBkFilesFound = true;
+                                                                                        // for (var modFile in allAppliedModFiles[m]) {
+                                                                                        //   for (var bkFile in modFile.bkLocations) {
+                                                                                        //     if (!File(bkFile).existsSync()) {
+                                                                                        //       allBkFilesFound = false;
+                                                                                        //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!',
+                                                                                        //           '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                                              break;
-                                                                                            }
-                                                                                          }
-                                                                                        }
-                                                                                        if (allBkFilesFound) {
+                                                                                        //       break;
+                                                                                        //     }
+                                                                                        //   }
+                                                                                        // }
+                                                                                        // if (allBkFilesFound) {
                                                                                           modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                             List<ModFile> unappliedModFiles = value;
                                                                                             previewImages.clear();
@@ -3631,7 +3631,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             saveModdedItemListToJson();
                                                                                             setState(() {});
                                                                                           });
-                                                                                        }
+                                                                                        //}
                                                                                       });
                                                                                     },
                                                                                   ),
@@ -3976,7 +3976,7 @@ class _HomePageState extends State<HomePage> {
                                                             //status
                                                             String filesUnapplied = '';
                                                             //check backups
-                                                            bool allBkFilesFound = true;
+                                                            // bool allBkFilesFound = true;
                                                             List<ModFile> allAppliedModFiles = [];
                                                             for (var item in curSet.setItems) {
                                                               if (item.applyStatus) {
@@ -3992,18 +3992,18 @@ class _HomePageState extends State<HomePage> {
                                                               }
                                                             }
 
-                                                            for (var modFile in allAppliedModFiles) {
-                                                              for (var bkFile in modFile.bkLocations) {
-                                                                if (!File(bkFile).existsSync()) {
-                                                                  allBkFilesFound = false;
-                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                      snackBarMessage(context, curLangText!.uiError, '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                            // for (var modFile in allAppliedModFiles) {
+                                                            //   for (var bkFile in modFile.bkLocations) {
+                                                            //     if (!File(bkFile).existsSync()) {
+                                                            //       allBkFilesFound = false;
+                                                            //       ScaffoldMessenger.of(context).showSnackBar(
+                                                            //           snackBarMessage(context, curLangText!.uiError, '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                  break;
-                                                                }
-                                                              }
-                                                            }
-                                                            if (allBkFilesFound) {
+                                                            //       break;
+                                                            //     }
+                                                            //   }
+                                                            // }
+                                                            //if (allBkFilesFound) {
                                                               modFilesUnapply(context, allAppliedModFiles).then((value) async {
                                                                 List<ModFile> unappliedModFiles = value;
                                                                 previewImages.clear();
@@ -4056,7 +4056,7 @@ class _HomePageState extends State<HomePage> {
                                                                 saveModdedItemListToJson();
                                                                 setState(() {});
                                                               });
-                                                            }
+                                                            //}
                                                           });
                                                         },
                                                       ),
@@ -4408,19 +4408,19 @@ class _HomePageState extends State<HomePage> {
                                                                                         //status
                                                                                         String filesUnapplied = '';
                                                                                         //check backups
-                                                                                        bool allBkFilesFound = true;
-                                                                                        for (var modFile in allAppliedModFiles[m]) {
-                                                                                          for (var bkFile in modFile.bkLocations) {
-                                                                                            if (!File(bkFile).existsSync()) {
-                                                                                              allBkFilesFound = false;
-                                                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!',
-                                                                                                  '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
+                                                                                        // bool allBkFilesFound = true;
+                                                                                        // for (var modFile in allAppliedModFiles[m]) {
+                                                                                        //   for (var bkFile in modFile.bkLocations) {
+                                                                                        //     if (!File(bkFile).existsSync()) {
+                                                                                        //       allBkFilesFound = false;
+                                                                                        //       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!',
+                                                                                        //           '${curLangText!.uiCouldntFindBackupFileFor} ${modFile.modFileName}', 3000));
 
-                                                                                              break;
-                                                                                            }
-                                                                                          }
-                                                                                        }
-                                                                                        if (allBkFilesFound) {
+                                                                                        //       break;
+                                                                                        //     }
+                                                                                        //   }
+                                                                                        // }
+                                                                                        //if (allBkFilesFound) {
                                                                                           modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
                                                                                             List<ModFile> unappliedModFiles = value;
                                                                                             previewImages.clear();
@@ -4467,7 +4467,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             saveModdedItemListToJson();
                                                                                             setState(() {});
                                                                                           });
-                                                                                        }
+                                                                                        //}
                                                                                       });
                                                                                     },
                                                                                   ),
