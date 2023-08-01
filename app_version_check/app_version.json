@@ -4,6 +4,7 @@
     "description": [
         "Removed local files backup system and backup folder for original files",
         "Backup files for mods are now being downloaded directly from Sega servers when restoring mods",
+        "This method may take a bit longer than local backups but will ensure original files availability",
         "Some minor bugs fixes"
     ],
     "windows_file": "",
