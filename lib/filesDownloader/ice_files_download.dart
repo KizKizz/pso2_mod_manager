@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 Future<List<String>> getPatchServerList() async {
   String managenentLink = 'http://patch01.pso2gs.net/patch_prod/patches/management_beta.txt';
@@ -69,6 +71,42 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
 
   dio.close();
   return downloadedIceList;
+}
+
+Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) async {
+  Dio dio = Dio();
+  dio.options.headers = {"User-Agent": "AQUA_HTTP"};
+
+  String webLinkPath = dataIcePath.replaceFirst(modManPso2binPath, '').replaceAll('\\', '/').trim();
+  String saveToPath = Uri.file('$saveToDirPath/${p.basenameWithoutExtension(dataIcePath)}').toFilePath();
+  try {
+    await dio.download('$masterURL$webLinkPath.pat', saveToPath);
+    //debugPrint('$modManPso2binPath\\$path');
+    dio.close();
+    return File(saveToPath);
+  } catch (e) {
+    try {
+      await dio.download('$patchURL$webLinkPath.pat', saveToPath);
+      dio.close();
+      return File(saveToPath);
+    } catch (e) {
+      try {
+        await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
+        dio.close();
+        return File(saveToPath);
+      } catch (e) {
+        try {
+          await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
+          dio.close();
+          return File(saveToPath);
+        } catch (e) {
+          //debugPrint(e.toString());
+          dio.close();
+          return File('');
+        }
+      }
+    }
+  }
 }
 
 Future<void> testDownload() async {
