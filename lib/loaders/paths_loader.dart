@@ -119,6 +119,10 @@ Future<bool> pathsLoader(context) async {
   // for (var name in dataFolders) {
   //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
   // }
+  //Remove backup folder if existing
+  if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
+    Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
+  }
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();

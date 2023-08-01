@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.2.2",
+    "version": "2.3.0",
     "description": [
-        "Fixed a bug where searching for items in swapper would prevent item swapping lists from loading", 
-        "Fixed an out of range bug due to md5 of original files is empty when checking for applied mods when startup",
-        "Upgraded backend framework"
+        "Removed local files backup system and backup folder for original files",
+        "Backup files for mods are now being downloaded directly from Sega servers when restoring mods",
+        "Some minor bugs fixes"
     ],
     "windows_file": "",
     "linux_file": ""
