@@ -591,7 +591,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperSwappingDialog(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
+                        swapperSwappingDialog(context, false, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);

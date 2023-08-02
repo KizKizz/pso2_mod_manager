@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -37,6 +38,41 @@ Future<List<String>> getPatchServerList() async {
   return patchList;
 }
 
+Future<void> fetchOfficialPatchFileList() async {
+  Dio dio = Dio();
+  dio.options.headers = {"User-Agent": "AQUA_HTTP"};
+
+  try {
+    final response = await dio.get('${patchURL}patchlist_region1st.txt');
+    if (response.statusCode == 200) {
+      officialPatchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+  try {
+    final response = await dio.get('${patchURL}patchlist_classic.txt');
+    if (response.statusCode == 200) {
+      officialPatchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+  try {
+    final response = await dio.get('${patchURL}patchlist_avatar.txt');
+    if (response.statusCode == 200) {
+      officialPatchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+
+  dio.close();
+}
+
 Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
   Dio dio = Dio();
   dio.options.headers = {"User-Agent": "AQUA_HTTP"};
@@ -45,24 +81,66 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
 
   for (var path in dataIcePaths) {
     String webLinkPath = path.replaceAll('\\', '/');
-    try {
-      await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-      //debugPrint('$modManPso2binPath\\$path');
-      downloadedIceList.add(path);
-    } catch (e) {
+    String server = '';
+
+    if (officialPatchFileList.isNotEmpty) {
+      final fileFound = officialPatchFileList.firstWhere(
+        (element) => element.contains(p.basenameWithoutExtension(path)),
+        orElse: () => '',
+      );
+
+      if (fileFound.isNotEmpty) {
+        server = fileFound.trim().substring(fileFound.length - 2, fileFound.length - 1);
+      }
+    }
+
+    if (server == 'm') {
       try {
-        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        //debugPrint('master ${file.statusCode}');
         downloadedIceList.add(path);
-      } catch (e) {
+      } on DioException {
         try {
           await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
         } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
+    } else if (server == 'p') {
+      try {
+        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        //debugPrint('patch ${file.statusCode}');
+        downloadedIceList.add(path);
+      } on DioException {
+        try {
+          await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+          downloadedIceList.add(path);
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
+    } else {
+      try {
+        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        //debugPrint('patch ${file.statusCode}');
+        downloadedIceList.add(path);
+      } on DioException {
+        try {
+          await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+          downloadedIceList.add(path);
+        } on DioException {
           try {
-            await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+            await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+            //debugPrint('master ${file.statusCode}');
             downloadedIceList.add(path);
-          } catch (e) {
-            debugPrint(e.toString());
+          } on DioException {
+            try {
+              await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+              downloadedIceList.add(path);
+            } catch (e) {
+              debugPrint(e.toString());
+            }
           }
         }
       }
@@ -80,23 +158,23 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
   String webLinkPath = dataIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/').trim();
   String saveToPath = Uri.file('$saveToDirPath/${p.basenameWithoutExtension(dataIcePath)}').toFilePath();
   try {
-    await dio.download('$masterURL$webLinkPath.pat', saveToPath);
+    await dio.download('$patchURL$webLinkPath.pat', saveToPath);
     //debugPrint('$modManPso2binPath\\$path');
     dio.close();
     return File(saveToPath);
   } catch (e) {
     try {
-      await dio.download('$patchURL$webLinkPath.pat', saveToPath);
+      await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
       dio.close();
       return File(saveToPath);
     } catch (e) {
       try {
-        await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
+        await dio.download('$masterURL$webLinkPath.pat', saveToPath);
         dio.close();
         return File(saveToPath);
       } catch (e) {
         try {
-          await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
+          await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
           dio.close();
           return File(saveToPath);
         } catch (e) {

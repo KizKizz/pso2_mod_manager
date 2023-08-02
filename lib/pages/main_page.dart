@@ -46,8 +46,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  
-
   @override
   void initState() {
     _selectedIconLoaderSwitches[saveValues.indexWhere((element) => element == isAutoFetchingIconsOnStartup)] = true;
@@ -63,10 +61,10 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> iconLoaderSwitches = <Widget>[
-    ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
-    ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
-    ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
-  ];
+      ModManTooltip(message: curLangText!.uiWillNotFetchItemIcon, child: Text(curLangText!.uiOFF)),
+      ModManTooltip(message: curLangText!.uiOnlyFetchOneIcon, child: Text(curLangText!.uiMinimal)),
+      ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
+    ];
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -376,7 +374,7 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Path open
-                      //Open Backup removed due to backups being downloaded from sega 
+                      //Open Backup removed due to backups being downloaded from sega
                       // MaterialButton(
                       //   height: 40,
                       //   onPressed: (() async {
@@ -1184,10 +1182,10 @@ class _MainPageState extends State<MainPage> {
                                 }),
                                 child: Row(
                                   children: [
-                                      const Icon(
-                                        Icons.swap_horizontal_circle_outlined,
-                                        size: 18,
-                                      ),
+                                    const Icon(
+                                      Icons.swap_horizontal_circle_outlined,
+                                      size: 18,
+                                    ),
                                     const SizedBox(width: 2.5),
                                     Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
                                   ],
@@ -1281,11 +1279,17 @@ class _MainPageState extends State<MainPage> {
                                   );
                                   if (checksumLocation != null) {
                                     String? checksumPath = checksumLocation!.paths.first;
-                                    File(checksumPath!).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
-                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();
-                                    File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
-
-                                    Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                                    if (checksumPath!.isNotEmpty) {
+                                      File(checksumPath).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
+                                      modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();
+                                      File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
+                                      if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+                                        File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32_na/${p.basename(modManChecksumFilePath)}').toFilePath());
+                                      }
+                                      final prefs = await SharedPreferences.getInstance();
+                                      prefs.setString('checksumFilePath', modManChecksumFilePath);
+                                      Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                                    }
                                     setState(() {});
                                   }
                                 } else {

@@ -16,7 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
+Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -60,12 +60,32 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod, List<String> f
     List<File> extractedGroup1FilesT = [];
     List<File> extractedGroup2FilesT = [];
 
-    //copy to temp fromitem dir
-    int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == iceNameF);
-    if (modFileIndexF != -1) {
-      final modFileF = fromSubmod.modFiles[modFileIndexF];
-      final iceFileInTempF = await File(modFileF.location).copy(Uri.file('$modManSwapperFromItemDirPath/$iceNameF').toFilePath());
-      //extract F ice to
+    //copy or download files to temp fromitem dir
+    File iceFileInTempF = File('');
+    if (isVanillaItemSwap) {
+      //get ice path
+      String icePathFromOgDataF = '';
+      if (icePathFromOgDataF.isEmpty) {
+        for (var type in ogDataFilePaths) {
+          icePathFromOgDataF = type.firstWhere(
+            (element) => p.basename(element) == iceNameF,
+            orElse: () => '',
+          );
+          if (icePathFromOgDataF.isNotEmpty) {
+            break;
+          }
+        }
+      }
+      iceFileInTempF = await swapperIceFileDownload(icePathFromOgDataF, modManSwapperFromItemDirPath);
+    } else {
+      int modFileIndexF = fromSubmod.modFiles.indexWhere((element) => element.modFileName == iceNameF);
+      if (modFileIndexF != -1) {
+        final modFileF = fromSubmod.modFiles[modFileIndexF];
+        iceFileInTempF = await File(modFileF.location).copy(Uri.file('$modManSwapperFromItemDirPath/$iceNameF').toFilePath());
+      }
+    }
+    //extract F ice to
+    if (iceFileInTempF.path.isNotEmpty) {
       await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [iceFileInTempF.path]);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {
@@ -189,7 +209,7 @@ Future<String> modsSwapperIceFilesGet(context, SubMod fromSubmod, List<String> f
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperSwappingDialog(context, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
+Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -200,7 +220,7 @@ Future<void> swapperSwappingDialog(context, SubMod fromSubmod, List<String> from
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName) : null,
+                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, isVanillaItemSwap, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
