@@ -749,7 +749,7 @@ Future<void> swapperLaConfirmDialog(context, SubMod fromSubmod, List<String> fro
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperLaSwappingDialog(context, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                        swapperLaSwappingDialog(context, false, fromSubmod, toItemName, fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
@@ -930,7 +930,7 @@ Future<void> swapperLaQueueConfirmDialog(
                           for (int i = 0; i < queueFromEmotesAvailableIceList.length; i++) {
                             fromEmotesAvailableIces = queueFromEmotesAvailableIceList[i].toList();
                             toEmotesAvailableIces = queueToEmotesAvailableIceList[i].toList();
-                            await swapperLaQueueSwappingDialog(context, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
+                            await swapperLaQueueSwappingDialog(context, false, fromSubmod, queueToItemNameList[i], fromEmotesAvailableIces, toEmotesAvailableIces, queueSwappedLaPaths);
                             setState(
                               () {},
                             );

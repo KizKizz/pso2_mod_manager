@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
@@ -17,24 +16,24 @@ Future<List<String>> unapplyAllMods(context) async {
             if (mod.applyStatus) {
               for (var submod in mod.submods) {
                 List<ModFile> allAppliedModFiles = submod.modFiles.where((element) => element.applyStatus).toList();
-                String bkNotFoundFileNames = '';
-                //check backups
-                bool allBkFilesFound = true;
-                for (var modFile in allAppliedModFiles) {
-                  for (var bkFile in modFile.bkLocations) {
-                    if (!File(bkFile).existsSync()) {
-                      allBkFilesFound = false;
-                      if (!bkNotFoundFileNames.contains(modFile.modFileName)) {
-                        bkNotFoundFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName} ${modFile.modFileName}\n';
-                      }
-                    }
-                  }
-                }
-                if (!allBkFilesFound) {
-                  return ['${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor}\n${bkNotFoundFileNames.trim()}'];
-                }
+                // String bkNotFoundFileNames = '';
+                // //check backups
+                // bool allBkFilesFound = true;
+                // for (var modFile in allAppliedModFiles) {
+                //   for (var bkFile in modFile.bkLocations) {
+                //     if (!File(bkFile).existsSync()) {
+                //       allBkFilesFound = false;
+                //       if (!bkNotFoundFileNames.contains(modFile.modFileName)) {
+                //         bkNotFoundFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName} ${modFile.modFileName}\n';
+                //       }
+                //     }
+                //   }
+                // }
+                // if (!allBkFilesFound) {
+                //   return ['${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor}\n${bkNotFoundFileNames.trim()}'];
+                // }
 
-                if (allBkFilesFound) {
+                // if (allBkFilesFound) {
                   await modFilesUnapply(context, allAppliedModFiles);
                   if (submod.applyStatus) {
                     unappliedFileNames += '${item.itemName} > ${mod.modName} > ${submod.submodName}\n';
@@ -56,7 +55,7 @@ Future<List<String>> unapplyAllMods(context) async {
 
                   appliedItemList = await appliedListBuilder(moddedItemsList);
                   saveModdedItemListToJson();
-                }
+                //}
               }
             }
           }

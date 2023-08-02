@@ -8,11 +8,27 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> checksumChecker() async {
-  final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
-  if (filesInCSFolder.isNotEmpty && p.extension(filesInCSFolder.first.path) == '') {
-    modManChecksumFilePath = filesInCSFolder.first.path;
+  final prefs = await SharedPreferences.getInstance();
+  modManChecksumFilePath = (prefs.getString('checksumFilePath') ?? '');
+  if (!File(modManChecksumFilePath).existsSync()) {
+    modManChecksumFilePath = '';
+  }
+
+  if (modManChecksumFilePath.isEmpty || p.basename(modManChecksumFilePath) != netChecksumFileName) {
+    final filesInCSFolder = Directory(modManChecksumDirPath).listSync().whereType<File>();
+    if (filesInCSFolder.isNotEmpty) {
+      modManChecksumFilePath = Uri.file(filesInCSFolder
+              .firstWhere(
+                (element) => p.basename(element.path) == netChecksumFileName,
+                orElse: () => File(''),
+              )
+              .path)
+          .toFilePath();
+      prefs.setString('checksumFilePath', modManChecksumFilePath);
+    }
   }
 
   if (modManChecksumFilePath.isNotEmpty && File(modManChecksumFilePath).existsSync()) {

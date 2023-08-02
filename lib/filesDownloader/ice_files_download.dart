@@ -46,20 +46,20 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
   for (var path in dataIcePaths) {
     String webLinkPath = path.replaceAll('\\', '/');
     try {
-      await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+      await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
       //debugPrint('$modManPso2binPath\\$path');
       downloadedIceList.add(path);
     } catch (e) {
       try {
-        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
         downloadedIceList.add(path);
       } catch (e) {
         try {
-          await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+          await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
         } catch (e) {
           try {
-            await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+            await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
             downloadedIceList.add(path);
           } catch (e) {
             debugPrint(e.toString());
@@ -80,23 +80,23 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
   String webLinkPath = dataIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/').trim();
   String saveToPath = Uri.file('$saveToDirPath/${p.basenameWithoutExtension(dataIcePath)}').toFilePath();
   try {
-    await dio.download('$masterURL$webLinkPath.pat', saveToPath);
+    await dio.download('$patchURL$webLinkPath.pat', saveToPath);
     //debugPrint('$modManPso2binPath\\$path');
     dio.close();
     return File(saveToPath);
   } catch (e) {
     try {
-      await dio.download('$patchURL$webLinkPath.pat', saveToPath);
+      await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
       dio.close();
       return File(saveToPath);
     } catch (e) {
       try {
-        await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
+        await dio.download('$masterURL$webLinkPath.pat', saveToPath);
         dio.close();
         return File(saveToPath);
       } catch (e) {
         try {
-          await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
+          await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
           dio.close();
           return File(saveToPath);
         } catch (e) {

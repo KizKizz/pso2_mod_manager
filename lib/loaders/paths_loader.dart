@@ -142,12 +142,15 @@ Future<bool> pathsLoader(context) async {
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
-  File(modManRefSheetListFilePath).createSync();
+  if (!File(modManRefSheetListFilePath).existsSync()) {
+    File(modManRefSheetListFilePath).createSync();
+  }
   //Create log file
   // modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
+  await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
   //ref sheets check load files
@@ -262,6 +265,7 @@ Future<bool> pso2PathsReloader(context) async {
   }
 
   //Checksum
+  await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
   //Apply mods to new data folder
@@ -380,6 +384,7 @@ Future<bool> modManPathReloader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
+  await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
   listsReloading = true;

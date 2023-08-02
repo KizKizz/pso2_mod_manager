@@ -1,8 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "description": [
-        "Fixed a bug where local backups still being required to unapply mods"
+        "Mods and Items now fetch original files from Sega server", 
+        "Improved checksum detection",
+        "Some other bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
