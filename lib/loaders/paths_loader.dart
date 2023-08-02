@@ -153,6 +153,8 @@ Future<bool> pathsLoader(context) async {
   await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
+  
+
   //ref sheets check load files
   if (kDebugMode) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
@@ -175,6 +177,9 @@ Future<bool> pathsLoader(context) async {
   patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
   backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
   backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+
+  //Get patch file lists
+  await fetchOfficialPatchFileList();
 
   //Return true if all paths loaded
   return true;
@@ -379,6 +384,7 @@ Future<bool> modManPathReloader(context) async {
   // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
+
   //Create log file
   // modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManOpLogsFilePath).createSync();
@@ -386,6 +392,16 @@ Future<bool> modManPathReloader(context) async {
   //Checksum check
   await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
+
+  //sega patch server loader
+  final patchLinks = await getPatchServerList();
+  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+
+  //Get patch file lists
+  await fetchOfficialPatchFileList();
 
   listsReloading = true;
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();

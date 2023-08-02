@@ -92,3 +92,4 @@ List<CsvAccessoryIceFile> csvAccData = [];
 List<CsvAccessoryIceFile> availableAccCsvData = [];
 List<CsvEmoteIceFile> csvEmotesData = [];
 List<CsvEmoteIceFile> availableEmotesCsvData = [];
+List<String> officialPatchFileList = [];

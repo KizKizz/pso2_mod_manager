@@ -2,7 +2,8 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.3.2",
     "description": [
-        "Mods and Items now fetch original files from Sega server", 
+        "Mods and Items Swapper now fetch original files from Sega servers",
+        "More improvement to getting files process from Sega",
         "Improved checksum detection",
         "Some other bug fixes"
     ],
