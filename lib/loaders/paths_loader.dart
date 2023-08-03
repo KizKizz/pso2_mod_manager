@@ -153,8 +153,6 @@ Future<bool> pathsLoader(context) async {
   await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
-  
-
   //ref sheets check load files
   if (kDebugMode) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
@@ -173,10 +171,12 @@ Future<bool> pathsLoader(context) async {
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();
-  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
-  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
-  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
-  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  if (patchLinks.isNotEmpty) {
+    masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+    patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+    backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+    backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  }
 
   //Get patch file lists
   await fetchOfficialPatchFileList();
@@ -395,10 +395,12 @@ Future<bool> modManPathReloader(context) async {
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();
-  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
-  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
-  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
-  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  if (patchLinks.isNotEmpty) {
+    masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+    patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+    backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+    backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  }
 
   //Get patch file lists
   await fetchOfficialPatchFileList();

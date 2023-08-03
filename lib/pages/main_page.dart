@@ -23,6 +23,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
@@ -1157,6 +1158,15 @@ class _MainPageState extends State<MainPage> {
                                   });
                                   modAddHandler(context);
                                 }),
+                                onLongPress: () {
+                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
+                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
+                                  modsAdderHomePage(context);
+                                },
                                 child: Row(
                                   children: [
                                     const Icon(
