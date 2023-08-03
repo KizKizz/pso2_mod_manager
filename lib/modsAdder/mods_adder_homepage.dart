@@ -12,6 +12,8 @@ import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/mods_adder.dart';
@@ -23,9 +25,12 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:io/io.dart' as io;
 
 bool dropZoneMax = true;
 bool _newModDragging = false;
+List<XFile> modAdderDragDropFiles = [];
+List<ModsAdderFile> processedFileList = [];
 
 void modsAdderHomePage(context) {
   showDialog(
@@ -129,7 +134,7 @@ void modsAdderHomePage(context) {
                                   SizedBox(
                                       width: dropZoneMax
                                           ? constraints.maxWidth * 0.7
-                                          : newModDragDropList.isEmpty
+                                          : modAdderDragDropFiles.isEmpty
                                               ? constraints.maxWidth * 0.3
                                               : constraints.maxWidth * 0.45,
                                       child: Column(
@@ -139,10 +144,10 @@ void modsAdderHomePage(context) {
                                             onDragDone: (detail) async {
                                               for (var element in detail.files) {
                                                 if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
-                                                  modsAdderUnsupportedFileTypeDialog(context);
-                                                } else if (newModDragDropList.indexWhere((file) => file.path == element.path) == -1) {
-                                                  newModDragDropList.add(element);
-                                                  newModMainFolderList.add(element);
+                                                  modsAdderUnsupportedFileTypeDialog(context, p.basename(element.path));
+                                                } else if (modAdderDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
+                                                  modAdderDragDropFiles.add(element);
+                                                  //newModMainFolderList.add(element);
                                                 }
                                               }
                                               setState(
@@ -173,14 +178,14 @@ void modsAdderHomePage(context) {
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      if (newModDragDropList.isEmpty)
+                                                      if (modAdderDragDropFiles.isEmpty)
                                                         Center(
                                                             child: Text(
                                                           curLangText!.uiDragDropFiles,
                                                           style: const TextStyle(fontSize: 20),
                                                           textAlign: TextAlign.center,
                                                         )),
-                                                      if (newModDragDropList.isNotEmpty)
+                                                      if (modAdderDragDropFiles.isNotEmpty)
                                                         Expanded(
                                                           child: Padding(
                                                             padding: const EdgeInsets.only(right: 5),
@@ -190,7 +195,7 @@ void modsAdderHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(horizontal: 0),
                                                                   child: ListView.builder(
-                                                                      itemCount: newModDragDropList.length,
+                                                                      itemCount: modAdderDragDropFiles.length,
                                                                       itemBuilder: (BuildContext context, int index) {
                                                                         return ListTile(
                                                                           //dense: true,
@@ -203,7 +208,7 @@ void modsAdderHomePage(context) {
                                                                               child: MaterialButton(
                                                                                 child: const Icon(Icons.remove_circle),
                                                                                 onPressed: () {
-                                                                                  newModDragDropList.removeAt(index);
+                                                                                  modAdderDragDropFiles.removeAt(index);
                                                                                   setState(
                                                                                     () {},
                                                                                   );
@@ -211,9 +216,9 @@ void modsAdderHomePage(context) {
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          title: Text(newModDragDropList[index].name),
+                                                                          title: Text(modAdderDragDropFiles[index].name),
                                                                           subtitle: Text(
-                                                                            newModDragDropList[index].path,
+                                                                            modAdderDragDropFiles[index].path,
                                                                             maxLines: 1,
                                                                             overflow: TextOverflow.ellipsis,
                                                                             softWrap: false,
@@ -227,6 +232,48 @@ void modsAdderHomePage(context) {
                                                   )),
                                             ),
                                           ),
+                                          SizedBox(
+                                            //width: constraints.maxWidth * 0.7,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 5, bottom: 4),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                        onPressed: modAdderDragDropFiles.isNotEmpty
+                                                            ? (() {
+                                                                modAdderDragDropFiles.clear();
+                                                                //newModMainFolderList.clear();
+                                                                setState(
+                                                                  () {},
+                                                                );
+                                                              })
+                                                            : null,
+                                                        child: Text(curLangText!.uiClearAll)),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                        onPressed: modAdderDragDropFiles.isNotEmpty
+                                                            ? (() async {
+                                                                processedFileList = await modsAdderFilesProcess(modAdderDragDropFiles);
+                                                                modAdderDragDropFiles.clear();
+                                                                dropZoneMax = false;
+                                                                setState(
+                                                                  () {},
+                                                                );
+                                                              })
+                                                            : null,
+                                                        child: Text(curLangText!.uiProcess)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       )),
                                 ],
@@ -242,15 +289,112 @@ void modsAdderHomePage(context) {
 }
 
 //suport functions
-void modsAdderUnsupportedFileTypeDialog(context) {
+Future<List<ModsAdderFile>> modsAdderFilesProcess(List<XFile> xFilePaths) async {
+  List<String> charsToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+  //copy files to temp
+  for (var xFile in xFilePaths) {
+    if (p.extension(xFile.path) == '.zip') {
+      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true);
+    } else if (File(xFile.path).statSync().type == FileSystemEntityType.directory) {
+      await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name}').toFilePath());
+    } else {
+      final tempPath = Uri.file('$modManAddModsTempDirPath/${p.basename(File(xFile.path).parent.path)}').toFilePath();
+      Directory(tempPath).createSync(recursive: true);
+      File(xFile.path).copySync(Uri.file('$tempPath/${xFile.name}').toFilePath());
+    }
+  }
+  //listing ice files in temp
+  List<File> iceFileList = [];
+  for (var dir in Directory(modManAddModsTempDirPath).listSync(recursive: false).whereType<Directory>()) {
+    iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isEmpty));
+  }
+  //fetch csv
+  if (csvInfosFromSheets.isEmpty) {
+    csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+  }
+  List<String> csvFileInfos = [];
+  for (var iceFile in iceFileList) {
+    //look in csv infos
+    for (var csvFile in csvInfosFromSheets) {
+      csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
+    }
+  }
+  if (csvInfosFromSheets.isNotEmpty) {
+    csvInfosFromSheets.clear();
+  }
+  //create new item structures
+  List<File> csvMatchedIceFiles = [];
+  for (var infoLine in csvFileInfos) {
+    final infos = infoLine.split(',');
+    String itemName = '';
+    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    for (var char in charsToReplace) {
+      itemName = itemName.replaceAll(char, '_');
+    }
+    //move files from temp
+    for (var iceFile in iceFileList) {
+      if (infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
+        String newItemDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+        await Directory(p.dirname(newItemDirPath)).create(recursive: true);
+        iceFile.copySync(newItemDirPath);
+        csvMatchedIceFiles.add(iceFile);
+      }
+    }
+    //get item icon
+    if (infos[0] != defaultCateforyDirs[7] && infos[0] != defaultCateforyDirs[14]) {
+      String ogIconIcePath = '';
+      //find og icon path
+      if (infos[5].isNotEmpty) {
+        int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == infos[5]);
+        int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
+        int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
+        int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
+        if (win32PathIndex != -1) {
+          ogIconIcePath = ogWin32FilePaths[win32PathIndex];
+        } else if (win32NAPathIndex != -1) {
+          ogIconIcePath = ogWin32NAFilePaths[win32NAPathIndex];
+        } else if (win32RebootPathIndex != -1) {
+          ogIconIcePath = ogWin32RebootFilePaths[win32RebootPathIndex];
+        } else if (win32RebootNAPathIndex != -1) {
+          ogIconIcePath = ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
+        } else {
+          ogIconIcePath = '';
+        }
+      }
+      if (ogIconIcePath.isNotEmpty) {
+        String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/tempItemIconUnpack').toFilePath();
+        final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
+        //unpack and convert dds to png
+        if (downloadedconIcePath.isNotEmpty) {
+          //debugPrint(downloadedconIcePath);
+          await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+          File ddsItemIcon = Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+          if (ddsItemIcon.path.isNotEmpty) {
+            await Process.run(Uri.file('${Directory.current.path}/ddstopngtool/DDStronk.exe').toFilePath(), [ddsItemIcon.path]);
+            File pngItemIcon =
+                Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
+            if (pngItemIcon.path.isNotEmpty) {
+              pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/$itemName.png').toFilePath());
+            }
+          }
+          Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+        }
+      }
+    }
+  }
+
+  return [];
+}
+
+void modsAdderUnsupportedFileTypeDialog(context, String fileName) {
   showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            titlePadding: const EdgeInsets.all(5),
+            titlePadding: const EdgeInsets.all(16),
             title: Text(curLangText!.uiError),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-            content: Text(curLangText!.uiAchiveCurrentlyNotSupported),
-            actionsPadding: const EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            content: Text('"$fileName" ${curLangText!.uiAchiveCurrentlyNotSupported}'),
+            actionsPadding: const EdgeInsets.all(16),
             actions: [
               ElevatedButton(
                   onPressed: () {

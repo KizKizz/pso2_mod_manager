@@ -42,6 +42,7 @@ String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
 String modManWin32NaChecksumMD5 = '';
+String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -134,6 +135,7 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
   File(modManModsListJsonPath).createSync();
@@ -375,6 +377,7 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
   File(modManModsListJsonPath).createSync();
