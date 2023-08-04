@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +42,7 @@ String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
 String modManWin32NaChecksumMD5 = '';
+String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -134,6 +135,7 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
   File(modManModsListJsonPath).createSync();
@@ -153,8 +155,6 @@ Future<bool> pathsLoader(context) async {
   await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker();
 
-  
-
   //ref sheets check load files
   if (kDebugMode) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
@@ -173,10 +173,12 @@ Future<bool> pathsLoader(context) async {
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();
-  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
-  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
-  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
-  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  if (patchLinks.isNotEmpty) {
+    masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+    patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+    backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+    backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  }
 
   //Get patch file lists
   await fetchOfficialPatchFileList();
@@ -212,10 +214,12 @@ Future<String?> pso2binPathGet(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -246,10 +250,12 @@ Future<String?> modManDirPathGet(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -324,10 +330,12 @@ Future<String?> pso2binPathReselect(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
@@ -375,6 +383,7 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
   File(modManModsListJsonPath).createSync();
@@ -395,10 +404,12 @@ Future<bool> modManPathReloader(context) async {
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();
-  masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
-  patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
-  backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
-  backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  if (patchLinks.isNotEmpty) {
+    masterURL = patchLinks.firstWhere((element) => element.contains('MasterURL=')).split('=').last.trim();
+    patchURL = patchLinks.firstWhere((element) => element.contains('PatchURL=')).split('=').last.trim();
+    backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
+    backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
+  }
 
   //Get patch file lists
   await fetchOfficialPatchFileList();
@@ -440,10 +451,12 @@ Future<String?> modManDirPathReselect(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
