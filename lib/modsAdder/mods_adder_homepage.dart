@@ -30,7 +30,7 @@ import 'package:io/io.dart' as io;
 bool dropZoneMax = true;
 bool _newModDragging = false;
 List<XFile> modAdderDragDropFiles = [];
-List<ModsAdderFile> processedFileList = [];
+List<ModsAdderItem> processedFileList = [];
 
 void modsAdderHomePage(context) {
   showDialog(
@@ -289,7 +289,8 @@ void modsAdderHomePage(context) {
 }
 
 //suport functions
-Future<List<ModsAdderFile>> modsAdderFilesProcess(List<XFile> xFilePaths) async {
+Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async {
+  List<ModsAdderItem> modsAdderItemList = [];
   List<String> charsToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
   //copy files to temp
   for (var xFile in xFilePaths) {
@@ -331,36 +332,31 @@ Future<List<ModsAdderFile>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
     for (var char in charsToReplace) {
       itemName = itemName.replaceAll(char, '_');
     }
+
     //move files from temp
+    String newItemDirPath = '';
     for (var iceFile in iceFileList) {
       if (infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
-        String newItemDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
-        await Directory(p.dirname(newItemDirPath)).create(recursive: true);
-        iceFile.copySync(newItemDirPath);
+        String newItemPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+        newItemPath = removeRebootPath(newItemPath);
+        newItemDirPath = p.dirname(newItemPath);
+        await Directory(newItemDirPath).create(recursive: true);
+        iceFile.copySync(newItemPath);
         csvMatchedIceFiles.add(iceFile);
+        //fetch extra file in ice dir
+        final extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty);
+        for (var extraFile in extraFiles) {
+          String newExtraFilePath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName${extraFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+          if (!File(newExtraFilePath).existsSync()) {
+            extraFile.copySync(newExtraFilePath);
+          }
+        }
       }
     }
     //get item icon
+    File newItemIcon = File('');
     if (infos[0] != defaultCateforyDirs[7] && infos[0] != defaultCateforyDirs[14]) {
-      String ogIconIcePath = '';
-      //find og icon path
-      if (infos[5].isNotEmpty) {
-        int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == infos[5]);
-        int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
-        int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
-        int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == infos[5]);
-        if (win32PathIndex != -1) {
-          ogIconIcePath = ogWin32FilePaths[win32PathIndex];
-        } else if (win32NAPathIndex != -1) {
-          ogIconIcePath = ogWin32NAFilePaths[win32NAPathIndex];
-        } else if (win32RebootPathIndex != -1) {
-          ogIconIcePath = ogWin32RebootFilePaths[win32RebootPathIndex];
-        } else if (win32RebootNAPathIndex != -1) {
-          ogIconIcePath = ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
-        } else {
-          ogIconIcePath = '';
-        }
-      }
+      String ogIconIcePath = findIcePathInGameData(infos[5]);
       if (ogIconIcePath.isNotEmpty) {
         String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/tempItemIconUnpack').toFilePath();
         final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
@@ -374,16 +370,78 @@ Future<List<ModsAdderFile>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
             File pngItemIcon =
                 Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
             if (pngItemIcon.path.isNotEmpty) {
-              pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/$itemName.png').toFilePath());
+              newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/$itemName.png').toFilePath());
             }
           }
           Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
         }
       }
     }
+    //create new item object
+    
+    //ModsAdderItem newModsAdderItem = ModsAdderItem(infos[0], itemName, newItemDirPath, newItemIcon.path, false, true, modList);
+  }
+  //move unmatched ice files to misc
+  for (var iceFile in iceFileList) {
+    if (!csvMatchedIceFiles.contains(iceFile)) {
+      String itemName = curActiveLang == 'JP' ? '不明な項目' : 'Unknown Item';
+      String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+      newItemDirPath = removeRebootPath(newItemDirPath);
+      await Directory(p.dirname(newItemDirPath)).create(recursive: true);
+      iceFile.copySync(newItemDirPath);
+      //fetch extra file in ice dir
+      final extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty);
+      for (var extraFile in extraFiles) {
+        String newExtraFilePath = Uri.file('$modManModsAdderPath/Misc/$itemName${extraFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+        if (!File(newExtraFilePath).existsSync()) {
+          extraFile.copySync(newExtraFilePath);
+        }
+      }
+    }
   }
 
-  return [];
+  return modsAdderItemList;
+}
+
+String findIcePathInGameData(String iceName) {
+  if (iceName.isEmpty) {
+    return '';
+  }
+  int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
+  if (win32PathIndex != -1) {
+    return ogWin32FilePaths[win32PathIndex];
+  }
+  int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+  if (win32NAPathIndex != -1) {
+    return ogWin32NAFilePaths[win32NAPathIndex];
+  }
+  int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == iceName);
+  if (win32RebootPathIndex != -1) {
+    return ogWin32RebootFilePaths[win32RebootPathIndex];
+  }
+  int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+  if (win32RebootNAPathIndex != -1) {
+    return ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
+  }
+  return '';
+}
+
+String removeRebootPath(String filePath) {
+  String newPath = filePath;
+  String ogPath = findIcePathInGameData(p.basename(filePath));
+  if (ogPath.isEmpty) {
+    return filePath;
+  } else {
+    String trimmedPath = ogPath.replaceFirst(Uri.file('$modManPso2binPath/data/').toFilePath(), '');
+    final toRemovePathNames = p.dirname(trimmedPath).split(Uri.file('/').toFilePath());
+    List<String> newPathSplit = newPath.split(Uri.file('/').toFilePath());
+    for (var name in toRemovePathNames) {
+      newPathSplit.remove(name);
+    }
+    newPath = p.joinAll(newPathSplit);
+  }
+
+  return newPath;
 }
 
 void modsAdderUnsupportedFileTypeDialog(context, String fileName) {

@@ -1,10 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "description": [
-        "Mods and Items Swapper now fetch original files from Sega servers",
-        "More improvement to getting files process from Sega",
-        "Improved checksum detection",
+        "Fixed a bug where selecting directory crashes the app",
+        "More improvements to files backup system",
         "Some other bug fixes"
     ],
     "windows_file": "",

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
@@ -20,7 +19,8 @@ String langDropDownSelected = '';
 List<String> topBtnMenuItems = [];
 String appVersion = '';
 int refSheetsVersion = -1;
-FilePickerResult? checksumLocation;
+//FilePickerResult? checksumLocation;
+String? checksumLocation;
 bool previewWindowVisible = true;
 double windowsWidth = 1280.0;
 double windowsHeight = 720.0;

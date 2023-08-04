@@ -73,6 +73,43 @@ Future<void> fetchOfficialPatchFileList() async {
   dio.close();
 }
 
+Future<List<String>> fetchOfficialPatchFileListForModsAdder() async {
+  List<String> patchFileList = [];
+  Dio dio = Dio();
+  dio.options.headers = {"User-Agent": "AQUA_HTTP"};
+
+  try {
+    final response = await dio.get('${patchURL}patchlist_region1st.txt');
+    if (response.statusCode == 200) {
+      patchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+  try {
+    final response = await dio.get('${patchURL}patchlist_classic.txt');
+    if (response.statusCode == 200) {
+      patchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+  try {
+    final response = await dio.get('${patchURL}patchlist_avatar.txt');
+    if (response.statusCode == 200) {
+      patchFileList.addAll(response.data.toString().split('\n'));
+      //debugPrint(officialPatchFileList.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+
+  dio.close();
+  return patchFileList;
+}
+
 Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
   Dio dio = Dio();
   dio.options.headers = {"User-Agent": "AQUA_HTTP"};

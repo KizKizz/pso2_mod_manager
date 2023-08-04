@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
@@ -1000,10 +1000,16 @@ class _MainPageState extends State<MainPage> {
                                               : Center(child: Text(curLangText!.uiNoBackgroundImageFound)),
                                         ),
                                         onTap: () async {
-                                          await FilePicker.platform.pickFiles(dialogTitle: curLangText!.uiSelectBackgroundImage, lockParentWindow: true, type: FileType.image).then((value) async {
+                                          //await FilePicker.platform.pickFiles(dialogTitle: curLangText!.uiSelectBackgroundImage, lockParentWindow: true, type: FileType.image).then((value) async {
+                                          const XTypeGroup typeGroup = XTypeGroup(
+                                            label: 'images',
+                                            extensions: <String>['png', 'jpg'],
+                                          );
+                                          await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]).then((value) async {
                                             if (value != null) {
                                               final prefs = await SharedPreferences.getInstance();
-                                              backgroundImage = File(value.paths.first!);
+                                              //backgroundImage = File(value.paths.first!);
+                                              backgroundImage = File(value.path);
                                               prefs.setString('backgroundImagePath', backgroundImage.path);
                                               Provider.of<StateProvider>(context, listen: false).backgroundImageTriggerTrue();
                                             }
@@ -1158,18 +1164,18 @@ class _MainPageState extends State<MainPage> {
                                   });
                                   modAddHandler(context);
                                 }),
-                                onLongPress: () {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  modsAdderHomePage(context);
-                                },
+                                // onLongPress: () {
+                                //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   modsAdderHomePage(context);
+                                // },
                                 child: Row(
                                   children: [
                                     const Icon(
@@ -1283,15 +1289,20 @@ class _MainPageState extends State<MainPage> {
                             child: MaterialButton(
                               onLongPress: () async {
                                 if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
-                                  checksumLocation = await FilePicker.platform.pickFiles(
-                                    dialogTitle: curLangText!.uiSelectLocalChecksum,
-                                    allowMultiple: false,
-                                    // type: FileType.custom,
-                                    // allowedExtensions: ['\'\''],
-                                    lockParentWindow: true,
-                                  );
+                                  final XFile? selectedFile = await openFile();
+                                  if (selectedFile != null) {
+                                    checksumLocation = selectedFile.path;
+                                  }
+                                  // await FilePicker.platform.pickFiles(
+                                  //   dialogTitle: curLangText!.uiSelectLocalChecksum,
+                                  //   allowMultiple: false,
+                                  //   // type: FileType.custom,
+                                  //   // allowedExtensions: ['\'\''],
+                                  //   lockParentWindow: true,
+                                  // );
                                   if (checksumLocation != null) {
-                                    String? checksumPath = checksumLocation!.paths.first;
+                                    //String? checksumPath = checksumLocation!.paths.first;
+                                    String? checksumPath = checksumLocation;
                                     if (checksumPath!.isNotEmpty) {
                                       File(checksumPath).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
                                       modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();

@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -214,10 +214,12 @@ Future<String?> pso2binPathGet(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -248,10 +250,12 @@ Future<String?> modManDirPathGet(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -326,10 +330,12 @@ Future<String?> pso2binPathReselect(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectPso2binFolderPath,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
@@ -445,10 +451,12 @@ Future<String?> modManDirPathReselect(context) async {
                     onPressed: () async {
                       Navigator.pop(
                           context,
-                          await FilePicker.platform.getDirectoryPath(
-                            dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
-                            lockParentWindow: true,
-                          ));
+                          // await FilePicker.platform.getDirectoryPath(
+                          //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
+                          //   lockParentWindow: true,
+                          // )
+                          await getDirectoryPath()
+                          );
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
