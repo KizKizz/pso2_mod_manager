@@ -214,10 +214,15 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
 
   for (var line in csvList) {
     for (var item in line) {
+      //
       if (item.split(',').first == defaultCateforyDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
       } else if (item.split(',').first == defaultCateforyDirs[7]) {
-        if (item.split(',').length == 14) {
+        if (item.split(',').length != 15 && item.split(',').length != 19) {
+          debugPrint('${item.split(',')[2]} _ ${item.split(',').length}');
+          //
+        }
+        if (item.split(',').length == 15) {
           csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
         } else if (item.split(',').length == 19) {
           csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));

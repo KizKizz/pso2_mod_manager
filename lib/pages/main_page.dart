@@ -1164,18 +1164,18 @@ class _MainPageState extends State<MainPage> {
                                   });
                                   modAddHandler(context);
                                 }),
-                                onLongPress: () {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  modsAdderHomePage(context);
-                                },
+                                // onLongPress: () {
+                                //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   modsAdderHomePage(context);
+                                // },
                                 child: Row(
                                   children: [
                                     const Icon(

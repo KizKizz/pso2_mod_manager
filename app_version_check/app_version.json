@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "description": [
-        "Fixed a bug where selecting directory crashes the app",
-        "More improvements to files backup system",
+        "Fixed a bug with illegal character in path in Mods and Items Swappers",
+        "Fixed an issue where emote filter hiding more emotes than it supposed to in both Mods and Items Swappers",
         "Some other bug fixes"
     ],
     "windows_file": "",

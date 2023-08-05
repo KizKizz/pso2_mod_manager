@@ -38,17 +38,20 @@ Future<List<String>> getPatchServerList() async {
   return patchList;
 }
 
-Future<void> fetchOfficialPatchFileList() async {
+Future<List<String>> fetchOfficialPatchFileList() async {
   Dio dio = Dio();
   dio.options.headers = {"User-Agent": "AQUA_HTTP"};
+  List<String> returnStatus = [];
 
   try {
     final response = await dio.get('${patchURL}patchlist_region1st.txt');
     if (response.statusCode == 200) {
       officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
       //debugPrint(officialPatchFileList.toString());
+      returnStatus.add('Patch list 1: Success');
     }
   } catch (e) {
+    returnStatus.add('Patch list 1: Failed');
     debugPrint(e.toString());
   }
   try {
@@ -56,8 +59,10 @@ Future<void> fetchOfficialPatchFileList() async {
     if (response.statusCode == 200) {
       officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
       //debugPrint(officialPatchFileList.toString());
+      returnStatus.add('Patch list 2: Success');
     }
   } catch (e) {
+    returnStatus.add('Patch list 2: Failed');
     debugPrint(e.toString());
   }
   try {
@@ -65,12 +70,15 @@ Future<void> fetchOfficialPatchFileList() async {
     if (response.statusCode == 200) {
       officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
       //debugPrint(officialPatchFileList.toString());
+      returnStatus.add('Patch list 3: Success');
     }
   } catch (e) {
+    returnStatus.add('Patch list 3: Failed');
     debugPrint(e.toString());
   }
 
   dio.close();
+  return returnStatus;
 }
 
 Future<List<String>> fetchOfficialPatchFileListForModsAdder() async {
