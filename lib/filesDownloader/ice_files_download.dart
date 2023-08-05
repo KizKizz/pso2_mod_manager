@@ -203,7 +203,8 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
       return File(saveToPath);
     } catch (e) {
       try {
-        await dio.download('$masterURL$webLinkPath.pat', saveToPath);
+        final test = await dio.download('$masterURL$webLinkPath.pat', saveToPath);
+        debugPrint(test.statusCode.toString());
         dio.close();
         return File(saveToPath);
       } catch (e) {

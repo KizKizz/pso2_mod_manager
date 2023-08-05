@@ -93,3 +93,5 @@ List<CsvAccessoryIceFile> availableAccCsvData = [];
 List<CsvEmoteIceFile> csvEmotesData = [];
 List<CsvEmoteIceFile> availableEmotesCsvData = [];
 List<String> officialPatchServerFileList = [];
+String charToReplace = '[\\/:*?"<>|]';
+String charToReplaceWithoutSeparators = '[:*?"<>|]';

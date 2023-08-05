@@ -26,8 +26,8 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
   Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
-  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
+  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   List<List<String>> iceSwappingList = [];
 
   toAccItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
@@ -322,15 +322,13 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
     }
 
     //pack
-    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-    for (var char in charToReplace) {
-      toItemName = toItemName.replaceAll(char, '_');
-    }
+
+    toItemName = toItemName.replaceAll(RegExp(charToReplace), '_');
     String packDirPath = '';
     if (fromSubmod.modName == fromSubmod.submodName) {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);
