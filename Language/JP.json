@@ -257,5 +257,7 @@
   "uiItemCategoryNotFound": "カテゴリーが見つかりません",
   "uiExperimental": "実験的",
   "uiChooseAnItemBelow": "以下から商品をお選びください",
-  "uiItemCategories": "カテゴリー"
+  "uiItemCategories": "カテゴリー",
+  "uiFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得\n(しばらく時間がかかるかもしれない)",
+  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得しようとするとエラーが発生する"
 }

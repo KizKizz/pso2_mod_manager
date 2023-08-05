@@ -71,6 +71,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
 
     //fetch
     final iceNamesFromSubmod = widget.fromSubmod.getModFileNames();
+    //debugPrint(csvEmotesData.where((element) => element.enName == 'Captured').toString());
     if (!isEmotesToStandbyMotions || fromItemCsvData.isEmpty) {
       fromItemCsvData = csvEmotesData
           .where((element) =>
@@ -329,7 +330,9 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                     child: ListTile(
                                                       shape: RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                      tileColor: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
+                                                      tileColor: MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7)
+                                                          : Colors.transparent,
                                                       title: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [

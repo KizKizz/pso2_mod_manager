@@ -181,7 +181,7 @@ Future<bool> pathsLoader(context) async {
   }
 
   //Get patch file lists
-  await fetchOfficialPatchFileList();
+  //await fetchOfficialPatchFileList();
 
   //Return true if all paths loaded
   return true;

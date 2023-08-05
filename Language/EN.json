@@ -257,5 +257,7 @@
   "uiItemCategoryNotFound": "Item Category Not Found",
   "uiExperimental": "Experimental",
   "uiChooseAnItemBelow": "Choose an item below",
-  "uiItemCategories": "Item categories"
+  "uiItemCategories": "Item categories",
+  "uiFetchingItemPatchListsFromServers": "Fetching item patch lists from servers\n(Might take a while)",
+  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "Error when trying to fetching item patch lists from servers"
 }

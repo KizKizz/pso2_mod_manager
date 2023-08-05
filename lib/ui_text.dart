@@ -308,6 +308,10 @@ class TranslationText {
   //items_swapper_popup
   String uiItemCategories = 'Item categories';
 
+  //patch_item_list_loading_page
+  String uiFetchingItemPatchListsFromServers = 'Fetching item patch lists from servers\n(Might take a while)',
+      uiErrorWhenTryingToFetchingItemPatchListsFromServers = 'Error when trying to fetching item patch lists from servers';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

@@ -276,15 +276,12 @@ Future<String> modsSwapperLaIceFilesGet(
     //}
 
     //pack
-    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-    for (var char in charToReplace) {
-      newToSelectedItemName = newToSelectedItemName.replaceAll(char, '_');
-    }
+    newToSelectedItemName = newToSelectedItemName.replaceAll(RegExp(charToReplace), '_');
     String packDirPath = '';
     if (fromSubmod.modName == fromSubmod.submodName) {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);

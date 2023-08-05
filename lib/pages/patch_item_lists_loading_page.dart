@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/pages/patch_item_lists_loading_page.dart';
+import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 
-class PathsLoadingPage extends StatefulWidget {
-  const PathsLoadingPage({Key? key}) : super(key: key);
+class PatchItemListLoadingPage extends StatefulWidget {
+  const PatchItemListLoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<PathsLoadingPage> createState() => _PathsLoadingPageState();
+  State<PatchItemListLoadingPage> createState() => _PatchItemListLoadingPageState();
 }
 
-class _PathsLoadingPageState extends State<PathsLoadingPage> {
+class _PatchItemListLoadingPageState extends State<PatchItemListLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: pathsLoader(context),
+        future: fetchOfficialPatchFileList(),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -28,7 +28,8 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    curLangText!.uiLoadingPaths,
+                    curLangText!.uiFetchingItemPatchListsFromServers,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
@@ -46,7 +47,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uiErrorWhenLoadingPaths,
+                      curLangText!.uiErrorWhenTryingToFetchingItemPatchListsFromServers,
                       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                     ),
                     const SizedBox(
@@ -71,8 +72,9 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      curLangText!.uiLoadingPaths,
-                      style: const TextStyle(fontSize: 20),
+                      curLangText!.uiFetchingItemPatchListsFromServers,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 20, ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -82,7 +84,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else {
-              return const PatchItemListLoadingPage();
+              return const MainPage();
             }
           }
         });
