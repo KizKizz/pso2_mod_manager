@@ -301,7 +301,7 @@ void modsAdderHomePage(context) {
                                                 BuildContext context,
                                                 AsyncSnapshot snapshot,
                                               ) {
-                                                if (snapshot.connectionState == ConnectionState.none) {
+                                                if (snapshot.connectionState == ConnectionState.none && processedFileList.isEmpty) {
                                                   return Center(
                                                     child: Column(
                                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -352,7 +352,17 @@ void modsAdderHomePage(context) {
                                                   } else {
                                                     processedFileList = snapshot.data;
                                                     //rename trigger
-                                                    if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedFileList.length) {
+                                                    bool renameModDifferencesFound = false;
+                                                    if (_itemNameRenameIndex.isNotEmpty) {
+                                                      for (int i = 0; i < mainFolderRenameIndex.length; i++) {
+                                                        if (processedFileList[i].modList.length != mainFolderRenameIndex[i].length) {
+                                                          renameModDifferencesFound = true;
+                                                          break;
+                                                        }
+                                                      }
+                                                    }
+                                                    if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedFileList.length || renameModDifferencesFound) {
+                                                      renameModDifferencesFound = false;
                                                       _itemNameRenameIndex = List.generate(processedFileList.length, (index) => false);
                                                       mainFolderRenameIndex =
                                                           List.generate(processedFileList.length, (index) => List.generate(processedFileList[index].modList.length, (mIndex) => false));
@@ -513,31 +523,33 @@ void modsAdderHomePage(context) {
                                                                                                   counterText: '',
                                                                                                 ),
                                                                                                 inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                                onEditingComplete: () {
-                                                                                                  // if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                  //   String newItemName = renameTextBoxController.text.trim();
-                                                                                                  //   if (sortedModsList[index][0] == 'Basewears' && !renameTextBoxController.text.contains('[Ba]')) {
-                                                                                                  //     newItemName += ' [Ba]';
-                                                                                                  //   } else if (sortedModsList[index][0] == 'Innerwears' &&
-                                                                                                  //       !renameTextBoxController.text.contains('[In]')) {
-                                                                                                  //     newItemName += ' [In]';
-                                                                                                  //   } else if (sortedModsList[index][0] == 'Outerwears' &&
-                                                                                                  //       !renameTextBoxController.text.contains('[Ou]')) {
-                                                                                                  //     newItemName += ' [Ou]';
-                                                                                                  //   } else if (sortedModsList[index][0] == 'Setwears' &&
-                                                                                                  //       !renameTextBoxController.text.contains('[Se]')) {
-                                                                                                  //     newItemName += ' [Se]';
-                                                                                                  //   } else {
-                                                                                                  //     newItemName = renameTextBoxController.text;
-                                                                                                  //   }
-                                                                                                  //   if (curActiveLang == 'JP') {
-                                                                                                  //     sortedModsList[index][1] = newItemName;
-                                                                                                  //   } else {
-                                                                                                  //     sortedModsList[index][2] = newItemName;
-                                                                                                  //   }
+                                                                                                onEditingComplete: () async {
+                                                                                                  if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                    //rename text
+                                                                                                    String newItemName = renameTextBoxController.text.trim();
+                                                                                                    if (processedFileList[index].category == 'Basewears' &&
+                                                                                                        !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                      newItemName += ' [Ba]';
+                                                                                                    } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[In]')) {
+                                                                                                      newItemName += ' [In]';
+                                                                                                    } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                      newItemName += ' [Ou]';
+                                                                                                    } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                        !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                      newItemName += ' [Se]';
+                                                                                                    } else {
+                                                                                                      newItemName = renameTextBoxController.text;
+                                                                                                    }
+                                                                                                    //change dir name
+                                                                                                    processedFileList[index].itemName = newItemName;
+                                                                                                    var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
+                                                                                                        Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                    processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                    processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                  }
 
-                                                                                                  //   //print(sortedModsList);
-                                                                                                  // }
                                                                                                   _itemNameRenameIndex[index] = false;
                                                                                                   renameTextBoxController.clear();
                                                                                                   _isNameEditing = false;
@@ -555,30 +567,33 @@ void modsAdderHomePage(context) {
                                                                                           SizedBox(
                                                                                             width: 40,
                                                                                             child: MaterialButton(
-                                                                                              onPressed: () {
-                                                                                                // if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                //   String newItemName = renameTextBoxController.text.trim();
-                                                                                                //   if (sortedModsList[index][0] == 'Basewears' && !renameTextBoxController.text.contains('[Ba]')) {
-                                                                                                //     newItemName += ' [Ba]';
-                                                                                                //   } else if (sortedModsList[index][0] == 'Innerwears' &&
-                                                                                                //       !renameTextBoxController.text.contains('[In]')) {
-                                                                                                //     newItemName += ' [In]';
-                                                                                                //   } else if (sortedModsList[index][0] == 'Outerwears' &&
-                                                                                                //       !renameTextBoxController.text.contains('[Ou]')) {
-                                                                                                //     newItemName += ' [Ou]';
-                                                                                                //   } else if (sortedModsList[index][0] == 'Setwears' && !renameTextBoxController.text.contains('[Se]')) {
-                                                                                                //     newItemName += ' [Se]';
-                                                                                                //   } else {
-                                                                                                //     newItemName = renameTextBoxController.text;
-                                                                                                //   }
-                                                                                                //   if (curActiveLang == 'JP') {
-                                                                                                //     sortedModsList[index][1] = newItemName;
-                                                                                                //   } else {
-                                                                                                //     sortedModsList[index][2] = newItemName;
-                                                                                                //   }
+                                                                                              onPressed: () async {
+                                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                  //rename text
+                                                                                                  String newItemName = renameTextBoxController.text.trim();
+                                                                                                  if (processedFileList[index].category == 'Basewears' &&
+                                                                                                      !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                    newItemName += ' [Ba]';
+                                                                                                  } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                      !renameTextBoxController.text.contains('[In]')) {
+                                                                                                    newItemName += ' [In]';
+                                                                                                  } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                      !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                    newItemName += ' [Ou]';
+                                                                                                  } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                      !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                    newItemName += ' [Se]';
+                                                                                                  } else {
+                                                                                                    newItemName = renameTextBoxController.text;
+                                                                                                  }
+                                                                                                  //change dir name
+                                                                                                  processedFileList[index].itemName = newItemName;
+                                                                                                  var newItemDir = await Directory(processedFileList[index].itemDirPath)
+                                                                                                      .rename(Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                  processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                  processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                }
 
-                                                                                                //   //print(sortedModsList);
-                                                                                                // }
                                                                                                 _itemNameRenameIndex[index] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
@@ -743,67 +758,15 @@ void modsAdderHomePage(context) {
                                                                                                 counterText: '',
                                                                                               ),
                                                                                               inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                              onEditingComplete: () {
-                                                                                                // if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                //   //print('OLD: $sortedModsList');
-                                                                                                //   String oldMainDirName = sortedModsList[index][4].split('|')[ex];
-                                                                                                //   // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
-                                                                                                //   //     .renameSync('$modManAddModsTempDirPath$s${renameTextBoxController.text}');
-                                                                                                //   List<FileSystemEntity> curFilesInMainDir =
-                                                                                                //       Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath())
-                                                                                                //           .listSync(recursive: true);
-                                                                                                //   for (var element in curFilesInMainDir) {
-                                                                                                //     //print(curFilesInMainDir);
-                                                                                                //     String newMainPath = element.path.replaceFirst(
-                                                                                                //         Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(),
-                                                                                                //         Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}/').toFilePath());
-                                                                                                //     if (!File(element.path).existsSync()) {
-                                                                                                //       Directory(newMainPath).createSync(recursive: true);
-                                                                                                //     }
-                                                                                                //     if (sortedModsList[index][5].isEmpty) {
-                                                                                                //       Directory(Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}').toFilePath())
-                                                                                                //           .createSync(recursive: true);
-                                                                                                //     }
-                                                                                                //   }
-                                                                                                //   for (var element in curFilesInMainDir) {
-                                                                                                //     String newMainPath = element.path.replaceFirst(
-                                                                                                //         Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(),
-                                                                                                //         Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}/').toFilePath());
-                                                                                                //     if (File(element.path).existsSync()) {
-                                                                                                //       File(element.path).copySync(newMainPath);
-                                                                                                //     }
-                                                                                                //   }
+                                                                                              onEditingComplete: () async {
+                                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                  curMod.modName = renameTextBoxController.text;
+                                                                                                  var newModDir = await Directory(curMod.modDirPath)
+                                                                                                      .rename(Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
+                                                                                                  curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                  curMod.modDirPath = newModDir.path;
+                                                                                                }
 
-                                                                                                //   //Itemlist
-                                                                                                //   //Item name replace
-                                                                                                //   List<String> mainDirsString = sortedModsList[index][4].split('|');
-                                                                                                //   mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                                //   sortedModsList[index][4] = mainDirsString.join('|');
-
-                                                                                                //   //Subitem Item name replace
-                                                                                                //   List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
-                                                                                                //   for (var element in mainDirsInSubItemString) {
-                                                                                                //     List<String> split = element.split((':'));
-                                                                                                //     if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                                                                                //       split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                                //       mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
-                                                                                                //     }
-                                                                                                //   }
-                                                                                                //   sortedModsList[index][5] = mainDirsInSubItemString.join('|');
-
-                                                                                                //   //icefile Item name replace
-                                                                                                //   List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
-                                                                                                //   for (var element in mainDirsInItemString) {
-                                                                                                //     List<String> split = element.split((':'));
-                                                                                                //     if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                                                                                //       split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                                //       mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
-                                                                                                //     }
-                                                                                                //   }
-                                                                                                //   sortedModsList[index][6] = mainDirsInItemString.join('|');
-
-                                                                                                //   //print(sortedModsList);
-                                                                                                // }
                                                                                                 mainFolderRenameIndex[index][mIndex] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
@@ -821,63 +784,15 @@ void modsAdderHomePage(context) {
                                                                                         SizedBox(
                                                                                           width: 40,
                                                                                           child: MaterialButton(
-                                                                                            onPressed: () {
-                                                                                              // if (renameTextBoxController.text.isNotEmpty) {
-                                                                                              //   String oldMainDirName = sortedModsList[index][4].split('|')[ex];
-                                                                                              //   // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}')
-                                                                                              //   //     .renameSync('$modManAddModsTempDirPath$s${renameTextBoxController.text}');
-                                                                                              //   List<FileSystemEntity> curFilesInMainDir =
-                                                                                              //       Directory(Uri.file('$modManAddModsTempDirPath/$oldMainDirName').toFilePath()).listSync(recursive: true);
-                                                                                              //   for (var element in curFilesInMainDir) {
-                                                                                              //     //print(curFilesInMainDir);
-                                                                                              //     String newMainPath = element.path.replaceFirst(
-                                                                                              //         Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(),
-                                                                                              //         Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}/').toFilePath());
-                                                                                              //     if (!File(element.path).existsSync()) {
-                                                                                              //       Directory(newMainPath).createSync(recursive: true);
-                                                                                              //     }
-                                                                                              //     if (sortedModsList[index][5].isEmpty) {
-                                                                                              //       Directory(Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}').toFilePath())
-                                                                                              //           .createSync(recursive: true);
-                                                                                              //     }
-                                                                                              //   }
-                                                                                              //   for (var element in curFilesInMainDir) {
-                                                                                              //     String newMainPath = element.path.replaceFirst(
-                                                                                              //         Uri.file('$modManAddModsTempDirPath/$oldMainDirName/').toFilePath(),
-                                                                                              //         Uri.file('$modManAddModsTempDirPath/${renameTextBoxController.text}/').toFilePath());
-                                                                                              //     if (File(element.path).existsSync()) {
-                                                                                              //       File(element.path).copySync(newMainPath);
-                                                                                              //     }
-                                                                                              //   }
+                                                                                            onPressed: () async {
+                                                                                              if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                curMod.modName = renameTextBoxController.text;
+                                                                                                var newModDir = await Directory(curMod.modDirPath)
+                                                                                                    .rename(Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
+                                                                                                curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                curMod.modDirPath = newModDir.path;
+                                                                                              }
 
-                                                                                              //   //Itemlist
-                                                                                              //   List<String> mainDirsString = sortedModsList[index][4].split('|');
-                                                                                              //   mainDirsString[mainDirsString.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                              //   sortedModsList[index][4] = mainDirsString.join('|');
-
-                                                                                              //   //Subitem Item name replace
-                                                                                              //   List<String> mainDirsInSubItemString = sortedModsList[index][5].split('|');
-                                                                                              //   for (var element in mainDirsInSubItemString) {
-                                                                                              //     List<String> split = element.split((':'));
-                                                                                              //     if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                                                                              //       split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                              //       mainDirsInSubItemString[mainDirsInSubItemString.indexOf(element)] = split.join(':');
-                                                                                              //     }
-                                                                                              //   }
-                                                                                              //   sortedModsList[index][5] = mainDirsInSubItemString.join('|');
-
-                                                                                              //   List<String> mainDirsInItemString = sortedModsList[index][6].split('|');
-                                                                                              //   for (var element in mainDirsInItemString) {
-                                                                                              //     List<String> split = element.split((':'));
-                                                                                              //     if (split.indexWhere((element) => element == oldMainDirName) != -1) {
-                                                                                              //       split[split.indexOf(oldMainDirName)] = renameTextBoxController.text;
-                                                                                              //       mainDirsInItemString[mainDirsInItemString.indexOf(element)] = split.join(':');
-                                                                                              //     }
-                                                                                              //   }
-                                                                                              //   sortedModsList[index][6] = mainDirsInItemString.join('|');
-
-                                                                                              //   //print(sortedModsList);
-                                                                                              // }
                                                                                               mainFolderRenameIndex[index][mIndex] = false;
                                                                                               renameTextBoxController.clear();
                                                                                               _isNameEditing = false;
@@ -940,47 +855,10 @@ void modsAdderHomePage(context) {
                                                                                               waitDuration: const Duration(seconds: 1),
                                                                                               child: MaterialButton(
                                                                                                 onPressed: () {
-                                                                                                  // //mainName
-                                                                                                  // final mainNames = sortedModsList[index][4].split('|');
-                                                                                                  // int curMainIndex = mainNames.indexOf(sortedModsList[index][4].split('|')[ex]);
-                                                                                                  // if (!sortedModsList[index][4].split('|')[ex].contains(':[TOREMOVE]')) {
-                                                                                                  //   mainNames[curMainIndex] = sortedModsList[index][4].split('|')[ex] += ':[TOREMOVE]';
-                                                                                                  // }
-                                                                                                  // sortedModsList[index][4] = mainNames.join('|');
-                                                                                                  // //subName
-                                                                                                  // final subNames = sortedModsList[index][5].split('|');
-                                                                                                  // String subTemp = '';
-                                                                                                  // for (int i = 0; i < subNames.length; i++) {
-                                                                                                  //   if (subTemp.isEmpty) {
-                                                                                                  //     if (subNames[i].split(':').first == sortedModsList[index][4].split('|')[ex].split(':').first) {
-                                                                                                  //       subTemp = subNames[i] += ':[TOREMOVE]';
-                                                                                                  //     } else {
-                                                                                                  //       subTemp = subNames[i];
-                                                                                                  //     }
-                                                                                                  //   } else {
-                                                                                                  //     if (subNames[i].split(':').first == sortedModsList[index][4].split('|')[ex].split(':').first) {
-                                                                                                  //       subTemp += '|${subNames[i]}:[TOREMOVE]';
-                                                                                                  //     } else {
-                                                                                                  //       subTemp += '|${subNames[i]}';
-                                                                                                  //     }
-                                                                                                  //   }
-                                                                                                  // }
-                                                                                                  // sortedModsList[index][5] = subTemp;
-
-                                                                                                  // //check mains to disable or able the whole item if all main disabled
-                                                                                                  // bool allMainRemoving = true;
-                                                                                                  // for (var element in sortedModsList[index][4].split('|')) {
-                                                                                                  //   if (element.split(':').last != '[TOREMOVE]') {
-                                                                                                  //     allMainRemoving = false;
-                                                                                                  //     break;
-                                                                                                  //   }
-                                                                                                  // }
-                                                                                                  // if (allMainRemoving) {
-                                                                                                  //   sortedModsList[index][1] = sortedModsList[index][1] += ':[TOREMOVE]';
-                                                                                                  //   sortedModsList[index][2] = sortedModsList[index][2] += ':[TOREMOVE]';
-                                                                                                  //   //print(sortedModsList[index][4]);
-                                                                                                  // }
-                                                                                                  //print(sortedModsList[index]);
+                                                                                                  curMod.toBeAdded = false;
+                                                                                                  for (var submod in curMod.submodList) {
+                                                                                                    submod.toBeAdded = false;
+                                                                                                  }
                                                                                                   setState(
                                                                                                     () {},
                                                                                                   );
@@ -1002,17 +880,10 @@ void modsAdderHomePage(context) {
                                                                                               waitDuration: const Duration(seconds: 1),
                                                                                               child: MaterialButton(
                                                                                                 onPressed: () {
-                                                                                                  // sortedModsList[index][1] = sortedModsList[index][1].replaceAll(':[TOREMOVE]', '');
-                                                                                                  // sortedModsList[index][2] = sortedModsList[index][2].replaceAll(':[TOREMOVE]', '');
-                                                                                                  // //mainName
-                                                                                                  // final mainNames = sortedModsList[index][4].split('|');
-                                                                                                  // int curMainIndex = mainNames.indexOf(sortedModsList[index][4].split('|')[ex]);
-                                                                                                  // if (sortedModsList[index][4].split('|')[ex].contains(':[TOREMOVE]')) {
-                                                                                                  //   mainNames[curMainIndex] = sortedModsList[index][4].split('|')[ex].replaceAll(':[TOREMOVE]', '');
-                                                                                                  // }
-                                                                                                  // sortedModsList[index][4] = mainNames.join('|');
-                                                                                                  // sortedModsList[index][5] = sortedModsList[index][5].replaceAll(':[TOREMOVE]', '');
-                                                                                                  //print(sortedModsList[index]);
+                                                                                                  curMod.toBeAdded = true;
+                                                                                                  for (var submod in curMod.submodList) {
+                                                                                                    submod.toBeAdded = true;
+                                                                                                  }
                                                                                                   setState(
                                                                                                     () {},
                                                                                                   );
@@ -1090,82 +961,31 @@ void modsAdderHomePage(context) {
                                                                                                                 Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
                                                                                                                 return curLangText!.uiNameCannotBeEmpty;
                                                                                                               }
-                                                                                                              // final List<String> subDirList = sortedModsList[index][5]
-                                                                                                              //     .split('|')
-                                                                                                              //     .where((element) =>
-                                                                                                              //         element.split(':')[1] != sortedModsList[index][5].split('|')[sub].split(':')[1])
-                                                                                                              //     .toList();
-                                                                                                              // List<String> subDirNames = [];
-                                                                                                              // for (var name in subDirList) {
-                                                                                                              //   subDirNames.add(name.split(':')[1]);
-                                                                                                              // }
 
-                                                                                                              // for (var name in subDirNames) {
-                                                                                                              //   if (name.toLowerCase() == value.toLowerCase()) {
-                                                                                                              //     Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
-                                                                                                              //     return curLangText!.uiNameAlreadyExisted;
-                                                                                                              //   }
-                                                                                                              // }
+                                                                                                              if (Directory(curMod.modDirPath)
+                                                                                                                  .listSync()
+                                                                                                                  .whereType<Directory>()
+                                                                                                                  .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                                  .isNotEmpty) {
+                                                                                                                Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                                return curLangText!.uiNameAlreadyExisted;
+                                                                                                              }
 
                                                                                                               return null;
                                                                                                             },
-                                                                                                            onEditingComplete: (() {
+                                                                                                            onEditingComplete: (() async {
                                                                                                               if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                                //   if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                                //     String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
-                                                                                                                //     String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
-                                                                                                                //     // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                                //     //     '$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
-                                                                                                                //     List<FileSystemEntity> curFilesInSubDir = Directory(Uri.file(
-                                                                                                                //                 '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName')
-                                                                                                                //             .toFilePath())
-                                                                                                                //         .listSync(recursive: true);
-                                                                                                                //     for (var element in curFilesInSubDir) {
-                                                                                                                //       //print(curFilesInMainDir);
-                                                                                                                //       String newMainPath = element.path.replaceFirst(
-                                                                                                                //           Uri.file(
-                                                                                                                //                   '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName/')
-                                                                                                                //               .toFilePath(),
-                                                                                                                //           Uri.file(
-                                                                                                                //                   '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/${renameTextBoxController.text}/')
-                                                                                                                //               .toFilePath());
-                                                                                                                //       if (!File(element.path).existsSync()) {
-                                                                                                                //         Directory(newMainPath).createSync(recursive: true);
-                                                                                                                //       } else {
-                                                                                                                //         Directory(File(newMainPath).parent.path).createSync(recursive: true);
-                                                                                                                //       }
-                                                                                                                //     }
-                                                                                                                //     for (var element in curFilesInSubDir) {
-                                                                                                                //       String newMainPath = element.path.replaceFirst(
-                                                                                                                //           Uri.file(
-                                                                                                                //                   '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName/')
-                                                                                                                //               .toFilePath(),
-                                                                                                                //           Uri.file(
-                                                                                                                //                   '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/${renameTextBoxController.text}/')
-                                                                                                                //               .toFilePath());
-                                                                                                                //       if (File(element.path).existsSync()) {
-                                                                                                                //         File(element.path).copySync(newMainPath);
-                                                                                                                //       }
-                                                                                                                //     }
-
-                                                                                                                //     //List
-                                                                                                                //     List<String> subDirsString = sortedModsList[index][5].split('|');
-                                                                                                                //     subDirsString[subDirsString.indexOf('$mainDirName:$oldSubDirName')] =
-                                                                                                                //         '$mainDirName:${renameTextBoxController.text}';
-                                                                                                                //     sortedModsList[index][5] = subDirsString.join('|');
-
-                                                                                                                //     List<String> subDirsInItemString = sortedModsList[index][6].split('|');
-                                                                                                                //     for (var element in subDirsInItemString) {
-                                                                                                                //       List<String> split = element.split((':'));
-                                                                                                                //       if (split.indexWhere((element) => element == oldSubDirName) != -1) {
-                                                                                                                //         split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
-                                                                                                                //         subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
-                                                                                                                //       }
-                                                                                                                //     }
-                                                                                                                //     sortedModsList[index][6] = subDirsInItemString.join('|');
-                                                                                                                //   }
+                                                                                                                if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                                  curSubmod.submodName = renameTextBoxController.text;
+                                                                                                                  var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
+                                                                                                                      Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
+                                                                                                                          .toFilePath());
+                                                                                                                  curMod.filesInMod = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                                  curSubmod.submodDirPath = newSubmodDir.path;
+                                                                                                                }
 
                                                                                                                 //Clear
+                                                                                                                // ignore: use_build_context_synchronously
                                                                                                                 Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                                 subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                                 renameTextBoxController.clear();
@@ -1185,66 +1005,22 @@ void modsAdderHomePage(context) {
                                                                                                     SizedBox(
                                                                                                       width: 40,
                                                                                                       child: MaterialButton(
-                                                                                                        onPressed: () {
+                                                                                                        onPressed: () async {
                                                                                                           if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                            // if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                            //   String mainDirName = sortedModsList[index][5].split('|')[sub].split(':').first;
-                                                                                                            //   String oldSubDirName = sortedModsList[index][5].split('|')[sub].split(':')[1];
-                                                                                                            //   // Directory('$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s$oldSubDirName').renameSync(
-                                                                                                            //   //     '$modManAddModsTempDirPath$s${sortedModsList[index][3].split('|')[ex]}$s${renameTextBoxController.text}');
-                                                                                                            //   List<FileSystemEntity> curFilesInSubDir = Directory(Uri.file(
-                                                                                                            //               '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName')
-                                                                                                            //           .toFilePath())
-                                                                                                            //       .listSync(recursive: true);
-                                                                                                            //   for (var element in curFilesInSubDir) {
-                                                                                                            //     //print(curFilesInMainDir);
-                                                                                                            //     String newMainPath = element.path.replaceFirst(
-                                                                                                            //         Uri.file(
-                                                                                                            //                 '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName/')
-                                                                                                            //             .toFilePath(),
-                                                                                                            //         Uri.file(
-                                                                                                            //                 '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/${renameTextBoxController.text}/')
-                                                                                                            //             .toFilePath());
-                                                                                                            //     if (!File(element.path).existsSync()) {
-                                                                                                            //       Directory(newMainPath).createSync(recursive: true);
-                                                                                                            //     } else {
-                                                                                                            //       Directory(File(newMainPath).parent.path).createSync(recursive: true);
-                                                                                                            //     }
-                                                                                                            //   }
-                                                                                                            //   for (var element in curFilesInSubDir) {
-                                                                                                            //     String newMainPath = element.path.replaceFirst(
-                                                                                                            //         Uri.file(
-                                                                                                            //                 '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/$oldSubDirName/')
-                                                                                                            //             .toFilePath(),
-                                                                                                            //         Uri.file(
-                                                                                                            //                 '$modManAddModsTempDirPath/${sortedModsList[index][4].split('|')[ex]}/${renameTextBoxController.text}/')
-                                                                                                            //             .toFilePath());
-                                                                                                            //     if (File(element.path).existsSync()) {
-                                                                                                            //       File(element.path).copySync(newMainPath);
-                                                                                                            //     }
-                                                                                                            //   }
-
-                                                                                                            //   //List
-                                                                                                            //   List<String> subDirsString = sortedModsList[index][5].split('|');
-                                                                                                            //   subDirsString[subDirsString.indexOf('$mainDirName:$oldSubDirName')] =
-                                                                                                            //       '$mainDirName:${renameTextBoxController.text}';
-                                                                                                            //   sortedModsList[index][5] = subDirsString.join('|');
-
-                                                                                                            //   List<String> subDirsInItemString = sortedModsList[index][6].split('|');
-                                                                                                            //   for (var element in subDirsInItemString) {
-                                                                                                            //     List<String> split = element.split((':'));
-                                                                                                            //     if (split.indexWhere((element) => element == oldSubDirName) != -1) {
-                                                                                                            //       split[split.indexOf(oldSubDirName)] = renameTextBoxController.text;
-                                                                                                            //       subDirsInItemString[subDirsInItemString.indexOf(element)] = split.join(':');
-                                                                                                            //     }
-                                                                                                            //   }
-                                                                                                            //   sortedModsList[index][6] = subDirsInItemString.join('|');
-                                                                                                            // }
+                                                                                                            if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                              curSubmod.submodName = renameTextBoxController.text;
+                                                                                                              var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
+                                                                                                                  Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
+                                                                                                                      .toFilePath());
+                                                                                                              curMod.filesInMod = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                              curSubmod.submodDirPath = newSubmodDir.path;
+                                                                                                            }
 
                                                                                                             //Clear
                                                                                                             subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                             renameTextBoxController.clear();
                                                                                                             _isNameEditing = false;
+                                                                                                            // ignore: use_build_context_synchronously
                                                                                                             Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                             setState(
                                                                                                               () {},
@@ -1308,90 +1084,7 @@ void modsAdderHomePage(context) {
                                                                                                           waitDuration: const Duration(seconds: 1),
                                                                                                           child: MaterialButton(
                                                                                                             onPressed: () {
-                                                                                                              // final subNames = sortedModsList[index][5].split('|');
-                                                                                                              // String subTemp = '';
-                                                                                                              // for (int i = 0; i < subNames.length; i++) {
-                                                                                                              //   if (subTemp.isEmpty) {
-                                                                                                              //     if (subNames[i].split(':').first ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              //         subNames[i].split(':')[1] ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[1]) {
-                                                                                                              //       subTemp = subNames[i] += ':[TOREMOVE]';
-                                                                                                              //     } else {
-                                                                                                              //       subTemp = subNames[i];
-                                                                                                              //     }
-                                                                                                              //   } else {
-                                                                                                              //     if (subNames[i].split(':').first ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              //         subNames[i].split(':')[1] ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[1]) {
-                                                                                                              //       subTemp += '|${subNames[i]}:[TOREMOVE]';
-                                                                                                              //     } else {
-                                                                                                              //       subTemp += '|${subNames[i]}';
-                                                                                                              //     }
-                                                                                                              //   }
-                                                                                                              // }
-                                                                                                              // sortedModsList[index][5] = subTemp;
-                                                                                                              // //print(sortedModsList[index][5]);
-
-                                                                                                              // //check sub to disable or able main if all or one disabled
-                                                                                                              // bool allSubRemoving = true;
-                                                                                                              // for (var element in sortedModsList[index][5].split('|')) {
-                                                                                                              //   if (sortedModsList[index][5].split('|').length > 1 &&
-                                                                                                              //       sub < sortedModsList[index][5].split('|').length) {
-                                                                                                              //     if (element.split(':').first ==
-                                                                                                              //                 sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              //             element.split(':').last != '[TOREMOVE]' ||
-                                                                                                              //         sortedModsList[index][6].contains('${sortedModsList[index][4]}::')) {
-                                                                                                              //       allSubRemoving = false;
-                                                                                                              //       break;
-                                                                                                              //     }
-                                                                                                              //   } else {
-                                                                                                              //     if (element.split(':').first ==
-                                                                                                              //                 sortedModsList[index][5].split('|')[0].split(':')[0] &&
-                                                                                                              //             element.split(':').last != '[TOREMOVE]' ||
-                                                                                                              //         sortedModsList[index][6].contains('${sortedModsList[index][4]}::')) {
-                                                                                                              //       allSubRemoving = false;
-                                                                                                              //       break;
-                                                                                                              //     }
-                                                                                                              //   }
-                                                                                                              // }
-                                                                                                              // if (allSubRemoving) {
-                                                                                                              //   String mainTemp = '';
-                                                                                                              //   for (var element in sortedModsList[index][4].split('|')) {
-                                                                                                              //     if (element.split(':').first ==
-                                                                                                              //         sortedModsList[index][4].split('|')[ex].split(':').first) {
-                                                                                                              //       if (mainTemp.isEmpty) {
-                                                                                                              //         mainTemp = '${element.split(':').first}:[TOREMOVE]';
-                                                                                                              //       } else {
-                                                                                                              //         mainTemp += '|${element.split(':').first}:[TOREMOVE]';
-                                                                                                              //       }
-                                                                                                              //     } else {
-                                                                                                              //       if (mainTemp.isEmpty) {
-                                                                                                              //         mainTemp = element;
-                                                                                                              //       } else {
-                                                                                                              //         mainTemp += '|$element';
-                                                                                                              //       }
-                                                                                                              //     }
-                                                                                                              //   }
-                                                                                                              //   sortedModsList[index][4] = mainTemp;
-                                                                                                              //   //print(sortedModsList[index][4]);
-                                                                                                              // }
-
-                                                                                                              // //check mains to disable or able the whole item if all main disabled
-                                                                                                              // bool allMainRemoving = true;
-                                                                                                              // for (var element in sortedModsList[index][4].split('|')) {
-                                                                                                              //   if (element.split(':').last != '[TOREMOVE]') {
-                                                                                                              //     allMainRemoving = false;
-                                                                                                              //     break;
-                                                                                                              //   }
-                                                                                                              // }
-                                                                                                              // if (allMainRemoving) {
-                                                                                                              //   sortedModsList[index][1] = sortedModsList[index][1] += ':[TOREMOVE]';
-                                                                                                              //   sortedModsList[index][2] = sortedModsList[index][2] += ':[TOREMOVE]';
-                                                                                                              //   //print(sortedModsList[index][4]);
-                                                                                                              // }
-                                                                                                              //print(sortedModsList[index]);
+                                                                                                              curSubmod.toBeAdded = false;
                                                                                                               setState(
                                                                                                                 () {},
                                                                                                               );
@@ -1413,52 +1106,7 @@ void modsAdderHomePage(context) {
                                                                                                           waitDuration: const Duration(seconds: 1),
                                                                                                           child: MaterialButton(
                                                                                                             onPressed: () {
-                                                                                                              // sortedModsList[index][1] = sortedModsList[index][1].replaceAll(':[TOREMOVE]', '');
-                                                                                                              // sortedModsList[index][2] = sortedModsList[index][2].replaceAll(':[TOREMOVE]', '');
-                                                                                                              // String mainTemp = '';
-                                                                                                              // for (var element in sortedModsList[index][4].split('|')) {
-                                                                                                              //   if (element.split(':').first ==
-                                                                                                              //       sortedModsList[index][4].split('|')[ex].split(':').first) {
-                                                                                                              //     if (mainTemp.isEmpty) {
-                                                                                                              //       mainTemp = element.split(':').first;
-                                                                                                              //     } else {
-                                                                                                              //       mainTemp += '|${element.split(':').first}';
-                                                                                                              //     }
-                                                                                                              //   } else {
-                                                                                                              //     if (mainTemp.isEmpty) {
-                                                                                                              //       mainTemp = element;
-                                                                                                              //     } else {
-                                                                                                              //       mainTemp += '|$element';
-                                                                                                              //     }
-                                                                                                              //   }
-                                                                                                              // }
-                                                                                                              // sortedModsList[index][4] = mainTemp;
-                                                                                                              // //print(sortedModsList[index][4]);
-                                                                                                              // final subNames = sortedModsList[index][5].split('|');
-                                                                                                              // String subTemp = '';
-                                                                                                              // for (int i = 0; i < subNames.length; i++) {
-                                                                                                              //   if (subTemp.isEmpty) {
-                                                                                                              //     if (subNames[i].split(':').first ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              //         subNames[i].split(':')[1] ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[1]) {
-                                                                                                              //       subTemp = subNames[i].replaceAll(':[TOREMOVE]', '');
-                                                                                                              //     } else {
-                                                                                                              //       subTemp = subNames[i];
-                                                                                                              //     }
-                                                                                                              //   } else {
-                                                                                                              //     if (subNames[i].split(':').first ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[0] &&
-                                                                                                              //         subNames[i].split(':')[1] ==
-                                                                                                              //             sortedModsList[index][5].split('|')[sub].split(':')[1]) {
-                                                                                                              //       subTemp += '|${subNames[i].replaceAll(':[TOREMOVE]', '')}';
-                                                                                                              //     } else {
-                                                                                                              //       subTemp += '|${subNames[i]}';
-                                                                                                              //     }
-                                                                                                              //   }
-                                                                                                              // }
-                                                                                                              // sortedModsList[index][5] = subTemp;
-                                                                                                              //print(sortedModsList[index]);
+                                                                                                              curSubmod.toBeAdded = true;
                                                                                                               setState(
                                                                                                                 () {},
                                                                                                               );
@@ -1522,14 +1170,19 @@ void modsAdderHomePage(context) {
                                                               Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
                                                                 element.deleteSync(recursive: true);
                                                               });
-                                                              //_mainFolderRenameIndex.clear();
+                                                              Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              _itemNameRenameIndex.clear();
+                                                              mainFolderRenameIndex.clear();
+                                                              subFoldersRenameIndex.clear();
                                                               //newModMainFolderList.clear();
                                                               _selectedCategories.clear();
+                                                              processedFileListLoad = null;
                                                               processedFileList.clear();
                                                               //_exitConfirmDialog = false;
                                                               Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                               // _duplicateModNames.clear();
-                                                              // sortedModsList.clear();
                                                               // newModDragDropList.clear();
                                                               // modsToAddList.clear();
                                                               _isNameEditing = false;
@@ -1552,17 +1205,21 @@ void modsAdderHomePage(context) {
                                                       //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
                                                       //     element.deleteSync(recursive: true);
                                                       //   });
+                                                      //   Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                      //     element.deleteSync(recursive: true);
+                                                      //   });
 
-                                                      //   _mainFolderRenameIndex.clear();
-                                                      //   newModMainFolderList.clear();
+                                                      //   _itemNameRenameIndex.clear();
+                                                      //   subFoldersRenameIndex.clear();
+                                                      //   mainFolderRenameIndex.clear();
                                                       //   _selectedCategories.clear();
                                                       //   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                      //   _exitConfirmDialog = false;
-                                                      //   _duplicateModNames.clear();
-                                                      //   itemRefSheetsList.clear();
-                                                      //   sortedModsList.clear();
-                                                      //   newModDragDropList.clear();
-                                                      //   modsToAddList.clear();
+                                                      //   // _exitConfirmDialog = false;
+                                                      //   // _duplicateModNames.clear();
+                                                      //   // itemRefSheetsList.clear();
+                                                      //   // sortedModsList.clear();
+                                                      //   // newModDragDropList.clear();
+                                                      //   // modsToAddList.clear();
                                                       //   setState(
                                                       //     () {},
                                                       //   );
@@ -1574,21 +1231,31 @@ void modsAdderHomePage(context) {
                                                       //     () {},
                                                       //   );
                                                       // } else {
-                                                      //   //clear lists
-                                                      //   _mainFolderRenameIndex.clear();
-                                                      //   newModMainFolderList.clear();
-                                                      //   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                      //   _selectedCategories.clear();
-                                                      //   itemRefSheetsList.clear();
-                                                      //   sortedModsList.clear();
-                                                      //   newModDragDropList.clear();
-                                                      //   modsToAddList.clear();
-                                                      //   setState(
-                                                      //     () {},
-                                                      //   );
-                                                      //   dropZoneMax = true;
-                                                      //   Navigator.of(context).pop();
-                                                      // }
+
+                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                        element.deleteSync(recursive: true);
+                                                      });
+                                                      Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                        element.deleteSync(recursive: true);
+                                                      });
+                                                      Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                        element.deleteSync(recursive: true);
+                                                      });
+                                                      //clear lists
+                                                      processedFileListLoad = null;
+                                                      processedFileList.clear();
+                                                      _itemNameRenameIndex.clear();
+                                                      subFoldersRenameIndex.clear();
+                                                      mainFolderRenameIndex.clear();
+                                                      Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                      _selectedCategories.clear();
+
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                      dropZoneMax = true;
+                                                      Navigator.of(context).pop();
+                                                      //}
                                                     }),
                                                     child: Text(curLangText!.uiClose)),
                                               ),
@@ -1600,125 +1267,7 @@ void modsAdderHomePage(context) {
                                                       style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                       onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
                                                           ? (() async {
-                                                              //Check for dub mods
-                                                              // _duplicateModNames.clear();
-                                                              // for (var sortedLine in sortedModsList.where((element) => !element[1].contains('[TOREMOVE]') || !element[2].contains('[TOREMOVE]'))) {
-                                                              //   String category = sortedLine[0];
-                                                              //   String itemName = '';
-                                                              //   if (curActiveLang == 'JP') {
-                                                              //     itemName = sortedLine[1];
-                                                              //   } else {
-                                                              //     itemName = sortedLine[2];
-                                                              //   }
-                                                              //   List<String> mainNames = sortedLine[4].split('|').where((element) => element.split(':').last != '[TOREMOVE]').toList();
-
-                                                              //   if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath()).existsSync()) {
-                                                              //     if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
-                                                              //             .listSync(recursive: false)
-                                                              //             .indexWhere((element) => mainNames.contains(p.basename(element.path))) !=
-                                                              //         -1) {
-                                                              //       for (var mainName in mainNames) {
-                                                              //         if (Directory(Uri.file('$modManModsDirPath/$category/$itemName').toFilePath())
-                                                              //                 .listSync(recursive: false)
-                                                              //                 .indexWhere((element) => p.basename(element.path) == mainName) !=
-                                                              //             -1) {
-                                                              //           //check submod dirs
-                                                              //           final subDirsInCurMainDir =
-                                                              //               Directory(Uri.file('$modManModsDirPath/$category/$itemName/$mainName').toFilePath()).listSync().whereType<Directory>();
-                                                              //           List<String> subNames = sortedLine[5]
-                                                              //               .split('|')
-                                                              //               .where((element) => element.split(':').last != '[TOREMOVE]' && element.split(':').first == mainName)
-                                                              //               .toList();
-                                                              //           if (subNames.isNotEmpty) {
-                                                              //             for (var subName in subNames) {
-                                                              //               String name = subName.split(':')[1];
-                                                              //               final matchingSubDirs = subDirsInCurMainDir.where((element) => p.basename(element.path) == name);
-                                                              //               if (matchingSubDirs.isNotEmpty) {
-                                                              //                 for (var matchingSubName in matchingSubDirs) {
-                                                              //                   _duplicateModNames.add('$itemName > $mainName > ${p.basename(matchingSubName.path)}');
-                                                              //                 }
-                                                              //               }
-                                                              //             }
-                                                              //           } else {
-                                                              //             _duplicateModNames.add('$itemName > $mainName');
-                                                              //           }
-                                                              //         }
-                                                              //       }
-                                                              //     }
-                                                              //   }
-                                                              // }
-
-                                                              // //Add mods
-                                                              // if (_duplicateModNames.isEmpty) {
-                                                              //   //Remove 'TOREMOVE' lines from list
-                                                              //   List<List<String>> removingItems = [];
-                                                              //   for (var line in sortedModsList) {
-                                                              //     if (line[1].split(':').last != '[TOREMOVE]' && line[2].split(':').last != '[TOREMOVE]') {
-                                                              //       List<String> mainLine = [];
-                                                              //       for (var main in line[4].split('|')) {
-                                                              //         if (main.split(':').last != '[TOREMOVE]') {
-                                                              //           mainLine.add(main);
-                                                              //         }
-                                                              //       }
-                                                              //       line[4] = mainLine.join('|');
-
-                                                              //       List<String> subLine = [];
-                                                              //       for (var sub in line[5].split('|')) {
-                                                              //         if (sub.split(':').last != '[TOREMOVE]') {
-                                                              //           subLine.add(sub);
-                                                              //         }
-                                                              //       }
-                                                              //       line[5] = subLine.join('|');
-                                                              //     } else {
-                                                              //       removingItems.add(line);
-                                                              //     }
-                                                              //   }
-                                                              //   for (var item in removingItems) {
-                                                              //     sortedModsList.remove(item);
-                                                              //   }
-                                                              //   //print(sortedModsList);
-                                                              //   //add
-                                                              //   modFilesAdder(context, sortedModsList).then((value) {
-                                                              //     if (value) {
-                                                              //       //clear lists and delete temp
-                                                              //       _isAddedSuccess = true;
-                                                              //       setState(
-                                                              //         () {},
-                                                              //       );
-                                                              //       _mainFolderRenameIndex.clear();
-                                                              //       newModMainFolderList.clear();
-                                                              //       _selectedCategories.clear();
-                                                              //       _exitConfirmDialog = false;
-                                                              //       Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                              //       //Provider.of<StateProvider>(context, listen: false).singleItemDropAddClear();
-                                                              //       _duplicateModNames.clear();
-                                                              //       sortedModsList.clear();
-                                                              //       newModDragDropList.clear();
-                                                              //       modsToAddList.clear();
-                                                              //       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                              //         element.deleteSync(recursive: true);
-                                                              //       });
-                                                              //       Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                              //         element.deleteSync(recursive: true);
-                                                              //       });
-                                                              //       setState(
-                                                              //         () {},
-                                                              //       );
-                                                              //       Future.delayed(const Duration(milliseconds: 500)).then((value) {
-                                                              //         _isAddedSuccess = false;
-                                                              //         dropZoneMax = true;
-                                                              //         setState(
-                                                              //           () {},
-                                                              //         );
-                                                              //       });
-                                                              //     }
-                                                              //   });
-                                                              // } else {
-                                                              //   _exitConfirmDialog = true;
-                                                              //   if (_exitConfirmDialog && _duplicateModNames.isNotEmpty) {
-                                                              //     await duplicateNamesDialog(context);
-                                                              //   }
-                                                              // }
+                                                            
                                                               setState(
                                                                 () {},
                                                               );
