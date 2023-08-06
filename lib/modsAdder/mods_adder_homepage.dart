@@ -383,6 +383,9 @@ void modsAdderHomePage(context) {
                                                       }
                                                     }
 
+                                                    //get duplicates
+                                                    processedFileList = getDuplicates(processedFileList);
+
                                                     return ScrollbarTheme(
                                                       data: ScrollbarThemeData(
                                                         thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -485,6 +488,7 @@ void modsAdderHomePage(context) {
                                                                                     setState(() {
                                                                                       _selectedCategories[index] = value.toString();
                                                                                       processedFileList[index].category = value.toString();
+                                                                                      // TO-DO
                                                                                     });
                                                                                   },
                                                                                 ),
@@ -553,6 +557,8 @@ void modsAdderHomePage(context) {
                                                                                                   _itemNameRenameIndex[index] = false;
                                                                                                   renameTextBoxController.clear();
                                                                                                   _isNameEditing = false;
+                                                                                                  //check duplicates
+                                                                                                  //processedFileList = getDuplicates(processedFileList);
 
                                                                                                   setState(
                                                                                                     () {},
@@ -597,6 +603,8 @@ void modsAdderHomePage(context) {
                                                                                                 _itemNameRenameIndex[index] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
+                                                                                                //check duplicates
+                                                                                                //processedFileList = getDuplicates(processedFileList);
 
                                                                                                 setState(
                                                                                                   () {},
@@ -623,6 +631,24 @@ void modsAdderHomePage(context) {
                                                                                           const SizedBox(
                                                                                             width: 5,
                                                                                           ),
+                                                                                          if (processedFileList[index].isChildrenDuplicated)
+                                                                                            Padding(
+                                                                                              padding: const EdgeInsets.only(right: 5),
+                                                                                              child: Container(
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                ),
+                                                                                                child: Text(
+                                                                                                  'Duplicates found',
+                                                                                                  style: TextStyle(
+                                                                                                      fontSize: 14,
+                                                                                                      fontWeight: FontWeight.normal,
+                                                                                                      color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
                                                                                           SizedBox(
                                                                                             width: 40,
                                                                                             child: Tooltip(
@@ -770,6 +796,8 @@ void modsAdderHomePage(context) {
                                                                                                 mainFolderRenameIndex[index][mIndex] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
+                                                                                                //check duplicates
+                                                                                                //processedFileList = getDuplicates(processedFileList);
 
                                                                                                 setState(
                                                                                                   () {},
@@ -796,6 +824,8 @@ void modsAdderHomePage(context) {
                                                                                               mainFolderRenameIndex[index][mIndex] = false;
                                                                                               renameTextBoxController.clear();
                                                                                               _isNameEditing = false;
+                                                                                              //check duplicates
+                                                                                              //processedFileList = getDuplicates(processedFileList);
 
                                                                                               setState(
                                                                                                 () {},
@@ -819,6 +849,38 @@ void modsAdderHomePage(context) {
                                                                                         const SizedBox(
                                                                                           width: 5,
                                                                                         ),
+                                                                                        if (curMod.isChildrenDuplicated)
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(right: 5),
+                                                                                            child: Container(
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                              ),
+                                                                                              child: Text(
+                                                                                                'Duplicates found',
+                                                                                                style: TextStyle(
+                                                                                                    fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        if (curMod.isDuplicated)
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.only(right: 5),
+                                                                                            child: Container(
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              decoration: BoxDecoration(
+                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                              ),
+                                                                                              child: Text(
+                                                                                                'Rename this',
+                                                                                                style: TextStyle(
+                                                                                                    fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
                                                                                         SizedBox(
                                                                                           width: 40,
                                                                                           child: ModManTooltip(
@@ -990,6 +1052,8 @@ void modsAdderHomePage(context) {
                                                                                                                 subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                                 renameTextBoxController.clear();
                                                                                                                 _isNameEditing = false;
+                                                                                                                //check duplicates
+                                                                                                                processedFileList = getDuplicates(processedFileList);
                                                                                                                 setState(
                                                                                                                   () {},
                                                                                                                 );
@@ -1020,6 +1084,8 @@ void modsAdderHomePage(context) {
                                                                                                             subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                             renameTextBoxController.clear();
                                                                                                             _isNameEditing = false;
+                                                                                                            //check duplicates
+                                                                                                            processedFileList = getDuplicates(processedFileList);
                                                                                                             // ignore: use_build_context_synchronously
                                                                                                             Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                             setState(
@@ -1045,6 +1111,24 @@ void modsAdderHomePage(context) {
                                                                                                     const SizedBox(
                                                                                                       width: 5,
                                                                                                     ),
+                                                                                                    if (curSubmod.isDuplicated)
+                                                                                                      Padding(
+                                                                                                        padding: const EdgeInsets.only(right: 5),
+                                                                                                        child: Container(
+                                                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                          decoration: BoxDecoration(
+                                                                                                            border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                          ),
+                                                                                                          child: Text(
+                                                                                                            'Rename this',
+                                                                                                            style: TextStyle(
+                                                                                                                fontSize: 14,
+                                                                                                                fontWeight: FontWeight.normal,
+                                                                                                                color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
                                                                                                     SizedBox(
                                                                                                       width: 40,
                                                                                                       child: Tooltip(
@@ -1267,7 +1351,6 @@ void modsAdderHomePage(context) {
                                                       style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                       onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
                                                           ? (() async {
-                                                            
                                                               setState(
                                                                 () {},
                                                               );
@@ -1398,7 +1481,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
       }
     }
     //create new item object
-    ModsAdderItem newItem = ModsAdderItem(infos[0], itemName, newItemDirPath, newItemIcon.path, false, true, []);
+    ModsAdderItem newItem = ModsAdderItem(infos[0], itemName, newItemDirPath, newItemIcon.path, false, true, false, []);
     if (modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
       modsAdderItemList.add(newItem);
     }
@@ -1431,7 +1514,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
         }
       }
       //add to list
-      ModsAdderItem newItem = ModsAdderItem('Misc', itemName, newItemDirPath, '', true, true, []);
+      ModsAdderItem newItem = ModsAdderItem('Misc', itemName, newItemDirPath, '', true, true, false, []);
       if (!isUnknownItemAdded &&
           modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
         modsAdderItemList.add(newItem);
@@ -1446,9 +1529,9 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
     for (var modDir in Directory(item.itemDirPath).listSync().whereType<Directory>()) {
       List<ModsAdderSubMod> submods = [];
       for (var submodDir in Directory(modDir.path).listSync(recursive: true).whereType<Directory>()) {
-        submods.add(ModsAdderSubMod(p.basename(submodDir.path), submodDir.path, true, Directory(submodDir.path).listSync(recursive: true).whereType<File>().toList()));
+        submods.add(ModsAdderSubMod(p.basename(submodDir.path), submodDir.path, true, false, Directory(submodDir.path).listSync(recursive: true).whereType<File>().toList()));
       }
-      mods.add(ModsAdderMod(p.basename(modDir.path), modDir.path, true, submods, Directory(modDir.path).listSync().whereType<File>().toList()));
+      mods.add(ModsAdderMod(p.basename(modDir.path), modDir.path, true, false, false, submods, Directory(modDir.path).listSync().whereType<File>().toList()));
     }
     item.modList.addAll(mods);
   }
@@ -1495,6 +1578,39 @@ String removeRebootPath(String filePath) {
   }
 
   return newPath;
+}
+
+List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
+  List<ModsAdderItem> returnList = processedList;
+  for (var item in returnList) {
+    for (var mod in item.modList) {
+      if (mod.filesInMod.isNotEmpty) {
+        String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+        if (Directory(modDirPathInMods).existsSync()) {
+          mod.isDuplicated = true;
+          item.isChildrenDuplicated = true;
+        } else {
+          mod.isDuplicated = false;
+          item.isChildrenDuplicated = false;
+        }
+      } else {
+        for (var submod in mod.submodList) {
+          String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+          if (Directory(submodDirinMods).existsSync()) {
+            submod.isDuplicated = true;
+            mod.isChildrenDuplicated = true;
+            item.isChildrenDuplicated = true;
+          } else {
+            submod.isDuplicated = false;
+            mod.isChildrenDuplicated = false;
+            item.isChildrenDuplicated = false;
+          }
+        }
+      }
+    }
+  }
+
+  return returnList;
 }
 
 void modsAdderUnsupportedFileTypeDialog(context, String fileName) {

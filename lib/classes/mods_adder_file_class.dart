@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:pso2_mod_manager/global_variables.dart';
-
 class ModsAdderItem {
-  ModsAdderItem(this.category, this.itemName, this.itemDirPath, this.itemIconPath, this.isUnknown, this.toBeAdded, this.modList);
+  ModsAdderItem(this.category, this.itemName, this.itemDirPath, this.itemIconPath, this.isUnknown, this.toBeAdded, this.isChildrenDuplicated, this.modList);
 
   String category;
   String itemName;
@@ -11,6 +9,7 @@ class ModsAdderItem {
   String itemIconPath;
   bool isUnknown;
   bool toBeAdded;
+  bool isChildrenDuplicated;
   List<ModsAdderMod> modList;
 
   void setNewParentPathToChildren(String newParentPath) {
@@ -30,11 +29,13 @@ class ModsAdderItem {
 }
 
 class ModsAdderMod {
-  ModsAdderMod(this.modName, this.modDirPath, this.toBeAdded, this.submodList, this.filesInMod);
+  ModsAdderMod(this.modName, this.modDirPath, this.toBeAdded, this.isChildrenDuplicated, this.isDuplicated, this.submodList, this.filesInMod);
 
   String modName;
   String modDirPath;
   bool toBeAdded;
+  bool isChildrenDuplicated;
+  bool isDuplicated;
   List<ModsAdderSubMod> submodList;
   List<File> filesInMod;
 
@@ -42,16 +43,16 @@ class ModsAdderMod {
     filesInMod = Directory(newParentPath).listSync().whereType<File>().toList();
     for (var submod in submodList) {
       submod.submodDirPath = submod.submodDirPath.replaceFirst(modDirPath, newParentPath);
-
     }
   }
 }
 
 class ModsAdderSubMod {
-  ModsAdderSubMod(this.submodName, this.submodDirPath, this.toBeAdded, this.files);
+  ModsAdderSubMod(this.submodName, this.submodDirPath, this.toBeAdded, this.isDuplicated, this.files);
 
   String submodName;
   String submodDirPath;
   bool toBeAdded;
+  bool isDuplicated;
   List<File> files;
 }
