@@ -362,6 +362,7 @@ void modsAdderHomePage(context) {
                                                       }
                                                     }
                                                     if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedFileList.length || renameModDifferencesFound) {
+                                                      
                                                       renameModDifferencesFound = false;
                                                       _itemNameRenameIndex = List.generate(processedFileList.length, (index) => false);
                                                       mainFolderRenameIndex =
@@ -382,9 +383,8 @@ void modsAdderHomePage(context) {
                                                         _selectedCategories.add(element.category);
                                                       }
                                                     }
-
                                                     //get duplicates
-                                                    processedFileList = getDuplicates(processedFileList);
+                                                      processedFileList = getDuplicates(processedFileList);
 
                                                     return ScrollbarTheme(
                                                       data: ScrollbarThemeData(
@@ -1042,7 +1042,7 @@ void modsAdderHomePage(context) {
                                                                                                                   var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
                                                                                                                       Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
                                                                                                                           .toFilePath());
-                                                                                                                  curMod.filesInMod = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                                  curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
                                                                                                                   curSubmod.submodDirPath = newSubmodDir.path;
                                                                                                                 }
 
@@ -1053,7 +1053,7 @@ void modsAdderHomePage(context) {
                                                                                                                 renameTextBoxController.clear();
                                                                                                                 _isNameEditing = false;
                                                                                                                 //check duplicates
-                                                                                                                processedFileList = getDuplicates(processedFileList);
+                                                                                                                //processedFileList = getDuplicates(processedFileList);
                                                                                                                 setState(
                                                                                                                   () {},
                                                                                                                 );
@@ -1076,7 +1076,7 @@ void modsAdderHomePage(context) {
                                                                                                               var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
                                                                                                                   Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
                                                                                                                       .toFilePath());
-                                                                                                              curMod.filesInMod = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                              curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
                                                                                                               curSubmod.submodDirPath = newSubmodDir.path;
                                                                                                             }
 
@@ -1085,7 +1085,7 @@ void modsAdderHomePage(context) {
                                                                                                             renameTextBoxController.clear();
                                                                                                             _isNameEditing = false;
                                                                                                             //check duplicates
-                                                                                                            processedFileList = getDuplicates(processedFileList);
+                                                                                                            //processedFileList = getDuplicates(processedFileList);
                                                                                                             // ignore: use_build_context_synchronously
                                                                                                             Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
                                                                                                             setState(
