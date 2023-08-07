@@ -46,7 +46,6 @@ String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toF
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
-String modManModSettingsJsonPath = '';
 String modManRefSheetListFilePath = '';
 //Log file path
 String modManOpLogsFilePath = '';
@@ -63,6 +62,8 @@ String backupPatchURL = '';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
+  //get profile
+  modManCurActiveProfile = (prefs.getInt('modManCurActiveProfile') ?? 1);
   //pso2_bin path
   modManPso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
   while (modManPso2binPath.isEmpty) {
@@ -218,8 +219,7 @@ Future<String?> pso2binPathGet(context) async {
                           //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -254,8 +254,7 @@ Future<String?> modManDirPathGet(context) async {
                           //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -334,8 +333,7 @@ Future<String?> pso2binPathReselect(context) async {
                           //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
@@ -455,8 +453,7 @@ Future<String?> modManDirPathReselect(context) async {
                           //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiReselect))
               ]));

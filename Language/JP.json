@@ -259,5 +259,7 @@
   "uiChooseAnItemBelow": "以下から商品をお選びください",
   "uiItemCategories": "カテゴリー",
   "uiFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得\n(しばらく時間がかかるかもしれない)",
-  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得しようとするとエラーが発生する"
+  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得しようとするとエラーが発生する",
+  "uiDuplicateModsInside": "Duplicate mods inside",
+  "uiRenameThis": "Rename this"
 }

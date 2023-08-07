@@ -259,5 +259,7 @@
   "uiChooseAnItemBelow": "Choose an item below",
   "uiItemCategories": "Item categories",
   "uiFetchingItemPatchListsFromServers": "Fetching item patch lists from servers\n(Might take a while)",
-  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "Error when trying to fetching item patch lists from servers"
+  "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "Error when trying to fetching item patch lists from servers",
+  "uiDuplicateModsInside": "Duplicate mods inside",
+  "uiRenameThis": "Rename this"
 }

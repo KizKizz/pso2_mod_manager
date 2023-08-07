@@ -723,7 +723,7 @@ void modsAdderHomePage(context) {
                                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                 ),
                                                                                                 child: Text(
-                                                                                                  'Duplicates found',
+                                                                                                  curLangText!.uiDuplicateModsInside,
                                                                                                   style: TextStyle(
                                                                                                       fontSize: 14,
                                                                                                       fontWeight: FontWeight.normal,
@@ -986,7 +986,7 @@ void modsAdderHomePage(context) {
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                               ),
                                                                                               child: Text(
-                                                                                                'Duplicates found',
+                                                                                              curLangText!.uiDuplicateModsInside,
                                                                                                 style: TextStyle(
                                                                                                     fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               ),
@@ -1002,7 +1002,7 @@ void modsAdderHomePage(context) {
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                               ),
                                                                                               child: Text(
-                                                                                                'Rename this',
+                                                                                                curLangText!.uiRenameThis,
                                                                                                 style: TextStyle(
                                                                                                     fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               ),
@@ -1272,7 +1272,7 @@ void modsAdderHomePage(context) {
                                                                                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                           ),
                                                                                                           child: Text(
-                                                                                                            'Rename this',
+                                                                                                            curLangText!.uiRenameThis,
                                                                                                             style: TextStyle(
                                                                                                                 fontSize: 14,
                                                                                                                 fontWeight: FontWeight.normal,

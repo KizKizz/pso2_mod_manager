@@ -330,8 +330,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiFetchingItemPatchListsFromServers =
           json['uiFetchingItemPatchListsFromServers'] as String
       ..uiErrorWhenTryingToFetchingItemPatchListsFromServers =
-          json['uiErrorWhenTryingToFetchingItemPatchListsFromServers']
-              as String;
+          json['uiErrorWhenTryingToFetchingItemPatchListsFromServers'] as String
+      ..uiDuplicateModsInside = json['uiDuplicateModsInside'] as String
+      ..uiRenameThis = json['uiRenameThis'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -606,4 +607,6 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiFetchingItemPatchListsFromServers,
       'uiErrorWhenTryingToFetchingItemPatchListsFromServers':
           instance.uiErrorWhenTryingToFetchingItemPatchListsFromServers,
+      'uiDuplicateModsInside': instance.uiDuplicateModsInside,
+      'uiRenameThis': instance.uiRenameThis,
     };

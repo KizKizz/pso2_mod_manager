@@ -312,6 +312,9 @@ class TranslationText {
   String uiFetchingItemPatchListsFromServers = 'Fetching item patch lists from servers\n(Might take a while)',
       uiErrorWhenTryingToFetchingItemPatchListsFromServers = 'Error when trying to fetching item patch lists from servers';
 
+  //mods_adder_homepage
+  String uiDuplicateModsInside = 'Duplicate mods inside', uiRenameThis = 'Rename this';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

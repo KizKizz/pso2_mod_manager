@@ -12,6 +12,7 @@ import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:pso2_mod_manager/classes/profile_class.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -95,3 +96,4 @@ List<CsvEmoteIceFile> availableEmotesCsvData = [];
 List<String> officialPatchServerFileList = [];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
+int modManCurActiveProfile = 1;
