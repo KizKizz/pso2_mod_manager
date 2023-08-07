@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:window_manager/window_manager.dart';
@@ -35,6 +36,7 @@ List<bool> _itemNameRenameIndex = [];
 List<List<bool>> mainFolderRenameIndex = [];
 List<List<List<bool>>> subFoldersRenameIndex = [];
 bool _isNameEditing = false;
+int _duplicateCounter = 0;
 final _subItemFormValidate = GlobalKey<FormState>();
 
 void modsAdderHomePage(context) {
@@ -350,10 +352,25 @@ void modsAdderHomePage(context) {
                                                       ),
                                                     );
                                                   } else {
-                                                    processedFileList = snapshot.data;
-                                                    //rename trigger
                                                     bool renameModDifferencesFound = false;
-                                                    if (_itemNameRenameIndex.isNotEmpty) {
+                                                    //sort item to add list
+                                                    for (ModsAdderItem element in snapshot.data) {
+                                                      int matchingItemIndex = processedFileList.indexWhere((item) => item.itemDirPath == element.itemDirPath);
+                                                      if (matchingItemIndex == -1 && Directory(element.itemDirPath).existsSync()) {
+                                                        processedFileList.add(element);
+                                                      } else if (matchingItemIndex != -1) {
+                                                        int ogModListLength = processedFileList[matchingItemIndex].modList.length;
+                                                        processedFileList[matchingItemIndex].modList.addAll(
+                                                            element.modList.where((mod) => processedFileList[matchingItemIndex].modList.indexWhere((e) => e.modDirPath == mod.modDirPath) == -1));
+                                                        if (ogModListLength < processedFileList[matchingItemIndex].modList.length) {
+                                                          renameModDifferencesFound = true;
+                                                        }
+                                                      }
+                                                    }
+
+                                                    //rename trigger
+
+                                                    if (_itemNameRenameIndex.isNotEmpty && _itemNameRenameIndex.length != processedFileList.length) {
                                                       for (int i = 0; i < mainFolderRenameIndex.length; i++) {
                                                         if (processedFileList[i].modList.length != mainFolderRenameIndex[i].length) {
                                                           renameModDifferencesFound = true;
@@ -362,7 +379,6 @@ void modsAdderHomePage(context) {
                                                       }
                                                     }
                                                     if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedFileList.length || renameModDifferencesFound) {
-                                                      
                                                       renameModDifferencesFound = false;
                                                       _itemNameRenameIndex = List.generate(processedFileList.length, (index) => false);
                                                       mainFolderRenameIndex =
@@ -384,7 +400,7 @@ void modsAdderHomePage(context) {
                                                       }
                                                     }
                                                     //get duplicates
-                                                      processedFileList = getDuplicates(processedFileList);
+                                                    processedFileList = getDuplicates(processedFileList);
 
                                                     return ScrollbarTheme(
                                                       data: ScrollbarThemeData(
@@ -401,6 +417,7 @@ void modsAdderHomePage(context) {
                                                               physics: const NeverScrollableScrollPhysics(),
                                                               itemCount: processedFileList.length,
                                                               itemBuilder: (context, index) {
+                                                                debugPrint(processedFileList[index].itemDirPath);
                                                                 return Card(
                                                                   margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
                                                                   color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -484,12 +501,25 @@ void modsAdderHomePage(context) {
                                                                                           )))
                                                                                       .toList(),
                                                                                   value: _selectedCategories[index],
-                                                                                  onChanged: (value) {
-                                                                                    setState(() {
-                                                                                      _selectedCategories[index] = value.toString();
-                                                                                      processedFileList[index].category = value.toString();
-                                                                                      // TO-DO
-                                                                                    });
+                                                                                  onChanged: (value) async {
+                                                                                    _selectedCategories[index] = value.toString();
+                                                                                    String newItemPath = processedFileList[index].itemDirPath.replaceFirst(
+                                                                                        p.dirname(processedFileList[index].itemDirPath),
+                                                                                        Uri.file('$modManModsAdderPath/${_selectedCategories[index]}').toFilePath());
+                                                                                    await io.copyPath(processedFileList[index].itemDirPath, newItemPath);
+                                                                                    //delete item dir
+                                                                                    Directory(processedFileList[index].itemDirPath).deleteSync(recursive: true);
+                                                                                    //delete parent dir if empty
+                                                                                    if (Directory(p.dirname(processedFileList[index].itemDirPath)).listSync().isEmpty) {
+                                                                                      Directory(p.dirname(processedFileList[index].itemDirPath)).deleteSync(recursive: true);
+                                                                                    }
+                                                                                    processedFileList[index].setNewParentPathToChildren(newItemPath);
+                                                                                    processedFileList[index].itemDirPath = newItemPath;
+                                                                                    processedFileList[index].category = value.toString();
+                                                                                    debugPrint(processedFileList[index].itemDirPath);
+                                                                                    setState(
+                                                                                      () {},
+                                                                                    );
                                                                                   },
                                                                                 ),
                                                                               if (!processedFileList[index].isUnknown)
@@ -515,55 +545,84 @@ void modsAdderHomePage(context) {
                                                                                             child: SizedBox(
                                                                                               //width: constraints.maxWidth * 0.4,
                                                                                               height: 40,
-                                                                                              child: TextFormField(
-                                                                                                autofocus: true,
-                                                                                                controller: renameTextBoxController,
-                                                                                                maxLines: 1,
-                                                                                                maxLength: 50,
-                                                                                                decoration: InputDecoration(
-                                                                                                  contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                  border: const OutlineInputBorder(),
-                                                                                                  hintText: processedFileList[index].itemName,
-                                                                                                  counterText: '',
-                                                                                                ),
-                                                                                                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                                onEditingComplete: () async {
-                                                                                                  if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                    //rename text
-                                                                                                    String newItemName = renameTextBoxController.text.trim();
-                                                                                                    if (processedFileList[index].category == 'Basewears' &&
-                                                                                                        !renameTextBoxController.text.contains('[Ba]')) {
-                                                                                                      newItemName += ' [Ba]';
-                                                                                                    } else if (processedFileList[index].category == 'Innerwears' &&
-                                                                                                        !renameTextBoxController.text.contains('[In]')) {
-                                                                                                      newItemName += ' [In]';
-                                                                                                    } else if (processedFileList[index].category == 'Outerwears' &&
-                                                                                                        !renameTextBoxController.text.contains('[Ou]')) {
-                                                                                                      newItemName += ' [Ou]';
-                                                                                                    } else if (processedFileList[index].category == 'Setwears' &&
-                                                                                                        !renameTextBoxController.text.contains('[Se]')) {
-                                                                                                      newItemName += ' [Se]';
-                                                                                                    } else {
-                                                                                                      newItemName = renameTextBoxController.text;
+                                                                                              child: Form(
+                                                                                                key: _subItemFormValidate,
+                                                                                                child: TextFormField(
+                                                                                                  autofocus: true,
+                                                                                                  controller: renameTextBoxController,
+                                                                                                  maxLines: 1,
+                                                                                                  maxLength: 50,
+                                                                                                  decoration: InputDecoration(
+                                                                                                    contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                    border: const OutlineInputBorder(),
+                                                                                                    hintText: processedFileList[index].itemName,
+                                                                                                    counterText: '',
+                                                                                                  ),
+                                                                                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                                  validator: (value) {
+                                                                                                    if (value == null || value.isEmpty) {
+                                                                                                      Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                      return curLangText!.uiNameCannotBeEmpty;
                                                                                                     }
-                                                                                                    //change dir name
-                                                                                                    processedFileList[index].itemName = newItemName;
-                                                                                                    var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
-                                                                                                        Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
-                                                                                                    processedFileList[index].setNewParentPathToChildren(newItemDir.path);
-                                                                                                    processedFileList[index].itemDirPath = newItemDir.path;
-                                                                                                  }
 
-                                                                                                  _itemNameRenameIndex[index] = false;
-                                                                                                  renameTextBoxController.clear();
-                                                                                                  _isNameEditing = false;
-                                                                                                  //check duplicates
-                                                                                                  //processedFileList = getDuplicates(processedFileList);
+                                                                                                    if (Directory(p.dirname(processedFileList[index].itemDirPath))
+                                                                                                        .listSync()
+                                                                                                        .whereType<Directory>()
+                                                                                                        .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                        .isNotEmpty) {
+                                                                                                      Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                      return curLangText!.uiNameAlreadyExisted;
+                                                                                                    }
 
-                                                                                                  setState(
-                                                                                                    () {},
-                                                                                                  );
-                                                                                                },
+                                                                                                    return null;
+                                                                                                  },
+                                                                                                  onChanged: (value) {
+                                                                                                    setState(
+                                                                                                      () {},
+                                                                                                    );
+                                                                                                  },
+                                                                                                  onEditingComplete: () async {
+                                                                                                    if (renameTextBoxController.text != processedFileList[index].itemName &&
+                                                                                                        _subItemFormValidate.currentState!.validate()) {
+                                                                                                      if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                        //rename text
+                                                                                                        String newItemName = renameTextBoxController.text.trim();
+                                                                                                        if (processedFileList[index].category == 'Basewears' &&
+                                                                                                            !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                          newItemName += ' [Ba]';
+                                                                                                        } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                            !renameTextBoxController.text.contains('[In]')) {
+                                                                                                          newItemName += ' [In]';
+                                                                                                        } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                            !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                          newItemName += ' [Ou]';
+                                                                                                        } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                            !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                          newItemName += ' [Se]';
+                                                                                                        } else {
+                                                                                                          newItemName = renameTextBoxController.text;
+                                                                                                        }
+                                                                                                        //change dir name
+                                                                                                        processedFileList[index].itemName = newItemName;
+                                                                                                        var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
+                                                                                                            Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                        processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                        processedFileList[index].itemIconPath = processedFileList[index]
+                                                                                                            .itemIconPath
+                                                                                                            .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
+                                                                                                        processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                      }
+
+                                                                                                      _itemNameRenameIndex[index] = false;
+                                                                                                      renameTextBoxController.clear();
+                                                                                                      _isNameEditing = false;
+
+                                                                                                      setState(
+                                                                                                        () {},
+                                                                                                      );
+                                                                                                    }
+                                                                                                  },
+                                                                                                ),
                                                                                               ),
                                                                                             ),
                                                                                           ),
@@ -573,44 +632,67 @@ void modsAdderHomePage(context) {
                                                                                           SizedBox(
                                                                                             width: 40,
                                                                                             child: MaterialButton(
-                                                                                              onPressed: () async {
-                                                                                                if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                  //rename text
-                                                                                                  String newItemName = renameTextBoxController.text.trim();
-                                                                                                  if (processedFileList[index].category == 'Basewears' &&
-                                                                                                      !renameTextBoxController.text.contains('[Ba]')) {
-                                                                                                    newItemName += ' [Ba]';
-                                                                                                  } else if (processedFileList[index].category == 'Innerwears' &&
-                                                                                                      !renameTextBoxController.text.contains('[In]')) {
-                                                                                                    newItemName += ' [In]';
-                                                                                                  } else if (processedFileList[index].category == 'Outerwears' &&
-                                                                                                      !renameTextBoxController.text.contains('[Ou]')) {
-                                                                                                    newItemName += ' [Ou]';
-                                                                                                  } else if (processedFileList[index].category == 'Setwears' &&
-                                                                                                      !renameTextBoxController.text.contains('[Se]')) {
-                                                                                                    newItemName += ' [Se]';
-                                                                                                  } else {
-                                                                                                    newItemName = renameTextBoxController.text;
-                                                                                                  }
-                                                                                                  //change dir name
-                                                                                                  processedFileList[index].itemName = newItemName;
-                                                                                                  var newItemDir = await Directory(processedFileList[index].itemDirPath)
-                                                                                                      .rename(Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
-                                                                                                  processedFileList[index].setNewParentPathToChildren(newItemDir.path);
-                                                                                                  processedFileList[index].itemDirPath = newItemDir.path;
-                                                                                                }
+                                                                                              onPressed: renameTextBoxController.text == processedFileList[index].itemName
+                                                                                                  ? null
+                                                                                                  : () async {
+                                                                                                      if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                        if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                          //rename text
+                                                                                                          String newItemName = renameTextBoxController.text.trim();
+                                                                                                          if (processedFileList[index].category == 'Basewears' &&
+                                                                                                              !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                            newItemName += ' [Ba]';
+                                                                                                          } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                              !renameTextBoxController.text.contains('[In]')) {
+                                                                                                            newItemName += ' [In]';
+                                                                                                          } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                              !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                            newItemName += ' [Ou]';
+                                                                                                          } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                              !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                            newItemName += ' [Se]';
+                                                                                                          } else {
+                                                                                                            newItemName = renameTextBoxController.text;
+                                                                                                          }
+                                                                                                          //change dir name
+                                                                                                          processedFileList[index].itemName = newItemName;
+                                                                                                          var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
+                                                                                                              Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName').toFilePath());
+                                                                                                          processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                          processedFileList[index].itemIconPath = processedFileList[index]
+                                                                                                              .itemIconPath
+                                                                                                              .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
+                                                                                                          processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                        }
 
+                                                                                                        _itemNameRenameIndex[index] = false;
+                                                                                                        renameTextBoxController.clear();
+                                                                                                        _isNameEditing = false;
+
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
+                                                                                                      }
+                                                                                                    },
+                                                                                              child: const Icon(Icons.check),
+                                                                                            ),
+                                                                                          ),
+                                                                                          const SizedBox(
+                                                                                            width: 5,
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            width: 40,
+                                                                                            child: MaterialButton(
+                                                                                              onPressed: () {
                                                                                                 _itemNameRenameIndex[index] = false;
                                                                                                 renameTextBoxController.clear();
                                                                                                 _isNameEditing = false;
-                                                                                                //check duplicates
-                                                                                                //processedFileList = getDuplicates(processedFileList);
 
                                                                                                 setState(
                                                                                                   () {},
                                                                                                 );
                                                                                               },
-                                                                                              child: const Icon(Icons.check),
+                                                                                              child: const Icon(Icons.close),
                                                                                             ),
                                                                                           ),
                                                                                         ],
@@ -772,37 +854,62 @@ void modsAdderHomePage(context) {
                                                                                           child: SizedBox(
                                                                                             //width: constraints.maxWidth * 0.4,
                                                                                             height: 40,
-                                                                                            child: TextFormField(
-                                                                                              autofocus: true,
-                                                                                              controller: renameTextBoxController,
-                                                                                              maxLines: 1,
-                                                                                              maxLength: 50,
-                                                                                              decoration: InputDecoration(
-                                                                                                contentPadding: const EdgeInsets.only(left: 10, top: 10),
-                                                                                                border: const OutlineInputBorder(),
-                                                                                                hintText: curMod.modName,
-                                                                                                counterText: '',
+                                                                                            child: Form(
+                                                                                              key: _subItemFormValidate,
+                                                                                              child: TextFormField(
+                                                                                                autofocus: true,
+                                                                                                controller: renameTextBoxController,
+                                                                                                maxLines: 1,
+                                                                                                maxLength: 50,
+                                                                                                decoration: InputDecoration(
+                                                                                                  contentPadding: const EdgeInsets.only(left: 10, top: 10),
+                                                                                                  border: const OutlineInputBorder(),
+                                                                                                  hintText: curMod.modName,
+                                                                                                  counterText: '',
+                                                                                                ),
+                                                                                                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                                                                                                validator: (value) {
+                                                                                                  if (value == null || value.isEmpty) {
+                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                    return curLangText!.uiNameCannotBeEmpty;
+                                                                                                  }
+
+                                                                                                  if (Directory(processedFileList[index].itemDirPath)
+                                                                                                      .listSync()
+                                                                                                      .whereType<Directory>()
+                                                                                                      .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
+                                                                                                      .isNotEmpty) {
+                                                                                                    Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(65);
+                                                                                                    return curLangText!.uiNameAlreadyExisted;
+                                                                                                  }
+
+                                                                                                  return null;
+                                                                                                },
+                                                                                                onChanged: (value) {
+                                                                                                  setState(
+                                                                                                    () {},
+                                                                                                  );
+                                                                                                },
+                                                                                                onEditingComplete: () async {
+                                                                                                  if (renameTextBoxController.text != curMod.modName && _subItemFormValidate.currentState!.validate()) {
+                                                                                                    if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                      curMod.modName = renameTextBoxController.text;
+                                                                                                      var newModDir = await Directory(curMod.modDirPath).rename(
+                                                                                                          Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
+                                                                                                      curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                      curMod.modDirPath = newModDir.path;
+                                                                                                    }
+
+                                                                                                    mainFolderRenameIndex[index][mIndex] = false;
+                                                                                                    renameTextBoxController.clear();
+                                                                                                    _isNameEditing = false;
+
+                                                                                                    setState(
+                                                                                                      () {},
+                                                                                                    );
+                                                                                                  }
+                                                                                                },
                                                                                               ),
-                                                                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
-                                                                                              onEditingComplete: () async {
-                                                                                                if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                  curMod.modName = renameTextBoxController.text;
-                                                                                                  var newModDir = await Directory(curMod.modDirPath)
-                                                                                                      .rename(Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
-                                                                                                  curMod.setNewParentPathToChildren(newModDir.path);
-                                                                                                  curMod.modDirPath = newModDir.path;
-                                                                                                }
-
-                                                                                                mainFolderRenameIndex[index][mIndex] = false;
-                                                                                                renameTextBoxController.clear();
-                                                                                                _isNameEditing = false;
-                                                                                                //check duplicates
-                                                                                                //processedFileList = getDuplicates(processedFileList);
-
-                                                                                                setState(
-                                                                                                  () {},
-                                                                                                );
-                                                                                              },
                                                                                             ),
                                                                                           ),
                                                                                         ),
@@ -812,26 +919,46 @@ void modsAdderHomePage(context) {
                                                                                         SizedBox(
                                                                                           width: 40,
                                                                                           child: MaterialButton(
-                                                                                            onPressed: () async {
-                                                                                              if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                curMod.modName = renameTextBoxController.text;
-                                                                                                var newModDir = await Directory(curMod.modDirPath)
-                                                                                                    .rename(Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
-                                                                                                curMod.setNewParentPathToChildren(newModDir.path);
-                                                                                                curMod.modDirPath = newModDir.path;
-                                                                                              }
+                                                                                            onPressed: renameTextBoxController.text == curMod.modName
+                                                                                                ? null
+                                                                                                : () async {
+                                                                                                    if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                      if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                        curMod.modName = renameTextBoxController.text;
+                                                                                                        var newModDir = await Directory(curMod.modDirPath).rename(
+                                                                                                            Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
+                                                                                                        curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                        curMod.modDirPath = newModDir.path;
+                                                                                                      }
 
+                                                                                                      mainFolderRenameIndex[index][mIndex] = false;
+                                                                                                      renameTextBoxController.clear();
+                                                                                                      _isNameEditing = false;
+
+                                                                                                      setState(
+                                                                                                        () {},
+                                                                                                      );
+                                                                                                    }
+                                                                                                  },
+                                                                                            child: const Icon(Icons.check),
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 5,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: 40,
+                                                                                          child: MaterialButton(
+                                                                                            onPressed: () {
                                                                                               mainFolderRenameIndex[index][mIndex] = false;
                                                                                               renameTextBoxController.clear();
                                                                                               _isNameEditing = false;
-                                                                                              //check duplicates
-                                                                                              //processedFileList = getDuplicates(processedFileList);
 
                                                                                               setState(
                                                                                                 () {},
                                                                                               );
                                                                                             },
-                                                                                            child: const Icon(Icons.check),
+                                                                                            child: const Icon(Icons.close),
                                                                                           ),
                                                                                         ),
                                                                                       ],
@@ -1035,8 +1162,14 @@ void modsAdderHomePage(context) {
 
                                                                                                               return null;
                                                                                                             },
+                                                                                                            onChanged: (value) {
+                                                                                                              setState(
+                                                                                                                () {},
+                                                                                                              );
+                                                                                                            },
                                                                                                             onEditingComplete: (() async {
-                                                                                                              if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                              if (renameTextBoxController.text != curSubmod.submodName &&
+                                                                                                                  _subItemFormValidate.currentState!.validate()) {
                                                                                                                 if (renameTextBoxController.text.isNotEmpty) {
                                                                                                                   curSubmod.submodName = renameTextBoxController.text;
                                                                                                                   var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
@@ -1052,8 +1185,6 @@ void modsAdderHomePage(context) {
                                                                                                                 subFoldersRenameIndex[index][mIndex][sIndex] = false;
                                                                                                                 renameTextBoxController.clear();
                                                                                                                 _isNameEditing = false;
-                                                                                                                //check duplicates
-                                                                                                                //processedFileList = getDuplicates(processedFileList);
                                                                                                                 setState(
                                                                                                                   () {},
                                                                                                                 );
@@ -1069,31 +1200,51 @@ void modsAdderHomePage(context) {
                                                                                                     SizedBox(
                                                                                                       width: 40,
                                                                                                       child: MaterialButton(
-                                                                                                        onPressed: () async {
-                                                                                                          if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                            if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                              curSubmod.submodName = renameTextBoxController.text;
-                                                                                                              var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
-                                                                                                                  Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
-                                                                                                                      .toFilePath());
-                                                                                                              curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
-                                                                                                              curSubmod.submodDirPath = newSubmodDir.path;
-                                                                                                            }
+                                                                                                        onPressed: renameTextBoxController.text == curSubmod.submodName
+                                                                                                            ? null
+                                                                                                            : () async {
+                                                                                                                if (_subItemFormValidate.currentState!.validate()) {
+                                                                                                                  if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                                    curSubmod.submodName = renameTextBoxController.text;
+                                                                                                                    var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
+                                                                                                                            '${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
+                                                                                                                        .toFilePath());
+                                                                                                                    curSubmod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+                                                                                                                    curSubmod.submodDirPath = newSubmodDir.path;
+                                                                                                                  }
 
-                                                                                                            //Clear
-                                                                                                            subFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                            renameTextBoxController.clear();
-                                                                                                            _isNameEditing = false;
-                                                                                                            //check duplicates
-                                                                                                            //processedFileList = getDuplicates(processedFileList);
-                                                                                                            // ignore: use_build_context_synchronously
-                                                                                                            Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          }
-                                                                                                        },
+                                                                                                                  //Clear
+                                                                                                                  subFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                                  renameTextBoxController.clear();
+                                                                                                                  _isNameEditing = false;
+                                                                                                                  // ignore: use_build_context_synchronously
+                                                                                                                  Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+                                                                                                                  setState(
+                                                                                                                    () {},
+                                                                                                                  );
+                                                                                                                }
+                                                                                                              },
                                                                                                         child: const Icon(Icons.check),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    const SizedBox(
+                                                                                                      width: 5,
+                                                                                                    ),
+                                                                                                    SizedBox(
+                                                                                                      width: 40,
+                                                                                                      child: MaterialButton(
+                                                                                                        onPressed: () {
+                                                                                                          subFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                          renameTextBoxController.clear();
+                                                                                                          _isNameEditing = false;
+                                                                                                          // ignore: use_build_context_synchronously
+                                                                                                          Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
+
+                                                                                                          setState(
+                                                                                                            () {},
+                                                                                                          );
+                                                                                                        },
+                                                                                                        child: const Icon(Icons.close),
                                                                                                       ),
                                                                                                     ),
                                                                                                   ],
@@ -1241,81 +1392,10 @@ void modsAdderHomePage(context) {
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Visibility(
-                                                visible: !dropZoneMax,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(right: 5),
-                                                  child: ElevatedButton(
-                                                      onPressed: processedFileList.isNotEmpty || context.watch<StateProvider>().modAdderReload
-                                                          ? (() {
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              _itemNameRenameIndex.clear();
-                                                              mainFolderRenameIndex.clear();
-                                                              subFoldersRenameIndex.clear();
-                                                              //newModMainFolderList.clear();
-                                                              _selectedCategories.clear();
-                                                              processedFileListLoad = null;
-                                                              processedFileList.clear();
-                                                              //_exitConfirmDialog = false;
-                                                              Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                              // _duplicateModNames.clear();
-                                                              // newModDragDropList.clear();
-                                                              // modsToAddList.clear();
-                                                              _isNameEditing = false;
-                                                              dropZoneMax = true;
-                                                              setState(
-                                                                () {},
-                                                              );
-                                                            })
-                                                          : null,
-                                                      child: Text(curLangText!.uiClearAll)),
-                                                ),
-                                              ),
                                               Expanded(
+                                                flex: dropZoneMax ? 1 : 0,
                                                 child: ElevatedButton(
                                                     onPressed: (() async {
-                                                      // if (_exitConfirmDialog) {
-                                                      //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                      //     element.deleteSync(recursive: true);
-                                                      //   });
-                                                      //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                      //     element.deleteSync(recursive: true);
-                                                      //   });
-                                                      //   Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                      //     element.deleteSync(recursive: true);
-                                                      //   });
-
-                                                      //   _itemNameRenameIndex.clear();
-                                                      //   subFoldersRenameIndex.clear();
-                                                      //   mainFolderRenameIndex.clear();
-                                                      //   _selectedCategories.clear();
-                                                      //   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                      //   // _exitConfirmDialog = false;
-                                                      //   // _duplicateModNames.clear();
-                                                      //   // itemRefSheetsList.clear();
-                                                      //   // sortedModsList.clear();
-                                                      //   // newModDragDropList.clear();
-                                                      //   // modsToAddList.clear();
-                                                      //   setState(
-                                                      //     () {},
-                                                      //   );
-                                                      //   dropZoneMax = true;
-                                                      //   Navigator.of(context).pop();
-                                                      // } else if (sortedModsList.isNotEmpty || modsToAddList.isNotEmpty || newModDragDropList.isNotEmpty) {
-                                                      //   _exitConfirmDialog = true;
-                                                      //   setState(
-                                                      //     () {},
-                                                      //   );
-                                                      // } else {
-
                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                         element.deleteSync(recursive: true);
                                                       });
@@ -1348,15 +1428,85 @@ void modsAdderHomePage(context) {
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(left: 5),
                                                   child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
-                                                      onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
-                                                          ? (() async {
+                                                      onPressed: processedFileList.isNotEmpty || context.watch<StateProvider>().modAdderReload
+                                                          ? (() {
+                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              _itemNameRenameIndex.clear();
+                                                              mainFolderRenameIndex.clear();
+                                                              subFoldersRenameIndex.clear();
+                                                              _selectedCategories.clear();
+                                                              processedFileListLoad = null;
+                                                              processedFileList.clear();
+                                                              //_exitConfirmDialog = false;
+                                                              Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                              _isNameEditing = false;
+                                                              dropZoneMax = true;
                                                               setState(
                                                                 () {},
                                                               );
                                                             })
                                                           : null,
-                                                      child: Text(curLangText!.uiAddAll)),
+                                                      child: Text(curLangText!.uiClearAll)),
+                                                ),
+                                              ),
+                                              Visibility(
+                                                visible: !dropZoneMax,
+                                                child: Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 5),
+                                                    child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
+                                                        onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
+                                                            ? (() async {
+                                                                if (_duplicateCounter > 0) {
+                                                                  processedFileList = await replaceNamesOfDuplicates(processedFileList);
+                                                                } else {
+                                                                  await modsAdderModFilesAdder(context, processedFileList);
+                                                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                    element.deleteSync(recursive: true);
+                                                                  });
+                                                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                                    element.deleteSync(recursive: true);
+                                                                  });
+                                                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                                    element.deleteSync(recursive: true);
+                                                                  });
+                                                                  _itemNameRenameIndex.clear();
+                                                                  mainFolderRenameIndex.clear();
+                                                                  subFoldersRenameIndex.clear();
+                                                                  _selectedCategories.clear();
+                                                                  processedFileListLoad = null;
+                                                                  processedFileList.clear();
+                                                                  //_exitConfirmDialog = false;
+                                                                  // ignore: use_build_context_synchronously
+                                                                  Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                                  _isNameEditing = false;
+                                                                  dropZoneMax = true;
+                                                                  setState(
+                                                                    () {},
+                                                                  );
+                                                                  // ignore: use_build_context_synchronously
+                                                                  Navigator.of(context).pop();
+                                                                }
+                                                                setState(
+                                                                  () {},
+                                                                );
+                                                              })
+                                                            : null,
+                                                        child: _duplicateCounter > 0 && _duplicateCounter < 2
+                                                            ? Text('Click to rename $_duplicateCounter duplicated mod')
+                                                            : _duplicateCounter > 1
+                                                                ? Text('Click to rename $_duplicateCounter duplicated mods')
+                                                                : Text(curLangText!.uiAddAll)),
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -1536,6 +1686,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
     item.modList.addAll(mods);
   }
 
+  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+    element.deleteSync(recursive: true);
+  });
+
   return modsAdderItemList;
 }
 
@@ -1582,6 +1736,7 @@ String removeRebootPath(String filePath) {
 
 List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
   List<ModsAdderItem> returnList = processedList;
+  _duplicateCounter = 0;
   for (var item in returnList) {
     for (var mod in item.modList) {
       if (mod.filesInMod.isNotEmpty) {
@@ -1589,6 +1744,7 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
         if (Directory(modDirPathInMods).existsSync()) {
           mod.isDuplicated = true;
           item.isChildrenDuplicated = true;
+          _duplicateCounter++;
         } else {
           mod.isDuplicated = false;
           item.isChildrenDuplicated = false;
@@ -1600,10 +1756,37 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
             submod.isDuplicated = true;
             mod.isChildrenDuplicated = true;
             item.isChildrenDuplicated = true;
+            _duplicateCounter++;
           } else {
             submod.isDuplicated = false;
             mod.isChildrenDuplicated = false;
             item.isChildrenDuplicated = false;
+          }
+        }
+      }
+    }
+  }
+
+  return returnList;
+}
+
+Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> processedList) async {
+  List<ModsAdderItem> returnList = processedList;
+
+  for (var item in returnList) {
+    for (var mod in item.modList) {
+      if (mod.isDuplicated) {
+        mod.modName = '${mod.modName}_DUP';
+        var newModDir = await Directory(mod.modDirPath).rename(Uri.file('${p.dirname(mod.modDirPath)}/${mod.modName}').toFilePath());
+        mod.setNewParentPathToChildren(newModDir.path);
+        mod.modDirPath = newModDir.path;
+      } else if (mod.isChildrenDuplicated) {
+        for (var submod in mod.submodList) {
+          if (submod.isDuplicated) {
+            submod.submodName = '${submod.submodName}_DUP';
+            var newSubmodDir = await Directory(submod.submodDirPath).rename(Uri.file('${p.dirname(submod.submodDirPath)}/${submod.submodName}').toFilePath());
+            submod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
+            submod.submodDirPath = newSubmodDir.path;
           }
         }
       }
