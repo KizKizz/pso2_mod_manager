@@ -151,6 +151,13 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
+        : context.watch<StateProvider>().reloadProfile
+        ? Center(
+            child:
+                Text('Switching Profile', style: const TextStyle(fontSize: 20)),
+              
+            )
+          
         : Stack(children: [
             if (showBackgroundImage && context.watch<StateProvider>().backgroundImageTrigger)
               Image.file(

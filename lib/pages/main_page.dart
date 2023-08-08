@@ -25,6 +25,7 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
@@ -291,6 +292,120 @@ class _MainPageState extends State<MainPage> {
                       ),
                       const SizedBox(
                         height: 5,
+                      ),
+
+                      //profiles select
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.filter_1_rounded,
+                                  size: 18,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text('Profiles:'),
+                              ],
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 22, bottom: 5),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: 'Click to select, hold to rename profile',
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveProfile == 1
+                                          ? null
+                                          : () async {
+                                            Navigator.pop(context);
+                                            final prefs = await SharedPreferences.getInstance();
+                                            modManCurActiveProfile = 1;
+                                            prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                            Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                            Future.delayed(const Duration(milliseconds: 500), () {
+                                              profileLoader(context).then((value) {
+                                                Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                              });
+                                            });
+                                            
+                                            //setState(() {});
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveProfile == 1
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text('Profile 1',
+                                              style: TextStyle(
+                                                  color: modManCurActiveProfile == 1
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: curLangText!.uiPrimaryDark,
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveProfile == 2
+                                          ? null
+                                          : () async {
+                                            Navigator.pop(context);
+                                            final prefs = await SharedPreferences.getInstance();
+                                            modManCurActiveProfile = 2;
+                                            prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                            Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                            Future.delayed(const Duration(milliseconds: 500), () {
+                                              profileLoader(context).then((value) {
+                                                Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                              });
+                                            });
+
+                                            //setState(() {});
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveProfile == 2
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text('Profile 2',
+                                              style: TextStyle(
+                                                  color: modManCurActiveProfile == 2
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
                       ),
 
                       //Path reselect

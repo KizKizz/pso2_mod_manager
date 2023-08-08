@@ -65,12 +65,12 @@ Future<bool> pathsLoader(context) async {
   //get profile
   modManCurActiveProfile = (prefs.getInt('modManCurActiveProfile') ?? 1);
   //pso2_bin path
-  modManPso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
+  modManPso2binPath = Uri.file(prefs.getString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2') ?? '').toFilePath();
   while (modManPso2binPath.isEmpty) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
-      prefs.setString('binDirPath', modManPso2binPath);
+      prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     }
   }
   //modman dir path
@@ -138,9 +138,9 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
-  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
+  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
@@ -267,7 +267,7 @@ Future<bool> pso2PathsReloader(context) async {
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
   if (pso2binPathFromPicker != null) {
     modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
-    prefs.setString('binDirPath', modManPso2binPath);
+    prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     modManChecksumFilePath = '';
     ogModFilesLoader();
   } else {
@@ -383,9 +383,9 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
-  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
+  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
