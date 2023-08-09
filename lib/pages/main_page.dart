@@ -1467,6 +1467,7 @@ class _MainPageState extends State<MainPage> {
                                   setState(() {});
                                   await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
                                     Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
+                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
                                     checksumChecker(context);
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
@@ -1499,12 +1500,22 @@ class _MainPageState extends State<MainPage> {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty)
-                                          Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
-                                          Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (Provider.of<StateProvider>(context, listen: false).checksumDownloading)
-                                          Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        !Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty
+                                            ? Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                            : !Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                                ? Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                : Provider.of<StateProvider>(context, listen: false).checksumDownloading
+                                                    ? Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                    : Row(
+                                                        children: [
+                                                          Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                                          Text('ERROR',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 13,
+                                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
+                                                        ],
+                                                      ),
                                       ],
                                     ),
                             ),

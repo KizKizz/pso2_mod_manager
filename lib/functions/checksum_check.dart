@@ -11,11 +11,11 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> checksumChecker(context) async {
+  await ApplicationConfig().checkChecksumFileForUpdates(context);
   final prefs = await SharedPreferences.getInstance();
   modManChecksumFilePath = (prefs.getString('checksumFilePath') ?? '');
   if (!File(modManChecksumFilePath).existsSync()) {
     modManChecksumFilePath = '';
-    await ApplicationConfig().checkChecksumFileForUpdates(context);
   }
 
   if (modManChecksumFilePath.isEmpty || p.basename(modManChecksumFilePath) != netChecksumFileName) {
@@ -28,7 +28,9 @@ Future<void> checksumChecker(context) async {
               )
               .path)
           .toFilePath();
-      prefs.setString('checksumFilePath', modManChecksumFilePath);
+      if (modManChecksumFilePath.isNotEmpty && p.basename(modManChecksumFilePath) == netChecksumFileName) {
+        prefs.setString('checksumFilePath', modManChecksumFilePath);
+      }
     }
   }
 
