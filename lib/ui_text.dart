@@ -118,7 +118,9 @@ class TranslationText {
       uiMinimal = 'Minimal',
       uiAll = 'All',
       uiSwapItems = 'Swap Items',
-      uiSwapAnItemToAnotherItem = 'Swap an item to another item';
+      uiSwapAnItemToAnotherItem = 'Swap an item to another item',
+      uiProfiles = 'Profiles',
+      uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename';
 
   //homepage
   String uiItemList = 'Item List',
@@ -179,7 +181,10 @@ class TranslationText {
       uiSuccessfullyAppliedAllModsIn = 'Sucessfully applied all mods in',
       uiAddToThisSet = 'Add to this set',
       uiFromThisSet = 'from this set',
-      uiToAnotherItem = 'to another item';
+      uiToAnotherItem = 'to another item',
+      uiUnableToObtainOrginalFilesFromSegaServers = 'Unable to obtain original files from Sega\'s servers',
+      uiSwitchingProfile = 'Switching Profile',
+      uiProfile = 'Profile';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -188,7 +193,7 @@ class TranslationText {
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
       uiErrorWhenLoadingAddModsData = 'Error when loading data for Mods Adder. Please restart the app.',
-      uiLoadingModsAdderData = 'Loading data for Mods Adder',
+      uiProcessingFiles = 'Processing files',
       uiSelectACategory = 'Select a Category',
       uiEditName = 'Edit Name',
       uiMarkThisNotToBeAdded = 'Mark this not to be added',
@@ -202,7 +207,8 @@ class TranslationText {
       uiDuplicateNamesFound = 'Duplicate mod name(s) found',
       uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
       uiDuplicateModsIn = 'in',
-      uiRenameForMe = 'Rename for me!';
+      uiRenameForMe = 'Rename for me!',
+      uiAddingMods = 'Adding mods';
 
   //color_picker
   String uiPickAColor = 'Pick a color';
@@ -311,6 +317,16 @@ class TranslationText {
   //patch_item_list_loading_page
   String uiFetchingItemPatchListsFromServers = 'Fetching item patch lists from servers\n(Might take a while)',
       uiErrorWhenTryingToFetchingItemPatchListsFromServers = 'Error when trying to fetching item patch lists from servers';
+
+  //mods_adder_homepage
+  String uiDuplicateModsInside = 'Duplicate mods inside',
+      uiRenameThis = 'Rename this',
+      uiClickToRename = 'Click to rename ',
+      uiDuplicatedMod = ' duplicated mod',
+      uiDuplicatedMods = ' duplicated mods';
+
+  //new_profile_name.dart
+  String uiNewProfileName = 'New profile name';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

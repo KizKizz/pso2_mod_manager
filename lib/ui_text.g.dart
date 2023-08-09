@@ -134,6 +134,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiAll = json['uiAll'] as String
       ..uiSwapItems = json['uiSwapItems'] as String
       ..uiSwapAnItemToAnotherItem = json['uiSwapAnItemToAnotherItem'] as String
+      ..uiProfiles = json['uiProfiles'] as String
+      ..uiClickToChangeToThisProfileHoldToRename =
+          json['uiClickToChangeToThisProfileHoldToRename'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -198,6 +201,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiAddToThisSet = json['uiAddToThisSet'] as String
       ..uiFromThisSet = json['uiFromThisSet'] as String
       ..uiToAnotherItem = json['uiToAnotherItem'] as String
+      ..uiUnableToObtainOrginalFilesFromSegaServers =
+          json['uiUnableToObtainOrginalFilesFromSegaServers'] as String
+      ..uiSwitchingProfile = json['uiSwitchingProfile'] as String
+      ..uiProfile = json['uiProfile'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -206,7 +213,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiWaitingForData = json['uiWaitingForData'] as String
       ..uiErrorWhenLoadingAddModsData =
           json['uiErrorWhenLoadingAddModsData'] as String
-      ..uiLoadingModsAdderData = json['uiLoadingModsAdderData'] as String
+      ..uiProcessingFiles = json['uiProcessingFiles'] as String
       ..uiSelectACategory = json['uiSelectACategory'] as String
       ..uiEditName = json['uiEditName'] as String
       ..uiMarkThisNotToBeAdded = json['uiMarkThisNotToBeAdded'] as String
@@ -223,6 +230,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiRenameTheModsBelowBeforeAdding'] as String
       ..uiDuplicateModsIn = json['uiDuplicateModsIn'] as String
       ..uiRenameForMe = json['uiRenameForMe'] as String
+      ..uiAddingMods = json['uiAddingMods'] as String
       ..uiPickAColor = json['uiPickAColor'] as String
       ..uiDuplicatesInAppliedModsFound =
           json['uiDuplicatesInAppliedModsFound'] as String
@@ -330,8 +338,13 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiFetchingItemPatchListsFromServers =
           json['uiFetchingItemPatchListsFromServers'] as String
       ..uiErrorWhenTryingToFetchingItemPatchListsFromServers =
-          json['uiErrorWhenTryingToFetchingItemPatchListsFromServers']
-              as String;
+          json['uiErrorWhenTryingToFetchingItemPatchListsFromServers'] as String
+      ..uiDuplicateModsInside = json['uiDuplicateModsInside'] as String
+      ..uiRenameThis = json['uiRenameThis'] as String
+      ..uiClickToRename = json['uiClickToRename'] as String
+      ..uiDuplicatedMod = json['uiDuplicatedMod'] as String
+      ..uiDuplicatedMods = json['uiDuplicatedMods'] as String
+      ..uiNewProfileName = json['uiNewProfileName'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -436,6 +449,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAll': instance.uiAll,
       'uiSwapItems': instance.uiSwapItems,
       'uiSwapAnItemToAnotherItem': instance.uiSwapAnItemToAnotherItem,
+      'uiProfiles': instance.uiProfiles,
+      'uiClickToChangeToThisProfileHoldToRename':
+          instance.uiClickToChangeToThisProfileHoldToRename,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -495,13 +511,17 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAddToThisSet': instance.uiAddToThisSet,
       'uiFromThisSet': instance.uiFromThisSet,
       'uiToAnotherItem': instance.uiToAnotherItem,
+      'uiUnableToObtainOrginalFilesFromSegaServers':
+          instance.uiUnableToObtainOrginalFilesFromSegaServers,
+      'uiSwitchingProfile': instance.uiSwitchingProfile,
+      'uiProfile': instance.uiProfile,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
       'uiProcess': instance.uiProcess,
       'uiWaitingForData': instance.uiWaitingForData,
       'uiErrorWhenLoadingAddModsData': instance.uiErrorWhenLoadingAddModsData,
-      'uiLoadingModsAdderData': instance.uiLoadingModsAdderData,
+      'uiProcessingFiles': instance.uiProcessingFiles,
       'uiSelectACategory': instance.uiSelectACategory,
       'uiEditName': instance.uiEditName,
       'uiMarkThisNotToBeAdded': instance.uiMarkThisNotToBeAdded,
@@ -518,6 +538,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiRenameTheModsBelowBeforeAdding,
       'uiDuplicateModsIn': instance.uiDuplicateModsIn,
       'uiRenameForMe': instance.uiRenameForMe,
+      'uiAddingMods': instance.uiAddingMods,
       'uiPickAColor': instance.uiPickAColor,
       'uiDuplicatesInAppliedModsFound': instance.uiDuplicatesInAppliedModsFound,
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,
@@ -606,4 +627,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiFetchingItemPatchListsFromServers,
       'uiErrorWhenTryingToFetchingItemPatchListsFromServers':
           instance.uiErrorWhenTryingToFetchingItemPatchListsFromServers,
+      'uiDuplicateModsInside': instance.uiDuplicateModsInside,
+      'uiRenameThis': instance.uiRenameThis,
+      'uiClickToRename': instance.uiClickToRename,
+      'uiDuplicatedMod': instance.uiDuplicatedMod,
+      'uiDuplicatedMods': instance.uiDuplicatedMods,
+      'uiNewProfileName': instance.uiNewProfileName,
     };

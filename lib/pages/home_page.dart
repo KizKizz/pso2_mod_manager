@@ -151,19 +151,23 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
-        : Stack(children: [
-            if (showBackgroundImage && context.watch<StateProvider>().backgroundImageTrigger)
-              Image.file(
-                backgroundImage,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: viewsTheme,
-            ),
-          ]);
+        : context.watch<StateProvider>().reloadProfile
+            ? Center(
+                child: Text(curLangText!.uiSwitchingProfile, style: const TextStyle(fontSize: 20)),
+              )
+            : Stack(children: [
+                if (showBackgroundImage && context.watch<StateProvider>().backgroundImageTrigger)
+                  Image.file(
+                    backgroundImage,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: viewsTheme,
+                ),
+              ]);
   }
 
 //ITEM LIST=====================================================================================================================================================================================
@@ -898,6 +902,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                 curCategory.items.remove(curItem);
                                                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                                     '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                                saveModdedItemListToJson();
                                                                                                 setState(() {});
                                                                                               });
                                                                                             },
@@ -1204,6 +1209,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                       curCategory.items.remove(curItem);
                                                                                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                                           '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                                      saveModdedItemListToJson();
                                                                                                       setState(() {});
                                                                                                     });
                                                                                                   },
@@ -1757,6 +1763,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                                 '${curLangText!.uiSuccess}!',
                                                                                                                 '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}',
                                                                                                                 3000));
+                                                                                                            saveModdedItemListToJson();
                                                                                                             setState(() {});
                                                                                                           });
                                                                                                         },
@@ -2228,8 +2235,13 @@ class _HomePageState extends State<HomePage> {
                                                                       }
                                                                       filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                     }
-                                                                    ScaffoldMessenger.of(context)
-                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                    if (filesUnapplied.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                    } else {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                          snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                                    }
 
                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
 
@@ -2276,6 +2288,7 @@ class _HomePageState extends State<HomePage> {
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                         snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                     allOGFilesFound = false;
+                                                                    isModViewModsApplying = false;
                                                                     break;
                                                                   }
                                                                 }
@@ -2387,6 +2400,7 @@ class _HomePageState extends State<HomePage> {
                                                                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                 previewModName = '';
                                                                 previewImages.clear();
+                                                                saveModdedItemListToJson();
                                                                 setState(() {});
                                                               });
                                                             } else {
@@ -2409,6 +2423,7 @@ class _HomePageState extends State<HomePage> {
                                                                 previewImages.clear();
                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                saveModdedItemListToJson();
                                                                 setState(() {});
                                                               });
                                                             }
@@ -2492,8 +2507,13 @@ class _HomePageState extends State<HomePage> {
                                                                       }
                                                                       filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                     }
-                                                                    ScaffoldMessenger.of(context)
-                                                                        .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                    if (filesUnapplied.isNotEmpty) {
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                    } else {
+                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                          snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                                    }
 
                                                                     appliedItemList = await appliedListBuilder(moddedItemsList);
 
@@ -2540,6 +2560,7 @@ class _HomePageState extends State<HomePage> {
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                         snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                     allOGFilesFound = false;
+                                                                    isModViewModsApplying = false;
                                                                     break;
                                                                   }
                                                                 }
@@ -2652,6 +2673,7 @@ class _HomePageState extends State<HomePage> {
                                                                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
                                                                 previewModName = '';
                                                                 previewImages.clear();
+                                                                saveModdedItemListToJson();
                                                                 setState(() {});
                                                               });
                                                             } else {
@@ -2674,6 +2696,7 @@ class _HomePageState extends State<HomePage> {
                                                                 previewImages.clear();
                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                saveModdedItemListToJson();
                                                                 setState(() {});
                                                               });
                                                             }
@@ -2829,8 +2852,13 @@ class _HomePageState extends State<HomePage> {
                                                                                 filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                               }
 
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                  snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                              if (filesUnapplied.isNotEmpty) {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                              } else {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                    context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                                              }
 
                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                               isModViewModsRemoving = false;
@@ -2873,6 +2901,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                     context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                                 allOGFilesFound = false;
+                                                                                isModViewModsApplying = false;
                                                                                 break;
                                                                               }
                                                                             }
@@ -2989,6 +3018,7 @@ class _HomePageState extends State<HomePage> {
                                                                             previewImages.clear();
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                 '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                            saveModdedItemListToJson();
                                                                             setState(() {});
                                                                           });
                                                                         } else {
@@ -3010,6 +3040,7 @@ class _HomePageState extends State<HomePage> {
                                                                             previewImages.clear();
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                 '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                            saveModdedItemListToJson();
                                                                             setState(() {});
                                                                           });
                                                                         }
@@ -3158,8 +3189,9 @@ class _HomePageState extends State<HomePage> {
                                                                                 previewImages.clear();
                                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                     '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                saveModdedItemListToJson();
+                                                                                setState(() {});
                                                                               });
-                                                                              setState(() {});
                                                                             } else {
                                                                               deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
                                                                                 String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
@@ -3185,6 +3217,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 previewImages.clear();
                                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
                                                                                     '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                saveModdedItemListToJson();
                                                                                 setState(() {});
                                                                               });
                                                                             }
@@ -3290,7 +3323,26 @@ class _HomePageState extends State<HomePage> {
         ],
         title: Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 5),
-          child: Text(curLangText!.uiAppliedMods),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(curLangText!.uiAppliedMods),
+              Padding(
+                padding: const EdgeInsets.only(left: 5, top: 5),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).colorScheme.primary),
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                  child: Text(
+                    context.watch<StateProvider>().profileName,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.primary),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(headersOpacityValue),
         foregroundColor: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color,
@@ -3619,8 +3671,13 @@ class _HomePageState extends State<HomePage> {
                                                                                             filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                           }
                                                                                           saveModdedItemListToJson();
-                                                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                              context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                          if (filesUnapplied.isNotEmpty) {
+                                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                          } else {
+                                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                                                          }
 
                                                                                           appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                           if (appliedItemList.isEmpty) {
@@ -3655,6 +3712,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                         context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                                     allOGFilesFound = false;
+                                                                                    isModViewModsApplying = false;
                                                                                     break;
                                                                                   }
                                                                                 }
@@ -4046,8 +4104,13 @@ class _HomePageState extends State<HomePage> {
                                                                   filesUnapplied += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
                                                                 }
                                                               }
-                                                              ScaffoldMessenger.of(context)
-                                                                  .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                              if (filesUnapplied.isNotEmpty) {
+                                                                ScaffoldMessenger.of(context)
+                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                              } else {
+                                                                ScaffoldMessenger.of(context)
+                                                                    .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                              }
 
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                               if (appliedItemList.isEmpty) {
@@ -4109,6 +4172,7 @@ class _HomePageState extends State<HomePage> {
                                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                                     snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                 allOGFilesFound = false;
+                                                                isModViewModsApplying = false;
                                                                 break;
                                                               }
                                                             }
@@ -4457,8 +4521,13 @@ class _HomePageState extends State<HomePage> {
                                                                                             }
                                                                                             filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                           }
-                                                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                              context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                          if (filesUnapplied.isNotEmpty) {
+                                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                                          } else {
+                                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                                context, '${curLangText!.uiError}!', curLangText!.uiUnableToObtainOrginalFilesFromSegaServers, 3000));
+                                                                                          }
 
                                                                                           appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                           if (appliedItemList.isEmpty) {
@@ -4493,6 +4562,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                         context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
                                                                                     allOGFilesFound = false;
+                                                                                    isModViewModsApplying = false;
                                                                                     break;
                                                                                   }
                                                                                 }

@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
-    
+
     super.initState();
   }
 
@@ -195,6 +195,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //profile names
+      modManProfile1Name = (prefs.getString('modManProfile1Name') ?? 'Profile 1');
+      modManProfile2Name = (prefs.getString('modManProfile2Name') ?? 'Profile 2');
+      modManCurActiveProfile = (prefs.getInt('modManCurActiveProfile') ?? 1);
+      if (modManCurActiveProfile == 1) {
+        Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
+      }
       //mods swapper check
       // isEmotesToStandbyMotions = (prefs.getBool('isEmotesToStandbyMotions') ?? false);
       isReplacingNQWithHQ = (prefs.getBool('modsSwapperIsReplacingNQWithHQ') ?? false);

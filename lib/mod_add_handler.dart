@@ -695,7 +695,7 @@ void modAddHandler(context) {
                                                               crossAxisAlignment: CrossAxisAlignment.center,
                                                               children: [
                                                                 Text(
-                                                                  curLangText!.uiLoadingModsAdderData,
+                                                                  curLangText!.uiProcessingFiles,
                                                                   style: const TextStyle(fontSize: 20),
                                                                 ),
                                                                 const SizedBox(

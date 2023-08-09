@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
@@ -22,9 +23,9 @@ import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
@@ -293,6 +294,146 @@ class _MainPageState extends State<MainPage> {
                         height: 5,
                       ),
 
+                      //profiles select
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.filter_1_rounded,
+                                  size: 18,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text('${curLangText!.uiProfiles}:'),
+                              ],
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 22, bottom: 5),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: curLangText!.uiClickToChangeToThisProfileHoldToRename,
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveProfile == 1
+                                              ? null
+                                              : () async {
+                                                  Navigator.pop(context);
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveProfile = 1;
+                                                  prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                                  Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                                  modViewItem = null;
+                                                  ogModFilesReset();
+                                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                                    profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
+                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    });
+                                                  });
+
+                                                  //setState(() {});
+                                                },
+                                          onLongPress: () async {
+                                            String newName = await newProfileNameDialog(context);
+                                            if (newName.isNotEmpty) {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              prefs.setString('modManProfile1Name', newName);
+                                              modManProfile1Name = newName;
+                                              Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
+                                              setState(() {});
+                                            }
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveProfile == 1
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text(modManProfile1Name,
+                                              style: TextStyle(
+                                                  color: modManCurActiveProfile == 1
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: curLangText!.uiClickToChangeToThisProfileHoldToRename,
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveProfile == 2
+                                              ? null
+                                              : () async {
+                                                  Navigator.pop(context);
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveProfile = 2;
+                                                  prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                                  Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                                  modViewItem = null;
+                                                  ogModFilesReset();
+                                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                                    profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
+                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    });
+                                                  });
+
+                                                  //setState(() {});
+                                                },
+                                          onLongPress: () async {
+                                            String newName = await newProfileNameDialog(context);
+                                            if (newName.isNotEmpty) {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              prefs.setString('modManProfile2Name', newName);
+                                              modManProfile2Name = newName;
+                                              Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
+                                              setState(() {});
+                                            }
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveProfile == 2
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text(modManProfile2Name,
+                                              style: TextStyle(
+                                                  color: modManCurActiveProfile == 2
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ),
+
                       //Path reselect
                       MaterialButton(
                         height: 40,
@@ -454,7 +595,7 @@ class _MainPageState extends State<MainPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Text(curLangText!.uiStartupItemIconsFetching),
+                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
                               ],
                             ),
                             Padding(
@@ -474,7 +615,7 @@ class _MainPageState extends State<MainPage> {
                                 selectedBorderColor: Theme.of(context).colorScheme.primary,
                                 constraints: const BoxConstraints(
                                   minHeight: 25.0,
-                                  minWidth: 60.0,
+                                  minWidth: 74.0,
                                 ),
                                 isSelected: _selectedIconLoaderSwitches,
                                 children: iconLoaderSwitches,
@@ -1155,27 +1296,27 @@ class _MainPageState extends State<MainPage> {
                               child: MaterialButton(
                                 color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
                                 //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
-                                onPressed: (() {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  modAddHandler(context);
-                                }),
-                                // onLongPress: () {
+                                // onPressed: (() {
                                 //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                 //     element.deleteSync(recursive: true);
                                 //   });
                                 //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
                                 //     element.deleteSync(recursive: true);
                                 //   });
-                                //   Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                //     element.deleteSync(recursive: true);
-                                //   });
-                                //   modsAdderHomePage(context);
-                                // },
+                                //   modAddHandler(context);
+                                // }),
+                                onPressed: () {
+                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
+                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
+                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
+                                  modsAdderHomePage(context);
+                                },
                                 child: Row(
                                   children: [
                                     const Icon(
@@ -1326,7 +1467,8 @@ class _MainPageState extends State<MainPage> {
                                   setState(() {});
                                   await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
                                     Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
-                                    checksumChecker();
+                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
+                                    checksumChecker(context);
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
@@ -1358,12 +1500,22 @@ class _MainPageState extends State<MainPage> {
                                           color: Colors.red,
                                         ),
                                         const SizedBox(width: 2.5),
-                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty)
-                                          Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (!Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match)
-                                          Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
-                                        if (Provider.of<StateProvider>(context, listen: false).checksumDownloading)
-                                          Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                        !Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty
+                                            ? Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                            : !Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                                ? Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                : Provider.of<StateProvider>(context, listen: false).checksumDownloading
+                                                    ? Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                    : Row(
+                                                        children: [
+                                                          Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                                          Text('ERROR',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 13,
+                                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
+                                                        ],
+                                                      ),
                                       ],
                                     ),
                             ),

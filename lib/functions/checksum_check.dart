@@ -10,7 +10,8 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> checksumChecker() async {
+Future<void> checksumChecker(context) async {
+  await ApplicationConfig().checkChecksumFileForUpdates(context);
   final prefs = await SharedPreferences.getInstance();
   modManChecksumFilePath = (prefs.getString('checksumFilePath') ?? '');
   if (!File(modManChecksumFilePath).existsSync()) {
@@ -27,7 +28,9 @@ Future<void> checksumChecker() async {
               )
               .path)
           .toFilePath();
-      prefs.setString('checksumFilePath', modManChecksumFilePath);
+      if (modManChecksumFilePath.isNotEmpty && p.basename(modManChecksumFilePath) == netChecksumFileName) {
+        prefs.setString('checksumFilePath', modManChecksumFilePath);
+      }
     }
   }
 
@@ -41,20 +44,20 @@ Future<void> checksumChecker() async {
     //win32
     if (modManWin32CheckSumFilePath.isNotEmpty && File(modManWin32CheckSumFilePath).existsSync()) {
       modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
-    } else if (!File(modManWin32CheckSumFilePath).existsSync()) {
+    } else if (modManWin32CheckSumFilePath.isNotEmpty && !File(modManWin32CheckSumFilePath).existsSync()) {
       File(modManChecksumFilePath).copySync(modManWin32CheckSumFilePath);
       modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
     }
     if (modManWin32ChecksumMD5 != modManLocalChecksumMD5) {
       File(modManChecksumFilePath).copySync(modManWin32CheckSumFilePath);
       modManWin32ChecksumMD5 = await getFileHash(modManWin32CheckSumFilePath);
-    }
+    } 
 
     //win32_na
     if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
       if (modManWin32NaCheckSumFilePath.isNotEmpty && File(modManWin32NaCheckSumFilePath).existsSync()) {
         modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
-      } else if (!File(modManWin32NaCheckSumFilePath).existsSync()) {
+      } else if (modManWin32NaCheckSumFilePath.isNotEmpty && !File(modManWin32NaCheckSumFilePath).existsSync()) {
         File(modManChecksumFilePath).copySync(modManWin32NaCheckSumFilePath);
         modManWin32NaChecksumMD5 = await getFileHash(modManWin32NaCheckSumFilePath);
       }
@@ -71,7 +74,7 @@ Future<void> applyModsChecksumChecker(context) async {
     Provider.of<StateProvider>(context, listen: false).checksumDownloadingTrue();
     await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
       Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
-      checksumChecker();
+      checksumChecker(context);
       Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
     });
   }

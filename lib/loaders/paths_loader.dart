@@ -46,7 +46,6 @@ String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toF
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
-String modManModSettingsJsonPath = '';
 String modManRefSheetListFilePath = '';
 //Log file path
 String modManOpLogsFilePath = '';
@@ -63,13 +62,15 @@ String backupPatchURL = '';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
+  //get profile
+  modManCurActiveProfile = (prefs.getInt('modManCurActiveProfile') ?? 1);
   //pso2_bin path
-  modManPso2binPath = Uri.file(prefs.getString('binDirPath') ?? '').toFilePath();
+  modManPso2binPath = Uri.file(prefs.getString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2') ?? '').toFilePath();
   while (modManPso2binPath.isEmpty) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
-      prefs.setString('binDirPath', modManPso2binPath);
+      prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     }
   }
   //modman dir path
@@ -135,11 +136,12 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
-  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
+  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
@@ -152,8 +154,8 @@ Future<bool> pathsLoader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  //await ApplicationConfig().checkChecksumFileForUpdates(context);
+  await checksumChecker(context);
 
   //ref sheets check load files
   if (kDebugMode) {
@@ -218,8 +220,7 @@ Future<String?> pso2binPathGet(context) async {
                           //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -254,8 +255,7 @@ Future<String?> modManDirPathGet(context) async {
                           //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiYes))
               ]));
@@ -268,7 +268,7 @@ Future<bool> pso2PathsReloader(context) async {
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
   if (pso2binPathFromPicker != null) {
     modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
-    prefs.setString('binDirPath', modManPso2binPath);
+    prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     modManChecksumFilePath = '';
     ogModFilesLoader();
   } else {
@@ -276,8 +276,7 @@ Future<bool> pso2PathsReloader(context) async {
   }
 
   //Checksum
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  await checksumChecker(context);
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -334,8 +333,7 @@ Future<String?> pso2binPathReselect(context) async {
                           //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
@@ -383,11 +381,12 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
-  modManModsListJsonPath = Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath();
+  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath();
+  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
@@ -399,8 +398,8 @@ Future<bool> modManPathReloader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  //await ApplicationConfig().checkChecksumFileForUpdates(context);
+  await checksumChecker(context);
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();
@@ -455,8 +454,7 @@ Future<String?> modManDirPathReselect(context) async {
                           //   dialogTitle: curLangText!.uiSelectAFolderToStoreMMFolder,
                           //   lockParentWindow: true,
                           // )
-                          await getDirectoryPath()
-                          );
+                          await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
