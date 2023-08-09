@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -528,9 +529,11 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                             onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
                                                 ? null
                                                 : () {
-                                                    newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                                    newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                                    modAddHandler(context);
+                                                    // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // modAddHandler(context);
+                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
                                       ],

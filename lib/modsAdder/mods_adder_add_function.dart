@@ -15,63 +15,88 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:io/io.dart' as io;
 
 //Auto Files adder
 Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList) async {
   //List<List<String>> addedItems = [];
   for (var item in itemsToAddList) {
-    String category = item.category;
-    String itemName = item.itemName;
-    List<String> mainNames = item.modList.map((e) => e.modName).toList();
+    if (item.toBeAdded) {
+      String category = item.category;
+      String itemName = item.itemName;
+      List<String> mainNames = [];
 
-    String newItemPath = item.itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-    io.copyPathSync(item.itemDirPath, newItemPath);
-
-    List<Directory> foldersInNewItemPath = [];
-    for (var mod in item.modList) {
-      String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-      if (foldersInNewItemPath.indexWhere((element) => element.path == newmodDirPath) == -1) {
-        foldersInNewItemPath.add(Directory(newmodDirPath));
-      }
-    }
-
-    //Add to current moddedItemList
-    for (var cateType in moddedItemsList) {
-      int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == category);
-      if (cateIndex != -1) {
-        Category cateInList = cateType.categories[cateIndex];
-        int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
-        if (itemInListIndex == -1) {
-          cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
-        } else {
-          Item itemInList = cateInList.items[itemInListIndex];
-          int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
-          if (modInListIndex != -1) {
-            Mod modInList = itemInList.mods[modInListIndex];
-            List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName);
-            for (var subModInCurMod in modInList.submods) {
-              extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
-            }
-            modInList.submods.addAll(extraSubmods);
-            modInList.isNew = true;
-          } else {
-            itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath));
+      //copy files to Mods
+      String newItemPath = item.itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+      for (var mod in item.modList) {
+        if (mod.toBeAdded) {
+          mainNames.add(mod.modName);
+          String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+          Directory(newmodDirPath).createSync(recursive: true);
+          for (var file in mod.filesInMod) {
+            String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            file.copySync(newFilePath);
           }
-          itemInList.isNew = true;
-          //Sort alpha
-          itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+          for (var submod in mod.submodList) {
+            if (submod.toBeAdded) {
+              String newSubmodDirPath = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+              Directory(newSubmodDirPath).createSync(recursive: true);
+              for (var file in submod.files) {
+                String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                file.copySync(newFilePath);
+              }
+            }
+          }
         }
-        //Sort alpha
-        cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
-        cateInList.visible = cateInList.items.isNotEmpty ? true : false;
-        cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
+      }
+      //io.copyPathSync(item.itemDirPath, newItemPath);
 
-        break;
+      if (mainNames.isNotEmpty) {
+        List<Directory> foldersInNewItemPath = [];
+        for (var mod in item.modList) {
+          String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+          if (mod.toBeAdded && foldersInNewItemPath.indexWhere((element) => element.path == newmodDirPath) == -1) {
+            foldersInNewItemPath.add(Directory(newmodDirPath));
+          }
+        }
+
+        //Add to current moddedItemList
+        for (var cateType in moddedItemsList) {
+          int cateIndex = cateType.categories.indexWhere((element) => element.categoryName == category);
+          if (cateIndex != -1) {
+            Category cateInList = cateType.categories[cateIndex];
+            int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
+            if (itemInListIndex == -1) {
+              cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+            } else {
+              Item itemInList = cateInList.items[itemInListIndex];
+              int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
+              if (modInListIndex != -1) {
+                Mod modInList = itemInList.mods[modInListIndex];
+                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName);
+                for (var subModInCurMod in modInList.submods) {
+                  extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
+                }
+                modInList.submods.addAll(extraSubmods);
+                modInList.isNew = true;
+              } else {
+                itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath));
+              }
+              itemInList.isNew = true;
+              //Sort alpha
+              itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+            }
+            //Sort alpha
+            cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            cateInList.visible = cateInList.items.isNotEmpty ? true : false;
+            cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
+
+            break;
+          }
+        }
+
+        Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
       }
     }
-
-    Provider.of<StateProvider>(context, listen: false).singleItemsDropAddRemoveFirst();
   }
 
   //Save to json

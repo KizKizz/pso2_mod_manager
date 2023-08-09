@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/mod_add_handler.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_functions.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -328,7 +329,8 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
+      packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}')
+          .toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);
@@ -572,9 +574,11 @@ Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, SubMod fr
                                             onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
                                                 ? null
                                                 : () {
-                                                    newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                                    newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                                    modAddHandler(context);
+                                                    // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // modAddHandler(context);
+                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
                                       ],

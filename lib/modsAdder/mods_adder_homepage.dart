@@ -269,7 +269,7 @@ void modsAdderHomePage(context) {
                                                     child: ElevatedButton(
                                                         onPressed: modAdderDragDropFiles.isNotEmpty
                                                             ? (() async {
-                                                                processedFileListLoad = modsAdderFilesProcess(modAdderDragDropFiles.toList());
+                                                                processedFileListLoad = modsAdderFilesProcess(context, modAdderDragDropFiles.toList());
                                                                 modAdderDragDropFiles.clear();
                                                                 dropZoneMax = false;
                                                                 setState(
@@ -1469,7 +1469,7 @@ void modsAdderHomePage(context) {
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
-                                                        onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload && !_isNameEditing
+                                                        onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload
                                                             ? (() async {
                                                                 if (_duplicateCounter > 0) {
                                                                   processedFileList = await replaceNamesOfDuplicates(processedFileList);
@@ -1542,7 +1542,7 @@ void modsAdderHomePage(context) {
 }
 
 //suport functions
-Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async {
+Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePaths) async {
   List<ModsAdderItem> modsAdderItemList = [];
   List<String> pathsWithNoIceInRoot = [];
   List<String> charsToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
@@ -1701,6 +1701,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
     element.deleteSync(recursive: true);
   });
+
+  if (modsAdderItemList.isNotEmpty) {
+    Provider.of<StateProvider>(context, listen: false).modAdderReloadTrue();
+  }
 
   return modsAdderItemList;
 }
