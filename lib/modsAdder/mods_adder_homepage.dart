@@ -71,7 +71,7 @@ void modsAdderHomePage(context) {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    curLangText!.uiPreparing + ' test',
+                                    curLangText!.uiPreparing,
                                     style: const TextStyle(fontSize: 20),
                                   ),
                                   const SizedBox(
