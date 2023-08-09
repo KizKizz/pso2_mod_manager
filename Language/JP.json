@@ -169,7 +169,6 @@
   "uiWaitingForData": "データ待機中",
   "uiErrorWhenLoadingAddModsData": "Mods Adderのデータ読み込み時にエラーが発生しました。アプリを再起動してください。",
   "uiProcessingFiles": "加工ファイル",
-  "uiLoadingModsAdderData": "Mods Adderのデータを読み込む",
   "uiSelectACategory": "カテゴリーを選択する",
   "uiEditName": "編集名",
   "uiMarkThisNotToBeAdded": "追加されないようにマークする",
