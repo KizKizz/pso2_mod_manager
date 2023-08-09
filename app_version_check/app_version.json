@@ -3,7 +3,7 @@
     "version": "2.3.5",
     "description": [
         "Added new system for Mods Adder",
-        "Added dual profiles for people that play both NA and JP servers - Separates applied mods and sets but shares everything else",
+        "Added dual profiles for people that play both NA and JP servers",
         "Some other bug fixes"
     ],
     "windows_file": "",
