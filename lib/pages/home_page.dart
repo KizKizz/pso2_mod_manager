@@ -3336,7 +3336,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                   ),
                   child: Text(
-                    modManCurActiveProfile == 1 ? modManProfile1Name : modManProfile2Name,
+                    context.watch<StateProvider>().profileName,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.primary),
                   ),
                 ),

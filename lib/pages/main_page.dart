@@ -338,6 +338,7 @@ class _MainPageState extends State<MainPage> {
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
                                                     profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
                                                     });
                                                   });
@@ -350,6 +351,7 @@ class _MainPageState extends State<MainPage> {
                                               final prefs = await SharedPreferences.getInstance();
                                               prefs.setString('modManProfile1Name', newName);
                                               modManProfile1Name = newName;
+                                              Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
                                               setState(() {});
                                             }
                                           },
@@ -391,6 +393,7 @@ class _MainPageState extends State<MainPage> {
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
                                                     profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
                                                       Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
                                                     });
                                                   });
@@ -403,6 +406,7 @@ class _MainPageState extends State<MainPage> {
                                               final prefs = await SharedPreferences.getInstance();
                                               prefs.setString('modManProfile2Name', newName);
                                               modManProfile2Name = newName;
+                                              Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
                                               setState(() {});
                                             }
                                           },
@@ -611,7 +615,7 @@ class _MainPageState extends State<MainPage> {
                                 selectedBorderColor: Theme.of(context).colorScheme.primary,
                                 constraints: const BoxConstraints(
                                   minHeight: 25.0,
-                                  minWidth: 60.0,
+                                  minWidth: 74.0,
                                 ),
                                 isSelected: _selectedIconLoaderSwitches,
                                 children: iconLoaderSwitches,

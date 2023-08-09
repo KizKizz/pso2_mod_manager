@@ -27,6 +27,7 @@ class StateProvider with ChangeNotifier {
   bool _checksumDownloading = false;
   bool _modsSwapperSwitchToSwapPage = false;
   bool _reloadProfile = false;
+  String _profileName = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -53,6 +54,12 @@ class StateProvider with ChangeNotifier {
   bool get checksumDownloading => _checksumDownloading;
   bool get modsSwapperSwitchToSwapPage => _modsSwapperSwitchToSwapPage;
   bool get reloadProfile => _reloadProfile;
+  String get profileName => _profileName;
+
+  void setProfileName(String name) {
+    _profileName = name;
+    notifyListeners();
+  }
 
   void reloadProfileTrue() {
     _reloadProfile = true;
