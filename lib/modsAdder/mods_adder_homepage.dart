@@ -40,6 +40,7 @@ bool _isNameEditing = false;
 int _duplicateCounter = 0;
 final _subItemFormValidate = GlobalKey<FormState>();
 bool _isAddingMods = false;
+bool _disableFirstLoadingScreen = true;
 
 void modsAdderHomePage(context) {
   showDialog(
@@ -63,14 +64,14 @@ void modsAdderHomePage(context) {
                           BuildContext context,
                           AsyncSnapshot snapshot,
                         ) {
-                          if (snapshot.connectionState == ConnectionState.waiting && csvInfosFromSheets.isEmpty && _isAddingMods) {
+                          if (snapshot.connectionState == ConnectionState.waiting && csvInfosFromSheets.isEmpty && !_disableFirstLoadingScreen) {
                             return Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    curLangText!.uiPreparing,
+                                    curLangText!.uiPreparing + ' test',
                                     style: const TextStyle(fontSize: 20),
                                   ),
                                   const SizedBox(
@@ -312,7 +313,7 @@ void modsAdderHomePage(context) {
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
                                                         Text(
-                                                          curLangText!.uiWaitingForData,
+                                                          _isAddingMods ? curLangText!.uiAddingMods : curLangText!.uiWaitingForData,
                                                           style: const TextStyle(fontSize: 20),
                                                         ),
                                                         const SizedBox(
@@ -343,7 +344,7 @@ void modsAdderHomePage(context) {
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            curLangText!.uiLoadingModsAdderData,
+                                                            curLangText!.uiProcessingFiles,
                                                             style: const TextStyle(fontSize: 20),
                                                           ),
                                                           const SizedBox(
@@ -1397,7 +1398,9 @@ void modsAdderHomePage(context) {
                                               Expanded(
                                                 flex: dropZoneMax ? 1 : 0,
                                                 child: ElevatedButton(
-                                                    onPressed: (() async {
+                                                    onPressed: _isAddingMods
+                                                    ? null
+                                                    : (() async {
                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                         element.deleteSync(recursive: true);
                                                       });
@@ -1413,6 +1416,7 @@ void modsAdderHomePage(context) {
                                                       _itemNameRenameIndex.clear();
                                                       subFoldersRenameIndex.clear();
                                                       mainFolderRenameIndex.clear();
+                                                      renameTextBoxController.clear();
                                                       Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                       _selectedCategories.clear();
 
@@ -1430,8 +1434,9 @@ void modsAdderHomePage(context) {
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(left: 5),
                                                   child: ElevatedButton(
-                                                      onPressed: processedFileList.isNotEmpty || context.watch<StateProvider>().modAdderReload
-                                                          ? (() {
+                                                      onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
+                                                          ? null
+                                                          : (() {
                                                               Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                 element.deleteSync(recursive: true);
                                                               });
@@ -1442,6 +1447,7 @@ void modsAdderHomePage(context) {
                                                                 element.deleteSync(recursive: true);
                                                               });
                                                               _itemNameRenameIndex.clear();
+                                                              renameTextBoxController.clear();
                                                               mainFolderRenameIndex.clear();
                                                               subFoldersRenameIndex.clear();
                                                               _selectedCategories.clear();
@@ -1457,8 +1463,7 @@ void modsAdderHomePage(context) {
                                                               setState(
                                                                 () {},
                                                               );
-                                                            })
-                                                          : null,
+                                                            }),
                                                       child: Text(curLangText!.uiClearAll)),
                                                 ),
                                               ),
@@ -1469,12 +1474,20 @@ void modsAdderHomePage(context) {
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
-                                                        onPressed: processedFileList.isNotEmpty && !_isNameEditing || context.watch<StateProvider>().modAdderReload
-                                                            ? (() async {
+                                                        onPressed: processedFileList.isEmpty || _isNameEditing || !context.watch<StateProvider>().modAdderReload
+                                                            ? null
+                                                            : (() async {
                                                                 if (_duplicateCounter > 0) {
                                                                   processedFileList = await replaceNamesOfDuplicates(processedFileList);
                                                                 } else {
-                                                                  modsAdderModFilesAdder(context, processedFileList).then(
+                                                                  List<ModsAdderItem> toAddList = processedFileList.toList();
+                                                                  processedFileListLoad = null;
+                                                                  processedFileList.clear();
+                                                                  _isAddingMods = true;
+                                                                  setState(
+                                                                    () {},
+                                                                  );
+                                                                  modsAdderModFilesAdder(context, toAddList).then(
                                                                     (value) {
                                                                       if (value) {
                                                                         Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
@@ -1488,10 +1501,13 @@ void modsAdderHomePage(context) {
                                                                         });
                                                                         _itemNameRenameIndex.clear();
                                                                         mainFolderRenameIndex.clear();
+                                                                        renameTextBoxController.clear();
                                                                         subFoldersRenameIndex.clear();
                                                                         _selectedCategories.clear();
                                                                         processedFileListLoad = null;
                                                                         processedFileList.clear();
+                                                                        toAddList.clear();
+                                                                        _isAddingMods = false;
                                                                         //_exitConfirmDialog = false;
                                                                         // ignore: use_build_context_synchronously
                                                                         Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
@@ -1500,6 +1516,10 @@ void modsAdderHomePage(context) {
                                                                         if (csvInfosFromSheets.isNotEmpty) {
                                                                           csvInfosFromSheets.clear();
                                                                         }
+                                                                      } else {
+                                                                        processedFileList = toAddList.toList();
+                                                                        toAddList.clear();
+                                                                        _isAddingMods = false;
                                                                       }
                                                                       setState(
                                                                         () {},
@@ -1513,12 +1533,11 @@ void modsAdderHomePage(context) {
                                                                 setState(
                                                                   () {},
                                                                 );
-                                                              })
-                                                            : null,
+                                                              }),
                                                         child: _duplicateCounter > 0 && _duplicateCounter < 2
                                                             ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMod}')
                                                             : _duplicateCounter > 1
-                                                                ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMod}')
+                                                                ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMods}')
                                                                 : Text(curLangText!.uiAddAll)),
                                                   ),
                                                 ),

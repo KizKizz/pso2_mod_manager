@@ -193,7 +193,7 @@ class TranslationText {
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
       uiErrorWhenLoadingAddModsData = 'Error when loading data for Mods Adder. Please restart the app.',
-      uiLoadingModsAdderData = 'Loading data for Mods Adder',
+      uiProcessingFiles = 'Processing files',
       uiSelectACategory = 'Select a Category',
       uiEditName = 'Edit Name',
       uiMarkThisNotToBeAdded = 'Mark this not to be added',
@@ -207,7 +207,8 @@ class TranslationText {
       uiDuplicateNamesFound = 'Duplicate mod name(s) found',
       uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
       uiDuplicateModsIn = 'in',
-      uiRenameForMe = 'Rename for me!';
+      uiRenameForMe = 'Rename for me!',
+      uiAddingMods = 'Adding mods';
 
   //color_picker
   String uiPickAColor = 'Pick a color';

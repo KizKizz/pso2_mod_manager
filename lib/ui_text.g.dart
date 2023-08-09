@@ -213,7 +213,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiWaitingForData = json['uiWaitingForData'] as String
       ..uiErrorWhenLoadingAddModsData =
           json['uiErrorWhenLoadingAddModsData'] as String
-      ..uiLoadingModsAdderData = json['uiLoadingModsAdderData'] as String
+      ..uiProcessingFiles = json['uiProcessingFiles'] as String
       ..uiSelectACategory = json['uiSelectACategory'] as String
       ..uiEditName = json['uiEditName'] as String
       ..uiMarkThisNotToBeAdded = json['uiMarkThisNotToBeAdded'] as String
@@ -230,6 +230,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiRenameTheModsBelowBeforeAdding'] as String
       ..uiDuplicateModsIn = json['uiDuplicateModsIn'] as String
       ..uiRenameForMe = json['uiRenameForMe'] as String
+      ..uiAddingMods = json['uiAddingMods'] as String
       ..uiPickAColor = json['uiPickAColor'] as String
       ..uiDuplicatesInAppliedModsFound =
           json['uiDuplicatesInAppliedModsFound'] as String
@@ -520,7 +521,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiProcess': instance.uiProcess,
       'uiWaitingForData': instance.uiWaitingForData,
       'uiErrorWhenLoadingAddModsData': instance.uiErrorWhenLoadingAddModsData,
-      'uiLoadingModsAdderData': instance.uiLoadingModsAdderData,
+      'uiProcessingFiles': instance.uiProcessingFiles,
       'uiSelectACategory': instance.uiSelectACategory,
       'uiEditName': instance.uiEditName,
       'uiMarkThisNotToBeAdded': instance.uiMarkThisNotToBeAdded,
@@ -537,6 +538,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiRenameTheModsBelowBeforeAdding,
       'uiDuplicateModsIn': instance.uiDuplicateModsIn,
       'uiRenameForMe': instance.uiRenameForMe,
+      'uiAddingMods': instance.uiAddingMods,
       'uiPickAColor': instance.uiPickAColor,
       'uiDuplicatesInAppliedModsFound': instance.uiDuplicatesInAppliedModsFound,
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,
