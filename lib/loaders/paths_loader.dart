@@ -154,8 +154,8 @@ Future<bool> pathsLoader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  //await ApplicationConfig().checkChecksumFileForUpdates(context);
+  await checksumChecker(context);
 
   //ref sheets check load files
   if (kDebugMode) {
@@ -276,8 +276,7 @@ Future<bool> pso2PathsReloader(context) async {
   }
 
   //Checksum
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  await checksumChecker(context);
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -399,8 +398,8 @@ Future<bool> modManPathReloader(context) async {
   // File(modManOpLogsFilePath).createSync();
 
   //Checksum check
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
-  await checksumChecker();
+  //await ApplicationConfig().checkChecksumFileForUpdates(context);
+  await checksumChecker(context);
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();

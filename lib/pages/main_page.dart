@@ -1467,7 +1467,7 @@ class _MainPageState extends State<MainPage> {
                                   setState(() {});
                                   await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
                                     Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
-                                    checksumChecker();
+                                    checksumChecker(context);
                                     Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
                                     setState(() {});
                                   });
