@@ -97,3 +97,5 @@ List<String> officialPatchServerFileList = [];
 String charToReplace = '[\\/:*?"<>|]';
 String charToReplaceWithoutSeparators = '[:*?"<>|]';
 int modManCurActiveProfile = 1;
+String modManProfile1Name = '';
+String modManProfile2Name = '';

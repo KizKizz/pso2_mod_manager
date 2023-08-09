@@ -98,6 +98,8 @@
   "uiAll": "すべて",
   "uiSwapItems": "スワップアイテム",
   "uiSwapAnItemToAnotherItem": "アイテムを別のアイテムと交換する",
+  "uiProfiles": "プロフィール",
+  "uiClickToChangeToThisProfileHoldToRename": "このプロファイルに変更するにはクリックし、名前を変更するにはホールドする。",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -157,6 +159,9 @@
   "uiAddToThisSet": "このセットに追加する",
   "uiFromThisSet": "この中から",
   "uiToAnotherItem": "別項目へ",
+  "uiUnableToObtainOrginalFilesFromSegaServers": "SEGAのサーバーからオリジナルファイルを取得できない。",
+  "uiSwitchingProfile": "スイッチング・プロファイル",
+  "uiProfile": "プロフィール",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",
@@ -261,5 +266,9 @@
   "uiFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得\n(しばらく時間がかかるかもしれない)",
   "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "サーバーからアイテムのパッチリストを取得しようとするとエラーが発生する",
   "uiDuplicateModsInside": "Duplicate mods inside",
-  "uiRenameThis": "Rename this"
+  "uiRenameThis": "この名前を変更する",
+  "uiClickToRename": "重複している",
+  "uiDuplicatedMod": "つのMODの名前を変更するにはクリックしてください",
+  "uiDuplicatedMods": "つのMODの名前を変更するにはクリックしてください",
+  "uiNewProfileName": "新しいプロフィール名"
 }

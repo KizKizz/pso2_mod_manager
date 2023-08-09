@@ -136,6 +136,7 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
@@ -381,6 +382,7 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();

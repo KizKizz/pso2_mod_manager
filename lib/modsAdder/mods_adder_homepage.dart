@@ -6,6 +6,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
 //import 'package:collection/collection.dart';
 
@@ -38,10 +39,11 @@ List<List<List<bool>>> subFoldersRenameIndex = [];
 bool _isNameEditing = false;
 int _duplicateCounter = 0;
 final _subItemFormValidate = GlobalKey<FormState>();
+bool _isAddingMods = false;
 
 void modsAdderHomePage(context) {
   showDialog(
-      barrierDismissible: true,
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
@@ -61,7 +63,7 @@ void modsAdderHomePage(context) {
                           BuildContext context,
                           AsyncSnapshot snapshot,
                         ) {
-                          if (snapshot.connectionState == ConnectionState.waiting && csvInfosFromSheets.isEmpty) {
+                          if (snapshot.connectionState == ConnectionState.waiting && csvInfosFromSheets.isEmpty && _isAddingMods) {
                             return Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -417,7 +419,7 @@ void modsAdderHomePage(context) {
                                                               physics: const NeverScrollableScrollPhysics(),
                                                               itemCount: processedFileList.length,
                                                               itemBuilder: (context, index) {
-                                                                debugPrint(processedFileList[index].itemDirPath);
+                                                                //debugPrint(processedFileList[index].itemDirPath);
                                                                 return Card(
                                                                   margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
                                                                   color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -986,7 +988,7 @@ void modsAdderHomePage(context) {
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                               ),
                                                                                               child: Text(
-                                                                                              curLangText!.uiDuplicateModsInside,
+                                                                                                curLangText!.uiDuplicateModsInside,
                                                                                                 style: TextStyle(
                                                                                                     fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                               ),
@@ -1445,6 +1447,9 @@ void modsAdderHomePage(context) {
                                                               _selectedCategories.clear();
                                                               processedFileListLoad = null;
                                                               processedFileList.clear();
+                                                              if (csvInfosFromSheets.isNotEmpty) {
+                                                                csvInfosFromSheets.clear();
+                                                              }
                                                               //_exitConfirmDialog = false;
                                                               Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                               _isNameEditing = false;
@@ -1469,32 +1474,41 @@ void modsAdderHomePage(context) {
                                                                 if (_duplicateCounter > 0) {
                                                                   processedFileList = await replaceNamesOfDuplicates(processedFileList);
                                                                 } else {
-                                                                  await modsAdderModFilesAdder(context, processedFileList);
-                                                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                    element.deleteSync(recursive: true);
-                                                                  });
-                                                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                    element.deleteSync(recursive: true);
-                                                                  });
-                                                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                    element.deleteSync(recursive: true);
-                                                                  });
-                                                                  _itemNameRenameIndex.clear();
-                                                                  mainFolderRenameIndex.clear();
-                                                                  subFoldersRenameIndex.clear();
-                                                                  _selectedCategories.clear();
-                                                                  processedFileListLoad = null;
-                                                                  processedFileList.clear();
-                                                                  //_exitConfirmDialog = false;
-                                                                  // ignore: use_build_context_synchronously
-                                                                  Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                                  _isNameEditing = false;
-                                                                  dropZoneMax = true;
-                                                                  setState(
-                                                                    () {},
+                                                                  modsAdderModFilesAdder(context, processedFileList).then(
+                                                                    (value) {
+                                                                      if (value) {
+                                                                        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                          element.deleteSync(recursive: true);
+                                                                        });
+                                                                        Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                                          element.deleteSync(recursive: true);
+                                                                        });
+                                                                        Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                                          element.deleteSync(recursive: true);
+                                                                        });
+                                                                        _itemNameRenameIndex.clear();
+                                                                        mainFolderRenameIndex.clear();
+                                                                        subFoldersRenameIndex.clear();
+                                                                        _selectedCategories.clear();
+                                                                        processedFileListLoad = null;
+                                                                        processedFileList.clear();
+                                                                        //_exitConfirmDialog = false;
+                                                                        // ignore: use_build_context_synchronously
+                                                                        Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                                        _isNameEditing = false;
+                                                                        dropZoneMax = true;
+                                                                        if (csvInfosFromSheets.isNotEmpty) {
+                                                                          csvInfosFromSheets.clear();
+                                                                        }
+                                                                      }
+                                                                      setState(
+                                                                        () {},
+                                                                      );
+                                                                    },
                                                                   );
+
                                                                   // ignore: use_build_context_synchronously
-                                                                  Navigator.of(context).pop();
+                                                                  //Navigator.of(context).pop();
                                                                 }
                                                                 setState(
                                                                   () {},
@@ -1502,9 +1516,9 @@ void modsAdderHomePage(context) {
                                                               })
                                                             : null,
                                                         child: _duplicateCounter > 0 && _duplicateCounter < 2
-                                                            ? Text('Click to rename $_duplicateCounter duplicated mod')
+                                                            ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMod}')
                                                             : _duplicateCounter > 1
-                                                                ? Text('Click to rename $_duplicateCounter duplicated mods')
+                                                                ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMod}')
                                                                 : Text(curLangText!.uiAddAll)),
                                                   ),
                                                 ),
@@ -1564,9 +1578,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(List<XFile> xFilePaths) async 
       csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
     }
   }
-  if (csvInfosFromSheets.isNotEmpty) {
-    csvInfosFromSheets.clear();
-  }
+
   //create new item structures
   List<File> csvMatchedIceFiles = [];
   for (var infoLine in csvFileInfos) {
@@ -1776,14 +1788,18 @@ Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> process
   for (var item in returnList) {
     for (var mod in item.modList) {
       if (mod.isDuplicated) {
-        mod.modName = '${mod.modName}_DUP';
+        DateTime now = DateTime.now();
+        String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+        mod.modName = '${mod.modName}_$formattedDate';
         var newModDir = await Directory(mod.modDirPath).rename(Uri.file('${p.dirname(mod.modDirPath)}/${mod.modName}').toFilePath());
         mod.setNewParentPathToChildren(newModDir.path);
         mod.modDirPath = newModDir.path;
       } else if (mod.isChildrenDuplicated) {
         for (var submod in mod.submodList) {
           if (submod.isDuplicated) {
-            submod.submodName = '${submod.submodName}_DUP';
+            DateTime now = DateTime.now();
+            String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+            submod.submodName = '${submod.submodName}_$formattedDate';
             var newSubmodDir = await Directory(submod.submodDirPath).rename(Uri.file('${p.dirname(submod.submodDirPath)}/${submod.submodName}').toFilePath());
             submod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
             submod.submodDirPath = newSubmodDir.path;

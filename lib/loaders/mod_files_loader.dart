@@ -101,7 +101,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     if (typeIndex != -1) {
       type.position = typeIndex;
       type.expanded = structureFromJson[typeIndex].expanded;
-      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty? true : structureFromJson[typeIndex].visible;
+      type.visible = isEmptyCatesHide && type.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : structureFromJson[typeIndex].visible;
       //Settings for categories
       for (var cate in type.categories) {
         int cateIndex = structureFromJson[typeIndex].categories.indexWhere((element) => element.categoryName == cate.categoryName);
@@ -184,12 +184,26 @@ Future<List<CategoryType>> modFileStructureLoader() async {
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
+                        } else {
+                          modFile.isNew = true;
+                          submod.isNew = true;
+                          mod.isNew = true;
+                          item.isNew = true;
                         }
                       }
+                    } else {
+                      submod.isNew = true;
+                      mod.isNew = true;
+                      item.isNew = true;
                     }
                   }
+                } else {
+                  mod.isNew = true;
+                  item.isNew = true;
                 }
               }
+            } else {
+              item.isNew = true;
             }
           }
           cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
@@ -494,6 +508,13 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
   }
 
   return submods;
+}
+
+void ogModFilesReset() {
+  ogWin32FilePaths.clear();
+  ogWin32NAFilePaths.clear();
+  ogWin32RebootFilePaths.clear();
+  ogWin32RebootFilePaths.clear();
 }
 
 void ogModFilesLoader() {

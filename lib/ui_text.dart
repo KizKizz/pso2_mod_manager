@@ -118,7 +118,9 @@ class TranslationText {
       uiMinimal = 'Minimal',
       uiAll = 'All',
       uiSwapItems = 'Swap Items',
-      uiSwapAnItemToAnotherItem = 'Swap an item to another item';
+      uiSwapAnItemToAnotherItem = 'Swap an item to another item',
+      uiProfiles = 'Profiles',
+      uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename';
 
   //homepage
   String uiItemList = 'Item List',
@@ -179,7 +181,10 @@ class TranslationText {
       uiSuccessfullyAppliedAllModsIn = 'Sucessfully applied all mods in',
       uiAddToThisSet = 'Add to this set',
       uiFromThisSet = 'from this set',
-      uiToAnotherItem = 'to another item';
+      uiToAnotherItem = 'to another item',
+      uiUnableToObtainOrginalFilesFromSegaServers = 'Unable to obtain original files from Sega\'s servers',
+      uiSwitchingProfile = 'Switching Profile',
+      uiProfile = 'Profile';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -313,7 +318,14 @@ class TranslationText {
       uiErrorWhenTryingToFetchingItemPatchListsFromServers = 'Error when trying to fetching item patch lists from servers';
 
   //mods_adder_homepage
-  String uiDuplicateModsInside = 'Duplicate mods inside', uiRenameThis = 'Rename this';
+  String uiDuplicateModsInside = 'Duplicate mods inside',
+      uiRenameThis = 'Rename this',
+      uiClickToRename = 'Click to rename ',
+      uiDuplicatedMod = ' duplicated mod',
+      uiDuplicatedMods = ' duplicated mods';
+
+  //new_profile_name.dart
+  String uiNewProfileName = 'New profile name';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

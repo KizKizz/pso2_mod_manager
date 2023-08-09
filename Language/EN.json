@@ -98,6 +98,8 @@
   "uiAll": "All",
   "uiSwapItems": "Swap Items",
   "uiSwapAnItemToAnotherItem": "Swap an item to another item",
+  "uiProfiles": "Profiles",
+  "uiClickToChangeToThisProfileHoldToRename": "Click to change to this profile, hold to rename",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -157,6 +159,9 @@
   "uiAddToThisSet": "Add to this set",
   "uiFromThisSet": "from this set",
   "uiToAnotherItem": "to another item",
+  "uiUnableToObtainOrginalFilesFromSegaServers": "Unable to obtain original files from Sega's servers",
+  "uiSwitchingProfile": "Switching Profile",
+  "uiProfile": "Profile",
   "uiPreparing": "Preparing",
   "uiDragDropFiles": "Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files",
   "uiAchiveCurrentlyNotSupported": "currently not supported. Open the archive file then drag the content in here instead",
@@ -261,5 +266,9 @@
   "uiFetchingItemPatchListsFromServers": "Fetching item patch lists from servers\n(Might take a while)",
   "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "Error when trying to fetching item patch lists from servers",
   "uiDuplicateModsInside": "Duplicate mods inside",
-  "uiRenameThis": "Rename this"
+  "uiRenameThis": "Rename this",
+  "uiClickToRename": "Click to rename ",
+  "uiDuplicatedMod": " duplicated mod",
+  "uiDuplicatedMods": " duplicated mods",
+  "uiNewProfileName": "New profile name"
 }

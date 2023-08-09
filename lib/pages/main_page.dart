@@ -14,6 +14,7 @@ import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
@@ -22,7 +23,6 @@ import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
@@ -311,7 +311,7 @@ class _MainPageState extends State<MainPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Text('Profiles:'),
+                                Text('${curLangText!.uiProfiles}:'),
                               ],
                             ),
                             Padding(
@@ -321,26 +321,37 @@ class _MainPageState extends State<MainPage> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 5, bottom: 2.5),
                                       child: ModManTooltip(
-                                        message: 'Click to select, hold to rename profile',
+                                        message: curLangText!.uiClickToChangeToThisProfileHoldToRename,
                                         child: MaterialButton(
                                           minWidth: 120,
                                           height: 30,
                                           //color: Theme.of(context).primaryColorDark,
                                           onPressed: modManCurActiveProfile == 1
-                                          ? null
-                                          : () async {
-                                            Navigator.pop(context);
-                                            final prefs = await SharedPreferences.getInstance();
-                                            modManCurActiveProfile = 1;
-                                            prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
-                                            Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                            Future.delayed(const Duration(milliseconds: 500), () {
-                                              profileLoader(context).then((value) {
-                                                Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
-                                              });
-                                            });
-                                            
-                                            //setState(() {});
+                                              ? null
+                                              : () async {
+                                                  Navigator.pop(context);
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveProfile = 1;
+                                                  prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                                  Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                                  modViewItem = null;
+                                                  ogModFilesReset();
+                                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                                    profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    });
+                                                  });
+
+                                                  //setState(() {});
+                                                },
+                                          onLongPress: () async {
+                                            String newName = await newProfileNameDialog(context);
+                                            if (newName.isNotEmpty) {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              prefs.setString('modManProfile1Name', newName);
+                                              modManProfile1Name = newName;
+                                              setState(() {});
+                                            }
                                           },
                                           shape: RoundedRectangleBorder(
                                               side: BorderSide(
@@ -350,7 +361,7 @@ class _MainPageState extends State<MainPage> {
                                                           : Color(darkModePrimarySwatch.value)
                                                       : Theme.of(context).hintColor),
                                               borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                          child: Text('Profile 1',
+                                          child: Text(modManProfile1Name,
                                               style: TextStyle(
                                                   color: modManCurActiveProfile == 1
                                                       ? MyApp.themeNotifier.value == ThemeMode.light
@@ -363,26 +374,37 @@ class _MainPageState extends State<MainPage> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2.5),
                                       child: ModManTooltip(
-                                        message: curLangText!.uiPrimaryDark,
+                                        message: curLangText!.uiClickToChangeToThisProfileHoldToRename,
                                         child: MaterialButton(
                                           minWidth: 120,
                                           height: 30,
                                           //color: Theme.of(context).primaryColorDark,
                                           onPressed: modManCurActiveProfile == 2
-                                          ? null
-                                          : () async {
-                                            Navigator.pop(context);
-                                            final prefs = await SharedPreferences.getInstance();
-                                            modManCurActiveProfile = 2;
-                                            prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
-                                            Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
-                                            Future.delayed(const Duration(milliseconds: 500), () {
-                                              profileLoader(context).then((value) {
-                                                Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
-                                              });
-                                            });
+                                              ? null
+                                              : () async {
+                                                  Navigator.pop(context);
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveProfile = 2;
+                                                  prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                                                  Provider.of<StateProvider>(context, listen: false).reloadProfileTrue();
+                                                  modViewItem = null;
+                                                  ogModFilesReset();
+                                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                                    profileLoader(context).then((value) {
+                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    });
+                                                  });
 
-                                            //setState(() {});
+                                                  //setState(() {});
+                                                },
+                                          onLongPress: () async {
+                                            String newName = await newProfileNameDialog(context);
+                                            if (newName.isNotEmpty) {
+                                              final prefs = await SharedPreferences.getInstance();
+                                              prefs.setString('modManProfile2Name', newName);
+                                              modManProfile2Name = newName;
+                                              setState(() {});
+                                            }
                                           },
                                           shape: RoundedRectangleBorder(
                                               side: BorderSide(
@@ -392,7 +414,7 @@ class _MainPageState extends State<MainPage> {
                                                           : Color(darkModePrimarySwatch.value)
                                                       : Theme.of(context).hintColor),
                                               borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                          child: Text('Profile 2',
+                                          child: Text(modManProfile2Name,
                                               style: TextStyle(
                                                   color: modManCurActiveProfile == 2
                                                       ? MyApp.themeNotifier.value == ThemeMode.light
@@ -569,7 +591,7 @@ class _MainPageState extends State<MainPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Text(curLangText!.uiStartupItemIconsFetching),
+                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
                               ],
                             ),
                             Padding(
@@ -1270,16 +1292,16 @@ class _MainPageState extends State<MainPage> {
                               child: MaterialButton(
                                 color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
                                 //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
-                                onPressed: (() {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  modAddHandler(context);
-                                }),
-                                onLongPress: () {
+                                // onPressed: (() {
+                                //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                //     element.deleteSync(recursive: true);
+                                //   });
+                                //   modAddHandler(context);
+                                // }),
+                                onPressed: () {
                                   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                     element.deleteSync(recursive: true);
                                   });
