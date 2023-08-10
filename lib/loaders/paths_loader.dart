@@ -66,6 +66,9 @@ Future<bool> pathsLoader(context) async {
   modManCurActiveProfile = (prefs.getInt('modManCurActiveProfile') ?? 1);
   //pso2_bin path
   modManPso2binPath = Uri.file(prefs.getString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2') ?? '').toFilePath();
+  if (!Directory(modManPso2binPath).existsSync()) {
+    modManPso2binPath = '';
+  }
   while (modManPso2binPath.isEmpty) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
@@ -75,6 +78,9 @@ Future<bool> pathsLoader(context) async {
   }
   //modman dir path
   modManDirParentDirPath = Uri.file(prefs.getString('mainModManDirPath') ?? '').toFilePath();
+  if (!Directory(modManDirParentDirPath).existsSync()) {
+    modManDirParentDirPath = '';
+  }
   while (modManDirParentDirPath.isEmpty) {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
