@@ -7,8 +7,6 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
-import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';

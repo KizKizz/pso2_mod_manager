@@ -1777,29 +1777,35 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
   List<ModsAdderItem> returnList = processedList;
   _duplicateCounter = 0;
   for (var item in returnList) {
-    for (var mod in item.modList) {
-      if (mod.filesInMod.isNotEmpty) {
-        String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-        if (Directory(modDirPathInMods).existsSync()) {
-          mod.isDuplicated = true;
-          item.isChildrenDuplicated = true;
-          _duplicateCounter++;
-        } else {
-          mod.isDuplicated = false;
-          item.isChildrenDuplicated = false;
-        }
-      } else {
-        for (var submod in mod.submodList) {
-          String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-          if (Directory(submodDirinMods).existsSync()) {
-            submod.isDuplicated = true;
-            mod.isChildrenDuplicated = true;
-            item.isChildrenDuplicated = true;
-            _duplicateCounter++;
+    if (item.toBeAdded) {
+      for (var mod in item.modList) {
+        if (mod.toBeAdded) {
+          if (mod.filesInMod.isNotEmpty) {
+            String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            if (Directory(modDirPathInMods).existsSync()) {
+              mod.isDuplicated = true;
+              item.isChildrenDuplicated = true;
+              _duplicateCounter++;
+            } else {
+              mod.isDuplicated = false;
+              item.isChildrenDuplicated = false;
+            }
           } else {
-            submod.isDuplicated = false;
-            mod.isChildrenDuplicated = false;
-            item.isChildrenDuplicated = false;
+            for (var submod in mod.submodList) {
+              if (submod.toBeAdded) {
+                String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                if (Directory(submodDirinMods).existsSync()) {
+                  submod.isDuplicated = true;
+                  mod.isChildrenDuplicated = true;
+                  item.isChildrenDuplicated = true;
+                  _duplicateCounter++;
+                } else {
+                  submod.isDuplicated = false;
+                  mod.isChildrenDuplicated = false;
+                  item.isChildrenDuplicated = false;
+                }
+              }
+            }
           }
         }
       }
@@ -1811,7 +1817,6 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
 
 Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> processedList) async {
   List<ModsAdderItem> returnList = processedList;
-
   for (var item in returnList) {
     for (var mod in item.modList) {
       if (mod.isDuplicated) {
