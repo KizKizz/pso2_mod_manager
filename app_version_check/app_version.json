@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.6",
+    "version": "2.3.7",
     "description": [
-        "Hotfix for a bug in paths loader"
+        "Hotfix to fix Mods Adder placing [Se] items inside Basewears category when adding"
     ],
     "windows_file": "",
     "linux_file": ""

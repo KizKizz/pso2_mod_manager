@@ -1399,34 +1399,34 @@ void modsAdderHomePage(context) {
                                                 flex: dropZoneMax ? 1 : 0,
                                                 child: ElevatedButton(
                                                     onPressed: _isAddingMods
-                                                    ? null
-                                                    : (() async {
-                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                        element.deleteSync(recursive: true);
-                                                      });
-                                                      Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                        element.deleteSync(recursive: true);
-                                                      });
-                                                      Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                        element.deleteSync(recursive: true);
-                                                      });
-                                                      //clear lists
-                                                      processedFileListLoad = null;
-                                                      processedFileList.clear();
-                                                      _itemNameRenameIndex.clear();
-                                                      subFoldersRenameIndex.clear();
-                                                      mainFolderRenameIndex.clear();
-                                                      renameTextBoxController.clear();
-                                                      Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                      _selectedCategories.clear();
+                                                        ? null
+                                                        : (() async {
+                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            //clear lists
+                                                            processedFileListLoad = null;
+                                                            processedFileList.clear();
+                                                            _itemNameRenameIndex.clear();
+                                                            subFoldersRenameIndex.clear();
+                                                            mainFolderRenameIndex.clear();
+                                                            renameTextBoxController.clear();
+                                                            Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                            _selectedCategories.clear();
 
-                                                      setState(
-                                                        () {},
-                                                      );
-                                                      dropZoneMax = true;
-                                                      Navigator.of(context).pop();
-                                                      //}
-                                                    }),
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                            dropZoneMax = true;
+                                                            Navigator.of(context).pop();
+                                                            //}
+                                                          }),
                                                     child: Text(curLangText!.uiClose)),
                                               ),
                                               Visibility(
@@ -1607,11 +1607,15 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     for (var char in charsToReplace) {
       itemName = itemName.replaceAll(char, '_');
     }
+    String itemCategory = infos[0];
+    if (itemName.contains('[Se]')) {
+      itemCategory = defaultCateforyDirs[16];
+    }
     //move files from temp
     String newItemDirPath = '';
     for (var iceFile in iceFileList) {
       if (infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
-        newItemDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName').toFilePath();
+        newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath();
         String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
         newIceFilePath = removeRebootPath(newIceFilePath);
         await Directory(p.dirname(newIceFilePath)).create(recursive: true);
@@ -1630,10 +1634,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //
     //get item icon
     File newItemIcon = File('');
-    if (infos[0] != defaultCateforyDirs[7] && infos[0] != defaultCateforyDirs[14]) {
-      String ogIconIcePath = infos[0] == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+    if (itemCategory != defaultCateforyDirs[7] && itemCategory != defaultCateforyDirs[14]) {
+      String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
       if (ogIconIcePath.isNotEmpty) {
-        String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/tempItemIconUnpack').toFilePath();
+        String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName/tempItemIconUnpack').toFilePath();
         final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
         //unpack and convert dds to png
         if (downloadedconIcePath.isNotEmpty) {
@@ -1645,7 +1649,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
             File pngItemIcon =
                 Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
             if (pngItemIcon.path.isNotEmpty) {
-              newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/${infos[0]}/$itemName/$itemName.png').toFilePath());
+              newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
             }
           }
           Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
@@ -1662,7 +1666,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       }
     }
     //create new item object
-    ModsAdderItem newItem = ModsAdderItem(infos[0], itemName, newItemDirPath, newItemIcon.path, false, true, false, []);
+    ModsAdderItem newItem = ModsAdderItem(itemCategory, itemName, newItemDirPath, newItemIcon.path, false, true, false, []);
     if (modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
       modsAdderItemList.add(newItem);
     }
@@ -1773,29 +1777,35 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
   List<ModsAdderItem> returnList = processedList;
   _duplicateCounter = 0;
   for (var item in returnList) {
-    for (var mod in item.modList) {
-      if (mod.filesInMod.isNotEmpty) {
-        String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-        if (Directory(modDirPathInMods).existsSync()) {
-          mod.isDuplicated = true;
-          item.isChildrenDuplicated = true;
-          _duplicateCounter++;
-        } else {
-          mod.isDuplicated = false;
-          item.isChildrenDuplicated = false;
-        }
-      } else {
-        for (var submod in mod.submodList) {
-          String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-          if (Directory(submodDirinMods).existsSync()) {
-            submod.isDuplicated = true;
-            mod.isChildrenDuplicated = true;
-            item.isChildrenDuplicated = true;
-            _duplicateCounter++;
+    if (item.toBeAdded) {
+      for (var mod in item.modList) {
+        if (mod.toBeAdded) {
+          if (mod.filesInMod.isNotEmpty) {
+            String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            if (Directory(modDirPathInMods).existsSync()) {
+              mod.isDuplicated = true;
+              item.isChildrenDuplicated = true;
+              _duplicateCounter++;
+            } else {
+              mod.isDuplicated = false;
+              item.isChildrenDuplicated = false;
+            }
           } else {
-            submod.isDuplicated = false;
-            mod.isChildrenDuplicated = false;
-            item.isChildrenDuplicated = false;
+            for (var submod in mod.submodList) {
+              if (submod.toBeAdded) {
+                String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                if (Directory(submodDirinMods).existsSync()) {
+                  submod.isDuplicated = true;
+                  mod.isChildrenDuplicated = true;
+                  item.isChildrenDuplicated = true;
+                  _duplicateCounter++;
+                } else {
+                  submod.isDuplicated = false;
+                  mod.isChildrenDuplicated = false;
+                  item.isChildrenDuplicated = false;
+                }
+              }
+            }
           }
         }
       }
@@ -1807,7 +1817,6 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
 
 Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> processedList) async {
   List<ModsAdderItem> returnList = processedList;
-
   for (var item in returnList) {
     for (var mod in item.modList) {
       if (mod.isDuplicated) {
