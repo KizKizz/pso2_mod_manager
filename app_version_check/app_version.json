@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.3.7",
     "description": [
-        "Hotfix to fix Mods Adder placing Se inside Basewears category when adding"
+        "Hotfix to fix Mods Adder placing [Se] items inside Basewears category when adding"
     ],
     "windows_file": "",
     "linux_file": ""
