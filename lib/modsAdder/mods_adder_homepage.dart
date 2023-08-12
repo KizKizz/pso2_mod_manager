@@ -1142,7 +1142,7 @@ void modsAdderHomePage(context) {
                                                                                                             decoration: InputDecoration(
                                                                                                               contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                               border: const OutlineInputBorder(),
-                                                                                                              hintText: curSubmod.submodName,
+                                                                                                              hintText: curSubmod.submodName.split(' > ').last,
                                                                                                               counterText: '',
                                                                                                             ),
                                                                                                             inputFormatters: <TextInputFormatter>[
@@ -1171,10 +1171,13 @@ void modsAdderHomePage(context) {
                                                                                                               );
                                                                                                             },
                                                                                                             onEditingComplete: (() async {
-                                                                                                              if (renameTextBoxController.text != curSubmod.submodName &&
+                                                                                                              if (renameTextBoxController.text != curSubmod.submodName.split(' > ').last &&
                                                                                                                   _subItemFormValidate.currentState!.validate()) {
                                                                                                                 if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                                  curSubmod.submodName = renameTextBoxController.text;
+                                                                                                                  List<String> submodNameParts = curSubmod.submodName.split(' > ');
+                                                                                                                  submodNameParts.removeLast();
+                                                                                                                  submodNameParts.add(renameTextBoxController.text);
+                                                                                                                  curSubmod.submodName = submodNameParts.join(' > ');
                                                                                                                   var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(
                                                                                                                       Uri.file('${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
                                                                                                                           .toFilePath());
@@ -1208,7 +1211,10 @@ void modsAdderHomePage(context) {
                                                                                                             : () async {
                                                                                                                 if (_subItemFormValidate.currentState!.validate()) {
                                                                                                                   if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                                    curSubmod.submodName = renameTextBoxController.text;
+                                                                                                                    List<String> submodNameParts = curSubmod.submodName.split(' > ');
+                                                                                                                    submodNameParts.removeLast();
+                                                                                                                    submodNameParts.add(renameTextBoxController.text);
+                                                                                                                    curSubmod.submodName = submodNameParts.join(' > ');
                                                                                                                     var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
                                                                                                                             '${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
                                                                                                                         .toFilePath());
@@ -1293,7 +1299,7 @@ void modsAdderHomePage(context) {
                                                                                                         child: MaterialButton(
                                                                                                           onPressed: !_isNameEditing && curSubmod.toBeAdded
                                                                                                               ? () {
-                                                                                                                  renameTextBoxController.text = curSubmod.submodName;
+                                                                                                                  renameTextBoxController.text = curSubmod.submodName.split(' > ').last;
                                                                                                                   renameTextBoxController.selection = TextSelection(
                                                                                                                     baseOffset: 0,
                                                                                                                     extentOffset: renameTextBoxController.text.length,
@@ -1714,7 +1720,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     for (var modDir in Directory(item.itemDirPath).listSync().whereType<Directory>()) {
       List<ModsAdderSubMod> submods = [];
       for (var submodDir in Directory(modDir.path).listSync(recursive: true).whereType<Directory>()) {
-        submods.add(ModsAdderSubMod(p.basename(submodDir.path), submodDir.path, true, false, Directory(submodDir.path).listSync(recursive: true).whereType<File>().toList()));
+        if (submodDir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').isNotEmpty) {
+          submods.add(ModsAdderSubMod(submodDir.path.replaceFirst(modDir.path + p.separator, '').replaceAll(p.separator, ' > '), submodDir.path, true, false,
+              Directory(submodDir.path).listSync(recursive: true).whereType<File>().toList()));
+        }
       }
       mods.add(ModsAdderMod(p.basename(modDir.path), modDir.path, true, false, false, submods, Directory(modDir.path).listSync().whereType<File>().toList()));
     }
@@ -1782,7 +1791,7 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
         if (mod.toBeAdded) {
           if (mod.filesInMod.isNotEmpty) {
             String modDirPathInMods = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-            if (Directory(modDirPathInMods).existsSync()) {
+            if (Directory(modDirPathInMods).existsSync() && Directory(modDirPathInMods).listSync().isNotEmpty) {
               mod.isDuplicated = true;
               item.isChildrenDuplicated = true;
               _duplicateCounter++;
@@ -1794,7 +1803,7 @@ List<ModsAdderItem> getDuplicates(List<ModsAdderItem> processedList) {
             for (var submod in mod.submodList) {
               if (submod.toBeAdded) {
                 String submodDirinMods = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-                if (Directory(submodDirinMods).existsSync()) {
+                if (Directory(submodDirinMods).existsSync() && Directory(submodDirinMods).listSync().isNotEmpty) {
                   submod.isDuplicated = true;
                   mod.isChildrenDuplicated = true;
                   item.isChildrenDuplicated = true;
@@ -1831,8 +1840,13 @@ Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> process
           if (submod.isDuplicated) {
             DateTime now = DateTime.now();
             String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
-            submod.submodName = '${submod.submodName}_$formattedDate';
-            var newSubmodDir = await Directory(submod.submodDirPath).rename(Uri.file('${p.dirname(submod.submodDirPath)}/${submod.submodName}').toFilePath());
+            List<String> submodNameParts = submod.submodName.split(' > ');
+            String submodName = submodNameParts.removeLast();
+            submodName = '${submodName}_$formattedDate';
+            submodNameParts.add(submodName);
+            submod.submodName = submodNameParts.join(' > ');
+            //submod.submodName = '${submod.submodName}_$formattedDate';
+            var newSubmodDir = await Directory(submod.submodDirPath).rename(Uri.file('${p.dirname(submod.submodDirPath)}/$submodName').toFilePath());
             submod.files = newSubmodDir.listSync(recursive: true).whereType<File>().toList();
             submod.submodDirPath = newSubmodDir.path;
           }
