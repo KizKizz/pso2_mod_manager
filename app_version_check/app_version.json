@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.7",
+    "version": "2.3.8",
     "description": [
-        "Hotfix to fix Mods Adder placing [Se] items inside Basewears category when adding"
+        "More hotfix to fix a bug where Mods Adder freezes if mods came with many nested folders"
     ],
     "windows_file": "",
     "linux_file": ""

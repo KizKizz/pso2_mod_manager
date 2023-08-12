@@ -46,6 +46,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
               Directory(newSubmodDirPath).createSync(recursive: true);
               for (var file in submod.files) {
                 String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                Directory(p.dirname(newFilePath)).createSync(recursive: true);
                 file.copySync(newFilePath);
               }
             }
@@ -314,6 +315,9 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
     parentPaths.removeWhere((element) => element.isEmpty);
     submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [], modFiles));
   }
+
+  //remove empty submods
+  submods.removeWhere((element) => element.modFiles.isEmpty);
 
   //Sort alpha
   submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
