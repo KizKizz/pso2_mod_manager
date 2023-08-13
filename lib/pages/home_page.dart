@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
@@ -25,6 +26,7 @@ import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/preview_dialog.dart';
+import 'package:pso2_mod_manager/functions/reapply_applied_mods.dart';
 import 'package:pso2_mod_manager/functions/search_list_builder.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/functions/unapply_all_mods.dart';
@@ -178,6 +180,23 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
           actions: <Widget>[
             //Show all hidden
+            Visibility(
+              visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: ModManTooltip(
+                  message: curLangText!.uiHoldToApplyAllAvailableModsToTheGame,
+                  child: InkWell(
+                      onLongPress: () async {
+                        await applyAllAvailableModsDialog(context);
+                      },
+                      child: const Icon(
+                        Icons.add_to_queue_outlined,
+                        size: 19,
+                      )),
+                ),
+              ),
+            ),
             Visibility(
               visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
               child: Padding(
@@ -347,7 +366,7 @@ class _HomePageState extends State<HomePage> {
               ),
             //Add new cate group
             Visibility(
-              visible: !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+              visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
               child: Padding(
                 padding: const EdgeInsets.only(left: 5, right: 5),
                 child: ModManTooltip(
@@ -3261,6 +3280,45 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.only(right: 5),
             child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
+              //Reapply all applied mods to game
+              Stack(
+                children: [
+                  Visibility(
+                    visible: isModViewModsApplying,
+                    child: const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  Visibility(
+                    visible: !isModViewModsApplying,
+                    child: ModManTooltip(
+                      message: curLangText!.uiHoldToReapplyAllModsInAppliedList,
+                      child: InkWell(
+                          onLongPress: appliedItemList.isEmpty
+                              ? null
+                              : () {
+                                  isModViewModsRemoving = true;
+                                  isModViewModsApplying = true;
+                                  setState(() {});
+                                  Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                    reapplyAppliedMods().then((value) {
+                                      isModViewModsRemoving = false;
+                                      isModViewModsApplying = false;
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
+                                      setState(() {});
+                                    });
+                                  });
+                                },
+                          child: Icon(
+                            Icons.playlist_add,
+                            color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
               //Remove all mods from game
               Stack(
                 children: [

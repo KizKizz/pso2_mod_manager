@@ -195,6 +195,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      //mods adder group same item variants
+      modsAdderGroupSameItemVariants = prefs.getBool('modsAdderGroupSameItemVariants') ?? false;
       //profile names
       modManProfile1Name = (prefs.getString('modManProfile1Name') ?? 'Profile 1');
       modManProfile2Name = (prefs.getString('modManProfile2Name') ?? 'Profile 2');

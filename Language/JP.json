@@ -162,6 +162,8 @@
   "uiUnableToObtainOrginalFilesFromSegaServers": "SEGAのサーバーからオリジナルファイルを取得できない。",
   "uiSwitchingProfile": "スイッチング・プロファイル",
   "uiProfile": "プロフィール",
+  "uiHoldToApplyAllAvailableModsToTheGame": "利用可能なすべてのMODをゲームに適用するためにホールドする\n注意:これはアイテム内のすべてのMODを適用し、すべてのルールを無視します。",
+  "uiHoldToReapplyAllModsInAppliedList": "適用済みMODリストのすべてのMODを再適用するためにホールドする",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",
@@ -271,5 +273,9 @@
   "uiClickToRename": "重複している",
   "uiDuplicatedMod": "つのMODの名前を変更するにはクリックしてください",
   "uiDuplicatedMods": "つのMODの名前を変更するにはクリックしてください",
-  "uiNewProfileName": "新しいプロフィール名"
+  "uiGroupSameItemVariants": "同じ亜種のグループ",
+  "uiNewProfileName": "新しいプロフィール名",
+  "uiApplyingAllAvailableMods": "利用可能なすべての改造を適用する",
+  "uiErrorWhenApplyingAllAvailableMods": "利用可能なすべてのMODを適用するとエラーが発生する",
+  "uiPatchNotes": "パッチノート"
 }
