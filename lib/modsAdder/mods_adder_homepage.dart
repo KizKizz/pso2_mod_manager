@@ -23,6 +23,7 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:io/io.dart' as io;
 
@@ -182,7 +183,7 @@ void modsAdderHomePage(context) {
                                                     border: Border.all(color: Theme.of(context).hintColor),
                                                     color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
                                                   ),
-                                                  height: constraints.maxHeight - 42,
+                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 75,
                                                   //width: constraints.maxWidth * 0.45,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -242,6 +243,34 @@ void modsAdderHomePage(context) {
                                                   )),
                                             ),
                                           ),
+                                          Visibility(
+                                            visible: !dropZoneMax,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 5),
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                    onPressed: modAdderDragDropFiles.isNotEmpty
+                                                        ? (() async {
+                                                            final prefs = await SharedPreferences.getInstance();
+                                                            if (modsAdderGroupSameItemVariants) {
+                                                              modsAdderGroupSameItemVariants = false;
+                                                              prefs.setBool('modsAdderGroupSameItemVariants', false);
+                                                            } else {
+                                                              modsAdderGroupSameItemVariants = true;
+                                                              prefs.setBool('modsAdderGroupSameItemVariants', true);
+                                                            }
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          })
+                                                        : null,
+                                                    child: Text(modsAdderGroupSameItemVariants
+                                                        ? '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiON}'
+                                                        : '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiOFF}')),
+                                              ),
+                                            ),
+                                          ),
                                           SizedBox(
                                             //width: constraints.maxWidth * 0.7,
                                             child: Padding(
@@ -265,6 +294,33 @@ void modsAdderHomePage(context) {
                                                   ),
                                                   const SizedBox(
                                                     width: 5,
+                                                  ),
+                                                  Visibility(
+                                                    visible: dropZoneMax,
+                                                    child: Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(right: 5),
+                                                        child: ElevatedButton(
+                                                            onPressed: modAdderDragDropFiles.isNotEmpty
+                                                                ? (() async {
+                                                                    final prefs = await SharedPreferences.getInstance();
+                                                                    if (modsAdderGroupSameItemVariants) {
+                                                                      modsAdderGroupSameItemVariants = false;
+                                                                      prefs.setBool('modsAdderGroupSameItemVariants', false);
+                                                                    } else {
+                                                                      modsAdderGroupSameItemVariants = true;
+                                                                      prefs.setBool('modsAdderGroupSameItemVariants', true);
+                                                                    }
+                                                                    setState(
+                                                                      () {},
+                                                                    );
+                                                                  })
+                                                                : null,
+                                                            child: Text(modsAdderGroupSameItemVariants
+                                                                ? '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiON}'
+                                                                : '${curLangText!.uiGroupSameItemVariants}: ${curLangText!.uiOFF}')),
+                                                      ),
+                                                    ),
                                                   ),
                                                   Expanded(
                                                     child: ElevatedButton(
@@ -1599,8 +1655,20 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   List<String> csvFileInfos = [];
   for (var iceFile in iceFileList) {
     //look in csv infos
-    for (var csvFile in csvInfosFromSheets) {
-      csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
+    if (modsAdderGroupSameItemVariants && csvFileInfos.where((element) => element.contains(p.basename(iceFile.path))).isEmpty) {
+      for (var csvFile in csvInfosFromSheets) {
+        final csv = csvFile.firstWhere(
+          (line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty,
+          orElse: () => '',
+        );
+        if (csv.isNotEmpty) {
+          csvFileInfos.add(csv);
+        }
+      }
+    } else if (!modsAdderGroupSameItemVariants) {
+      for (var csvFile in csvInfosFromSheets) {
+        csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
+      }
     }
   }
 

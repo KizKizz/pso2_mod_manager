@@ -1,8 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.8",
+    "version": "2.3.9",
     "description": [
-        "More hotfix to fix a bug where Mods Adder freezes if mods came with many nested folders"
+        "Added an option to group all variants of an item together in Mods Adder",
+        "Added a button that allows to apply all available mods to the game",
+        "Added a button to readd all applied mod in Applied Mods list",
+        "Some other bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

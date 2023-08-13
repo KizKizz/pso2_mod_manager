@@ -205,6 +205,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiUnableToObtainOrginalFilesFromSegaServers'] as String
       ..uiSwitchingProfile = json['uiSwitchingProfile'] as String
       ..uiProfile = json['uiProfile'] as String
+      ..uiHoldToApplyAllAvailableModsToTheGame =
+          json['uiHoldToApplyAllAvailableModsToTheGame'] as String
+      ..uiHoldToReapplyAllModsInAppliedList =
+          json['uiHoldToReapplyAllModsInAppliedList'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -344,7 +348,13 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiClickToRename = json['uiClickToRename'] as String
       ..uiDuplicatedMod = json['uiDuplicatedMod'] as String
       ..uiDuplicatedMods = json['uiDuplicatedMods'] as String
-      ..uiNewProfileName = json['uiNewProfileName'] as String;
+      ..uiGroupSameItemVariants = json['uiGroupSameItemVariants'] as String
+      ..uiNewProfileName = json['uiNewProfileName'] as String
+      ..uiApplyingAllAvailableMods =
+          json['uiApplyingAllAvailableMods'] as String
+      ..uiErrorWhenApplyingAllAvailableMods =
+          json['uiErrorWhenApplyingAllAvailableMods'] as String
+      ..uiPatchNotes = json['uiPatchNotes'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -515,6 +525,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiUnableToObtainOrginalFilesFromSegaServers,
       'uiSwitchingProfile': instance.uiSwitchingProfile,
       'uiProfile': instance.uiProfile,
+      'uiHoldToApplyAllAvailableModsToTheGame':
+          instance.uiHoldToApplyAllAvailableModsToTheGame,
+      'uiHoldToReapplyAllModsInAppliedList':
+          instance.uiHoldToReapplyAllModsInAppliedList,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -632,5 +646,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiClickToRename': instance.uiClickToRename,
       'uiDuplicatedMod': instance.uiDuplicatedMod,
       'uiDuplicatedMods': instance.uiDuplicatedMods,
+      'uiGroupSameItemVariants': instance.uiGroupSameItemVariants,
       'uiNewProfileName': instance.uiNewProfileName,
+      'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
+      'uiErrorWhenApplyingAllAvailableMods':
+          instance.uiErrorWhenApplyingAllAvailableMods,
+      'uiPatchNotes': instance.uiPatchNotes,
     };

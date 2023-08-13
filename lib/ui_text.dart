@@ -184,7 +184,9 @@ class TranslationText {
       uiToAnotherItem = 'to another item',
       uiUnableToObtainOrginalFilesFromSegaServers = 'Unable to obtain original files from Sega\'s servers',
       uiSwitchingProfile = 'Switching Profile',
-      uiProfile = 'Profile';
+      uiProfile = 'Profile',
+      uiHoldToApplyAllAvailableModsToTheGame = 'Hold to apply all available mods to the game\nNote: this will apply all mods inside an items and ignores all rules',
+      uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -323,10 +325,17 @@ class TranslationText {
       uiRenameThis = 'Rename this',
       uiClickToRename = 'Click to rename ',
       uiDuplicatedMod = ' duplicated mod',
-      uiDuplicatedMods = ' duplicated mods';
+      uiDuplicatedMods = ' duplicated mods',
+      uiGroupSameItemVariants = 'Group same item variants';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';
+
+  //apply_all_available_mods
+  String uiApplyingAllAvailableMods = 'Applying all available mods', uiErrorWhenApplyingAllAvailableMods = 'Error when applying all available mods';
+
+  //changelog_dialog.dart
+  String uiPatchNotes = 'Patch Notes';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
