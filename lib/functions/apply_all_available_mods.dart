@@ -1,4 +1,3 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
@@ -8,7 +7,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
 Future<void> applyAllAvailableModsDialog(context) async {
-  List<String> appliedModsList = [];
+  //List<String> appliedModsList = [];
   await showDialog(
       barrierDismissible: false,
       context: context,
@@ -94,7 +93,7 @@ Future<void> applyAllAvailableModsDialog(context) async {
                             ),
                           );
                         } else {
-                          appliedModsList = snapshot.data;
+                          //appliedModsList = snapshot.data;
                           Navigator.pop(context, true);
                           return const SizedBox();
                           // return Column(
