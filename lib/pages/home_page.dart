@@ -188,7 +188,9 @@ class _HomePageState extends State<HomePage> {
                   message: curLangText!.uiHoldToApplyAllAvailableModsToTheGame,
                   child: InkWell(
                       onLongPress: () async {
-                        await applyAllAvailableModsDialog(context);
+                        print(await applyAllAvailableModsDialog(context));
+                          setState(() {});
+                       
                       },
                       child: const Icon(
                         Icons.add_to_queue_outlined,
