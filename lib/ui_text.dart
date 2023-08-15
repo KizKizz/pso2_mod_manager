@@ -185,7 +185,7 @@ class TranslationText {
       uiUnableToObtainOrginalFilesFromSegaServers = 'Unable to obtain original files from Sega\'s servers',
       uiSwitchingProfile = 'Switching Profile',
       uiProfile = 'Profile',
-      uiHoldToApplyAllAvailableModsToTheGame = 'Hold to apply all available mods to the game\nNote: this will apply all mods inside an items and ignores all rules',
+      uiHoldToApplyAllAvailableModsToTheGame = 'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
       uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list';
 
   //mod_add_handler

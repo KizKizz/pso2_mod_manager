@@ -162,7 +162,7 @@
   "uiUnableToObtainOrginalFilesFromSegaServers": "SEGAのサーバーからオリジナルファイルを取得できない。",
   "uiSwitchingProfile": "スイッチング・プロファイル",
   "uiProfile": "プロフィール",
-  "uiHoldToApplyAllAvailableModsToTheGame": "利用可能なすべてのMODをゲームに適用するためにホールドする\n注意:これはアイテム内のすべてのMODを適用し、すべてのルールを無視します。",
+  "uiHoldToApplyAllAvailableModsToTheGame": "利用可能なすべてのMODをゲームに適用するためにホールドする\n注意:これはすべてのアイテムの最初のMODのバリエーションをゲームに適用し、すでにMODが適用されているものは無視します。",
   "uiHoldToReapplyAllModsInAppliedList": "適用済みMODリストのすべてのMODを再適用するためにホールドする",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\n大量のファイルの処理に時間がかかる場合があります。",

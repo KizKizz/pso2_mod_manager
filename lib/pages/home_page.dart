@@ -188,23 +188,8 @@ class _HomePageState extends State<HomePage> {
                   message: curLangText!.uiHoldToApplyAllAvailableModsToTheGame,
                   child: InkWell(
                       onLongPress: () async {
-                        applyAllAvailableModsDialog(context);
-                        applyAllOgFileLocations = applyAllGetOgPaths(moddedItemsList);
-                        Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterReset();
-                        for (var cateType in moddedItemsList) {
-                          for (var cate in cateType.categories) {
-                            for (var item in cate.items) {
-                              for (var mod in item.mods) {
-                                for (var submod in mod.submods) {
-                                  Future.delayed(const Duration(milliseconds: 500), () {
-                                    applyAllSubmodList = applyAllAvailableMods(context, cate.categoryName, submod);
-                                  });
-                                  Provider.of<StateProvider>(context, listen: false).applyAllStatus;
-                                }
-                              }
-                            }
-                          }
-                        }
+                        isApplyAllApplied = false;
+                        await applyAllAvailableModsDialog(context);
 
                         setState(() {});
                       },
