@@ -1,11 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.9",
+    "version": "2.3.10",
     "description": [
-        "Added an option to group all variants of an item together in Mods Adder",
-        "Added a button that allows to apply all available mods to the game",
-        "Added a button to readd all applied mod in Applied Mods list",
-        "Some other bug fixes"
+        "Some fixes for apply all mods button to apply only the first variant of the first mod of an item and ignores items that been applied"
     ],
     "windows_file": "",
     "linux_file": ""
