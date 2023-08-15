@@ -28,6 +28,8 @@ class StateProvider with ChangeNotifier {
   bool _modsSwapperSwitchToSwapPage = false;
   bool _reloadProfile = false;
   String _profileName = '';
+  String _applyAllStatus = '';
+  int _applyAllProgressCounter = 0;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -55,6 +57,23 @@ class StateProvider with ChangeNotifier {
   bool get modsSwapperSwitchToSwapPage => _modsSwapperSwitchToSwapPage;
   bool get reloadProfile => _reloadProfile;
   String get profileName => _profileName;
+  String get applyAllStatus => _applyAllStatus;
+  int get applyAllProgressCounter => _applyAllProgressCounter;
+
+  void applyAllProgressCounterIncrease() {
+    _applyAllProgressCounter++;
+    notifyListeners();
+  }
+
+  void applyAllProgressCounterReset() {
+    _applyAllProgressCounter = 0;
+    notifyListeners();
+  }
+
+  void setApplyAllStatus(String status) {
+    _applyAllStatus = status;
+    notifyListeners();
+  }
 
   void setProfileName(String name) {
     _profileName = name;
