@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -9,8 +10,9 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-Future<bool> applyAllAvailableModsDialog(context) async {
-  return await showDialog(
+void applyAllAvailableModsDialog(context) {
+  int totalFiles = 0;
+  showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
@@ -19,10 +21,7 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(10),
                 content: FutureBuilder(
-                    future: //Future.delayed(const Duration(milliseconds: 500), () {
-                        applyAllGetOgPaths(moddedItemsList)
-                    //})
-                    ,
+                    future: applyAllOgFileLocations,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -99,267 +98,125 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                             ),
                           );
                         } else {
-                          return FutureBuilder(
-                              future: applyAllAvailableMods(context, moddedItemsList),
-                              builder: (
-                                BuildContext context,
-                                AsyncSnapshot snapshot,
-                              ) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return SizedBox(
-                                    width: 250,
-                                    height: 250,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            curLangText!.uiApplyingAllAvailableMods,
-                                            style: const TextStyle(fontSize: 20),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          const CircularProgressIndicator(),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  if (snapshot.hasError) {
-                                    return Center(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            curLangText!.uiErrorWhenApplyingAllAvailableMods,
-                                            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                            child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                                          ),
-                                          ElevatedButton(
-                                              child: Text(curLangText!.uiReturn),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              }),
-                                        ],
-                                      ),
-                                    );
-                                  } else if (!snapshot.hasData) {
-                                    return SizedBox(
-                                      width: 250,
-                                      height: 250,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              curLangText!.uiSwappingItem,
-                                              style: const TextStyle(fontSize: 20),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            const CircularProgressIndicator(),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    //appliedModsList = snapshot.data;
-                                    //Navigator.pop(context, true);
-                                    return SizedBox(
-                                      width: 250,
-                                      height: 250,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Success',
-                                            style: const TextStyle(fontSize: 20),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ElevatedButton(onPressed:() {
-                                            Navigator.pop(context, true);
-                                          }, child: Text(curLangText!.uiReturn))
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                }
-                              });
+                          totalFiles = snapshot.data;
+                          return ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                context.watch<StateProvider>().applyAllProgressCounter < totalFiles
+                                ? Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    curLangText!.uiApplyingAllAvailableMods,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                )
+                                : Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    curLangText!.uiSuccessfullyApplied,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                                if (context.watch<StateProvider>().applyAllProgressCounter < totalFiles)
+                                const CircularProgressIndicator(),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text('${context.watch<StateProvider>().applyAllProgressCounter} / $totalFiles ${curLangText!.uiMods}'),
+                                ),
+                                if (context.watch<StateProvider>().applyAllProgressCounter < totalFiles)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(context.watch<StateProvider>().applyAllStatus),
+                                ),
+                                if (context.watch<StateProvider>().applyAllProgressCounter >= totalFiles)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, true);
+                                      },
+                                      child: Text(curLangText!.uiReturn)),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       }
                     }));
           }));
 }
 
-// Future<List<String>> applyAllAvailableMods(List<CategoryType> moddedList) async {
-//   List<String> appliedList = [];
-//   for (var cateType in moddedList) {
-//     for (var cate in cateType.categories) {
-//       String appliedPath = '${cate.categoryName} > ';
-//       for (var item in cate.items) {
-//         appliedPath += '${item.itemName} > ';
-//         for (var mod in item.mods) {
-//           appliedPath += '${mod.modName} > ';
-//           for (var submod in mod.submods) {
-//             appliedPath += submod.submodName;
-//             for (var modFile in submod.modFiles) {
-//               if (!modFile.applyStatus) {
-//                 modFileApply(modFile).then((value) {
-//                 if (appliedPath.isNotEmpty && !appliedList.contains(appliedPath)) {
-//                   appliedList.add(appliedPath);
-//                 }
-//                 });
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
 
-//   return appliedList;
-// }
-
-Future<bool> applyAllGetOgPaths(List<CategoryType> moddedList) async {
-  //Future.delayed(const Duration(milliseconds: 3000), () {
+Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
+  int totalFiles = 0;
   for (var cateType in moddedList) {
     for (var cate in cateType.categories) {
       for (var item in cate.items) {
         for (var mod in item.mods) {
           for (var submod in mod.submods) {
+            bool ogFileFound = false;
             for (var modFile in submod.modFiles) {
-              if (!modFile.applyStatus && submod.submodName == 'Aelio Tribal D') {
+              if (!modFile.applyStatus) {
                 modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                print(modFile.ogLocations.length);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  //});
-  return true;
-}
-
-Future<List<String>> applyAllAvailableMods(context, List<CategoryType> moddedList) async {
-  List<String> appliedList = [];
-  for (var cateType in moddedList) {
-    for (var cate in cateType.categories) {
-      for (var item in cate.items) {
-        for (var mod in item.mods) {
-          for (var submod in mod.submods) {
-            if (!submod.applyStatus) {
-              String appliedPath = '${cate.categoryName} > ${item.itemName} > ${mod.modName} > ${submod.submodName}';
-              bool allOGFilesFound = true;
-              for (var modFile in submod.modFiles) {
-                if (modFile.ogLocations.isEmpty) {
-                  allOGFilesFound = false;
-                  break;
+                if (modFile.ogLocations.isNotEmpty) {
+                  ogFileFound = true;
                 }
+                //print(modFile.ogLocations.length);
               }
-              if (allOGFilesFound && submod.submodName == 'Aelio Tribal D') {
-                //print(appliedPath);
-                modFilesApply(context, submod.modFiles).then((value) async {
-                  if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                    submod.applyDate = DateTime.now();
-                    item.applyDate = DateTime.now();
-                    mod.applyDate = DateTime.now();
-                    submod.applyStatus = true;
-                    submod.isNew = false;
-                    mod.applyStatus = true;
-                    mod.isNew = false;
-                    item.applyStatus = true;
-                    item.isNew = false;
-                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                  }
-                  saveModdedItemListToJson();
-                  if (appliedPath.isNotEmpty && !appliedList.contains(appliedPath)) {
-                    appliedList.add(appliedPath);
-                  }
-                });
-              }
+            }
+            if (ogFileFound) {
+              totalFiles++;
+              ogFileFound = false;
             }
           }
         }
       }
     }
   }
-  return appliedList;
+  return totalFiles;
 }
 
-// Future<List<String>> applyAllAvailableMods(List<CategoryType> moddedList) async {
-//   List<String> appliedList = [];
-//   for (var cateType in moddedList) {
-//     for (var cate in cateType.categories) {
-//       for (var item in cate.items) {
-//         for (var mod in item.mods) {
-//           for (var submod in mod.submods) {
-//             for (var modFile in submod.modFiles) {
-//               if (!modFile.applyStatus) {
-//                 String appliedPath = '${cate.categoryName} > ${item.itemName} > ${mod.modName} > ${submod.submodName}';
-//                 if (modFile.ogLocations.isNotEmpty && modFile.submodName == 'Aelio Tribal D') {
-//                   //print(appliedPath);
-//                   modFileApply(modFile).then((value) async {
-//                     if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-//                       submod.applyDate = DateTime.now();
-//                       item.applyDate = DateTime.now();
-//                       mod.applyDate = DateTime.now();
-//                       submod.applyStatus = true;
-//                       submod.isNew = false;
-//                       mod.applyStatus = true;
-//                       mod.isNew = false;
-//                       item.applyStatus = true;
-//                       item.isNew = false;
-//                       modFile.applyStatus = true;
-//                       modFile.applyDate = DateTime.now();
-//                       if (modFile.isNew) {
-//                         modFile.isNew = false;
-//                       }
-//                       print(appliedPath);
-//                       // List<ModFile> appliedModFiles = value;
-//                       // String fileAppliedText = '';
-//                       // for (var element in appliedModFiles) {
-//                       //   if (fileAppliedText.isEmpty) {
-//                       //     fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
-//                       //   }
-//                       //   fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-//                       // }
-//                       // ScaffoldMessenger.of(context).showSnackBar(
-//                       //     snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-//                       appliedItemList = await appliedListBuilder(moddedItemsList);
-//                     }
+Future<String> applyAllAvailableMods(context, String categoryName, SubMod submod) async {
+  //List<String> appliedList = [];
+  String appliedPath = '$categoryName > ${submod.itemName} > ${submod.modName} > ${submod.submodName}';
+  if (!submod.applyStatus) {
+    bool allOGFilesFound = true;
+    for (var modFile in submod.modFiles) {
+      if (modFile.ogLocations.isEmpty) {
+        allOGFilesFound = false;
+        break;
+      }
+    }
+    if (allOGFilesFound) {
+      print(appliedPath);
+      // modFilesApply(context, submod.modFiles).then((value) async {
+      //   if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+      //     submod.applyDate = DateTime.now();
+      //     item.applyDate = DateTime.now();
+      //     mod.applyDate = DateTime.now();
+      //     submod.applyStatus = true;
+      //     submod.isNew = false;
+      //     mod.applyStatus = true;
+      //     mod.isNew = false;
+      //     item.applyStatus = true;
+      //     item.isNew = false;
+      //     appliedItemList = await appliedListBuilder(moddedItemsList);
+      //   }
+      //   saveModdedItemListToJson();
+      // if (appliedPath.isNotEmpty && !appliedList.contains(appliedPath)) {
+      //   appliedList.add(appliedPath);
 
-//                     saveModdedItemListToJson();
-//                     if (appliedPath.isNotEmpty && !appliedList.contains(appliedPath)) {
-//                       appliedList.add(appliedPath);
-//                     }
-//                   });
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
+      //}
+      // });
+      Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
+      Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
+      return appliedPath;
+    }
+  }
 
-//   return appliedList;
-// }
+  return '';
+}

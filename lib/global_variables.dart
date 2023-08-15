@@ -100,3 +100,6 @@ int modManCurActiveProfile = 1;
 String modManProfile1Name = '';
 String modManProfile2Name = '';
 bool modsAdderGroupSameItemVariants = false;
+Future<int>? applyAllOgFileLocations;
+Future<String>? applyAllSubmodList;
+

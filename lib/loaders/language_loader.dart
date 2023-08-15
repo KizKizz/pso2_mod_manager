@@ -63,7 +63,9 @@ Future<TranslationText?> uiTextLoader() async {
         TranslationText defaultENLanguage = TranslationText();
         File(lang.langFilePath).writeAsStringSync(encoder.convert(defaultENLanguage));
       }
-      langDropDownList.add(lang.langInitial);
+      if (!langDropDownList.contains(lang.langInitial)) {
+        langDropDownList.add(lang.langInitial);
+      }
     }
   } else {
     //Load local json
@@ -84,7 +86,9 @@ Future<TranslationText?> uiTextLoader() async {
         TranslationText defaultENLanguage = TranslationText();
         File(lang.langFilePath).writeAsStringSync(encoder.convert(defaultENLanguage));
       }
-      langDropDownList.add(lang.langInitial);
+      if (!langDropDownList.contains(lang.langInitial)) {
+        langDropDownList.add(lang.langInitial);
+      }
     }
   }
 
