@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -2392,6 +2393,9 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                        onLongPress: () {
+                                                          modsBoundaryEditHomePage(context, curMod.submods.first);
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -2665,6 +2669,9 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                        onLongPress: () {
+                                                          modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -3010,6 +3017,9 @@ class _HomePageState extends State<HomePage> {
                                                                       Icons.swap_horizontal_circle_outlined,
                                                                     ),
                                                                     onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                    onLongPress: () {
+                                                                      modsBoundaryEditHomePage(context, curSubmod);
+                                                                    },
                                                                   ),
                                                                 ),
                                                               ),
