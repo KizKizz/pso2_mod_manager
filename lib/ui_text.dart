@@ -185,8 +185,10 @@ class TranslationText {
       uiUnableToObtainOrginalFilesFromSegaServers = 'Unable to obtain original files from Sega\'s servers',
       uiSwitchingProfile = 'Switching Profile',
       uiProfile = 'Profile',
-      uiHoldToApplyAllAvailableModsToTheGame = 'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
-      uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list';
+      uiHoldToApplyAllAvailableModsToTheGame =
+          'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
+      uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list',
+      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -332,10 +334,27 @@ class TranslationText {
   String uiNewProfileName = 'New profile name';
 
   //apply_all_available_mods
-  String uiApplyingAllAvailableMods = 'Applying all available mods', uiErrorWhenApplyingAllAvailableMods = 'Error when applying all available mods';
+  String uiApplyingAllAvailableMods = 'Applying all available mods', uiLocatingOriginalFiles = 'Locating original files', uiErrorWhenLocatingOriginalFiles = 'Error when locating original files';
 
   //changelog_dialog.dart
   String uiPatchNotes = 'Patch Notes';
+
+  //mods_boundary_edit.dart
+  String uiBoundaryRadiusModification = 'Boundary Radius Modification',
+      uiIndexingFiles = 'Indexing files',
+      uispaceFoundExcl = ' found!',
+      uiMatchingFilesFound = 'Matching files found',
+      uiExtractingFiles = 'Extracting files',
+      uiReadingspace = 'Reading ',
+      uiEditingBoundaryRadiusValue = 'Editing boundary radius value',
+      uiPackingFiles = 'Packing files',
+      uiReplacingModFiles = 'Replacing mod files',
+      uiAllDone = 'All done',
+      uiMakeSureToReapplyThisMod = 'Make sure to re-apply this mod',
+      uiBoundaryRadiusValueNotFound = 'Boundary radius value not found',
+      uiNoAqpFileFound = 'No .aqp file found',
+      uiNoMatchingFileFound = 'No matching file found',
+      uiOnlyBasewearsAndSetwearsCanBeModified = 'Only Basewears and Setwears can be modified';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

@@ -2387,13 +2387,16 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                         onLongPress: () {
+                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            element.deleteSync(recursive: true);
+                                                          });
                                                           modsBoundaryEditHomePage(context, curMod.submods.first);
                                                         },
                                                       ),
@@ -2663,13 +2666,16 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
                                                         onLongPress: () {
+                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            element.deleteSync(recursive: true);
+                                                          });
                                                           modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
                                                         },
                                                       ),
@@ -3011,13 +3017,16 @@ class _HomePageState extends State<HomePage> {
                                                               child: Padding(
                                                                 padding: const EdgeInsets.only(left: 2),
                                                                 child: ModManTooltip(
-                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}',
+                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                                   child: InkWell(
                                                                     child: const Icon(
                                                                       Icons.swap_horizontal_circle_outlined,
                                                                     ),
                                                                     onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                     onLongPress: () {
+                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                        element.deleteSync(recursive: true);
+                                                                      });
                                                                       modsBoundaryEditHomePage(context, curSubmod);
                                                                     },
                                                                   ),

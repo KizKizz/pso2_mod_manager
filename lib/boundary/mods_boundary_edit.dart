@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -105,6 +107,7 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
                         csvInfosFromSheets = snapshot.data;
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!isBoundaryEdited) {
+                            isBoundaryEdited = true;
                             boundaryEdit(context, submod);
                           }
                         });
@@ -115,13 +118,14 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 5),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
-                                  'Boundary Radius Edit',
-                                  style: TextStyle(fontSize: 20),
+                                  curLangText!.uiBoundaryRadiusModification,
+                                  style: const TextStyle(fontSize: 20),
                                 ),
                               ),
+                              if (context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiError && context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiSuccess)
                               const CircularProgressIndicator(),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
@@ -130,13 +134,17 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: ElevatedButton(
-                                    onPressed: context.watch<StateProvider>().boundaryEditProgressStatus.split(',').first != curLangText!.uiError
-                                        ? null
-                                        : () {
+                                    onPressed: context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiError ||
+                                            context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiSuccess
+                                        ? () {
+                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                              element.deleteSync(recursive: true);
+                                            });
                                             isBoundaryEdited = false;
                                             csvInfosFromSheets.clear();
                                             Navigator.pop(context, true);
-                                          },
+                                          }
+                                        : null,
                                     child: Text(curLangText!.uiReturn)),
                               ),
                             ],
@@ -151,7 +159,7 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
 
 void boundaryEdit(context, SubMod submod) async {
   List<String> charsToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-  Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('Indexing files');
+  Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiIndexingFiles);
   //fetch csv
   // if (csvInfosFromSheets.isEmpty) {
   //   csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
@@ -186,12 +194,72 @@ void boundaryEdit(context, SubMod submod) async {
     }
 
     if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1]) {
-      Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('$itemCategory found!');
+      Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('$itemCategory${curLangText!.uispaceFoundExcl}');
       await Future.delayed(const Duration(milliseconds: 100));
-
+      List<ModFile> matchingFiles = submod.modFiles.where((element) => element.modFileName == infoLine.split(',')[6] || element.modFileName == infoLine.split(',')[7]).toList();
+      if (matchingFiles.isNotEmpty) {
+        Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiMatchingFilesFound);
+        await Future.delayed(const Duration(milliseconds: 100));
+        for (var modFile in matchingFiles) {
+          Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiExtractingFiles);
+          await Future.delayed(const Duration(milliseconds: 100));
+          List<File> extractedGroup1Files = [];
+          List<File> extractedGroup2Files = [];
+          //extract files
+          await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [modFile.location]);
+          String extractedGroup1Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
+          if (Directory(extractedGroup1Path).existsSync()) {
+            extractedGroup1Files = Directory(extractedGroup1Path).listSync(recursive: true).whereType<File>().toList();
+          }
+          String extractedGroup2PathF = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group2').toFilePath();
+          if (Directory(extractedGroup2PathF).existsSync()) {
+            extractedGroup2Files = Directory(extractedGroup2PathF).listSync(recursive: true).whereType<File>().toList();
+          }
+          //Get aqp files
+          List<File> aqpFiles = [];
+          aqpFiles.addAll(extractedGroup1Files.where((element) => p.extension(element.path) == '.aqp'));
+          aqpFiles.addAll(extractedGroup2Files.where((element) => p.extension(element.path) == '.aqp'));
+          if (aqpFiles.isNotEmpty) {
+            for (var aqpFile in aqpFiles) {
+              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiReadingspace}${p.basename(aqpFile.path)}');
+              await Future.delayed(const Duration(milliseconds: 100));
+              Uint8List aqpBytes = await File(aqpFile.path).readAsBytes();
+              if (aqpBytes[233] == 0 && aqpBytes[234] == 0 && aqpBytes[235] == 0) {
+                Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiEditingBoundaryRadiusValue);
+                await Future.delayed(const Duration(milliseconds: 100));
+                //-10
+                aqpBytes[236] = 0;
+                aqpBytes[237] = 0;
+                aqpBytes[238] = 32;
+                aqpBytes[239] = 193;
+                aqpFile.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+                Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiPackingFiles);
+                await Future.delayed(const Duration(milliseconds: 100));
+                //pack
+                await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+                Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
+                await Future.delayed(const Duration(milliseconds: 100));
+                await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(modFile.location);
+                if (modFile.modFileName == matchingFiles.last.modFileName) {
+                  Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
+                  await Future.delayed(const Duration(milliseconds: 100));
+                }
+              } else {
+                Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
+                await Future.delayed(const Duration(milliseconds: 100));
+              }
+            }
+          } else {
+            Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoAqpFileFound}');
+            await Future.delayed(const Duration(milliseconds: 100));
+          }
+        }
+      } else {
+        Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}');
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
     } else {
-      isBoundaryEdited = true;
-      Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}, only Basewears and Setwears are editable');
+      Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiOnlyBasewearsAndSetwearsCanBeModified}');
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
