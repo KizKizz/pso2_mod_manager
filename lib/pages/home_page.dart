@@ -59,7 +59,6 @@ class _HomePageState extends State<HomePage> {
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
 
-  String itemListAppBarName = curLangText!.uiItemList;
   bool hoveringOnSubmod = false;
   Category? modViewCate;
   double headersOpacityValue = 0.7;
@@ -211,10 +210,8 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         if (isFavListVisible) {
                           isFavListVisible = false;
-                          itemListAppBarName = curLangText!.uiItemList;
                         } else {
                           isFavListVisible = true;
-                          itemListAppBarName = curLangText!.uiFavItemList;
                         }
                         modViewItem = null;
                         setState(() {});
@@ -295,10 +292,8 @@ class _HomePageState extends State<HomePage> {
                           : () {
                               if (isShowHideCates) {
                                 isShowHideCates = false;
-                                itemListAppBarName = curLangText!.uiItemList;
                               } else {
                                 isShowHideCates = true;
-                                itemListAppBarName = curLangText!.uiHiddenItemList;
                               }
                               setState(() {});
                             },
@@ -352,10 +347,8 @@ class _HomePageState extends State<HomePage> {
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
-                                      itemListAppBarName = curLangText!.uiItemList;
                                     } else {
                                       isCateTypeReordering = true;
-                                      itemListAppBarName = curLangText!.uiSortItemList;
                                     }
                                     setState(() {});
                                   },
@@ -403,7 +396,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
-                child: Text(itemListAppBarName),
+                child: Text(isFavListVisible ? curLangText!.uiFavItemList : isShowHideCates ? curLangText!.uiHiddenItemList : isCateTypeReordering ? curLangText!.uiSortItemList : curLangText!.uiItemList),
               ),
               //Search
               Visibility(
@@ -1192,7 +1185,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                 ),
                                                                                                 child: Text(
-                                                                                                  '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiApplied}',
+                                                                                                  '${curItem.mods.where((element) => element.applyStatus).length} ${curLangText!.uiApplied}',
                                                                                                   style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                                 )),
                                                                                           ],
@@ -2397,6 +2390,7 @@ class _HomePageState extends State<HomePage> {
                                                           Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                             element.deleteSync(recursive: true);
                                                           });
+                                                          isBoundaryEdited = false;
                                                           modsBoundaryEditHomePage(context, curMod.submods.first);
                                                         },
                                                       ),
@@ -2676,6 +2670,7 @@ class _HomePageState extends State<HomePage> {
                                                           Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                             element.deleteSync(recursive: true);
                                                           });
+                                                          isBoundaryEdited = false;
                                                           modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
                                                         },
                                                       ),
@@ -3027,6 +3022,7 @@ class _HomePageState extends State<HomePage> {
                                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                         element.deleteSync(recursive: true);
                                                                       });
+                                                                      isBoundaryEdited = false;
                                                                       modsBoundaryEditHomePage(context, curSubmod);
                                                                     },
                                                                   ),

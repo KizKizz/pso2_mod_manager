@@ -12,11 +12,11 @@ Future<List<CategoryType>> searchListBuilder(List<CategoryType> moddedList, Stri
         for (var mod in item.mods) {
           for (var submod in mod.submods) {
             for (var modFile in submod.modFiles) {
-              if (modFile.modFileName.toLowerCase().contains(searchTerm) ||
-                  submod.submodName.toLowerCase().contains(searchTerm) ||
-                  mod.modName.toLowerCase().contains(searchTerm) ||
-                  item.itemName.toLowerCase().contains(searchTerm) ||
-                  cate.categoryName.toLowerCase().contains(searchTerm)) {
+              if (modFile.modFileName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+                  submod.submodName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+                  mod.modName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+                  item.itemName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+                  cate.categoryName.toLowerCase().contains(searchTerm.toLowerCase())) {
                 //print('$searchTerm : ${cate.categoryName} > ${item.itemName} > ${mod.modName} > ${submod.submodName} > ${modFile.modFileName}',);
                 if (!newModdedList.contains(type) && type.visible) {
                   newModdedList.add(type);
@@ -39,10 +39,10 @@ int cateItemSearchMatchesCheck(Category category, String searchTerm) {
     for (var mod in item.mods) {
       for (var submod in mod.submods) {
         for (var modFile in submod.modFiles) {
-          if (modFile.modFileName.toLowerCase().contains(searchTerm) ||
-              submod.submodName.toLowerCase().contains(searchTerm) ||
-              mod.modName.toLowerCase().contains(searchTerm) ||
-              item.itemName.toLowerCase().contains(searchTerm)) {
+          if (modFile.modFileName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+              submod.submodName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+              mod.modName.toLowerCase().contains(searchTerm.toLowerCase()) ||
+              item.itemName.toLowerCase().contains(searchTerm.toLowerCase())) {
             found = true;
             break;
           }
@@ -70,7 +70,7 @@ int itemModSearchMatchesCheck(Item item, String searchTerm) {
     bool found = false;
     for (var submod in mod.submods) {
       for (var modFile in submod.modFiles) {
-        if (modFile.modFileName.toLowerCase().contains(searchTerm) || submod.submodName.toLowerCase().contains(searchTerm) || mod.modName.toLowerCase().contains(searchTerm)) {
+        if (modFile.modFileName.toLowerCase().contains(searchTerm.toLowerCase()) || submod.submodName.toLowerCase().contains(searchTerm.toLowerCase()) || mod.modName.toLowerCase().contains(searchTerm.toLowerCase())) {
           found = true;
           break;
         }
@@ -93,7 +93,7 @@ int modSearchMatchesCheck(Mod mod, String searchTerm) {
   for (var submod in mod.submods) {
     bool found = false;
     for (var modFile in submod.modFiles) {
-      if (modFile.modFileName.toLowerCase().contains(searchTerm) || submod.submodName.toLowerCase().contains(searchTerm)) {
+      if (modFile.modFileName.toLowerCase().contains(searchTerm.toLowerCase()) || submod.submodName.toLowerCase().contains(searchTerm.toLowerCase())) {
         found = true;
         break;
       }
@@ -109,7 +109,7 @@ int submodSearchMatchesCheck(SubMod submod, String searchTerm) {
   int matchingCount = 0;
 
   for (var modFile in submod.modFiles) {
-    if (modFile.modFileName.toLowerCase().contains(searchTerm) || submod.submodName.toLowerCase().contains(searchTerm)) {
+    if (modFile.modFileName.toLowerCase().contains(searchTerm.toLowerCase()) || submod.submodName.toLowerCase().contains(searchTerm.toLowerCase())) {
       matchingCount++;
     }
   }

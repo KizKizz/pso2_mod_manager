@@ -193,7 +193,7 @@ void boundaryEdit(context, SubMod submod) async {
       itemCategory = defaultCateforyDirs[16];
     }
 
-    if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1]) {
+    if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
       Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('$itemCategory${curLangText!.uispaceFoundExcl}');
       await Future.delayed(const Duration(milliseconds: 100));
       List<ModFile> matchingFiles = submod.modFiles.where((element) => element.modFileName == infoLine.split(',')[6] || element.modFileName == infoLine.split(',')[7]).toList();
