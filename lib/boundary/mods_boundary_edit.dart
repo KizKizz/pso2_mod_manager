@@ -125,11 +125,15 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
                                   style: const TextStyle(fontSize: 20),
                                 ),
                               ),
-                              if (context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiError && context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiSuccess)
-                              const CircularProgressIndicator(),
+                              if (context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiError &&
+                                  context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first != curLangText!.uiSuccess)
+                                const CircularProgressIndicator(),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: Text(context.watch<StateProvider>().boundaryEditProgressStatus),
+                                child: Text(
+                                  context.watch<StateProvider>().boundaryEditProgressStatus,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
@@ -241,7 +245,9 @@ void boundaryEdit(context, SubMod submod) async {
                 await Future.delayed(const Duration(milliseconds: 100));
                 await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(modFile.location);
                 if (modFile.modFileName == matchingFiles.last.modFileName) {
-                  Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
+                  Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(modFile.applyStatus
+                      ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}}\n${curLangText!.uiMakeSureToReapplyThisMod}'
+                      : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
                   await Future.delayed(const Duration(milliseconds: 100));
                 }
               } else {
