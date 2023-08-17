@@ -30,6 +30,7 @@ class StateProvider with ChangeNotifier {
   String _profileName = '';
   String _applyAllStatus = '';
   int _applyAllProgressCounter = 0;
+  String _boundaryEditProgressStatus = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -59,6 +60,12 @@ class StateProvider with ChangeNotifier {
   String get profileName => _profileName;
   String get applyAllStatus => _applyAllStatus;
   int get applyAllProgressCounter => _applyAllProgressCounter;
+  String get boundaryEditProgressStatus => _boundaryEditProgressStatus;
+
+  void setBoundaryEditProgressStatus(String status) {
+    _boundaryEditProgressStatus = status;
+    notifyListeners();
+  }
 
   void applyAllProgressCounterIncrease() {
     _applyAllProgressCounter++;

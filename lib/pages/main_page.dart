@@ -27,7 +27,6 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
-import 'package:pso2_mod_manager/read_file_byte.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
@@ -1342,7 +1341,6 @@ class _MainPageState extends State<MainPage> {
                                 child: MaterialButton(
                                   onPressed: (() {
                                     //testDialog(context);
-                                    getByte();
                                   }),
                                   child: const Row(
                                     children: [

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -58,7 +59,6 @@ class _HomePageState extends State<HomePage> {
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
 
-  String itemListAppBarName = curLangText!.uiItemList;
   bool hoveringOnSubmod = false;
   Category? modViewCate;
   double headersOpacityValue = 0.7;
@@ -210,10 +210,8 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         if (isFavListVisible) {
                           isFavListVisible = false;
-                          itemListAppBarName = curLangText!.uiItemList;
                         } else {
                           isFavListVisible = true;
-                          itemListAppBarName = curLangText!.uiFavItemList;
                         }
                         modViewItem = null;
                         setState(() {});
@@ -294,10 +292,8 @@ class _HomePageState extends State<HomePage> {
                           : () {
                               if (isShowHideCates) {
                                 isShowHideCates = false;
-                                itemListAppBarName = curLangText!.uiItemList;
                               } else {
                                 isShowHideCates = true;
-                                itemListAppBarName = curLangText!.uiHiddenItemList;
                               }
                               setState(() {});
                             },
@@ -351,10 +347,8 @@ class _HomePageState extends State<HomePage> {
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
-                                      itemListAppBarName = curLangText!.uiItemList;
                                     } else {
                                       isCateTypeReordering = true;
-                                      itemListAppBarName = curLangText!.uiSortItemList;
                                     }
                                     setState(() {});
                                   },
@@ -402,7 +396,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
-                child: Text(itemListAppBarName),
+                child: Text(isFavListVisible ? curLangText!.uiFavItemList : isShowHideCates ? curLangText!.uiHiddenItemList : isCateTypeReordering ? curLangText!.uiSortItemList : curLangText!.uiItemList),
               ),
               //Search
               Visibility(
@@ -1191,7 +1185,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                                                 ),
                                                                                                 child: Text(
-                                                                                                  '${curItem.mods.where((element) => element.applyStatus && element.itemName.contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiApplied}',
+                                                                                                  '${curItem.mods.where((element) => element.applyStatus).length} ${curLangText!.uiApplied}',
                                                                                                   style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
                                                                                                 )),
                                                                                           ],
@@ -2386,12 +2380,19 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                        onLongPress: () {
+                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            element.deleteSync(recursive: true);
+                                                          });
+                                                          isBoundaryEdited = false;
+                                                          modsBoundaryEditHomePage(context, curMod.submods.first);
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -2659,12 +2660,19 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}',
+                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
                                                         ),
                                                         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                        onLongPress: () {
+                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            element.deleteSync(recursive: true);
+                                                          });
+                                                          isBoundaryEdited = false;
+                                                          modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -3004,12 +3012,19 @@ class _HomePageState extends State<HomePage> {
                                                               child: Padding(
                                                                 padding: const EdgeInsets.only(left: 2),
                                                                 child: ModManTooltip(
-                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}',
+                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                                   child: InkWell(
                                                                     child: const Icon(
                                                                       Icons.swap_horizontal_circle_outlined,
                                                                     ),
                                                                     onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                    onLongPress: () {
+                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                        element.deleteSync(recursive: true);
+                                                                      });
+                                                                      isBoundaryEdited = false;
+                                                                      modsBoundaryEditHomePage(context, curSubmod);
+                                                                    },
                                                                   ),
                                                                 ),
                                                               ),

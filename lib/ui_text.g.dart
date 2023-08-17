@@ -209,6 +209,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiHoldToApplyAllAvailableModsToTheGame'] as String
       ..uiHoldToReapplyAllModsInAppliedList =
           json['uiHoldToReapplyAllModsInAppliedList'] as String
+      ..uiHoldToModifyBoundaryRadius =
+          json['uiHoldToModifyBoundaryRadius'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -352,9 +354,30 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiNewProfileName = json['uiNewProfileName'] as String
       ..uiApplyingAllAvailableMods =
           json['uiApplyingAllAvailableMods'] as String
-      ..uiErrorWhenApplyingAllAvailableMods =
-          json['uiErrorWhenApplyingAllAvailableMods'] as String
-      ..uiPatchNotes = json['uiPatchNotes'] as String;
+      ..uiLocatingOriginalFiles = json['uiLocatingOriginalFiles'] as String
+      ..uiErrorWhenLocatingOriginalFiles =
+          json['uiErrorWhenLocatingOriginalFiles'] as String
+      ..uiPatchNotes = json['uiPatchNotes'] as String
+      ..uiBoundaryRadiusModification =
+          json['uiBoundaryRadiusModification'] as String
+      ..uiIndexingFiles = json['uiIndexingFiles'] as String
+      ..uispaceFoundExcl = json['uispaceFoundExcl'] as String
+      ..uiMatchingFilesFound = json['uiMatchingFilesFound'] as String
+      ..uiExtractingFiles = json['uiExtractingFiles'] as String
+      ..uiReadingspace = json['uiReadingspace'] as String
+      ..uiEditingBoundaryRadiusValue =
+          json['uiEditingBoundaryRadiusValue'] as String
+      ..uiPackingFiles = json['uiPackingFiles'] as String
+      ..uiReplacingModFiles = json['uiReplacingModFiles'] as String
+      ..uiAllDone = json['uiAllDone'] as String
+      ..uiMakeSureToReapplyThisMod =
+          json['uiMakeSureToReapplyThisMod'] as String
+      ..uiBoundaryRadiusValueNotFound =
+          json['uiBoundaryRadiusValueNotFound'] as String
+      ..uiNoAqpFileFound = json['uiNoAqpFileFound'] as String
+      ..uiNoMatchingFileFound = json['uiNoMatchingFileFound'] as String
+      ..uiOnlyBasewearsAndSetwearsCanBeModified =
+          json['uiOnlyBasewearsAndSetwearsCanBeModified'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -529,6 +552,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiHoldToApplyAllAvailableModsToTheGame,
       'uiHoldToReapplyAllModsInAppliedList':
           instance.uiHoldToReapplyAllModsInAppliedList,
+      'uiHoldToModifyBoundaryRadius': instance.uiHoldToModifyBoundaryRadius,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -649,7 +673,24 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiGroupSameItemVariants': instance.uiGroupSameItemVariants,
       'uiNewProfileName': instance.uiNewProfileName,
       'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
-      'uiErrorWhenApplyingAllAvailableMods':
-          instance.uiErrorWhenApplyingAllAvailableMods,
+      'uiLocatingOriginalFiles': instance.uiLocatingOriginalFiles,
+      'uiErrorWhenLocatingOriginalFiles':
+          instance.uiErrorWhenLocatingOriginalFiles,
       'uiPatchNotes': instance.uiPatchNotes,
+      'uiBoundaryRadiusModification': instance.uiBoundaryRadiusModification,
+      'uiIndexingFiles': instance.uiIndexingFiles,
+      'uispaceFoundExcl': instance.uispaceFoundExcl,
+      'uiMatchingFilesFound': instance.uiMatchingFilesFound,
+      'uiExtractingFiles': instance.uiExtractingFiles,
+      'uiReadingspace': instance.uiReadingspace,
+      'uiEditingBoundaryRadiusValue': instance.uiEditingBoundaryRadiusValue,
+      'uiPackingFiles': instance.uiPackingFiles,
+      'uiReplacingModFiles': instance.uiReplacingModFiles,
+      'uiAllDone': instance.uiAllDone,
+      'uiMakeSureToReapplyThisMod': instance.uiMakeSureToReapplyThisMod,
+      'uiBoundaryRadiusValueNotFound': instance.uiBoundaryRadiusValueNotFound,
+      'uiNoAqpFileFound': instance.uiNoAqpFileFound,
+      'uiNoMatchingFileFound': instance.uiNoMatchingFileFound,
+      'uiOnlyBasewearsAndSetwearsCanBeModified':
+          instance.uiOnlyBasewearsAndSetwearsCanBeModified,
     };

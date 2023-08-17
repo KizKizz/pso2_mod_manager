@@ -1,8 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.10",
+    "version": "2.3.11",
     "description": [
-        "Some fixes for apply all mods button to apply only the first variant of the first mod of an item and ignores items that been applied"
+        "Added boundary radius modification for Basewears and Setwears. Access it by holding the swap button on each mod (This allows modded items to be zoomed in extremely close without being disappeared)"
     ],
     "windows_file": "",
     "linux_file": ""

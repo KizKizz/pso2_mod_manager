@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
@@ -33,7 +32,7 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                       AsyncSnapshot snapshot,
                     ) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
+                        return SizedBox(
                           width: 250,
                           height: 250,
                           child: Center(
@@ -43,14 +42,14 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Locating original files',
+                                  curLangText!.uiLocatingOriginalFiles,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 20),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
-                                CircularProgressIndicator(),
+                                const CircularProgressIndicator(),
                               ],
                             ),
                           ),
@@ -63,7 +62,7 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  curLangText!.uiErrorWhenApplyingAllAvailableMods,
+                                  curLangText!.uiErrorWhenLocatingOriginalFiles,
                                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                 ),
                                 const SizedBox(
@@ -92,7 +91,7 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    curLangText!.uiErrorWhenApplyingAllAvailableMods,
+                                    curLangText!.uiErrorWhenLocatingOriginalFiles,
                                     style: const TextStyle(fontSize: 20),
                                   ),
                                   const SizedBox(
@@ -107,6 +106,7 @@ Future<bool> applyAllAvailableModsDialog(context) async {
                           totalFiles = snapshot.data;
                           // WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!isApplyAllApplied) {
+                            isApplyAllApplied = true;
                             applyAllCallBack(context);
                           }
                           //});
@@ -173,29 +173,29 @@ Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
   for (var cateType in moddedList) {
     for (var cate in cateType.categories) {
       //if (cate.categoryName == 'Outerwears') {
-        for (var item in cate.items) {
-          if (!item.applyStatus) {
-            if (!item.mods.first.applyStatus) {
-              if (!item.mods.first.submods.first.applyStatus) {
-                bool ogFileFound = false;
-                for (var modFile in item.mods.first.submods.first.modFiles) {
-                  if (!modFile.applyStatus) {
-                    await Future.delayed(const Duration(milliseconds: 5));
-                    modFile.ogLocations = applyModsOgIcePathsFetcher(item.mods.first.submods.first, modFile.modFileName);
-                    if (modFile.ogLocations.isNotEmpty) {
-                      ogFileFound = true;
-                    }
-                    //print(modFile.ogLocations.length);
+      for (var item in cate.items) {
+        if (!item.applyStatus) {
+          if (!item.mods.first.applyStatus) {
+            if (!item.mods.first.submods.first.applyStatus) {
+              bool ogFileFound = false;
+              for (var modFile in item.mods.first.submods.first.modFiles) {
+                if (!modFile.applyStatus) {
+                  await Future.delayed(const Duration(milliseconds: 5));
+                  modFile.ogLocations = applyModsOgIcePathsFetcher(item.mods.first.submods.first, modFile.modFileName);
+                  if (modFile.ogLocations.isNotEmpty) {
+                    ogFileFound = true;
                   }
+                  //print(modFile.ogLocations.length);
                 }
-                if (ogFileFound) {
-                  totalFiles++;
-                  ogFileFound = false;
-                }
+              }
+              if (ogFileFound) {
+                totalFiles++;
+                ogFileFound = false;
               }
             }
           }
         }
+      }
       //}
     }
   }
@@ -207,13 +207,13 @@ Future<void> applyAllCallBack(context) async {
   for (var cateType in moddedItemsList) {
     for (var cate in cateType.categories) {
       //if (cate.categoryName == 'Outerwears') {
-        for (var item in cate.items) {
-          if (!item.applyStatus) {
-            if (!item.mods.first.applyStatus) {
-              applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first);
-            }
+      for (var item in cate.items) {
+        if (!item.applyStatus) {
+          if (!item.mods.first.applyStatus) {
+            applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first);
           }
         }
+      }
       //}
     }
   }
