@@ -43,6 +43,7 @@ String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
 String modManWin32NaChecksumMD5 = '';
 String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
+String modManVitalGaugeDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -131,6 +132,9 @@ Future<bool> pathsLoader(context) async {
   if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
     Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
   }
+  //Create Vital gauge folder
+  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  Directory(modManVitalGaugeDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();
@@ -376,6 +380,9 @@ Future<bool> modManPathReloader(context) async {
   // for (var name in dataFolders) {
   //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
   // }
+  //Create Vital gauge folder
+  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  Directory(modManVitalGaugeDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();

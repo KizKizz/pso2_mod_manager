@@ -29,6 +29,7 @@ import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1340,7 +1341,7 @@ class _MainPageState extends State<MainPage> {
                                 //width: 99,
                                 child: MaterialButton(
                                   onPressed: (() {
-                                    //testDialog(context);
+                                    vitalGaugeHomePage(context);
                                   }),
                                   child: const Row(
                                     children: [
