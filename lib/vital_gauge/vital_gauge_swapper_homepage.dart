@@ -9,23 +9,22 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-Future vitalgaugeDataLoader = originalVitalBackgroundsFetching();
-List<File> allAvailableImages = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
-List<File> allOriginalImages = Directory(modManVitalGaugeOriginalsDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
-bool _isDropped = false;
-Widget? _droppedImage;
+Future? vitalgaugeDataLoader;
+Future? allCustomBackgroundsLoader;
+//List<File> allOriginalImages = Directory(modManVitalGaugeOriginalsDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
+//List<File> allAvailableImages = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
 
 void vitalGaugeHomePage(context) {
   showDialog(
@@ -41,288 +40,437 @@ void vitalGaugeHomePage(context) {
                 width: MediaQuery.of(context).size.width * 0.8,
                 height: MediaQuery.of(context).size.height,
                 child: Scaffold(
-                  backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                  body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                    return FutureBuilder(
-                        future: vitalgaugeDataLoader,
-                        builder: ((
-                          BuildContext context,
-                          AsyncSnapshot snapshot,
-                        ) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    curLangText!.uiPreparing,
-                                    style: const TextStyle(fontSize: 20),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  const CircularProgressIndicator(),
-                                ],
-                              ),
-                            );
-                          } else {
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      curLangText!.uiErrorWhenLoadingAddModsData,
-                                      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                      child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          windowManager.destroy();
-                                        },
-                                        child: Text(curLangText!.uiExit))
-                                  ],
-                                ),
-                              );
-                            } else if (!snapshot.hasData) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      curLangText!.uiPreparing,
-                                      style: const TextStyle(fontSize: 20),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    const CircularProgressIndicator(),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              List<VitalGaugeBackground> vgData = snapshot.data;
-                              return Row(
-                                children: [
-                                  RotatedBox(
-                                      quarterTurns: -1,
-                                      child: Text(
-                                        'VITAL GAUGE',
-                                        style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 14),
-                                      )),
-                                  VerticalDivider(
-                                    width: 10,
-                                    thickness: 2,
-                                    indent: 5,
-                                    endIndent: 5,
-                                    color: Theme.of(context).textTheme.bodySmall!.color,
-                                  ),
-                                  Expanded(
+                    backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                    body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+                      return Row(children: [
+                        RotatedBox(
+                            quarterTurns: -1,
+                            child: Text(
+                              'VITAL GAUGE',
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: constraints.maxHeight / 14),
+                            )),
+                        VerticalDivider(
+                          width: 10,
+                          thickness: 2,
+                          indent: 5,
+                          endIndent: 5,
+                          color: Theme.of(context).textTheme.bodySmall!.color,
+                        ),
+                        Expanded(
+                            child: FutureBuilder(
+                                future: allCustomBackgroundsLoader = Directory(modManVitalGaugeDirPath).list().where((element) => p.extension(element.path) == '.png').toList(),
+                                builder: ((
+                                  BuildContext context,
+                                  AsyncSnapshot snapshot,
+                                ) {
+                                  if (snapshot.connectionState == ConnectionState.waiting && allCustomBackgroundsLoader == null) {
+                                    return Center(
                                       child: Column(
-                                    children: [
-                                      Text('Available Backgrounds', style: Theme.of(context).textTheme.titleLarge),
-                                      Expanded(
-                                          child: ScrollbarTheme(
-                                              data: ScrollbarThemeData(
-                                                thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                  if (states.contains(MaterialState.hovered)) {
-                                                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                                  }
-                                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                                                }),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                                child: ListView.separated(
-                                                    separatorBuilder: (BuildContext context, int index) {
-                                                      return const SizedBox(height: 4);
-                                                    },
-                                                    shrinkWrap: true,
-                                                    //physics: const PageScrollPhysics(),
-                                                    itemCount: allAvailableImages.length,
-                                                    itemBuilder: (context, i) {
-                                                      Offset pointerDragAnchorStrategy(Draggable<Object> draggable, BuildContext context, Offset position) {
-                                                        return Offset.zero;
-                                                      }
-
-                                                      return Draggable(
-                                                        dragAnchorStrategy: pointerDragAnchorStrategy,
-                                                        feedback: Image.file(allAvailableImages[i]),
-                                                        data: Image.file(allAvailableImages[i]),
-                                                        child: Container(
-                                                          decoration: ShapeDecoration(
-                                                              shape: RoundedRectangleBorder(
-                                                                  side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(0)))),
-                                                          child: AspectRatio(
-                                                              aspectRatio: 4 / 1,
-                                                              child: Image.file(
-                                                                allAvailableImages[i],
-                                                                fit: BoxFit.fill,
-                                                              )),
-                                                        ),
-                                                      );
-                                                    }),
-                                              ))),
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 5),
-                                        child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            curLangText!.uiPreparing,
+                                            style: const TextStyle(fontSize: 20),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          const CircularProgressIndicator(),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    const XTypeGroup typeGroup = XTypeGroup(
-                                                      label: 'image',
-                                                      extensions: <String>['png'],
-                                                    );
-                                                    final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                    if (selectedImage != null) {
-                                                      // ignore: use_build_context_synchronously
-                                                      await vitalGaugeImageCropDialog(context, File(selectedImage.path)).then((value) => setState(() {}));
-                                                    }
-                                                  },
-                                                  child: Text('Create')),
-                                            )
+                                            Text(
+                                              curLangText!.uiErrorWhenLoadingAddModsData,
+                                              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                              child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  windowManager.destroy();
+                                                },
+                                                child: Text(curLangText!.uiExit))
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  )),
-                                  VerticalDivider(
-                                    width: 10,
-                                    thickness: 2,
-                                    indent: 5,
-                                    endIndent: 5,
-                                    color: Theme.of(context).textTheme.bodySmall!.color,
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    children: [
-                                      Text('Original Backgrounds', style: Theme.of(context).textTheme.titleLarge),
-                                      Expanded(
-                                          child: ScrollbarTheme(
-                                              data: ScrollbarThemeData(
-                                                thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                  if (states.contains(MaterialState.hovered)) {
-                                                    return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
-                                                  }
-                                                  return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
-                                                }),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                                child: ListView.separated(
-                                                    separatorBuilder: (BuildContext context, int index) {
-                                                      return const SizedBox(height: 4);
-                                                    },
-                                                    shrinkWrap: true,
-                                                    //physics: const PageScrollPhysics(),
-                                                    itemCount: allOriginalImages.length,
-                                                    itemBuilder: (context, i) {
-                                                      return DragTarget(
-                                                        builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
-                                                          return Center(
-                                                            child: _isDropped
-                                                                ? AspectRatio(
-                                                                  aspectRatio: 4 /1,
+                                      );
+                                    } else if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              curLangText!.uiPreparing,
+                                              style: const TextStyle(fontSize: 20),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            const CircularProgressIndicator(),
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      List<FileSystemEntity> temp = snapshot.data;
+                                      List<File> allCustomBackgrounds = temp.whereType<File>().toList();
+                                      return Column(
+                                        children: [
+                                          Text('Custom Backgrounds', style: Theme.of(context).textTheme.titleLarge),
+                                          Expanded(
+                                              child: ScrollbarTheme(
+                                                  data: ScrollbarThemeData(
+                                                    thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                      if (states.contains(MaterialState.hovered)) {
+                                                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                                      }
+                                                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                                    }),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                                    child: ListView.separated(
+                                                        separatorBuilder: (BuildContext context, int index) {
+                                                          return const SizedBox(height: 4);
+                                                        },
+                                                        shrinkWrap: true,
+                                                        //physics: const PageScrollPhysics(),
+                                                        itemCount: allCustomBackgrounds.length,
+                                                        itemBuilder: (context, i) {
+                                                          Offset pointerDragAnchorStrategy(Draggable<Object> draggable, BuildContext context, Offset position) {
+                                                            return Offset.zero;
+                                                          }
+
+                                                          return Draggable(
+                                                            dragAnchorStrategy: pointerDragAnchorStrategy,
+                                                            feedback: Container(
+                                                              decoration: ShapeDecoration(
+                                                                  shape: RoundedRectangleBorder(
+                                                                      side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(0)))),
+                                                              child: Image.file(
+                                                                allCustomBackgrounds[i],
+                                                                fit: BoxFit.fill,
+                                                              ),
+                                                            ),
+                                                            data: allCustomBackgrounds[i].path,
+                                                            child: Stack(
+                                                              alignment: AlignmentDirectional.bottomStart,
+                                                              children: [
+                                                                AspectRatio(
+                                                                  aspectRatio: 4 / 1,
                                                                   child: Container(
-                                                                      decoration: ShapeDecoration(
-                                                                          shape: RoundedRectangleBorder(
-                                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(0)))),
-                                                                      child: Stack(
-                                                                        children: [
-                                                                          Positioned(
-                                                                            right: 0,
-                                                                            top: 0,
-                                                                            bottom: 0,
-                                                                            left: 0,
-                                                                            child: AspectRatio(
-                                                                                aspectRatio: 4 / 1,
-                                                                                child: Image.file(
-                                                                                  allOriginalImages[i],
-                                                                                  fit: BoxFit.fill,
-                                                                                )),
-                                                                          ),
-                                                                          Positioned(
-                                                                            left: 0,
-                                                                            top: 0,
-                                                                            bottom: 0,
-                                                                            child: AspectRatio(
-                                                                              aspectRatio: 4 / 1,
-                                                                              child: ClipPath(
-                                                                                clipper: CustomPath(),
-                                                                                child: AspectRatio(aspectRatio: 4 / 1, child: _droppedImage),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                )
-                                                                : Container(
                                                                     decoration: ShapeDecoration(
                                                                         shape: RoundedRectangleBorder(
                                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(0)))),
-                                                                    child: AspectRatio(
-                                                                        aspectRatio: 4 / 1,
-                                                                        child: Image.file(
-                                                                          allOriginalImages[i],
-                                                                          fit: BoxFit.fill,
-                                                                        )),
+                                                                    child: Image.file(
+                                                                      allCustomBackgrounds[i],
+                                                                      fit: BoxFit.fill,
+                                                                    ),
                                                                   ),
+                                                                ),
+                                                                ModManTooltip(
+                                                                  message: 'Hold to delete this background',
+                                                                  child: InkWell(
+                                                                    child: Container(
+                                                                      decoration: ShapeDecoration(
+                                                                        color: Colors.red,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            side: BorderSide(color: Theme.of(context).hintColor), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                      ),
+                                                                      child: const Icon(
+                                                                        Icons.delete,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                    onLongPress: () async {
+                                                                      allCustomBackgrounds[i].deleteSync();
+                                                                      allCustomBackgrounds.removeAt(i);
+                                                                      setState(() {});
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           );
-                                                        },
-                                                        onAccept: (data) {
-                                                          setState(
-                                                            () {
-                                                              _droppedImage = data as Widget?;
-                                                              _isDropped = true;
-                                                            },
-                                                          );
-                                                        },
-                                                        onLeave: (data) {
-                                                          setState(
-                                                            () {
-                                                              _isDropped = false;
-                                                            },
-                                                          );
-                                                        },
-                                                      );
-                                                    }),
-                                              ))),
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 5),
-                                        child: Row(
+                                                        }),
+                                                  ))),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 5),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        await launchUrl(Uri.file(modManVitalGaugeDirPath));
+                                                      },
+                                                      child: Text('Open Custom Backgrounds Folder')),
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        const XTypeGroup typeGroup = XTypeGroup(
+                                                          label: 'image',
+                                                          extensions: <String>['png'],
+                                                        );
+                                                        final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                        if (selectedImage != null && context.mounted) {
+                                                          vitalGaugeImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                            setState(() {});
+                                                          });
+                                                        }
+                                                      },
+                                                      child: Text('Create')),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  }
+                                }))),
+                        VerticalDivider(
+                          width: 10,
+                          thickness: 2,
+                          indent: 5,
+                          endIndent: 5,
+                          color: Theme.of(context).textTheme.bodySmall!.color,
+                        ),
+                        Expanded(
+                            child: FutureBuilder(
+                                future: vitalgaugeDataLoader = originalVitalBackgroundsFetching(),
+                                builder: ((
+                                  BuildContext context,
+                                  AsyncSnapshot snapshot,
+                                ) {
+                                  if (snapshot.connectionState == ConnectionState.waiting && vitalgaugeDataLoader == null) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            curLangText!.uiPreparing,
+                                            style: const TextStyle(fontSize: 20),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          const CircularProgressIndicator(),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  onPressed: () async {
-                                                    setState(
-                                                      () {},
-                                                    );
-                                                  },
-                                                  child: Text('Restore All')),
-                                            )
+                                            Text(
+                                              curLangText!.uiErrorWhenLoadingAddModsData,
+                                              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                              child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  windowManager.destroy();
+                                                },
+                                                child: Text(curLangText!.uiExit))
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ))
-                                ],
-                              );
-                            }
-                          }
-                        }));
-                  }),
-                ),
+                                      );
+                                    } else if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              curLangText!.uiPreparing,
+                                              style: const TextStyle(fontSize: 20),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            const CircularProgressIndicator(),
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      List<VitalGaugeBackground> vgData = snapshot.data;
+                                      return Column(
+                                        children: [
+                                          Text('Available Backgrounds', style: Theme.of(context).textTheme.titleLarge),
+                                          Expanded(
+                                              child: ScrollbarTheme(
+                                                  data: ScrollbarThemeData(
+                                                    thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                      if (states.contains(MaterialState.hovered)) {
+                                                        return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                                      }
+                                                      return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                                    }),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                                    child: ListView.separated(
+                                                        separatorBuilder: (BuildContext context, int index) {
+                                                          return const SizedBox(height: 4);
+                                                        },
+                                                        shrinkWrap: true,
+                                                        itemCount: vgData.length,
+                                                        itemBuilder: (context, i) {
+                                                          return DragTarget(
+                                                            builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
+                                                              return Center(
+                                                                child: vgData[i].isReplaced
+                                                                    ? AspectRatio(
+                                                                        aspectRatio: 4 / 1,
+                                                                        child: Container(
+                                                                          decoration: ShapeDecoration(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  side: BorderSide(color: Theme.of(context).primaryColorLight),
+                                                                                  borderRadius: const BorderRadius.all(Radius.circular(0)))),
+                                                                          child: Stack(
+                                                                            alignment: AlignmentDirectional.bottomStart,
+                                                                            children: [
+                                                                              Stack(
+                                                                                fit: StackFit.expand,
+                                                                                children: [
+                                                                                  Image.file(
+                                                                                    File(vgData[i].pngPath),
+                                                                                    fit: BoxFit.fill,
+                                                                                  ),
+                                                                                  ClipPath(
+                                                                                    clipper: CustomClipLayerPath(),
+                                                                                    child: Container(
+                                                                                      color: Theme.of(context).primaryColorLight,
+                                                                                    ),
+                                                                                  ),
+                                                                                  ClipPath(
+                                                                                    clipper: CustomClipPath(),
+                                                                                    child: Image.file(
+                                                                                      File(vgData[i].replacedImagePath),
+                                                                                      fit: BoxFit.fill,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              ModManTooltip(
+                                                                                message: 'Hold to restore this background to its original',
+                                                                                child: InkWell(
+                                                                                  child: Container(
+                                                                                    decoration: ShapeDecoration(
+                                                                                      color: Colors.red,
+                                                                                      shape: RoundedRectangleBorder(
+                                                                                          side: BorderSide(color: Theme.of(context).hintColor),
+                                                                                          borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                                                    ),
+                                                                                    child: const Icon(
+                                                                                      Icons.restore,
+                                                                                      color: Colors.white,
+                                                                                    ),
+                                                                                  ),
+                                                                                  onLongPress: () async {
+                                                                                    vgData[i].replacedImagePath = '';
+                                                                                    vgData[i].replacedImageName = '';
+                                                                                    vgData[i].isReplaced = false;
+                                                                                    saveVitalGaugesInfoToJson(vgData);
+                                                                                    setState(() {});
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : AspectRatio(
+                                                                        aspectRatio: 4 / 1,
+                                                                        child: Container(
+                                                                          decoration: ShapeDecoration(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  side: BorderSide(color: Theme.of(context).primaryColorLight),
+                                                                                  borderRadius: const BorderRadius.all(Radius.circular(0)))),
+                                                                          child: Image.file(
+                                                                            File(vgData[i].pngPath),
+                                                                            fit: BoxFit.fill,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                              );
+                                                            },
+                                                            onAccept: (data) {
+                                                              setState(
+                                                                () {
+                                                                  String imgPath = data as String;
+                                                                  vgData[i].replacedImagePath = imgPath;
+                                                                  vgData[i].replacedImageName = p.basename(imgPath);
+                                                                  vgData[i].isReplaced = true;
+                                                                  saveVitalGaugesInfoToJson(vgData);
+                                                                },
+                                                              );
+                                                            },
+                                                          );
+                                                        }),
+                                                  ))),
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 5),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        setState(
+                                                          () {},
+                                                        );
+                                                      },
+                                                      child: Text('Restore All')),
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        allCustomBackgroundsLoader = null;
+                                                        vitalgaugeDataLoader = null;
+
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(curLangText!.uiClose)),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  }
+                                })))
+                      ]);
+                    })),
               ));
         });
       });
@@ -332,7 +480,8 @@ void vitalGaugeHomePage(context) {
 Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
   final imageCropController = CropController(
     aspectRatio: 4 / 1,
-    defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
+    //minimumImageSize: 100,
+    //defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
   TextEditingController newImageName = TextEditingController(text: p.basenameWithoutExtension(newImageFile.path));
   final nameFormKey = GlobalKey<FormState>();
@@ -426,12 +575,10 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                                 final bytes = data!.buffer.asUint8List();
                                 File croppedImage = File(Uri.file('$modManVitalGaugeDirPath/${newImageName.text}.png').toFilePath());
                                 croppedImage.writeAsBytes(bytes, flush: true);
-                                allAvailableImages = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
-                                // ignore: use_build_context_synchronously
+                                if (context.mounted) {
+                                  Navigator.pop(context, true);
+                                }
                               }
-                              setState(
-                                () {},
-                              );
                             },
                             child: Text('Save Crop')),
                       ),
@@ -447,10 +594,9 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                               final bytes = data!.buffer.asUint8List();
                               File croppedImage = File(Uri.file('$modManVitalGaugeDirPath/${newImageName.text}.png').toFilePath());
                               croppedImage.writeAsBytes(bytes, flush: true);
-                              allAvailableImages = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
-                              setState(
-                                () {},
-                              );
+                              if (context.mounted) {
+                                Navigator.pop(context, true);
+                              }
                             },
                             child: Text('Overwrite')),
                       )
@@ -490,19 +636,20 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
       String ddsName = p.basenameWithoutExtension(line.split(',').first.split('/').last);
       String iceName = line.split(',').last.split('\\').last;
       String ogPath = ogVitalGaugeIcePathsFetcher(iceName);
+      String pngPath = '';
       if (ogPath.isNotEmpty) {
         String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
         await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
         File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
         if (ddsImage.path.isNotEmpty) {
           await Process.run(Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath(),
-              [ddsImage.path, '$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png', '-ddstopng']);
-          File pngItemIcon = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
-          // if (pngItemIcon.path.isNotEmpty) {
-          //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+              [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
+          if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
+            pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
+          }
         }
 
-        vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, await getFileHash(ogPath), '', '', '', false));
+        vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, pngPath, await getFileHash(ogPath), '', '', '', false));
       }
     }
     saveVitalGaugesInfoToJson(vitalGaugesData);
@@ -511,24 +658,42 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
       String ddsName = p.basenameWithoutExtension(line.split(',').first.split('/').last);
       String iceName = line.split(',').last.split('\\').last;
       String ogPath = ogVitalGaugeIcePathsFetcher(iceName);
+      String pngPath = '';
       if (vitalGaugesData.where((element) => element.iceName == iceName).isEmpty && ogPath.isNotEmpty) {
         String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
         await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
         File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
         if (ddsImage.path.isNotEmpty) {
           await Process.run(Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath(),
-              [ddsImage.path, '$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png', '-ddstopng']);
-          File pngItemIcon = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
-          // if (pngItemIcon.path.isNotEmpty) {
-          //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+              [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
+          if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
+            pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
+          }
         }
-        vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, await getFileHash(ogPath), '', '', '', false));
+        vitalGaugesData.add(VitalGaugeBackground(ogPath, iceName, ddsName, pngPath, await getFileHash(ogPath), '', '', '', false));
       }
     }
     vitalGaugesData.sort(
       (a, b) => a.ddsName.compareTo(b.ddsName),
     );
     saveVitalGaugesInfoToJson(vitalGaugesData);
+  }
+
+  //check original png
+  for (var vg in vitalGaugesData) {
+    if (!File(vg.pngPath).existsSync()) {
+      String ogPath = ogVitalGaugeIcePathsFetcher(vg.iceName);
+      String downloadedFilePath = await downloadIconIceFromOfficial(ogPath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+      await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedFilePath]);
+      File ddsImage = Directory('${downloadedFilePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+      if (ddsImage.path.isNotEmpty) {
+        await Process.run(Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath(),
+            [ddsImage.path, Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath(), '-ddstopng']);
+        if (File(Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath()).existsSync()) {
+          vg.pngPath = Uri.file('$modManVitalGaugeOriginalsDirPath/${p.basenameWithoutExtension(ddsImage.path)}.png').toFilePath();
+        }
+      }
+    }
   }
 
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
@@ -538,20 +703,34 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
   return vitalGaugesData;
 }
 
-class CustomPath extends CustomClipper<Path> {
+class CustomClipPath extends CustomClipper<Path> {
+  //var radius=10.0;
   @override
   Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(size.width - 50, 0);
-    path.lineTo(size.width - 90, size.height / 2);
-    path.lineTo(size.width - 50, size.height);
-    path.lineTo(0, size.height);
-    path.close();
+    Path path = Path();
+    path.lineTo(0, 200);
+    path.lineTo(200, 200);
+    path.lineTo(460, 0);
+    path.lineTo(230, 0);
     return path;
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class CustomClipLayerPath extends CustomClipper<Path> {
+  //var radius=10.0;
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, 200);
+    path.lineTo(200, 200);
+    path.lineTo(463, 0);
+    path.lineTo(235, 0);
+    return path;
   }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

@@ -4,11 +4,12 @@ part 'vital_gauge_class.g.dart';
 
 @JsonSerializable()
 class VitalGaugeBackground {
-  VitalGaugeBackground(this.icePath, this.iceName, this.ddsName, this.ogMd5, this.replacedImagePath, this.replacedImageName, this.replacedMd5, this.isReplaced);
+  VitalGaugeBackground(this.icePath, this.iceName, this.ddsName, this.pngPath, this.ogMd5, this.replacedImagePath, this.replacedImageName, this.replacedMd5, this.isReplaced);
 
   String icePath;
   String iceName;
   String ddsName;
+  String pngPath;
   String ogMd5;
   String replacedImagePath;
   String replacedImageName;
