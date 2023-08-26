@@ -71,3 +71,23 @@ List<String> applyModsOgIcePathsFetcher(SubMod submod, String iceName) {
   }
   return ogPaths;
 }
+
+String ogVitalGaugeIcePathsFetcher(String iceName) {
+  String win32RebootPath = ogWin32RebootFilePaths.firstWhere(
+    (element) => p.basename(element) == iceName,
+    orElse: () => '',
+  );
+  if (win32RebootPath.isNotEmpty) {
+    return win32RebootPath;
+  }
+  
+  String win32RebootNAPath = ogWin32RebootNAFilePaths.firstWhere(
+    (element) => p.basename(element) == iceName,
+    orElse: () => '',
+  );
+  if (win32RebootNAPath.isNotEmpty) {
+    return win32RebootNAPath;
+  }
+
+  return '';
+}

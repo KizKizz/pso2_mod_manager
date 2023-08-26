@@ -88,3 +88,4 @@
 \Player\NGS\TeethNGS.csv
 \Player\Stickers.csv
 \Player\UnknownOutfits.csv
+\Player\Vital_Gauge.csv
