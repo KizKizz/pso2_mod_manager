@@ -58,7 +58,7 @@ void vitalGaugeHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: allCustomBackgroundsLoader = Directory(modManVitalGaugeDirPath).list().where((element) => p.extension(element.path) == '.png').toList(),
+                                future: allCustomBackgroundsLoader = customVitalBackgroundsFetching(),
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
@@ -124,8 +124,7 @@ void vitalGaugeHomePage(context) {
                                         ),
                                       );
                                     } else {
-                                      List<FileSystemEntity> temp = snapshot.data;
-                                      List<File> allCustomBackgrounds = temp.whereType<File>().toList();
+                                      List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
                                           future: vitalgaugeDataLoader = originalVitalBackgroundsFetching(),
                                           builder: ((
@@ -677,8 +676,10 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                     spacing: 5.0,
                     children: [
                       ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             imageCropController.dispose();
+                            await Future.delayed(const Duration(milliseconds: 50));
+                            // ignore: use_build_context_synchronously
                             Navigator.pop(context, false);
                           },
                           child: Text(curLangText!.uiReturn)),
@@ -700,9 +701,11 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                                 croppedImage.writeAsBytesSync(img.encodePng(resized));
                                 //croppedImage.writeAsBytes(bytes, flush: true);
                                 imageCropController.dispose();
-                                if (context.mounted) {
-                                  Navigator.pop(context, true);
-                                }
+                                //Future.delayed(const Duration(milliseconds: 100), () {
+                                  if (context.mounted) {
+                                    Navigator.pop(context, true);
+                                  }
+                                //});
                               }
                             },
                             child: Text(curLangText!.uiSaveCroppedArea)),
@@ -724,9 +727,11 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                               croppedImage.writeAsBytesSync(img.encodePng(resized));
                               //croppedImage.writeAsBytes(bytes, flush: true);
                               imageCropController.dispose();
-                              if (context.mounted) {
-                                Navigator.pop(context, true);
-                              }
+                              //Future.delayed(const Duration(milliseconds: 100), () {
+                                if (context.mounted) {
+                                  Navigator.pop(context, true);
+                                }
+                              //});
                             },
                             child: Text(curLangText!.uiOverwriteImage)),
                       )
@@ -833,6 +838,17 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
   }
 
   return vitalGaugesData;
+}
+
+Future<List<File>> customVitalBackgroundsFetching() async {
+  List<File> returnList = [];
+  if (allCustomBackgroundsLoader == null) {
+    await Future.delayed(const Duration(milliseconds: 250));
+  } else {
+    await Future.delayed(const Duration(milliseconds: 150));
+  }
+    returnList = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
+  return returnList;
 }
 
 Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgDataFile) async {

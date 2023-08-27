@@ -1333,27 +1333,27 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Vital gauge
-                            ModManTooltip(
-                              message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
-                              child: SizedBox(
-                                //width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() {
-                                    vitalGaugeHomePage(context);
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.horizontal_split,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
+                          ModManTooltip(
+                            message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
+                            child: SizedBox(
+                              //width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  vitalGaugeHomePage(context);
+                                }),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.horizontal_split,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
+                                  ],
                                 ),
                               ),
                             ),
+                          ),
 
                           //Item swapper
                           ModManTooltip(
