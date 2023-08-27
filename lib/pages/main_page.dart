@@ -7,7 +7,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
