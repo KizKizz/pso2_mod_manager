@@ -1333,8 +1333,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
 
-                          //???
-                          if (kDebugMode)
+                          //Vital gauge
                             ModManTooltip(
                               message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
                               child: SizedBox(
