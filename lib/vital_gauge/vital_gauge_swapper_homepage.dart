@@ -310,11 +310,10 @@ void vitalGaugeHomePage(context) {
                                                                 shape: RoundedRectangleBorder(
                                                                     side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                                               ),
-                                                              child: Expanded(
-                                                                  child: Text(
+                                                              child: Text(
                                                                 curLangText!.uiVitalGaugeBackGroundsInstruction,
                                                                 textAlign: TextAlign.center,
-                                                              )),
+                                                              ),
                                                             ),
                                                           ),
                                                         Padding(
