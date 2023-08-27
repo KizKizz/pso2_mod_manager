@@ -120,7 +120,9 @@ class TranslationText {
       uiSwapItems = 'Swap Items',
       uiSwapAnItemToAnotherItem = 'Swap an item to another item',
       uiProfiles = 'Profiles',
-      uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename';
+      uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename',
+      uiVitalGauge = 'Vital Gauge',
+      uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background';
 
   //homepage
   String uiItemList = 'Item List',
@@ -328,7 +330,7 @@ class TranslationText {
       uiClickToRename = 'Click to rename ',
       uiDuplicatedMod = ' duplicated mod',
       uiDuplicatedMods = ' duplicated mods',
-      uiGroupSameItemVariants = 'Group same item variants';
+      uiGroupSameItemVariants = 'Group Same Variants';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';
@@ -355,6 +357,25 @@ class TranslationText {
       uiNoAqpFileFound = 'No .aqp file found',
       uiNoMatchingFileFound = 'No matching file found',
       uiOnlyBasewearsAndSetwearsCanBeModified = 'Only Basewears and Setwears can be modified';
+
+  //vital_gauge_swapper_homepage.dart
+  String uiCustomBackgrounds = 'Custom Backgrounds',
+      uiHoldToDeleteThisBackground = 'Hold to delete this background',
+      uiOpenInFileExplorer = 'Open In File Explorer',
+      uiCreateBackground = 'Create New Background',
+      uiSwappedAvailableBackgrounds = 'Swapped - Available Backgrounds',
+      uiHoldToRestoreThisBackgroundToItsOriginal = 'Hold to restore this background to its original',
+      uiRestoreAll = 'Hold To Restore All',
+      uiCroppedImageName = 'Cropped Image Name',
+      uiSaveCroppedArea = 'Save Cropped Area',
+      uiOverwriteImage = 'Overwite Image',
+      uiVitalGaugeBackGroundsInstruction = 'Create a new background with the Create button bellow\nThen drag a background from "Custom Backgrounds" and drop onto a desired background in "Swapped - Available Backgrounds" to replace';
+
+  //applied_vital_gauge_checking_page.dart
+  String uicheckingReplacedVitalGaugeBackgrounds = 'Checking replaced Vital Gauge backgrounds',
+  uierrorWhenCheckingReplacedVitalGaugeBackgrounds = 'Error when checking replaced Vital Gauge backgrounds',
+        uiReappliedVitalGaugesAfterChecking = 'The backgrounds below have been automatically re-applied to the game';
+
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

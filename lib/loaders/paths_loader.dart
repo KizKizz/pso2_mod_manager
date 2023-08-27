@@ -36,6 +36,7 @@ String modManChecksumFilePath = '';
 String modManAddModsTempDirPath = '';
 String modManAddModsUnpackDirPath = '';
 String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
+String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
 String modManWin32CheckSumFilePath = '';
 String modManWin32NaCheckSumFilePath = '';
@@ -157,7 +158,8 @@ Future<bool> pathsLoader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
-  modManVitalGaugeJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  modManVitalGaugeJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
   File(modManVitalGaugeJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
@@ -409,7 +411,8 @@ Future<bool> modManPathReloader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
-  modManVitalGaugeJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  modManVitalGaugeJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
   File(modManVitalGaugeJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();

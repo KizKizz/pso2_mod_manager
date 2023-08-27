@@ -63,6 +63,7 @@ dependencies:
   io: ^1.0.4
   file_selector: ^1.0.0
   crop_image: ^1.0.10
+  image: ^4.0.17
   
 
   # The following adds the Cupertino Icons font to your application.

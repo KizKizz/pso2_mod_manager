@@ -137,6 +137,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiProfiles = json['uiProfiles'] as String
       ..uiClickToChangeToThisProfileHoldToRename =
           json['uiClickToChangeToThisProfileHoldToRename'] as String
+      ..uiVitalGauge = json['uiVitalGauge'] as String
+      ..uiCreateAndSwapVitalGaugeBackground =
+          json['uiCreateAndSwapVitalGaugeBackground'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -377,7 +380,28 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiNoAqpFileFound = json['uiNoAqpFileFound'] as String
       ..uiNoMatchingFileFound = json['uiNoMatchingFileFound'] as String
       ..uiOnlyBasewearsAndSetwearsCanBeModified =
-          json['uiOnlyBasewearsAndSetwearsCanBeModified'] as String;
+          json['uiOnlyBasewearsAndSetwearsCanBeModified'] as String
+      ..uiCustomBackgrounds = json['uiCustomBackgrounds'] as String
+      ..uiHoldToDeleteThisBackground =
+          json['uiHoldToDeleteThisBackground'] as String
+      ..uiOpenInFileExplorer = json['uiOpenInFileExplorer'] as String
+      ..uiCreateBackground = json['uiCreateBackground'] as String
+      ..uiSwappedAvailableBackgrounds =
+          json['uiSwappedAvailableBackgrounds'] as String
+      ..uiHoldToRestoreThisBackgroundToItsOriginal =
+          json['uiHoldToRestoreThisBackgroundToItsOriginal'] as String
+      ..uiRestoreAll = json['uiRestoreAll'] as String
+      ..uiCroppedImageName = json['uiCroppedImageName'] as String
+      ..uiSaveCroppedArea = json['uiSaveCroppedArea'] as String
+      ..uiOverwriteImage = json['uiOverwriteImage'] as String
+      ..uiVitalGaugeBackGroundsInstruction =
+          json['uiVitalGaugeBackGroundsInstruction'] as String
+      ..uicheckingReplacedVitalGaugeBackgrounds =
+          json['uicheckingReplacedVitalGaugeBackgrounds'] as String
+      ..uierrorWhenCheckingReplacedVitalGaugeBackgrounds =
+          json['uierrorWhenCheckingReplacedVitalGaugeBackgrounds'] as String
+      ..uiReappliedVitalGaugesAfterChecking =
+          json['uiReappliedVitalGaugesAfterChecking'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -485,6 +509,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiProfiles': instance.uiProfiles,
       'uiClickToChangeToThisProfileHoldToRename':
           instance.uiClickToChangeToThisProfileHoldToRename,
+      'uiVitalGauge': instance.uiVitalGauge,
+      'uiCreateAndSwapVitalGaugeBackground':
+          instance.uiCreateAndSwapVitalGaugeBackground,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -693,4 +720,23 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiNoMatchingFileFound': instance.uiNoMatchingFileFound,
       'uiOnlyBasewearsAndSetwearsCanBeModified':
           instance.uiOnlyBasewearsAndSetwearsCanBeModified,
+      'uiCustomBackgrounds': instance.uiCustomBackgrounds,
+      'uiHoldToDeleteThisBackground': instance.uiHoldToDeleteThisBackground,
+      'uiOpenInFileExplorer': instance.uiOpenInFileExplorer,
+      'uiCreateBackground': instance.uiCreateBackground,
+      'uiSwappedAvailableBackgrounds': instance.uiSwappedAvailableBackgrounds,
+      'uiHoldToRestoreThisBackgroundToItsOriginal':
+          instance.uiHoldToRestoreThisBackgroundToItsOriginal,
+      'uiRestoreAll': instance.uiRestoreAll,
+      'uiCroppedImageName': instance.uiCroppedImageName,
+      'uiSaveCroppedArea': instance.uiSaveCroppedArea,
+      'uiOverwriteImage': instance.uiOverwriteImage,
+      'uiVitalGaugeBackGroundsInstruction':
+          instance.uiVitalGaugeBackGroundsInstruction,
+      'uicheckingReplacedVitalGaugeBackgrounds':
+          instance.uicheckingReplacedVitalGaugeBackgrounds,
+      'uierrorWhenCheckingReplacedVitalGaugeBackgrounds':
+          instance.uierrorWhenCheckingReplacedVitalGaugeBackgrounds,
+      'uiReappliedVitalGaugesAfterChecking':
+          instance.uiReappliedVitalGaugesAfterChecking,
     };

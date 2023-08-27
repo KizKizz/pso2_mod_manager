@@ -1336,21 +1336,21 @@ class _MainPageState extends State<MainPage> {
                           //???
                           if (kDebugMode)
                             ModManTooltip(
-                              message: curLangText!.uiSwapAnItemToAnotherItem,
+                              message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
                               child: SizedBox(
                                 //width: 99,
                                 child: MaterialButton(
                                   onPressed: (() {
                                     vitalGaugeHomePage(context);
                                   }),
-                                  child: const Row(
+                                  child: Row(
                                     children: [
-                                      Icon(
-                                        Icons.swap_horizontal_circle_outlined,
+                                      const Icon(
+                                        Icons.horizontal_split,
                                         size: 18,
                                       ),
-                                      SizedBox(width: 2.5),
-                                      Text('Test', style: TextStyle(fontWeight: FontWeight.w400))
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
                                     ],
                                   ),
                                 ),
