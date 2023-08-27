@@ -7,7 +7,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
@@ -29,6 +28,7 @@ import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
+import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1332,29 +1332,28 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
 
-                          //???
-                          if (kDebugMode)
-                            ModManTooltip(
-                              message: curLangText!.uiSwapAnItemToAnotherItem,
-                              child: SizedBox(
-                                //width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() {
-                                    //testDialog(context);
-                                  }),
-                                  child: const Row(
-                                    children: [
-                                      Icon(
-                                        Icons.swap_horizontal_circle_outlined,
-                                        size: 18,
-                                      ),
-                                      SizedBox(width: 2.5),
-                                      Text('Test', style: TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
+                          //Vital gauge
+                          ModManTooltip(
+                            message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
+                            child: SizedBox(
+                              //width: 99,
+                              child: MaterialButton(
+                                onPressed: (() {
+                                  vitalGaugeHomePage(context);
+                                }),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.horizontal_split,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
+                                  ],
                                 ),
                               ),
                             ),
+                          ),
 
                           //Item swapper
                           ModManTooltip(

@@ -1,8 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.3.11",
+    "version": "2.4.0",
     "description": [
-        "Added boundary radius modification for Basewears and Setwears. Access it by holding the swap button on each mod (This allows modded items to be zoomed in extremely close without being disappeared)"
+        "Added Vital Gauge backgrounds swapper - create your own backgrounds today!",
+        "Backend systems improvements - might cause some unexpected bugs",
+        "Some minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

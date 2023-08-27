@@ -2320,7 +2320,9 @@ class _HomePageState extends State<HomePage> {
                                                                       curMod.applyStatus = true;
                                                                       curMod.isNew = false;
                                                                       modViewItem!.applyStatus = true;
-                                                                      modViewItem!.isNew = false;
+                                                                      if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                        modViewItem!.isNew = false;
+                                                                      }
                                                                       List<ModFile> appliedModFiles = value;
                                                                       String fileAppliedText = '';
                                                                       for (var element in appliedModFiles) {
@@ -2599,7 +2601,9 @@ class _HomePageState extends State<HomePage> {
                                                                       curMod.applyStatus = true;
                                                                       curMod.isNew = false;
                                                                       modViewItem!.applyStatus = true;
-                                                                      modViewItem!.isNew = false;
+                                                                      if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                        modViewItem!.isNew = false;
+                                                                      }
                                                                       List<ModFile> appliedModFiles = value;
                                                                       String fileAppliedText = '';
                                                                       for (var element in appliedModFiles) {
@@ -2947,7 +2951,9 @@ class _HomePageState extends State<HomePage> {
                                                                                   curMod.applyStatus = true;
                                                                                   curMod.isNew = false;
                                                                                   modViewItem!.applyStatus = true;
-                                                                                  modViewItem!.isNew = false;
+                                                                                  if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                                    modViewItem!.isNew = false;
+                                                                                  }
                                                                                   List<ModFile> appliedModFiles = value;
                                                                                   String fileAppliedText = '';
                                                                                   for (var element in appliedModFiles) {
@@ -3137,7 +3143,9 @@ class _HomePageState extends State<HomePage> {
                                                                               curMod.applyStatus = true;
                                                                               curMod.isNew = false;
                                                                               modViewItem!.applyStatus = true;
-                                                                              modViewItem!.isNew = false;
+                                                                              if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                                modViewItem!.isNew = false;
+                                                                              }
                                                                               List<ModFile> appliedModFiles = value;
                                                                               String fileAppliedText = '';
                                                                               for (var element in appliedModFiles) {
@@ -3805,9 +3813,10 @@ class _HomePageState extends State<HomePage> {
                                                                                       curItem.mods[curModIndex].applyStatus = true;
                                                                                       curItem.mods[curModIndex].isNew = false;
                                                                                       curItem.mods[curModIndex].applyDate = DateTime.now();
-
                                                                                       curItem.applyStatus = true;
-                                                                                      curItem.isNew = false;
+                                                                                      if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                        curItem.isNew = false;
+                                                                                      }
                                                                                       curItem.applyDate = DateTime.now();
                                                                                       List<ModFile> appliedModFiles = value;
                                                                                       String fileAppliedText = '';
@@ -4268,7 +4277,9 @@ class _HomePageState extends State<HomePage> {
                                                                     curItem.mods[curModIndex].applyDate = DateTime.now();
 
                                                                     curItem.applyStatus = true;
-                                                                    curItem.isNew = false;
+                                                                    if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                      curItem.isNew = false;
+                                                                    }
                                                                     curItem.applyDate = DateTime.now();
                                                                   }
                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
@@ -4657,7 +4668,9 @@ class _HomePageState extends State<HomePage> {
                                                                                       curItem.mods[curModIndex].applyDate = DateTime.now();
 
                                                                                       curItem.applyStatus = true;
-                                                                                      curItem.isNew = false;
+                                                                                      if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                        curItem.isNew = false;
+                                                                                      }
                                                                                       curItem.applyDate = DateTime.now();
                                                                                       List<ModFile> appliedModFiles = value;
                                                                                       String fileAppliedText = '';

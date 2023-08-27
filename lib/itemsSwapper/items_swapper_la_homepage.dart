@@ -13,7 +13,7 @@ import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
-import 'package:pso2_mod_manager/mod_add_handler.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as msdl;
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_swappage.dart' as msls;
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -1081,10 +1081,10 @@ Future<void> swapperLaQueueConfirmDialog(
                           ? null
                           : () {
                               for (var swappedModPath in queueSwappedLaPaths) {
-                                newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
-                                newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                //newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                               }
-                              modAddHandler(context);
+                              modsAdderHomePage(context);
                             },
                       child: Text(curLangText!.uiAddToModManager)),
                   Padding(

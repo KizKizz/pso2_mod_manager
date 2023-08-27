@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/pages/applied_vital_gauge_checking_page.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -142,7 +143,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                   ),
                 );
               } else {
-                return const ModSetsLoadingPage();
+                return const AppliedVitalGaugeCheckingPage();
               }
             }
           }

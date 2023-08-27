@@ -36,6 +36,7 @@ String modManChecksumFilePath = '';
 String modManAddModsTempDirPath = '';
 String modManAddModsUnpackDirPath = '';
 String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
+String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
 String modManWin32CheckSumFilePath = '';
 String modManWin32NaCheckSumFilePath = '';
@@ -43,10 +44,13 @@ String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
 String modManWin32NaChecksumMD5 = '';
 String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
+String modManVitalGaugeDirPath = '';
+String modManVitalGaugeOriginalsDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
 String modManRefSheetListFilePath = '';
+String modManVitalGaugeJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -131,6 +135,11 @@ Future<bool> pathsLoader(context) async {
   if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
     Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
   }
+  //Create Vital gauge folder
+  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  Directory(modManVitalGaugeDirPath).createSync();
+  modManVitalGaugeOriginalsDirPath = Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath();
+  Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();
@@ -149,6 +158,9 @@ Future<bool> pathsLoader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
+  modManVitalGaugeJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  File(modManVitalGaugeJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
@@ -376,6 +388,11 @@ Future<bool> modManPathReloader(context) async {
   // for (var name in dataFolders) {
   //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
   // }
+  //Create Vital gauge folder
+  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  Directory(modManVitalGaugeDirPath).createSync();
+  modManVitalGaugeOriginalsDirPath = Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath();
+  Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
   Directory(modManChecksumDirPath).createSync();
@@ -394,6 +411,9 @@ Future<bool> modManPathReloader(context) async {
   File(modManModsListJsonPath).createSync();
   modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
   File(modManModSetsJsonPath).createSync();
+  modManVitalGaugeJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  File(modManVitalGaugeJsonPath).createSync();
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
