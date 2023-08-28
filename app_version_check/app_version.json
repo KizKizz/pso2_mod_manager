@@ -1,10 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "description": [
-        "Added Vital Gauge backgrounds swapper - create your own backgrounds today!",
-        "Backend systems improvements - might cause some unexpected bugs",
-        "Some minor bug fixes"
+        "Hotfix for infinite loading when changing Vital Gauge background",
+        "Fixed some bugs when selecting what not to add in Add Mods"
     ],
     "windows_file": "",
     "linux_file": ""

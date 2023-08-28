@@ -49,7 +49,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
                 Directory(p.dirname(newFilePath)).createSync(recursive: true);
                 file.copySync(newFilePath);
               }
-            }
+            } 
           }
         }
       }
@@ -58,9 +58,11 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
       if (mainNames.isNotEmpty) {
         List<Directory> foldersInNewItemPath = [];
         for (var mod in item.modList) {
-          String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
-          if (mod.toBeAdded && foldersInNewItemPath.indexWhere((element) => element.path == newmodDirPath) == -1) {
-            foldersInNewItemPath.add(Directory(newmodDirPath));
+          if (mod.toBeAdded) {
+            String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            if (foldersInNewItemPath.indexWhere((element) => element.path == newmodDirPath) == -1) {
+              foldersInNewItemPath.add(Directory(newmodDirPath));
+            }
           }
         }
 

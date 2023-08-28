@@ -1339,6 +1339,9 @@ class _MainPageState extends State<MainPage> {
                               //width: 99,
                               child: MaterialButton(
                                 onPressed: (() {
+                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                    element.deleteSync(recursive: true);
+                                  });
                                   vitalGaugeHomePage(context);
                                 }),
                                 child: Row(
