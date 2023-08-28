@@ -68,18 +68,21 @@ https://github.com/KizKizz/pso2_mod_manager/assets/101075148/5b5ffe32-3699-4033-
 
 [swapmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/1f273e73-f5b6-4179-bc4a-9f4a8f1529e8)
 
+**Vital Gauge backgrounds change:**
+
+https://github.com/KizKizz/pso2_mod_manager/assets/101075148/f8d16fc4-0660-4673-a709-0822fc516452
 
 # Known Issues
 Drag & drop won't work if app is running with Administrator
 
 # Plans
-More improvements  
+More improvements and features
 
 # Built With
 
 Flutter and various libraries from [pub.dev](https://pub.dev/packages)
 
-[Zamboni](https://github.com/Shadowth117/Zamboni) and [DDStronk](https://github.com/scorpdx/ddstronk)
+[Zamboni](https://github.com/Shadowth117/Zamboni)
 
 Found a bug? [Leave a message here](https://github.com/KizKizz/pso2_mod_manager/issues)
 
