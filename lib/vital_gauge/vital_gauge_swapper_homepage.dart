@@ -511,9 +511,9 @@ void vitalGaugeHomePage(context) {
                                                                                       vgData[i].replacedImageName = p.basename(imgPath);
                                                                                       vgData[i].isReplaced = true;
                                                                                       saveVitalGaugesInfoToJson(vgData);
-                                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                        element.deleteSync(recursive: true);
-                                                                                      });
+                                                                                      // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                      //   element.deleteSync(recursive: true);
+                                                                                      // });
                                                                                       _loading[i] = false;
                                                                                       setState(
                                                                                         () {},
@@ -550,6 +550,16 @@ void vitalGaugeHomePage(context) {
                                                                             vg.replacedImageName = '';
                                                                             vg.isReplaced = false;
                                                                             saveVitalGaugesInfoToJson(vgData);
+                                                                            _loading[index] = false;
+                                                                            setState(() {});
+                                                                          });
+                                                                        } else {
+                                                                          int index = vgData.indexOf(vg);
+                                                                          _loading[index] = true;
+                                                                          Future.delayed(const Duration(milliseconds: 500), () async {
+                                                                            String downloadedFilePath = await downloadIconIceFromOfficial(
+                                                                                vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                            File(downloadedFilePath).copySync(vg.icePath);
                                                                             _loading[index] = false;
                                                                             setState(() {});
                                                                           });
@@ -702,9 +712,9 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                                 //croppedImage.writeAsBytes(bytes, flush: true);
                                 imageCropController.dispose();
                                 //Future.delayed(const Duration(milliseconds: 100), () {
-                                  if (context.mounted) {
-                                    Navigator.pop(context, true);
-                                  }
+                                if (context.mounted) {
+                                  Navigator.pop(context, true);
+                                }
                                 //});
                               }
                             },
@@ -728,9 +738,9 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
                               //croppedImage.writeAsBytes(bytes, flush: true);
                               imageCropController.dispose();
                               //Future.delayed(const Duration(milliseconds: 100), () {
-                                if (context.mounted) {
-                                  Navigator.pop(context, true);
-                                }
+                              if (context.mounted) {
+                                Navigator.pop(context, true);
+                              }
                               //});
                             },
                             child: Text(curLangText!.uiOverwriteImage)),
@@ -847,7 +857,7 @@ Future<List<File>> customVitalBackgroundsFetching() async {
   } else {
     await Future.delayed(const Duration(milliseconds: 150));
   }
-    returnList = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
+  returnList = Directory(modManVitalGaugeDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
 
@@ -863,13 +873,23 @@ Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgData
   if (File(Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath()).existsSync()) {
     await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath()]);
     Directory(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath()).deleteSync(recursive: true);
-    final renamedIce = File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).renameSync(vgDataFile.icePath);
-    vgDataFile.replacedMd5 = await getFileHash(renamedIce.path);
-  }
 
-  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    element.deleteSync(recursive: true);
-  });
+    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath());
+    if (renamedFile.path.isNotEmpty) {
+      File copied = renamedFile.copySync(vgDataFile.icePath);
+      vgDataFile.replacedMd5 = await getFileHash(copied.path);
+    }
+
+    // File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(vgDataFile.icePath).then((value) async {
+    //   if (value.path.isNotEmpty) {
+    //     vgDataFile.replacedMd5 = await getFileHash(value.path);
+    //   }
+    // });
+
+    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+      element.deleteSync(recursive: true);
+    });
+  }
 
   return true;
 }

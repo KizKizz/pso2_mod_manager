@@ -401,7 +401,15 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uierrorWhenCheckingReplacedVitalGaugeBackgrounds =
           json['uierrorWhenCheckingReplacedVitalGaugeBackgrounds'] as String
       ..uiReappliedVitalGaugesAfterChecking =
-          json['uiReappliedVitalGaugesAfterChecking'] as String;
+          json['uiReappliedVitalGaugesAfterChecking'] as String
+      ..uiRequiredDotnetRuntimeMissing =
+          json['uiRequiredDotnetRuntimeMissing'] as String
+      ..uiRequiresDotnetRuntimeToWorkProperly =
+          json['uiRequiresDotnetRuntimeToWorkProperly'] as String
+      ..uiYourDotNetVersions = json['uiYourDotNetVersions'] as String
+      ..uiUseButtonBelowToGetDotnet =
+          json['uiUseButtonBelowToGetDotnet'] as String
+      ..uiGetDotnetRuntime6 = json['uiGetDotnetRuntime6'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -739,4 +747,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uierrorWhenCheckingReplacedVitalGaugeBackgrounds,
       'uiReappliedVitalGaugesAfterChecking':
           instance.uiReappliedVitalGaugesAfterChecking,
+      'uiRequiredDotnetRuntimeMissing': instance.uiRequiredDotnetRuntimeMissing,
+      'uiRequiresDotnetRuntimeToWorkProperly':
+          instance.uiRequiresDotnetRuntimeToWorkProperly,
+      'uiYourDotNetVersions': instance.uiYourDotNetVersions,
+      'uiUseButtonBelowToGetDotnet': instance.uiUseButtonBelowToGetDotnet,
+      'uiGetDotnetRuntime6': instance.uiGetDotnetRuntime6,
     };

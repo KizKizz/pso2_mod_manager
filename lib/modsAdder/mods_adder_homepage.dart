@@ -1125,6 +1125,9 @@ void modsAdderHomePage(context) {
                                                                                                       for (var submod in curMod.submodList) {
                                                                                                         submod.toBeAdded = false;
                                                                                                       }
+                                                                                                      if (processedFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                        processedFileList[index].toBeAdded = false;
+                                                                                                      }
                                                                                                       setState(
                                                                                                         () {},
                                                                                                       );
@@ -1149,6 +1152,9 @@ void modsAdderHomePage(context) {
                                                                                                       curMod.toBeAdded = true;
                                                                                                       for (var submod in curMod.submodList) {
                                                                                                         submod.toBeAdded = true;
+                                                                                                      }
+                                                                                                      if (processedFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                        processedFileList[index].toBeAdded = true;
                                                                                                       }
                                                                                                       setState(
                                                                                                         () {},
@@ -1406,6 +1412,12 @@ void modsAdderHomePage(context) {
                                                                                                               child: MaterialButton(
                                                                                                                 onPressed: () {
                                                                                                                   curSubmod.toBeAdded = false;
+                                                                                                                  if (curMod.submodList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                                    curMod.toBeAdded = false;
+                                                                                                                  }
+                                                                                                                  if (processedFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                                    processedFileList[index].toBeAdded = false;
+                                                                                                                  }
                                                                                                                   setState(
                                                                                                                     () {},
                                                                                                                   );
@@ -1428,6 +1440,12 @@ void modsAdderHomePage(context) {
                                                                                                               child: MaterialButton(
                                                                                                                 onPressed: () {
                                                                                                                   curSubmod.toBeAdded = true;
+                                                                                                                  if (curMod.submodList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                                    curMod.toBeAdded = true;
+                                                                                                                  }
+                                                                                                                  if (processedFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                                    processedFileList[index].toBeAdded = true;
+                                                                                                                  }
                                                                                                                   setState(
                                                                                                                     () {},
                                                                                                                   );
@@ -1831,7 +1849,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       for (var submodDir in Directory(modDir.path).listSync(recursive: true).whereType<Directory>()) {
         if (submodDir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').isNotEmpty) {
           submods.add(ModsAdderSubMod(submodDir.path.replaceFirst(modDir.path + p.separator, '').replaceAll(p.separator, ' > '), submodDir.path, true, false,
-              Directory(submodDir.path).listSync(recursive: true).whereType<File>().toList()));
+              Directory(submodDir.path).listSync(recursive: false).whereType<File>().toList()));
         }
       }
       mods.add(ModsAdderMod(p.basename(modDir.path), modDir.path, true, false, false, submods, Directory(modDir.path).listSync().whereType<File>().toList()));

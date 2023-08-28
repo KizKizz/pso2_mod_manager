@@ -21,6 +21,7 @@ import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
+import 'package:pso2_mod_manager/functions/dotnet_check.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
@@ -84,6 +85,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    dotnetVerCheck(context);
     setState(() {});
     super.initState();
   }
@@ -396,7 +398,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
-                child: Text(isFavListVisible ? curLangText!.uiFavItemList : isShowHideCates ? curLangText!.uiHiddenItemList : isCateTypeReordering ? curLangText!.uiSortItemList : curLangText!.uiItemList),
+                child: Text(isFavListVisible
+                    ? curLangText!.uiFavItemList
+                    : isShowHideCates
+                        ? curLangText!.uiHiddenItemList
+                        : isCateTypeReordering
+                            ? curLangText!.uiSortItemList
+                            : curLangText!.uiItemList),
               ),
               //Search
               Visibility(
@@ -2382,7 +2390,8 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                      message:
+                                                          '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
@@ -2664,7 +2673,8 @@ class _HomePageState extends State<HomePage> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 2),
                                                     child: ModManTooltip(
-                                                      message: '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                      message:
+                                                          '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                       child: InkWell(
                                                         child: const Icon(
                                                           Icons.swap_horizontal_circle_outlined,
@@ -3018,7 +3028,8 @@ class _HomePageState extends State<HomePage> {
                                                               child: Padding(
                                                                 padding: const EdgeInsets.only(left: 2),
                                                                 child: ModManTooltip(
-                                                                  message: '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                                  message:
+                                                                      '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
                                                                   child: InkWell(
                                                                     child: const Icon(
                                                                       Icons.swap_horizontal_circle_outlined,
