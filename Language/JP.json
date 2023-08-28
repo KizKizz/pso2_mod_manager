@@ -310,5 +310,10 @@
   "uiVitalGaugeBackGroundsInstruction": "下の「作成」ボタンで新しい背景を作成する。\n次に、「カスタム背景」から背景をドラッグし、「交換 - 利用可能な背景」の希望の背景にドロップして置き換えます。",
   "uicheckingReplacedVitalGaugeBackgrounds": "交換したバイタルゲージの背景をチェック",
   "uierrorWhenCheckingReplacedVitalGaugeBackgrounds": "交換したバイタルゲージの背景を確認する際にエラーが発生",
-  "uiReappliedVitalGaugesAfterChecking": "以下の背景が自動的にゲームに再適用されました。"
+  "uiReappliedVitalGaugesAfterChecking": "以下の背景が自動的にゲームに再適用されました。",
+  "uiRequiredDotnetRuntimeMissing": "必要な.NETランタイムの入手が見つからない",
+  "uiRequiresDotnetRuntimeToWorkProperly": "PSO2NGS Mod Managerを正常に動作させるには、.NETランタイム6.0の入手以降が必要です。",
+  "uiYourDotNetVersions": ".NETランタイムのバージョン",
+  "uiUseButtonBelowToGetDotnet": "以下のボタンを使って、必要な.NETランタイムを入手し、インストールしてください。",
+  "uiGetDotnetRuntime6": ".NETランタイム6.0の入手"
 }

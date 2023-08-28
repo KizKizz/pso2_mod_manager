@@ -3,7 +3,8 @@
     "version": "2.4.1",
     "description": [
         "Hotfix for infinite loading when changing Vital Gauge background",
-        "Fixed some bugs when selecting what not to add in Add Mods"
+        "Fixed some bugs when selecting what not to add in Add Mods",
+        "Added a check for required dotnet version"
     ],
     "windows_file": "",
     "linux_file": ""

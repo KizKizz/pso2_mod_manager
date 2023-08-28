@@ -553,6 +553,16 @@ void vitalGaugeHomePage(context) {
                                                                             _loading[index] = false;
                                                                             setState(() {});
                                                                           });
+                                                                        } else {
+                                                                          int index = vgData.indexOf(vg);
+                                                                          _loading[index] = true;
+                                                                          Future.delayed(const Duration(milliseconds: 500), () async {
+                                                                            String downloadedFilePath = await downloadIconIceFromOfficial(
+                                                                                vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                            File(downloadedFilePath).copySync(vg.icePath);
+                                                                            _loading[index] = false;
+                                                                            setState(() {});
+                                                                          });
                                                                         }
                                                                       }
                                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {

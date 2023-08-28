@@ -369,13 +369,20 @@ class TranslationText {
       uiCroppedImageName = 'Cropped Image Name',
       uiSaveCroppedArea = 'Save Cropped Area',
       uiOverwriteImage = 'Overwite Image',
-      uiVitalGaugeBackGroundsInstruction = 'Create a new background with the Create button bellow\nThen drag a background from "Custom Backgrounds" and drop onto a desired background in "Swapped - Available Backgrounds" to replace';
+      uiVitalGaugeBackGroundsInstruction =
+          'Create a new background with the Create button bellow\nThen drag a background from "Custom Backgrounds" and drop onto a desired background in "Swapped - Available Backgrounds" to replace';
 
   //applied_vital_gauge_checking_page.dart
   String uicheckingReplacedVitalGaugeBackgrounds = 'Checking replaced Vital Gauge backgrounds',
-  uierrorWhenCheckingReplacedVitalGaugeBackgrounds = 'Error when checking replaced Vital Gauge backgrounds',
-        uiReappliedVitalGaugesAfterChecking = 'The backgrounds below have been automatically re-applied to the game';
+      uierrorWhenCheckingReplacedVitalGaugeBackgrounds = 'Error when checking replaced Vital Gauge backgrounds',
+      uiReappliedVitalGaugesAfterChecking = 'The backgrounds below have been automatically re-applied to the game';
 
+  //dotnet_check.dart
+  String uiRequiredDotnetRuntimeMissing = 'Required .NET Runtime Missing',
+      uiRequiresDotnetRuntimeToWorkProperly = 'PSO2NGS Mod Manager requires .NET Runtime 6.0 or later to function properly',
+      uiYourDotNetVersions = 'Your .NET Runtime versions',
+      uiUseButtonBelowToGetDotnet = 'Use the button below to get and install the required .NET Runtime',
+      uiGetDotnetRuntime6 = 'Get .NET Runtime 6.0';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
