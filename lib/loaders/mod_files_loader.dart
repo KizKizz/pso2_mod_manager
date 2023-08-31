@@ -280,68 +280,70 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       //loading icon images
       List<String> tempItemIconPaths = [];
 
-      if (isAutoFetchingIconsOnStartup == 'all') {
-        //load sheets
-        if (csvInfosFromSheets.isEmpty) {
-          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-        }
+      
 
-        for (var toAddMod in modList) {
-          iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
-        }
-        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
-        List<String> itemInCsv = [];
-        List<String> itemCsvMissingIcons = [];
+      // if (isAutoFetchingIconsOnStartup == 'all') {
+      //   //load sheets
+      //   if (csvInfosFromSheets.isEmpty) {
+      //     csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+      //   }
 
-        if (defaultCateIndex != -1) {
-          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
-          for (var line in itemInCsv) {
-            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
-            if (csvItemIconName.isNotEmpty) {
-              for (var char in charToReplace) {
-                csvItemIconName = csvItemIconName.replaceAll(char, '_');
-              }
-              if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
-                itemCsvMissingIcons.add(line);
-                //print(csvItemIconName);
-              }
-            }
-          }
+      //   for (var toAddMod in modList) {
+      //     iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
+      //   }
+      //   int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
+      //   List<String> itemInCsv = [];
+      //   List<String> itemCsvMissingIcons = [];
 
-          if (itemCsvMissingIcons.isNotEmpty) {
-            tempItemIconPaths = await modLoaderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
-          }
-        }
-      } else if (isAutoFetchingIconsOnStartup == 'minimal') {
-        //load sheets
-        if (csvInfosFromSheets.isEmpty) {
-          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-        }
-        //get ices from first mod
-        iceFilesInCurItemNoDup.addAll(modList.first.getDistinctModFilePaths().map((e) => File(e)));
+      //   if (defaultCateIndex != -1) {
+      //     itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
+      //     for (var line in itemInCsv) {
+      //       String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
+      //       if (csvItemIconName.isNotEmpty) {
+      //         for (var char in charToReplace) {
+      //           csvItemIconName = csvItemIconName.replaceAll(char, '_');
+      //         }
+      //         if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
+      //           itemCsvMissingIcons.add(line);
+      //           //print(csvItemIconName);
+      //         }
+      //       }
+      //     }
 
-        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
-        List<String> itemInCsv = [];
-        List<String> itemCsvMissingIcons = [];
+      //     if (itemCsvMissingIcons.isNotEmpty) {
+      //       tempItemIconPaths = await modLoaderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
+      //     }
+      //   }
+      // } else if (isAutoFetchingIconsOnStartup == 'minimal') {
+      //   //load sheets
+      //   if (csvInfosFromSheets.isEmpty) {
+      //     csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+      //   }
+      //   //get ices from first mod
+      //   iceFilesInCurItemNoDup.addAll(modList.first.getDistinctModFilePaths().map((e) => File(e)));
 
-        if (defaultCateIndex != -1) {
-          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
-          for (var line in itemInCsv) {
-            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
-            for (var char in charToReplace) {
-              csvItemIconName = csvItemIconName.replaceAll(char, '_');
-            }
-            if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty && csvItemIconName == p.basename(dir.path)) {
-              itemCsvMissingIcons.add(line);
-              //print(csvItemIconName);
-            }
-          }
+      //   int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
+      //   List<String> itemInCsv = [];
+      //   List<String> itemCsvMissingIcons = [];
 
-          if (itemCsvMissingIcons.isNotEmpty) {
-            tempItemIconPaths = await modLoaderItemIconFetch([itemCsvMissingIcons.first], p.basename(catePath));
-          }
-        }
-      }
+      //   if (defaultCateIndex != -1) {
+      //     itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
+      //     for (var line in itemInCsv) {
+      //       String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
+      //       for (var char in charToReplace) {
+      //         csvItemIconName = csvItemIconName.replaceAll(char, '_');
+      //       }
+      //       if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty && csvItemIconName == p.basename(dir.path)) {
+      //         itemCsvMissingIcons.add(line);
+      //         //print(csvItemIconName);
+      //       }
+      //     }
+
+      //     if (itemCsvMissingIcons.isNotEmpty) {
+      //       tempItemIconPaths = await modLoaderItemIconFetch([itemCsvMissingIcons.first], p.basename(catePath));
+      //     }
+      //   }
+      // }
 
       if (tempItemIconPaths.isNotEmpty) {
         for (var tempItemIconPath in tempItemIconPaths) {
