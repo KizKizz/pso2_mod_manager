@@ -295,7 +295,9 @@ Future<List<Item>> itemsFetcher(String catePath) async {
         } else {
           itemIcons.add('assets/img/placeholdersquare.png');
         }
-      } else if (isAutoFetchingIconsOnStartup == 'full') {}
+      } else if (isAutoFetchingIconsOnStartup == 'full') {
+        
+      }
 
       // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       //List<File> iceFilesInCurItemNoDup = [];
