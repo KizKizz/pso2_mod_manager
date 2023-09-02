@@ -14,6 +14,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
@@ -30,6 +31,13 @@ Future<List<CategoryType>> modFileStructureLoader() async {
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
+
+  if (isAutoFetchingIconsOnStartup != 'off') {
+    //load sheets
+    if (csvInfosFromSheets.isEmpty) {
+      csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+    }
+  }
 
   //Load list from json
   if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
@@ -262,8 +270,33 @@ Future<List<Item>> itemsFetcher(String catePath) async {
     if (cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
     } else {
+      final iconFilesInDir = dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '.png');
+      if (isAutoFetchingIconsOnStartup == 'off') {
+        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isEmpty) {
+          itemIcons.add('assets/img/placeholdersquare.png');
+        }
+      } else if (isAutoFetchingIconsOnStartup == 'minimal') {
+        final iconIceDownloadPath = await autoItemIconFetcherMinimal(dir.path, modList);
+        if (iconIceDownloadPath.isNotEmpty) {
+          String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
+          final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath, tempIconUnpackDirPath);
+          //unpack and convert dds to png
+          if (downloadedconIcePath.isNotEmpty) {
+            //debugPrint(downloadedconIcePath);
+            await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+            File ddsItemIcon =
+                Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+            if (ddsItemIcon.path.isNotEmpty) {
+              File newItemIcon = File(Uri.file('${dir.path}/${p.basename(dir.path)}.png').toFilePath());
+              await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+            }
+            Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+          }
+        }
+      }
+
       // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      List<File> iceFilesInCurItemNoDup = [];
+      //List<File> iceFilesInCurItemNoDup = [];
       // for (var file in iceFilesInCurItem) {
       //   if (iceFilesInCurItemNoDup.where((element) => p.basename(element.path) == p.basename(file.path)).isEmpty) {
       //     iceFilesInCurItemNoDup.add(file);
@@ -273,14 +306,12 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       //   Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
       //   iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       // }itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-      final imagesFoundInItemDir =
-          Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
-      itemIcons.addAll(imagesFoundInItemDir.map((e) => e.path));
+      // final imagesFoundInItemDir =
+      //     Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
+      // itemIcons.addAll(imagesFoundInItemDir.map((e) => e.path));
 
       //loading icon images
       List<String> tempItemIconPaths = [];
-
-      
 
       // if (isAutoFetchingIconsOnStartup == 'all') {
       //   //load sheets
