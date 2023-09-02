@@ -39,6 +39,8 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   }
   final infos = csvInfo.split(',');
   String itemCategory = infos[0];
+  String itemName = '';
+    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
   if (itemName.contains('[Se]')) {
     itemCategory = defaultCateforyDirs[16];
   }

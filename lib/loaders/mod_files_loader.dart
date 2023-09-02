@@ -292,8 +292,10 @@ Future<List<Item>> itemsFetcher(String catePath) async {
             }
             Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
           }
+        } else {
+          itemIcons.add('assets/img/placeholdersquare.png');
         }
-      }
+      } else if (isAutoFetchingIconsOnStartup == 'full') {}
 
       // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
       //List<File> iceFilesInCurItemNoDup = [];
@@ -311,7 +313,7 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       // itemIcons.addAll(imagesFoundInItemDir.map((e) => e.path));
 
       //loading icon images
-      List<String> tempItemIconPaths = [];
+      //List<String> tempItemIconPaths = [];
 
       // if (isAutoFetchingIconsOnStartup == 'all') {
       //   //load sheets
@@ -376,20 +378,20 @@ Future<List<Item>> itemsFetcher(String catePath) async {
       //   }
       // }
 
-      if (tempItemIconPaths.isNotEmpty) {
-        for (var tempItemIconPath in tempItemIconPaths) {
-          File(tempItemIconPath).copySync(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-          itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-        }
-        //clear temp dir
-        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-          element.deleteSync(recursive: true);
-        });
-      } else {
-        if (imagesFoundInItemDir.isEmpty && itemIcons.isEmpty) {
-          itemIcons.add('assets/img/placeholdersquare.png');
-        }
-      }
+      // if (tempItemIconPaths.isNotEmpty) {
+      //   for (var tempItemIconPath in tempItemIconPaths) {
+      //     File(tempItemIconPath).copySync(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+      //     itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
+      //   }
+      //   //clear temp dir
+      //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+      //     element.deleteSync(recursive: true);
+      //   });
+      // } else {
+      //   if (imagesFoundInItemDir.isEmpty && itemIcons.isEmpty) {
+      //     itemIcons.add('assets/img/placeholdersquare.png');
+      //   }
+      // }
 
       //Get variants names
       //populate sheets
