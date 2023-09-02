@@ -258,7 +258,7 @@ Future<List<CategoryType>> modFileStructureLoader() async {
 Future<List<Item>> itemsFetcher(String catePath) async {
   final itemInCategory = Directory(catePath).listSync(recursive: false).whereType<Directory>();
   List<Item> items = [];
-  List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+  //List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
   for (var dir in itemInCategory) {
     List<Mod> modList = modsFetcher(dir.path, p.basename(catePath));
@@ -296,7 +296,27 @@ Future<List<Item>> itemsFetcher(String catePath) async {
           itemIcons.add('assets/img/placeholdersquare.png');
         }
       } else if (isAutoFetchingIconsOnStartup == 'full') {
-        
+        final iconIceDownloadPaths = await autoItemIconFetcherFull(dir.path, modList);
+        if (iconIceDownloadPaths.isNotEmpty) {
+          for (var iconIceDownloadPath in iconIceDownloadPaths) {
+            String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
+            final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath, tempIconUnpackDirPath);
+            //unpack and convert dds to png
+            if (downloadedconIcePath.isNotEmpty) {
+              //debugPrint(downloadedconIcePath);
+              await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+              File ddsItemIcon =
+                  Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+              if (ddsItemIcon.path.isNotEmpty) {
+                File newItemIcon = File(Uri.file('${dir.path}/${p.basename(dir.path)}.png').toFilePath());
+                await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+              }
+              Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+            }
+          }
+        } else {
+          itemIcons.add('assets/img/placeholdersquare.png');
+        }
       }
 
       // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();

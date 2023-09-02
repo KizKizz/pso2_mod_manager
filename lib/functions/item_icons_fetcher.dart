@@ -40,12 +40,46 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   final infos = csvInfo.split(',');
   String itemCategory = infos[0];
   String itemName = '';
-    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+  curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
   if (itemName.contains('[Se]')) {
     itemCategory = defaultCateforyDirs[16];
   }
   String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
   return ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '');
+}
+
+Future<List<String>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modList) async {
+  List<String> csvInfos = [];
+  //get csvInfo from item name
+  for (var csvFile in csvInfosFromSheets) {
+    csvInfos.addAll(csvFile.where((element) => element.contains(p.basename(itemDirPath))));
+  }
+
+  //get csvInfo from ice files
+  if (csvInfos.isEmpty) {
+    //get ice file names
+    List<String> uniqueIcePaths = List.from(modList.map((e) => e.getDistinctModFilePaths()));
+    for (var icePath in uniqueIcePaths) {
+      for (var csvFile in csvInfosFromSheets) {
+        csvInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvInfos.contains(line) && line.split(',')[1].isNotEmpty));
+      }
+    }
+  }
+
+  List<String> ogIconPaths = [];
+  for (var csvInfo in csvInfos) {
+    final infos = csvInfo.split(',');
+    String itemCategory = infos[0];
+    String itemName = '';
+    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    if (itemName.contains('[Se]')) {
+      itemCategory = defaultCateforyDirs[16];
+    }
+    String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+    ogIconPaths.add(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''));
+  }
+
+  return ogIconPaths;
 }
 
 Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {
