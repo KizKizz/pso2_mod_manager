@@ -31,6 +31,8 @@ class StateProvider with ChangeNotifier {
   String _applyAllStatus = '';
   int _applyAllProgressCounter = 0;
   String _boundaryEditProgressStatus = '';
+  String _modsLoaderProgressStatus = '';
+  bool _showTitleBarButtons = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -61,6 +63,23 @@ class StateProvider with ChangeNotifier {
   String get applyAllStatus => _applyAllStatus;
   int get applyAllProgressCounter => _applyAllProgressCounter;
   String get boundaryEditProgressStatus => _boundaryEditProgressStatus;
+  String get modsLoaderProgressStatus => _modsLoaderProgressStatus;
+  bool get showTitleBarButtons => _showTitleBarButtons;
+
+  void showTitleBarButtonsTrue() {
+    _showTitleBarButtons = true;
+    notifyListeners();
+  }
+
+  void showTitleBarButtonsFalse() {
+    _showTitleBarButtons = false;
+    notifyListeners();
+  }
+
+  void setModsLoaderProgressStatus(String status) {
+    _modsLoaderProgressStatus = status;
+    notifyListeners();
+  }
 
   void setBoundaryEditProgressStatus(String status) {
     _boundaryEditProgressStatus = status;

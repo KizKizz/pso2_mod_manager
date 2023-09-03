@@ -89,7 +89,7 @@ Future<bool> profileLoader(context) async {
                         } else {
                           //mod loading page
                           return FutureBuilder(
-                              future: modFileStructureLoader(),
+                              future: modFileStructureLoader(context, true),
                               builder: (
                                 BuildContext context,
                                 AsyncSnapshot snapshot,
@@ -108,13 +108,15 @@ Future<bool> profileLoader(context) async {
                                           height: 20,
                                         ),
                                         const CircularProgressIndicator(),
-                                        // Padding(
-                                        //   padding: const EdgeInsets.symmetric(vertical: 20),
-                                        //   child: TextButton(
-                                        //       onPressed: () {
-                                        //         isAutoFetchingIconsOnStartup = false;
-                                        //       },
-                                        //       child: Text(curLangText!.uiSkipStartupIconFectching)),
+                                        // Visibility(
+                                        //   visible: Provider.of<StateProvider>(context, listen: true).modsLoaderProgressStatus.isNotEmpty,
+                                        //   child: Padding(
+                                        //       padding: const EdgeInsets.symmetric(vertical: 20),
+                                        //       child: Text(
+                                        //         Provider.of<StateProvider>(context, listen: true).modsLoaderProgressStatus,
+                                        //         style: const TextStyle(fontSize: 18),
+                                        //         textAlign: TextAlign.center,
+                                        //       )),
                                         // )
                                       ],
                                     ),
@@ -165,7 +167,7 @@ Future<bool> profileLoader(context) async {
                                   } else {
                                     //Item list
                                     moddedItemsList = snapshot.data;
-                              
+
                                     //Applied list loading page
                                     return FutureBuilder(
                                         future: appliedListBuilder(moddedItemsList),
@@ -236,7 +238,7 @@ Future<bool> profileLoader(context) async {
                                             } else {
                                               //Applied Item list
                                               appliedItemList = snapshot.data;
-                              
+
                                               //applied mods checking page
                                               return FutureBuilder(
                                                   future: appliedFileCheck(appliedItemList),
@@ -351,7 +353,7 @@ Future<bool> profileLoader(context) async {
                                                                       ),
                                                                     ),
                                                                   ),
-                              
+
                                                                   //button
                                                                   Padding(
                                                                     padding: const EdgeInsets.only(top: 10),
@@ -428,7 +430,7 @@ Future<bool> profileLoader(context) async {
                                                                                     //Applied Item list
                                                                                     modSetList = snapshot.data;
                                                                                     Navigator.of(context).pop();
-                              
+
                                                                                     return const SizedBox();
                                                                                   }
                                                                                 }
@@ -513,7 +515,7 @@ Future<bool> profileLoader(context) async {
                                                                     //Applied Item list
                                                                     modSetList = snapshot.data;
                                                                     Navigator.pop(context, true);
-                              
+
                                                                     return const SizedBox();
                                                                   }
                                                                 }

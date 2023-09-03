@@ -17,7 +17,10 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   String csvInfo = '';
   //get csvInfo from item name
   for (var csvFile in csvInfosFromSheets) {
-    csvInfo = csvFile.firstWhere((element) => element.contains(p.basename(itemDirPath)));
+    csvInfo = csvFile.firstWhere(
+      (element) => element.contains(p.basename(itemDirPath)),
+      orElse: () => '',
+    );
     if (csvInfo.isNotEmpty) {
       break;
     }
@@ -26,7 +29,10 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   //get csvInfo from ice files
   if (csvInfo.isEmpty) {
     //get ice file names
-    List<String> uniqueIcePaths = List.from(modList.map((e) => e.getDistinctModFilePaths()));
+    List<String> uniqueIcePaths = [];
+    for (var mod in modList) {
+      uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
+    }
     List<String> csvFileInfos = [];
     for (var icePath in uniqueIcePaths) {
       for (var csvFile in csvInfosFromSheets) {
@@ -36,6 +42,9 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
     if (csvFileInfos.isNotEmpty) {
       csvInfo = csvFileInfos.first;
     }
+  }
+  if (csvInfo.isEmpty) {
+    return '';
   }
   final infos = csvInfo.split(',');
   String itemCategory = infos[0];
@@ -48,25 +57,21 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   return ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '');
 }
 
-Future<List<String>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modList) async {
+Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modList, List<File> iconFilesInDir) async {
   List<String> csvInfos = [];
-  //get csvInfo from item name
-  for (var csvFile in csvInfosFromSheets) {
-    csvInfos.addAll(csvFile.where((element) => element.contains(p.basename(itemDirPath))));
-  }
-
   //get csvInfo from ice files
-  if (csvInfos.isEmpty) {
-    //get ice file names
-    List<String> uniqueIcePaths = List.from(modList.map((e) => e.getDistinctModFilePaths()));
-    for (var icePath in uniqueIcePaths) {
-      for (var csvFile in csvInfosFromSheets) {
-        csvInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvInfos.contains(line) && line.split(',')[1].isNotEmpty));
-      }
+  //get ice file names
+  List<String> uniqueIcePaths = [];
+  for (var mod in modList) {
+    uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
+  }
+  for (var icePath in uniqueIcePaths) {
+    for (var csvFile in csvInfosFromSheets) {
+      csvInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvInfos.contains(line) && line.split(',')[1].isNotEmpty));
     }
   }
 
-  List<String> ogIconPaths = [];
+  List<List<String>> ogIconPaths = [];
   for (var csvInfo in csvInfos) {
     final infos = csvInfo.split(',');
     String itemCategory = infos[0];
@@ -75,8 +80,13 @@ Future<List<String>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modLi
     if (itemName.contains('[Se]')) {
       itemCategory = defaultCateforyDirs[16];
     }
-    String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
-    ogIconPaths.add(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''));
+    itemName = itemName.replaceAll(RegExp(charToReplace), '_');
+    if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == itemName).isEmpty) {
+      String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+      if (ogIconIcePath.isNotEmpty) {
+        ogIconPaths.add([itemName, ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '')]);
+      }
+    }
   }
 
   return ogIconPaths;

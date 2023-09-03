@@ -263,8 +263,7 @@ class TranslationText {
   String uiLoadingModSets = 'Loading Mod Sets', uiErrorWhenLoadingModSets = 'Error when loading Mod Sets';
 
   //mod_loading_page
-  String uiLoadingMods = 'Loading Mods', uiErrorWhenLoadingMods = 'Error when loading mod files';
-  String uiSkipStartupIconFectching = 'Skip startup item icons fetching';
+  String uiLoadingMods = 'Loading Mods', uiErrorWhenLoadingMods = 'Error when loading mod files', uiSkipStartupIconFectching = 'Skip startup item icons fetching';
 
   //path_loading_page
   String uiLoadingPaths = 'Loading Paths', uiErrorWhenLoadingPaths = 'Error when loading paths';

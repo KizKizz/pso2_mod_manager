@@ -1443,7 +1443,10 @@ void modsAdderHomePage(context) {
                                                                                                                   if (curMod.submodList.where((element) => element.toBeAdded).isNotEmpty) {
                                                                                                                     curMod.toBeAdded = true;
                                                                                                                   }
-                                                                                                                  if (processedFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                                  if (processedFileList[index]
+                                                                                                                      .modList
+                                                                                                                      .where((element) => element.toBeAdded)
+                                                                                                                      .isNotEmpty) {
                                                                                                                     processedFileList[index].toBeAdded = true;
                                                                                                                   }
                                                                                                                   setState(
@@ -1684,7 +1687,6 @@ void modsAdderHomePage(context) {
 Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePaths) async {
   List<ModsAdderItem> modsAdderItemList = [];
   List<String> pathsWithNoIceInRoot = [];
-  List<String> charsToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
   //copy files to temp
   for (var xFile in xFilePaths) {
     if (p.extension(xFile.path) == '.zip') {
@@ -1736,9 +1738,8 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     final infos = infoLine.split(',');
     String itemName = '';
     curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
-    for (var char in charsToReplace) {
-      itemName = itemName.replaceAll(char, '_');
-    }
+    itemName = itemName.replaceAll(RegExp(charToReplace), '_');
+
     String itemCategory = infos[0];
     if (itemName.contains('[Se]')) {
       itemCategory = defaultCateforyDirs[16];

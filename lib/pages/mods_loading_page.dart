@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:window_manager/window_manager.dart';
+
+late final Future modListLoader;
 
 class ModsLoadingPage extends StatefulWidget {
   const ModsLoadingPage({Key? key}) : super(key: key);
@@ -14,9 +18,15 @@ class ModsLoadingPage extends StatefulWidget {
 
 class _ModsLoadingPageState extends State<ModsLoadingPage> {
   @override
+  void initState() {
+    modListLoader = modFileStructureLoader(context, false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: modFileStructureLoader(),
+        future: modListLoader,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -35,14 +45,13 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
                     height: 20,
                   ),
                   const CircularProgressIndicator(),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 20),
-                  //   child: TextButton(
-                  //       onPressed: () {
-                  //         isAutoFetchingIconsOnStartup = false;
-                  //       },
-                  //       child: Text(curLangText!.uiSkipStartupIconFectching)),
-                  // )
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        Provider.of<StateProvider>(context, listen: true).modsLoaderProgressStatus,
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      )),
                 ],
               ),
             );
@@ -91,9 +100,10 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
               );
             } else {
               //Item list
-            moddedItemsList = snapshot.data;
+              isStartupModsLoad = false;
+              moddedItemsList = snapshot.data;
 
-            return const AppliedModsLoadingPage();
+              return const AppliedModsLoadingPage();
             }
           }
         });

@@ -24,6 +24,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
+import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -1290,6 +1291,7 @@ class _MainPageState extends State<MainPage> {
                       child: Row(
                         children: [
                           //Add Items/Mods
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: curLangText!.uiAddNewModsToMM,
                             child: SizedBox(
@@ -1333,6 +1335,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Vital gauge
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
                             child: SizedBox(
@@ -1359,6 +1362,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Item swapper
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: curLangText!.uiSwapAnItemToAnotherItem,
                             child: SizedBox(
@@ -1382,6 +1386,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Mod sets
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                             child: SizedBox(
@@ -1420,6 +1425,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Refresh
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: curLangText!.uiRefreshMM,
                             child: MaterialButton(
@@ -1428,7 +1434,7 @@ class _MainPageState extends State<MainPage> {
                                 listsReloading = true;
                                 Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
                                 Future.delayed(const Duration(milliseconds: 500), () {
-                                  modFileStructureLoader().then((value) {
+                                  modFileStructureLoader(context, true).then((value) {
                                     moddedItemsList = value;
                                     listsReloading = false;
                                     modViewItem = null;
@@ -1450,6 +1456,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Checksum
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                 ? curLangText!.uiOpenChecksumFolder
@@ -1549,6 +1556,7 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Preview
+                          if (context.watch<StateProvider>().showTitleBarButtons)
                           ModManTooltip(
                             message: curLangText!.uiPreviewShowHide,
                             child: MaterialButton(
@@ -1797,7 +1805,7 @@ class _MainPageState extends State<MainPage> {
             color: Theme.of(context).dividerColor,
           ),
 
-          const Expanded(child: ModsLoadingPage())
+          Expanded(child: isStartupModsLoad ? const ModsLoadingPage() : const AppliedModsLoadingPage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
