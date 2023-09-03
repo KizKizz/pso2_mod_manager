@@ -92,9 +92,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<StateProvider>(context, listen: false).showTitleBarButtonsTrue();
-    });
+    
     
     //set headers opacity values
     if (context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue > 1.0) {
