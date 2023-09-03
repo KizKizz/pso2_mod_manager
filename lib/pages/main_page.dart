@@ -1291,308 +1291,322 @@ class _MainPageState extends State<MainPage> {
                       child: Row(
                         children: [
                           //Add Items/Mods
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: curLangText!.uiAddNewModsToMM,
-                            child: SizedBox(
-                              //width: curActiveLang == 'JP' ? 110 : 105,
-                              child: MaterialButton(
-                                color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
-                                //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
-                                // onPressed: (() {
-                                //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                //     element.deleteSync(recursive: true);
-                                //   });
-                                //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                //     element.deleteSync(recursive: true);
-                                //   });
-                                //   modAddHandler(context);
-                                // }),
-                                onPressed: () {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  modsAdderHomePage(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.add_circle_outline,
-                                      size: 18,
-                                    ),
-                                    const SizedBox(width: 2.5),
-                                    Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiAddNewModsToMM,
+                              child: SizedBox(
+                                //width: curActiveLang == 'JP' ? 110 : 105,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                                  //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
+                                  // onPressed: (() {
+                                  //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                  //     element.deleteSync(recursive: true);
+                                  //   });
+                                  //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                  //     element.deleteSync(recursive: true);
+                                  //   });
+                                  //   modAddHandler(context);
+                                  // }),
+                                  onPressed: () {
+                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                      element.deleteSync(recursive: true);
+                                    });
+                                    Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
+                                      element.deleteSync(recursive: true);
+                                    });
+                                    Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
+                                      element.deleteSync(recursive: true);
+                                    });
+                                    modsAdderHomePage(context);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.add_circle_outline,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
 
                           //Vital gauge
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
-                            child: SizedBox(
-                              //width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                    element.deleteSync(recursive: true);
-                                  });
-                                  vitalGaugeHomePage(context);
-                                }),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.horizontal_split,
-                                      size: 18,
-                                    ),
-                                    const SizedBox(width: 2.5),
-                                    Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
+                              child: SizedBox(
+                                //width: 99,
+                                child: MaterialButton(
+                                  onPressed: (() {
+                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                      element.deleteSync(recursive: true);
+                                    });
+                                    vitalGaugeHomePage(context);
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.horizontal_split,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
 
                           //Item swapper
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: curLangText!.uiSwapAnItemToAnotherItem,
-                            child: SizedBox(
-                              //width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  itemsSwapperCategorySelect(context);
-                                }),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.swap_horizontal_circle_outlined,
-                                      size: 18,
-                                    ),
-                                    const SizedBox(width: 2.5),
-                                    Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiSwapAnItemToAnotherItem,
+                              child: SizedBox(
+                                //width: 99,
+                                child: MaterialButton(
+                                  onPressed: (() {
+                                    itemsSwapperCategorySelect(context);
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.swap_horizontal_circle_outlined,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
 
                           //Mod sets
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
-                            child: SizedBox(
-                              //width: 99,
-                              child: MaterialButton(
-                                onPressed: (() {
-                                  if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                    isModViewListHidden = true;
-                                    isModSetAdding = false;
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                  } else {
-                                    isModViewListHidden = true;
-                                    isModSetAdding = false;
-                                    Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                  }
-                                }),
-                                child: Row(
-                                  children: [
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.list_alt_outlined,
-                                        size: 18,
-                                      ),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                      const Icon(
-                                        Icons.view_list_outlined,
-                                        size: 18,
-                                      ),
-                                    const SizedBox(width: 2.5),
-                                    if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
-                                  ],
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
+                              child: SizedBox(
+                                //width: 99,
+                                child: MaterialButton(
+                                  onPressed: (() {
+                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                      isModViewListHidden = true;
+                                      isModSetAdding = false;
+                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                    } else {
+                                      isModViewListHidden = true;
+                                      isModSetAdding = false;
+                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                    }
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                        const Icon(
+                                          Icons.list_alt_outlined,
+                                          size: 18,
+                                        ),
+                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                        const Icon(
+                                          Icons.view_list_outlined,
+                                          size: 18,
+                                        ),
+                                      const SizedBox(width: 2.5),
+                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
 
                           //Refresh
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: curLangText!.uiRefreshMM,
-                            child: MaterialButton(
-                              //visualDensity: VisualDensity.compact,
-                              onPressed: (() async {
-                                listsReloading = true;
-                                Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-                                Future.delayed(const Duration(milliseconds: 500), () {
-                                  modFileStructureLoader(context, true).then((value) {
-                                    moddedItemsList = value;
-                                    listsReloading = false;
-                                    modViewItem = null;
-                                    Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiRefreshMM,
+                              child: MaterialButton(
+                                //visualDensity: VisualDensity.compact,
+                                onPressed: (() async {
+                                  listsReloading = true;
+                                  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
+                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                    modFileStructureLoader(context, true).then((value) {
+                                      moddedItemsList = value;
+                                      listsReloading = false;
+                                      modViewItem = null;
+                                      Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                    });
                                   });
-                                });
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.refresh,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 2.5),
-                                  Text(curLangText!.uiRefresh, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                ],
+                                }),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.refresh,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiRefresh, style: const TextStyle(fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
 
                           //Checksum
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
-                                ? curLangText!.uiOpenChecksumFolder
-                                : curLangText!.uiChecksumDownloadSelect,
-                            child: MaterialButton(
-                              onLongPress: () async {
-                                if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
-                                  final XFile? selectedFile = await openFile();
-                                  if (selectedFile != null) {
-                                    checksumLocation = selectedFile.path;
-                                  }
-                                  // await FilePicker.platform.pickFiles(
-                                  //   dialogTitle: curLangText!.uiSelectLocalChecksum,
-                                  //   allowMultiple: false,
-                                  //   // type: FileType.custom,
-                                  //   // allowedExtensions: ['\'\''],
-                                  //   lockParentWindow: true,
-                                  // );
-                                  if (checksumLocation != null) {
-                                    //String? checksumPath = checksumLocation!.paths.first;
-                                    String? checksumPath = checksumLocation;
-                                    if (checksumPath!.isNotEmpty) {
-                                      File(checksumPath).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
-                                      modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();
-                                      File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
-                                      if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
-                                        File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32_na/${p.basename(modManChecksumFilePath)}').toFilePath());
-                                      }
-                                      final prefs = await SharedPreferences.getInstance();
-                                      prefs.setString('checksumFilePath', modManChecksumFilePath);
-                                      Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                  ? curLangText!.uiOpenChecksumFolder
+                                  : curLangText!.uiChecksumDownloadSelect,
+                              child: MaterialButton(
+                                onLongPress: () async {
+                                  if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
+                                    final XFile? selectedFile = await openFile();
+                                    if (selectedFile != null) {
+                                      checksumLocation = selectedFile.path;
                                     }
-                                    setState(() {});
+                                    // await FilePicker.platform.pickFiles(
+                                    //   dialogTitle: curLangText!.uiSelectLocalChecksum,
+                                    //   allowMultiple: false,
+                                    //   // type: FileType.custom,
+                                    //   // allowedExtensions: ['\'\''],
+                                    //   lockParentWindow: true,
+                                    // );
+                                    if (checksumLocation != null) {
+                                      //String? checksumPath = checksumLocation!.paths.first;
+                                      String? checksumPath = checksumLocation;
+                                      if (checksumPath!.isNotEmpty) {
+                                        File(checksumPath).copySync(Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath());
+                                        modManChecksumFilePath = Uri.file('$modManChecksumDirPath/${p.basename(checksumPath)}').toFilePath();
+                                        File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32/${p.basename(modManChecksumFilePath)}').toFilePath());
+                                        if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+                                          File(modManChecksumFilePath).copySync(Uri.file('$modManPso2binPath/data/win32_na/${p.basename(modManChecksumFilePath)}').toFilePath());
+                                        }
+                                        final prefs = await SharedPreferences.getInstance();
+                                        prefs.setString('checksumFilePath', modManChecksumFilePath);
+                                        Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                                      }
+                                      setState(() {});
+                                    }
+                                  } else {
+                                    await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
                                   }
-                                } else {
-                                  await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
-                                }
-                              },
-                              onPressed: (() async {
-                                if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
-                                  Provider.of<StateProvider>(context, listen: false).checksumDownloadingTrue();
-                                  setState(() {});
-                                  await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
-                                    Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
-                                    modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
-                                    checksumChecker(context);
-                                    Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                                },
+                                onPressed: (() async {
+                                  if (modManChecksumFilePath.isEmpty || !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match) {
+                                    Provider.of<StateProvider>(context, listen: false).checksumDownloadingTrue();
                                     setState(() {});
-                                  });
-                                } else {
-                                  await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
-                                }
-                              }),
-                              child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
-                                  ? Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.fingerprint,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
-                                        Text('OK',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 13,
-                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.fingerprint,
-                                          size: 18,
-                                          color: Colors.red,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        !Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty
-                                            ? Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                            : !Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
-                                                ? Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                                : Provider.of<StateProvider>(context, listen: false).checksumDownloading
-                                                    ? Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
-                                                    : Row(
-                                                        children: [
-                                                          Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
-                                                          Text('ERROR',
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.w600,
-                                                                  fontSize: 13,
-                                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
-                                                        ],
-                                                      ),
-                                      ],
-                                    ),
+                                    await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath()).then((value) {
+                                      Provider.of<StateProvider>(context, listen: false).checksumDownloadingFalse();
+                                      modManChecksumFilePath = Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath();
+                                      checksumChecker(context);
+                                      Provider.of<StateProvider>(context, listen: false).checksumMD5MatchTrue();
+                                      setState(() {});
+                                    });
+                                  } else {
+                                    await launchUrl(Uri.parse('file:$modManChecksumDirPath'));
+                                  }
+                                }),
+                                child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                    ? Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.fingerprint,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                          Text('OK',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 13,
+                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.fingerprint,
+                                            size: 18,
+                                            color: Colors.red,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          !Provider.of<StateProvider>(context, listen: false).checksumDownloading && modManChecksumFilePath.isEmpty
+                                              ? Text(curLangText!.uiChecksumMissingClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                              : !Provider.of<StateProvider>(context, listen: false).checksumDownloading && !Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
+                                                  ? Text(curLangText!.uiChecksumOutdatedClick, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                  : Provider.of<StateProvider>(context, listen: false).checksumDownloading
+                                                      ? Text(curLangText!.uiChecksumDownloading, style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.red))
+                                                      : Row(
+                                                          children: [
+                                                            Text('${curLangText!.uiChecksum}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                                            Text('ERROR',
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.w600,
+                                                                    fontSize: 13,
+                                                                    color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color)),
+                                                          ],
+                                                        ),
+                                        ],
+                                      ),
+                              ),
                             ),
                           ),
 
                           //Preview
-                          if (context.watch<StateProvider>().showTitleBarButtons)
-                          ModManTooltip(
-                            message: curLangText!.uiPreviewShowHide,
-                            child: MaterialButton(
-                              //visualDensity: VisualDensity.compact,
-                              onPressed: (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
-                                  previewWindowVisible = false;
-                                  prefs.setBool('previewWindowVisible', false);
-                                  //previewPlayer.stop();
-                                } else {
-                                  Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
-                                  previewWindowVisible = true;
-                                  prefs.setBool('previewWindowVisible', true);
-                                }
-                              }),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.preview_outlined,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 2.5),
-                                  Text('${curLangText!.uiPreview}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
-                                  if (context.watch<StateProvider>().previewWindowVisible)
-                                    SizedBox(
-                                        width: 23,
-                                        child: Text('ON',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 13,
-                                                color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
-                                  if (context.watch<StateProvider>().previewWindowVisible == false)
-                                    const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
-                                ],
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiPreviewShowHide,
+                              child: MaterialButton(
+                                //visualDensity: VisualDensity.compact,
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  if (Provider.of<StateProvider>(context, listen: false).previewWindowVisible) {
+                                    Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
+                                    previewWindowVisible = false;
+                                    prefs.setBool('previewWindowVisible', false);
+                                    //previewPlayer.stop();
+                                  } else {
+                                    Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetTrue();
+                                    previewWindowVisible = true;
+                                    prefs.setBool('previewWindowVisible', true);
+                                  }
+                                }),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.preview_outlined,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text('${curLangText!.uiPreview}: ', style: const TextStyle(fontWeight: FontWeight.w400)),
+                                    if (context.watch<StateProvider>().previewWindowVisible)
+                                      SizedBox(
+                                          width: 23,
+                                          child: Text('ON',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 13,
+                                                  color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Theme.of(context).iconTheme.color))),
+                                    if (context.watch<StateProvider>().previewWindowVisible == false)
+                                      const SizedBox(width: 23, child: FittedBox(fit: BoxFit.contain, child: Text('OFF', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13))))
+                                  ],
+                                ),
                               ),
                             ),
                           ),
