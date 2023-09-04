@@ -1,10 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.1",
+    "version": "2.4.2",
     "description": [
-        "Hotfix for infinite loading when changing Vital Gauge background",
-        "Fixed some bugs when selecting what not to add in Add Mods",
-        "Added a check for required dotnet version"
+        "Improved the way the app fetches item icons on startup. It now displays detailed progress",
+        "Added language selection for first time users. This may ask you to select your language once",
+        "Separated Vital Gauge background cache for each profile",
+        "Some general bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
