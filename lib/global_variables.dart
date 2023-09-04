@@ -101,3 +101,4 @@ String modManProfile1Name = '';
 String modManProfile2Name = '';
 bool modsAdderGroupSameItemVariants = false;
 bool isStartupModsLoad = true;
+bool firstTimeLanguageSet = true;

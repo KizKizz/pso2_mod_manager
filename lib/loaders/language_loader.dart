@@ -48,7 +48,10 @@ Future<TranslationText?> uiTextLoader() async {
     //Load local json
     var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath).readAsStringSync());
     for (var lang in jsonData) {
-      languageList.add(TranslationLanguage.fromJson(lang));
+      final langInfo = TranslationLanguage.fromJson(lang);
+      if (languageList.where((element) => element.langFilePath == langInfo.langFilePath).isEmpty) {
+        languageList.add(langInfo);
+      }
     }
 
     for (var lang in languageList) {
@@ -71,7 +74,10 @@ Future<TranslationText?> uiTextLoader() async {
     //Load local json
     var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath).readAsStringSync());
     for (var lang in jsonData) {
-      languageList.add(TranslationLanguage.fromJson(lang));
+      final langInfo = TranslationLanguage.fromJson(lang);
+      if (languageList.where((element) => element.langFilePath == langInfo.langFilePath).isEmpty) {
+        languageList.add(langInfo);
+      }
     }
 
     for (var lang in languageList) {

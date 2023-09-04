@@ -24,7 +24,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
-import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -601,7 +601,7 @@ class _MainPageState extends State<MainPage> {
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 5, left: 25, bottom: 5),
+                              padding: const EdgeInsets.only(top: 10, left: 25, bottom: 5),
                               child: ToggleButtons(
                                 onPressed: (int index) async {
                                   final prefs = await SharedPreferences.getInstance();
@@ -1819,7 +1819,7 @@ class _MainPageState extends State<MainPage> {
             color: Theme.of(context).dividerColor,
           ),
 
-          Expanded(child: isStartupModsLoad ? const ModsLoadingPage() : const AppliedModsLoadingPage())
+          Expanded(child: isStartupModsLoad ? const ModsLoadingPage() : const HomePage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],
