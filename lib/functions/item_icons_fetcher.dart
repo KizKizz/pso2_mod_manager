@@ -4,11 +4,93 @@ import 'package:cross_file/cross_file.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+// ignore: depend_on_referenced_packages
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 
 List<String> itemIconRefSheetsList = [];
+
+Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList) async {
+  String csvInfo = '';
+  //get csvInfo from item name
+  for (var csvFile in csvInfosFromSheets) {
+    csvInfo = csvFile.firstWhere(
+      (element) => element.contains(p.basename(itemDirPath)),
+      orElse: () => '',
+    );
+    if (csvInfo.isNotEmpty) {
+      break;
+    }
+  }
+
+  //get csvInfo from ice files
+  if (csvInfo.isEmpty) {
+    //get ice file names
+    List<String> uniqueIcePaths = [];
+    for (var mod in modList) {
+      uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
+    }
+    List<String> csvFileInfos = [];
+    for (var icePath in uniqueIcePaths) {
+      for (var csvFile in csvInfosFromSheets) {
+        csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
+      }
+    }
+    if (csvFileInfos.isNotEmpty) {
+      csvInfo = csvFileInfos.first;
+    }
+  }
+  if (csvInfo.isEmpty) {
+    return '';
+  }
+  final infos = csvInfo.split(',');
+  String itemCategory = infos[0];
+  String itemName = '';
+  curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+  if (itemName.contains('[Se]')) {
+    itemCategory = defaultCateforyDirs[16];
+  }
+  String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+  return ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '');
+}
+
+Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modList, List<File> iconFilesInDir) async {
+  List<String> csvInfos = [];
+  //get csvInfo from ice files
+  //get ice file names
+  List<String> uniqueIcePaths = [];
+  for (var mod in modList) {
+    uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
+  }
+  for (var icePath in uniqueIcePaths) {
+    for (var csvFile in csvInfosFromSheets) {
+      csvInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvInfos.contains(line) && line.split(',')[1].isNotEmpty));
+    }
+  }
+
+  List<List<String>> ogIconPaths = [];
+  for (var csvInfo in csvInfos) {
+    final infos = csvInfo.split(',');
+    String itemCategory = infos[0];
+    String itemName = '';
+    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    if (itemName.contains('[Se]')) {
+      itemCategory = defaultCateforyDirs[16];
+    }
+    itemName = itemName.replaceAll(RegExp(charToReplace), '_');
+    if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == itemName).isEmpty) {
+      String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+      if (ogIconIcePath.isNotEmpty) {
+        ogIconPaths.add([itemName, ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '')]);
+      }
+    }
+  }
+
+  return ogIconPaths;
+}
 
 Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {
   //CLear temp dir

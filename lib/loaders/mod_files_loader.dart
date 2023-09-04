@@ -14,6 +14,7 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
@@ -25,11 +26,18 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<List<CategoryType>> modFileStructureLoader() async {
+Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   ogModFilesLoader();
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
+
+  if (isAutoFetchingIconsOnStartup != 'off') {
+    //load sheets
+    if (csvInfosFromSheets.isEmpty) {
+      csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+    }
+  }
 
   //Load list from json
   if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
@@ -61,10 +69,10 @@ Future<List<CategoryType>> modFileStructureLoader() async {
     }
 
     if (cateTypes.indexWhere((element) => element.groupName == group) == -1) {
-      cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(dir.path))]));
+      cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, dir.path, reload))]));
     } else {
       int index = cateTypes.indexWhere((element) => element.groupName == group);
-      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(dir.path)));
+      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, dir.path, reload)));
     }
   }
 
@@ -247,10 +255,10 @@ Future<List<CategoryType>> modFileStructureLoader() async {
   return cateTypes;
 }
 
-Future<List<Item>> itemsFetcher(String catePath) async {
+Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
   final itemInCategory = Directory(catePath).listSync(recursive: false).whereType<Directory>();
   List<Item> items = [];
-  List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+  //List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
   List<String> cateToIgnoreScan = ['Emotes', 'Motions'];
   for (var dir in itemInCategory) {
     List<Mod> modList = modsFetcher(dir.path, p.basename(catePath));
@@ -262,111 +270,72 @@ Future<List<Item>> itemsFetcher(String catePath) async {
     if (cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
     } else {
-      // List<File> iceFilesInCurItem = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      List<File> iceFilesInCurItemNoDup = [];
-      // for (var file in iceFilesInCurItem) {
-      //   if (iceFilesInCurItemNoDup.where((element) => p.basename(element.path) == p.basename(file.path)).isEmpty) {
-      //     iceFilesInCurItemNoDup.add(file);
-      //   }
-      // }
-      // if (iceFilesInCurItem.isEmpty) {
-      //   Directory firstFolderInCurItem = Directory(dir.path).listSync(recursive: false).whereType<Directory>().first;
-      //   iceFilesInCurItem = firstFolderInCurItem.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
-      // }itemIcons = imagesFoundInItemDir.map((e) => e.path).toList();
-      final imagesFoundInItemDir =
-          Directory(dir.path).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
-      itemIcons.addAll(imagesFoundInItemDir.map((e) => e.path));
-
-      //loading icon images
-      List<String> tempItemIconPaths = [];
-
-      if (isAutoFetchingIconsOnStartup == 'all') {
-        //load sheets
-        if (csvInfosFromSheets.isEmpty) {
-          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-        }
-
-        for (var toAddMod in modList) {
-          iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
-        }
-        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
-        List<String> itemInCsv = [];
-        List<String> itemCsvMissingIcons = [];
-
-        if (defaultCateIndex != -1) {
-          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
-          for (var line in itemInCsv) {
-            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
-            if (csvItemIconName.isNotEmpty) {
-              for (var char in charToReplace) {
-                csvItemIconName = csvItemIconName.replaceAll(char, '_');
-              }
-              if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
-                itemCsvMissingIcons.add(line);
-                //print(csvItemIconName);
-              }
-            }
-          }
-
-          if (itemCsvMissingIcons.isNotEmpty) {
-            tempItemIconPaths = await modLoaderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
-          }
+      final iconFilesInDir = dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '.png');
+      if (isAutoFetchingIconsOnStartup == 'off') {
+        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isNotEmpty) {
+          itemIcons.addAll(iconFilesInDir.map((e) => e.path));
         }
       } else if (isAutoFetchingIconsOnStartup == 'minimal') {
-        //load sheets
-        if (csvInfosFromSheets.isEmpty) {
-          csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-        }
-        //get ices from first mod
-        iceFilesInCurItemNoDup.addAll(modList.first.getDistinctModFilePaths().map((e) => File(e)));
-
-        int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
-        List<String> itemInCsv = [];
-        List<String> itemCsvMissingIcons = [];
-
-        if (defaultCateIndex != -1) {
-          itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
-          for (var line in itemInCsv) {
-            String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
-            for (var char in charToReplace) {
-              csvItemIconName = csvItemIconName.replaceAll(char, '_');
-            }
-            if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty && csvItemIconName == p.basename(dir.path)) {
-              itemCsvMissingIcons.add(line);
-              //print(csvItemIconName);
+        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isNotEmpty) {
+          itemIcons.addAll(iconFilesInDir.map((e) => e.path));
+        } else {
+          final iconIceDownloadPath = await autoItemIconFetcherMinimal(dir.path, modList);
+          if (iconIceDownloadPath.isNotEmpty) {
+            String tempIconUnpackDirPath = Uri.file('$modManAddModsTempDirPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
+            final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath, tempIconUnpackDirPath);
+            //unpack and convert dds to png
+            if (downloadedconIcePath.isNotEmpty) {
+              //debugPrint(downloadedconIcePath);
+              await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+              File ddsItemIcon =
+                  Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+              if (ddsItemIcon.path.isNotEmpty) {
+                File newItemIcon = File(Uri.file('${dir.path}/${p.basename(dir.path)}.png').toFilePath());
+                await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+                itemIcons.add(newItemIcon.path);
+              }
             }
           }
-
-          if (itemCsvMissingIcons.isNotEmpty) {
-            tempItemIconPaths = await modLoaderItemIconFetch([itemCsvMissingIcons.first], p.basename(catePath));
+        }
+      } else if (isAutoFetchingIconsOnStartup == 'all') {
+        itemIcons.addAll(iconFilesInDir.map((e) => e.path));
+        if (!reload) {
+          final iconIceDownloadPaths = await autoItemIconFetcherFull(dir.path, modList, iconFilesInDir.toList());
+          if (iconIceDownloadPaths.isNotEmpty) {
+            for (var iconIceDownloadPath in iconIceDownloadPaths) {
+              String tempIconUnpackDirPath = Uri.file('$modManAddModsTempDirPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
+              final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath.last, tempIconUnpackDirPath);
+              //unpack and convert dds to png
+              if (downloadedconIcePath.isNotEmpty) {
+                //debugPrint(downloadedconIcePath);
+                await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+                File ddsItemIcon =
+                    Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+                if (ddsItemIcon.path.isNotEmpty) {
+                  File newItemIcon = File(Uri.file('${dir.path}/${iconIceDownloadPath.first}.png').toFilePath());
+                  await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+                  itemIcons.add(newItemIcon.path);
+                }
+              }
+            }
           }
         }
       }
-
-      if (tempItemIconPaths.isNotEmpty) {
-        for (var tempItemIconPath in tempItemIconPaths) {
-          File(tempItemIconPath).copySync(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-          itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-        }
-        //clear temp dir
-        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-          element.deleteSync(recursive: true);
-        });
-      } else {
-        if (imagesFoundInItemDir.isEmpty && itemIcons.isEmpty) {
-          itemIcons.add('assets/img/placeholdersquare.png');
-        }
+      if (itemIcons.isEmpty) {
+        itemIcons.add('assets/img/placeholdersquare.png');
       }
-
-      //Get variants names
-      //populate sheets
-
-      // if (!cateToIgnoreScan.contains(p.basename(catePath))) {
-      //   nameVariants = await itemVariantsFetch(modList, p.basename(catePath), p.basename(dir.path));
-      // }
     }
+
     items.add(Item(p.basename(dir.path), nameVariants, itemIcons, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
+    if (isAutoFetchingIconsOnStartup != 'off' && !reload) {
+      Provider.of<StateProvider>(context, listen: false).setModsLoaderProgressStatus('${p.basename(dir.parent.path)}\n${p.basename(dir.path)}');
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
   }
+  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+    element.deleteSync(recursive: true);
+  });
+
   return items;
 }
 

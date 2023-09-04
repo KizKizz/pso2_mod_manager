@@ -138,7 +138,7 @@ Future<bool> pathsLoader(context) async {
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath = Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath();
+  modManVitalGaugeOriginalsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -391,7 +391,7 @@ Future<bool> modManPathReloader(context) async {
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath = Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath();
+  modManVitalGaugeOriginalsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -442,7 +442,7 @@ Future<bool> modManPathReloader(context) async {
   listsReloading = true;
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
   Future.delayed(const Duration(milliseconds: 500), () {
-    modFileStructureLoader().then((value) {
+    modFileStructureLoader(context, false).then((value) {
       moddedItemsList = value;
       listsReloading = false;
       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();

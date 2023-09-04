@@ -92,6 +92,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    
     //set headers opacity values
     if (context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue > 1.0) {
       headersOpacityValue = 1.0;
