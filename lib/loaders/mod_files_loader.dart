@@ -267,6 +267,13 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
     List<String> itemIcons = [];
     List<String> nameVariants = [];
 
+    //CLear temp dir
+    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+      if (element.existsSync()) {
+        element.deleteSync(recursive: true);
+      }
+    });
+
     if (cateToIgnoreScan.contains(p.basename(catePath))) {
       itemIcons.add('assets/img/placeholdersquare.png');
     } else {
@@ -333,7 +340,9 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
     }
   }
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    element.deleteSync(recursive: true);
+    if (element.existsSync()) {
+      element.deleteSync(recursive: true);
+    }
   });
 
   return items;
