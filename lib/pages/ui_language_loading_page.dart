@@ -110,7 +110,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                           width: 70,
                           child: DropdownButtonHideUnderline(
                               child: DropdownButton2(
-                            style: const TextStyle(fontWeight: FontWeight.w400),
+                            style: TextStyle(fontWeight: FontWeight.w400, color: Theme.of(context).textTheme.bodyMedium!.color),
                             buttonStyleData: ButtonStyleData(
                               height: 30,
                               decoration: BoxDecoration(
@@ -141,10 +141,10 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                                           padding: const EdgeInsets.only(bottom: 3),
                                           child: Text(
                                             item,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 16,
                                               //fontWeight: FontWeight.bold,
-                                              //color: Colors.white,
+                                              color: Theme.of(context).textTheme.bodyMedium!.color,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                           ),
