@@ -13,6 +13,7 @@ import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
@@ -1299,26 +1300,8 @@ class _MainPageState extends State<MainPage> {
                                 //width: curActiveLang == 'JP' ? 110 : 105,
                                 child: MaterialButton(
                                   color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
-                                  //color: MyApp.themeNotifier.value == ThemeMode.light ? Colors.tealAccent : Colors.blue,
-                                  // onPressed: (() {
-                                  //   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                  //     element.deleteSync(recursive: true);
-                                  //   });
-                                  //   Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                  //     element.deleteSync(recursive: true);
-                                  //   });
-                                  //   modAddHandler(context);
-                                  // }),
                                   onPressed: () {
-                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
-                                    Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
-                                    Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
+                                    clearAllTempDirs();
                                     modsAdderHomePage(context);
                                   },
                                   child: Row(
@@ -1345,9 +1328,7 @@ class _MainPageState extends State<MainPage> {
                                 //width: 99,
                                 child: MaterialButton(
                                   onPressed: (() {
-                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                      element.deleteSync(recursive: true);
-                                    });
+                                    clearAllTempDirs();
                                     vitalGaugeHomePage(context);
                                   }),
                                   child: Row(
