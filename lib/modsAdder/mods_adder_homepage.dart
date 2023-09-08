@@ -1773,7 +1773,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName/tempItemIconUnpack').toFilePath();
         final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
         //unpack and convert dds to png
-        if (downloadedconIcePath.isNotEmpty) {
+        if (downloadedconIcePath.isNotEmpty && File(downloadedconIcePath).existsSync()) {
           //debugPrint(downloadedconIcePath);
           await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
           File ddsItemIcon = Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
@@ -1859,7 +1859,9 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   }
 
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    element.deleteSync(recursive: true);
+    if(element.existsSync()) {
+      element.deleteSync(recursive: true);
+    }
   });
 
   if (modsAdderItemList.isNotEmpty) {

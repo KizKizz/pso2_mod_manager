@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -18,7 +17,7 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   //get csvInfo from item name
   for (var csvFile in csvInfosFromSheets) {
     csvInfo = csvFile.firstWhere(
-      (element) => element.contains(p.basename(itemDirPath)),
+      (element) => element.contains(p.basenameWithoutExtension(itemDirPath)),
       orElse: () => '',
     );
     if (csvInfo.isNotEmpty) {
@@ -92,68 +91,63 @@ Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod>
   return ogIconPaths;
 }
 
-Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {
-  //CLear temp dir
-  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    element.deleteSync(recursive: true);
-  });
+// Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {
+//   List<CsvAccessoryIceFile> csvAccFiles = [];
+//   List<CsvIceFile> csvGenFiles = [];
 
-  List<CsvAccessoryIceFile> csvAccFiles = [];
-  List<CsvIceFile> csvGenFiles = [];
+//   //Find item in csv
 
-  //Find item in csv
+//   for (var csvLine in itemInCsv) {
+//     final lineToList = csvLine.split(',');
+//     if (lineToList[0] != 'Emotes' && lineToList[0] != 'Motions' && lineToList[0] != 'Unknown' && lineToList[0] != '未知') {
+//       if (lineToList[0] == 'Accessories') {
+//         csvAccFiles.add(CsvAccessoryIceFile.fromList(lineToList));
+//       } else {
+//         csvGenFiles.add(CsvIceFile.fromList(lineToList));
+//       }
+//     }
+//   }
 
-  for (var csvLine in itemInCsv) {
-    final lineToList = csvLine.split(',');
-    if (lineToList[0] != 'Emotes' && lineToList[0] != 'Motions' && lineToList[0] != 'Unknown' && lineToList[0] != '未知') {
-      if (lineToList[0] == 'Accessories') {
-        csvAccFiles.add(CsvAccessoryIceFile.fromList(lineToList));
-      } else {
-        csvGenFiles.add(CsvIceFile.fromList(lineToList));
-      }
-    }
-  }
+//   List<String> iconImagePaths = [];
 
-  List<String> iconImagePaths = [];
+//   for (var file in csvAccFiles) {
+//     List<String> iconIcePaths = [];
+//     final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
+//     if (iconPaths.isNotEmpty) {
+//       iconIcePaths.addAll(iconPaths);
+//     } else {
+//       iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
+//     }
+//     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+//     String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
+//     for (var char in charToReplace) {
+//       itemName = itemName.replaceAll(char, '_');
+//     }
+//     for (var path in iconIcePaths) {
+//       iconImagePaths.add(await getIconFromIceFile(itemName, path));
+//     }
+//   }
 
-  for (var file in csvAccFiles) {
-    List<String> iconIcePaths = [];
-    final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
-    if (iconPaths.isNotEmpty) {
-      iconIcePaths.addAll(iconPaths);
-    } else {
-      iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
-    }
-    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-    String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
-    for (var char in charToReplace) {
-      itemName = itemName.replaceAll(char, '_');
-    }
-    for (var path in iconIcePaths) {
-      iconImagePaths.add(await getIconFromIceFile(itemName, path));
-    }
-  }
+//   for (var file in csvGenFiles) {
+//     List<String> iconIcePaths = [];
+//     final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
+//     if (iconPaths.isNotEmpty) {
+//       iconIcePaths.addAll(iconPaths);
+//     } else {
+//       iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
+//     }
+//     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+//     String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
+//     for (var char in charToReplace) {
+//       itemName = itemName.replaceAll(char, '_');
+//     }
+//     for (var path in iconIcePaths) {
+//       iconImagePaths.add(await getIconFromIceFile(itemName, path));
+//     }
+//   }
 
-  for (var file in csvGenFiles) {
-    List<String> iconIcePaths = [];
-    final iconPaths = ogWin32FilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)).toList();
-    if (iconPaths.isNotEmpty) {
-      iconIcePaths.addAll(iconPaths);
-    } else {
-      iconIcePaths.addAll(ogWin32NAFilePaths.where((element) => file.iconIceName.isNotEmpty && p.basename(element) == p.basename(file.iconIceName)));
-    }
-    List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-    String itemName = curActiveLang == 'JP' ? file.jpName : file.enName;
-    for (var char in charToReplace) {
-      itemName = itemName.replaceAll(char, '_');
-    }
-    for (var path in iconIcePaths) {
-      iconImagePaths.add(await getIconFromIceFile(itemName, path));
-    }
-  }
-
-  return iconImagePaths;
-}
+//   return iconImagePaths;
+// }
 
 // Future<List<String>> modAdderItemIconFetch(List<String> itemInCsv, String category) async {
 //   //CLear temp dir

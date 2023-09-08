@@ -1,11 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.2",
+    "version": "2.4.3",
     "description": [
-        "Improved the way the app fetches item icons on startup. It now displays detailed progress",
-        "Added language selection for first time users. This may ask you to select your language once",
-        "Separated Vital Gauge background cache for each profile",
-        "Some general bug fixes"
+        "Some fixes for loading mods on startup",
+        "Attempted to fix Add Mods button freezes after failed to add (Can still happen and requires more info to fix)",
+        "Fixed text color on language selection screen did not show up correctly in light mode",
+        "Other general bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
