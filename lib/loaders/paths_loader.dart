@@ -73,7 +73,7 @@ Future<bool> pathsLoader(context) async {
   if (!Directory(modManPso2binPath).existsSync()) {
     modManPso2binPath = '';
   }
-  while (modManPso2binPath.isEmpty) {
+  while (modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin') {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
@@ -284,7 +284,7 @@ Future<bool> pso2PathsReloader(context) async {
   final prefs = await SharedPreferences.getInstance();
   //pso2_bin path
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
-  if (pso2binPathFromPicker != null) {
+  if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
     modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
     prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     modManChecksumFilePath = '';
