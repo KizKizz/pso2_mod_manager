@@ -146,11 +146,14 @@ Future<String> modsSwapperLaIceFilesGet(
     } else if (extractedGroup2FilesF.isNotEmpty && extractedGroup2FilesT.isEmpty) {
       renamedExtractedGroup2Files = await lasSwapRename(extractedGroup2FilesF, extractedGroup1FilesT);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
-      Directory(extractedGroup1PathF).createSync();
-      for (var file in renamedExtractedGroup2Files) {
-        file.renameSync(Uri.file('$extractedGroup1PathF/${p.basename(file.path)}').toFilePath());
+      if (!Directory(extractedGroup1PathF).existsSync()) {
+        Directory(extractedGroup1PathF).createSync();
+        for (var file in renamedExtractedGroup2Files) {
+          file.renameSync(Uri.file('$extractedGroup1PathF/${p.basename(file.path)}').toFilePath());
+        }
       }
     }
+
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
@@ -160,9 +163,11 @@ Future<String> modsSwapperLaIceFilesGet(
     } else if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isEmpty) {
       renamedExtractedGroup1Files = await lasSwapRename(extractedGroup1FilesF, extractedGroup2FilesT);
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
-      Directory(extractedGroup2PathF).createSync();
-      for (var file in renamedExtractedGroup1Files) {
-        file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+      if (!Directory(extractedGroup2PathF).existsSync()) {
+        Directory(extractedGroup2PathF).createSync();
+        for (var file in renamedExtractedGroup1Files) {
+          file.renameSync(Uri.file('$extractedGroup2PathF/${p.basename(file.path)}').toFilePath());
+        }
       }
     }
 
@@ -281,7 +286,9 @@ Future<String> modsSwapperLaIceFilesGet(
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
     } else {
-      packDirPath = Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
+      packDirPath =
+          Uri.file('$modManSwapperOutputDirPath/$newToSelectedItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}')
+              .toFilePath();
     }
     Directory(packDirPath).createSync(recursive: true);
     await Process.run('$modManZamboniExePath -c -pack -outdir "$packDirPath"', [Uri.file('$tempSubmodPathF/${iceNameF}_ext').toFilePath()]);

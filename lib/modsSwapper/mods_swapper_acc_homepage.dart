@@ -190,7 +190,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: fromItemCsvData[i],
                                                     groupValue: selectedFromAccCsvFile,
-                                                    title: Text(fromItemCsvData[i].enName),
+                                                    title: Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                     subtitle: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,

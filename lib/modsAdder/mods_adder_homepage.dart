@@ -1828,7 +1828,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
         if (index != -1) {
           for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-            extraFile.copySync(Uri.file('$modDir/${p.basename(extraFile.path)}').toFilePath());
+            extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
           }
         }
       }
@@ -1859,7 +1859,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   }
 
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    if(element.existsSync()) {
+    if (element.existsSync()) {
       element.deleteSync(recursive: true);
     }
   });

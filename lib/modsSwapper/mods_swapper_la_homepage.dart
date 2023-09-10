@@ -241,7 +241,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: fromItemCsvData[i],
                                                     groupValue: selectedFromEmotesCsvFile,
-                                                    title: Text(fromItemCsvData[i].enName),
+                                                    title: Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                     subtitle: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +339,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Text(queueFromEmoteCsvFiles[i].enName),
+                                                              Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                               // for (int line = 0;
                                                               //     line < csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first)).length;
                                                               //     line++)
@@ -354,7 +354,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           Column(
                                                             crossAxisAlignment: CrossAxisAlignment.end,
                                                             children: [
-                                                              Text(queueToEmoteCsvFiles[i].enName),
+                                                              Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                               Text(queueToEmoteCsvFiles[i].gender,
                                                                   style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
                                                             ],
@@ -796,7 +796,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          queueFromEmoteCsvFiles[i].enName,
+                                          curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                     const SizedBox(
@@ -805,7 +805,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          queueToEmoteCsvFiles[i].enName,
+                                          curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                   ],
