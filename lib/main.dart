@@ -196,7 +196,6 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> miscCheck() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      clearAllTempDirs();
       //first Time Language Set
       firstTimeLanguageSet = (prefs.getBool('firstTimeLanguageSet') ?? false);
       //mods adder group same item variants
