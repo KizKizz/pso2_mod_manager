@@ -3,7 +3,8 @@
     "version": "2.4.4",
     "description": [
         "Attempted #2 to fix Add Mods button freezes after failed to add",
-        "Other general bug fixes"
+        "Fixed some bugs in mods swapper",
+        "Other other bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
