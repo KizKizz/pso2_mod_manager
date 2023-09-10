@@ -15,6 +15,7 @@ import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -24,7 +25,6 @@ import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:window_manager/window_manager.dart';
 import 'package:io/io.dart' as io;
 
 bool dropZoneMax = true;
@@ -103,9 +103,10 @@ void modsAdderHomePage(context) {
                                     ),
                                     ElevatedButton(
                                         onPressed: () {
-                                          windowManager.destroy();
+                                          clearAllTempDirs();
+                                          Navigator.of(context).pop();
                                         },
-                                        child: Text(curLangText!.uiExit))
+                                        child: Text(curLangText!.uiReturn))
                                   ],
                                 ),
                               );
@@ -397,6 +398,15 @@ void modsAdderHomePage(context) {
                                                             curLangText!.uiErrorWhenLoadingAddModsData,
                                                             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                           ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                clearAllTempDirs();
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              child: Text(curLangText!.uiReturn))
                                                         ],
                                                       ),
                                                     );
@@ -1524,15 +1534,7 @@ void modsAdderHomePage(context) {
                                                     onPressed: _isAddingMods
                                                         ? null
                                                         : (() async {
-                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
+                                                            clearAllTempDirs();
                                                             //clear lists
                                                             processedFileListLoad = null;
                                                             processedFileList.clear();
@@ -1560,15 +1562,7 @@ void modsAdderHomePage(context) {
                                                       onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
                                                           ? null
                                                           : (() {
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
+                                                              clearAllTempDirs();
                                                               _itemNameRenameIndex.clear();
                                                               renameTextBoxController.clear();
                                                               mainFolderRenameIndex.clear();
@@ -1613,15 +1607,7 @@ void modsAdderHomePage(context) {
                                                                   modsAdderModFilesAdder(context, toAddList).then(
                                                                     (value) {
                                                                       if (value) {
-                                                                        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
-                                                                        Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
-                                                                        Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
+                                                                        clearAllTempDirs();
                                                                         _itemNameRenameIndex.clear();
                                                                         mainFolderRenameIndex.clear();
                                                                         renameTextBoxController.clear();
