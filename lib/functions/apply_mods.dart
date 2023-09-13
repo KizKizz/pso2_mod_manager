@@ -22,16 +22,3 @@ Future<ModFile> modFileApply(ModFile modFile) async {
   return modFile;
 }
 
-// Future<ModFile> modFileApply(ModFile modFile) async {
-//   //retore dublicate
-//   //await modFileRestore(moddedItemsList, modFile);
-//   modFile = await modFileBackup(modFile);
-//   //replace files in game data
-//   for (var ogPath in modFile.ogLocations) {
-//     File(modFile.location).copySync(ogPath);
-//   }
-//   modFile.md5 = await getFileHash(modFile.location);
-//   saveModdedItemListToJson();
-
-//   return modFile;
-// }
