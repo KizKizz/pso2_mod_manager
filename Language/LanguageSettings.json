@@ -2,11 +2,11 @@
   {
     "langInitial": "EN",
     "langFilePath": "C:\\Users\\kizkizz\\Documents\\GitHub\\pso2_mod_manager\\Language\\EN.json",
-    "selected": false
+    "selected": true
   },
   {
     "langInitial": "JP",
     "langFilePath": "C:\\Users\\kizkizz\\Documents\\GitHub\\pso2_mod_manager\\Language\\JP.json",
-    "selected": true
+    "selected": false
   }
 ]

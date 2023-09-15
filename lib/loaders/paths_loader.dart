@@ -75,7 +75,7 @@ Future<bool> pathsLoader(context) async {
   }
   while (modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin') {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
-    if (pso2binPathFromPicker != null) {
+    if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
       prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     }
@@ -84,12 +84,22 @@ Future<bool> pathsLoader(context) async {
   modManDirParentDirPath = Uri.file(prefs.getString('mainModManDirPath') ?? '').toFilePath();
   if (!Directory(modManDirParentDirPath).existsSync()) {
     modManDirParentDirPath = '';
+  } else {
+    if (Directory(Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath()).existsSync()) {
+      modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+    }
   }
-  while (modManDirParentDirPath.isEmpty) {
+  while (modManDirParentDirPath.isEmpty || modManDirPath.isEmpty) {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
-      modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
-      prefs.setString('mainModManDirPath', modManDirParentDirPath);
+      if (p.basename(modManDirPathFromPicker) == 'PSO2 Mod Manager') {
+        modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+      } else {
+        modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+        modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+        Directory(modManDirPath).createSync();
+        prefs.setString('mainModManDirPath', modManDirParentDirPath);
+      }
     } else {
       modManDirParentDirPath = modManPso2binPath;
       //Create modman folder if not already existed
@@ -100,22 +110,22 @@ Future<bool> pathsLoader(context) async {
   }
 
   //Check modman folder if existed, if not choose path to it
-  if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
-    modManDirPath = modManDirParentDirPath;
-  } else {
-    modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
-  }
-  while (!Directory(modManDirPath).existsSync()) {
-    String? modManDirPathFromPicker = await modManDirPathGet(context);
-    if (modManDirPathFromPicker != null) {
-      modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
-    } else {
-      modManDirParentDirPath = modManPso2binPath;
-      //Create modman folder if not already existed
-      modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
-      Directory(modManDirPath).createSync();
-    }
-  }
+  // if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
+  //   modManDirPath = modManDirParentDirPath;
+  // } else {
+  //   modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  // }
+  // while (!Directory(modManDirPath).existsSync()) {
+  //   String? modManDirPathFromPicker = await modManDirPathGet(context);
+  //   if (modManDirPathFromPicker != null) {
+  //     modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+  //   } else {
+  //     modManDirParentDirPath = modManPso2binPath;
+  //     //Create modman folder if not already existed
+  //     modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  //     Directory(modManDirPath).createSync();
+  //   }
+  // }
 
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
@@ -138,7 +148,8 @@ Future<bool> pathsLoader(context) async {
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
+  modManVitalGaugeOriginalsDirPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -345,13 +356,18 @@ Future<String?> pso2binPathReselect(context) async {
                     }),
                 ElevatedButton(
                     onPressed: () async {
-                      Navigator.pop(
-                          context,
-                          // await FilePicker.platform.getDirectoryPath(
-                          //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
-                          //   lockParentWindow: true,
-                          // )
-                          await getDirectoryPath());
+                      getDirectoryPath().then((value) {
+                        if (value!.isNotEmpty && p.basename(value) == 'pso2_bin') {
+                          Navigator.pop(context, value);
+                        }
+                      });
+                      // Navigator.pop(
+                      //     context,
+                      //     // await FilePicker.platform.getDirectoryPath(
+                      //     //   dialogTitle: curLangText!.uiSelectPso2binFolderPath,
+                      //     //   lockParentWindow: true,
+                      //     // )
+                      //     await getDirectoryPath());
                     },
                     child: Text(curLangText!.uiReselect))
               ]));
@@ -361,18 +377,28 @@ Future<bool> modManPathReloader(context) async {
   final prefs = await SharedPreferences.getInstance();
   String? modManDirPathFromPicker = await modManDirPathReselect(context);
   if (modManDirPathFromPicker != null) {
-    modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
-    prefs.setString('mainModManDirPath', modManDirParentDirPath);
+    if (p.basename(modManDirPathFromPicker) == 'PSO2 Mod Manager') {
+      modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+      modManDirPath = modManDirParentDirPath;
+      modManDirParentDirPath = Uri.file(p.dirname(modManDirParentDirPath)).toFilePath();
+      prefs.setString('mainModManDirPath', modManDirParentDirPath);
+    } else {
+      modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+      modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+      Directory(modManDirPath).createSync();
+      prefs.setString('mainModManDirPath', modManDirParentDirPath);
+    }
   } else {
     return false;
   }
 
   //Check modman folder
-  if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
-    modManDirPath = modManDirParentDirPath;
-  } else {
-    modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
-  }
+  // if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
+  //   modManDirPath = modManDirParentDirPath;
+  // } else {
+  //   modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+  //   Directory(modManDirPath).createSync();
+  // }
 
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
@@ -391,7 +417,8 @@ Future<bool> modManPathReloader(context) async {
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
+  modManVitalGaugeOriginalsDirPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
