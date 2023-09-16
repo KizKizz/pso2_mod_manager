@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
@@ -73,7 +74,7 @@ Future<bool> pathsLoader(context) async {
   if (!Directory(modManPso2binPath).existsSync()) {
     modManPso2binPath = '';
   }
-  while (modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin') {
+  while ((modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin')) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
     if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
@@ -93,7 +94,10 @@ Future<bool> pathsLoader(context) async {
     String? modManDirPathFromPicker = await modManDirPathGet(context);
     if (modManDirPathFromPicker != null) {
       if (p.basename(modManDirPathFromPicker) == 'PSO2 Mod Manager') {
-        modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
+        modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
+        modManDirPath = modManDirParentDirPath;
+        modManDirParentDirPath = Uri.file(p.dirname(modManDirParentDirPath)).toFilePath();
+        prefs.setString('mainModManDirPath', modManDirParentDirPath);
       } else {
         modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
         modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
@@ -101,7 +105,8 @@ Future<bool> pathsLoader(context) async {
         prefs.setString('mainModManDirPath', modManDirParentDirPath);
       }
     } else {
-      modManDirParentDirPath = modManPso2binPath;
+      final documentDir = await getApplicationDocumentsDirectory();
+      modManDirParentDirPath = documentDir.path;
       //Create modman folder if not already existed
       modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
       Directory(modManDirPath).createSync();
@@ -235,6 +240,20 @@ Future<String?> pso2binPathGet(context) async {
                 curLangText!.uiPso2binFolderNotFoundSelect,
               ),
               actions: <Widget>[
+                // if (Provider.of<StateProvider>(context, listen: false).reloadProfile)
+                //   ElevatedButton(
+                //       child: Text(curLangText!.uiReturn),
+                //       onPressed: () async {
+                //         Navigator.pop(context, null);
+                //         final prefs = await SharedPreferences.getInstance();
+                //         if (modManCurActiveProfile == 1) {
+                //           modManCurActiveProfile = 2;
+                //         } else if (modManCurActiveProfile == 2) {
+                //           modManCurActiveProfile = 1;
+                //         }
+                //         prefs.setInt('modManCurActiveProfile', modManCurActiveProfile);
+                //       }),
+                // if (!Provider.of<StateProvider>(context, listen: false).reloadProfile)
                 ElevatedButton(
                     child: Text(curLangText!.uiExit),
                     onPressed: () async {

@@ -1,9 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.4",
+    "version": "2.4.5",
     "description": [
-        "Attempted #2 to fix Add Mods button freezes after failed to add",
-        "Fixed some bugs in mods swapper",
+        "Fixed some bugs when selecting pso2_bin path and PSO2 Mod Manager folder path",
+        "Changed the default location of 'PSO2 Mod Manager' folder to 'Documents' when selecting 'No' on first launch",
+        "Fixed a bug where files become corrupted after unzipped in a certain zip files",
         "Other other bug fixes"
     ],
     "windows_file": "",

@@ -210,7 +210,7 @@
   "uiPso2binFolderNotFoundSelect": "pso2_bin フォルダが見つかりません。今すぐ選択しますか？終了を選択すると、アプリが終了します",
   "uiSelectPso2binFolderPath": "pso2_binのフォルダパスを選択する。",
   "uiMMFolderNotFound": "Mod Manager Folderが見つからない",
-  "uiSelectPathToStoreMMFolder": "MODを保存するパスを選択してください。\n「いいえ」を選択すると、「pso2_bin」フォルダの中にフォルダが作成されます。\n注意:このフォルダはMODとバックアップを保存するフォルダです。",
+  "uiSelectPathToStoreMMFolder": "MODを保存するパスを選択しますか?\n「いいえ」を選択すると、Documentsフォルダ内に「PSO2 Mod Manager」というフォルダが作成されます。\n注:このフォルダにはMODやその他の設定が保存されます。",
   "uiSelectAFolderToStoreMMFolder": "Mod Managerフォルダを保存するフォルダを選択します。",
   "uiCurrentPath": "現在のパス",
   "uiReselect": "リセレクト",

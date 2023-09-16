@@ -1676,7 +1676,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   //copy files to temp
   for (var xFile in xFilePaths) {
     if (p.extension(xFile.path) == '.zip') {
-      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true);
+      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: false);
     } else if (File(xFile.path).statSync().type == FileSystemEntityType.directory) {
       await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name}').toFilePath());
     } else {
