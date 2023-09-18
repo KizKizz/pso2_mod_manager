@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:file_selector/file_selector.dart';
 // ignore: depend_on_referenced_packages
 //import 'package:collection/collection.dart';
 
@@ -185,7 +185,7 @@ void modsAdderHomePage(context) {
                                                     border: Border.all(color: Theme.of(context).hintColor),
                                                     color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
                                                   ),
-                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 75,
+                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 108,
                                                   //width: constraints.maxWidth * 0.45,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -252,6 +252,26 @@ void modsAdderHomePage(context) {
                                               child: SizedBox(
                                                 width: double.infinity,
                                                 child: ElevatedButton(
+                                                    onPressed: (() async {
+                                                      String? selectedDirPath = await getDirectoryPath();
+                                                      if (selectedDirPath != null) {
+                                                        modAdderDragDropFiles.add(XFile(selectedDirPath));
+                                                      }
+                                                      setState(
+                                                        () {},
+                                                      );
+                                                    }),
+                                                    child: Text(curLangText!.uiBrowseFolder)),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: !dropZoneMax,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 5),
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
                                                     onPressed: modAdderDragDropFiles.isNotEmpty
                                                         ? (() async {
                                                             final prefs = await SharedPreferences.getInstance();
@@ -281,19 +301,17 @@ void modsAdderHomePage(context) {
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                        onPressed: modAdderDragDropFiles.isNotEmpty
-                                                            ? (() {
-                                                                modAdderDragDropFiles.clear();
-                                                                //newModMainFolderList.clear();
-                                                                setState(
-                                                                  () {},
-                                                                );
-                                                              })
-                                                            : null,
-                                                        child: Text(curLangText!.uiClearAll)),
-                                                  ),
+                                                  ElevatedButton(
+                                                      onPressed: modAdderDragDropFiles.isNotEmpty
+                                                          ? (() {
+                                                              modAdderDragDropFiles.clear();
+                                                              //newModMainFolderList.clear();
+                                                              setState(
+                                                                () {},
+                                                              );
+                                                            })
+                                                          : null,
+                                                      child: Text(curLangText!.uiClearAll)),
                                                   const SizedBox(
                                                     width: 5,
                                                   ),
@@ -324,8 +342,28 @@ void modsAdderHomePage(context) {
                                                       ),
                                                     ),
                                                   ),
+                                                  Visibility(
+                                                    visible: dropZoneMax,
+                                                    child: Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(right: 5),
+                                                        child: ElevatedButton(
+                                                            onPressed: (() async {
+                                                              String? selectedDirPath = await getDirectoryPath();
+                                                              if (selectedDirPath != null) {
+                                                                modAdderDragDropFiles.add(XFile(selectedDirPath));
+                                                              }
+                                                              setState(
+                                                                () {},
+                                                              );
+                                                            }),
+                                                            child: Text(curLangText!.uiBrowseFolder)),
+                                                      ),
+                                                    ),
+                                                  ),
                                                   Expanded(
                                                     child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                         onPressed: modAdderDragDropFiles.isNotEmpty
                                                             ? (() async {
                                                                 if (processedFileList.isNotEmpty) {
@@ -1590,7 +1628,7 @@ void modsAdderHomePage(context) {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
-                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
+                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(100)),
                                                         onPressed: processedFileList.isEmpty || _isNameEditing || !context.watch<StateProvider>().modAdderReload
                                                             ? null
                                                             : (() async {

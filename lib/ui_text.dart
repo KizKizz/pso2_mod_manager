@@ -194,7 +194,7 @@ class TranslationText {
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
-      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nOr use the "Browse Folder" button to select\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
@@ -329,7 +329,8 @@ class TranslationText {
       uiClickToRename = 'Click to rename ',
       uiDuplicatedMod = ' duplicated mod',
       uiDuplicatedMods = ' duplicated mods',
-      uiGroupSameItemVariants = 'Group Same Variants';
+      uiGroupSameItemVariants = 'Group Same Variants',
+      uiBrowseFolder = 'Browse Folder';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';
