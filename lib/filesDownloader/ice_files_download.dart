@@ -126,6 +126,11 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
 
   for (var path in dataIcePaths) {
     String webLinkPath = path.replaceAll('\\', '/');
+    if (webLinkPath.contains('win32reboot_na')) {
+      webLinkPath = webLinkPath.replaceFirst('win32reboot_na', 'win32reboot');
+    } else if (webLinkPath.contains('win32_na')) {
+      webLinkPath = webLinkPath.replaceFirst('win32_na', 'win32');
+    }
 
     if (officialPatchServerFileList.isNotEmpty) {
       bool fileFound = officialPatchServerFileList

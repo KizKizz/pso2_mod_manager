@@ -194,7 +194,7 @@ class TranslationText {
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
-      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nMay take some time\nto process large amount of files',
+      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
@@ -209,7 +209,7 @@ class TranslationText {
       uiBeforeAdding = 'before adding',
       uiThereAreStillModsThatWaitingToBeAdded = 'There are still mods in the list waiting to be added',
       uiModsAddedSuccessfully = 'Mods added successfully!',
-      uiAddAll = 'Add All',
+      uiAddAll = 'Add To Mod Mananager',
       uiDuplicateNamesFound = 'Duplicate mod name(s) found',
       uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
       uiDuplicateModsIn = 'in',
@@ -242,10 +242,10 @@ class TranslationText {
   String uiSuccessfullyRemovedTheseMods = 'Successfully removed these mods from the game';
 
   //paths_loader
-  String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" will close the app',
+  String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" would close the app',
       uiSelectPso2binFolderPath = 'Select \'pso2_bin\' folder path',
       uiMMFolderNotFound = 'Mod Manager Folder not found',
-      uiSelectPathToStoreMMFolder = 'Select a path to store your mods?\nSelecting "No" will create a folder inside "pso2_bin" folder\nNote: This folder stores mods and backups',
+      uiSelectPathToStoreMMFolder = 'Select a path to store your mods?\nSelecting "No" would create a folder named "PSO2 Mod Manager" inside "Documents" folder\nNote: This folder will store your mods and other settings',
       uiSelectAFolderToStoreMMFolder = 'Select a folder to store Mod Manager folder',
       uiCurrentPath = 'Current path',
       uiReselect = 'Reselect',
@@ -329,7 +329,9 @@ class TranslationText {
       uiClickToRename = 'Click to rename ',
       uiDuplicatedMod = ' duplicated mod',
       uiDuplicatedMods = ' duplicated mods',
-      uiGroupSameItemVariants = 'Group Same Variants';
+      uiGroupSameItemVariants = 'Group Variants',
+      uiAddFolders = 'Add Folders',
+      uiAddFiles = 'Add Files';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';

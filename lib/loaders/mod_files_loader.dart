@@ -492,7 +492,7 @@ void ogModFilesReset() {
   ogWin32FilePaths.clear();
   ogWin32NAFilePaths.clear();
   ogWin32RebootFilePaths.clear();
-  ogWin32RebootFilePaths.clear();
+  ogWin32RebootNAFilePaths.clear();
 }
 
 void ogModFilesLoader() {
@@ -517,8 +517,8 @@ void ogModFilesLoader() {
         .map((e) => e.path)
         .toList();
   }
-  if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
-    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
+  if (ogWin32RebootNAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
+    ogWin32RebootNAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
         .listSync(recursive: true)
         .whereType<File>()
         .where((element) => p.extension(element.path) == '')

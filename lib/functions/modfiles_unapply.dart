@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -46,16 +48,41 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
   }
 
   final restoredFiles = await downloadIceFromOfficial(unapplyModFileDataPaths);
-  final restoredFileNames = restoredFiles.map((e) => p.basename(e)).toList();
+  //final restoredFileNames = restoredFiles.map((e) => p.basename(e)).toList();
+  final restoredOGFilePaths = restoredFiles.map((e) => Uri.file('$modManPso2binPath/$e').toFilePath()).toList();
 
   for (var modFile in modFiles) {
-    if (restoredFileNames.contains(modFile.modFileName)) {
-    modFile.ogMd5s.clear();
-    modFile.bkLocations.clear();
-    modFile.ogLocations.clear();
-    modFile.applyDate = DateTime(0);
-    modFile.applyStatus = false;
-    unappliedModFiles.add(modFile);
+    modFile.ogLocations.removeWhere((element) => restoredOGFilePaths.contains(element));
+
+    List<String> bkPathsToRemove = [];
+    for (var ogPath in modFile.ogLocations) {
+      //restore backups for win32_na and win32reboot_na
+      if (ogPath.contains('win32_na') || ogPath.contains('win32reboot_na')) {
+        for (var bkPath in modFile.bkLocations) {
+          if (File(bkPath).existsSync() && ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), '') == bkPath.replaceFirst(modManBackupsDirPath, '')) {
+            final restoredFile = await File(bkPath).copy(ogPath);
+            if (restoredFile.path == ogPath) {
+              File(bkPath).deleteSync();
+              if (bkPath.contains('win32reboot_na') && Directory(p.dirname(bkPath)).listSync(recursive: true).whereType<File>().isEmpty) {
+                Directory(p.dirname(bkPath)).deleteSync(recursive: true);
+              }
+              bkPathsToRemove.add(bkPath);
+            }
+          }
+        }
+      }
+    }
+    for (var bkPath in bkPathsToRemove) {
+      modFile.bkLocations.remove(bkPath);
+      modFile.ogLocations.removeWhere((element) => element.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), '') == bkPath.replaceFirst(modManBackupsDirPath, ''));
+    }
+    if (modFile.bkLocations.isEmpty && modFile.ogLocations.isEmpty) {
+      modFile.ogMd5s.clear();
+      modFile.bkLocations.clear();
+      modFile.ogLocations.clear();
+      modFile.applyDate = DateTime(0);
+      modFile.applyStatus = false;
+      unappliedModFiles.add(modFile);
     }
   }
 

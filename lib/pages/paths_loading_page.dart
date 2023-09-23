@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/patch_item_lists_loading_page.dart';
@@ -82,6 +83,7 @@ class _PathsLoadingPageState extends State<PathsLoadingPage> {
                 ),
               );
             } else {
+              clearAllTempDirs();
               return const PatchItemListLoadingPage();
             }
           }

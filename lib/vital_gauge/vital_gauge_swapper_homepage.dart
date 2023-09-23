@@ -319,6 +319,17 @@ void vitalGaugeHomePage(context) {
                                                           padding: const EdgeInsets.only(bottom: 5),
                                                           child: Row(
                                                             children: [
+                                                              ElevatedButton(
+                                                                  onPressed: () async {
+                                                                    await customVitalBackgroundsFetching();
+                                                                    setState(
+                                                                      () {},
+                                                                    );
+                                                                  },
+                                                                  child: const Icon(Icons.refresh)),
+                                                              const SizedBox(
+                                                                width: 5,
+                                                              ),
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {

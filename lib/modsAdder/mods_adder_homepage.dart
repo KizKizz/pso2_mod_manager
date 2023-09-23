@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:file_selector/file_selector.dart';
 // ignore: depend_on_referenced_packages
 //import 'package:collection/collection.dart';
 
@@ -15,6 +15,7 @@ import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -24,7 +25,6 @@ import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:window_manager/window_manager.dart';
 import 'package:io/io.dart' as io;
 
 bool dropZoneMax = true;
@@ -55,7 +55,7 @@ void modsAdderHomePage(context) {
               backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               contentPadding: const EdgeInsets.all(5),
               content: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: Scaffold(
                   backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -103,9 +103,10 @@ void modsAdderHomePage(context) {
                                     ),
                                     ElevatedButton(
                                         onPressed: () {
-                                          windowManager.destroy();
+                                          clearAllTempDirs();
+                                          Navigator.of(context).pop();
                                         },
-                                        child: Text(curLangText!.uiExit))
+                                        child: Text(curLangText!.uiReturn))
                                   ],
                                 ),
                               );
@@ -184,7 +185,7 @@ void modsAdderHomePage(context) {
                                                     border: Border.all(color: Theme.of(context).hintColor),
                                                     color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
                                                   ),
-                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 75,
+                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 108,
                                                   //width: constraints.maxWidth * 0.45,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -248,6 +249,49 @@ void modsAdderHomePage(context) {
                                             visible: !dropZoneMax,
                                             child: Padding(
                                               padding: const EdgeInsets.only(top: 5),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: SizedBox(
+                                                      width: double.infinity,
+                                                      child: ElevatedButton(
+                                                          onPressed: (() async {
+                                                            List<String?> selectedDirPaths = await getDirectoryPaths();
+                                                            if (selectedDirPaths.isNotEmpty) {
+                                                              modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
+                                                            }
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          }),
+                                                          child: Text(curLangText!.uiAddFolders)),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 5,),
+                                                  Expanded(
+                                                    child: SizedBox(
+                                                      width: double.infinity,
+                                                      child: ElevatedButton(
+                                                          onPressed: (() async {
+                                                            List<XFile?> selectedDirPaths = await openFiles();
+                                                            if (selectedDirPaths.isNotEmpty) {
+                                                              modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
+                                                            }
+                                                            setState(
+                                                              () {},
+                                                            );
+                                                          }),
+                                                          child: Text(curLangText!.uiAddFiles)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: !dropZoneMax,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 5),
                                               child: SizedBox(
                                                 width: double.infinity,
                                                 child: ElevatedButton(
@@ -280,19 +324,17 @@ void modsAdderHomePage(context) {
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                        onPressed: modAdderDragDropFiles.isNotEmpty
-                                                            ? (() {
-                                                                modAdderDragDropFiles.clear();
-                                                                //newModMainFolderList.clear();
-                                                                setState(
-                                                                  () {},
-                                                                );
-                                                              })
-                                                            : null,
-                                                        child: Text(curLangText!.uiClearAll)),
-                                                  ),
+                                                  ElevatedButton(
+                                                      onPressed: modAdderDragDropFiles.isNotEmpty
+                                                          ? (() {
+                                                              modAdderDragDropFiles.clear();
+                                                              //newModMainFolderList.clear();
+                                                              setState(
+                                                                () {},
+                                                              );
+                                                            })
+                                                          : null,
+                                                      child: Text(curLangText!.uiClearAll)),
                                                   const SizedBox(
                                                     width: 5,
                                                   ),
@@ -323,8 +365,47 @@ void modsAdderHomePage(context) {
                                                       ),
                                                     ),
                                                   ),
+                                                  Visibility(
+                                                    visible: dropZoneMax,
+                                                    child: Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(right: 5),
+                                                        child: ElevatedButton(
+                                                            onPressed: (() async {
+                                                              List<String?> selectedDirPaths = await getDirectoryPaths();
+                                                              if (selectedDirPaths.isNotEmpty) {
+                                                                modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
+                                                              }
+                                                              setState(
+                                                                () {},
+                                                              );
+                                                            }),
+                                                            child: Text(curLangText!.uiAddFolders)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Visibility(
+                                                    visible: dropZoneMax,
+                                                    child: Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(right: 5),
+                                                        child: ElevatedButton(
+                                                            onPressed: (() async {
+                                                              List<XFile?> selectedDirPaths = await openFiles();
+                                                              if (selectedDirPaths.isNotEmpty) {
+                                                                modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
+                                                              }
+                                                              setState(
+                                                                () {},
+                                                              );
+                                                            }),
+                                                            child: Text(curLangText!.uiAddFiles)),
+                                                      ),
+                                                    ),
+                                                  ),
                                                   Expanded(
                                                     child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
                                                         onPressed: modAdderDragDropFiles.isNotEmpty
                                                             ? (() async {
                                                                 if (processedFileList.isNotEmpty) {
@@ -397,6 +478,15 @@ void modsAdderHomePage(context) {
                                                             curLangText!.uiErrorWhenLoadingAddModsData,
                                                             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                           ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                clearAllTempDirs();
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              child: Text(curLangText!.uiReturn))
                                                         ],
                                                       ),
                                                     );
@@ -1524,15 +1614,7 @@ void modsAdderHomePage(context) {
                                                     onPressed: _isAddingMods
                                                         ? null
                                                         : (() async {
-                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
+                                                            clearAllTempDirs();
                                                             //clear lists
                                                             processedFileListLoad = null;
                                                             processedFileList.clear();
@@ -1560,15 +1642,7 @@ void modsAdderHomePage(context) {
                                                       onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
                                                           ? null
                                                           : (() {
-                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
-                                                              Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                element.deleteSync(recursive: true);
-                                                              });
+                                                              clearAllTempDirs();
                                                               _itemNameRenameIndex.clear();
                                                               renameTextBoxController.clear();
                                                               mainFolderRenameIndex.clear();
@@ -1596,7 +1670,7 @@ void modsAdderHomePage(context) {
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
-                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
+                                                        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(100)),
                                                         onPressed: processedFileList.isEmpty || _isNameEditing || !context.watch<StateProvider>().modAdderReload
                                                             ? null
                                                             : (() async {
@@ -1613,15 +1687,7 @@ void modsAdderHomePage(context) {
                                                                   modsAdderModFilesAdder(context, toAddList).then(
                                                                     (value) {
                                                                       if (value) {
-                                                                        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
-                                                                        Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
-                                                                        Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
+                                                                        clearAllTempDirs();
                                                                         _itemNameRenameIndex.clear();
                                                                         mainFolderRenameIndex.clear();
                                                                         renameTextBoxController.clear();
@@ -1690,7 +1756,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   //copy files to temp
   for (var xFile in xFilePaths) {
     if (p.extension(xFile.path) == '.zip') {
-      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: true);
+      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: false);
     } else if (File(xFile.path).statSync().type == FileSystemEntityType.directory) {
       await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name}').toFilePath());
     } else {
@@ -1828,7 +1894,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
         if (index != -1) {
           for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-            extraFile.copySync(Uri.file('$modDir/${p.basename(extraFile.path)}').toFilePath());
+            extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
           }
         }
       }
@@ -1859,7 +1925,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   }
 
   Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    if(element.existsSync()) {
+    if (element.existsSync()) {
       element.deleteSync(recursive: true);
     }
   });

@@ -354,6 +354,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiDuplicatedMod = json['uiDuplicatedMod'] as String
       ..uiDuplicatedMods = json['uiDuplicatedMods'] as String
       ..uiGroupSameItemVariants = json['uiGroupSameItemVariants'] as String
+      ..uiAddFolders = json['uiAddFolders'] as String
+      ..uiAddFiles = json['uiAddFiles'] as String
       ..uiNewProfileName = json['uiNewProfileName'] as String
       ..uiApplyingAllAvailableMods =
           json['uiApplyingAllAvailableMods'] as String
@@ -706,6 +708,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiDuplicatedMod': instance.uiDuplicatedMod,
       'uiDuplicatedMods': instance.uiDuplicatedMods,
       'uiGroupSameItemVariants': instance.uiGroupSameItemVariants,
+      'uiAddFolders': instance.uiAddFolders,
+      'uiAddFiles': instance.uiAddFiles,
       'uiNewProfileName': instance.uiNewProfileName,
       'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
       'uiLocatingOriginalFiles': instance.uiLocatingOriginalFiles,

@@ -1,11 +1,13 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.3",
+    "version": "2.4.6",
     "description": [
-        "Some fixes for loading mods on startup",
-        "Attempted to fix Add Mods button freezes after failed to add (Can still happen and requires more info to fix)",
-        "Fixed text color on language selection screen did not show up correctly in light mode",
-        "Other general bug fixes"
+        "Added more ways to add mods into Mod Manager",
+        "Fixed no original files found issue when applying win32reboot_na mods",
+        "win32_na and win32reboot_na mods will now be backed up locally if files are not found on sega's servers. As always, make sure to restore your game files to their original state before using the Mod Manager",
+        "Added a local backup folder for profile2",
+        "Switched to a slower files replacing method for boundary modification feature to prevent lockups on some machines",
+        "Some translation corrections and other bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
