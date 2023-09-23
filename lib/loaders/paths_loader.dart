@@ -29,7 +29,7 @@ String modManPso2binPath = '';
 String modManDirParentDirPath = '';
 String modManDirPath = '';
 String modManModsDirPath = '';
-//String modManBackupsDirPath = '';
+String modManBackupsDirPath = '';
 String modManChecksumDirPath = '';
 String modManDeletedItemsDirPath = '';
 String modManChecksumFilePath = '';
@@ -114,23 +114,6 @@ Future<bool> pathsLoader(context) async {
     }
   }
 
-  //Check modman folder if existed, if not choose path to it
-  // if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
-  //   modManDirPath = modManDirParentDirPath;
-  // } else {
-  //   modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
-  // }
-  // while (!Directory(modManDirPath).existsSync()) {
-  //   String? modManDirPathFromPicker = await modManDirPathGet(context);
-  //   if (modManDirPathFromPicker != null) {
-  //     modManDirParentDirPath = Uri.file(modManDirPathFromPicker).toFilePath();
-  //   } else {
-  //     modManDirParentDirPath = modManPso2binPath;
-  //     //Create modman folder if not already existed
-  //     modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
-  //     Directory(modManDirPath).createSync();
-  //   }
-  // }
 
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
@@ -138,23 +121,22 @@ Future<bool> pathsLoader(context) async {
   for (var name in defaultCateforyDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
-  //Backup folders removed since downloading backups from sega
   //Create Backups folder
-  // modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
-  // Directory(modManBackupsDirPath).createSync();
-  // List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  // for (var name in dataFolders) {
-  //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
-  // }
-  //Remove backup folder if existing
-  if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
+  modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
+  Directory(modManBackupsDirPath).createSync();
+  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  for (var name in dataFolders) {
+    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
   }
+  //Remove backup folder if existing
+  // if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
+  //   Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
+  // }
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
   modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
@@ -425,14 +407,13 @@ Future<bool> modManPathReloader(context) async {
   for (var name in defaultCateforyDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
-  //Backup folders removed since downloading backups from sega
   //Create Backups folder
-  // modManBackupsDirPath = Uri.file('$modManDirPath/Backups').toFilePath();
-  // Directory(modManBackupsDirPath).createSync();
-  // List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  // for (var name in dataFolders) {
-  //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
-  // }
+  modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
+  Directory(modManBackupsDirPath).createSync();
+  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  for (var name in dataFolders) {
+    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  }
   //Create Vital gauge folder
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
