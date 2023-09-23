@@ -3,6 +3,7 @@
     "version": "2.4.6",
     "description": [
         "Added more ways to add mods into Mod Manager",
+        "Added a refresh button to Vital Gauge custom backgrounds",
         "Fixed no original files found issue when applying win32reboot_na mods",
         "win32_na and win32reboot_na mods will now be backed up locally if files are not found on sega's servers. As always, make sure to restore your game files to their original state before using the Mod Manager",
         "Added a local backup folder for profile2",
