@@ -194,7 +194,7 @@ class TranslationText {
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
-      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nOr use the "Browse Folder" button to select\nMay take some time\nto process large amount of files',
+      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
@@ -209,7 +209,7 @@ class TranslationText {
       uiBeforeAdding = 'before adding',
       uiThereAreStillModsThatWaitingToBeAdded = 'There are still mods in the list waiting to be added',
       uiModsAddedSuccessfully = 'Mods added successfully!',
-      uiAddAll = 'Add All',
+      uiAddAll = 'Add To Mod Mananager',
       uiDuplicateNamesFound = 'Duplicate mod name(s) found',
       uiRenameTheModsBelowBeforeAdding = 'Rename the mods below before adding',
       uiDuplicateModsIn = 'in',
@@ -329,8 +329,9 @@ class TranslationText {
       uiClickToRename = 'Click to rename ',
       uiDuplicatedMod = ' duplicated mod',
       uiDuplicatedMods = ' duplicated mods',
-      uiGroupSameItemVariants = 'Group Same Variants',
-      uiBrowseFolder = 'Browse Folder';
+      uiGroupSameItemVariants = 'Group Variants',
+      uiAddFolders = 'Add Folders',
+      uiAddFiles = 'Add Files';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';

@@ -243,7 +243,8 @@ void boundaryEdit(context, SubMod submod) async {
                 await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
                 Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
                 await Future.delayed(const Duration(milliseconds: 100));
-                await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(modFile.location);
+                File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
+                await renamedFile.copy(modFile.location);
                 if (modFile.modFileName == matchingFiles.last.modFileName) {
                   Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(modFile.applyStatus
                       ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}}\n${curLangText!.uiMakeSureToReapplyThisMod}'
