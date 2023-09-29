@@ -140,6 +140,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiVitalGauge = json['uiVitalGauge'] as String
       ..uiCreateAndSwapVitalGaugeBackground =
           json['uiCreateAndSwapVitalGaugeBackground'] as String
+      ..uiRemoveProfanityFilter = json['uiRemoveProfanityFilter'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -522,6 +523,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiVitalGauge': instance.uiVitalGauge,
       'uiCreateAndSwapVitalGaugeBackground':
           instance.uiCreateAndSwapVitalGaugeBackground,
+      'uiRemoveProfanityFilter': instance.uiRemoveProfanityFilter,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

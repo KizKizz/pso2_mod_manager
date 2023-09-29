@@ -658,6 +658,36 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //remove profanity Filter
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+                              prefs.setBool('profanityFilterRemove', false);
+                              Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+                            } else {
+                              prefs.setBool('profanityFilterRemove', true);
+                              Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.abc_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).profanityFilterRemove ? '${curLangText!.uiRemoveProfanityFilter}: ON' : '${curLangText!.uiRemoveProfanityFilter}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(
                         height: 5,
                       ),

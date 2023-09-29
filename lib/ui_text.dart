@@ -122,7 +122,8 @@ class TranslationText {
       uiProfiles = 'Profiles',
       uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename',
       uiVitalGauge = 'Vital Gauge',
-      uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background';
+      uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background',
+      uiRemoveProfanityFilter = "Profanity Filter Removal";
 
   //homepage
   String uiItemList = 'Item List',
@@ -245,7 +246,8 @@ class TranslationText {
   String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" would close the app',
       uiSelectPso2binFolderPath = 'Select \'pso2_bin\' folder path',
       uiMMFolderNotFound = 'Mod Manager Folder not found',
-      uiSelectPathToStoreMMFolder = 'Select a path to store your mods?\nSelecting "No" would create a folder named "PSO2 Mod Manager" inside "Documents" folder\nNote: This folder will store your mods and other settings',
+      uiSelectPathToStoreMMFolder =
+          'Select a path to store your mods?\nSelecting "No" would create a folder named "PSO2 Mod Manager" inside "Documents" folder\nNote: This folder will store your mods and other settings',
       uiSelectAFolderToStoreMMFolder = 'Select a folder to store Mod Manager folder',
       uiCurrentPath = 'Current path',
       uiReselect = 'Reselect',

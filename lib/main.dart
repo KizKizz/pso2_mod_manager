@@ -238,6 +238,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       } else {
         Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
       }
+      
+      //Remove profanity filter
+      bool profanityFilterRemove = (prefs.getBool('profanityFilterRemove') ?? false);
+      if (profanityFilterRemove) {
+        Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
+      } else {
+        Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+      }
 
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
