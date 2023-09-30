@@ -54,35 +54,47 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
   for (var modFile in modFiles) {
     modFile.ogLocations.removeWhere((element) => restoredOGFilePaths.contains(element));
 
-    List<String> bkPathsToRemove = [];
-    for (var ogPath in modFile.ogLocations) {
-      //restore backups for win32_na and win32reboot_na
-      if (ogPath.contains('win32_na') || ogPath.contains('win32reboot_na')) {
-        for (var bkPath in modFile.bkLocations) {
-          if (File(bkPath).existsSync() && ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), '') == bkPath.replaceFirst(modManBackupsDirPath, '')) {
-            final restoredFile = await File(bkPath).copy(ogPath);
-            if (restoredFile.path == ogPath) {
-              File(bkPath).deleteSync();
-              if (bkPath.contains('win32reboot_na') && Directory(p.dirname(bkPath)).listSync(recursive: true).whereType<File>().isEmpty) {
-                Directory(p.dirname(bkPath)).deleteSync(recursive: true);
-              }
-              bkPathsToRemove.add(bkPath);
+    if (modFile.ogLocations.isEmpty) {
+      //remove backup files
+      for (var filePath in modFile.bkLocations) {
+        File(filePath).deleteSync();
+        if (filePath.contains('win32reboot_na') && Directory(p.dirname(filePath)).listSync(recursive: true).whereType<File>().isEmpty) {
+          Directory(p.dirname(filePath)).deleteSync(recursive: true);
+        }
+      }
+      modFile.bkLocations.clear();
+    } else {
+      List<String> ogPathsToRemove = [];
+      for (var ogPath in modFile.ogLocations) {
+        String matchingBkPath = modFile.bkLocations.firstWhere(
+          (element) => element.replaceFirst(modManBackupsDirPath, '') == ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), ''),
+          orElse: () => '',
+        );
+        if (matchingBkPath.isNotEmpty) {
+          final restoredFile = await File(matchingBkPath).copy(ogPath);
+          if (restoredFile.path == ogPath) {
+            File(matchingBkPath).deleteSync();
+            if (matchingBkPath.contains('win32reboot_na') && Directory(p.dirname(matchingBkPath)).listSync(recursive: true).whereType<File>().isEmpty) {
+              Directory(p.dirname(matchingBkPath)).deleteSync(recursive: true);
             }
+            modFile.bkLocations.remove(matchingBkPath);
+            ogPathsToRemove.add(ogPath);
           }
         }
       }
+      for (var path in ogPathsToRemove) {
+        modFile.ogLocations.remove(path);
+      }
     }
-    for (var bkPath in bkPathsToRemove) {
-      modFile.bkLocations.remove(bkPath);
-      modFile.ogLocations.removeWhere((element) => element.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), '') == bkPath.replaceFirst(modManBackupsDirPath, ''));
-    }
+
     if (modFile.bkLocations.isEmpty && modFile.ogLocations.isEmpty) {
       modFile.ogMd5s.clear();
-      modFile.bkLocations.clear();
-      modFile.ogLocations.clear();
       modFile.applyDate = DateTime(0);
+      //add to result if applied then unapplied
+      if (modFile.applyStatus) {
+        unappliedModFiles.add(modFile);
+      }
       modFile.applyStatus = false;
-      unappliedModFiles.add(modFile);
     }
   }
 

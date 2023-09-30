@@ -102,3 +102,4 @@ String modManProfile2Name = '';
 bool modsAdderGroupSameItemVariants = false;
 bool isStartupModsLoad = true;
 bool firstTimeLanguageSet = true;
+String profanityFilterIce = 'ffbff2ac5b7a7948961212cefd4d402c';
