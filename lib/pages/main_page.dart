@@ -666,9 +666,21 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+                              if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+                              }
+                              if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+                              }
                               prefs.setBool('profanityFilterRemove', false);
                               Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
                             } else {
+                              if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+                              }
+                              if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+                              }
                               prefs.setBool('profanityFilterRemove', true);
                               Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
                             }
@@ -681,7 +693,10 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(Provider.of<StateProvider>(context, listen: false).profanityFilterRemove ? '${curLangText!.uiRemoveProfanityFilter}: ON' : '${curLangText!.uiRemoveProfanityFilter}: OFF',
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).profanityFilterRemove
+                                      ? '${curLangText!.uiRemoveProfanityFilter}: ON'
+                                      : '${curLangText!.uiRemoveProfanityFilter}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

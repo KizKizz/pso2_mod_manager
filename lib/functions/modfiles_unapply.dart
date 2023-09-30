@@ -67,7 +67,9 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
       List<String> ogPathsToRemove = [];
       for (var ogPath in modFile.ogLocations) {
         String matchingBkPath = modFile.bkLocations.firstWhere(
-          (element) => element.replaceFirst(modManBackupsDirPath, '') == ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), ''),
+          (element) =>
+              element.replaceFirst(modManBackupsDirPath, '') == ogPath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), '') &&
+              unapplyModFileDataPaths.contains(element.replaceFirst(modManBackupsDirPath, 'data')),
           orElse: () => '',
         );
         if (matchingBkPath.isNotEmpty) {
