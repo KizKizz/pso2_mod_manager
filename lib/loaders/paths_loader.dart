@@ -173,7 +173,14 @@ Future<bool> pathsLoader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileJP();
+    }
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileNA();
+    }
+  } else {
     if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }
@@ -318,7 +325,14 @@ Future<bool> pso2PathsReloader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileJP();
+    }
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileNA();
+    }
+  } else {
     if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }
@@ -474,7 +488,14 @@ Future<bool> modManPathReloader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileJP();
+    }
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await downloadProfanityFileNA();
+    }
+  } else {
     if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }

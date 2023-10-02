@@ -317,14 +317,15 @@ Future<bool> downloadProfanityFileJP() async {
   }
 }
 
-// Future<bool> downloadProfanityFileNA() async {
-//   final returnedResult = await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath());
-//   if (returnedResult.first == 'data/win32/$profanityFilterIce') {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
+Future<bool> downloadProfanityFileNA() async {
+  final returnedResult = await Dio().download(
+      'https://github.com/KizKizz/pso2_mod_manager/raw/main/profanityFilterNA/ffbff2ac5b7a7948961212cefd4d402c', Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath());
+  if (returnedResult.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 Future<void> testDownload() async {
   final fileList = ['data\\win32\\372340de8e902ef7aa236aef87429f44', 'data\\win32\\94364983bfbe6d547a26b5d9fc1dd20d'];
