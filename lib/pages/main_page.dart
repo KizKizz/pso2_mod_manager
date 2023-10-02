@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
@@ -652,6 +653,51 @@ class _MainPageState extends State<MainPage> {
                               ),
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? '${curLangText!.uiSlidingItemIcons}: ON' : '${curLangText!.uiSlidingItemIcons}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //remove profanity Filter
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+                              if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+                                downloadProfanityFileJP();
+                              }
+                              if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+                              }
+                              prefs.setBool('profanityFilterRemove', false);
+                              Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+                            } else {
+                              if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+                              }
+                              if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+                                await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+                              }
+                              prefs.setBool('profanityFilterRemove', true);
+                              Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.abc_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).profanityFilterRemove
+                                      ? '${curLangText!.uiRemoveProfanityFilter}: ON'
+                                      : '${curLangText!.uiRemoveProfanityFilter}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

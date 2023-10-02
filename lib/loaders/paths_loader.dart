@@ -114,7 +114,6 @@ Future<bool> pathsLoader(context) async {
     }
   }
 
-
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
   Directory(modManModsDirPath).createSync(recursive: true);
@@ -172,6 +171,16 @@ Future<bool> pathsLoader(context) async {
   //Checksum check
   //await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker(context);
+
+  //Profanity filter
+  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+    }
+    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+    }
+  }
 
   //ref sheets check load files
   if (kDebugMode) {
@@ -307,6 +316,16 @@ Future<bool> pso2PathsReloader(context) async {
 
   //Checksum
   await checksumChecker(context);
+
+  //Profanity filter
+  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+    }
+    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+    }
+  }
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -453,6 +472,16 @@ Future<bool> modManPathReloader(context) async {
   //Checksum check
   //await ApplicationConfig().checkChecksumFileForUpdates(context);
   await checksumChecker(context);
+
+  //Profanity filter
+  if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+    }
+    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+      await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+    }
+  }
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();

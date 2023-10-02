@@ -308,6 +308,24 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
   return downloadedIceFile;
 }
 
+Future<bool> downloadProfanityFileJP() async {
+  final returnedResult = await downloadIceFromOfficial(['data/win32/$profanityFilterIce']);
+  if (returnedResult.first == 'data/win32/$profanityFilterIce') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Future<bool> downloadProfanityFileNA() async {
+//   final returnedResult = await Dio().download(netChecksumFileLink, Uri.file('$modManChecksumDirPath/$netChecksumFileName').toFilePath());
+//   if (returnedResult.first == 'data/win32/$profanityFilterIce') {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
 Future<void> testDownload() async {
   final fileList = ['data\\win32\\372340de8e902ef7aa236aef87429f44', 'data\\win32\\94364983bfbe6d547a26b5d9fc1dd20d'];
   final filesDown = await downloadIceFromOfficial(fileList);

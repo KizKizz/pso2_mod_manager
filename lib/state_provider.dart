@@ -33,6 +33,7 @@ class StateProvider with ChangeNotifier {
   String _boundaryEditProgressStatus = '';
   String _modsLoaderProgressStatus = '';
   bool _showTitleBarButtons = false;
+  bool _profanityFilterRemove = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -65,6 +66,17 @@ class StateProvider with ChangeNotifier {
   String get boundaryEditProgressStatus => _boundaryEditProgressStatus;
   String get modsLoaderProgressStatus => _modsLoaderProgressStatus;
   bool get showTitleBarButtons => _showTitleBarButtons;
+  bool get profanityFilterRemove => _profanityFilterRemove;
+
+  void profanityFilterRemoveTrue() {
+    _profanityFilterRemove = true;
+    notifyListeners();
+  }
+
+  void profanityFilterRemoveFalse() {
+    _profanityFilterRemove = false;
+    notifyListeners();
+  }
 
   void showTitleBarButtonsTrue() {
     _showTitleBarButtons = true;
