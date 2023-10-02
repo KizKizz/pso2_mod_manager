@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
+import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
@@ -667,7 +668,7 @@ class _MainPageState extends State<MainPage> {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
                               if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
-                                await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+                                downloadProfanityFileJP();
                               }
                               if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
                                 await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
