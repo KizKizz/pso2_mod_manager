@@ -1,14 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.6",
+    "version": "2.4.7",
     "description": [
-        "Added more ways to add mods into Mod Manager",
-        "Added a refresh button to Vital Gauge custom backgrounds",
-        "Fixed no original files found issue when applying win32reboot_na mods",
-        "win32_na and win32reboot_na mods will now be backed up locally if files are not found on sega's servers. As always, make sure to restore your game files to their original state before using the Mod Manager",
-        "Added a local backup folder for profile2",
-        "Switched to a slower files replacing method for boundary modification feature to prevent lockups on some machines",
-        "Some translation corrections and other bug fixes"
+        "Added profanity removal feature for both JP and NA version which can be found inside Settings. Auto removal each time manager startup if set to ON and restore if set to OFF",
+        "Improved local backup logics for win32_na and win32reboot_na mods",
+        "Fixed a bug where win32_na and win32reboot_na mods getting stuck in mod manager even though the files are restored",
+        "Some other bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

@@ -667,14 +667,26 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
+                              bool downloadSuccessJP = false;
+                              bool downloadSuccessNA = false;
                               if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
-                                downloadProfanityFileJP();
+                                await downloadProfanityFileJP().then((value) {
+                                  if (value) {
+                                    downloadSuccessJP = true;
+                                  }
+                                });
                               }
                               if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
-                                await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+                                await downloadProfanityFileNA().then((value) {
+                                  if (value) {
+                                    downloadSuccessNA = true;
+                                  }
+                                });
                               }
-                              prefs.setBool('profanityFilterRemove', false);
-                              Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+                              if (downloadSuccessJP && downloadSuccessNA) {
+                                prefs.setBool('profanityFilterRemove', false);
+                                Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+                              }
                             } else {
                               if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
                                 await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
