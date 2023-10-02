@@ -676,12 +676,15 @@ class _MainPageState extends State<MainPage> {
                                   }
                                 });
                               }
-                              if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+                              if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() &&
+                                  !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
                                 await downloadProfanityFileNA().then((value) {
                                   if (value) {
                                     downloadSuccessNA = true;
                                   }
                                 });
+                              } else if (!Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync()) {
+                                downloadSuccessNA = true;
                               }
                               if (downloadSuccessJP && downloadSuccessNA) {
                                 prefs.setBool('profanityFilterRemove', false);

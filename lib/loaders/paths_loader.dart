@@ -177,7 +177,7 @@ Future<bool> pathsLoader(context) async {
     if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileJP();
     }
-    if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileNA();
     }
   } else {
@@ -329,7 +329,7 @@ Future<bool> pso2PathsReloader(context) async {
     if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileJP();
     }
-    if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileNA();
     }
   } else {
@@ -492,7 +492,7 @@ Future<bool> modManPathReloader(context) async {
     if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileJP();
     }
-    if (!File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await downloadProfanityFileNA();
     }
   } else {
