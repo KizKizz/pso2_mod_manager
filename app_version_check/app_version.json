@@ -1,11 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.7",
+    "version": "2.4.8",
     "description": [
-        "Added profanity removal feature for both JP and NA version which can be found inside Settings. Auto removal each time manager startup if set to ON and restore if set to OFF",
-        "Improved local backup logics for win32_na and win32reboot_na mods",
-        "Fixed a bug where win32_na and win32reboot_na mods getting stuck in mod manager even though the files are restored",
-        "Some other bug fixes"
+        "Hotfix for a path error of no element bug in v2.4.7"
     ],
     "windows_file": "",
     "linux_file": ""
