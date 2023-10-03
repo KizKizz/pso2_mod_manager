@@ -310,7 +310,7 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
 
 Future<bool> downloadProfanityFileJP() async {
   final returnedResult = await downloadIceFromOfficial(['data/win32/$profanityFilterIce']);
-  if (returnedResult.first == 'data/win32/$profanityFilterIce') {
+  if (returnedResult.isNotEmpty && returnedResult.contains('data/win32/$profanityFilterIce')) {
     return true;
   } else {
     return false;

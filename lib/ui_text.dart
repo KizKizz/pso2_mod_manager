@@ -247,7 +247,7 @@ class TranslationText {
       uiSelectPso2binFolderPath = 'Select \'pso2_bin\' folder path',
       uiMMFolderNotFound = 'Mod Manager Folder not found',
       uiSelectPathToStoreMMFolder =
-          'Select a path to store your mods?\nSelecting "No" would create a folder named "PSO2 Mod Manager" inside "Documents" folder\nNote: This folder will store your mods and other settings',
+          'Select a path to store your mods?\nSelecting "No" would create a folder named "PSO2 Mod Manager" inside "C:" drive\nNote: This folder will store your mods and other settings',
       uiSelectAFolderToStoreMMFolder = 'Select a folder to store Mod Manager folder',
       uiCurrentPath = 'Current path',
       uiReselect = 'Reselect',

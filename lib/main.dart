@@ -238,13 +238,15 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       } else {
         Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
       }
-      
+
       //Remove profanity filter
       bool profanityFilterRemove = (prefs.getBool('profanityFilterRemove') ?? false);
       if (profanityFilterRemove) {
         Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
+        profanityFilterRemoval = true;
       } else {
         Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+        profanityFilterRemoval = false;
       }
 
       //UI opacity

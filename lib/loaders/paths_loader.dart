@@ -105,8 +105,8 @@ Future<bool> pathsLoader(context) async {
         prefs.setString('mainModManDirPath', modManDirParentDirPath);
       }
     } else {
-      final documentDir = await getApplicationDocumentsDirectory();
-      modManDirParentDirPath = documentDir.path;
+      //final documentDir = await getApplicationDocumentsDirectory();
+      modManDirParentDirPath = Uri.file('C:\\').toFilePath();
       //Create modman folder if not already existed
       modManDirPath = Uri.file('$modManDirParentDirPath/PSO2 Mod Manager').toFilePath();
       Directory(modManDirPath).createSync();
@@ -173,21 +173,29 @@ Future<bool> pathsLoader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
-    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileJP();
-    }
-    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileNA();
-    }
-  } else {
-    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  if (profanityFilterRemoval) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }
-    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
     }
   }
+  // if (!profanityFilterRemoval) {
+  //   if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileJP();
+  //   }
+  //   if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileNA();
+  //   }
+  // } else {
+  //   if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  //   if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  // }
 
   //ref sheets check load files
   if (kDebugMode) {
@@ -325,21 +333,29 @@ Future<bool> pso2PathsReloader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
-    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileJP();
-    }
-    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileNA();
-    }
-  } else {
-    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  if (profanityFilterRemoval) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }
-    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
     }
   }
+  // if (!profanityFilterRemoval) {
+  //   if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileJP();
+  //   }
+  //   if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileNA();
+  //   }
+  // } else {
+  //   if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  //   if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  // }
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -488,21 +504,29 @@ Future<bool> modManPathReloader(context) async {
   await checksumChecker(context);
 
   //Profanity filter
-  if (!Provider.of<StateProvider>(context, listen: false).profanityFilterRemove) {
-    if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileJP();
-    }
-    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
-      await downloadProfanityFileNA();
-    }
-  } else {
-    if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  if (profanityFilterRemoval) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
     }
-    if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+    if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
       await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
     }
   }
+  // if (!profanityFilterRemoval) {
+  //   if (!File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileJP();
+  //   }
+  //   if (Directory(Uri.file('$modManPso2binPath/data/win32_na').toFilePath()).existsSync() && !File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await downloadProfanityFileNA();
+  //   }
+  // } else {
+  //   if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  //   if (File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).existsSync()) {
+  //     await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
+  //   }
+  // }
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();

@@ -689,6 +689,7 @@ class _MainPageState extends State<MainPage> {
                               if (downloadSuccessJP && downloadSuccessNA) {
                                 prefs.setBool('profanityFilterRemove', false);
                                 Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
+                                profanityFilterRemoval = false;
                               }
                             } else {
                               if (File(Uri.file('$modManPso2binPath/data/win32/$profanityFilterIce').toFilePath()).existsSync()) {
@@ -699,6 +700,7 @@ class _MainPageState extends State<MainPage> {
                               }
                               prefs.setBool('profanityFilterRemove', true);
                               Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
+                              profanityFilterRemoval = true;
                             }
                             setState(() {});
                           }),
