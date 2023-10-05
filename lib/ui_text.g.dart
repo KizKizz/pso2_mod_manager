@@ -412,7 +412,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiYourDotNetVersions = json['uiYourDotNetVersions'] as String
       ..uiUseButtonBelowToGetDotnet =
           json['uiUseButtonBelowToGetDotnet'] as String
-      ..uiGetDotnetRuntime6 = json['uiGetDotnetRuntime6'] as String;
+      ..uiGetDotnetRuntime6 = json['uiGetDotnetRuntime6'] as String
+      ..uiNoGamedataFound = json['uiNoGamedataFound'] as String
+      ..uiNoGameDataFoundMessage = json['uiNoGameDataFoundMessage'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -759,4 +761,6 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiYourDotNetVersions': instance.uiYourDotNetVersions,
       'uiUseButtonBelowToGetDotnet': instance.uiUseButtonBelowToGetDotnet,
       'uiGetDotnetRuntime6': instance.uiGetDotnetRuntime6,
+      'uiNoGamedataFound': instance.uiNoGamedataFound,
+      'uiNoGameDataFoundMessage': instance.uiNoGameDataFoundMessage,
     };

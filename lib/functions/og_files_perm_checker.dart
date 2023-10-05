@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
 void ogFilesPermChecker(context) {
@@ -18,7 +19,7 @@ Future<bool> noOGFIlesFoundDialog(context) async {
               backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
-                child: Text('No game data found', style: const TextStyle(fontWeight: FontWeight.w700)),
+                child: Text(curLangText!.uiNoGamedataFound, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
               content: Padding(
@@ -29,7 +30,7 @@ Future<bool> noOGFIlesFoundDialog(context) async {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as admin or reselect pso2_bin path',
+                      curLangText!.uiNoGameDataFoundMessage,
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
