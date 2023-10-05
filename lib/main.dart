@@ -166,12 +166,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
+    clearAllTempDirsBeforeGettingPath();
     miscCheck();
     getAppVer();
-
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
-
     super.initState();
   }
 
