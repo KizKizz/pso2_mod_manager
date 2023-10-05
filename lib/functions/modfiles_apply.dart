@@ -27,11 +27,11 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
       dupAppliedFiles += '${modFile.itemName} > ${modFile.modName} > ${modFile.submodName} > ${modFile.modFileName}\n';
     }
     applyMods = await duplicateAppliedDialog(context, dupAppliedFiles.trim());
-    if (applyMods) {
-      for (var modFile in alreadyAppliedModFiles) {
-        modFile = (await modFileAppliedDupRestore(moddedItemsList, modFile))!;
-      }
-    }
+    // if (applyMods) {
+    //   for (var modFile in alreadyAppliedModFiles) {
+    //     modFile = (await modFileAppliedDupRestore(moddedItemsList, modFile))!;
+    //   }
+    // }
   }
 
   //check for checksum
@@ -41,13 +41,18 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   List<ModFile> appliedModFiles = [];
   if (applyMods) {
     for (var modFile in modFiles) {
-      modFile = await modFileApply(modFile);
-      modFile.applyStatus = true;
-      modFile.applyDate = DateTime.now();
-      if (modFile.isNew) {
-        modFile.isNew = false;
-      }
-      appliedModFiles.add(modFile);
+      bool replacedStatus = await modFileApply(modFile);
+      if (replacedStatus) {
+        if (alreadyAppliedModFiles.where((element) => element.location == modFile.location).isNotEmpty) {
+          await modFileAppliedDupRestore(moddedItemsList, modFile);
+        }
+        modFile.applyStatus = true;
+        modFile.applyDate = DateTime.now();
+        if (modFile.isNew) {
+          modFile.isNew = false;
+        }
+        appliedModFiles.add(modFile);
+      } 
     }
   }
 

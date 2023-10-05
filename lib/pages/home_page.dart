@@ -26,6 +26,7 @@ import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
+import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/preview_dialog.dart';
 import 'package:pso2_mod_manager/functions/reapply_applied_mods.dart';
@@ -86,14 +87,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     dotnetVerCheck(context);
+    ogFilesPermChecker(context);
     setState(() {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    
     //set headers opacity values
     if (context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue > 1.0) {
       headersOpacityValue = 1.0;
