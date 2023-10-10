@@ -319,6 +319,6 @@
   "uiYourDotNetVersions": ".NETランタイムのバージョン",
   "uiUseButtonBelowToGetDotnet": "以下のボタンを使って、必要な.NETランタイムを入手し、インストールしてください。",
   "uiGetDotnetRuntime6": ".NETランタイム6.0の入手",
-  "uiNoGamedataFound": "No game data found",
-  "uiNoGameDataFoundMessage": "Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path"
+  "uiNoGamedataFound": "ゲームデータが見つかりません",
+  "uiNoGameDataFoundMessage": "pso2_bin データフォルダ内のファイルが見つかりません。\nアプリを再起動して管理者として実行するか、pso2_binのパスを再選択してください。"
 }
