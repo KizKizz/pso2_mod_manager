@@ -43,6 +43,8 @@ class ModsAdderMod {
     filesInMod = Directory(newParentPath).listSync().whereType<File>().toList();
     for (var submod in submodList) {
       submod.submodDirPath = submod.submodDirPath.replaceFirst(modDirPath, newParentPath);
+      //files in submod
+      submod.files = Directory(submod.submodDirPath).listSync(recursive: true).whereType<File>().toList();
     }
   }
 }

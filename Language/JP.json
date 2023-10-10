@@ -318,5 +318,7 @@
   "uiRequiresDotnetRuntimeToWorkProperly": "PSO2NGS Mod Managerを正常に動作させるには、.NETランタイム6.0の入手以降が必要です。",
   "uiYourDotNetVersions": ".NETランタイムのバージョン",
   "uiUseButtonBelowToGetDotnet": "以下のボタンを使って、必要な.NETランタイムを入手し、インストールしてください。",
-  "uiGetDotnetRuntime6": ".NETランタイム6.0の入手"
+  "uiGetDotnetRuntime6": ".NETランタイム6.0の入手",
+  "uiNoGamedataFound": "ゲームデータが見つかりません",
+  "uiNoGameDataFoundMessage": "pso2_bin データフォルダ内のファイルが見つかりません。\nアプリを再起動して管理者として実行するか、pso2_binのパスを再選択してください。"
 }

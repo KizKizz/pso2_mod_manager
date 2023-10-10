@@ -318,5 +318,7 @@
   "uiRequiresDotnetRuntimeToWorkProperly": "PSO2NGS Mod Manager requires .NET Runtime 6.0 or later to function properly",
   "uiYourDotNetVersions": "Your .NET Runtime versions",
   "uiUseButtonBelowToGetDotnet": "Use the button below to get and install the required .NET Runtime",
-  "uiGetDotnetRuntime6": "Get .NET Runtime 6.0"
+  "uiGetDotnetRuntime6": "Get .NET Runtime 6.0",
+  "uiNoGamedataFound": "No game data found",
+  "uiNoGameDataFoundMessage": "Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path"
 }

@@ -5,7 +5,8 @@ import 'package:pso2_mod_manager/functions/backup_mods.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 
-Future<ModFile> modFileApply(ModFile modFile) async {
+//return true if successfully copied
+Future<bool> modFileApply(ModFile modFile) async {
   //retore dublicate
   //await modFileRestore(moddedItemsList, modFile);
   //modFile = await modFileBackup(modFile);
@@ -14,7 +15,10 @@ Future<ModFile> modFileApply(ModFile modFile) async {
     if (ogPath.contains('win32_na') || ogPath.contains('win32reboot_na')) {
       modFile = await modFileBackup(modFile);
     }
-    File(modFile.location).copySync(ogPath);
+    File returnedFile = await File(modFile.location).copy(ogPath);
+    if (returnedFile.path != ogPath) {
+      return false;
+    }
     String newOGMD5 = await getFileHash(ogPath);
     if (!modFile.ogMd5s.contains(newOGMD5)) {
       modFile.ogMd5s.add(newOGMD5);
@@ -23,5 +27,5 @@ Future<ModFile> modFileApply(ModFile modFile) async {
   modFile.md5 = await getFileHash(modFile.location);
   saveModdedItemListToJson();
 
-  return modFile;
+  return true;
 }

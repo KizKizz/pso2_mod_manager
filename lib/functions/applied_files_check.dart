@@ -54,8 +54,10 @@ Future<List<ModFile>> appliedFileCheck(List<CategoryType> appliedList) async {
   List<ModFile> allReappliedFiles = [];
 
   for (var modFile in filesToApplyAndBackup) {
-    modFile = await modFileApply(modFile);
-    allReappliedFiles.add(modFile);
+    bool replacedStatus = await modFileApply(modFile);
+    if (replacedStatus) {
+      allReappliedFiles.add(modFile);
+    }
   }
 
   for (var modFile in filesToApplyOnly) {

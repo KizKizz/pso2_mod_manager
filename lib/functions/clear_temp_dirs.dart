@@ -49,12 +49,12 @@ void clearAllTempDirsBeforeGettingPath() {
     });
   }
   if (Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).existsSync()) {
-    Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).deleteSync(recursive: true);
-    //   Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).listSync(recursive: false).forEach((element) {
-    //   if (element.existsSync()) {
-    //     element.deleteSync(recursive: true);
-    //   }
-    // });
+    //Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).deleteSync(recursive: true);
+      Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).listSync(recursive: false).forEach((element) {
+      if (element.existsSync()) {
+        element.deleteSync(recursive: true);
+      }
+    });
   }
   if (Directory(Uri.file('${Directory.current.path}/swapper').toFilePath()).existsSync()) {
     Directory(Uri.file('${Directory.current.path}/swapper').toFilePath()).listSync(recursive: false).forEach((element) {

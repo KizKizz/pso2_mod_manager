@@ -387,6 +387,10 @@ class TranslationText {
       uiUseButtonBelowToGetDotnet = 'Use the button below to get and install the required .NET Runtime',
       uiGetDotnetRuntime6 = 'Get .NET Runtime 6.0';
 
+  //og_file_perm_check.dart
+  String uiNoGamedataFound = 'No game data found',
+      uiNoGameDataFoundMessage = 'Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

@@ -267,7 +267,9 @@ void modsAdderHomePage(context) {
                                                           child: Text(curLangText!.uiAddFolders)),
                                                     ),
                                                   ),
-                                                  const SizedBox(width: 5,),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
                                                   Expanded(
                                                     child: SizedBox(
                                                       width: double.infinity,
@@ -1842,17 +1844,22 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         if (downloadedconIcePath.isNotEmpty && File(downloadedconIcePath).existsSync()) {
           //debugPrint(downloadedconIcePath);
           await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
-          File ddsItemIcon = Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-          if (ddsItemIcon.path.isNotEmpty) {
-            newItemIcon = File(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
-            await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
-            // File pngItemIcon =
-            //     Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
-            // if (pngItemIcon.path.isNotEmpty) {
-            //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
-            // }
+          if (Directory('${downloadedconIcePath}_ext').existsSync()) {
+            File ddsItemIcon =
+                Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+            if (ddsItemIcon.path.isNotEmpty) {
+              newItemIcon = File(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+              await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+              // File pngItemIcon =
+              //     Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
+              // if (pngItemIcon.path.isNotEmpty) {
+              //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+              // }
+            }
           }
-          Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+          if (Directory(tempIconUnpackDirPath).existsSync()) {
+            Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+          }
         }
       }
     }

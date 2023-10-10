@@ -1,8 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.8",
+    "version": "2.4.9",
     "description": [
-        "Hotfix for a path error of no element bug in v2.4.7"
+        "Fixed a bug where renaming mods when adding would causes infinite loading and causes blank app on restart",
+        "Mod manager now check for game data on startup and will notify if it cannot access game data"
     ],
     "windows_file": "",
     "linux_file": ""
