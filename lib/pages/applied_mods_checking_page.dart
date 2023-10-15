@@ -1,12 +1,18 @@
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
+import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_vital_gauge_checking_page.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
+
+bool _reapplySelected = false;
+bool _noReapplySelected = false;
+List<bool> _reAppliedStatus = [];
 
 class AppliedModsCheckingPage extends StatefulWidget {
   const AppliedModsCheckingPage({Key? key}) : super(key: key);
@@ -87,6 +93,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
             } else {
               //Return
               List<ModFile> result = snapshot.data;
+              _reAppliedStatus = List.generate(result.length, (index) => false);
               if (result.isNotEmpty) {
                 return SizedBox(
                   width: double.infinity,
@@ -100,7 +107,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Text(
-                            '${curLangText!.uiReappliedModsAfterChecking}:',
+                            _reapplySelected ? '${curLangText!.uireApplyingModFiles}:' : '${curLangText!.uiReappliedModsAfterChecking}:',
                             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                           ),
                         ),
@@ -122,7 +129,11 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                   itemCount: result.length,
                                   itemBuilder: (context, i) {
                                     return ListTile(
-                                      title: Center(child: Text('${result[i].category} > ${result[i].itemName} > ${result[i].modName} > ${result[i].submodName} > ${result[i].modFileName}')),
+                                      title: Center(
+                                          child: Text(
+                                        '${result[i].category} > ${result[i].itemName} > ${result[i].modName} > ${result[i].submodName} > ${result[i].modFileName}',
+                                        style: TextStyle(color: _reAppliedStatus[i] ? Colors.green : null),
+                                      )),
                                     );
                                   }),
                             ),
@@ -136,20 +147,60 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton(
-                                  onPressed: () {
-                                    const ModSetsLoadingPage();
-                                    setState(() {});
-                                  },
-                                  child: Text(curLangText!.uiNo)),
+                                  onPressed: _noReapplySelected
+                                      ? null
+                                      : () async {
+                                          _noReapplySelected = true;
+                                          await Future.delayed(const Duration(milliseconds: 100));
+                                          setState(() {});
+                                          // ignore: use_build_context_synchronously
+                                          await modFilesUnapply(context, result);
+                                          const ModSetsLoadingPage();
+                                          setState(() {});
+                                        },
+                                  child: _noReapplySelected
+                                    ? Row(
+                                        children: [
+                                          Text(curLangText!.uiDontReapplyRemoveFromAppliedList),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const CircularProgressIndicator(),
+                                        ],
+                                      )
+                                    :Text(curLangText!.uiDontReapplyRemoveFromAppliedList)),
+                              const SizedBox(
+                                width: 5,
+                              ),
                               ElevatedButton(
-                                  onPressed: () async {
-                                    for (var modFile in result) {
-                                      bool replacedStatus = await modFileApply(modFile);
-                                      if (replacedStatus) {}
-                                    }
-                                    setState(() {});
-                                  },
-                                  child: Text(curLangText!.uiYes)),
+                                onPressed: _reapplySelected
+                                    ? null
+                                    : () async {
+                                        _reapplySelected = true;
+                                        await Future.delayed(const Duration(milliseconds: 100));
+                                        setState(() {});
+                                        for (int i = 0; i < result.length; i++) {
+                                          bool replacedStatus = await modFileApply(result[i]);
+                                          if (replacedStatus) {
+                                            _reAppliedStatus[i] = true;
+                                            await Future.delayed(const Duration(milliseconds: 100));
+                                            setState(() {});
+                                          }
+                                        }
+                                        setState(() {});
+                                      },
+                                child: _reapplySelected
+                                    ? Row(
+                                        children: [
+                                          Text(curLangText!.uiReapply),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const CircularProgressIndicator(),
+                                        ],
+                                      )
+                                    : Text(curLangText!.uiReapply),
+                              ),
                             ],
                           ),
                         ),

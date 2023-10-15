@@ -283,6 +283,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiErrorWhenCheckingAppliedMods'] as String
       ..uiReappliedModsAfterChecking =
           json['uiReappliedModsAfterChecking'] as String
+      ..uireApplyingModFiles = json['uireApplyingModFiles'] as String
+      ..uiDontReapplyRemoveFromAppliedList =
+          json['uiDontReapplyRemoveFromAppliedList'] as String
+      ..uiReapply = json['uiReapply'] as String
       ..uiLoadingAppliedMods = json['uiLoadingAppliedMods'] as String
       ..uiErrorWhenLoadingAppliedMods =
           json['uiErrorWhenLoadingAppliedMods'] as String
@@ -648,6 +652,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCheckingAppliedMods': instance.uiCheckingAppliedMods,
       'uiErrorWhenCheckingAppliedMods': instance.uiErrorWhenCheckingAppliedMods,
       'uiReappliedModsAfterChecking': instance.uiReappliedModsAfterChecking,
+      'uireApplyingModFiles': instance.uireApplyingModFiles,
+      'uiDontReapplyRemoveFromAppliedList':
+          instance.uiDontReapplyRemoveFromAppliedList,
+      'uiReapply': instance.uiReapply,
       'uiLoadingAppliedMods': instance.uiLoadingAppliedMods,
       'uiErrorWhenLoadingAppliedMods': instance.uiErrorWhenLoadingAppliedMods,
       'uiLoadingModSets': instance.uiLoadingModSets,

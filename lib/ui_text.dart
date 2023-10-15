@@ -256,7 +256,10 @@ class TranslationText {
   //applied_mods_checking_page
   String uiCheckingAppliedMods = 'Checking Applied Mods',
       uiErrorWhenCheckingAppliedMods = 'Error when checking applied mod files',
-      uiReappliedModsAfterChecking = 'The mod(s) below have been automatically re-applied to the game';
+      uiReappliedModsAfterChecking = 'The mod files below have been unapplied from the game',
+      uireApplyingModFiles = 'Attempting to re-apply these files below',
+      uiDontReapplyRemoveFromAppliedList = 'Do not re-apply and remove from Applied Mods List',
+      uiReapply = 'Re-apply these mod files to the game';
 
   //applied_mods_loading_page
   String uiLoadingAppliedMods = 'Loading Applied Mods', uiErrorWhenLoadingAppliedMods = 'Error when loading applied mod files';
