@@ -20,7 +20,7 @@ Future<bool> modFileApply(ModFile modFile) async {
       returnedFile = await File(modFile.location).copy(ogPath);
     } catch (e) {
       if (File(ogPath).existsSync()) {
-        File(ogPath).delete();
+        await File(ogPath).delete();
       }
       returnedFile = await File(modFile.location).copy(ogPath);
     }
