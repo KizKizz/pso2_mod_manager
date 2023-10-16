@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.9",
+    "version": "2.4.10",
     "description": [
-        "Fixed a bug where renaming mods when adding would causes infinite loading and causes blank app on restart",
-        "Mod manager now check for game data on startup and will notify if it cannot access game data"
+        "Reworked some systems that would cause stuck and infinite loading",
+        "Some minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""

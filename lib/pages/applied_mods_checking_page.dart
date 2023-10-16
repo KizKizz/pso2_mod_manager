@@ -13,7 +13,7 @@ bool _noReapplySelected = false;
 bool _finish = false;
 bool _gotoNext = false;
 List<bool> _reAppliedStatus = [];
-final Future getUnappliedFileList = appliedFileCheck(appliedItemList);
+Future? getUnappliedFileList;
 
 class AppliedModsCheckingPage extends StatefulWidget {
   const AppliedModsCheckingPage({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
       return const AppliedVitalGaugeCheckingPage();
     }
     return FutureBuilder(
-        future: getUnappliedFileList,
+        future: _reAppliedStatus.isEmpty ? getUnappliedFileList = appliedFileCheck(appliedItemList) : getUnappliedFileList,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -164,7 +164,8 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                             setState(() {});
                                             // ignore: use_build_context_synchronously
                                             await modFilesUnapply(context, result);
-                                            const AppliedVitalGaugeCheckingPage();
+                                            _reAppliedStatus.clear();
+                                            _gotoNext = true;
                                             setState(() {});
                                           },
                                     child: _noReapplySelected
