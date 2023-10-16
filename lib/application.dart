@@ -102,7 +102,7 @@ class ApplicationConfig {
       final jsonVal = await loadRefSheetsJsonFromGithub();
       if (jsonVal.entries.first.key != 'null') {
         String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
-        if (refSheetsVersion < int.parse(newVersionValue)) {
+        if (refSheetsVersion < int.parse(newVersionValue) || modManRefSheetsLocalVersion < int.parse(newVersionValue)) {
           refSheetsNewVersion = int.parse(newVersionValue);
           Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
         }

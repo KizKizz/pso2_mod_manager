@@ -43,7 +43,6 @@ List<String> saveValues = ['off', 'minimal', 'all'];
 
 List<bool> _selectedIconLoaderSwitches = <bool>[false, false, false];
 
-
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -1803,6 +1802,9 @@ class _MainPageState extends State<MainPage> {
                                   downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
                                     final prefs = await SharedPreferences.getInstance();
                                     prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                                    refSheetsVersion = refSheetsNewVersion;
+                                    modManRefSheetsLocalVersion = refSheetsNewVersion;
+                                    File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsNewVersion.toString());
                                     //print('complete');
                                     Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
                                     Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
