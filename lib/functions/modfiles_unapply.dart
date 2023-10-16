@@ -83,7 +83,15 @@ Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
           orElse: () => '',
         );
         if (matchingBkPath.isNotEmpty && File(matchingBkPath).existsSync()) {
-          final restoredFile = await File(matchingBkPath).copy(ogPath);
+          File restoredFile = File('');
+          try {
+            restoredFile = await File(matchingBkPath).copy(ogPath);
+          } catch (e) {
+            if (File(ogPath).existsSync()) {
+              File(ogPath).deleteSync();
+            }
+            restoredFile = await File(matchingBkPath).copy(ogPath);
+          }
           if (restoredFile.path == ogPath) {
             File(matchingBkPath).deleteSync();
             if (matchingBkPath.contains('win32reboot_na') && Directory(p.dirname(matchingBkPath)).listSync(recursive: true).whereType<File>().isEmpty) {

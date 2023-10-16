@@ -26,7 +26,6 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
-import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -43,6 +42,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 List<String> saveValues = ['off', 'minimal', 'all'];
 
 List<bool> _selectedIconLoaderSwitches = <bool>[false, false, false];
+bool profileLoad = false;
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -341,10 +341,12 @@ class _MainPageState extends State<MainPage> {
                                                   modViewItem = null;
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
-                                                    profileLoader(context).then((value) {
-                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
-                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
-                                                    });
+                                                    profileLoad = true;
+                                                    setState(() {});
+                                                    // profileLoader(context).then((value) {
+                                                    Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
+                                                    Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    // });
                                                   });
 
                                                   //setState(() {});
@@ -396,10 +398,12 @@ class _MainPageState extends State<MainPage> {
                                                   modViewItem = null;
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
-                                                    profileLoader(context).then((value) {
-                                                      Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
-                                                      Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
-                                                    });
+                                                    profileLoad = true;
+                                                    setState(() {});
+                                                    // profileLoader(context).then((value) {
+                                                    Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
+                                                    Provider.of<StateProvider>(context, listen: false).reloadProfileFalse();
+                                                    // });
                                                   });
 
                                                   //setState(() {});
@@ -1863,7 +1867,13 @@ class _MainPageState extends State<MainPage> {
             color: Theme.of(context).dividerColor,
           ),
 
-          Expanded(child: isStartupModsLoad ? const ModsLoadingPage() : const HomePage())
+          Expanded(child: Provider.of<StateProvider>(context, listen: false).reloadProfile ? const ProfileLoader() : const ModsLoadingPage())
+          // Expanded(
+          //     child: isStartupModsLoad
+          //         ? const ModsLoadingPage()
+          //         : Provider.of<StateProvider>(context, listen: false).reloadProfile
+          //             ? const ProfileLoader()
+          //             : const HomePage())
 
           //Expanded(child: curLangText == null ? const LangLoadingPage() : const PathsLoadingPage())
         ],

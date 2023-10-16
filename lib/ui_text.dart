@@ -35,7 +35,8 @@ class TranslationText {
       uiExit = 'Exit',
       uiON = 'ON',
       uiOFF = 'OFF',
-      uiMove = 'Move';
+      uiMove = 'Move',
+      uiContinue = 'Continue';
 
   //main page
   String uiSettings = 'Settings',
