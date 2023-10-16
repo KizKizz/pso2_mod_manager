@@ -42,7 +42,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 List<String> saveValues = ['off', 'minimal', 'all'];
 
 List<bool> _selectedIconLoaderSwitches = <bool>[false, false, false];
-bool profileLoad = false;
+
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -341,7 +341,6 @@ class _MainPageState extends State<MainPage> {
                                                   modViewItem = null;
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
-                                                    profileLoad = true;
                                                     setState(() {});
                                                     // profileLoader(context).then((value) {
                                                     Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile1Name);
@@ -398,7 +397,6 @@ class _MainPageState extends State<MainPage> {
                                                   modViewItem = null;
                                                   ogModFilesReset();
                                                   Future.delayed(const Duration(milliseconds: 500), () {
-                                                    profileLoad = true;
                                                     setState(() {});
                                                     // profileLoader(context).then((value) {
                                                     Provider.of<StateProvider>(context, listen: false).setProfileName(modManProfile2Name);
