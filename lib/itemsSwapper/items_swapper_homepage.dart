@@ -68,7 +68,10 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
       curCategorySymbol = '[In]';
     }
     List<CsvIceFile> fromItemCsvData = csvData
-        .where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol))
+        .where((element) =>
+            ((element.jpName.isEmpty || element.enName.isEmpty) && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty)) ||
+            ((element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol)))
+        // .where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol))
         .toList();
     if (curActiveLang == 'JP') {
       fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));

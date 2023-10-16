@@ -58,7 +58,8 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
 
     //fetch icons
     List<CsvAccessoryIceFile> fromItemCsvData =
-        csvAccData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty)).toList();
+    csvAccData.where((element) => element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty).toList();
+        // csvAccData.where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty)).toList();
     if (curActiveLang == 'JP') {
       fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
     } else {
