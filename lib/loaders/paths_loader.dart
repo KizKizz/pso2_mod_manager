@@ -168,6 +168,7 @@ Future<bool> pathsLoader(context) async {
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();
+    File(modManRefSheetsLocalVerFilePath).writeAsString('0');
   }
   //Create log file
   // modManOpLogsFilePath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
@@ -207,7 +208,7 @@ Future<bool> pathsLoader(context) async {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
     List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
     File(modManRefSheetListFilePath).writeAsString(sheetPaths.join('\n').trim());
-    //File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsVersion.toString());
+    File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsVersion.toString());
   }
 
   //ref sheets check
@@ -504,6 +505,7 @@ Future<bool> modManPathReloader(context) async {
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();
+    File(modManRefSheetsLocalVerFilePath).writeAsString('0');
   }
 
   //Create log file
