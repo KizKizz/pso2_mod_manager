@@ -7,7 +7,7 @@ import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-late final Future modListLoader;
+//late final Future modListLoader;
 
 class ModsLoadingPage extends StatefulWidget {
   const ModsLoadingPage({Key? key}) : super(key: key);
@@ -17,16 +17,16 @@ class ModsLoadingPage extends StatefulWidget {
 }
 
 class _ModsLoadingPageState extends State<ModsLoadingPage> {
-  @override
-  void initState() {
-    modListLoader = modFileStructureLoader(context, false);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   modListLoader = modFileStructureLoader(context, false);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: modListLoader,
+        future: modFileStructureLoader(context, Provider.of<StateProvider>(context, listen: false).reloadProfile),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -100,7 +100,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
               );
             } else {
               //Item list
-              isStartupModsLoad = false;
+              //isStartupModsLoad = false;
               moddedItemsList = snapshot.data;
 
               return const AppliedModsLoadingPage();

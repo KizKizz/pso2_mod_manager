@@ -15,8 +15,16 @@ Future<bool> modFileApply(ModFile modFile) async {
     if (ogPath.contains('win32_na') || ogPath.contains('win32reboot_na')) {
       modFile = await modFileBackup(modFile);
     }
-    File returnedFile = await File(modFile.location).copy(ogPath);
-    if (returnedFile.path != ogPath) {
+    File returnedFile = File('');
+    try {
+      returnedFile = await File(modFile.location).copy(ogPath);
+    } catch (e) {
+      if (File(ogPath).existsSync()) {
+        await File(ogPath).delete();
+      }
+      returnedFile = await File(modFile.location).copy(ogPath);
+    }
+    if (returnedFile.path.isEmpty || returnedFile.path != ogPath) {
       return false;
     }
     String newOGMD5 = await getFileHash(ogPath);

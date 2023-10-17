@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 
@@ -12,6 +14,11 @@ Future<ModFile?> modFileAppliedDupRestore(List<CategoryType> moddedList, ModFile
               //submod.modFiles[modFileIndex].applyStatus = false;
               //removed for downloading backups from sega
               //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
+              for (var bkPath in submod.modFiles[modFileIndex].bkLocations) {
+                if (File(bkPath).existsSync()) {
+                  File(bkPath).deleteSync();
+                }
+              }
               submod.modFiles[modFileIndex].applyStatus = false;
               submod.modFiles[modFileIndex].ogMd5s.clear();
               submod.modFiles[modFileIndex].bkLocations.clear();

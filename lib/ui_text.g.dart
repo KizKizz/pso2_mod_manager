@@ -41,6 +41,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiON = json['uiON'] as String
       ..uiOFF = json['uiOFF'] as String
       ..uiMove = json['uiMove'] as String
+      ..uiContinue = json['uiContinue'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -283,6 +284,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiErrorWhenCheckingAppliedMods'] as String
       ..uiReappliedModsAfterChecking =
           json['uiReappliedModsAfterChecking'] as String
+      ..uireApplyingModFiles = json['uireApplyingModFiles'] as String
+      ..uiDontReapplyRemoveFromAppliedList =
+          json['uiDontReapplyRemoveFromAppliedList'] as String
+      ..uiReapply = json['uiReapply'] as String
       ..uiLoadingAppliedMods = json['uiLoadingAppliedMods'] as String
       ..uiErrorWhenLoadingAppliedMods =
           json['uiErrorWhenLoadingAppliedMods'] as String
@@ -436,6 +441,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiON': instance.uiON,
       'uiOFF': instance.uiOFF,
       'uiMove': instance.uiMove,
+      'uiContinue': instance.uiContinue,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,
@@ -648,6 +654,10 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCheckingAppliedMods': instance.uiCheckingAppliedMods,
       'uiErrorWhenCheckingAppliedMods': instance.uiErrorWhenCheckingAppliedMods,
       'uiReappliedModsAfterChecking': instance.uiReappliedModsAfterChecking,
+      'uireApplyingModFiles': instance.uireApplyingModFiles,
+      'uiDontReapplyRemoveFromAppliedList':
+          instance.uiDontReapplyRemoveFromAppliedList,
+      'uiReapply': instance.uiReapply,
       'uiLoadingAppliedMods': instance.uiLoadingAppliedMods,
       'uiErrorWhenLoadingAppliedMods': instance.uiErrorWhenLoadingAppliedMods,
       'uiLoadingModSets': instance.uiLoadingModSets,

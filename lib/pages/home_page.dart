@@ -86,9 +86,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    dotnetVerCheck(context);
-    ogFilesPermChecker(context);
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      dotnetVerCheck(context);
+      ogFilesPermChecker(context);
+    });
     super.initState();
   }
 

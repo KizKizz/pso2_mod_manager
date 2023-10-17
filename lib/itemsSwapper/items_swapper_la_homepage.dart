@@ -89,8 +89,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
       if (dropDownSelectedMotionType == motionTypes.first || selectedMotionType.isEmpty) {
         fromItemCsvData = csvEmotesData
             .where((element) =>
-                element.jpName.isNotEmpty &&
-                element.enName.isNotEmpty &&
+                // element.jpName.isNotEmpty &&
+                // element.enName.isNotEmpty &&
                 (element.pso2HashIceName.isNotEmpty ||
                     element.pso2VfxHashIceName.isNotEmpty ||
                     element.rbCastFemaleHashIceName.isNotEmpty ||
@@ -102,8 +102,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
       } else {
         fromItemCsvData = csvEmotesData
             .where((element) =>
-                element.jpName.isNotEmpty &&
-                element.enName.isNotEmpty &&
+                // element.jpName.isNotEmpty &&
+                // element.enName.isNotEmpty &&
                 element.subCategory == dropDownSelectedMotionType &&
                 (element.pso2HashIceName.isNotEmpty ||
                     element.pso2VfxHashIceName.isNotEmpty ||

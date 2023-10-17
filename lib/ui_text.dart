@@ -35,7 +35,8 @@ class TranslationText {
       uiExit = 'Exit',
       uiON = 'ON',
       uiOFF = 'OFF',
-      uiMove = 'Move';
+      uiMove = 'Move',
+      uiContinue = 'Continue';
 
   //main page
   String uiSettings = 'Settings',
@@ -99,10 +100,10 @@ class TranslationText {
       uiPatchNote = 'Patch Notes...',
       uiSkipMMUpdate = 'Skip This Version',
       uiUpdate = 'Update',
-      uiNewRefSheetsUpdate = 'New update available for item reference sheets (Important for Add Mods function to work correctly)',
+      uiNewRefSheetsUpdate = 'New update available for item reference sheets (Important for many features to work correctly)',
       uiDownloading = 'Downloading',
       uiOf = 'of',
-      uiRefSheetsDownloadingCount = 'of the required item reference sheets. (Important for Add Mods function to work correctly)',
+      uiRefSheetsDownloadingCount = 'of the required item reference sheets.',
       uiDownloadUpdate = 'Download Update',
       uiNewUserNotice = 'If this is your first time using PSO2NGS Mod Manager please restore the game files to their originals before applying mods to the game',
       uiUpdateNow = 'Update Now',
@@ -256,7 +257,10 @@ class TranslationText {
   //applied_mods_checking_page
   String uiCheckingAppliedMods = 'Checking Applied Mods',
       uiErrorWhenCheckingAppliedMods = 'Error when checking applied mod files',
-      uiReappliedModsAfterChecking = 'The mod(s) below have been automatically re-applied to the game';
+      uiReappliedModsAfterChecking = 'The mod files below have been unapplied from the game',
+      uireApplyingModFiles = 'Attempting to re-apply these files below',
+      uiDontReapplyRemoveFromAppliedList = 'Do not re-apply and remove from Applied Mods List',
+      uiReapply = 'Re-apply these mod files to the game';
 
   //applied_mods_loading_page
   String uiLoadingAppliedMods = 'Loading Applied Mods', uiErrorWhenLoadingAppliedMods = 'Error when loading applied mod files';
