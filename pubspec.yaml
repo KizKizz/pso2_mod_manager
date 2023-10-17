@@ -71,7 +71,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dependency_overrides:
-  win32: ^5.0.7
+  win32: ^5.0.9
 
 dev_dependencies:
   flutter_test:
