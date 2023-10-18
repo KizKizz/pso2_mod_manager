@@ -192,7 +192,13 @@ class TranslationText {
       uiHoldToApplyAllAvailableModsToTheGame =
           'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
       uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list',
-      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius';
+      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius',
+      uiAddToFavList = 'Add to Favorite List',
+      uiRemoveFromFavList = 'Remove from Favorite List',
+      uiMore = 'More',
+      uiSwapToAnotherItem = 'Swap to another item',
+      uiRemoveBoundaryRadius = 'Remove boundary radius', 
+      uiRemoveFromMM = 'Remove from Mod Manager';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
