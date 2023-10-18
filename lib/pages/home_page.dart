@@ -3115,7 +3115,7 @@ class _HomePageState extends State<HomePage> {
                                                                     message: curLangText!.uiMore,
                                                                     child: InkWell(
                                                                       child: const Icon(
-                                                                        Icons.more_vert,
+                                                                        Icons.more_horiz,
                                                                       ),
                                                                       onTap: () {
                                                                         if (controller.isOpen) {
@@ -3127,6 +3127,13 @@ class _HomePageState extends State<HomePage> {
                                                                     ),
                                                                   );
                                                                 },
+                                                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                }),
+                                                                shape: MaterialStateProperty.resolveWith((states) {
+                                                                  return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                })
+                                                                ),
                                                                 menuChildren: [
                                                                   // favorite
                                                                   MenuItemButton(
@@ -3203,7 +3210,7 @@ class _HomePageState extends State<HomePage> {
                                                                   MenuItemButton(
                                                                     leadingIcon: Icon(
                                                                       Icons.delete_forever_outlined,
-                                                                      color: curSubmod.applyStatus ? Theme.of(context).disabledColor : null,
+                                                                      color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
                                                                     ),
                                                                     onPressed: curSubmod.applyStatus
                                                                         ? null
@@ -3244,7 +3251,10 @@ class _HomePageState extends State<HomePage> {
                                                                               });
                                                                             }
                                                                           },
-                                                                    child: Text(curLangText!.uiRemoveFromMM),
+                                                                    child: Text(
+                                                                      curLangText!.uiRemoveFromMM,
+                                                                      style: TextStyle(color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                                    ),
                                                                   ),
                                                                 ])
                                                           ],
