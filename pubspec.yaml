@@ -64,7 +64,7 @@ dependencies:
   file_selector: ^1.0.0
   crop_image: ^1.0.10
   image: ^4.0.17
-  
+  windows_single_instance: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

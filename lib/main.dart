@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:windows_single_instance/windows_single_instance.dart';
 
 //Colors
 Color lightModePrimaryColor = const Color(0xffffffff);
@@ -41,8 +42,11 @@ MaterialColor darkModePrimarySwatch = Colors.blue;
 //Background image
 File backgroundImage = File('');
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await WindowsSingleInstance.ensureSingleInstance(args, "PSO2NGS Mod Manager", onSecondWindow: (args) {
+    debugPrint(args.toString());
+  });
   await windowManager.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   windowsWidth = (prefs.getDouble('windowsWidth') ?? 1280.0);
