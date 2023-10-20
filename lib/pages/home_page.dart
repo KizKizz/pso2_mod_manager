@@ -287,24 +287,22 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             //Show/Hide button
-            if (!isCateTypeReordering && !isFavListVisible && searchTextController.value.text.isEmpty)
+            if (!isCateTypeReordering && !isFavListVisible && isShowHideCates)
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: ModManTooltip(
-                  message: isShowHideCates ? curLangText!.uiBack : curLangText!.uiShowHideCate,
+                  message: curLangText!.uiBack,
                   child: InkWell(
                       onTap: isCatesReordering.indexWhere((element) => element) != -1
                           ? null
                           : () {
                               if (isShowHideCates) {
                                 isShowHideCates = false;
-                              } else {
-                                isShowHideCates = true;
                               }
                               setState(() {});
                             },
                       child: Icon(
-                        isShowHideCates ? Icons.arrow_back_ios_new : Icons.highlight_alt_rounded,
+                        Icons.arrow_back_ios_new,
                         color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
                       )),
                 ),
@@ -340,11 +338,11 @@ class _HomePageState extends State<HomePage> {
                               Icons.sort_by_alpha_outlined,
                             )),
                       ),
-                    //Sort button
+                    //Sort Back button
                     Visibility(
-                      visible: !isFavListVisible && searchTextController.value.text.isEmpty,
+                      visible: isCateTypeReordering,
                       child: ModManTooltip(
-                        message: isCateTypeReordering ? curLangText!.uiBack : curLangText!.uiSortItemList,
+                        message: curLangText!.uiBack,
                         child: InkWell(
                             onTap: isCatesReordering.indexWhere((element) => element) != -1
                                 ? null
@@ -353,13 +351,11 @@ class _HomePageState extends State<HomePage> {
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
-                                    } else {
-                                      isCateTypeReordering = true;
                                     }
                                     setState(() {});
                                   },
                             child: Icon(
-                              !isCateTypeReordering ? Icons.sort_outlined : Icons.arrow_back_ios_new,
+                              Icons.arrow_back_ios_new,
                               color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
                             )),
                       ),
@@ -367,32 +363,102 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+
             //Add new cate group
+            // Visibility(
+            //   visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(left: 5, right: 5),
+            //     child: ModManTooltip(
+            //       message: curLangText!.uiAddNewCateGroup,
+            //       child: InkWell(
+            //           onTap: () async {
+            //             String newCateTypeName = await categoryGroupAdder(context);
+            //             if (newCateTypeName.isNotEmpty) {
+            //               moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
+            //               for (var cateType in moddedItemsList) {
+            //                 cateType.position = moddedItemsList.indexOf(cateType);
+            //               }
+            //               saveModdedItemListToJson();
+            //               setState(() {});
+            //             }
+            //           },
+            //           child: const Icon(
+            //             Icons.add_to_photos_outlined,
+            //             size: 20,
+            //           )),
+            //     ),
+            //   ),
+            // ),
+
+            //Buttons Menu
             Visibility(
-              visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5),
-                child: ModManTooltip(
-                  message: curLangText!.uiAddNewCateGroup,
-                  child: InkWell(
-                      onTap: () async {
-                        String newCateTypeName = await categoryGroupAdder(context);
-                        if (newCateTypeName.isNotEmpty) {
-                          moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
-                          for (var cateType in moddedItemsList) {
-                            cateType.position = moddedItemsList.indexOf(cateType);
+                visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+                child: MenuAnchor(
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return ModManTooltip(
+                        message: curLangText!.uiMore,
+                        child: InkWell(
+                          child: const Icon(
+                            Icons.more_vert,
+                          ),
+                          onTap: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                        ),
+                      );
+                    },
+                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                    }), shape: MaterialStateProperty.resolveWith((states) {
+                      return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                    })),
+                    menuChildren: [
+                      // add new cate group
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.add_to_photos_outlined,
+                        ),
+                        child: Text(curLangText!.uiAddNewCateGroup),
+                        onPressed: () async {
+                          String newCateTypeName = await categoryGroupAdder(context);
+                          if (newCateTypeName.isNotEmpty) {
+                            moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
+                            for (var cateType in moddedItemsList) {
+                              cateType.position = moddedItemsList.indexOf(cateType);
+                            }
+                            saveModdedItemListToJson();
+                            setState(() {});
                           }
-                          saveModdedItemListToJson();
+                        },
+                      ),
+                      // sort item list
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.sort_outlined,
+                        ),
+                        child: Text(curLangText!.uiSortItemList),
+                        onPressed: () async {
+                          isCateTypeReordering = true;
                           setState(() {});
-                        }
-                      },
-                      child: const Icon(
-                        Icons.add_to_photos_outlined,
-                        size: 20,
-                      )),
-                ),
-              ),
-            ),
+                        },
+                      ),
+                      // show/hide cate
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.highlight_alt_rounded,
+                        ),
+                        child: Text(curLangText!.uiShowHideCate),
+                        onPressed: () async {
+                          isShowHideCates = true;
+                          setState(() {});
+                        },
+                      ),
+                    ]))
           ],
           //Title
           titleSpacing: 0,
