@@ -374,7 +374,7 @@ class TranslationText {
   //vital_gauge_swapper_homepage.dart
   String uiCustomBackgrounds = 'Custom Backgrounds',
       uiHoldToDeleteThisBackground = 'Hold to delete this background',
-      uiOpenInFileExplorer = 'Open In File Explorer',
+      uiOpenInFileExplorer = 'Open in File Explorer',
       uiCreateBackground = 'Create New Background',
       uiSwappedAvailableBackgrounds = 'Swapped - Available Backgrounds',
       uiHoldToRestoreThisBackgroundToItsOriginal = 'Hold to restore this background to its original',
