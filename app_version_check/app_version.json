@@ -1,9 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.10",
+    "version": "2.4.11",
     "description": [
-        "Reworked some systems that would cause stuck and infinite loading",
-        "Enabled unnamed items in Swap Items feature",
+        "Tweaked some UI elements to be less clustered",
         "Some minor bug fixes"
     ],
     "windows_file": "",
