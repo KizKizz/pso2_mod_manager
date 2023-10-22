@@ -124,7 +124,9 @@ class TranslationText {
       uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename',
       uiVitalGauge = 'Vital Gauge',
       uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background',
-      uiRemoveProfanityFilter = "Profanity Filter Removal";
+      uiRemoveProfanityFilter = "Profanity Filter Removal",
+      uiExtras = 'Extras',
+      uiOtherFeaturesOfPSO2NGSModManager = 'Other features of PSO2NGS Mod Manager';
 
   //homepage
   String uiItemList = 'Item List',

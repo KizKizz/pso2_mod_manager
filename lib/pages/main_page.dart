@@ -1384,57 +1384,57 @@ class _MainPageState extends State<MainPage> {
                           ),
 
                           //Vital gauge
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: ModManTooltip(
-                              message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
-                              child: SizedBox(
-                                //width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() {
-                                    clearAllTempDirs();
-                                    vitalGaugeHomePage(context);
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.horizontal_split,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: ModManTooltip(
+                          //     message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
+                          //     child: SizedBox(
+                          //       //width: 99,
+                          //       child: MaterialButton(
+                          //         onPressed: (() {
+                          //           clearAllTempDirs();
+                          //           vitalGaugeHomePage(context);
+                          //         }),
+                          //         child: Row(
+                          //           children: [
+                          //             const Icon(
+                          //               Icons.horizontal_split,
+                          //               size: 18,
+                          //             ),
+                          //             const SizedBox(width: 2.5),
+                          //             Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Item swapper
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: ModManTooltip(
-                              message: curLangText!.uiSwapAnItemToAnotherItem,
-                              child: SizedBox(
-                                //width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() {
-                                    itemsSwapperCategorySelect(context);
-                                  }),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.swap_horizontal_circle_outlined,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: ModManTooltip(
+                          //     message: curLangText!.uiSwapAnItemToAnotherItem,
+                          //     child: SizedBox(
+                          //       //width: 99,
+                          //       child: MaterialButton(
+                          //         onPressed: (() {
+                          //           itemsSwapperCategorySelect(context);
+                          //         }),
+                          //         child: Row(
+                          //           children: [
+                          //             const Icon(
+                          //               Icons.swap_horizontal_circle_outlined,
+                          //               size: 18,
+                          //             ),
+                          //             const SizedBox(width: 2.5),
+                          //             Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
                           //Mod sets
                           Visibility(
@@ -1475,6 +1475,64 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
+                          ),
+
+                          //Extras
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: MenuAnchor(
+                                builder: (BuildContext context, MenuController controller, Widget? child) {
+                                  return ModManTooltip(
+                                    message: curLangText!.uiOtherFeaturesOfPSO2NGSModManager,
+                                    child: MaterialButton(
+                                      onPressed: () {
+                                        if (controller.isOpen) {
+                                          controller.close();
+                                        } else {
+                                          controller.open();
+                                        }
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.extension_outlined,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 2.5),
+                                          Text(curLangText!.uiExtras, style: const TextStyle(fontWeight: FontWeight.w400))
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                }), shape: MaterialStateProperty.resolveWith((states) {
+                                  return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                })),
+                                menuChildren: [
+                                  // Swap Items
+                                  MenuItemButton(
+                                    leadingIcon: const Icon(
+                                      Icons.swap_horizontal_circle_outlined,
+                                    ),
+                                    child: Text(curLangText!.uiSwapItems),
+                                    onPressed: () {
+                                      itemsSwapperCategorySelect(context);
+                                    },
+                                  ),
+                                  // Vital Gauge
+                                  MenuItemButton(
+                                    leadingIcon: const Icon(
+                                      Icons.horizontal_split,
+                                    ),
+                                    child: Text(curLangText!.uiVitalGauge),
+                                    onPressed: () {
+                                      clearAllTempDirs();
+                                      vitalGaugeHomePage(context);
+                                    },
+                                  ),
+                                ]),
                           ),
 
                           //Refresh
