@@ -196,7 +196,6 @@ class _HomePageState extends State<HomePage> {
                       onLongPress: () async {
                         isApplyAllApplied = false;
                         await applyAllAvailableModsDialog(context);
-
                         setState(() {});
                       },
                       child: const Icon(
@@ -4050,7 +4049,7 @@ class _HomePageState extends State<HomePage> {
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                     ),
                                                     child: curCategory.items.length < 2
-                                                        ? Text('${appliedItemList[groupIndex].categories[categoryIndex].items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
+                                                        ? Text('${curCategory.items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
                                                             style: const TextStyle(
                                                               fontSize: 15,
                                                             ))

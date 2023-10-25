@@ -175,8 +175,8 @@ Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
       //if (cate.categoryName == 'Outerwears') {
       for (var item in cate.items) {
         if (!item.applyStatus) {
-          if (!item.mods.first.applyStatus) {
-            if (!item.mods.first.submods.first.applyStatus) {
+          if (item.mods.isNotEmpty && !item.mods.first.applyStatus) {
+            if (item.mods.first.submods.isNotEmpty && !item.mods.first.submods.first.applyStatus) {
               bool ogFileFound = false;
               for (var modFile in item.mods.first.submods.first.modFiles) {
                 if (!modFile.applyStatus) {
@@ -210,7 +210,11 @@ Future<void> applyAllCallBack(context) async {
       for (var item in cate.items) {
         if (!item.applyStatus) {
           if (!item.mods.first.applyStatus) {
-            applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first);
+            if (!item.mods.first.submods.first.applyStatus) {
+              applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first).then((value) async {
+                appliedItemList = await appliedListBuilder(moddedItemsList);
+              });
+            }
           }
         }
       }
@@ -222,107 +226,61 @@ Future<void> applyAllCallBack(context) async {
 
 Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod) async {
   String appliedPath = '${item.category} > ${submod.itemName} > ${submod.modName} > ${submod.submodName}';
-  if (!submod.applyStatus) {
-    bool allOGFilesFound = true;
-    for (var modFile in submod.modFiles) {
-      if (modFile.ogLocations.isEmpty) {
-        allOGFilesFound = false;
-        break;
+  for (var modFile in submod.modFiles) {
+    if (modFile.ogLocations.isNotEmpty) {
+      final appliedFiles = await modFilesApply(context, [modFile]);
+      if (appliedFiles.where((element) => element.modFileName == modFile.modFileName).isNotEmpty) {
+        submod.applyDate = DateTime.now();
+        item.applyDate = DateTime.now();
+        mod.applyDate = DateTime.now();
+        submod.applyStatus = true;
+        submod.isNew = false;
+        mod.applyStatus = true;
+        mod.isNew = false;
+        item.applyStatus = true;
+        item.isNew = false;
+        saveModdedItemListToJson();
       }
     }
+  }
 
-    if (allOGFilesFound) {
-      //print(appliedPath);
-      modFilesApply(context, submod.modFiles).then((value) async {
-        if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-          submod.applyDate = DateTime.now();
-          item.applyDate = DateTime.now();
-          mod.applyDate = DateTime.now();
-          submod.applyStatus = true;
-          submod.isNew = false;
-          mod.applyStatus = true;
-          mod.isNew = false;
-          item.applyStatus = true;
-          item.isNew = false;
-          appliedItemList = await appliedListBuilder(moddedItemsList);
-        }
-        saveModdedItemListToJson();
-        Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
-        Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
-        await Future.delayed(const Duration(milliseconds: 100));
-      });
-      return appliedPath;
-    }
+  // bool allOGFilesFound = true;
+  // for (var modFile in submod.modFiles) {
+  //   if (modFile.ogLocations.isEmpty) {
+  //     allOGFilesFound = false;
+  //     break;
+  //   }
+  // }
+
+  // if (allOGFilesFound) {
+  //   //print(appliedPath);
+  //   modFilesApply(context, submod.modFiles).then((value) async {
+  //     if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+  //       submod.applyDate = DateTime.now();
+  //       item.applyDate = DateTime.now();
+  //       mod.applyDate = DateTime.now();
+  //       submod.applyStatus = true;
+  //       submod.isNew = false;
+  //       mod.applyStatus = true;
+  //       mod.isNew = false;
+  //       item.applyStatus = true;
+  //       item.isNew = false;
+  //       appliedItemList = await appliedListBuilder(moddedItemsList);
+  //     }
+  //     saveModdedItemListToJson();
+  //     Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
+  //     Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
+  //     await Future.delayed(const Duration(milliseconds: 100));
+  //   });
+  //   return appliedPath;
+  // }
+
+  if (submod.applyStatus) {
+    Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
+    Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
+    await Future.delayed(const Duration(milliseconds: 100));
+    return appliedPath;
   }
 
   return '';
 }
-
-
-//get and apply all mods
-
-// Future<int> applyAllGetOgPaths(List<CategoryType> moddedList) async {
-//   int totalFiles = 0;
-//   for (var cateType in moddedList) {
-//     for (var cate in cateType.categories) {
-//       if (cate.categoryName == 'Outerwears') {
-//         for (var item in cate.items) {
-//           if (!item.applyStatus) {
-//             for (var mod in item.mods) {
-//               if (!mod.applyStatus) {
-//                 for (var submod in mod.submods) {
-//                   if (!submod.applyStatus) {
-//                     bool ogFileFound = false;
-//                     for (var modFile in submod.modFiles) {
-//                       if (!modFile.applyStatus) {
-//                         //Future.delayed(const Duration(milliseconds: 500), () {
-//                         await Future.delayed(const Duration(milliseconds: 5));
-//                         modFile.ogLocations = applyModsOgIcePathsFetcher(submod, modFile.modFileName);
-//                         //});
-//                         //sleep(const Duration(seconds:1));
-//                         if (modFile.ogLocations.isNotEmpty) {
-//                           ogFileFound = true;
-//                         }
-//                         print(modFile.ogLocations.length);
-//                       }
-//                     }
-//                     if (ogFileFound) {
-//                       totalFiles++;
-//                       ogFileFound = false;
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return totalFiles;
-// }
-
-// Future<void> applyAllCallBack(context) async {
-//   //Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterReset();
-//   for (var cateType in moddedItemsList) {
-//     for (var cate in cateType.categories) {
-//       if (cate.categoryName == 'Outerwears') {
-//         for (var item in cate.items) {
-//           if (!item.applyStatus) {
-//             for (var mod in item.mods) {
-//               if (!mod.applyStatus) {
-                // for (var submod in mod.submods) {
-                //   if (!submod.applyStatus) {
-                //     applyAllAvailableMods(context, cate.categoryName, item, mod, submod);
-                //   }
-                // }
-//                 
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   isApplyAllApplied = true;
-// }
