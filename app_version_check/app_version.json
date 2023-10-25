@@ -3,6 +3,7 @@
     "version": "2.4.11",
     "description": [
         "Tweaked some UI elements to be less clustered",
+        "More improvement to emotes swapper",
         "Some minor bug fixes"
     ],
     "windows_file": "",
