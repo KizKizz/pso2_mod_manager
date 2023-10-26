@@ -216,6 +216,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiHoldToReapplyAllModsInAppliedList'] as String
       ..uiHoldToModifyBoundaryRadius =
           json['uiHoldToModifyBoundaryRadius'] as String
+      ..uiAddToFavList = json['uiAddToFavList'] as String
+      ..uiRemoveFromFavList = json['uiRemoveFromFavList'] as String
+      ..uiMore = json['uiMore'] as String
+      ..uiSwapToAnotherItem = json['uiSwapToAnotherItem'] as String
+      ..uiRemoveBoundaryRadius = json['uiRemoveBoundaryRadius'] as String
+      ..uiRemoveFromMM = json['uiRemoveFromMM'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -600,6 +606,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiHoldToReapplyAllModsInAppliedList':
           instance.uiHoldToReapplyAllModsInAppliedList,
       'uiHoldToModifyBoundaryRadius': instance.uiHoldToModifyBoundaryRadius,
+      'uiAddToFavList': instance.uiAddToFavList,
+      'uiRemoveFromFavList': instance.uiRemoveFromFavList,
+      'uiMore': instance.uiMore,
+      'uiSwapToAnotherItem': instance.uiSwapToAnotherItem,
+      'uiRemoveBoundaryRadius': instance.uiRemoveBoundaryRadius,
+      'uiRemoveFromMM': instance.uiRemoveFromMM,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,

@@ -161,6 +161,8 @@ Future<List<File>> lasSwapRename(List<File> fFiles, List<File> tFiles) async {
       if (aqmFile.path.isNotEmpty) {
         renamedFiles.add(await fileF.rename(Uri.file('${fileF.parent.path}/${p.basename(aqmFile.path)}').toFilePath()));
       }
+    } else if (fileNamePartsF.length > 2 && tFiles.where((element) => p.basename(element.path) == p.basename(fileF.path)).isNotEmpty) {
+      renamedFiles.add(fileF);
     } else if (fileNamePartsF.length > 2) {
       matchingFileT = tFiles.firstWhere(
           (element) =>

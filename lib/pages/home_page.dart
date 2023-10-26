@@ -22,6 +22,7 @@ import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/dotnet_check.dart';
+import 'package:pso2_mod_manager/functions/mod_deletion_dialog.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
@@ -195,7 +196,6 @@ class _HomePageState extends State<HomePage> {
                       onLongPress: () async {
                         isApplyAllApplied = false;
                         await applyAllAvailableModsDialog(context);
-
                         setState(() {});
                       },
                       child: const Icon(
@@ -286,24 +286,22 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             //Show/Hide button
-            if (!isCateTypeReordering && !isFavListVisible && searchTextController.value.text.isEmpty)
+            if (!isCateTypeReordering && !isFavListVisible && isShowHideCates)
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: ModManTooltip(
-                  message: isShowHideCates ? curLangText!.uiBack : curLangText!.uiShowHideCate,
+                  message: curLangText!.uiBack,
                   child: InkWell(
                       onTap: isCatesReordering.indexWhere((element) => element) != -1
                           ? null
                           : () {
                               if (isShowHideCates) {
                                 isShowHideCates = false;
-                              } else {
-                                isShowHideCates = true;
                               }
                               setState(() {});
                             },
                       child: Icon(
-                        isShowHideCates ? Icons.arrow_back_ios_new : Icons.highlight_alt_rounded,
+                        Icons.arrow_back_ios_new,
                         color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
                       )),
                 ),
@@ -339,11 +337,11 @@ class _HomePageState extends State<HomePage> {
                               Icons.sort_by_alpha_outlined,
                             )),
                       ),
-                    //Sort button
+                    //Sort Back button
                     Visibility(
-                      visible: !isFavListVisible && searchTextController.value.text.isEmpty,
+                      visible: isCateTypeReordering,
                       child: ModManTooltip(
-                        message: isCateTypeReordering ? curLangText!.uiBack : curLangText!.uiSortItemList,
+                        message: curLangText!.uiBack,
                         child: InkWell(
                             onTap: isCatesReordering.indexWhere((element) => element) != -1
                                 ? null
@@ -352,13 +350,11 @@ class _HomePageState extends State<HomePage> {
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
-                                    } else {
-                                      isCateTypeReordering = true;
                                     }
                                     setState(() {});
                                   },
                             child: Icon(
-                              !isCateTypeReordering ? Icons.sort_outlined : Icons.arrow_back_ios_new,
+                              Icons.arrow_back_ios_new,
                               color: isCatesReordering.indexWhere((element) => element) != -1 ? Theme.of(context).disabledColor : null,
                             )),
                       ),
@@ -366,32 +362,102 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+
             //Add new cate group
+            // Visibility(
+            //   visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(left: 5, right: 5),
+            //     child: ModManTooltip(
+            //       message: curLangText!.uiAddNewCateGroup,
+            //       child: InkWell(
+            //           onTap: () async {
+            //             String newCateTypeName = await categoryGroupAdder(context);
+            //             if (newCateTypeName.isNotEmpty) {
+            //               moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
+            //               for (var cateType in moddedItemsList) {
+            //                 cateType.position = moddedItemsList.indexOf(cateType);
+            //               }
+            //               saveModdedItemListToJson();
+            //               setState(() {});
+            //             }
+            //           },
+            //           child: const Icon(
+            //             Icons.add_to_photos_outlined,
+            //             size: 20,
+            //           )),
+            //     ),
+            //   ),
+            // ),
+
+            //Buttons Menu
             Visibility(
-              visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5),
-                child: ModManTooltip(
-                  message: curLangText!.uiAddNewCateGroup,
-                  child: InkWell(
-                      onTap: () async {
-                        String newCateTypeName = await categoryGroupAdder(context);
-                        if (newCateTypeName.isNotEmpty) {
-                          moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
-                          for (var cateType in moddedItemsList) {
-                            cateType.position = moddedItemsList.indexOf(cateType);
+                visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
+                child: MenuAnchor(
+                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                      return ModManTooltip(
+                        message: curLangText!.uiMore,
+                        child: InkWell(
+                          child: const Icon(
+                            Icons.more_vert,
+                          ),
+                          onTap: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                        ),
+                      );
+                    },
+                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                    }), shape: MaterialStateProperty.resolveWith((states) {
+                      return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                    })),
+                    menuChildren: [
+                      // add new cate group
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.add_to_photos_outlined,
+                        ),
+                        child: Text(curLangText!.uiAddNewCateGroup),
+                        onPressed: () async {
+                          String newCateTypeName = await categoryGroupAdder(context);
+                          if (newCateTypeName.isNotEmpty) {
+                            moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
+                            for (var cateType in moddedItemsList) {
+                              cateType.position = moddedItemsList.indexOf(cateType);
+                            }
+                            saveModdedItemListToJson();
+                            setState(() {});
                           }
-                          saveModdedItemListToJson();
+                        },
+                      ),
+                      // sort item list
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.sort_outlined,
+                        ),
+                        child: Text(curLangText!.uiSortItemList),
+                        onPressed: () async {
+                          isCateTypeReordering = true;
                           setState(() {});
-                        }
-                      },
-                      child: const Icon(
-                        Icons.add_to_photos_outlined,
-                        size: 20,
-                      )),
-                ),
-              ),
-            ),
+                        },
+                      ),
+                      // show/hide cate
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          Icons.highlight_alt_rounded,
+                        ),
+                        child: Text(curLangText!.uiShowHideCate),
+                        onPressed: () async {
+                          isShowHideCates = true;
+                          setState(() {});
+                        },
+                      ),
+                    ]))
           ],
           //Title
           titleSpacing: 0,
@@ -2360,117 +2426,270 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ),
 
-                                                //Favorite
-                                                ModManTooltip(
-                                                  message: curMod.submods.first.isFavorite
-                                                      ? '${curLangText!.uiRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromFavList}'
-                                                      : '${curLangText!.uiAdd} ${curMod.submods.first.submodName} ${curLangText!.uiToFavList}',
-                                                  child: InkWell(
-                                                    child: Icon(curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus, size: 18),
-                                                    onTap: () async {
-                                                      if (curMod.submods.first.isFavorite) {
-                                                        curMod.submods.first.isFavorite = false;
-                                                        if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                          curMod.isFavorite = false;
-                                                        }
-                                                        if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                          modViewItem!.isFavorite = false;
-                                                          modViewItem = null;
-                                                        }
-                                                      } else {
-                                                        curMod.submods.first.isFavorite = true;
-                                                        curMod.isFavorite = true;
-                                                        modViewItem!.isFavorite = true;
-                                                      }
-                                                      saveModdedItemListToJson();
-                                                      setState(() {});
-                                                    },
-                                                  ),
-                                                ),
-                                                //Swap
-                                                Visibility(
-                                                  //visible: f.kDebugMode,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(left: 2),
-                                                    child: ModManTooltip(
-                                                      message:
-                                                          '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
-                                                      child: InkWell(
-                                                        child: const Icon(
-                                                          Icons.swap_horizontal_circle_outlined,
-                                                        ),
-                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
-                                                        onLongPress: () {
-                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                            element.deleteSync(recursive: true);
-                                                          });
-                                                          isBoundaryEdited = false;
-                                                          modsBoundaryEditHomePage(context, curMod.submods.first);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                //Open folder
-                                                ModManTooltip(
-                                                  message: '${curLangText!.uiOpen} ${curMod.submods.first.submodName} ${curLangText!.uiInFileExplorer}',
-                                                  child: InkWell(
-                                                    child: const Icon(
-                                                      Icons.folder_open_outlined,
-                                                    ),
-                                                    onTap: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
-                                                  ),
-                                                ),
-                                                //Delete
-                                                ModManTooltip(
-                                                  message: '${curLangText!.uiHoldToRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromMM}',
-                                                  child: InkWell(
-                                                    onLongPress: curMod.applyStatus
-                                                        ? null
-                                                        : () async {
-                                                            if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                              deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                modViewCate!.items.remove(modViewItem);
-                                                                modViewItem = null;
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                    context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                previewModName = '';
-                                                                previewImages.clear();
-                                                                saveModdedItemListToJson();
-                                                                setState(() {});
-                                                              });
-                                                            } else {
-                                                              deleteModFromModMan(curMod.submods.first.location, curMod.location).then((value) {
-                                                                String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                curMod.submods.remove(curMod.submods.first);
-                                                                if (curMod.submods.isEmpty) {
-                                                                  modViewItem!.mods.remove(curMod);
-                                                                } else {
-                                                                  curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                }
+                                                // //Favorite
+                                                // ModManTooltip(
+                                                //   message: curMod.submods.first.isFavorite
+                                                //       ? '${curLangText!.uiRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromFavList}'
+                                                //       : '${curLangText!.uiAdd} ${curMod.submods.first.submodName} ${curLangText!.uiToFavList}',
+                                                //   child: InkWell(
+                                                //     child: Icon(curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus, size: 18),
+                                                //     onTap: () async {
+                                                //       if (curMod.submods.first.isFavorite) {
+                                                //         curMod.submods.first.isFavorite = false;
+                                                //         if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                //           curMod.isFavorite = false;
+                                                //         }
+                                                //         if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                //           modViewItem!.isFavorite = false;
+                                                //           modViewItem = null;
+                                                //         }
+                                                //       } else {
+                                                //         curMod.submods.first.isFavorite = true;
+                                                //         curMod.isFavorite = true;
+                                                //         modViewItem!.isFavorite = true;
+                                                //       }
+                                                //       saveModdedItemListToJson();
+                                                //       setState(() {});
+                                                //     },
+                                                //   ),
+                                                // ),
+                                                // //Swap
+                                                // Visibility(
+                                                //   //visible: f.kDebugMode,
+                                                //   child: Padding(
+                                                //     padding: const EdgeInsets.only(left: 2),
+                                                //     child: ModManTooltip(
+                                                //       message:
+                                                //           '${curLangText!.uiSwap} ${curMod.submods.first.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                //       child: InkWell(
+                                                //         child: const Icon(
+                                                //           Icons.swap_horizontal_circle_outlined,
+                                                //         ),
+                                                //         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                //         onLongPress: () {
+                                                //           Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                //             element.deleteSync(recursive: true);
+                                                //           });
+                                                //           isBoundaryEdited = false;
+                                                //           modsBoundaryEditHomePage(context, curMod.submods.first);
+                                                //         },
+                                                //       ),
+                                                //     ),
+                                                //   ),
+                                                // ),
+                                                // //Open folder
+                                                // ModManTooltip(
+                                                //   message: '${curLangText!.uiOpen} ${curMod.submods.first.submodName} ${curLangText!.uiInFileExplorer}',
+                                                //   child: InkWell(
+                                                //     child: const Icon(
+                                                //       Icons.folder_open_outlined,
+                                                //     ),
+                                                //     onTap: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
+                                                //   ),
+                                                // ),
+                                                // //Delete
+                                                // ModManTooltip(
+                                                //   message: '${curLangText!.uiHoldToRemove} ${curMod.submods.first.submodName} ${curLangText!.uiFromMM}',
+                                                //   child: InkWell(
+                                                //     onLongPress: curMod.applyStatus
+                                                //         ? null
+                                                //         : () async {
+                                                //             if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                //               deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                //                 String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                //                 modViewCate!.items.remove(modViewItem);
+                                                //                 modViewItem = null;
+                                                //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                //                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                //                 previewModName = '';
+                                                //                 previewImages.clear();
+                                                //                 saveModdedItemListToJson();
+                                                //                 setState(() {});
+                                                //               });
+                                                //             } else {
+                                                //               deleteModFromModMan(curMod.submods.first.location, curMod.location).then((value) {
+                                                //                 String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                //                 curMod.submods.remove(curMod.submods.first);
+                                                //                 if (curMod.submods.isEmpty) {
+                                                //                   modViewItem!.mods.remove(curMod);
+                                                //                 } else {
+                                                //                   curMod.isNew = curMod.getSubmodsIsNewState();
+                                                //                 }
 
-                                                                if (modViewItem!.mods.isEmpty) {
-                                                                  modViewCate!.items.remove(modViewItem);
-                                                                  modViewItem = null;
-                                                                } else {
-                                                                  modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                }
-                                                                previewModName = '';
-                                                                previewImages.clear();
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                    context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                saveModdedItemListToJson();
-                                                                setState(() {});
-                                                              });
+                                                //                 if (modViewItem!.mods.isEmpty) {
+                                                //                   modViewCate!.items.remove(modViewItem);
+                                                //                   modViewItem = null;
+                                                //                 } else {
+                                                //                   modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                //                 }
+                                                //                 previewModName = '';
+                                                //                 previewImages.clear();
+                                                //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                //                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                //                 saveModdedItemListToJson();
+                                                //                 setState(() {});
+                                                //               });
+                                                //             }
+                                                //           },
+                                                //     child: Icon(
+                                                //       Icons.delete_forever_outlined,
+                                                //       color: curMod.applyStatus ? Theme.of(context).disabledColor : null,
+                                                //     ),
+                                                //   ),
+                                                // ),
+
+                                                MenuAnchor(
+                                                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                      return ModManTooltip(
+                                                        message: curLangText!.uiMore,
+                                                        child: InkWell(
+                                                          child: const Icon(
+                                                            Icons.more_vert,
+                                                          ),
+                                                          onTap: () {
+                                                            if (controller.isOpen) {
+                                                              controller.close();
+                                                            } else {
+                                                              controller.open();
                                                             }
                                                           },
-                                                    child: Icon(
-                                                      Icons.delete_forever_outlined,
-                                                      color: curMod.applyStatus ? Theme.of(context).disabledColor : null,
-                                                    ),
-                                                  ),
-                                                ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                      return RoundedRectangleBorder(
+                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                    })),
+                                                    menuChildren: [
+                                                      // favorite
+                                                      MenuItemButton(
+                                                        leadingIcon: Icon(
+                                                          curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                          size: 18,
+                                                        ),
+                                                        child: curActiveLang == 'JP'
+                                                            ? Text(
+                                                                curMod.submods.first.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                              )
+                                                            : Text(
+                                                                curMod.submods.first.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                              ),
+                                                        onPressed: () async {
+                                                          if (curMod.submods.first.isFavorite) {
+                                                            curMod.submods.first.isFavorite = false;
+                                                            if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                              curMod.isFavorite = false;
+                                                            }
+                                                            if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                              modViewItem!.isFavorite = false;
+                                                              modViewItem = null;
+                                                            }
+                                                          } else {
+                                                            curMod.submods.first.isFavorite = true;
+                                                            curMod.isFavorite = true;
+                                                            modViewItem!.isFavorite = true;
+                                                          }
+                                                          saveModdedItemListToJson();
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                      // swap
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiSwapToAnotherItem),
+                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                      ),
+                                                      // boundary
+                                                      Visibility(
+                                                        visible: curMod.submods.first.category == defaultCateforyDirs[1] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[3] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[4] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[5] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[6] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[11] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[15] ||
+                                                            curMod.submods.first.category == defaultCateforyDirs[16],
+                                                        child: MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.radio_button_checked,
+                                                          ),
+                                                          child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                          onPressed: () {
+                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            isBoundaryEdited = false;
+                                                            modsBoundaryEditHomePage(context, curMod.submods.first);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      // open in file explorer
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.folder_open_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiOpenInFileExplorer),
+                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
+                                                      ),
+                                                      // delete
+                                                      MenuItemButton(
+                                                        leadingIcon: Icon(
+                                                          Icons.delete_forever_outlined,
+                                                          color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                        ),
+                                                        onPressed: curMod.applyStatus
+                                                            ? null
+                                                            : () async {
+                                                                bool deleteConfirm = await modDeletionDialog(context, curMod.submods.first.submodName);
+                                                                if (deleteConfirm) {
+                                                                  if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                      modViewCate!.items.remove(modViewItem);
+                                                                      modViewItem = null;
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                          context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                      previewModName = '';
+                                                                      previewImages.clear();
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    });
+                                                                  } else {
+                                                                    deleteModFromModMan(curMod.submods.first.location, curMod.location).then((value) {
+                                                                      String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                                      curMod.submods.remove(curMod.submods.first);
+                                                                      if (curMod.submods.isEmpty) {
+                                                                        modViewItem!.mods.remove(curMod);
+                                                                      } else {
+                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                      }
+
+                                                                      if (modViewItem!.mods.isEmpty) {
+                                                                        modViewCate!.items.remove(modViewItem);
+                                                                        modViewItem = null;
+                                                                      } else {
+                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                      }
+                                                                      previewModName = '';
+                                                                      previewImages.clear();
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                          context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    });
+                                                                  }
+                                                                }
+                                                              },
+                                                        child: Text(
+                                                          curLangText!.uiRemoveFromMM,
+                                                          style: TextStyle(color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                        ),
+                                                      ),
+                                                    ])
                                               ],
                                             ),
                                           ),
@@ -2643,117 +2862,270 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ),
 
-                                                //Favorite
-                                                ModManTooltip(
-                                                  message: curMod.submods[modViewModSetSubModIndex].isFavorite
-                                                      ? '${curLangText!.uiRemove} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiFromFavList}'
-                                                      : '${curLangText!.uiAdd} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToFavList}',
-                                                  child: InkWell(
-                                                    child: Icon(curMod.submods[modViewModSetSubModIndex].isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus, size: 18),
-                                                    onTap: () async {
-                                                      if (curMod.submods[modViewModSetSubModIndex].isFavorite) {
-                                                        curMod.submods[modViewModSetSubModIndex].isFavorite = false;
-                                                        if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                          curMod.isFavorite = false;
-                                                        }
-                                                        if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                          modViewItem!.isFavorite = false;
-                                                          modViewItem = null;
-                                                        }
-                                                      } else {
-                                                        curMod.submods[modViewModSetSubModIndex].isFavorite = true;
-                                                        curMod.isFavorite = true;
-                                                        modViewItem!.isFavorite = true;
-                                                      }
-                                                      saveModdedItemListToJson();
-                                                      setState(() {});
-                                                    },
-                                                  ),
-                                                ),
-                                                //Swap
-                                                Visibility(
-                                                  //visible: f.kDebugMode,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(left: 2),
-                                                    child: ModManTooltip(
-                                                      message:
-                                                          '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
-                                                      child: InkWell(
-                                                        child: const Icon(
-                                                          Icons.swap_horizontal_circle_outlined,
-                                                        ),
-                                                        onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
-                                                        onLongPress: () {
-                                                          Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                            element.deleteSync(recursive: true);
-                                                          });
-                                                          isBoundaryEdited = false;
-                                                          modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                //Open folder
-                                                ModManTooltip(
-                                                  message: '${curLangText!.uiOpen} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiInFileExplorer}',
-                                                  child: InkWell(
-                                                    child: const Icon(
-                                                      Icons.folder_open_outlined,
-                                                    ),
-                                                    onTap: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
-                                                  ),
-                                                ),
-                                                //Delete
-                                                ModManTooltip(
-                                                  message: '${curLangText!.uiHoldToRemove} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiFromMM}',
-                                                  child: InkWell(
-                                                    onLongPress: curMod.applyStatus
-                                                        ? null
-                                                        : () async {
-                                                            if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                              deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                modViewCate!.items.remove(modViewItem);
-                                                                modViewItem = null;
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                    context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                previewModName = '';
-                                                                previewImages.clear();
-                                                                saveModdedItemListToJson();
-                                                                setState(() {});
-                                                              });
-                                                            } else {
-                                                              deleteModFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
-                                                                String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
-                                                                curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
-                                                                if (curMod.submods.isEmpty) {
-                                                                  modViewItem!.mods.remove(curMod);
-                                                                } else {
-                                                                  curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                }
+                                                // //Favorite
+                                                // ModManTooltip(
+                                                //   message: curMod.submods[modViewModSetSubModIndex].isFavorite
+                                                //       ? '${curLangText!.uiRemove} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiFromFavList}'
+                                                //       : '${curLangText!.uiAdd} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToFavList}',
+                                                //   child: InkWell(
+                                                //     child: Icon(curMod.submods[modViewModSetSubModIndex].isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus, size: 18),
+                                                //     onTap: () async {
+                                                //       if (curMod.submods[modViewModSetSubModIndex].isFavorite) {
+                                                //         curMod.submods[modViewModSetSubModIndex].isFavorite = false;
+                                                //         if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                //           curMod.isFavorite = false;
+                                                //         }
+                                                //         if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                //           modViewItem!.isFavorite = false;
+                                                //           modViewItem = null;
+                                                //         }
+                                                //       } else {
+                                                //         curMod.submods[modViewModSetSubModIndex].isFavorite = true;
+                                                //         curMod.isFavorite = true;
+                                                //         modViewItem!.isFavorite = true;
+                                                //       }
+                                                //       saveModdedItemListToJson();
+                                                //       setState(() {});
+                                                //     },
+                                                //   ),
+                                                // ),
+                                                // //Swap
+                                                // Visibility(
+                                                //   //visible: f.kDebugMode,
+                                                //   child: Padding(
+                                                //     padding: const EdgeInsets.only(left: 2),
+                                                //     child: ModManTooltip(
+                                                //       message:
+                                                //           '${curLangText!.uiSwap} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                //       child: InkWell(
+                                                //         child: const Icon(
+                                                //           Icons.swap_horizontal_circle_outlined,
+                                                //         ),
+                                                //         onTap: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                //         onLongPress: () {
+                                                //           Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                //             element.deleteSync(recursive: true);
+                                                //           });
+                                                //           isBoundaryEdited = false;
+                                                //           modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                //         },
+                                                //       ),
+                                                //     ),
+                                                //   ),
+                                                // ),
+                                                // //Open folder
+                                                // ModManTooltip(
+                                                //   message: '${curLangText!.uiOpen} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiInFileExplorer}',
+                                                //   child: InkWell(
+                                                //     child: const Icon(
+                                                //       Icons.folder_open_outlined,
+                                                //     ),
+                                                //     onTap: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
+                                                //   ),
+                                                // ),
+                                                // //Delete
+                                                // ModManTooltip(
+                                                //   message: '${curLangText!.uiHoldToRemove} ${curMod.submods[modViewModSetSubModIndex].submodName} ${curLangText!.uiFromMM}',
+                                                //   child: InkWell(
+                                                //     onLongPress: curMod.applyStatus
+                                                //         ? null
+                                                //         : () async {
+                                                //             if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                //               deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                //                 String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                //                 modViewCate!.items.remove(modViewItem);
+                                                //                 modViewItem = null;
+                                                //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                //                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                //                 previewModName = '';
+                                                //                 previewImages.clear();
+                                                //                 saveModdedItemListToJson();
+                                                //                 setState(() {});
+                                                //               });
+                                                //             } else {
+                                                //               deleteModFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
+                                                //                 String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
+                                                //                 curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
+                                                //                 if (curMod.submods.isEmpty) {
+                                                //                   modViewItem!.mods.remove(curMod);
+                                                //                 } else {
+                                                //                   curMod.isNew = curMod.getSubmodsIsNewState();
+                                                //                 }
 
-                                                                if (modViewItem!.mods.isEmpty) {
-                                                                  modViewCate!.items.remove(modViewItem);
-                                                                  modViewItem = null;
-                                                                } else {
-                                                                  modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                }
-                                                                previewModName = '';
-                                                                previewImages.clear();
-                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                    context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                saveModdedItemListToJson();
-                                                                setState(() {});
-                                                              });
+                                                //                 if (modViewItem!.mods.isEmpty) {
+                                                //                   modViewCate!.items.remove(modViewItem);
+                                                //                   modViewItem = null;
+                                                //                 } else {
+                                                //                   modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                //                 }
+                                                //                 previewModName = '';
+                                                //                 previewImages.clear();
+                                                //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                //                     context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                //                 saveModdedItemListToJson();
+                                                //                 setState(() {});
+                                                //               });
+                                                //             }
+                                                //           },
+                                                //     child: Icon(
+                                                //       Icons.delete_forever_outlined,
+                                                //       color: curMod.applyStatus ? Theme.of(context).disabledColor : null,
+                                                //     ),
+                                                //   ),
+                                                // ),
+
+                                                MenuAnchor(
+                                                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                      return ModManTooltip(
+                                                        message: curLangText!.uiMore,
+                                                        child: InkWell(
+                                                          child: const Icon(
+                                                            Icons.more_vert,
+                                                          ),
+                                                          onTap: () {
+                                                            if (controller.isOpen) {
+                                                              controller.close();
+                                                            } else {
+                                                              controller.open();
                                                             }
                                                           },
-                                                    child: Icon(
-                                                      Icons.delete_forever_outlined,
-                                                      color: curMod.applyStatus ? Theme.of(context).disabledColor : null,
-                                                    ),
-                                                  ),
-                                                ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                      return RoundedRectangleBorder(
+                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                    })),
+                                                    menuChildren: [
+                                                      // favorite
+                                                      MenuItemButton(
+                                                        leadingIcon: Icon(
+                                                          curMod.submods[modViewModSetSubModIndex].isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                          size: 18,
+                                                        ),
+                                                        child: curActiveLang == 'JP'
+                                                            ? Text(
+                                                                curMod.submods[modViewModSetSubModIndex].isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                              )
+                                                            : Text(
+                                                                curMod.submods[modViewModSetSubModIndex].isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                              ),
+                                                        onPressed: () async {
+                                                          if (curMod.submods[modViewModSetSubModIndex].isFavorite) {
+                                                            curMod.submods[modViewModSetSubModIndex].isFavorite = false;
+                                                            if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                              curMod.isFavorite = false;
+                                                            }
+                                                            if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                              modViewItem!.isFavorite = false;
+                                                              modViewItem = null;
+                                                            }
+                                                          } else {
+                                                            curMod.submods[modViewModSetSubModIndex].isFavorite = true;
+                                                            curMod.isFavorite = true;
+                                                            modViewItem!.isFavorite = true;
+                                                          }
+                                                          saveModdedItemListToJson();
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                      // swap
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.swap_horizontal_circle_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiSwapToAnotherItem),
+                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                      ),
+                                                      // boundary
+                                                      Visibility(
+                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[1] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[3] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[4] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[5] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[6] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[11] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[15] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[16],
+                                                        child: MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.radio_button_checked,
+                                                          ),
+                                                          child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                          onPressed: () {
+                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                              element.deleteSync(recursive: true);
+                                                            });
+                                                            isBoundaryEdited = false;
+                                                            modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      // open in file explorer
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.folder_open_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiOpenInFileExplorer),
+                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
+                                                      ),
+                                                      // delete
+                                                      MenuItemButton(
+                                                        leadingIcon: Icon(
+                                                          Icons.delete_forever_outlined,
+                                                          color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                        ),
+                                                        onPressed: curMod.applyStatus
+                                                            ? null
+                                                            : () async {
+                                                                bool deleteConfirm = await modDeletionDialog(context, curMod.submods[modViewModSetSubModIndex].submodName);
+                                                                if (deleteConfirm) {
+                                                                  if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                      modViewCate!.items.remove(modViewItem);
+                                                                      modViewItem = null;
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                          context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                      previewModName = '';
+                                                                      previewImages.clear();
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    });
+                                                                  } else {
+                                                                    deleteModFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
+                                                                      String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
+                                                                      curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
+                                                                      if (curMod.submods.isEmpty) {
+                                                                        modViewItem!.mods.remove(curMod);
+                                                                      } else {
+                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                      }
+
+                                                                      if (modViewItem!.mods.isEmpty) {
+                                                                        modViewCate!.items.remove(modViewItem);
+                                                                        modViewItem = null;
+                                                                      } else {
+                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                      }
+                                                                      previewModName = '';
+                                                                      previewImages.clear();
+                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                          context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    });
+                                                                  }
+                                                                }
+                                                              },
+                                                        child: Text(
+                                                          curLangText!.uiRemoveFromMM,
+                                                          style: TextStyle(color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                        ),
+                                                      ),
+                                                    ])
                                               ],
                                             ),
                                           ),
@@ -2996,118 +3368,269 @@ class _HomePageState extends State<HomePage> {
                                                                 ],
                                                               ),
 
-                                                            //Favorite
-                                                            ModManTooltip(
-                                                              message: curSubmod.isFavorite
-                                                                  ? '${curLangText!.uiRemove} ${curSubmod.submodName} ${curLangText!.uiFromFavList}'
-                                                                  : '${curLangText!.uiAdd} ${curSubmod.submodName} ${curLangText!.uiToFavList}',
-                                                              child: InkWell(
-                                                                child: Icon(
-                                                                  curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
-                                                                  size: 18,
-                                                                ),
-                                                                onTap: () async {
-                                                                  if (curSubmod.isFavorite) {
-                                                                    curSubmod.isFavorite = false;
-                                                                    if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                                      curMod.isFavorite = false;
-                                                                    }
-                                                                    if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                                      modViewItem!.isFavorite = false;
-                                                                    }
-                                                                  } else {
-                                                                    curSubmod.isFavorite = true;
-                                                                    curMod.isFavorite = true;
-                                                                    modViewItem!.isFavorite = true;
-                                                                  }
-                                                                  saveModdedItemListToJson();
-                                                                  setState(() {});
-                                                                },
-                                                              ),
-                                                            ),
-                                                            //Swap
-                                                            Visibility(
-                                                              //visible: f.kDebugMode,
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(left: 2),
-                                                                child: ModManTooltip(
-                                                                  message:
-                                                                      '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
-                                                                  child: InkWell(
-                                                                    child: const Icon(
-                                                                      Icons.swap_horizontal_circle_outlined,
-                                                                    ),
-                                                                    onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
-                                                                    onLongPress: () {
-                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                        element.deleteSync(recursive: true);
-                                                                      });
-                                                                      isBoundaryEdited = false;
-                                                                      modsBoundaryEditHomePage(context, curSubmod);
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            //Open folder
-                                                            ModManTooltip(
-                                                              message: '${curLangText!.uiOpen} ${curSubmod.submodName} ${curLangText!.uiInFileExplorer}',
-                                                              child: InkWell(
-                                                                child: const Icon(
-                                                                  Icons.folder_open_outlined,
-                                                                ),
-                                                                onTap: () async => await launchUrl(Uri.file(curSubmod.location)),
-                                                              ),
-                                                            ),
-                                                            //Delete
-                                                            ModManTooltip(
-                                                              message: '${curLangText!.uiHoldToRemove} ${curSubmod.submodName} ${curLangText!.uiFromMM}',
-                                                              child: InkWell(
-                                                                onLongPress: curSubmod.applyStatus
-                                                                    ? null
-                                                                    : () async {
-                                                                        if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                          deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                            String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                            modViewCate!.items.remove(modViewItem);
-                                                                            modViewItem = null;
-                                                                            previewModName = '';
-                                                                            previewImages.clear();
-                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                            saveModdedItemListToJson();
-                                                                            setState(() {});
-                                                                          });
+                                                            // //Favorite
+                                                            // ModManTooltip(
+                                                            //   message: curSubmod.isFavorite
+                                                            //       ? '${curLangText!.uiRemove} ${curSubmod.submodName} ${curLangText!.uiFromFavList}'
+                                                            //       : '${curLangText!.uiAdd} ${curSubmod.submodName} ${curLangText!.uiToFavList}',
+                                                            //   child: InkWell(
+                                                            //     child: Icon(
+                                                            //       curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                            //       size: 18,
+                                                            //     ),
+                                                            //     onTap: () async {
+                                                            //       if (curSubmod.isFavorite) {
+                                                            //         curSubmod.isFavorite = false;
+                                                            //         if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                            //           curMod.isFavorite = false;
+                                                            //         }
+                                                            //         if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                            //           modViewItem!.isFavorite = false;
+                                                            //         }
+                                                            //       } else {
+                                                            //         curSubmod.isFavorite = true;
+                                                            //         curMod.isFavorite = true;
+                                                            //         modViewItem!.isFavorite = true;
+                                                            //       }
+                                                            //       saveModdedItemListToJson();
+                                                            //       setState(() {});
+                                                            //     },
+                                                            //   ),
+                                                            // ),
+                                                            // //Swap
+                                                            // Visibility(
+                                                            //   //visible: f.kDebugMode,
+                                                            //   child: Padding(
+                                                            //     padding: const EdgeInsets.only(left: 2),
+                                                            //     child: ModManTooltip(
+                                                            //       message:
+                                                            //           '${curLangText!.uiSwap} ${curSubmod.submodName} ${curLangText!.uiToAnotherItem}\n${curLangText!.uiHoldToModifyBoundaryRadius}',
+                                                            //       child: InkWell(
+                                                            //         child: const Icon(
+                                                            //           Icons.swap_horizontal_circle_outlined,
+                                                            //         ),
+                                                            //         onTap: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                            //         onLongPress: () {
+                                                            //           Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                            //             element.deleteSync(recursive: true);
+                                                            //           });
+                                                            //           isBoundaryEdited = false;
+                                                            //           modsBoundaryEditHomePage(context, curSubmod);
+                                                            //         },
+                                                            //       ),
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+                                                            // //Open folder
+                                                            // ModManTooltip(
+                                                            //   message: '${curLangText!.uiOpen} ${curSubmod.submodName} ${curLangText!.uiInFileExplorer}',
+                                                            //   child: InkWell(
+                                                            //     child: const Icon(
+                                                            //       Icons.folder_open_outlined,
+                                                            //     ),
+                                                            //     onTap: () async => await launchUrl(Uri.file(curSubmod.location)),
+                                                            //   ),
+                                                            // ),
+                                                            // //Delete
+                                                            // ModManTooltip(
+                                                            //   message: '${curLangText!.uiHoldToRemove} ${curSubmod.submodName} ${curLangText!.uiFromMM}',
+                                                            //   child: InkWell(
+                                                            //     onLongPress: curSubmod.applyStatus
+                                                            //         ? null
+                                                            //         : () async {
+                                                            //             if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                            //               deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                            //                 String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                            //                 modViewCate!.items.remove(modViewItem);
+                                                            //                 modViewItem = null;
+                                                            //                 previewModName = '';
+                                                            //                 previewImages.clear();
+                                                            //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                            //                     '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                            //                 saveModdedItemListToJson();
+                                                            //                 setState(() {});
+                                                            //               });
+                                                            //             } else {
+                                                            //               deleteModFromModMan(curSubmod.location, curMod.location).then((value) {
+                                                            //                 String removedName = '${curMod.modName} > ${curSubmod.submodName}';
+                                                            //                 curMod.submods.remove(curSubmod);
+                                                            //                 if (curMod.submods.isEmpty) {
+                                                            //                   modViewItem!.mods.remove(curMod);
+                                                            //                 } else {
+                                                            //                   curMod.isNew = curMod.getSubmodsIsNewState();
+                                                            //                 }
+                                                            //                 if (modViewItem!.mods.isEmpty) {
+                                                            //                   modViewCate!.items.remove(modViewItem);
+                                                            //                   modViewItem = null;
+                                                            //                 } else {
+                                                            //                   modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                            //                 }
+                                                            //                 previewModName = '';
+                                                            //                 previewImages.clear();
+                                                            //                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                            //                     '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                            //                 saveModdedItemListToJson();
+                                                            //                 setState(() {});
+                                                            //               });
+                                                            //             }
+                                                            //           },
+                                                            //     child: Icon(
+                                                            //       Icons.delete_forever_outlined,
+                                                            //       color: curSubmod.applyStatus ? Theme.of(context).disabledColor : null,
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+
+                                                            MenuAnchor(
+                                                                builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                                  return ModManTooltip(
+                                                                    message: curLangText!.uiMore,
+                                                                    child: InkWell(
+                                                                      child: const Icon(
+                                                                        Icons.more_vert,
+                                                                      ),
+                                                                      onTap: () {
+                                                                        if (controller.isOpen) {
+                                                                          controller.close();
                                                                         } else {
-                                                                          deleteModFromModMan(curSubmod.location, curMod.location).then((value) {
-                                                                            String removedName = '${curMod.modName} > ${curSubmod.submodName}';
-                                                                            curMod.submods.remove(curSubmod);
-                                                                            if (curMod.submods.isEmpty) {
-                                                                              modViewItem!.mods.remove(curMod);
-                                                                            } else {
-                                                                              curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                            }
-                                                                            if (modViewItem!.mods.isEmpty) {
-                                                                              modViewCate!.items.remove(modViewItem);
-                                                                              modViewItem = null;
-                                                                            } else {
-                                                                              modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                            }
-                                                                            previewModName = '';
-                                                                            previewImages.clear();
-                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                            saveModdedItemListToJson();
-                                                                            setState(() {});
-                                                                          });
+                                                                          controller.open();
                                                                         }
                                                                       },
-                                                                child: Icon(
-                                                                  Icons.delete_forever_outlined,
-                                                                  color: curSubmod.applyStatus ? Theme.of(context).disabledColor : null,
-                                                                ),
-                                                              ),
-                                                            ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                  return RoundedRectangleBorder(
+                                                                      side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                })),
+                                                                menuChildren: [
+                                                                  // favorite
+                                                                  MenuItemButton(
+                                                                    leadingIcon: Icon(
+                                                                      curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                                      size: 18,
+                                                                    ),
+                                                                    child: curActiveLang == 'JP'
+                                                                        ? Text(
+                                                                            curSubmod.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                                          )
+                                                                        : Text(
+                                                                            curSubmod.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                                          ),
+                                                                    onPressed: () async {
+                                                                      if (curSubmod.isFavorite) {
+                                                                        curSubmod.isFavorite = false;
+                                                                        if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                                          curMod.isFavorite = false;
+                                                                        }
+                                                                        if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                                          modViewItem!.isFavorite = false;
+                                                                        }
+                                                                      } else {
+                                                                        curSubmod.isFavorite = true;
+                                                                        curMod.isFavorite = true;
+                                                                        modViewItem!.isFavorite = true;
+                                                                      }
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    },
+                                                                  ),
+                                                                  // swap
+                                                                  MenuItemButton(
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.swap_horizontal_circle_outlined,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiSwapToAnotherItem),
+                                                                    onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                  ),
+                                                                  // boundary
+                                                                  Visibility(
+                                                                    visible: curSubmod.category == defaultCateforyDirs[1] ||
+                                                                        curSubmod.category == defaultCateforyDirs[3] ||
+                                                                        curSubmod.category == defaultCateforyDirs[4] ||
+                                                                        curSubmod.category == defaultCateforyDirs[5] ||
+                                                                        curSubmod.category == defaultCateforyDirs[6] ||
+                                                                        curSubmod.category == defaultCateforyDirs[11] ||
+                                                                        curSubmod.category == defaultCateforyDirs[15] ||
+                                                                        curSubmod.category == defaultCateforyDirs[16],
+                                                                    child: MenuItemButton(
+                                                                      leadingIcon: const Icon(
+                                                                        Icons.radio_button_checked,
+                                                                      ),
+                                                                      child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                                      onPressed: () {
+                                                                        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                          element.deleteSync(recursive: true);
+                                                                        });
+                                                                        isBoundaryEdited = false;
+                                                                        modsBoundaryEditHomePage(context, curSubmod);
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  // open in file explorer
+                                                                  MenuItemButton(
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.folder_open_outlined,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiOpenInFileExplorer),
+                                                                    onPressed: () async => await launchUrl(Uri.file(curSubmod.location)),
+                                                                  ),
+                                                                  // delete
+                                                                  MenuItemButton(
+                                                                    leadingIcon: Icon(
+                                                                      Icons.delete_forever_outlined,
+                                                                      color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                                    ),
+                                                                    onPressed: curSubmod.applyStatus
+                                                                        ? null
+                                                                        : () async {
+                                                                            bool deleteConfirm = await modDeletionDialog(context, curSubmod.submodName);
+                                                                            if (deleteConfirm) {
+                                                                              if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                                  modViewCate!.items.remove(modViewItem);
+                                                                                  modViewItem = null;
+                                                                                  previewModName = '';
+                                                                                  previewImages.clear();
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                      '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                  saveModdedItemListToJson();
+                                                                                  setState(() {});
+                                                                                });
+                                                                              } else {
+                                                                                deleteModFromModMan(curSubmod.location, curMod.location).then((value) {
+                                                                                  String removedName = '${curMod.modName} > ${curSubmod.submodName}';
+                                                                                  curMod.submods.remove(curSubmod);
+                                                                                  if (curMod.submods.isEmpty) {
+                                                                                    modViewItem!.mods.remove(curMod);
+                                                                                  } else {
+                                                                                    curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                  }
+                                                                                  if (modViewItem!.mods.isEmpty) {
+                                                                                    modViewCate!.items.remove(modViewItem);
+                                                                                    modViewItem = null;
+                                                                                  } else {
+                                                                                    modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                                  }
+                                                                                  previewModName = '';
+                                                                                  previewImages.clear();
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                      '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                  saveModdedItemListToJson();
+                                                                                  setState(() {});
+                                                                                });
+                                                                              }
+                                                                            }
+                                                                          },
+                                                                    child: Text(
+                                                                      curLangText!.uiRemoveFromMM,
+                                                                      style: TextStyle(color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                                    ),
+                                                                  ),
+                                                                ])
                                                           ],
                                                         ),
                                                       ),
@@ -3526,7 +4049,7 @@ class _HomePageState extends State<HomePage> {
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                     ),
                                                     child: curCategory.items.length < 2
-                                                        ? Text('${appliedItemList[groupIndex].categories[categoryIndex].items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
+                                                        ? Text('${curCategory.items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
                                                             style: const TextStyle(
                                                               fontSize: 15,
                                                             ))

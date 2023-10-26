@@ -207,8 +207,8 @@ Future<bool> pathsLoader(context) async {
   if (kDebugMode) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
     List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
-    File(modManRefSheetListFilePath).writeAsString(sheetPaths.join('\n').trim());
-    File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsVersion.toString());
+    File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
+    File(modManRefSheetsLocalVerFilePath).writeAsStringSync(refSheetsVersion.toString());
   }
 
   //ref sheets check

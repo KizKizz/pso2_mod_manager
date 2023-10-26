@@ -124,7 +124,9 @@ class TranslationText {
       uiClickToChangeToThisProfileHoldToRename = 'Click to change to this profile, hold to rename',
       uiVitalGauge = 'Vital Gauge',
       uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background',
-      uiRemoveProfanityFilter = "Profanity Filter Removal";
+      uiRemoveProfanityFilter = "Profanity Filter Removal",
+      uiExtras = 'Extras',
+      uiOtherFeaturesOfPSO2NGSModManager = 'Other features of PSO2NGS Mod Manager';
 
   //homepage
   String uiItemList = 'Item List',
@@ -192,7 +194,13 @@ class TranslationText {
       uiHoldToApplyAllAvailableModsToTheGame =
           'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
       uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list',
-      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius';
+      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius',
+      uiAddToFavList = 'Add to Favorite List',
+      uiRemoveFromFavList = 'Remove from Favorite List',
+      uiMore = 'More',
+      uiSwapToAnotherItem = 'Swap to another item',
+      uiRemoveBoundaryRadius = 'Remove boundary radius', 
+      uiRemoveFromMM = 'Remove from Mod Manager';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -368,7 +376,7 @@ class TranslationText {
   //vital_gauge_swapper_homepage.dart
   String uiCustomBackgrounds = 'Custom Backgrounds',
       uiHoldToDeleteThisBackground = 'Hold to delete this background',
-      uiOpenInFileExplorer = 'Open In File Explorer',
+      uiOpenInFileExplorer = 'Open in File Explorer',
       uiCreateBackground = 'Create New Background',
       uiSwappedAvailableBackgrounds = 'Swapped - Available Backgrounds',
       uiHoldToRestoreThisBackgroundToItsOriginal = 'Hold to restore this background to its original',
