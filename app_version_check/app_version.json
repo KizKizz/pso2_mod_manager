@@ -4,6 +4,7 @@
     "description": [
         "Tweaked some UI elements to be less clustered",
         "More improvement to emotes swapper",
+        "Changed some logics in 'Apply all available mods' function - it will skip all files that it could not find original files inside the game data",
         "Some minor bug fixes"
     ],
     "windows_file": "",
