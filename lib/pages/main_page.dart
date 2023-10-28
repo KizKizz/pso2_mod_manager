@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
+import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
@@ -34,6 +34,7 @@ import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
@@ -1776,13 +1777,13 @@ class _MainPageState extends State<MainPage> {
                             padding: const EdgeInsets.only(left: 5),
                             child: Text('${curLangText!.uiNewVersion}: $newVersion - ${curLangText!.uiCurrentVersion}: $appVersion'),
                           ),
-                          TextButton(
-                              onPressed: (() {
-                                setState(() {
-                                  patchNotesDialog(context);
-                                });
-                              }),
-                              child: Text(curLangText!.uiPatchNote)),
+                          // TextButton(
+                          //     onPressed: (() {
+                          //       setState(() {
+                          //         patchNotesDialog(context);
+                          //       });
+                          //     }),
+                          //     child: Text(curLangText!.uiPatchNote)),
                         ],
                       ),
                       Row(
@@ -1810,8 +1811,9 @@ class _MainPageState extends State<MainPage> {
                           ),
                           ElevatedButton(
                               onPressed: (() {
-                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                                launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                                patchNotesDialog(context);
+                                //Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                //launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                               }),
                               child: Text(curLangText!.uiUpdate)),
                         ],
@@ -1822,6 +1824,33 @@ class _MainPageState extends State<MainPage> {
                 ),
               ),
             )),
+
+          // UpdatWidget(
+          //     currentVersion: '2.4.10', // In this case we are importing it form a constants file.
+          //     getLatestVersion: () async {
+          //       // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
+          //       final data = await http.get(Uri.parse(
+          //         "https://api.github.com/repos/KizKizz/pso2_mod_manager/releases/latest",
+          //       ));
+
+          //       // Return the tag name, which is always a semantically versioned string.
+          //       return jsonDecode(data.body)["tag_name"].toString().replaceFirst(RegExp(r'v'), '');
+          //     },
+          //     getBinaryUrl: (version) async {
+          //       // Github also gives us a great way to download the binary for a certain release (as long as we use a consistent naming scheme)
+
+          //       // Make sure that this link includes the platform extension with which to save your binary.
+          //       // If you use https://exapmle.com/latest/macos for instance then you need to create your own file using `getDownloadFileLocation`
+          //       return "https://github.com/KizKizz/pso2_mod_manager/releases/download/v$version/PSO2NGSModManager_v$version.zip";
+          //     },
+          //     appName: "PSO2NGSModManager", // This is used to name the downloaded files.
+          //     getChangelog: (_, __) async {
+          //       // That same latest endpoint gives us access to a markdown-flavored release body. Perfect!
+          //       final data = await http.get(Uri.parse(
+          //         "https://api.github.com/repos/KizKizz/pso2_mod_manager/releases/latest",
+          //       ));
+          //       return jsonDecode(data.body)["body"];
+          //     }),
 
           //New Ref sheets
           if (context.watch<StateProvider>().refSheetsUpdateAvailable)

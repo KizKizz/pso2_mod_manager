@@ -181,6 +181,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   Future<void> getAppVer() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
+    //appVersion = '2.4.10';
   }
 
   Future<void> getRefSheetsVersion() async {
