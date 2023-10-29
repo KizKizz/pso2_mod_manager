@@ -354,7 +354,12 @@ class TranslationText {
   String uiApplyingAllAvailableMods = 'Applying all available mods', uiLocatingOriginalFiles = 'Locating original files', uiErrorWhenLocatingOriginalFiles = 'Error when locating original files';
 
   //changelog_dialog.dart
-  String uiPatchNotes = 'Patch Notes';
+  String uiPatchNotes = 'Patch Notes',
+  uiMMUpdate = 'PSO2NGS Mod Manager Update',
+  uiMMUpdateSuccess = 'Your Mod Manager is up to date',
+  uiDownloadingUpdate = 'Downloading Update',
+  uiGoToDownloadPage = 'Go to download page',
+  uiGitHubPage = 'GitHub Page';
 
   //mods_boundary_edit.dart
   String uiBoundaryRadiusModification = 'Boundary Radius Modification',

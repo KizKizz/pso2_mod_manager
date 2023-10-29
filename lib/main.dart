@@ -11,6 +11,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -171,8 +172,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   void initState() {
     windowManager.addListener(this);
     clearAllTempDirsBeforeGettingPath();
-    miscCheck();
     getAppVer();
+    miscCheck();
     getRefSheetsVersion();
     ApplicationConfig().checkForUpdates(context);
     super.initState();
@@ -180,8 +181,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   Future<void> getAppVer() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    appVersion = packageInfo.version;
-    //appVersion = '2.4.10';
+    //appVersion = packageInfo.version;
+    appVersion = '2.4.10';
   }
 
   Future<void> getRefSheetsVersion() async {
@@ -278,9 +279,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       // First time user load
       firstTimeUser = (prefs.getBool('isFirstTimeLoadV2') ?? true);
+      if (firstTimeUser) {
+        savedAppVersion = appVersion;
+        prefs.setString('savedAppVersion', savedAppVersion);
+      }
 
       // Check version to skip update
       versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');
+
+      //Set app version
+      savedAppVersion = prefs.getString('savedAppVersion') ?? '';
     });
   }
 

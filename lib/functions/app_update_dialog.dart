@@ -5,8 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 double _downloadPercent = 0;
@@ -70,11 +73,6 @@ Future<void> appDownloadDialog(context) async {
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
                         Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
                         asyncWrite: false);
-                    // Process.run('cmd', [
-                    //   'xcopy', Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion/PSO2NGSModManager/*.*').toFilePath(), Uri.file('${Directory.current.path}/.').toFilePath(), '/Y'
-                    // ],
-                    // runInShell: true
-                    // );
                     File patchFile = await patchFileGenerate();
                     Process.run(patchFile.path, []);
                     windowManager.destroy();
@@ -99,9 +97,7 @@ Future<void> appDownloadDialog(context) async {
           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
           backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
           titlePadding: const EdgeInsets.only(top: 10),
-          title: Center(
-              child:
-                  _downloadErrorMsg.isEmpty ? Text('${curLangText!.uiDownloading} ${curLangText!.uiUpdate}') : Text('${curLangText!.uiDownloading} ${curLangText!.uiUpdate} ${curLangText!.uiError}')),
+          title: Center(child: _downloadErrorMsg.isEmpty ? Text(curLangText!.uiDownloadUpdate) : Text('${curLangText!.uiDownloading} ${curLangText!.uiUpdate} ${curLangText!.uiError}')),
           contentPadding: const EdgeInsets.all(10),
           content: _downloadErrorMsg.isNotEmpty
               ? Text(_downloadErrorMsg)
@@ -110,6 +106,17 @@ Future<void> appDownloadDialog(context) async {
                   children: [const SizedBox(width: 60, height: 60, child: CircularProgressIndicator()), Text('${_downloadPercent.toStringAsFixed(0)} %')],
                 ),
           actions: <Widget>[
+            Visibility(
+              visible: _downloadErrorMsg.isNotEmpty,
+              child: ElevatedButton(
+                child: Text(curLangText!.uiGoToDownloadPage),
+                onPressed: () {
+                  launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                  dio.close();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
             Visibility(
               visible: _downloadErrorMsg.isNotEmpty,
               child: ElevatedButton(
@@ -133,8 +140,55 @@ Future<File> patchFileGenerate() async {
     patchFile.createSync(recursive: true);
   }
   String commands =
-      'xcopy "${Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion/PSO2NGSModManager').toFilePath().toString()}" "${Uri.file('${Directory.current.path}').toFilePath().toString()}" /Y /E /H /C /I';
+      'xcopy "${Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion/PSO2NGSModManager').toFilePath().toString()}" "${Uri.file(Directory.current.path).toFilePath().toString()}" /Y /E /H /C /I\nstart "${Uri.file('${Directory.current.path}/PSO2NGSModManager.exe').toFilePath().toString()}"';
   await patchFile.writeAsString(commands);
 
   return patchFile;
+}
+
+Future<void> appUpdateSuccessDialog(context) async {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+        backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+        titlePadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        title: Center(child: Text(curLangText!.uiMMUpdate)),
+        contentPadding: const EdgeInsets.all(10),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              '${curLangText!.uiMMUpdateSuccess}!!',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            Text('${curLangText!.uiVersion}: $appVersion')
+          ],
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text(curLangText!.uiGitHubPage),
+            onPressed: () {
+              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager#readme'));
+            },
+          ),
+          ElevatedButton(
+            child: Text(curLangText!.uiClose),
+            onPressed: () async {
+              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+              final prefs = await SharedPreferences.getInstance();
+              savedAppVersion = appVersion;
+              prefs.setString('savedAppVersion', savedAppVersion);
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

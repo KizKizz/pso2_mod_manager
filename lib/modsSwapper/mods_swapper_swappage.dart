@@ -26,8 +26,8 @@ Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, SubMod fr
   Directory(modManSwapperToItemDirPath).createSync(recursive: true);
   Directory(modManSwapperOutputDirPath).createSync(recursive: true);
 
-  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
-  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/')}').toFilePath();
+  String tempSubmodPathF = Uri.file('$modManSwapperFromItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
+  String tempSubmodPathT = Uri.file('$modManSwapperToItemDirPath/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath();
   List<List<String>> iceSwappingList = [];
 
   toItemAvailableIces.removeWhere((element) => element.split(': ').last.isEmpty);
@@ -439,7 +439,7 @@ Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, SubMod fromS
                                                     // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // modAddHandler(context);
-                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
                                                     modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
