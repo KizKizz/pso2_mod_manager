@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
+import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
@@ -88,6 +89,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (savedAppVersion != appVersion && !firstTimeUser && !Provider.of<StateProvider>(context, listen: false).isUpdateAvailable) {
+        appUpdateSuccessDialog(context);
+      }
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
     });

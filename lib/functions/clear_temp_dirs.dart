@@ -50,7 +50,7 @@ void clearAllTempDirsBeforeGettingPath() {
   }
   if (Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).existsSync()) {
     //Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).deleteSync(recursive: true);
-      Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).listSync(recursive: false).forEach((element) {
+    Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).listSync(recursive: false).forEach((element) {
       if (element.existsSync()) {
         element.deleteSync(recursive: true);
       }
@@ -62,5 +62,12 @@ void clearAllTempDirsBeforeGettingPath() {
         element.deleteSync(recursive: true);
       }
     });
+  }
+}
+
+void clearAppUpdateFolder() {
+  String appUpdatePath = Uri.file('${Directory.current.path}/appUpdate').toFilePath();
+  if (Directory(appUpdatePath).existsSync()) {
+    Directory(appUpdatePath).deleteSync(recursive: true);
   }
 }

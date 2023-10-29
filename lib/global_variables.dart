@@ -19,6 +19,7 @@ List<String> langDropDownList = [];
 String langDropDownSelected = '';
 List<String> topBtnMenuItems = [];
 String appVersion = '';
+String savedAppVersion = '';
 int refSheetsVersion = -1;
 //FilePickerResult? checksumLocation;
 String? checksumLocation;

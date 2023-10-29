@@ -1,10 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.4.11",
+    "version": "2.5.0",
     "description": [
-        "Tweaked some UI elements to be less clustered",
-        "More improvement to emotes swapper",
-        "Changed some logics in 'Apply all available mods' function - it will skip all files that it could not find original files inside the game data",
+        "Implemented auto updater",
+        "More improvements and fixes to mods/items swapper",
         "Some minor bug fixes"
     ],
     "windows_file": "",

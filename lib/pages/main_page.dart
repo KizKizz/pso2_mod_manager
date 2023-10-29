@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/changelog_dialog.dart';
+import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
@@ -1776,13 +1776,13 @@ class _MainPageState extends State<MainPage> {
                             padding: const EdgeInsets.only(left: 5),
                             child: Text('${curLangText!.uiNewVersion}: $newVersion - ${curLangText!.uiCurrentVersion}: $appVersion'),
                           ),
-                          TextButton(
-                              onPressed: (() {
-                                setState(() {
-                                  patchNotesDialog(context);
-                                });
-                              }),
-                              child: Text(curLangText!.uiPatchNote)),
+                          // TextButton(
+                          //     onPressed: (() {
+                          //       setState(() {
+                          //         patchNotesDialog(context);
+                          //       });
+                          //     }),
+                          //     child: Text(curLangText!.uiPatchNote)),
                         ],
                       ),
                       Row(
@@ -1810,8 +1810,9 @@ class _MainPageState extends State<MainPage> {
                           ),
                           ElevatedButton(
                               onPressed: (() {
-                                Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                                launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                                patchNotesDialog(context);
+                                //Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+                                //launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                               }),
                               child: Text(curLangText!.uiUpdate)),
                         ],

@@ -580,7 +580,7 @@ Future<void> swapperAccSwappingDialog(context, bool isVanillaItemSwap, SubMod fr
                                                     // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // modAddHandler(context);
-                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
                                                     modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
