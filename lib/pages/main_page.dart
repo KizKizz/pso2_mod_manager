@@ -34,7 +34,6 @@ import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 

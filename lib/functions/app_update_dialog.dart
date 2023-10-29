@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -41,11 +42,11 @@ Future<void> patchNotesDialog(context) async {
             },
           ),
           ElevatedButton(
-                child: Text(curLangText!.uiGoToDownloadPage),
-                onPressed: () {
-                  launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
-                },
-              ),
+            child: Text(curLangText!.uiGoToDownloadPage),
+            onPressed: () {
+              launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+            },
+          ),
           ElevatedButton(
             child: Text(curLangText!.uiDownloadUpdate),
             onPressed: () {
@@ -191,17 +192,17 @@ Future<void> appUpdateSuccessDialog(context) async {
           ElevatedButton(
             child: Text(curLangText!.uiGitHubPage),
             onPressed: () {
-              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
               launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager#readme'));
             },
           ),
           ElevatedButton(
             child: Text(curLangText!.uiClose),
             onPressed: () async {
-              Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
+              //Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
               final prefs = await SharedPreferences.getInstance();
               savedAppVersion = appVersion;
               prefs.setString('savedAppVersion', savedAppVersion);
+              clearAppUpdateFolder();
               // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             },
