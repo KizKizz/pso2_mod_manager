@@ -17,6 +17,7 @@ String _downloadErrorMsg = '';
 
 Future<void> patchNotesDialog(context) async {
   return showDialog<void>(
+    barrierDismissible: false,
     context: context, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
@@ -40,6 +41,12 @@ Future<void> patchNotesDialog(context) async {
             },
           ),
           ElevatedButton(
+                child: Text(curLangText!.uiGoToDownloadPage),
+                onPressed: () {
+                  launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
+                },
+              ),
+          ElevatedButton(
             child: Text(curLangText!.uiDownloadUpdate),
             onPressed: () {
               Navigator.of(context).pop();
@@ -54,7 +61,6 @@ Future<void> patchNotesDialog(context) async {
 
 Future<void> appDownloadDialog(context) async {
   Dio dio = Dio();
-
   return showDialog<void>(
     barrierDismissible: false,
     context: context,
@@ -73,8 +79,9 @@ Future<void> appDownloadDialog(context) async {
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
                         Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
                         asyncWrite: false);
-                    File patchFile = await patchFileGenerate();
-                    Process.run(patchFile.path, []);
+                    await patchFileGenerate();
+                    File patchLauncher = await patchFileLauncherGenerate();
+                    Process.run(patchLauncher.path, []);
                     windowManager.destroy();
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
@@ -97,7 +104,7 @@ Future<void> appDownloadDialog(context) async {
           shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
           backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
           titlePadding: const EdgeInsets.only(top: 10),
-          title: Center(child: _downloadErrorMsg.isEmpty ? Text(curLangText!.uiDownloadUpdate) : Text('${curLangText!.uiDownloading} ${curLangText!.uiUpdate} ${curLangText!.uiError}')),
+          title: Center(child: _downloadErrorMsg.isEmpty ? Text(curLangText!.uiDownloadingUpdate) : Text(curLangText!.uiDownloadingUpdateError)),
           contentPadding: const EdgeInsets.all(10),
           content: _downloadErrorMsg.isNotEmpty
               ? Text(_downloadErrorMsg)
@@ -134,13 +141,24 @@ Future<void> appDownloadDialog(context) async {
   );
 }
 
+Future<File> patchFileLauncherGenerate() async {
+  File patchFile = File(Uri.file('${Directory.current.path}/appUpdate/patchLauncher.bat').toFilePath());
+  if (!patchFile.existsSync()) {
+    patchFile.createSync(recursive: true);
+  }
+  String commands = 'start "" /D "${Uri.file('${Directory.current.path}/appUpdate/').toFilePath().toString()}" /MIN filesPatcher.bat';
+  await patchFile.writeAsString(commands);
+
+  return patchFile;
+}
+
 Future<File> patchFileGenerate() async {
   File patchFile = File(Uri.file('${Directory.current.path}/appUpdate/filesPatcher.bat').toFilePath());
   if (!patchFile.existsSync()) {
     patchFile.createSync(recursive: true);
   }
   String commands =
-      'xcopy "${Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion/PSO2NGSModManager').toFilePath().toString()}" "${Uri.file(Directory.current.path).toFilePath().toString()}" /Y /E /H /C /I\nstart "${Uri.file('${Directory.current.path}/PSO2NGSModManager.exe').toFilePath().toString()}"';
+      'xcopy "${Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion/PSO2NGSModManager').toFilePath().toString()}" "${Uri.file(Directory.current.path).toFilePath().toString()}" /Y /E /H /C /I\nstart "" /D "${Uri.file('${Directory.current.path}/').toFilePath().toString()}" PSO2NGSModManager.exe';
   await patchFile.writeAsString(commands);
 
   return patchFile;
@@ -148,6 +166,7 @@ Future<File> patchFileGenerate() async {
 
 Future<void> appUpdateSuccessDialog(context) async {
   return showDialog<void>(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(

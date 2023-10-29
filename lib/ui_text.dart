@@ -358,6 +358,7 @@ class TranslationText {
   uiMMUpdate = 'PSO2NGS Mod Manager Update',
   uiMMUpdateSuccess = 'Your Mod Manager is up to date',
   uiDownloadingUpdate = 'Downloading Update',
+  uiDownloadingUpdateError = 'Downloading Update Error',
   uiGoToDownloadPage = 'Go to download page',
   uiGitHubPage = 'GitHub Page';
 

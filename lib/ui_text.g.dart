@@ -142,6 +142,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCreateAndSwapVitalGaugeBackground =
           json['uiCreateAndSwapVitalGaugeBackground'] as String
       ..uiRemoveProfanityFilter = json['uiRemoveProfanityFilter'] as String
+      ..uiExtras = json['uiExtras'] as String
+      ..uiOtherFeaturesOfPSO2NGSModManager =
+          json['uiOtherFeaturesOfPSO2NGSModManager'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -375,6 +378,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiErrorWhenLocatingOriginalFiles =
           json['uiErrorWhenLocatingOriginalFiles'] as String
       ..uiPatchNotes = json['uiPatchNotes'] as String
+      ..uiMMUpdate = json['uiMMUpdate'] as String
+      ..uiMMUpdateSuccess = json['uiMMUpdateSuccess'] as String
+      ..uiDownloadingUpdate = json['uiDownloadingUpdate'] as String
+      ..uiDownloadingUpdateError = json['uiDownloadingUpdateError'] as String
+      ..uiGoToDownloadPage = json['uiGoToDownloadPage'] as String
+      ..uiGitHubPage = json['uiGitHubPage'] as String
       ..uiBoundaryRadiusModification =
           json['uiBoundaryRadiusModification'] as String
       ..uiIndexingFiles = json['uiIndexingFiles'] as String
@@ -538,6 +547,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCreateAndSwapVitalGaugeBackground':
           instance.uiCreateAndSwapVitalGaugeBackground,
       'uiRemoveProfanityFilter': instance.uiRemoveProfanityFilter,
+      'uiExtras': instance.uiExtras,
+      'uiOtherFeaturesOfPSO2NGSModManager':
+          instance.uiOtherFeaturesOfPSO2NGSModManager,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -742,6 +754,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiErrorWhenLocatingOriginalFiles':
           instance.uiErrorWhenLocatingOriginalFiles,
       'uiPatchNotes': instance.uiPatchNotes,
+      'uiMMUpdate': instance.uiMMUpdate,
+      'uiMMUpdateSuccess': instance.uiMMUpdateSuccess,
+      'uiDownloadingUpdate': instance.uiDownloadingUpdate,
+      'uiDownloadingUpdateError': instance.uiDownloadingUpdateError,
+      'uiGoToDownloadPage': instance.uiGoToDownloadPage,
+      'uiGitHubPage': instance.uiGitHubPage,
       'uiBoundaryRadiusModification': instance.uiBoundaryRadiusModification,
       'uiIndexingFiles': instance.uiIndexingFiles,
       'uispaceFoundExcl': instance.uispaceFoundExcl,
