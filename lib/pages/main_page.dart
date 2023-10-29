@@ -1824,33 +1824,6 @@ class _MainPageState extends State<MainPage> {
               ),
             )),
 
-          // UpdatWidget(
-          //     currentVersion: '2.4.10', // In this case we are importing it form a constants file.
-          //     getLatestVersion: () async {
-          //       // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
-          //       final data = await http.get(Uri.parse(
-          //         "https://api.github.com/repos/KizKizz/pso2_mod_manager/releases/latest",
-          //       ));
-
-          //       // Return the tag name, which is always a semantically versioned string.
-          //       return jsonDecode(data.body)["tag_name"].toString().replaceFirst(RegExp(r'v'), '');
-          //     },
-          //     getBinaryUrl: (version) async {
-          //       // Github also gives us a great way to download the binary for a certain release (as long as we use a consistent naming scheme)
-
-          //       // Make sure that this link includes the platform extension with which to save your binary.
-          //       // If you use https://exapmle.com/latest/macos for instance then you need to create your own file using `getDownloadFileLocation`
-          //       return "https://github.com/KizKizz/pso2_mod_manager/releases/download/v$version/PSO2NGSModManager_v$version.zip";
-          //     },
-          //     appName: "PSO2NGSModManager", // This is used to name the downloaded files.
-          //     getChangelog: (_, __) async {
-          //       // That same latest endpoint gives us access to a markdown-flavored release body. Perfect!
-          //       final data = await http.get(Uri.parse(
-          //         "https://api.github.com/repos/KizKizz/pso2_mod_manager/releases/latest",
-          //       ));
-          //       return jsonDecode(data.body)["body"];
-          //     }),
-
           //New Ref sheets
           if (context.watch<StateProvider>().refSheetsUpdateAvailable)
             ScaffoldMessenger(

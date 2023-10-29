@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (savedAppVersion != appVersion && !firstTimeUser) {
+      if (savedAppVersion != appVersion && !firstTimeUser && !Provider.of<StateProvider>(context, listen: false).isUpdateAvailable) {
         appUpdateSuccessDialog(context);
       }
       dotnetVerCheck(context);
