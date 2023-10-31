@@ -2170,7 +2170,7 @@ class _HomePageState extends State<HomePage> {
                             child: InkWell(
                               //Hover for preview
                               onTap: () {},
-                              onSecondaryTapCancel: () {
+                              onSecondaryTap: () {
                                 if (previewImages.isNotEmpty) {
                                   previewDialogImages = previewImages.toList();
                                   previewDialogModName = previewModName;
@@ -3151,7 +3151,7 @@ class _HomePageState extends State<HomePage> {
                                               child: InkWell(
                                                 //submod preview images
                                                 onTap: () {},
-                                                onSecondaryTapCancel: () {
+                                                onSecondaryTap: () {
                                                   if (previewImages.isNotEmpty) {
                                                     previewDialogImages = previewImages.toList();
                                                     previewDialogModName = previewModName;
@@ -4092,7 +4092,7 @@ class _HomePageState extends State<HomePage> {
                                               return InkResponse(
                                                 highlightShape: BoxShape.rectangle,
                                                 onTap: () => '',
-                                                onSecondaryTapCancel: () {
+                                                onSecondaryTap: () {
                                                   if (previewImages.isNotEmpty) {
                                                     previewDialogImages = previewImages.toList();
                                                     previewDialogModName = previewModName;
@@ -4927,7 +4927,7 @@ class _HomePageState extends State<HomePage> {
                                               return InkResponse(
                                                 highlightShape: BoxShape.rectangle,
                                                 onTap: () => '',
-                                                onSecondaryTapCancel: () {
+                                                onSecondaryTap: () {
                                                   if (previewImages.isNotEmpty) {
                                                     previewDialogImages = previewImages.toList();
                                                     previewDialogModName = previewModName;
