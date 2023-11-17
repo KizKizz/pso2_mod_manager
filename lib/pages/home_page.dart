@@ -2488,6 +2488,17 @@ class _HomePageState extends State<HomePage> {
                                                           setState(() {});
                                                         },
                                                       ),
+
+                                                      //Add to set
+                                                      SubmenuButton(
+                                                        alignmentOffset: const Offset(0, 8),
+                                                        menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods.first),
+                                                        leadingIcon: const Icon(
+                                                          Icons.list_alt_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiAddToModSets),
+                                                      ),
+
                                                       // swap
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
@@ -2496,6 +2507,16 @@ class _HomePageState extends State<HomePage> {
                                                         child: Text(curLangText!.uiSwapToAnotherItem),
                                                         onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                       ),
+
+                                                      // open in file explorer
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.folder_open_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiOpenInFileExplorer),
+                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
+                                                      ),
+
                                                       // boundary
                                                       Visibility(
                                                         visible: curMod.submods.first.category == defaultCateforyDirs[1] ||
@@ -2520,14 +2541,26 @@ class _HomePageState extends State<HomePage> {
                                                           },
                                                         ),
                                                       ),
-                                                      // open in file explorer
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.folder_open_outlined,
+
+                                                      //remove from set
+                                                      Visibility(
+                                                        visible: context.watch<StateProvider>().setsWindowVisible,
+                                                        child: MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.delete_forever_outlined,
+                                                          ),
+                                                          onPressed: () {
+                                                            removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods.first);
+                                                            saveSetListToJson();
+                                                            saveModdedItemListToJson();
+                                                            setState(() {});
+                                                          },
+                                                          child: Text(
+                                                            'Remove from this set',
+                                                          ),
                                                         ),
-                                                        child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
                                                       ),
+
                                                       // delete
                                                       MenuItemButton(
                                                         leadingIcon: Icon(
@@ -2813,6 +2846,17 @@ class _HomePageState extends State<HomePage> {
                                                           setState(() {});
                                                         },
                                                       ),
+
+                                                      //Add to set
+                                                      SubmenuButton(
+                                                        alignmentOffset: const Offset(0, 8),
+                                                        menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]),
+                                                        leadingIcon: const Icon(
+                                                          Icons.list_alt_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiAddToModSets),
+                                                      ),
+
                                                       // swap
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
@@ -2821,6 +2865,16 @@ class _HomePageState extends State<HomePage> {
                                                         child: Text(curLangText!.uiSwapToAnotherItem),
                                                         onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
                                                       ),
+
+                                                      // open in file explorer
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.folder_open_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiOpenInFileExplorer),
+                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
+                                                      ),
+
                                                       // boundary
                                                       Visibility(
                                                         visible: curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[1] ||
@@ -2845,14 +2899,23 @@ class _HomePageState extends State<HomePage> {
                                                           },
                                                         ),
                                                       ),
-                                                      // open in file explorer
+
+                                                      // remove from modset
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
-                                                          Icons.folder_open_outlined,
+                                                          Icons.delete_forever_outlined,
                                                         ),
-                                                        child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
+                                                        onPressed: () {
+                                                          removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
+                                                          saveSetListToJson();
+                                                          saveModdedItemListToJson();
+                                                          setState(() {});
+                                                        },
+                                                        child: Text(
+                                                          'Remove from this set',
+                                                        ),
                                                       ),
+
                                                       // delete
                                                       MenuItemButton(
                                                         leadingIcon: Icon(
@@ -3210,6 +3273,7 @@ class _HomePageState extends State<HomePage> {
 
                                                                   //Add to set
                                                                   SubmenuButton(
+                                                                    alignmentOffset: const Offset(0, 8),
                                                                     menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curSubmod),
                                                                     leadingIcon: const Icon(
                                                                       Icons.list_alt_outlined,
@@ -3225,6 +3289,16 @@ class _HomePageState extends State<HomePage> {
                                                                     child: Text(curLangText!.uiSwapToAnotherItem),
                                                                     onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
                                                                   ),
+
+                                                                  // open in file explorer
+                                                                  MenuItemButton(
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.folder_open_outlined,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiOpenInFileExplorer),
+                                                                    onPressed: () async => await launchUrl(Uri.file(curSubmod.location)),
+                                                                  ),
+
                                                                   // boundary
                                                                   Visibility(
                                                                     visible: curSubmod.category == defaultCateforyDirs[1] ||
@@ -3249,13 +3323,24 @@ class _HomePageState extends State<HomePage> {
                                                                       },
                                                                     ),
                                                                   ),
-                                                                  // open in file explorer
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.folder_open_outlined,
+
+                                                                  //remove from set
+                                                                  Visibility(
+                                                                    visible: context.watch<StateProvider>().setsWindowVisible,
+                                                                    child: MenuItemButton(
+                                                                      leadingIcon: const Icon(
+                                                                        Icons.delete_forever_outlined,
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod);
+                                                                        saveSetListToJson();
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      },
+                                                                      child: Text(
+                                                                        'Remove from this set',
+                                                                      ),
                                                                     ),
-                                                                    child: Text(curLangText!.uiOpenInFileExplorer),
-                                                                    onPressed: () async => await launchUrl(Uri.file(curSubmod.location)),
                                                                   ),
                                                                   // delete
                                                                   MenuItemButton(
@@ -3323,178 +3408,198 @@ class _HomePageState extends State<HomePage> {
                                                         itemCount: curSubmod.modFiles.length,
                                                         itemBuilder: (context, modFileIndex) {
                                                           var curModFile = curSubmod.modFiles[modFileIndex];
-                                                          return ListTile(
-                                                            tileColor: Colors.transparent,
-                                                            //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                                            trailing: Wrap(
-                                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                                              runAlignment: WrapAlignment.center,
-                                                              spacing: 5,
-                                                              children: [
-                                                                //Add-Remove button
-                                                                if (curModFile.applyStatus == false)
-                                                                  ModManTooltip(
-                                                                    message: '${curLangText!.uiApply} ${curModFile.modFileName} ${curLangText!.uiToTheGame}',
-                                                                    child: InkWell(
-                                                                      child: const Icon(
-                                                                        Icons.add,
-                                                                      ),
-                                                                      onTap: () async {
-                                                                        bool allOGFilesFound = true;
-                                                                        //get og file paths
-                                                                        curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
-                                                                        if (curModFile.ogLocations.isEmpty) {
-                                                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                              context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${curModFile.modFileName}', 3000));
-                                                                          allOGFilesFound = false;
-                                                                        }
-                                                                        //apply mod files
-                                                                        if (allOGFilesFound) {
-                                                                          modFilesApply(context, [curModFile]).then((value) async {
-                                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                              curSubmod.applyDate = DateTime.now();
-                                                                              modViewItem!.applyDate = DateTime.now();
-                                                                              curMod.applyDate = DateTime.now();
-                                                                              curSubmod.applyStatus = true;
-                                                                              curSubmod.isNew = false;
-                                                                              curMod.applyStatus = true;
-                                                                              curMod.isNew = false;
-                                                                              modViewItem!.applyStatus = true;
-                                                                              if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
-                                                                                modViewItem!.isNew = false;
-                                                                              }
-                                                                              List<ModFile> appliedModFiles = value;
-                                                                              String fileAppliedText = '';
-                                                                              for (var element in appliedModFiles) {
-                                                                                if (fileAppliedText.isEmpty) {
-                                                                                  fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                          return Visibility(
+                                                            visible: context.watch<StateProvider>().setsWindowVisible ? curModFile.isSet : true,
+                                                            child: ListTile(
+                                                              tileColor: Colors.transparent,
+                                                              //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                              trailing: Wrap(
+                                                                crossAxisAlignment: WrapCrossAlignment.center,
+                                                                runAlignment: WrapAlignment.center,
+                                                                spacing: 5,
+                                                                children: [
+                                                                  //Add-Remove button
+                                                                  if (curModFile.applyStatus == false)
+                                                                    ModManTooltip(
+                                                                      message: '${curLangText!.uiApply} ${curModFile.modFileName} ${curLangText!.uiToTheGame}',
+                                                                      child: InkWell(
+                                                                        child: const Icon(
+                                                                          Icons.add,
+                                                                        ),
+                                                                        onTap: () async {
+                                                                          bool allOGFilesFound = true;
+                                                                          //get og file paths
+                                                                          curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
+                                                                          if (curModFile.ogLocations.isEmpty) {
+                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${curModFile.modFileName}', 3000));
+                                                                            allOGFilesFound = false;
+                                                                          }
+                                                                          //apply mod files
+                                                                          if (allOGFilesFound) {
+                                                                            modFilesApply(context, [curModFile]).then((value) async {
+                                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                                curSubmod.applyDate = DateTime.now();
+                                                                                modViewItem!.applyDate = DateTime.now();
+                                                                                curMod.applyDate = DateTime.now();
+                                                                                curSubmod.applyStatus = true;
+                                                                                curSubmod.isNew = false;
+                                                                                curMod.applyStatus = true;
+                                                                                curMod.isNew = false;
+                                                                                modViewItem!.applyStatus = true;
+                                                                                if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                                  modViewItem!.isNew = false;
                                                                                 }
-                                                                                fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                List<ModFile> appliedModFiles = value;
+                                                                                String fileAppliedText = '';
+                                                                                for (var element in appliedModFiles) {
+                                                                                  if (fileAppliedText.isEmpty) {
+                                                                                    fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                  }
+                                                                                  fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                }
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                              }
+
+                                                                              saveModdedItemListToJson();
+                                                                              setState(() {});
+                                                                            });
+                                                                          }
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                  if (curModFile.applyStatus == true)
+                                                                    ModManTooltip(
+                                                                      message: '${curLangText!.uiRemove} ${curModFile.modFileName} ${curLangText!.uiFromTheGame}',
+                                                                      child: InkWell(
+                                                                        child: const Icon(
+                                                                          Icons.remove,
+                                                                        ),
+                                                                        onTap: () async {
+                                                                          //status
+                                                                          String filesUnapplied = '';
+                                                                          //check backups
+                                                                          bool allBkFilesFound = true;
+                                                                          for (var bkFile in curModFile.bkLocations) {
+                                                                            if (!File(bkFile).existsSync()) {
+                                                                              allBkFilesFound = false;
+                                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                  context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${curModFile.modFileName}', 3000));
+
+                                                                              break;
+                                                                            }
+                                                                          }
+                                                                          if (allBkFilesFound) {
+                                                                            modFilesUnapply(context, [curModFile]).then((value) async {
+                                                                              List<ModFile> unappliedModFiles = value;
+                                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                curSubmod.applyStatus = false;
+                                                                              }
+                                                                              if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                curMod.applyStatus = false;
+                                                                              }
+                                                                              if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                modViewItem!.applyStatus = false;
+                                                                              }
+                                                                              for (var element in unappliedModFiles) {
+                                                                                if (filesUnapplied.isEmpty) {
+                                                                                  filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${curMod.modName} > ${curSubmod.submodName}:\n';
+                                                                                }
+                                                                                filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                               }
                                                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                                                  snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                  snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+
                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                            }
 
-                                                                            saveModdedItemListToJson();
-                                                                            setState(() {});
-                                                                          });
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                if (curModFile.applyStatus == true)
-                                                                  ModManTooltip(
-                                                                    message: '${curLangText!.uiRemove} ${curModFile.modFileName} ${curLangText!.uiFromTheGame}',
-                                                                    child: InkWell(
-                                                                      child: const Icon(
-                                                                        Icons.remove,
-                                                                      ),
-                                                                      onTap: () async {
-                                                                        //status
-                                                                        String filesUnapplied = '';
-                                                                        //check backups
-                                                                        bool allBkFilesFound = true;
-                                                                        for (var bkFile in curModFile.bkLocations) {
-                                                                          if (!File(bkFile).existsSync()) {
-                                                                            allBkFilesFound = false;
-                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindBackupFileFor} ${curModFile.modFileName}', 3000));
-
-                                                                            break;
+                                                                              saveModdedItemListToJson();
+                                                                              setState(() {});
+                                                                            });
                                                                           }
-                                                                        }
-                                                                        if (allBkFilesFound) {
-                                                                          modFilesUnapply(context, [curModFile]).then((value) async {
-                                                                            List<ModFile> unappliedModFiles = value;
-                                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              curSubmod.applyStatus = false;
-                                                                            }
-                                                                            if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              curMod.applyStatus = false;
-                                                                            }
-                                                                            if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              modViewItem!.applyStatus = false;
-                                                                            }
-                                                                            for (var element in unappliedModFiles) {
-                                                                              if (filesUnapplied.isEmpty) {
-                                                                                filesUnapplied = '${curLangText!.uiSuccessfullyRemoved} ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                              }
-                                                                              filesUnapplied += '${unappliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                            }
-                                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                                                snackBarMessage(context, '${curLangText!.uiSuccess}!', filesUnapplied.trim(), unappliedModFiles.length * 1000));
+                                                                        },
+                                                                      ),
+                                                                    ),
 
-                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
-
-                                                                            saveModdedItemListToJson();
-                                                                            setState(() {});
-                                                                          });
-                                                                        }
-                                                                      },
+                                                                  //Remove from current Set
+                                                                  Visibility(
+                                                                    visible: context.watch<StateProvider>().setsWindowVisible,
+                                                                    child: ModManTooltip(
+                                                                      message: '${curLangText!.uiHoldToRemove} ${curModFile.modFileName} ${curLangText!.uiFromThisSet}',
+                                                                      child: InkWell(
+                                                                        onLongPress: () {
+                                                                          removeModFileFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod, curModFile);
+                                                                          saveSetListToJson();
+                                                                          saveModdedItemListToJson();
+                                                                          setState(() {});
+                                                                        },
+                                                                        child: const Icon(Icons.delete_forever_outlined),
+                                                                      ),
                                                                     ),
                                                                   ),
 
-                                                                //Delete
-                                                                ModManTooltip(
-                                                                  message: '${curLangText!.uiHoldToRemove} ${curModFile.modFileName} ${curLangText!.uiFromMM}',
-                                                                  child: InkWell(
-                                                                    onLongPress: curModFile.applyStatus
-                                                                        ? null
-                                                                        : () async {
-                                                                            if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                              deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                                String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                                modViewCate!.items.remove(modViewItem);
-                                                                                modViewItem = null;
-                                                                                previewModName = '';
-                                                                                previewImages.clear();
-                                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                    '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                                saveModdedItemListToJson();
-                                                                                setState(() {});
-                                                                              });
-                                                                            } else {
-                                                                              deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
-                                                                                String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
-                                                                                curSubmod.modFiles.remove(curModFile);
-
-                                                                                if (curSubmod.modFiles.isEmpty) {
-                                                                                  curMod.submods.remove(curSubmod);
-                                                                                } else {
-                                                                                  curSubmod.isNew = curSubmod.getModFilesIsNewState();
-                                                                                }
-                                                                                if (curMod.submods.isEmpty) {
-                                                                                  modViewItem!.mods.remove(curMod);
-                                                                                } else {
-                                                                                  curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                                }
-                                                                                if (modViewItem!.mods.isEmpty) {
+                                                                  //Delete
+                                                                  ModManTooltip(
+                                                                    message: '${curLangText!.uiHoldToRemove} ${curModFile.modFileName} ${curLangText!.uiFromMM}',
+                                                                    child: InkWell(
+                                                                      onLongPress: curModFile.applyStatus
+                                                                          ? null
+                                                                          : () async {
+                                                                              if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                                   modViewCate!.items.remove(modViewItem);
                                                                                   modViewItem = null;
-                                                                                } else {
-                                                                                  modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                                }
-                                                                                previewModName = '';
-                                                                                previewImages.clear();
-                                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                    '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
-                                                                                saveModdedItemListToJson();
-                                                                                setState(() {});
-                                                                              });
-                                                                            }
-                                                                          },
-                                                                    child: Icon(
-                                                                      Icons.delete_forever_outlined,
-                                                                      color: curModFile.applyStatus ? Theme.of(context).disabledColor : null,
+                                                                                  previewModName = '';
+                                                                                  previewImages.clear();
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                      '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                  saveModdedItemListToJson();
+                                                                                  setState(() {});
+                                                                                });
+                                                                              } else {
+                                                                                deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
+                                                                                  String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
+                                                                                  curSubmod.modFiles.remove(curModFile);
+
+                                                                                  if (curSubmod.modFiles.isEmpty) {
+                                                                                    curMod.submods.remove(curSubmod);
+                                                                                  } else {
+                                                                                    curSubmod.isNew = curSubmod.getModFilesIsNewState();
+                                                                                  }
+                                                                                  if (curMod.submods.isEmpty) {
+                                                                                    modViewItem!.mods.remove(curMod);
+                                                                                  } else {
+                                                                                    curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                  }
+                                                                                  if (modViewItem!.mods.isEmpty) {
+                                                                                    modViewCate!.items.remove(modViewItem);
+                                                                                    modViewItem = null;
+                                                                                  } else {
+                                                                                    modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                                  }
+                                                                                  previewModName = '';
+                                                                                  previewImages.clear();
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                      '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                                  saveModdedItemListToJson();
+                                                                                  setState(() {});
+                                                                                });
+                                                                              }
+                                                                            },
+                                                                      child: Icon(
+                                                                        Icons.delete_forever_outlined,
+                                                                        color: curModFile.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            title: Text(
-                                                              curModFile.modFileName,
-                                                              style: TextStyle(color: curModFile.applyStatus ? Theme.of(context).colorScheme.primary : null),
+                                                                ],
+                                                              ),
+                                                              title: Text(
+                                                                curModFile.modFileName,
+                                                                style: TextStyle(color: curModFile.applyStatus ? Theme.of(context).colorScheme.primary : null),
+                                                              ),
                                                             ),
                                                           );
                                                         })
@@ -4553,21 +4658,21 @@ class _HomePageState extends State<HomePage> {
                                             ModManTooltip(
                                               message: '${curLangText!.uiHoldToRemove} ${curSet.setName} ${curLangText!.uiFromMM}',
                                               child: InkWell(
-                                                onLongPress: 
-                                                // curSet.setItems.where((element) => element.applyStatus).isNotEmpty
-                                                //     ? null
-                                                //     : 
+                                                onLongPress:
+                                                    // curSet.setItems.where((element) => element.applyStatus).isNotEmpty
+                                                    //     ? null
+                                                    //     :
                                                     () async {
-                                                        String tempSetName = curSet.setName;
-                                                        removeModSetNameFromItems(curSet.setName, curSet.setItems);
-                                                        modSetList.remove(curSet);
-                                                        modViewItem = null;
-                                                        saveSetListToJson();
-                                                        saveModdedItemListToJson();
-                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                            context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $tempSetName ${curLangText!.uiFromMM}', 3000));
-                                                        setState(() {});
-                                                      },
+                                                  String tempSetName = curSet.setName;
+                                                  removeModSetNameFromItems(curSet.setName, curSet.setItems);
+                                                  modSetList.remove(curSet);
+                                                  modViewItem = null;
+                                                  saveSetListToJson();
+                                                  saveModdedItemListToJson();
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                      snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $tempSetName ${curLangText!.uiFromMM}', 3000));
+                                                  setState(() {});
+                                                },
                                                 child: Icon(
                                                   Icons.folder_delete,
                                                   size: 26,

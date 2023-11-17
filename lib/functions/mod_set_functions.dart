@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
@@ -17,10 +18,19 @@ import 'package:pso2_mod_manager/state_provider.dart';
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
   //Load list from json
-  if (File(modManModSetsJsonPath).readAsStringSync().toString().isNotEmpty) {
-    var jsonData = jsonDecode(File(modManModSetsJsonPath).readAsStringSync());
-    for (var set in jsonData) {
-      newModSets.add(ModSet.fromJson(set));
+  if (modManCurActiveProfile == 1) {
+    if (File(Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath()).readAsStringSync().toString().isNotEmpty) {
+      var jsonData = jsonDecode(File(Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath()).readAsStringSync());
+      for (var set in jsonData) {
+        newModSets.add(ModSet.fromJson(set));
+      }
+    }
+  } else if (modManCurActiveProfile == 2) {
+    if (File(Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath()).readAsStringSync().toString().isNotEmpty) {
+      var jsonData = jsonDecode(File(Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath()).readAsStringSync());
+      for (var set in jsonData) {
+        newModSets.add(ModSet.fromJson(set));
+      }
     }
   }
 
@@ -38,7 +48,7 @@ Future<List<ModSet>> modSetLoader() async {
     (a, b) => b.addedDate.compareTo(a.addedDate),
   );
 
-  saveSetListToJson();
+  //saveSetListToJson();
 
   return newModSets;
 }
@@ -137,6 +147,35 @@ void removeModSetNameFromItems(String modSetName, List<Item> items) {
   }
 }
 
+void removeModSetNameFromFiles(String modSetName, List<Item> duplicateItems, Mod addingMod, SubMod addingSubmod) {
+  for (var dupItem in duplicateItems) {
+    if (dupItem.isSet && dupItem.setNames.contains(modSetName)) {
+      for (var dupMod in dupItem.mods) {
+        if (dupMod.isSet && dupMod.setNames.contains(modSetName)) {
+          for (var dupSubmod in dupMod.submods) {
+            if (dupSubmod.isSet && dupSubmod.setNames.contains(modSetName)) {
+              for (var dupModFile in dupSubmod.modFiles) {
+                if (dupModFile.isSet && dupModFile.setNames.contains(modSetName) && addingSubmod.modFiles.where((element) => element.modFileName == dupModFile.modFileName).isNotEmpty) {
+                  dupModFile.setNames.remove(modSetName);
+                  dupModFile.isSet = false;
+                }
+              }
+              if (dupSubmod.modFiles.where((element) => element.isSet).isEmpty) {
+                dupSubmod.setNames.remove(modSetName);
+                dupSubmod.isSet = false;
+              }
+            }
+          }
+          if (dupMod.submods.where((element) => element.isSet).isEmpty) {
+            dupMod.setNames.remove(modSetName);
+            dupMod.isSet = false;
+          }
+        }
+      }
+    }
+  }
+}
+
 // add to set menu
 void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod submod) {
   if (!item.setNames.contains(modSetName)) {
@@ -144,6 +183,24 @@ void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod sub
   }
   item.isSet = true;
 
+  if (!mod.setNames.contains(modSetName)) {
+    mod.setNames.add(modSetName);
+  }
+  mod.isSet = true;
+
+  if (!submod.setNames.contains(modSetName)) {
+    submod.setNames.add(modSetName);
+  }
+  submod.isSet = true;
+  for (var modFile in submod.modFiles) {
+    if (!modFile.setNames.contains(modSetName)) {
+      modFile.isSet = true;
+      modFile.setNames.add(modSetName);
+    }
+  }
+}
+
+void setModSetNameToSingleMod(String modSetName, Mod mod, SubMod submod) {
   if (!mod.setNames.contains(modSetName)) {
     mod.setNames.add(modSetName);
   }
@@ -193,7 +250,12 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
               set.setItems.removeWhere((element) => duplicateSetItems.contains(element));
 
               readyToAdd = true;
-            } else if (userInput == 2) {}
+            } else if (userInput == 2) {
+              removeModSetNameFromFiles(set.setName, duplicateSetItems, mod, submod);
+              setModSetNameToSingleMod(set.setName, mod, submod);
+              saveSetListToJson();
+              saveModdedItemListToJson();
+            }
           } else {
             readyToAdd = true;
           }
@@ -255,4 +317,52 @@ Future<int> duplicateItemInModSetDialog(context, List<String> duplicatedModInfos
                     },
                     child: Text('Replace duplicate files only'))
               ]));
+}
+
+//remove modFile from set
+void removeModFileFromThisSet(String selectedSetName, Item item, Mod mod, SubMod submod, ModFile modFile) {
+  if (modFile.isSet && modFile.setNames.contains(selectedSetName)) {
+    modFile.setNames.remove(selectedSetName);
+    if (modFile.setNames.isEmpty) {
+      modFile.isSet = false;
+    }
+    if (submod.modFiles.where((element) => element.setNames.contains(selectedSetName)).isEmpty) {
+      removeSubmodFromThisSet(selectedSetName, item, mod, submod);
+    }
+  }
+}
+
+//remove modFile from set
+void removeSubmodFromThisSet(String selectedSetName, Item item, Mod mod, SubMod submod) {
+  if (submod.isSet && submod.setNames.contains(selectedSetName)) {
+    submod.setNames.remove(selectedSetName);
+    if (submod.setNames.isEmpty) {
+      submod.isSet = false;
+    }
+    if (mod.submods.where((element) => element.setNames.contains(selectedSetName)).isEmpty) {
+      removeModFromThisSet(selectedSetName, item, mod);
+    }
+  }
+}
+
+//remove modFile from set
+void removeModFromThisSet(String selectedSetName, Item item, Mod mod) {
+  if (mod.isSet && mod.setNames.contains(selectedSetName)) {
+    mod.setNames.remove(selectedSetName);
+    if (mod.setNames.isEmpty) {
+      mod.isSet = false;
+    }
+    if (item.mods.where((element) => element.setNames.contains(selectedSetName)).isEmpty) {
+      item.setNames.remove(selectedSetName);
+      for (var set in modSetList) {
+        if (set.setName == selectedSetName && set.setItems.contains(item)) {
+          set.setItems.remove(item);
+          break;
+        }
+      }
+      if (item.setNames.isEmpty) {
+        item.isSet = false;
+      }
+    }
+  }
 }

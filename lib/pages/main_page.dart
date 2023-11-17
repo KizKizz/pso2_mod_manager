@@ -332,6 +332,7 @@ class _MainPageState extends State<MainPage> {
                                           onPressed: modManCurActiveProfile == 1
                                               ? null
                                               : () async {
+                                                  modSetList.clear();
                                                   Navigator.pop(context);
                                                   final prefs = await SharedPreferences.getInstance();
                                                   modManCurActiveProfile = 1;
@@ -388,6 +389,7 @@ class _MainPageState extends State<MainPage> {
                                           onPressed: modManCurActiveProfile == 2
                                               ? null
                                               : () async {
+                                                  modSetList.clear();
                                                   Navigator.pop(context);
                                                   final prefs = await SharedPreferences.getInstance();
                                                   modManCurActiveProfile = 2;
@@ -654,6 +656,36 @@ class _MainPageState extends State<MainPage> {
                               ),
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? '${curLangText!.uiSlidingItemIcons}: ON' : '${curLangText!.uiSlidingItemIcons}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                      //Remove boundary radius on apply
+                      ModManTooltip(
+                        message: 'Automatically remove boundary radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [In], and Cast parts',
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply) {
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', false);
+                              Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyFalse();
+                            } else {
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', true);
+                              Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.radio_button_checked,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply ? 'Auto Boundary Radius Removal: ON' : 'Auto Boundary Radius Removal: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

@@ -34,6 +34,7 @@ class StateProvider with ChangeNotifier {
   String _modsLoaderProgressStatus = '';
   bool _showTitleBarButtons = false;
   bool _profanityFilterRemove = false;
+  bool _removeBoundaryRadiusOnModsApply = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -67,6 +68,17 @@ class StateProvider with ChangeNotifier {
   String get modsLoaderProgressStatus => _modsLoaderProgressStatus;
   bool get showTitleBarButtons => _showTitleBarButtons;
   bool get profanityFilterRemove => _profanityFilterRemove;
+  bool get removeBoundaryRadiusOnModsApply => _removeBoundaryRadiusOnModsApply;
+  
+  void removeBoundaryRadiusOnModsApplyTrue() {
+    _removeBoundaryRadiusOnModsApply = true;
+    notifyListeners();
+  }
+
+  void removeBoundaryRadiusOnModsApplyFalse() {
+    _removeBoundaryRadiusOnModsApply = false;
+    notifyListeners();
+  }
 
   void profanityFilterRemoveTrue() {
     _profanityFilterRemove = true;

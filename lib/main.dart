@@ -237,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       isAutoFetchingIconsOnStartup = (prefs.getString('isAutoFetchingIconsOnStartup') ?? 'minimal');
 
       //Sliding item icons
-      bool isSlidingItemIcons = (prefs.getBool('isSlidingItemIcons') ?? true);
+      isSlidingItemIcons = (prefs.getBool('isSlidingItemIcons') ?? false);
       if (isSlidingItemIcons) {
         Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsTrue();
       } else {
@@ -245,13 +245,23 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //Remove profanity filter
-      bool profanityFilterRemove = (prefs.getBool('profanityFilterRemove') ?? false);
+      profanityFilterRemove = (prefs.getBool('profanityFilterRemove') ?? false);
       if (profanityFilterRemove) {
         Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveTrue();
         profanityFilterRemoval = true;
       } else {
         Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
         profanityFilterRemoval = false;
+      }
+      
+      //Remove Boundary radius on mods apply
+      removeBoundaryRadiusOnModsApply = (prefs.getBool('removeBoundaryRadiusOnModsApply') ?? false);
+      if (removeBoundaryRadiusOnModsApply) {
+        Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyTrue();
+        removeBoundaryRadiusOnModsApply = true;
+      } else {
+        Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyFalse();
+        removeBoundaryRadiusOnModsApply = false;
       }
 
       //UI opacity
