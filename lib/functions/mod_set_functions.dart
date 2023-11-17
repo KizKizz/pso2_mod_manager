@@ -1,11 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
 
 Future<List<ModSet>> modSetLoader() async {
   List<ModSet> newModSets = [];
@@ -17,6 +24,12 @@ Future<List<ModSet>> modSetLoader() async {
     }
   }
 
+  //remove nonexistence set name
+  List<String> setNames = newModSets.map((e) => e.setName).toList();
+  for (var item in allSetItems) {
+    item.setNames.removeWhere((element) => !setNames.contains(element));
+  }
+
   for (var set in newModSets) {
     set.setItems = allSetItems.where((element) => element.setNames.contains(set.setName)).toList();
   }
@@ -25,7 +38,7 @@ Future<List<ModSet>> modSetLoader() async {
     (a, b) => b.addedDate.compareTo(a.addedDate),
   );
 
-  //saveSetListToJson()
+  saveSetListToJson();
 
   return newModSets;
 }
@@ -122,4 +135,124 @@ void removeModSetNameFromItems(String modSetName, List<Item> items) {
       }
     }
   }
+}
+
+// add to set menu
+void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod submod) {
+  if (!item.setNames.contains(modSetName)) {
+    item.setNames.add(modSetName);
+  }
+  item.isSet = true;
+
+  if (!mod.setNames.contains(modSetName)) {
+    mod.setNames.add(modSetName);
+  }
+  mod.isSet = true;
+
+  if (!submod.setNames.contains(modSetName)) {
+    submod.setNames.add(modSetName);
+  }
+  submod.isSet = true;
+  for (var modFile in submod.modFiles) {
+    if (!modFile.setNames.contains(modSetName)) {
+      modFile.isSet = true;
+      modFile.setNames.add(modSetName);
+    }
+  }
+}
+
+List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
+  List<Widget> menuButtonList = [];
+  for (var set in modSetList) {
+    menuButtonList.add(
+      MenuItemButton(
+        child: Text(set.setName),
+        onPressed: () async {
+          bool readyToAdd = false;
+          //check if existed in set
+          if (set.setItems.where((element) => element.itemName == item.itemName).isNotEmpty) {
+            final duplicateSetItems = set.setItems.where((element) => element.itemName == item.itemName).toList();
+            List<String> duplicatedModInfos = [];
+
+            for (var dupItem in duplicateSetItems) {
+              final duplicateSetMods = dupItem.mods.where((element) => element.isSet);
+              for (var dupMod in duplicateSetMods) {
+                final duplicateSetSubmods = dupMod.submods.where((element) => element.isSet);
+                for (var dupSubmod in duplicateSetSubmods) {
+                  final duplicateSetModFiles = dupSubmod.modFiles.where((element) => element.isSet);
+                  for (var dupModFile in duplicateSetModFiles) {
+                    duplicatedModInfos.add('${dupItem.itemName} > ${dupMod.modName} > ${dupSubmod.submodName} > ${dupModFile.modFileName}');
+                  }
+                }
+              }
+            }
+
+            int userInput = await duplicateItemInModSetDialog(context, duplicatedModInfos);
+            if (userInput == 1) {
+              removeModSetNameFromItems(set.setName, duplicateSetItems);
+              set.setItems.removeWhere((element) => duplicateSetItems.contains(element));
+
+              readyToAdd = true;
+            } else if (userInput == 2) {}
+          } else {
+            readyToAdd = true;
+          }
+
+          //add to set
+          if (readyToAdd) {
+            set.setItems.add(item);
+            setModSetNameToSingleItem(set.setName, item, mod, submod);
+            saveSetListToJson();
+            saveModdedItemListToJson();
+          }
+        },
+      ),
+    );
+  }
+  return menuButtonList;
+}
+
+Future<int> duplicateItemInModSetDialog(context, List<String> duplicatedModInfos) async {
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+              titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+              title: Center(
+                child: Text('Duplicates found in the current Mod Set', style: const TextStyle(fontWeight: FontWeight.w700)),
+              ),
+              contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+              content: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(duplicatedModInfos.join('\n')),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                    child: Text(curLangText!.uiReturn),
+                    onPressed: () async {
+                      Navigator.pop(context, 0);
+                    }),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(context, 1);
+                    },
+                    child: Text('Replace the entire mod')),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(context, 2);
+                    },
+                    child: Text('Replace duplicate files only'))
+              ]));
 }

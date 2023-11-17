@@ -200,7 +200,8 @@ class TranslationText {
       uiMore = 'More',
       uiSwapToAnotherItem = 'Swap to another item',
       uiRemoveBoundaryRadius = 'Remove boundary radius', 
-      uiRemoveFromMM = 'Remove from Mod Manager';
+      uiRemoveFromMM = 'Remove from Mod Manager',
+      uiAddToModSets = 'Add to Mod Sets';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
