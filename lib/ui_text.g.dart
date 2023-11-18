@@ -149,6 +149,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiAutoRadiusRemovalTooltip'] as String
       ..uiAutoBoundaryRadiusRemoval =
           json['uiAutoBoundaryRadiusRemoval'] as String
+      ..uiPrioritizeLocalBackupTooltip =
+          json['uiPrioritizeLocalBackupTooltip'] as String
+      ..uiPrioritizeLocalBackups = json['uiPrioritizeLocalBackups'] as String
+      ..uiPrioritizeSegaBackups = json['uiPrioritizeSegaBackups'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -563,6 +567,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiOtherFeaturesOfPSO2NGSModManager,
       'uiAutoRadiusRemovalTooltip': instance.uiAutoRadiusRemovalTooltip,
       'uiAutoBoundaryRadiusRemoval': instance.uiAutoBoundaryRadiusRemoval,
+      'uiPrioritizeLocalBackupTooltip': instance.uiPrioritizeLocalBackupTooltip,
+      'uiPrioritizeLocalBackups': instance.uiPrioritizeLocalBackups,
+      'uiPrioritizeSegaBackups': instance.uiPrioritizeSegaBackups,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

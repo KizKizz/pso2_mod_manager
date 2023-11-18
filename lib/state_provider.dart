@@ -35,6 +35,7 @@ class StateProvider with ChangeNotifier {
   bool _showTitleBarButtons = false;
   bool _profanityFilterRemove = false;
   bool _removeBoundaryRadiusOnModsApply = false;
+  bool _prioritizeLocalBackup = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -69,7 +70,18 @@ class StateProvider with ChangeNotifier {
   bool get showTitleBarButtons => _showTitleBarButtons;
   bool get profanityFilterRemove => _profanityFilterRemove;
   bool get removeBoundaryRadiusOnModsApply => _removeBoundaryRadiusOnModsApply;
-  
+  bool get prioritizeLocalBackup => _prioritizeLocalBackup;
+
+  void prioritizeLocalBackupTrue() {
+    _prioritizeLocalBackup = true;
+    notifyListeners();
+  }
+
+  void prioritizeLocalBackupFalse() {
+    _prioritizeLocalBackup= false;
+    notifyListeners();
+  }
+
   void removeBoundaryRadiusOnModsApplyTrue() {
     _removeBoundaryRadiusOnModsApply = true;
     notifyListeners();

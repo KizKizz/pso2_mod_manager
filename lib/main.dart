@@ -264,6 +264,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         removeBoundaryRadiusOnModsApply = false;
       }
 
+      //Remove Boundary radius on mods apply
+      prioritizeLocalBackup = (prefs.getBool('prioritizeLocalBackup') ?? false);
+      if (prioritizeLocalBackup) {
+        Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupTrue();
+        prioritizeLocalBackup = true;
+      } else {
+        Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupFalse();
+        prioritizeLocalBackup = false;
+      }
+
       //UI opacity
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
 

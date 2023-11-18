@@ -58,23 +58,23 @@ String previewModName = '';
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
 //Default Mod Caterories
 List<String> defaultCateforyDirs = [
-  'Accessories',      //0
-  'Basewears',        //1
-  'Body Paints',      //2
-  'Cast Arm Parts',   //3
-  'Cast Body Parts',  //4
-  'Cast Leg Parts',   //5
-  'Costumes',         //6
-  'Emotes',           //7
-  'Eyes',             //8
-  'Face Paints',      //9
-  'Hairs',            //10
-  'Innerwears',       //11
-  'Mags',             //12
-  'Misc',             //13
-  'Motions',          //14
-  'Outerwears',       //15
-  'Setwears'          //16
+  'Accessories', //0
+  'Basewears', //1
+  'Body Paints', //2
+  'Cast Arm Parts', //3
+  'Cast Body Parts', //4
+  'Cast Leg Parts', //5
+  'Costumes', //6
+  'Emotes', //7
+  'Eyes', //8
+  'Face Paints', //9
+  'Hairs', //10
+  'Innerwears', //11
+  'Mags', //12
+  'Misc', //13
+  'Motions', //14
+  'Outerwears', //15
+  'Setwears' //16
 ];
 bool isModViewModsApplying = false;
 bool isModViewModsRemoving = false;
@@ -109,3 +109,4 @@ int modManRefSheetsLocalVersion = 0;
 bool isSlidingItemIcons = false;
 bool profanityFilterRemove = false;
 bool removeBoundaryRadiusOnModsApply = false;
+bool prioritizeLocalBackup = false;

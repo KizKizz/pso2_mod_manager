@@ -585,6 +585,39 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Other options
+
+                      //Backup Priority
+                      ModManTooltip(
+                        message: curLangText!.uiPrioritizeLocalBackupTooltip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup) {
+                              prioritizeLocalBackup = false;
+                              prefs.setBool('prioritizeLocalBackup', false);
+                              Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupFalse();
+                            } else {
+                              prioritizeLocalBackup = true;
+                              prefs.setBool('prioritizeLocalBackup', true);
+                              Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.backup,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup ? curLangText!.uiPrioritizeLocalBackups : curLangText!.uiPrioritizeSegaBackups,
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+                      
                       //Auto fetching item icon on startup
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
