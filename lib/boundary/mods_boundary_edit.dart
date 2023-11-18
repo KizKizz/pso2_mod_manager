@@ -14,10 +14,11 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:path/path.dart' as p;
 
 bool isBoundaryEdited = false;
+bool isBoundaryEditDuringApply = false;
 
-void modsBoundaryEditHomePage(context, SubMod submod) {
+Future<bool> modsBoundaryEditHomePage(context, SubMod submod) async {
   Future csvLoader = itemCsvFetcher(modManRefSheetsDirPath);
-  showDialog(
+  return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
@@ -135,21 +136,24 @@ void modsBoundaryEditHomePage(context, SubMod submod) {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: ElevatedButton(
-                                    onPressed: context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiError ||
-                                            context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiSuccess
-                                        ? () {
-                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                              element.deleteSync(recursive: true);
-                                            });
-                                            isBoundaryEdited = false;
-                                            csvInfosFromSheets.clear();
-                                            Navigator.pop(context, true);
-                                          }
-                                        : null,
-                                    child: Text(curLangText!.uiReturn)),
+                              Visibility(
+                                visible: !isBoundaryEditDuringApply,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: ElevatedButton(
+                                      onPressed: context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiError ||
+                                              context.watch<StateProvider>().boundaryEditProgressStatus.split('\n').first == curLangText!.uiSuccess
+                                          ? () {
+                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                element.deleteSync(recursive: true);
+                                              });
+                                              isBoundaryEdited = false;
+                                              csvInfosFromSheets.clear();
+                                              Navigator.pop(context, true);
+                                            }
+                                          : null,
+                                      child: Text(curLangText!.uiReturn)),
+                                ),
                               ),
                             ],
                           ),
@@ -197,7 +201,14 @@ void boundaryEdit(context, SubMod submod) async {
       itemCategory = defaultCateforyDirs[16];
     }
 
-    if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
+    //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
+    if (itemCategory == defaultCateforyDirs[1] ||
+        itemCategory == defaultCateforyDirs[3] ||
+        itemCategory == defaultCateforyDirs[4] ||
+        itemCategory == defaultCateforyDirs[5] ||
+        itemCategory == defaultCateforyDirs[15] ||
+        itemCategory == defaultCateforyDirs[16] ||
+        itemName.contains('[Fu]')) {
       Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('$itemCategory${curLangText!.uispaceFoundExcl}');
       await Future.delayed(const Duration(milliseconds: 100));
       List<ModFile> matchingFiles = submod.modFiles.where((element) => element.modFileName == infoLine.split(',')[6] || element.modFileName == infoLine.split(',')[7]).toList();
@@ -247,9 +258,12 @@ void boundaryEdit(context, SubMod submod) async {
                 await renamedFile.copy(modFile.location);
                 if (modFile.modFileName == matchingFiles.last.modFileName) {
                   Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(modFile.applyStatus
-                      ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}}\n${curLangText!.uiMakeSureToReapplyThisMod}'
+                      ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}\n${curLangText!.uiMakeSureToReapplyThisMod}'
                       : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
                   await Future.delayed(const Duration(milliseconds: 100));
+                  if (isBoundaryEditDuringApply) {
+                    Navigator.pop(context, true);
+                  }
                 }
               } else {
                 Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');

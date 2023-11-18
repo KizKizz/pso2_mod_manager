@@ -15,6 +15,7 @@ Future<bool> modFileApply(ModFile modFile) async {
     if (ogPath.contains('win32_na') || ogPath.contains('win32reboot_na')) {
       modFile = await modFileBackup(modFile);
     }
+
     File returnedFile = File('');
     try {
       returnedFile = await File(modFile.location).copy(ogPath);

@@ -640,9 +640,11 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons) {
+                              isSlidingItemIcons = false;
                               prefs.setBool('isSlidingItemIcons', false);
                               Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
                             } else {
+                              isSlidingItemIcons = true;
                               prefs.setBool('isSlidingItemIcons', true);
                               Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsTrue();
                             }
@@ -661,18 +663,20 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ),
-                      
+
                       //Remove boundary radius on apply
                       ModManTooltip(
-                        message: 'Automatically remove boundary radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [In], and Cast parts',
+                        message: curLangText!.uiAutoRadiusRemovalTooltip,
                         child: MaterialButton(
                           height: 40,
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply) {
+                              removeBoundaryRadiusOnModsApply = false;
                               prefs.setBool('removeBoundaryRadiusOnModsApply', false);
                               Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyFalse();
                             } else {
+                              removeBoundaryRadiusOnModsApply = true;
                               prefs.setBool('removeBoundaryRadiusOnModsApply', true);
                               Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyTrue();
                             }
@@ -685,7 +689,7 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply ? 'Auto Boundary Radius Removal: ON' : 'Auto Boundary Radius Removal: OFF',
+                              Text(Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON' : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

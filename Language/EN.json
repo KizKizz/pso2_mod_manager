@@ -106,6 +106,8 @@
   "uiRemoveProfanityFilter": "Profanity Filter Removal",
   "uiExtras": "Extras",
   "uiOtherFeaturesOfPSO2NGSModManager": "Other features of PSO2NGS Mod Manager",
+  "uiAutoRadiusRemovalTooltip": "Automatically remove boundary radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [Fu], and Cast parts",
+  "uiAutoBoundaryRadiusRemoval": "Auto Boundary Radius Removal",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -177,6 +179,8 @@
   "uiSwapToAnotherItem": "Swap to another item",
   "uiRemoveBoundaryRadius": "Remove boundary radius",
   "uiRemoveFromMM": "Remove from Mod Manager",
+  "uiAddToModSets": "Add to Mod Sets",
+  "uiRemoveFromThisSet": "Remove from this set",
   "uiPreparing": "Preparing",
   "uiDragDropFiles": "Drag and drop folders, zip files\nand .ice files here\nOr use the \"Add Folders/Files\" buttons to select folders/files\nMay take some time\nto process large amount of files",
   "uiAchiveCurrentlyNotSupported": "currently not supported. Open the archive file then drag the content in here instead",
@@ -338,5 +342,8 @@
   "uiUseButtonBelowToGetDotnet": "Use the button below to get and install the required .NET Runtime",
   "uiGetDotnetRuntime6": "Get .NET Runtime 6.0",
   "uiNoGamedataFound": "No game data found",
-  "uiNoGameDataFoundMessage": "Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path"
+  "uiNoGameDataFoundMessage": "Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path",
+  "uiDuplicatesFoundInTheCurrentSet": "Duplicates found in the current set",
+  "uiReplaceAll": "Replace All",
+  "uiReplaceDuplicateFilesOnly": "Replace duplicate files only"
 }

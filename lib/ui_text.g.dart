@@ -145,6 +145,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiExtras = json['uiExtras'] as String
       ..uiOtherFeaturesOfPSO2NGSModManager =
           json['uiOtherFeaturesOfPSO2NGSModManager'] as String
+      ..uiAutoRadiusRemovalTooltip =
+          json['uiAutoRadiusRemovalTooltip'] as String
+      ..uiAutoBoundaryRadiusRemoval =
+          json['uiAutoBoundaryRadiusRemoval'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -225,6 +229,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSwapToAnotherItem = json['uiSwapToAnotherItem'] as String
       ..uiRemoveBoundaryRadius = json['uiRemoveBoundaryRadius'] as String
       ..uiRemoveFromMM = json['uiRemoveFromMM'] as String
+      ..uiAddToModSets = json['uiAddToModSets'] as String
+      ..uiRemoveFromThisSet = json['uiRemoveFromThisSet'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -434,7 +440,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiUseButtonBelowToGetDotnet'] as String
       ..uiGetDotnetRuntime6 = json['uiGetDotnetRuntime6'] as String
       ..uiNoGamedataFound = json['uiNoGamedataFound'] as String
-      ..uiNoGameDataFoundMessage = json['uiNoGameDataFoundMessage'] as String;
+      ..uiNoGameDataFoundMessage = json['uiNoGameDataFoundMessage'] as String
+      ..uiDuplicatesFoundInTheCurrentSet =
+          json['uiDuplicatesFoundInTheCurrentSet'] as String
+      ..uiReplaceAll = json['uiReplaceAll'] as String
+      ..uiReplaceDuplicateFilesOnly =
+          json['uiReplaceDuplicateFilesOnly'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -550,6 +561,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiExtras': instance.uiExtras,
       'uiOtherFeaturesOfPSO2NGSModManager':
           instance.uiOtherFeaturesOfPSO2NGSModManager,
+      'uiAutoRadiusRemovalTooltip': instance.uiAutoRadiusRemovalTooltip,
+      'uiAutoBoundaryRadiusRemoval': instance.uiAutoBoundaryRadiusRemoval,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -624,6 +637,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSwapToAnotherItem': instance.uiSwapToAnotherItem,
       'uiRemoveBoundaryRadius': instance.uiRemoveBoundaryRadius,
       'uiRemoveFromMM': instance.uiRemoveFromMM,
+      'uiAddToModSets': instance.uiAddToModSets,
+      'uiRemoveFromThisSet': instance.uiRemoveFromThisSet,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -803,4 +818,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiGetDotnetRuntime6': instance.uiGetDotnetRuntime6,
       'uiNoGamedataFound': instance.uiNoGamedataFound,
       'uiNoGameDataFoundMessage': instance.uiNoGameDataFoundMessage,
+      'uiDuplicatesFoundInTheCurrentSet':
+          instance.uiDuplicatesFoundInTheCurrentSet,
+      'uiReplaceAll': instance.uiReplaceAll,
+      'uiReplaceDuplicateFilesOnly': instance.uiReplaceDuplicateFilesOnly,
     };

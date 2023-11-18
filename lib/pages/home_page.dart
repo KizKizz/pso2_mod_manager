@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -18,6 +19,7 @@ import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
+import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
@@ -2376,7 +2378,7 @@ class _HomePageState extends State<HomePage> {
                                                             onTap: () async {
                                                               isModViewModsApplying = true;
                                                               setState(() {});
-                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
                                                                 bool allOGFilesFound = true;
                                                                 //get og file paths
                                                                 for (var modFile in curMod.submods.first.modFiles) {
@@ -2391,36 +2393,47 @@ class _HomePageState extends State<HomePage> {
                                                                 }
                                                                 //apply mod files
                                                                 if (allOGFilesFound) {
-                                                                  modFilesApply(context, curMod.submods.first.modFiles).then((value) async {
-                                                                    if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                      curMod.submods.first.applyDate = DateTime.now();
-                                                                      modViewItem!.applyDate = DateTime.now();
-                                                                      curMod.applyDate = DateTime.now();
-                                                                      curMod.submods.first.applyStatus = true;
-                                                                      curMod.submods.first.isNew = false;
-                                                                      curMod.applyStatus = true;
-                                                                      curMod.isNew = false;
-                                                                      modViewItem!.applyStatus = true;
-                                                                      if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
-                                                                        modViewItem!.isNew = false;
-                                                                      }
-                                                                      List<ModFile> appliedModFiles = value;
-                                                                      String fileAppliedText = '';
-                                                                      for (var element in appliedModFiles) {
-                                                                        if (fileAppliedText.isEmpty) {
-                                                                          fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
-                                                                        }
-                                                                        fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                      }
-                                                                      ScaffoldMessenger.of(context)
-                                                                          .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                    }
-
-                                                                    isModViewModsApplying = false;
-                                                                    saveModdedItemListToJson();
+                                                                  //apply auto radius removal if on
+                                                                  if (removeBoundaryRadiusOnModsApply) {
+                                                                    removeBoundaryOnModsApply(context, curMod.submods.first).then((value) async {
+                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
+                                                                      setState(() {});
+                                                                    });
+                                                                  } else {
+                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
                                                                     setState(() {});
-                                                                  });
+                                                                  }
+
+                                                                  // modFilesApply(context, curMod.submods.first.modFiles).then((value) async {
+                                                                  //   if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                  //     curMod.submods.first.applyDate = DateTime.now();
+                                                                  //     modViewItem!.applyDate = DateTime.now();
+                                                                  //     curMod.applyDate = DateTime.now();
+                                                                  //     curMod.submods.first.applyStatus = true;
+                                                                  //     curMod.submods.first.isNew = false;
+                                                                  //     curMod.applyStatus = true;
+                                                                  //     curMod.isNew = false;
+                                                                  //     modViewItem!.applyStatus = true;
+                                                                  //     if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                  //       modViewItem!.isNew = false;
+                                                                  //     }
+                                                                  //     List<ModFile> appliedModFiles = value;
+                                                                  //     String fileAppliedText = '';
+                                                                  //     for (var element in appliedModFiles) {
+                                                                  //       if (fileAppliedText.isEmpty) {
+                                                                  //         fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curMod.submods.first.submodName}:\n';
+                                                                  //       }
+                                                                  //       fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                  //     }
+                                                                  //     ScaffoldMessenger.of(context)
+                                                                  //         .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                  //     appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                  //   }
+
+                                                                  //   isModViewModsApplying = false;
+                                                                  //   saveModdedItemListToJson();
+                                                                  //   setState(() {});
+                                                                  // });
                                                                 }
                                                               });
                                                             },
@@ -2523,8 +2536,6 @@ class _HomePageState extends State<HomePage> {
                                                             curMod.submods.first.category == defaultCateforyDirs[3] ||
                                                             curMod.submods.first.category == defaultCateforyDirs[4] ||
                                                             curMod.submods.first.category == defaultCateforyDirs[5] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[6] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[11] ||
                                                             curMod.submods.first.category == defaultCateforyDirs[15] ||
                                                             curMod.submods.first.category == defaultCateforyDirs[16],
                                                         child: MenuItemButton(
@@ -2556,7 +2567,7 @@ class _HomePageState extends State<HomePage> {
                                                             setState(() {});
                                                           },
                                                           child: Text(
-                                                            'Remove from this set',
+                                                            curLangText!.uiRemoveFromThisSet,
                                                           ),
                                                         ),
                                                       ),
@@ -2733,7 +2744,7 @@ class _HomePageState extends State<HomePage> {
                                                             onTap: () async {
                                                               isModViewModsApplying = true;
                                                               setState(() {});
-                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
                                                                 bool allOGFilesFound = true;
                                                                 //get og file paths
                                                                 for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
@@ -2748,37 +2759,47 @@ class _HomePageState extends State<HomePage> {
                                                                 }
                                                                 //apply mod files
                                                                 if (allOGFilesFound) {
-                                                                  modFilesApply(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
-                                                                    if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                      curMod.submods[modViewModSetSubModIndex].applyDate = DateTime.now();
-                                                                      modViewItem!.applyDate = DateTime.now();
-                                                                      curMod.applyDate = DateTime.now();
-                                                                      curMod.submods[modViewModSetSubModIndex].applyStatus = true;
-                                                                      curMod.submods[modViewModSetSubModIndex].isNew = false;
-                                                                      curMod.applyStatus = true;
-                                                                      curMod.isNew = false;
-                                                                      modViewItem!.applyStatus = true;
-                                                                      if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
-                                                                        modViewItem!.isNew = false;
-                                                                      }
-                                                                      List<ModFile> appliedModFiles = value;
-                                                                      String fileAppliedText = '';
-                                                                      for (var element in appliedModFiles) {
-                                                                        if (fileAppliedText.isEmpty) {
-                                                                          fileAppliedText =
-                                                                              '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}:\n';
-                                                                        }
-                                                                        fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                      }
-                                                                      ScaffoldMessenger.of(context)
-                                                                          .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                    }
-
-                                                                    isModViewModsApplying = false;
-                                                                    saveModdedItemListToJson();
+                                                                  //apply auto radius removal if on
+                                                                  if (removeBoundaryRadiusOnModsApply) {
+                                                                    removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]).then((value) async {
+                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
+                                                                      setState(() {});
+                                                                    });
+                                                                  } else {
+                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                                     setState(() {});
-                                                                  });
+                                                                  }
+                                                                  //     modFilesApply(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
+                                                                  //       if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                  //         curMod.submods[modViewModSetSubModIndex].applyDate = DateTime.now();
+                                                                  //         modViewItem!.applyDate = DateTime.now();
+                                                                  //         curMod.applyDate = DateTime.now();
+                                                                  //         curMod.submods[modViewModSetSubModIndex].applyStatus = true;
+                                                                  //         curMod.submods[modViewModSetSubModIndex].isNew = false;
+                                                                  //         curMod.applyStatus = true;
+                                                                  //         curMod.isNew = false;
+                                                                  //         modViewItem!.applyStatus = true;
+                                                                  //         if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                  //           modViewItem!.isNew = false;
+                                                                  //         }
+                                                                  //         List<ModFile> appliedModFiles = value;
+                                                                  //         String fileAppliedText = '';
+                                                                  //         for (var element in appliedModFiles) {
+                                                                  //           if (fileAppliedText.isEmpty) {
+                                                                  //             fileAppliedText =
+                                                                  //                 '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}:\n';
+                                                                  //           }
+                                                                  //           fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                  //         }
+                                                                  //         ScaffoldMessenger.of(context)
+                                                                  //             .showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                  //         appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                  //       }
+
+                                                                  //       isModViewModsApplying = false;
+                                                                  //       saveModdedItemListToJson();
+                                                                  //       setState(() {});
+                                                                  //     });
                                                                 }
                                                               });
                                                             },
@@ -2881,8 +2902,6 @@ class _HomePageState extends State<HomePage> {
                                                             curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[3] ||
                                                             curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[4] ||
                                                             curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[5] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[6] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[11] ||
                                                             curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[15] ||
                                                             curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[16],
                                                         child: MenuItemButton(
@@ -2912,7 +2931,7 @@ class _HomePageState extends State<HomePage> {
                                                           setState(() {});
                                                         },
                                                         child: Text(
-                                                          'Remove from this set',
+                                                          curLangText!.uiRemoveFromThisSet,
                                                         ),
                                                       ),
 
@@ -3156,7 +3175,7 @@ class _HomePageState extends State<HomePage> {
                                                                         onTap: () async {
                                                                           isModViewModsApplying = true;
                                                                           setState(() {});
-                                                                          Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                                                          Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
                                                                             bool allOGFilesFound = true;
                                                                             //get og file paths
                                                                             for (var modFile in curSubmod.modFiles) {
@@ -3171,36 +3190,16 @@ class _HomePageState extends State<HomePage> {
                                                                             }
                                                                             //apply mod files
                                                                             if (allOGFilesFound) {
-                                                                              modFilesApply(context, curSubmod.modFiles).then((value) async {
-                                                                                if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                                  curSubmod.applyDate = DateTime.now();
-                                                                                  modViewItem!.applyDate = DateTime.now();
-                                                                                  curMod.applyDate = DateTime.now();
-                                                                                  curSubmod.applyStatus = true;
-                                                                                  curSubmod.isNew = false;
-                                                                                  curMod.applyStatus = true;
-                                                                                  curMod.isNew = false;
-                                                                                  modViewItem!.applyStatus = true;
-                                                                                  if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
-                                                                                    modViewItem!.isNew = false;
-                                                                                  }
-                                                                                  List<ModFile> appliedModFiles = value;
-                                                                                  String fileAppliedText = '';
-                                                                                  for (var element in appliedModFiles) {
-                                                                                    if (fileAppliedText.isEmpty) {
-                                                                                      fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${curMod.modName} > ${curSubmod.submodName}:\n';
-                                                                                    }
-                                                                                    fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                                  }
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                  appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                                }
-
-                                                                                isModViewModsApplying = false;
-                                                                                saveModdedItemListToJson();
+                                                                              //apply auto radius removal if on
+                                                                              if (removeBoundaryRadiusOnModsApply) {
+                                                                                removeBoundaryOnModsApply(context, curSubmod).then((value) async {
+                                                                                  await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
+                                                                                  setState(() {});
+                                                                                });
+                                                                              } else {
+                                                                                await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
                                                                                 setState(() {});
-                                                                              });
+                                                                              }
                                                                             }
                                                                           });
                                                                         },
@@ -3305,8 +3304,6 @@ class _HomePageState extends State<HomePage> {
                                                                         curSubmod.category == defaultCateforyDirs[3] ||
                                                                         curSubmod.category == defaultCateforyDirs[4] ||
                                                                         curSubmod.category == defaultCateforyDirs[5] ||
-                                                                        curSubmod.category == defaultCateforyDirs[6] ||
-                                                                        curSubmod.category == defaultCateforyDirs[11] ||
                                                                         curSubmod.category == defaultCateforyDirs[15] ||
                                                                         curSubmod.category == defaultCateforyDirs[16],
                                                                     child: MenuItemButton(
@@ -3338,7 +3335,7 @@ class _HomePageState extends State<HomePage> {
                                                                         setState(() {});
                                                                       },
                                                                       child: Text(
-                                                                        'Remove from this set',
+                                                                        curLangText!.uiRemoveFromThisSet,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -4673,7 +4670,7 @@ class _HomePageState extends State<HomePage> {
                                                       snackBarMessage(context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $tempSetName ${curLangText!.uiFromMM}', 3000));
                                                   setState(() {});
                                                 },
-                                                child: Icon(
+                                                child: const Icon(
                                                   Icons.folder_delete,
                                                   size: 26,
                                                   //color: curSet.setItems.where((element) => element.applyStatus).isNotEmpty ? Theme.of(context).disabledColor : null,

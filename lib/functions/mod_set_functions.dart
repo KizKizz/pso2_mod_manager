@@ -283,7 +283,7 @@ Future<int> duplicateItemInModSetDialog(context, List<String> duplicatedModInfos
               backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
               titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
               title: Center(
-                child: Text('Duplicates found in the current Mod Set', style: const TextStyle(fontWeight: FontWeight.w700)),
+                child: Text(curLangText!.uiDuplicatesFoundInTheCurrentSet, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
               content: Padding(
@@ -310,12 +310,12 @@ Future<int> duplicateItemInModSetDialog(context, List<String> duplicatedModInfos
                     onPressed: () async {
                       Navigator.pop(context, 1);
                     },
-                    child: Text('Replace the entire mod')),
+                    child: Text(curLangText!.uiReplaceAll)),
                 ElevatedButton(
                     onPressed: () async {
                       Navigator.pop(context, 2);
                     },
-                    child: Text('Replace duplicate files only'))
+                    child: Text(curLangText!.uiReplaceDuplicateFilesOnly))
               ]));
 }
 

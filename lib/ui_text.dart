@@ -126,7 +126,9 @@ class TranslationText {
       uiCreateAndSwapVitalGaugeBackground = 'Create and swap Vital Gauge background',
       uiRemoveProfanityFilter = "Profanity Filter Removal",
       uiExtras = 'Extras',
-      uiOtherFeaturesOfPSO2NGSModManager = 'Other features of PSO2NGS Mod Manager';
+      uiOtherFeaturesOfPSO2NGSModManager = 'Other features of PSO2NGS Mod Manager',
+      uiAutoRadiusRemovalTooltip = 'Automatically remove boundary radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [Fu], and Cast parts',
+      uiAutoBoundaryRadiusRemoval = 'Auto Boundary Radius Removal';
 
   //homepage
   String uiItemList = 'Item List',
@@ -199,9 +201,10 @@ class TranslationText {
       uiRemoveFromFavList = 'Remove from Favorite List',
       uiMore = 'More',
       uiSwapToAnotherItem = 'Swap to another item',
-      uiRemoveBoundaryRadius = 'Remove boundary radius', 
+      uiRemoveBoundaryRadius = 'Remove boundary radius',
       uiRemoveFromMM = 'Remove from Mod Manager',
-      uiAddToModSets = 'Add to Mod Sets';
+      uiAddToModSets = 'Add to Mod Sets',
+      uiRemoveFromThisSet = 'Remove from this set';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -356,12 +359,12 @@ class TranslationText {
 
   //changelog_dialog.dart
   String uiPatchNotes = 'Patch Notes',
-  uiMMUpdate = 'PSO2NGS Mod Manager Update',
-  uiMMUpdateSuccess = 'Your Mod Manager is up to date',
-  uiDownloadingUpdate = 'Downloading Update',
-  uiDownloadingUpdateError = 'Downloading Update Error',
-  uiGoToDownloadPage = 'Go to download page',
-  uiGitHubPage = 'GitHub Page';
+      uiMMUpdate = 'PSO2NGS Mod Manager Update',
+      uiMMUpdateSuccess = 'Your Mod Manager is up to date',
+      uiDownloadingUpdate = 'Downloading Update',
+      uiDownloadingUpdateError = 'Downloading Update Error',
+      uiGoToDownloadPage = 'Go to download page',
+      uiGitHubPage = 'GitHub Page';
 
   //mods_boundary_edit.dart
   String uiBoundaryRadiusModification = 'Boundary Radius Modification',
@@ -409,6 +412,9 @@ class TranslationText {
   //og_file_perm_check.dart
   String uiNoGamedataFound = 'No game data found',
       uiNoGameDataFoundMessage = 'Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path';
+
+  //mod_set_functions.dart
+  String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set', uiReplaceAll = 'Replace All', uiReplaceDuplicateFilesOnly = 'Replace duplicate files only';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

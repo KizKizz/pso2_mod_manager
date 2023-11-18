@@ -1,9 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.0",
+    "version": "2.5.1",
     "description": [
-        "Implemented auto updater",
-        "More improvements and fixes to mods/items swapper",
+        "First update with auto updater (might need to run Mod Manager as admin before update). Please download from the Releases page if you encounter any problem with it",
+        "Mods can now be added to Mod Sets from Available Mods list",
+        "Added auto remove boundary radius upon applying mods to the game (can be found in Settings)",
         "Some minor bug fixes"
     ],
     "windows_file": "",
