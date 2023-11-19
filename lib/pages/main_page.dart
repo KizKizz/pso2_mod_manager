@@ -524,28 +524,28 @@ class _MainPageState extends State<MainPage> {
 
                       //Path open
                       //Open Backup removed due to backups being downloaded from sega
-                      // MaterialButton(
-                      //   height: 40,
-                      //   onPressed: (() async {
-                      //     await launchUrl(Uri.file(modManBackupsDirPath));
-                      //   }),
-                      //   child: Row(
-                      //     children: [
-                      //       const Icon(
-                      //         Icons.folder_open_outlined,
-                      //         size: 18,
-                      //       ),
-                      //       const SizedBox(width: 10),
-                      //       Text(
-                      //         curLangText!.uiOpenBackupFolder,
-                      //         style: const TextStyle(fontWeight: FontWeight.normal),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManBackupsDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenBackupFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
 
                       //Path open
                       MaterialButton(

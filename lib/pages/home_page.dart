@@ -91,8 +91,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (savedAppVersion != appVersion && !firstTimeUser && !Provider.of<StateProvider>(context, listen: false).isUpdateAvailable) {
-        appUpdateSuccessDialog(context);
+      if (!firstTimeUser && !Provider.of<StateProvider>(context, listen: false).isUpdateAvailable) {
+        updatedVersionCheck(context);
       }
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
@@ -2382,7 +2382,7 @@ class _HomePageState extends State<HomePage> {
                                                                 bool allOGFilesFound = true;
                                                                 //get og file paths
                                                                 for (var modFile in curMod.submods.first.modFiles) {
-                                                                  modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                  modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                                   if (modFile.ogLocations.isEmpty) {
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                         snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
@@ -2748,7 +2748,7 @@ class _HomePageState extends State<HomePage> {
                                                                 bool allOGFilesFound = true;
                                                                 //get og file paths
                                                                 for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
-                                                                  modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                  modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                                   if (modFile.ogLocations.isEmpty) {
                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                         snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
@@ -3179,7 +3179,7 @@ class _HomePageState extends State<HomePage> {
                                                                             bool allOGFilesFound = true;
                                                                             //get og file paths
                                                                             for (var modFile in curSubmod.modFiles) {
-                                                                              modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                              modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                                               if (modFile.ogLocations.isEmpty) {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                     context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
@@ -3426,7 +3426,7 @@ class _HomePageState extends State<HomePage> {
                                                                         onTap: () async {
                                                                           bool allOGFilesFound = true;
                                                                           //get og file paths
-                                                                          curModFile.ogLocations = ogIcePathsFetcher(curModFile.modFileName);
+                                                                          curModFile.ogLocations = fetchOriginalIcePaths(curModFile.modFileName);
                                                                           if (curModFile.ogLocations.isEmpty) {
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                 context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${curModFile.modFileName}', 3000));
@@ -4110,7 +4110,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 bool allOGFilesFound = true;
                                                                                 //get og file paths
                                                                                 for (var modFile in allAppliedModFiles[m]) {
-                                                                                  modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                                  modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                                                   if (modFile.ogLocations.isEmpty) {
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                         context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
@@ -4571,7 +4571,7 @@ class _HomePageState extends State<HomePage> {
                                                             }
 
                                                             for (var modFile in allAppliedModFiles) {
-                                                              modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                              modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                               if (modFile.ogLocations.isEmpty) {
                                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                                     snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
@@ -4965,7 +4965,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 bool allOGFilesFound = true;
                                                                                 //get og file paths
                                                                                 for (var modFile in allAppliedModFiles[m]) {
-                                                                                  modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
+                                                                                  modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
                                                                                   if (modFile.ogLocations.isEmpty) {
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                         context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
