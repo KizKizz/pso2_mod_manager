@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
+import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 List<String> fetchOriginalIcePaths(String iceName) {
   List<String> ogPaths = [];
@@ -13,7 +18,27 @@ List<String> fetchOriginalIcePaths(String iceName) {
   return ogPaths;
 }
 
+Future<bool> originalFilesCheck(context, List<ModFile> modFiles) async {
+  for (var modFile in modFiles) {
+    modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
+    if (modFile.ogLocations.isEmpty) {
+      List<String> ogFilesFromServers = officialPatchFiles.where((element) => element.contains(modFile.modFileName)).toList();
+      ogFilesFromServers.addAll(officialMasterFiles.where((element) => element.contains(modFile.modFileName)));
+      List<String> tempOgFiles = [];
+      for (var line in ogFilesFromServers) {
+        tempOgFiles.add(Uri.file('$modManPso2binPath/$line').toFilePath());
+      }
+      modFile.ogLocations = tempOgFiles;
+      if (modFile.ogLocations.isEmpty) {
+        isModViewModsApplying = false;
+        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
+        return false;
+      }
+    }
+  }
 
+  return true;
+}
 
 List<String> applyModsOgIcePathsFetcher(SubMod submod, String iceName) {
   List<String> ogPaths = [];

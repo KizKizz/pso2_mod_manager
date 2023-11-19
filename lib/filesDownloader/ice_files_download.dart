@@ -129,23 +129,23 @@ Future<List<String>> fetchOfficialPatchFileList() async {
     officialPatchFiles.add(line.split('.pat').first);
   }
 
-  String allFilePath = Uri.file('${Directory.current.path}/allFiles.txt').toFilePath();
-  if (!File(allFilePath).existsSync()) {
-    File(allFilePath).createSync();
-  }
-  File(allFilePath).writeAsStringSync(officialServerFileList.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+  // String allFilePath = Uri.file('${Directory.current.path}/allFiles.txt').toFilePath();
+  // if (!File(allFilePath).existsSync()) {
+  //   File(allFilePath).createSync();
+  // }
+  // File(allFilePath).writeAsStringSync(officialServerFileList.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
 
-  String masterFilePath = Uri.file('${Directory.current.path}/masterFiles.txt').toFilePath();
-  if (!File(masterFilePath).existsSync()) {
-    File(masterFilePath).createSync();
-  }
-  File(masterFilePath).writeAsStringSync(officialMasterFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+  // String masterFilePath = Uri.file('${Directory.current.path}/masterFiles.txt').toFilePath();
+  // if (!File(masterFilePath).existsSync()) {
+  //   File(masterFilePath).createSync();
+  // }
+  // File(masterFilePath).writeAsStringSync(officialMasterFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
 
-  String patchFilePath = Uri.file('${Directory.current.path}/patchFiles.txt').toFilePath();
-  if (!File(patchFilePath).existsSync()) {
-    File(patchFilePath).createSync();
-  }
-  File(patchFilePath).writeAsStringSync(officialPatchFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+  // String patchFilePath = Uri.file('${Directory.current.path}/patchFiles.txt').toFilePath();
+  // if (!File(patchFilePath).existsSync()) {
+  //   File(patchFilePath).createSync();
+  // }
+  // File(patchFilePath).writeAsStringSync(officialPatchFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
   // debugPrint(officialPatchServerFileList.toString());
   // debugPrint(officialPatchServerFileList.length.toString());
   return returnStatus;
