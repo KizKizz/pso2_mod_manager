@@ -47,13 +47,19 @@ Future<ModFile?> modFileAppliedDupCheck(List<CategoryType> moddedList, ModFile m
   for (var cateType in moddedList) {
     for (var cate in cateType.categories) {
       for (var item in cate.items) {
-        for (var mod in item.mods) {
-          for (var submod in mod.submods) {
-            int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
-            if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location != modFile.location) {
-              //submod.modFiles[modFileIndex].applyStatus = false;
-              //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
-              return submod.modFiles[modFileIndex];
+        if (item.applyStatus) {
+          for (var mod in item.mods) {
+            if (mod.applyStatus) {
+              for (var submod in mod.submods) {
+                if (submod.applyStatus) {
+                  int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
+                  if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location != modFile.location) {
+                    //submod.modFiles[modFileIndex].applyStatus = false;
+                    //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
+                    return submod.modFiles[modFileIndex];
+                  }
+                }
+              }
             }
           }
         }

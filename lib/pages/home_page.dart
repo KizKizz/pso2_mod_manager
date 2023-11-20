@@ -35,6 +35,7 @@ import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/preview_dialog.dart';
 import 'package:pso2_mod_manager/functions/reapply_applied_mods.dart';
+import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/functions/search_list_builder.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/functions/unapply_all_mods.dart';
@@ -3081,7 +3082,7 @@ class _HomePageState extends State<HomePage> {
                                                                             //   }
                                                                             // }
                                                                             //if (allBkFilesFound) {
-                                                                            modFilesUnapply(context, curSubmod.modFiles).then((value) async {
+                                                                            restoreOriginalFilesToTheGame(context, curSubmod.modFiles).then((value) async {
                                                                               List<ModFile> unappliedModFiles = value;
                                                                               if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                 curSubmod.applyStatus = false;

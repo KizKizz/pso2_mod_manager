@@ -9,7 +9,10 @@ Future<void> localOriginalFilesBackup(List<ModFile> modFiles) async {
     for (var originalFilePath in modFile.ogLocations) {
       String fileInBackupFolderPath = originalFilePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManBackupsDirPath);
       if (File(originalFilePath).existsSync() && !File(fileInBackupFolderPath).existsSync()) {
-        backupFilePaths.add((await File(originalFilePath).copy(fileInBackupFolderPath)).path);
+        final backupFile = await File(originalFilePath).copy(fileInBackupFolderPath);
+        backupFilePaths.add(backupFile.path);
+      } else if (File(fileInBackupFolderPath).existsSync()) {
+        backupFilePaths.add(fileInBackupFolderPath);
       }
     }
     modFile.bkLocations = backupFilePaths;

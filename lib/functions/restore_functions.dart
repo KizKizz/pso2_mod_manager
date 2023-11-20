@@ -1,19 +1,58 @@
+import 'dart:io';
+
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/applied_files_check.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
+
+Future<List<ModFile>> restoreOriginalFilesToTheGame(context, List<ModFile> modFiles) async {
+  List<ModFile> unappliedModFiles = [];
+  if (prioritizeLocalBackup) {
+    await restoreOriginalFilesLocalBackups(context, modFiles);
+    await restoreOriginalFilesFromServers(context, modFiles);
+  } else {
+    await restoreOriginalFilesFromServers(context, modFiles);
+    await restoreOriginalFilesLocalBackups(context, modFiles);
+  }
+
+  for (var modFile in modFiles) {
+    if (modFile.ogLocations.isEmpty) {
+      modFile.ogMd5s.clear();
+      modFile.applyDate = DateTime(0);
+      //add to result if applied then unapplied
+      if (modFile.applyStatus) {
+        unappliedModFiles.add(modFile);
+      }
+      modFile.applyStatus = false;
+    }
+  }
+
+  saveModdedItemListToJson();
+  appliedItemList = await appliedListBuilder(moddedItemsList);
+
+  return unappliedModFiles;
+}
 
 bool multipleModFilesCheck(List<CategoryType> appliedList, ModFile modFile) {
   for (var cateType in appliedList) {
     for (var cate in cateType.categories) {
       for (var item in cate.items) {
-        for (var mod in item.mods) {
-          for (var submod in mod.submods) {
-            int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
-            if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location != modFile.location) {
-              return true;
+        if (item.applyStatus) {
+          for (var mod in item.mods) {
+            if (mod.applyStatus) {
+              for (var submod in mod.submods) {
+                if (submod.applyStatus) {
+                  int modFileIndex = submod.modFiles.indexWhere((element) => element.modFileName == modFile.modFileName);
+                  if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location != modFile.location) {
+                    return true;
+                  }
+                }
+              }
             }
           }
         }
@@ -23,7 +62,7 @@ bool multipleModFilesCheck(List<CategoryType> appliedList, ModFile modFile) {
   return false;
 }
 
-Future<List<ModFile>> restoreOriginalFilesFromServers(context, List<ModFile> modFiles) async {
+Future<void> restoreOriginalFilesFromServers(context, List<ModFile> modFiles) async {
   List<String> dataPathsToDownload = [];
   for (var modFile in modFiles) {
     for (var originalFilePath in modFile.ogLocations) {
@@ -36,6 +75,43 @@ Future<List<ModFile>> restoreOriginalFilesFromServers(context, List<ModFile> mod
   for (var modFile in modFiles) {
     final pathsToRemove = restoredFiles.where((element) => element.contains(modFile.modFileName));
     modFile.ogLocations.removeWhere((element) => pathsToRemove.contains(element.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim()));
-    modFile.bkLocations.removeWhere((element) => pathsToRemove.contains(element.replaceFirst(Uri.file('$modManBackupsDirPath/').toFilePath(), '').trim()) && !multipleModFilesCheck(appliedItemList, modFile));
+
+    // final backupsToRemove = pathsToRemove.modFile.bkLocations
+    //     .where((element) => pathsToRemove.contains((element.replaceFirst(Uri.file('$modManBackupsDirPath/').toFilePath(), 'data/').trim())) && !multipleModFilesCheck(appliedItemList, modFile));
+    for (var pathToRemove in pathsToRemove) {
+      File fileToRemove = File(Uri.file('$modManBackupsDirPath/${pathToRemove.replaceFirst(Uri.file('data/').toFilePath(), '')}').toFilePath());
+      if (fileToRemove.existsSync() && !multipleModFilesCheck(appliedItemList, modFile)) {
+        final deletedFile = await fileToRemove.delete();
+        if (!deletedFile.existsSync()) {
+          modFile.bkLocations.remove(fileToRemove.path);
+        }
+        if (p.basename(fileToRemove.parent.parent.path) == 'win32reboot' && fileToRemove.parent.listSync(recursive: true).whereType<File>().isEmpty ||
+            p.basename(fileToRemove.parent.parent.path) == 'win32reboot_na' && fileToRemove.parent.listSync(recursive: true).whereType<File>().isEmpty) {
+          await fileToRemove.parent.delete(recursive: true);
+        }
+      }
+    }
+  }
+}
+
+Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) async {
+  for (var modFile in modFiles) {
+    for (var originalFilePath in modFile.ogLocations) {
+      String backupFilePath = originalFilePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim();
+      File backupFile = File(backupFilePath);
+      if (backupFile.existsSync()) {
+        await backupFile.copy(originalFilePath);
+        if (!multipleModFilesCheck(appliedItemList, modFile) && backupFile.existsSync()) {
+          final deletedFile = await backupFile.delete();
+          if (!deletedFile.existsSync()) {
+            modFile.bkLocations.remove(backupFile.path);
+          }
+          if (p.basename(backupFile.parent.parent.path) == 'win32reboot' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty ||
+              p.basename(backupFile.parent.parent.path) == 'win32reboot_na' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty) {
+            await backupFile.parent.delete(recursive: true);
+          }
+        }
+      }
+    }
   }
 }
