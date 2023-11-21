@@ -376,8 +376,8 @@ Future<bool> pso2PathsReloader(context) async {
                 if (submod.applyStatus == true) {
                   for (var modFile in submod.modFiles) {
                     if (modFile.applyStatus == true) {
-                      modFile.ogLocations = ogIcePathsFetcher(modFile.modFileName);
-                      modFileApply(modFile);
+                      modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
+                      modFileApply(context, modFile);
                     }
                   }
                 }

@@ -15,7 +15,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   //check for applied file
   for (var modFile in modFiles) {
     if (!modFile.applyStatus) {
-      ModFile? appliedFile = await modFileAppliedDupCheck(moddedItemsList, modFile);
+      ModFile? appliedFile = await modFileAppliedDupCheck(appliedItemList, modFile);
       if (appliedFile != null) {
         alreadyAppliedModFiles.add(appliedFile);
       }
@@ -29,7 +29,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
     applyMods = await duplicateAppliedDialog(context, dupAppliedFiles.trim());
     if (applyMods) {
       for (var modFile in alreadyAppliedModFiles) {
-        modFile = (await modFileAppliedDupRestore(moddedItemsList, modFile))!;
+        await modFileAppliedDupRestore(context, appliedItemList, modFile);
       }
     }
   }
@@ -41,7 +41,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
   List<ModFile> appliedModFiles = [];
   if (applyMods) {
     for (var modFile in modFiles) {
-      bool replacedStatus = await modFileApply(modFile);
+      bool replacedStatus = await modFileApply(context, modFile);
       if (replacedStatus) {
         // if (alreadyAppliedModFiles.where((element) => element.location == modFile.location).isNotEmpty) {
         //   await modFileAppliedDupRestore(moddedItemsList, modFile);

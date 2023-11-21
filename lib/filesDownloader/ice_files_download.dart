@@ -46,38 +46,108 @@ Future<List<String>> fetchOfficialPatchFileList() async {
   try {
     final response = await dio.get('${patchURL}patchlist_region1st.txt');
     if (response.statusCode == 200) {
-      officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
-      //debugPrint(officialPatchFileList.toString());
+      // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+      officialServerFileList.addAll(response.data.toString().split('\n'));
+      // debugPrint(officialPatchServerFileList.toString());
+      // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 1: Success');
     }
   } catch (e) {
-    returnStatus.add('Patch list 1: Failed');
-    debugPrint(e.toString());
+    try {
+      final response = await dio.get('${backupPatchURL}patchlist_region1st.txt');
+      if (response.statusCode == 200) {
+        // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+        officialServerFileList.addAll(response.data.toString().split('\n'));
+        // debugPrint(officialPatchServerFileList.toString());
+        // debugPrint(officialPatchServerFileList.length.toString());
+        returnStatus.add('Patch list 1: Success');
+      }
+    } catch (e) {
+      returnStatus.add('Patch list 1: Failed');
+      debugPrint(e.toString());
+    }
   }
   try {
     final response = await dio.get('${patchURL}patchlist_classic.txt');
     if (response.statusCode == 200) {
-      officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
-      //debugPrint(officialPatchFileList.toString());
+      // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+      officialServerFileList.addAll(response.data.toString().split('\n'));
+      // debugPrint(officialPatchServerFileList.toString());
+      // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 2: Success');
     }
   } catch (e) {
-    returnStatus.add('Patch list 2: Failed');
-    debugPrint(e.toString());
+    try {
+      final response = await dio.get('${backupPatchURL}patchlist_classic.txt');
+      if (response.statusCode == 200) {
+        // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+        officialServerFileList.addAll(response.data.toString().split('\n'));
+        // debugPrint(officialPatchServerFileList.toString());
+        // debugPrint(officialPatchServerFileList.length.toString());
+        returnStatus.add('Patch list 2: Success');
+      }
+    } catch (e) {
+      returnStatus.add('Patch list 2: Failed');
+      debugPrint(e.toString());
+    }
   }
   try {
     final response = await dio.get('${patchURL}patchlist_avatar.txt');
     if (response.statusCode == 200) {
-      officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
-      //debugPrint(officialPatchFileList.toString());
+      // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+      officialServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty));
+      // debugPrint(officialPatchServerFileList.toString());
+      // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 3: Success');
     }
   } catch (e) {
-    returnStatus.add('Patch list 3: Failed');
-    debugPrint(e.toString());
+    try {
+      final response = await dio.get('${backupPatchURL}patchlist_avatar.txt');
+      if (response.statusCode == 200) {
+        // officialPatchServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p'));
+        officialServerFileList.addAll(response.data.toString().split('\n').where((element) => element.isNotEmpty));
+        // debugPrint(officialPatchServerFileList.toString());
+        // debugPrint(officialPatchServerFileList.length.toString());
+        returnStatus.add('Patch list 3: Success');
+      }
+    } catch (e) {
+      returnStatus.add('Patch list 3: Failed');
+      debugPrint(e.toString());
+    }
   }
 
   dio.close();
+
+  //separate servers
+  List<String> tempMasterFiles = officialServerFileList.where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'm').toList();
+  for (var line in tempMasterFiles) {
+    officialMasterFiles.add(line.split('.pat').first);
+  }
+
+  List<String> tempPatchFiles = officialServerFileList.where((element) => element.isNotEmpty && element.trim().substring(element.length - 2, element.length - 1) == 'p').toList();
+  for (var line in tempPatchFiles) {
+    officialPatchFiles.add(line.split('.pat').first);
+  }
+
+  // String allFilePath = Uri.file('${Directory.current.path}/allFiles.txt').toFilePath();
+  // if (!File(allFilePath).existsSync()) {
+  //   File(allFilePath).createSync();
+  // }
+  // File(allFilePath).writeAsStringSync(officialServerFileList.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+
+  // String masterFilePath = Uri.file('${Directory.current.path}/masterFiles.txt').toFilePath();
+  // if (!File(masterFilePath).existsSync()) {
+  //   File(masterFilePath).createSync();
+  // }
+  // File(masterFilePath).writeAsStringSync(officialMasterFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+
+  // String patchFilePath = Uri.file('${Directory.current.path}/patchFiles.txt').toFilePath();
+  // if (!File(patchFilePath).existsSync()) {
+  //   File(patchFilePath).createSync();
+  // }
+  // File(patchFilePath).writeAsStringSync(officialPatchFiles.toString().replaceAll('[', '').replaceAll(']', '').replaceAll(', ', '\n'));
+  // debugPrint(officialPatchServerFileList.toString());
+  // debugPrint(officialPatchServerFileList.length.toString());
   return returnStatus;
 }
 
@@ -132,39 +202,30 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
       webLinkPath = webLinkPath.replaceFirst('win32_na', 'win32');
     }
 
-    if (officialPatchServerFileList.isNotEmpty) {
-      bool fileFound = officialPatchServerFileList
-          .firstWhere(
-            (element) => element.contains(p.basenameWithoutExtension(path)),
-            orElse: () => '',
-          )
-          .isNotEmpty;
-
-      if (fileFound) {
+    if (officialPatchFiles.contains(webLinkPath)) {
+      try {
+        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        debugPrint('patch');
+        downloadedIceList.add(path);
+      } on DioException {
         try {
-          await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-          //debugPrint('patch ${file.statusCode}');
+          await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
-        } on DioException {
-          try {
-            await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-            downloadedIceList.add(path);
-          } catch (e) {
-            debugPrint(e.toString());
-          }
+        } catch (e) {
+          debugPrint(e.toString());
         }
-      } else {
+      }
+    } else if (officialMasterFiles.contains(webLinkPath)) {
+      try {
+        await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
+        debugPrint('master');
+        downloadedIceList.add(path);
+      } on DioException {
         try {
-          await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-          //debugPrint('master ${file.statusCode}');
+          await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
-        } on DioException {
-          try {
-            await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
-            downloadedIceList.add(path);
-          } catch (e) {
-            debugPrint(e.toString());
-          }
+        } catch (e) {
+          debugPrint(e.toString());
         }
       }
     } else {
@@ -243,39 +304,30 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
 
   String webLinkPath = iconIcePath.replaceAll('\\', '/');
 
-  if (officialPatchServerFileList.isNotEmpty) {
-    bool fileFound = officialPatchServerFileList
-        .firstWhere(
-          (element) => element.contains(p.basenameWithoutExtension(iconIcePath)),
-          orElse: () => '',
-        )
-        .isNotEmpty;
-
-    if (fileFound) {
+  if (officialPatchFiles.contains(webLinkPath)) {
+    try {
+      await dio.download('$patchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
+      //debugPrint('patch ${file.statusCode}');
+      downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
+    } on DioException {
       try {
-        await dio.download('$patchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
-        //debugPrint('patch ${file.statusCode}');
+        await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
         downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-      } on DioException {
-        try {
-          await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
-          downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-        } catch (e) {
-          debugPrint(e.toString());
-        }
+      } catch (e) {
+        debugPrint(e.toString());
       }
-    } else {
+    }
+  } else if (officialMasterFiles.contains(webLinkPath)) {
+    try {
+      await dio.download('$masterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
+      //debugPrint('master ${file.statusCode}');
+      downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
+    } on DioException {
       try {
-        await dio.download('$masterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
-        //debugPrint('master ${file.statusCode}');
+        await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
         downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-      } on DioException {
-        try {
-          await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
-          downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-        } catch (e) {
-          debugPrint(e.toString());
-        }
+      } catch (e) {
+        debugPrint(e.toString());
       }
     }
   } else {
@@ -328,7 +380,7 @@ Future<bool> downloadProfanityFileNA() async {
 }
 
 Future<void> testDownload() async {
-  final fileList = ['data\\win32\\372340de8e902ef7aa236aef87429f44', 'data\\win32\\94364983bfbe6d547a26b5d9fc1dd20d'];
+  final fileList = ['data\\win32\\000a686a27ade4d971ac5e27a664a5a3'];
   final filesDown = await downloadIceFromOfficial(fileList);
   debugPrint(filesDown.toString());
 }

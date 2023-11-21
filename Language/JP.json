@@ -106,6 +106,11 @@
   "uiRemoveProfanityFilter": "冒涜フィルター除去",
   "uiExtras": "エクストラ",
   "uiOtherFeaturesOfPSO2NGSModManager": "PSO2NGS Mod Managerのその他の機能",
+  "uiAutoRadiusRemovalTooltip": "ゲームにMODを適用すると、自動的に境界半径が削除される。\n[Ba]、[Ou]、[Se]、[Fu]、キャストパーツに適用されます。",
+  "uiAutoBoundaryRadiusRemoval": "自動境界半径除去",
+  "uiPrioritizeLocalBackupTooltip": "Mod Managerは、セガサーバーまたはローカルからのバックアップを優先します。",
+  "uiPrioritizeLocalBackups": "バックアップの優先順位: ローカル",
+  "uiPrioritizeSegaBackups": "バックアップの優先順位: セガサーバー ",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -177,6 +182,8 @@
   "uiSwapToAnotherItem": "別のアイテムに交換する",
   "uiRemoveBoundaryRadius": "境界半径の削除",
   "uiRemoveFromMM": "MODマネージャーから削除する",
+  "uiAddToModSets": "Add to Mod Sets",
+  "uiRemoveFromThisSet": "このセットから外す",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します。\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",
@@ -338,5 +345,8 @@
   "uiUseButtonBelowToGetDotnet": "以下のボタンを使って、必要な.NETランタイムを入手し、インストールしてください。",
   "uiGetDotnetRuntime6": ".NETランタイム6.0の入手",
   "uiNoGamedataFound": "ゲームデータが見つかりません",
-  "uiNoGameDataFoundMessage": "pso2_bin データフォルダ内のファイルが見つかりません。\nアプリを再起動して管理者として実行するか、pso2_binのパスを再選択してください。"
+  "uiNoGameDataFoundMessage": "pso2_bin データフォルダ内のファイルが見つかりません。\nアプリを再起動して管理者として実行するか、pso2_binのパスを再選択してください。",
+  "uiDuplicatesFoundInTheCurrentSet": "現在のセットで重複が見つかった",
+  "uiReplaceAll": "すべて交換",
+  "uiReplaceDuplicateFilesOnly": "重複ファイルのみを置換"
 }

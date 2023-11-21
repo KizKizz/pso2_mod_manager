@@ -332,6 +332,7 @@ class _MainPageState extends State<MainPage> {
                                           onPressed: modManCurActiveProfile == 1
                                               ? null
                                               : () async {
+                                                  modSetList.clear();
                                                   Navigator.pop(context);
                                                   final prefs = await SharedPreferences.getInstance();
                                                   modManCurActiveProfile = 1;
@@ -388,6 +389,7 @@ class _MainPageState extends State<MainPage> {
                                           onPressed: modManCurActiveProfile == 2
                                               ? null
                                               : () async {
+                                                  modSetList.clear();
                                                   Navigator.pop(context);
                                                   final prefs = await SharedPreferences.getInstance();
                                                   modManCurActiveProfile = 2;
@@ -522,28 +524,28 @@ class _MainPageState extends State<MainPage> {
 
                       //Path open
                       //Open Backup removed due to backups being downloaded from sega
-                      // MaterialButton(
-                      //   height: 40,
-                      //   onPressed: (() async {
-                      //     await launchUrl(Uri.file(modManBackupsDirPath));
-                      //   }),
-                      //   child: Row(
-                      //     children: [
-                      //       const Icon(
-                      //         Icons.folder_open_outlined,
-                      //         size: 18,
-                      //       ),
-                      //       const SizedBox(width: 10),
-                      //       Text(
-                      //         curLangText!.uiOpenBackupFolder,
-                      //         style: const TextStyle(fontWeight: FontWeight.normal),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManBackupsDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenBackupFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
 
                       //Path open
                       MaterialButton(
@@ -583,6 +585,39 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Other options
+
+                      //Backup Priority
+                      ModManTooltip(
+                        message: curLangText!.uiPrioritizeLocalBackupTooltip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup) {
+                              prioritizeLocalBackup = false;
+                              prefs.setBool('prioritizeLocalBackup', false);
+                              Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupFalse();
+                            } else {
+                              prioritizeLocalBackup = true;
+                              prefs.setBool('prioritizeLocalBackup', true);
+                              Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackupTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.backup,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup ? curLangText!.uiPrioritizeLocalBackups : curLangText!.uiPrioritizeSegaBackups,
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+                      
                       //Auto fetching item icon on startup
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
@@ -638,9 +673,11 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons) {
+                              isSlidingItemIcons = false;
                               prefs.setBool('isSlidingItemIcons', false);
                               Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsFalse();
                             } else {
+                              isSlidingItemIcons = true;
                               prefs.setBool('isSlidingItemIcons', true);
                               Provider.of<StateProvider>(context, listen: false).isSlidingItemIconsTrue();
                             }
@@ -654,6 +691,38 @@ class _MainPageState extends State<MainPage> {
                               ),
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons ? '${curLangText!.uiSlidingItemIcons}: ON' : '${curLangText!.uiSlidingItemIcons}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Remove boundary radius on apply
+                      ModManTooltip(
+                        message: curLangText!.uiAutoRadiusRemovalTooltip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply) {
+                              removeBoundaryRadiusOnModsApply = false;
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', false);
+                              Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyFalse();
+                            } else {
+                              removeBoundaryRadiusOnModsApply = true;
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', true);
+                              Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.radio_button_checked,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON' : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

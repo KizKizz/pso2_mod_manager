@@ -1816,7 +1816,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     String newItemDirPath = '';
     for (var iceFile in iceFileList) {
       if (infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
-        newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath();
+        newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trimRight();
         String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
         newIceFilePath = removeRebootPath(newIceFilePath);
         await Directory(p.dirname(newIceFilePath)).create(recursive: true);

@@ -196,7 +196,8 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                           await Future.delayed(const Duration(milliseconds: 100));
                                           setState(() {});
                                           for (int i = 0; i < result.length; i++) {
-                                            bool replacedStatus = await modFileApply(result[i]);
+                                            // ignore: use_build_context_synchronously
+                                            bool replacedStatus = await modFileApply(context, result[i]);
                                             if (replacedStatus) {
                                               _reAppliedStatus[i] = true;
                                               await Future.delayed(const Duration(milliseconds: 100));
