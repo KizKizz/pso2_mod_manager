@@ -13,7 +13,7 @@ Future<bool> modFileApply(context, ModFile modFile) async {
   //retore dublicate
   //await modFileRestore(moddedItemsList, modFile);
   //modFile = await modFileBackup(modFile);
-  await localOriginalFilesBackup(modFile);
+  await localOriginalFilesBackup(context, modFile);
   //replace files in game data
   for (var ogPath in modFile.ogLocations) {
     File returnedFile = File('');

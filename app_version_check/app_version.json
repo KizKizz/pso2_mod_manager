@@ -1,7 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.1",
+    "version": "2.5.2",
     "description": [
+        "v2.5.2",
+        "Hot fix for infinite loading when applying reboot files such as emotes",
+        "v2.5.1",
         "First update with auto updater (might need to run Mod Manager as admin before update). Please download from the Releases page if you encounter any problem with it",
         "Mods can now be added to Mod Sets from Available Mods list",
         "Added auto remove boundary radius upon applying mods to the game (can be found in Settings)",
@@ -9,6 +12,9 @@
         "Fixed some bugs in Add Mods and Mods Swapper",
         "Mod Manager will now look for original files in both local game data and patch servers when applying mods",
         "Some other minor bug fixes",
+        "v2.5.2",
+        "エモートのようなリブートファイル適用時の無限ロードに関するホットフィックス",
+        "v2.5.1",
         "最初のアップデートは自動アップデーターで行います(アップデートの前に管理者としてMod Managerを実行する必要があるかもしれません)。問題があれば、リリースページからダウンロードしてください。",
         "使用可能なMODリストからMODセットにMODを追加できるようになりました。",
         "ゲームにMODを適用した際に、境界半径を自動的に削除する機能を追加(設定から確認可能)",
