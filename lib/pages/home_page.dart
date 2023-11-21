@@ -20,7 +20,6 @@ import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
 import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
-import 'package:pso2_mod_manager/functions/backup_functions.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
@@ -29,7 +28,6 @@ import 'package:pso2_mod_manager/functions/dotnet_check.dart';
 import 'package:pso2_mod_manager/functions/mod_deletion_dialog.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
-import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -2318,7 +2316,7 @@ class _HomePageState extends State<HomePage> {
                                                                   //   }
                                                                   // }
                                                                   //if (allBkFilesFound) {
-                                                                  modFilesUnapply(context, curMod.submods.first.modFiles).then((value) async {
+                                                                  restoreOriginalFilesToTheGame(context, curMod.submods.first.modFiles).then((value) async {
                                                                     List<ModFile> unappliedModFiles = value;
                                                                     if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       curMod.submods.first.applyStatus = false;
@@ -2384,7 +2382,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //apply mod files
                                                                 if (await originalFilesCheck(context, curMod.submods.first.modFiles)) {
                                                                   //local backup
-                                                                  await localOriginalFilesBackup(curMod.submods.first.modFiles);
+                                                                  //await localOriginalFilesBackup(curMod.submods.first.modFiles);
                                                                   //apply auto radius removal if on
                                                                   if (removeBoundaryRadiusOnModsApply) {
                                                                     removeBoundaryOnModsApply(context, curMod.submods.first).then((value) async {
@@ -2537,9 +2535,13 @@ class _HomePageState extends State<HomePage> {
                                                       MenuItemButton(
                                                         leadingIcon: Icon(
                                                           Icons.delete_forever_outlined,
-                                                          color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                          color: curMod.applyStatus ||
+                                                                  curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                              ? Theme.of(context).disabledColor
+                                                              : Colors.red,
                                                         ),
-                                                        onPressed: curMod.applyStatus
+                                                        onPressed: curMod.applyStatus ||
+                                                                curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
                                                             ? null
                                                             : () async {
                                                                 bool deleteConfirm = await modDeletionDialog(context, curMod.submods.first.submodName);
@@ -2584,7 +2586,11 @@ class _HomePageState extends State<HomePage> {
                                                               },
                                                         child: Text(
                                                           curLangText!.uiRemoveFromMM,
-                                                          style: TextStyle(color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                          style: TextStyle(
+                                                              color: curMod.applyStatus ||
+                                                                      curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                  ? Theme.of(context).disabledColor
+                                                                  : Colors.red),
                                                         ),
                                                       ),
                                                     ])
@@ -2642,7 +2648,7 @@ class _HomePageState extends State<HomePage> {
                                                                   //   }
                                                                   // }
                                                                   //if (allBkFilesFound) {
-                                                                  modFilesUnapply(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
+                                                                  restoreOriginalFilesToTheGame(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
                                                                     List<ModFile> unappliedModFiles = value;
                                                                     if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       curMod.submods[modViewModSetSubModIndex].applyStatus = false;
@@ -2722,7 +2728,7 @@ class _HomePageState extends State<HomePage> {
                                                                 //apply mod files
                                                                 if (await originalFilesCheck(context, curMod.submods[modViewModSetSubModIndex].modFiles)) {
                                                                   //local original files backup
-                                                                  await localOriginalFilesBackup(curMod.submods[modViewModSetSubModIndex].modFiles);
+                                                                  //await localOriginalFilesBackup(curMod.submods[modViewModSetSubModIndex].modFiles);
                                                                   //apply auto radius removal if on
                                                                   if (removeBoundaryRadiusOnModsApply) {
                                                                     removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]).then((value) async {
@@ -2904,9 +2910,15 @@ class _HomePageState extends State<HomePage> {
                                                       MenuItemButton(
                                                         leadingIcon: Icon(
                                                           Icons.delete_forever_outlined,
-                                                          color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                          color: curMod.applyStatus ||
+                                                                  curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
+                                                                      Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                              ? Theme.of(context).disabledColor
+                                                              : Colors.red,
                                                         ),
-                                                        onPressed: curMod.applyStatus
+                                                        onPressed: curMod.applyStatus ||
+                                                                curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
+                                                                    Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
                                                             ? null
                                                             : () async {
                                                                 bool deleteConfirm = await modDeletionDialog(context, curMod.submods[modViewModSetSubModIndex].submodName);
@@ -2951,7 +2963,12 @@ class _HomePageState extends State<HomePage> {
                                                               },
                                                         child: Text(
                                                           curLangText!.uiRemoveFromMM,
-                                                          style: TextStyle(color: curMod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                          style: TextStyle(
+                                                              color: curMod.applyStatus ||
+                                                                      curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
+                                                                          Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                  ? Theme.of(context).disabledColor
+                                                                  : Colors.red),
                                                         ),
                                                       ),
                                                     ])
@@ -3141,23 +3158,10 @@ class _HomePageState extends State<HomePage> {
                                                                           isModViewModsApplying = true;
                                                                           setState(() {});
                                                                           Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                                            // bool allOGFilesFound = true;
-                                                                            //get og file paths
-                                                                            // for (var modFile in curSubmod.modFiles) {
-                                                                            //   modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
-                                                                            //   if (modFile.ogLocations.isEmpty) {
-                                                                            //     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                            //         context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
-                                                                            //     allOGFilesFound = false;
-                                                                            //     isModViewModsApplying = false;
-                                                                            //     break;
-                                                                            //   }
-                                                                            // }
-
                                                                             //apply mod files
                                                                             if (await originalFilesCheck(context, curSubmod.modFiles)) {
                                                                               //local original files backup
-                                                                              await localOriginalFilesBackup(curSubmod.modFiles);
+                                                                              //await localOriginalFilesBackup(curSubmod.modFiles);
                                                                               //apply auto radius removal if on
                                                                               if (removeBoundaryRadiusOnModsApply) {
                                                                                 removeBoundaryOnModsApply(context, curSubmod).then((value) async {
@@ -3311,9 +3315,13 @@ class _HomePageState extends State<HomePage> {
                                                                   MenuItemButton(
                                                                     leadingIcon: Icon(
                                                                       Icons.delete_forever_outlined,
-                                                                      color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                                      color: curSubmod.applyStatus ||
+                                                                              curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                          ? Theme.of(context).disabledColor
+                                                                          : Colors.red,
                                                                     ),
-                                                                    onPressed: curSubmod.applyStatus
+                                                                    onPressed: curSubmod.applyStatus ||
+                                                                            curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
                                                                         ? null
                                                                         : () async {
                                                                             bool deleteConfirm = await modDeletionDialog(context, curSubmod.submodName);
@@ -3357,7 +3365,11 @@ class _HomePageState extends State<HomePage> {
                                                                           },
                                                                     child: Text(
                                                                       curLangText!.uiRemoveFromMM,
-                                                                      style: TextStyle(color: curSubmod.applyStatus ? Theme.of(context).disabledColor : Colors.red),
+                                                                      style: TextStyle(
+                                                                          color: curSubmod.applyStatus ||
+                                                                                  curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                              ? Theme.of(context).disabledColor
+                                                                              : Colors.red),
                                                                     ),
                                                                   ),
                                                                 ])
@@ -3404,7 +3416,7 @@ class _HomePageState extends State<HomePage> {
                                                                           //apply mod files
                                                                           if (await originalFilesCheck(context, [curModFile])) {
                                                                             //local original files backup
-                                                                            await localOriginalFilesBackup([curModFile]);
+                                                                            //await localOriginalFilesBackup([curModFile]);
 
                                                                             modFilesApply(context, [curModFile]).then((value) async {
                                                                               if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
@@ -3461,7 +3473,7 @@ class _HomePageState extends State<HomePage> {
                                                                             }
                                                                           }
                                                                           if (allBkFilesFound) {
-                                                                            modFilesUnapply(context, [curModFile]).then((value) async {
+                                                                            restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
                                                                               List<ModFile> unappliedModFiles = value;
                                                                               if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                 curSubmod.applyStatus = false;
@@ -3620,7 +3632,7 @@ class _HomePageState extends State<HomePage> {
                                   isModViewModsApplying = true;
                                   setState(() {});
                                   Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
-                                    reapplyAppliedMods().then((value) {
+                                    reapplyAppliedMods(context).then((value) {
                                       isModViewModsRemoving = false;
                                       isModViewModsApplying = false;
                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
@@ -4010,7 +4022,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         //   }
                                                                                         // }
                                                                                         // if (allBkFilesFound) {
-                                                                                        modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                        restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
                                                                                           List<ModFile> unappliedModFiles = value;
                                                                                           previewImages.clear();
                                                                                           // videoPlayer.remove(0);
@@ -4095,7 +4107,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 //apply mod files
                                                                                 if (await originalFilesCheck(context, allAppliedModFiles[m])) {
                                                                                   //local original files backup
-                                                                                  await localOriginalFilesBackup(allAppliedModFiles[m]);
+                                                                                  //await localOriginalFilesBackup(allAppliedModFiles[m]);
 
                                                                                   modFilesApply(context, allAppliedModFiles[m]).then((value) async {
                                                                                     if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
@@ -4445,7 +4457,7 @@ class _HomePageState extends State<HomePage> {
                                                             //   }
                                                             // }
                                                             //if (allBkFilesFound) {
-                                                            modFilesUnapply(context, allAppliedModFiles).then((value) async {
+                                                            restoreOriginalFilesToTheGame(context, allAppliedModFiles).then((value) async {
                                                               List<ModFile> unappliedModFiles = value;
                                                               previewImages.clear();
                                                               // videoPlayer.remove(0);
@@ -4560,7 +4572,7 @@ class _HomePageState extends State<HomePage> {
                                                             //apply mod files
                                                             if (await originalFilesCheck(context, allAppliedModFiles)) {
                                                               //local original files backup
-                                                              await localOriginalFilesBackup(allAppliedModFiles);
+                                                              //await localOriginalFilesBackup(allAppliedModFiles);
 
                                                               modFilesApply(context, allAppliedModFiles).then((value) async {
                                                                 if (value.indexWhere((element) => element.applyStatus) != -1) {
@@ -4877,7 +4889,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         //   }
                                                                                         // }
                                                                                         //if (allBkFilesFound) {
-                                                                                        modFilesUnapply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                        restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
                                                                                           List<ModFile> unappliedModFiles = value;
                                                                                           previewImages.clear();
                                                                                           // videoPlayer.remove(0);
@@ -4958,7 +4970,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 //apply mod files
                                                                                 if (await originalFilesCheck(context, allAppliedModFiles[m])) {
                                                                                   //local original files backup
-                                                                                  await localOriginalFilesBackup(allAppliedModFiles[m]);
+                                                                                  //await localOriginalFilesBackup(allAppliedModFiles[m]);
                                                                                   modFilesApply(context, allAppliedModFiles[m]).then((value) async {
                                                                                     if (value.indexWhere((element) => element.applyStatus) != -1) {
                                                                                       int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);

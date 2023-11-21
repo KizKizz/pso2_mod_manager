@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 Future<List<ModFile>> restoreOriginalFilesToTheGame(context, List<ModFile> modFiles) async {
   List<ModFile> unappliedModFiles = [];
@@ -69,15 +72,10 @@ Future<void> restoreOriginalFilesFromServers(context, List<ModFile> modFiles) as
       dataPathsToDownload.add(originalFilePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
     }
   }
-
   final restoredFiles = await downloadIceFromOfficial(dataPathsToDownload);
-
   for (var modFile in modFiles) {
     final pathsToRemove = restoredFiles.where((element) => element.contains(modFile.modFileName));
     modFile.ogLocations.removeWhere((element) => pathsToRemove.contains(element.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim()));
-
-    // final backupsToRemove = pathsToRemove.modFile.bkLocations
-    //     .where((element) => pathsToRemove.contains((element.replaceFirst(Uri.file('$modManBackupsDirPath/').toFilePath(), 'data/').trim())) && !multipleModFilesCheck(appliedItemList, modFile));
     for (var pathToRemove in pathsToRemove) {
       File fileToRemove = File(Uri.file('$modManBackupsDirPath/${pathToRemove.replaceFirst(Uri.file('data/').toFilePath(), '')}').toFilePath());
       if (fileToRemove.existsSync() && !multipleModFilesCheck(appliedItemList, modFile)) {
@@ -96,22 +94,31 @@ Future<void> restoreOriginalFilesFromServers(context, List<ModFile> modFiles) as
 
 Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) async {
   for (var modFile in modFiles) {
+    List<String> originalPathsToRemove = [];
     for (var originalFilePath in modFile.ogLocations) {
-      String backupFilePath = originalFilePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim();
+      String backupFilePath = originalFilePath.replaceFirst(Uri.file('$modManPso2binPath/data').toFilePath(), modManBackupsDirPath).trim();
       File backupFile = File(backupFilePath);
       if (backupFile.existsSync()) {
-        await backupFile.copy(originalFilePath);
-        if (!multipleModFilesCheck(appliedItemList, modFile) && backupFile.existsSync()) {
-          final deletedFile = await backupFile.delete();
-          if (!deletedFile.existsSync()) {
-            modFile.bkLocations.remove(backupFile.path);
+        try {
+          await backupFile.copy(originalFilePath);
+          if (!multipleModFilesCheck(appliedItemList, modFile) && backupFile.existsSync()) {
+            final deletedFile = await backupFile.delete();
+            if (!deletedFile.existsSync()) {
+              modFile.bkLocations.remove(backupFile.path);
+            }
+            if (p.basename(backupFile.parent.parent.path) == 'win32reboot' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty ||
+                p.basename(backupFile.parent.parent.path) == 'win32reboot_na' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty) {
+              await backupFile.parent.delete(recursive: true);
+            }
           }
-          if (p.basename(backupFile.parent.parent.path) == 'win32reboot' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty ||
-              p.basename(backupFile.parent.parent.path) == 'win32reboot_na' && backupFile.parent.listSync(recursive: true).whereType<File>().isEmpty) {
-            await backupFile.parent.delete(recursive: true);
-          }
+          originalPathsToRemove.add(originalFilePath);
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 1000));
         }
       }
+    }
+    if (originalPathsToRemove.isNotEmpty) {
+      modFile.ogLocations.removeWhere((element) => originalPathsToRemove.contains(element));
     }
   }
 }

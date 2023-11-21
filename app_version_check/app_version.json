@@ -5,7 +5,9 @@
         "First update with auto updater (might need to run Mod Manager as admin before update). Please download from the Releases page if you encounter any problem with it",
         "Mods can now be added to Mod Sets from Available Mods list",
         "Added auto remove boundary radius upon applying mods to the game (can be found in Settings)",
-        "Some minor bug fixes"
+        "Added a setting to switch to prioritize backup methods. If Local backups is prioritized - local files will be restored first then any missing files will be downloaded after",
+        "Fixed some bugs in Add Mods and Mods Swapper",
+        "Some other minor bug fixes"
     ],
     "windows_file": "",
     "linux_file": ""
