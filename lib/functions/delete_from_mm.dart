@@ -48,7 +48,30 @@ Future<List<String>> deleteModFileFromModMan(String iceFilePath, String submodPa
   return deletedPaths;
 }
 
-Future<List<String>> deleteModFromModMan(String submodPath, String modPath) async {
+Future<List<String>> deleteModFromModMan(String modPath, String itemPath) async {
+  List<String> deletedPaths = [];
+  String deletedDate = DateFormat('MM-dd-yyyy').format(DateTime.now());
+  String todayDirPath = Uri.file('$modManDeletedItemsDirPath/$deletedDate').toFilePath();
+  //create today dir to store deleted files
+  Directory(todayDirPath).createSync(recursive: true);
+  final files = Directory(modPath).listSync(recursive: true).whereType<File>().toList();
+
+  for (var file in files) {
+    String filePath = file.path;
+    String deletedPath = filePath.replaceFirst(modManModsDirPath, todayDirPath);
+    Directory(p.dirname(deletedPath)).createSync(recursive: true);
+    File(filePath).copy(deletedPath).then((value) {
+      File(filePath).deleteSync();
+      if (Directory(modPath).existsSync()&& Directory(modPath).listSync(recursive: true).whereType<File>().isEmpty) {
+        Directory(modPath).deleteSync(recursive: true);
+      }
+    });
+  }
+
+  return deletedPaths;
+}
+
+Future<List<String>> deleteSubmodFromModMan(String submodPath, String modPath) async {
   List<String> deletedPaths = [];
   String deletedDate = DateFormat('MM-dd-yyyy').format(DateTime.now());
   String todayDirPath = Uri.file('$modManDeletedItemsDirPath/$deletedDate').toFilePath();

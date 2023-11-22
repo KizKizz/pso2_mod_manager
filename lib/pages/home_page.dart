@@ -28,6 +28,7 @@ import 'package:pso2_mod_manager/functions/dotnet_check.dart';
 import 'package:pso2_mod_manager/functions/mod_deletion_dialog.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
+import 'package:pso2_mod_manager/functions/mods_rename_functions.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -2265,6 +2266,157 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                         ),
+
+                                        //More menu for normal mods
+                                        if (curMod.submods.length > 1 && !context.watch<StateProvider>().setsWindowVisible ||
+                                            isModViewFromApplied && curMod.submods.length > 1 ||
+                                            curMod.submods.length == 1 && isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                            isModViewFromApplied && curMod.submods.length == 1 && isModViewItemListExpanded[modIndex])
+                                          MenuAnchor(
+                                              builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                return ModManTooltip(
+                                                  message: curLangText!.uiMore,
+                                                  child: InkWell(
+                                                    child: const Icon(
+                                                      Icons.more_vert,
+                                                    ),
+                                                    onTap: () {
+                                                      if (controller.isOpen) {
+                                                        controller.close();
+                                                      } else {
+                                                        controller.open();
+                                                      }
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                              style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                              }), shape: MaterialStateProperty.resolveWith((states) {
+                                                return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                              })),
+                                              menuChildren: [
+                                                // rename
+                                                MenuItemButton(
+                                                  leadingIcon: const Icon(
+                                                    Icons.edit_note,
+                                                  ),
+                                                  child: Text(curLangText!.uiRename),
+                                                  onPressed: () async {
+                                                    String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                    if (newName.isNotEmpty) {
+                                                      //change paths
+                                                      String oldModPath = curMod.location;
+                                                      String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
+                                                      if (oldModPath == modViewItem!.location) {
+                                                        await Directory(newModPath).create(recursive: true);
+                                                        curMod.modName = newName;
+                                                        curMod.location = newModPath;
+                                                        for (var submod in curMod.submods) {
+                                                          submod.modName = newName;
+                                                          submod.submodName = newName;
+                                                          submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                          for (var modFile in submod.modFiles) {
+                                                            final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
+                                                            modFile.modName = newName;
+                                                            modFile.submodName = newName;
+                                                            modFile.location = movedFile.path;
+                                                          }
+                                                        }
+                                                      } else {
+                                                        await Directory(oldModPath).rename(newModPath);
+                                                        curMod.modName = newName;
+                                                        curMod.location = newModPath;
+                                                        for (var submod in curMod.submods) {
+                                                          submod.modName = newName;
+                                                          if (submod.location == oldModPath) {
+                                                            submod.submodName = newName;
+                                                          }
+                                                          submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                          for (var modFile in submod.modFiles) {
+                                                            modFile.modName = newName;
+                                                            if (submod.location == curMod.location) {
+                                                              modFile.submodName = newName;
+                                                            }
+                                                            modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
+                                                          }
+                                                        }
+                                                      }
+                                                      await modSetLoader();
+                                                      saveSetListToJson();
+                                                      saveModdedItemListToJson();
+                                                      setState(() {});
+                                                    }
+                                                  },
+                                                ),
+
+                                                // open in file explorer
+                                                MenuItemButton(
+                                                  leadingIcon: const Icon(
+                                                    Icons.folder_open_outlined,
+                                                  ),
+                                                  child: Text(curLangText!.uiOpenInFileExplorer),
+                                                  onPressed: () async => await launchUrl(Uri.file(curMod.location)),
+                                                ),
+
+                                                // delete
+                                                MenuItemButton(
+                                                  leadingIcon: Icon(
+                                                    Icons.delete_forever_outlined,
+                                                    color: curMod.applyStatus ||
+                                                            curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                        ? Theme.of(context).disabledColor
+                                                        : Colors.red,
+                                                  ),
+                                                  onPressed:
+                                                      curMod.applyStatus || curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                          ? null
+                                                          : () async {
+                                                              bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
+                                                              if (deleteConfirm) {
+                                                                if (modViewItem!.mods.length < 2) {
+                                                                  deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                    String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                    modViewCate!.items.remove(modViewItem);
+                                                                    modViewItem = null;
+                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                        context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                    previewModName = '';
+                                                                    previewImages.clear();
+                                                                    saveModdedItemListToJson();
+                                                                    setState(() {});
+                                                                  });
+                                                                } else {
+                                                                  deleteModFromModMan(curMod.location, modViewItem!.location).then((value) {
+                                                                    String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                                    modViewItem!.mods.remove(curMod);
+                                                                    if (modViewItem!.mods.isEmpty) {
+                                                                      modViewCate!.items.remove(modViewItem);
+                                                                      modViewItem = null;
+                                                                    } else {
+                                                                      modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                    }
+                                                                    previewModName = '';
+                                                                    previewImages.clear();
+                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                        context, '${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemoved} $removedName ${curLangText!.uiFromMM}', 3000));
+                                                                    saveModdedItemListToJson();
+                                                                    setState(() {});
+                                                                  });
+                                                                }
+                                                              }
+                                                            },
+                                                  child: Text(
+                                                    curLangText!.uiRemoveFromMM,
+                                                    style: TextStyle(
+                                                        color: curMod.applyStatus ||
+                                                                curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                            ? Theme.of(context).disabledColor
+                                                            : Colors.red),
+                                                  ),
+                                                ),
+                                              ]),
+
                                         //normal
                                         if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
                                             isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
@@ -2471,6 +2623,60 @@ class _HomePageState extends State<HomePage> {
                                                         child: Text(curLangText!.uiAddToModSets),
                                                       ),
 
+                                                      // rename
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.edit_note,
+                                                        ),
+                                                        child: Text(curLangText!.uiRename),
+                                                        onPressed: () async {
+                                                          String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                          if (newName.isNotEmpty) {
+                                                            //change paths
+                                                            String oldModPath = curMod.location;
+                                                            String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
+                                                            if (oldModPath == modViewItem!.location) {
+                                                              await Directory(newModPath).create(recursive: true);
+                                                              curMod.modName = newName;
+                                                              curMod.location = newModPath;
+                                                              for (var submod in curMod.submods) {
+                                                                submod.modName = newName;
+                                                                submod.submodName = newName;
+                                                                submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                for (var modFile in submod.modFiles) {
+                                                                  final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
+                                                                  modFile.modName = newName;
+                                                                  modFile.submodName = newName;
+                                                                  modFile.location = movedFile.path;
+                                                                }
+                                                              }
+                                                            } else {
+                                                              await Directory(oldModPath).rename(newModPath);
+                                                              curMod.modName = newName;
+                                                              curMod.location = newModPath;
+                                                              for (var submod in curMod.submods) {
+                                                                submod.modName = newName;
+                                                                if (submod.location == oldModPath) {
+                                                                  submod.submodName = newName;
+                                                                }
+                                                                submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                for (var modFile in submod.modFiles) {
+                                                                  modFile.modName = newName;
+                                                                  if (submod.location == curMod.location) {
+                                                                    modFile.submodName = newName;
+                                                                  }
+                                                                  modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
+                                                                }
+                                                              }
+                                                            }
+                                                            await modSetLoader();
+                                                            saveSetListToJson();
+                                                            saveModdedItemListToJson();
+                                                            setState(() {});
+                                                          }
+                                                        },
+                                                      ),
+
                                                       // swap
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
@@ -2559,7 +2765,7 @@ class _HomePageState extends State<HomePage> {
                                                                       setState(() {});
                                                                     });
                                                                   } else {
-                                                                    deleteModFromModMan(curMod.submods.first.location, curMod.location).then((value) {
+                                                                    deleteSubmodFromModMan(curMod.submods.first.location, curMod.location).then((value) {
                                                                       String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
                                                                       curMod.submods.remove(curMod.submods.first);
                                                                       if (curMod.submods.isEmpty) {
@@ -2849,6 +3055,45 @@ class _HomePageState extends State<HomePage> {
                                                         child: Text(curLangText!.uiAddToModSets),
                                                       ),
 
+                                                      // rename
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.edit_note,
+                                                        ),
+                                                        child: Text(curLangText!.uiRename),
+                                                        onPressed: () async {
+                                                          String newName = await modsRenameDialog(context, curMod.location, curMod.submods[modViewModSetSubModIndex].location);
+                                                          if (newName.isNotEmpty) {
+                                                            //change paths
+                                                            String oldSubmodPath = curMod.submods[modViewModSetSubModIndex].location;
+                                                            String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
+                                                            if (oldSubmodPath == curMod.location) {
+                                                              await Directory(newSubmodPath).create(recursive: true);
+                                                              curMod.submods[modViewModSetSubModIndex].submodName = newName;
+                                                              curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                              for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
+                                                                modFile.submodName = newName;
+                                                                String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                final movedFile = await File(modFile.location).rename(newModFilePath);
+                                                                modFile.location = movedFile.path;
+                                                              }
+                                                            } else {
+                                                              await Directory(oldSubmodPath).rename(newSubmodPath);
+                                                              curMod.submods[modViewModSetSubModIndex].submodName = newName;
+                                                              curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                              for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
+                                                                modFile.submodName = newName;
+                                                                modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                              }
+                                                            }
+                                                            await modSetLoader();
+                                                            saveSetListToJson();
+                                                            saveModdedItemListToJson();
+                                                            setState(() {});
+                                                          }
+                                                        },
+                                                      ),
+
                                                       // swap
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
@@ -2936,7 +3181,7 @@ class _HomePageState extends State<HomePage> {
                                                                       setState(() {});
                                                                     });
                                                                   } else {
-                                                                    deleteModFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
+                                                                    deleteSubmodFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
                                                                       String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
                                                                       curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
                                                                       if (curMod.submods.isEmpty) {
@@ -3252,6 +3497,45 @@ class _HomePageState extends State<HomePage> {
                                                                     child: Text(curLangText!.uiAddToModSets),
                                                                   ),
 
+                                                                  // rename
+                                                                  MenuItemButton(
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.edit_note,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiRename),
+                                                                    onPressed: () async {
+                                                                      String newName = await modsRenameDialog(context, curMod.location, curSubmod.location);
+                                                                      if (newName.isNotEmpty) {
+                                                                        //change paths
+                                                                        String oldSubmodPath = curSubmod.location;
+                                                                        String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
+                                                                        if (oldSubmodPath == curMod.location) {
+                                                                          await Directory(newSubmodPath).create(recursive: true);
+                                                                          curSubmod.submodName = newName;
+                                                                          curSubmod.location = newSubmodPath;
+                                                                          for (var modFile in curSubmod.modFiles) {
+                                                                            modFile.submodName = newName;
+                                                                            String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                            final movedFile = await File(modFile.location).rename(newModFilePath);
+                                                                            modFile.location = movedFile.path;
+                                                                          }
+                                                                        } else {
+                                                                          await Directory(oldSubmodPath).rename(newSubmodPath);
+                                                                          curSubmod.submodName = newName;
+                                                                          curSubmod.location = newSubmodPath;
+                                                                          for (var modFile in curSubmod.modFiles) {
+                                                                            modFile.submodName = newName;
+                                                                            modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                          }
+                                                                        }
+                                                                        await modSetLoader();
+                                                                        saveSetListToJson();
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      }
+                                                                    },
+                                                                  ),
+
                                                                   // swap
                                                                   MenuItemButton(
                                                                     leadingIcon: const Icon(
@@ -3339,7 +3623,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   setState(() {});
                                                                                 });
                                                                               } else {
-                                                                                deleteModFromModMan(curSubmod.location, curMod.location).then((value) {
+                                                                                deleteSubmodFromModMan(curSubmod.location, curMod.location).then((value) {
                                                                                   String removedName = '${curMod.modName} > ${curSubmod.submodName}';
                                                                                   curMod.submods.remove(curSubmod);
                                                                                   if (curMod.submods.isEmpty) {
