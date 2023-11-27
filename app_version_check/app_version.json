@@ -1,8 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.2",
+    "version": "2.5.3",
     "description": [
-        "Added mods rename function"
+        "Added mods rename function",
+        "Other minor bug fixes",
+        "MODのリネーム機能を追加",
+        "その他細かいバグ修正"
     ],
     "windows_file": "",
     "linux_file": ""
