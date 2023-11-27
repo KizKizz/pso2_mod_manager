@@ -107,3 +107,25 @@ Future<String> modsRenameDialog(context, String parentLocationPath, String curLo
                 ]);
           }));
 }
+
+void renamedPreviewPathsGet(String parentDirPath, List<String> previewImagePaths, List<String> previewVideoPaths) {
+  //Get preview images;
+    final imagesInModDir = Directory(parentDirPath).listSync(recursive: false).whereType<File>().where(((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png'));
+    for (var element in imagesInModDir) {
+      bool isIconImage = false;
+      for (var part in p.basenameWithoutExtension(parentDirPath).split(' ')) {
+        if (p.basenameWithoutExtension(element.path).contains(part)) {
+          isIconImage = true;
+          break;
+        }
+      }
+      if (!isIconImage) {
+        previewImagePaths.add(Uri.file(element.path).toFilePath());
+      }
+    }
+    //Get preview videos;
+    final videosInModDir = Directory(parentDirPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+    for (var element in videosInModDir) {
+      previewVideoPaths.add(Uri.file(element.path).toFilePath());
+    }
+}

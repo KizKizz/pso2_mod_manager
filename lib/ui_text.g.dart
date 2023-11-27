@@ -449,7 +449,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiDuplicatesFoundInTheCurrentSet'] as String
       ..uiReplaceAll = json['uiReplaceAll'] as String
       ..uiReplaceDuplicateFilesOnly =
-          json['uiReplaceDuplicateFilesOnly'] as String;
+          json['uiReplaceDuplicateFilesOnly'] as String
+      ..enterNewName = json['enterNewName'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -829,4 +830,5 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiDuplicatesFoundInTheCurrentSet,
       'uiReplaceAll': instance.uiReplaceAll,
       'uiReplaceDuplicateFilesOnly': instance.uiReplaceDuplicateFilesOnly,
+      'enterNewName': instance.enterNewName,
     };

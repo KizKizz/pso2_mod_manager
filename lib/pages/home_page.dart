@@ -2312,10 +2312,16 @@ class _HomePageState extends State<HomePage> {
                                                         await Directory(newModPath).create(recursive: true);
                                                         curMod.modName = newName;
                                                         curMod.location = newModPath;
+                                                        curMod.previewImages.clear();
+                                                        curMod.previewVideos.clear();
+                                                        renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
                                                         for (var submod in curMod.submods) {
                                                           submod.modName = newName;
                                                           submod.submodName = newName;
                                                           submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                          submod.previewImages.clear();
+                                                          submod.previewVideos.clear();
+                                                          renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
                                                           for (var modFile in submod.modFiles) {
                                                             final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
                                                             modFile.modName = newName;
@@ -2327,12 +2333,24 @@ class _HomePageState extends State<HomePage> {
                                                         await Directory(oldModPath).rename(newModPath);
                                                         curMod.modName = newName;
                                                         curMod.location = newModPath;
+                                                        for (var imagePath in curMod.previewImages) {
+                                                          imagePath = imagePath.replaceFirst(oldModPath, newModPath);
+                                                        }
+                                                        for (var videoPath in curMod.previewVideos) {
+                                                          videoPath = videoPath.replaceFirst(oldModPath, newModPath);
+                                                        }
                                                         for (var submod in curMod.submods) {
                                                           submod.modName = newName;
                                                           if (submod.location == oldModPath) {
                                                             submod.submodName = newName;
                                                           }
                                                           submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                          for (var imagePath in submod.previewImages) {
+                                                            imagePath = imagePath.replaceFirst(oldModPath, newModPath);
+                                                          }
+                                                          for (var videoPath in submod.previewVideos) {
+                                                            videoPath = videoPath.replaceFirst(oldModPath, newModPath);
+                                                          }
                                                           for (var modFile in submod.modFiles) {
                                                             modFile.modName = newName;
                                                             if (submod.location == curMod.location) {
@@ -2639,10 +2657,16 @@ class _HomePageState extends State<HomePage> {
                                                               await Directory(newModPath).create(recursive: true);
                                                               curMod.modName = newName;
                                                               curMod.location = newModPath;
+                                                              curMod.previewImages.clear();
+                                                              curMod.previewVideos.clear();
+                                                              renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
                                                               for (var submod in curMod.submods) {
                                                                 submod.modName = newName;
                                                                 submod.submodName = newName;
                                                                 submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                submod.previewImages.clear();
+                                                                submod.previewVideos.clear();
+                                                                renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
                                                                 for (var modFile in submod.modFiles) {
                                                                   final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
                                                                   modFile.modName = newName;
@@ -2654,12 +2678,18 @@ class _HomePageState extends State<HomePage> {
                                                               await Directory(oldModPath).rename(newModPath);
                                                               curMod.modName = newName;
                                                               curMod.location = newModPath;
+                                                              curMod.previewImages.clear();
+                                                              curMod.previewVideos.clear();
+                                                              renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
                                                               for (var submod in curMod.submods) {
                                                                 submod.modName = newName;
                                                                 if (submod.location == oldModPath) {
                                                                   submod.submodName = newName;
                                                                 }
                                                                 submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                submod.previewImages.clear();
+                                                                submod.previewVideos.clear();
+                                                                renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
                                                                 for (var modFile in submod.modFiles) {
                                                                   modFile.modName = newName;
                                                                   if (submod.location == curMod.location) {
@@ -3071,6 +3101,10 @@ class _HomePageState extends State<HomePage> {
                                                               await Directory(newSubmodPath).create(recursive: true);
                                                               curMod.submods[modViewModSetSubModIndex].submodName = newName;
                                                               curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                              curMod.submods[modViewModSetSubModIndex].previewImages.clear();
+                                                              curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
+                                                              renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
+                                                                  curMod.submods[modViewModSetSubModIndex].previewVideos);
                                                               for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
                                                                 modFile.submodName = newName;
                                                                 String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
@@ -3081,6 +3115,10 @@ class _HomePageState extends State<HomePage> {
                                                               await Directory(oldSubmodPath).rename(newSubmodPath);
                                                               curMod.submods[modViewModSetSubModIndex].submodName = newName;
                                                               curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                              curMod.submods[modViewModSetSubModIndex].previewImages.clear();
+                                                              curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
+                                                              renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
+                                                                  curMod.submods[modViewModSetSubModIndex].previewVideos);
                                                               for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
                                                                 modFile.submodName = newName;
                                                                 modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
@@ -3513,6 +3551,9 @@ class _HomePageState extends State<HomePage> {
                                                                           await Directory(newSubmodPath).create(recursive: true);
                                                                           curSubmod.submodName = newName;
                                                                           curSubmod.location = newSubmodPath;
+                                                                          curSubmod.previewImages.clear();
+                                                                          curSubmod.previewVideos.clear();
+                                                                          renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
                                                                           for (var modFile in curSubmod.modFiles) {
                                                                             modFile.submodName = newName;
                                                                             String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
@@ -3523,6 +3564,9 @@ class _HomePageState extends State<HomePage> {
                                                                           await Directory(oldSubmodPath).rename(newSubmodPath);
                                                                           curSubmod.submodName = newName;
                                                                           curSubmod.location = newSubmodPath;
+                                                                          curSubmod.previewImages.clear();
+                                                                          curSubmod.previewVideos.clear();
+                                                                          renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
                                                                           for (var modFile in curSubmod.modFiles) {
                                                                             modFile.submodName = newName;
                                                                             modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);

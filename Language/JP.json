@@ -348,5 +348,6 @@
   "uiNoGameDataFoundMessage": "pso2_bin データフォルダ内のファイルが見つかりません。\nアプリを再起動して管理者として実行するか、pso2_binのパスを再選択してください。",
   "uiDuplicatesFoundInTheCurrentSet": "現在のセットで重複が見つかった",
   "uiReplaceAll": "すべて交換",
-  "uiReplaceDuplicateFilesOnly": "重複ファイルのみを置換"
+  "uiReplaceDuplicateFilesOnly": "重複ファイルのみを置換",
+  "enterNewName": "新しい名前を入力"
 }
