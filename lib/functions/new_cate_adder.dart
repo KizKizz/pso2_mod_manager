@@ -19,8 +19,8 @@ Future<String> categoryGroupAdder(context) async {
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-            backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiNewCateGroup, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
@@ -80,7 +80,7 @@ Future<String> categoryGroupAdder(context) async {
                         Navigator.pop(context, '');
                       }),
                   ElevatedButton(
-                      onPressed: newCateGroupName.value.text.isEmpty
+                      onPressed: newCateGroupName.text.isEmpty
                           ? null
                           : () async {
                               if (nameFormKey.currentState!.validate()) {
@@ -100,6 +100,8 @@ Future<String> categoryAdder(context) async {
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiNewCate, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
@@ -154,7 +156,7 @@ Future<String> categoryAdder(context) async {
                         Navigator.pop(context, '');
                       }),
                   ElevatedButton(
-                      onPressed: newCateName.value.text.isEmpty
+                      onPressed: newCateName.text.isEmpty
                           ? null
                           : () async {
                               if (nameFormKey.currentState!.validate()) {
@@ -172,6 +174,8 @@ void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiRemovingCateGroup, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
@@ -224,12 +228,13 @@ void categoryRemover(context, CategoryType cateTypeToDel, Category cateToDel) as
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiRemovingCate, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
-                content: Text(cateToDel.items.length < 2
-                    ? curLangText!.uiItemFoundWhenDeletingCate
-                    : '${curLangText!.uiThereAre} ${cateToDel.items.length} ${curLangText!.uiItemsFoundWhenDeletingCate}'),
+                content:
+                    Text(cateToDel.items.length < 2 ? curLangText!.uiItemFoundWhenDeletingCate : '${curLangText!.uiThereAre} ${cateToDel.items.length} ${curLangText!.uiItemsFoundWhenDeletingCate}'),
                 actions: <Widget>[
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
