@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
@@ -177,7 +178,7 @@ void removeModSetNameFromFiles(String modSetName, List<Item> duplicateItems, Mod
 }
 
 // add to set menu
-void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod submod) {
+void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod submod, List<ModFile> modFiles) {
   if (!item.setNames.contains(modSetName)) {
     item.setNames.add(modSetName);
   }
@@ -193,14 +194,14 @@ void setModSetNameToSingleItem(String modSetName, Item item, Mod mod, SubMod sub
   }
   submod.isSet = true;
   for (var modFile in submod.modFiles) {
-    if (!modFile.setNames.contains(modSetName)) {
+    if (modFiles.where((element) => element.location == modFile.location).isNotEmpty && !modFile.setNames.contains(modSetName)) {
       modFile.isSet = true;
       modFile.setNames.add(modSetName);
     }
   }
 }
 
-void setModSetNameToSingleMod(String modSetName, Mod mod, SubMod submod) {
+void setModSetNameToSingleMod(String modSetName, Mod mod, SubMod submod, List<ModFile> modFiles) {
   if (!mod.setNames.contains(modSetName)) {
     mod.setNames.add(modSetName);
   }
@@ -211,7 +212,7 @@ void setModSetNameToSingleMod(String modSetName, Mod mod, SubMod submod) {
   }
   submod.isSet = true;
   for (var modFile in submod.modFiles) {
-    if (!modFile.setNames.contains(modSetName)) {
+    if (modFiles.where((element) => element.location == modFile.location).isNotEmpty && !modFile.setNames.contains(modSetName)) {
       modFile.isSet = true;
       modFile.setNames.add(modSetName);
     }
@@ -220,9 +221,39 @@ void setModSetNameToSingleMod(String modSetName, Mod mod, SubMod submod) {
 
 List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
   List<Widget> menuButtonList = [];
+  //create new set
+  menuButtonList.add(
+    MenuItemButton(
+      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+        return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+      })),
+      child: Text(curLangText!.uiAddNewSet),
+      onPressed: () async {
+        //create new set
+        String newSetName = await newModSetDialog(context);
+        if (newSetName.isNotEmpty) {
+          ModSet newSet = ModSet(newSetName, 0, true, false, DateTime.now(), []);
+
+          newSet.setItems.add(item);
+          setModSetNameToSingleItem(newSet.setName, item, mod, submod, submod.modFiles);
+          modSetList.add(newSet);
+          modSetList.sort(
+            (a, b) => b.addedDate.compareTo(a.addedDate),
+          );
+          saveSetListToJson();
+          saveModdedItemListToJson();
+        }
+      },
+    ),
+  );
+
+  //modSets
   for (var set in modSetList) {
     menuButtonList.add(
       MenuItemButton(
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+        })),
         child: Text(set.setName),
         onPressed: () async {
           bool readyToAdd = false;
@@ -252,7 +283,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
               readyToAdd = true;
             } else if (userInput == 2) {
               removeModSetNameFromFiles(set.setName, duplicateSetItems, mod, submod);
-              setModSetNameToSingleMod(set.setName, mod, submod);
+              setModSetNameToSingleMod(set.setName, mod, submod, submod.modFiles);
               saveSetListToJson();
               saveModdedItemListToJson();
             }
@@ -263,7 +294,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
           //add to set
           if (readyToAdd) {
             set.setItems.add(item);
-            setModSetNameToSingleItem(set.setName, item, mod, submod);
+            setModSetNameToSingleItem(set.setName, item, mod, submod, submod.modFiles);
             saveSetListToJson();
             saveModdedItemListToJson();
           }
@@ -272,6 +303,175 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
     );
   }
   return menuButtonList;
+}
+
+List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
+  List<Widget> menuItemButtonList = [];
+
+  //create new set
+  menuItemButtonList.add(
+    MenuItemButton(
+      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+        return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+      })),
+      child: Text(curLangText!.uiAddNewSet),
+      onPressed: () async {
+        //create new set
+        String newSetName = await newModSetDialog(context);
+        if (newSetName.isNotEmpty) {
+          ModSet newSet = ModSet(newSetName, 0, true, false, DateTime.now(), []);
+
+          List<Item> matchedItems = [];
+          List<Mod> matchedMods = [];
+          List<SubMod> matchedSubmods = [];
+          for (var modFile in selectedModFiles) {
+            var matchingTypes = appliedItemList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
+            for (var type in matchingTypes) {
+              var matchingCates = type.categories.where((element) => modFile.location.contains(element.location));
+              for (var cate in matchingCates) {
+                var matchingItems = cate.items.where((element) => modFile.location.contains(element.location));
+                for (var item in matchingItems) {
+                  if (matchedItems.where((element) => element.location == item.location).isEmpty) {
+                    matchedItems.add(item);
+                  }
+                  var matchingMods = item.mods.where((element) => modFile.location.contains(element.location));
+                  for (var mod in matchingMods) {
+                    if (matchedMods.where((element) => element.location == mod.location).isEmpty) {
+                      matchedMods.add(mod);
+                    }
+                    var matchingSubmods = mod.submods.where((element) => modFile.location.contains(element.location));
+                    for (var submod in matchingSubmods) {
+                      if (matchedSubmods.where((element) => element.location == submod.location).isEmpty) {
+                        matchedSubmods.add(submod);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          for (var item in matchedItems) {
+            for (var mod in item.mods.where((element) => matchedMods.where((e) => e.location == element.location).isNotEmpty)) {
+              for (var submod in mod.submods.where((element) => matchedSubmods.where((e) => e.location == element.location).isNotEmpty)) {
+                setModSetNameToSingleItem(newSet.setName, item, mod, submod, selectedModFiles);
+                if (newSet.setItems.where((element) => element.location == item.location).isEmpty) {
+                  newSet.setItems.add(item);
+                }
+              }
+            }
+          }
+
+          modSetList.add(newSet);
+          modSetList.sort(
+            (a, b) => b.addedDate.compareTo(a.addedDate),
+          );
+          saveSetListToJson();
+          saveModdedItemListToJson();
+          isModViewListHidden = true;
+          Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+        }
+      },
+    ),
+  );
+
+  //modSets
+  for (var set in modSetList) {
+    menuItemButtonList.add(
+      MenuItemButton(
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+        })),
+        child: Text(set.setName),
+        onPressed: () async {
+          List<Item> matchedItems = [];
+          List<Mod> matchedMods = [];
+          List<SubMod> matchedSubmods = [];
+          for (var modFile in selectedModFiles) {
+            var matchingTypes = appliedItemList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
+            for (var type in matchingTypes) {
+              var matchingCates = type.categories.where((element) => modFile.location.contains(element.location));
+              for (var cate in matchingCates) {
+                var matchingItems = cate.items.where((element) => modFile.location.contains(element.location));
+                for (var item in matchingItems) {
+                  if (matchedItems.where((element) => element.location == item.location).isEmpty) {
+                    matchedItems.add(item);
+                  }
+                  var matchingMods = item.mods.where((element) => modFile.location.contains(element.location));
+                  for (var mod in matchingMods) {
+                    if (matchedMods.where((element) => element.location == mod.location).isEmpty) {
+                      matchedMods.add(mod);
+                    }
+                    var matchingSubmods = mod.submods.where((element) => modFile.location.contains(element.location));
+                    for (var submod in matchingSubmods) {
+                      if (matchedSubmods.where((element) => element.location == submod.location).isEmpty) {
+                        matchedSubmods.add(submod);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          for (var item in matchedItems) {
+            for (var mod in item.mods.where((element) => matchedMods.where((e) => e.location == element.location).isNotEmpty)) {
+              for (var submod in mod.submods.where((element) => matchedSubmods.where((e) => e.location == element.location).isNotEmpty)) {
+                bool readyToAdd = false;
+                //check if existed in set
+                if (set.setItems.where((element) => element.itemName == item.itemName).isNotEmpty) {
+                  final duplicateSetItems = set.setItems.where((element) => element.itemName == item.itemName).toList();
+                  List<String> duplicatedModInfos = [];
+
+                  for (var dupItem in duplicateSetItems) {
+                    final duplicateSetMods = dupItem.mods.where((element) => element.isSet);
+                    for (var dupMod in duplicateSetMods) {
+                      final duplicateSetSubmods = dupMod.submods.where((element) => element.isSet);
+                      for (var dupSubmod in duplicateSetSubmods) {
+                        final duplicateSetModFiles = dupSubmod.modFiles.where((element) => element.isSet);
+                        for (var dupModFile in duplicateSetModFiles) {
+                          duplicatedModInfos.add('${dupItem.itemName} > ${dupMod.modName} > ${dupSubmod.submodName} > ${dupModFile.modFileName}');
+                        }
+                      }
+                    }
+                  }
+
+                  if (duplicatedModInfos.isNotEmpty) {
+                    int userInput = await duplicateItemInModSetDialog(context, duplicatedModInfos);
+                    if (userInput == 1) {
+                      removeModSetNameFromItems(set.setName, duplicateSetItems);
+                      set.setItems.removeWhere((element) => duplicateSetItems.contains(element));
+                      readyToAdd = true;
+                    } else if (userInput == 2) {
+                      removeModSetNameFromFiles(set.setName, duplicateSetItems, mod, submod);
+                      setModSetNameToSingleMod(set.setName, mod, submod, selectedModFiles);
+                      saveSetListToJson();
+                      saveModdedItemListToJson();
+                      isModViewListHidden = true;
+                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                    }
+                  }
+                } else {
+                  readyToAdd = true;
+                }
+
+                //add to set
+                if (readyToAdd) {
+                  set.setItems.add(item);
+                  setModSetNameToSingleItem(set.setName, item, mod, submod, selectedModFiles);
+                  saveSetListToJson();
+                  saveModdedItemListToJson();
+                  isModViewListHidden = true;
+                  Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                }
+              }
+            }
+          }
+        },
+      ),
+    );
+  }
+  return menuItemButtonList;
 }
 
 Future<int> duplicateItemInModSetDialog(context, List<String> duplicatedModInfos) async {
@@ -365,4 +565,78 @@ void removeModFromThisSet(String selectedSetName, Item item, Mod mod) {
       }
     }
   }
+}
+
+Future<String> newModSetDialog(context) async {
+  TextEditingController newModSetName = TextEditingController();
+  final nameFormKey = GlobalKey<FormState>();
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                title: Text(curLangText!.uiNewModSet, style: const TextStyle(fontWeight: FontWeight.w700)),
+                contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                content: Form(
+                  key: nameFormKey,
+                  child: TextFormField(
+                    controller: newModSetName,
+                    maxLines: 1,
+                    textAlignVertical: TextAlignVertical.center,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                    validator: (value) {
+                      if (modSetList.where((element) => element.setName == newModSetName.text).isNotEmpty) {
+                        return curLangText!.uiNameAlreadyExisted;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: curLangText!.uiEnterNewModSetName,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        //isCollapsed: true,
+                        //isDense: true,
+                        contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                        constraints: const BoxConstraints.tightForFinite(),
+                        // Set border for enabled state (default)
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        // Set border for focused state
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                          borderRadius: BorderRadius.circular(2),
+                        )),
+                    onChanged: (value) async {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () async {
+                        Navigator.pop(context, '');
+                      }),
+                  ElevatedButton(
+                      onPressed: newModSetName.value.text.isEmpty
+                          ? null
+                          : () async {
+                              if (nameFormKey.currentState!.validate()) {
+                                Navigator.pop(context, newModSetName.text);
+                              }
+                            },
+                      child: Text(curLangText!.uiCreateAndAddModsToThisSet))
+                ]);
+          }));
 }

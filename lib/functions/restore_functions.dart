@@ -35,8 +35,9 @@ Future<List<ModFile>> restoreOriginalFilesToTheGame(context, List<ModFile> modFi
     }
   }
 
-  saveModdedItemListToJson();
+  selectedModFilesInAppliedList.removeWhere((element) => unappliedModFiles.where((e) => e.location == element.location).isNotEmpty);
   appliedItemList = await appliedListBuilder(moddedItemsList);
+  saveModdedItemListToJson();
 
   return unappliedModFiles;
 }
