@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
-import 'package:pso2_mod_manager/functions/modfiles_unapply.dart';
+import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_vital_gauge_checking_page.dart';
@@ -163,7 +163,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                             await Future.delayed(const Duration(milliseconds: 100));
                                             setState(() {});
                                             // ignore: use_build_context_synchronously
-                                            await modFilesUnapply(context, result);
+                                            await restoreOriginalFilesToTheGame(context, result);
                                             _reAppliedStatus.clear();
                                             _gotoNext = true;
                                             setState(() {});

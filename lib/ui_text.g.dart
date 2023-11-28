@@ -235,6 +235,18 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiRemoveFromMM = json['uiRemoveFromMM'] as String
       ..uiAddToModSets = json['uiAddToModSets'] as String
       ..uiRemoveFromThisSet = json['uiRemoveFromThisSet'] as String
+      ..uiSelect = json['uiSelect'] as String
+      ..uiDeselect = json['uiDeselect'] as String
+      ..uiSelectAllAppliedMods = json['uiSelectAllAppliedMods'] as String
+      ..uiDeselectAllAppliedMods = json['uiDeselectAllAppliedMods'] as String
+      ..uiSelectAll = json['uiSelectAll'] as String
+      ..uiDeselectAll = json['uiDeselectAll'] as String
+      ..uiHoldToReapplySelectedMods =
+          json['uiHoldToReapplySelectedMods'] as String
+      ..uiHoldToRemoveSelectedMods =
+          json['uiHoldToRemoveSelectedMods'] as String
+      ..uiAddSelectedModsToModSets =
+          json['uiAddSelectedModsToModSets'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -450,6 +462,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiReplaceAll = json['uiReplaceAll'] as String
       ..uiReplaceDuplicateFilesOnly =
           json['uiReplaceDuplicateFilesOnly'] as String
+      ..uiNewModSet = json['uiNewModSet'] as String
+      ..uiCreateAndAddModsToThisSet =
+          json['uiCreateAndAddModsToThisSet'] as String
+      ..uiAddNewSet = json['uiAddNewSet'] as String
       ..enterNewName = json['enterNewName'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
@@ -647,6 +663,15 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiRemoveFromMM': instance.uiRemoveFromMM,
       'uiAddToModSets': instance.uiAddToModSets,
       'uiRemoveFromThisSet': instance.uiRemoveFromThisSet,
+      'uiSelect': instance.uiSelect,
+      'uiDeselect': instance.uiDeselect,
+      'uiSelectAllAppliedMods': instance.uiSelectAllAppliedMods,
+      'uiDeselectAllAppliedMods': instance.uiDeselectAllAppliedMods,
+      'uiSelectAll': instance.uiSelectAll,
+      'uiDeselectAll': instance.uiDeselectAll,
+      'uiHoldToReapplySelectedMods': instance.uiHoldToReapplySelectedMods,
+      'uiHoldToRemoveSelectedMods': instance.uiHoldToRemoveSelectedMods,
+      'uiAddSelectedModsToModSets': instance.uiAddSelectedModsToModSets,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -830,5 +855,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiDuplicatesFoundInTheCurrentSet,
       'uiReplaceAll': instance.uiReplaceAll,
       'uiReplaceDuplicateFilesOnly': instance.uiReplaceDuplicateFilesOnly,
+      'uiNewModSet': instance.uiNewModSet,
+      'uiCreateAndAddModsToThisSet': instance.uiCreateAndAddModsToThisSet,
+      'uiAddNewSet': instance.uiAddNewSet,
       'enterNewName': instance.enterNewName,
     };

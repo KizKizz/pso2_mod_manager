@@ -172,6 +172,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   void initState() {
     windowManager.addListener(this);
     clearAllTempDirsBeforeGettingPath();
+    clearAppUpdateFolder();
     getAppVer();
     miscCheck();
     getRefSheetsVersion();
@@ -253,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         Provider.of<StateProvider>(context, listen: false).profanityFilterRemoveFalse();
         profanityFilterRemoval = false;
       }
-      
+
       //Remove Boundary radius on mods apply
       removeBoundaryRadiusOnModsApply = (prefs.getBool('removeBoundaryRadiusOnModsApply') ?? false);
       if (removeBoundaryRadiusOnModsApply) {

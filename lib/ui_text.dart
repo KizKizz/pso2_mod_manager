@@ -207,7 +207,16 @@ class TranslationText {
       uiRemoveBoundaryRadius = 'Remove boundary radius',
       uiRemoveFromMM = 'Remove from Mod Manager',
       uiAddToModSets = 'Add to Mod Sets',
-      uiRemoveFromThisSet = 'Remove from this set';
+      uiRemoveFromThisSet = 'Remove from this set',
+      uiSelect = "Select",
+      uiDeselect = "Deselect", 
+      uiSelectAllAppliedMods = "Select all applied mods",
+      uiDeselectAllAppliedMods = "Deselect all applied mods",
+      uiSelectAll = "Select All",
+      uiDeselectAll = "Deselect All",
+      uiHoldToReapplySelectedMods = "Hold to reapply selected mods to the game",
+      uiHoldToRemoveSelectedMods = "Hold to remove selected mods from the game",
+      uiAddSelectedModsToModSets = "Add selected mods to Mod Sets";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -417,7 +426,7 @@ class TranslationText {
       uiNoGameDataFoundMessage = 'Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path';
 
   //mod_set_functions.dart
-  String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set', uiReplaceAll = 'Replace All', uiReplaceDuplicateFilesOnly = 'Replace duplicate files only';
+  String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set', uiReplaceAll = 'Replace All', uiReplaceDuplicateFilesOnly = 'Replace duplicate files only', uiNewModSet = "New Mod Set", uiCreateAndAddModsToThisSet = "Create and add mods to this set", uiAddNewSet = "Add New Set";
 
   //mods_rename_functions.dart
   String enterNewName = 'Enter new name';

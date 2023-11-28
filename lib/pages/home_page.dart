@@ -28,6 +28,7 @@ import 'package:pso2_mod_manager/functions/dotnet_check.dart';
 import 'package:pso2_mod_manager/functions/mod_deletion_dialog.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
+import 'package:pso2_mod_manager/functions/modfiles_contain_in_list_function.dart';
 import 'package:pso2_mod_manager/functions/mods_rename_functions.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
@@ -2750,7 +2751,7 @@ class _HomePageState extends State<HomePage> {
 
                                                       //remove from set
                                                       Visibility(
-                                                        visible: context.watch<StateProvider>().setsWindowVisible,
+                                                        visible: context.watch<StateProvider>().setsWindowVisible && curMod.submods.first.isSet,
                                                         child: MenuItemButton(
                                                           leadingIcon: const Icon(
                                                             Icons.delete_forever_outlined,
@@ -3623,7 +3624,7 @@ class _HomePageState extends State<HomePage> {
 
                                                                   //remove from set
                                                                   Visibility(
-                                                                    visible: context.watch<StateProvider>().setsWindowVisible,
+                                                                    visible: context.watch<StateProvider>().setsWindowVisible && curSubmod.isSet,
                                                                     child: MenuItemButton(
                                                                       leadingIcon: const Icon(
                                                                         Icons.delete_forever_outlined,
@@ -3929,112 +3930,304 @@ class _HomePageState extends State<HomePage> {
 
 //APPLIED MOD LIST=====================================================================================================================================================================================
   Widget appliedModsView() {
+    int totalModFilesInAppliedList = 0;
+    for (var type in appliedItemList) {
+      for (var cate in type.categories) {
+        for (var item in cate.items) {
+          if (item.applyStatus) {
+            for (var mod in item.mods) {
+              if (mod.applyStatus) {
+                for (var submod in mod.submods) {
+                  if (submod.applyStatus) {
+                    totalModFilesInAppliedList += submod.modFiles.where((element) => element.applyStatus).length;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     return Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 10, children: [
-              //Reapply all applied mods to game
-              Stack(
-                children: [
-                  Visibility(
-                    visible: isModViewModsApplying,
-                    child: const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(),
-                    ),
+          Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 5, children: [
+            //checkbox
+            ModManTooltip(
+              message: selectedModFilesInAppliedList.length < totalModFilesInAppliedList ? curLangText!.uiSelectAllAppliedMods : curLangText!.uiDeselectAllAppliedMods,
+              child: InkWell(
+                  onTap: appliedItemList.isEmpty
+                      ? null
+                      : () async {
+                          if (selectedModFilesInAppliedList.isEmpty || selectedModFilesInAppliedList.length < totalModFilesInAppliedList) {
+                            for (var type in appliedItemList) {
+                              for (var cate in type.categories) {
+                                for (var item in cate.items) {
+                                  if (item.applyStatus) {
+                                    for (var mod in item.mods) {
+                                      if (mod.applyStatus) {
+                                        for (var submod in mod.submods) {
+                                          if (submod.applyStatus) {
+                                            selectedModFilesInAppliedList.addAll(submod.modFiles.where((element) => element.applyStatus));
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          } else {
+                            selectedModFilesInAppliedList.clear();
+                          }
+                          setState(() {});
+                        },
+                  child: Row(
+                    children: [
+                      Icon(
+                        //size: 28,
+                        color: selectedModFilesInAppliedList.isNotEmpty
+                            ? Colors.green
+                            : appliedItemList.isEmpty
+                                ? Theme.of(context).disabledColor
+                                : null,
+                        selectedModFilesInAppliedList.isEmpty
+                            ? Icons.check_box_outline_blank_outlined
+                            : selectedModFilesInAppliedList.length < totalModFilesInAppliedList
+                                ? Icons.check_box_rounded
+                                : Icons.check_box_outlined,
+                      ),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        selectedModFilesInAppliedList.isEmpty || selectedModFilesInAppliedList.length < totalModFilesInAppliedList ? curLangText!.uiSelectAll : curLangText!.uiDeselectAll,
+                        style: TextStyle(
+                          color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+                        ),
+                      )
+                    ],
+                  )),
+            ),
+            //Reapply selected applied mods to game
+            Stack(
+              children: [
+                Visibility(
+                  visible: isModViewModsApplying,
+                  child: const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(),
                   ),
-                  Visibility(
-                    visible: !isModViewModsApplying,
-                    child: ModManTooltip(
-                      message: curLangText!.uiHoldToReapplyAllModsInAppliedList,
-                      child: InkWell(
-                          onLongPress: appliedItemList.isEmpty
-                              ? null
-                              : () {
-                                  isModViewModsRemoving = true;
-                                  isModViewModsApplying = true;
-                                  setState(() {});
-                                  Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
-                                    reapplyAppliedMods(context).then((value) {
-                                      isModViewModsRemoving = false;
-                                      isModViewModsApplying = false;
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                      setState(() {});
-                                    });
+                ),
+                Visibility(
+                  visible: !isModViewModsApplying,
+                  child: ModManTooltip(
+                    message: curLangText!.uiHoldToReapplySelectedMods,
+                    child: InkWell(
+                        onLongPress: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty
+                            ? null
+                            : () {
+                                isModViewModsRemoving = true;
+                                isModViewModsApplying = true;
+                                setState(() {});
+                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+                                  reapplySelectedAppliedMods(context).then((value) {
+                                    isModViewModsRemoving = false;
+                                    isModViewModsApplying = false;
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
+                                    setState(() {});
                                   });
-                                },
-                          child: Icon(
-                            Icons.playlist_add,
-                            color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-                          )),
-                    ),
+                                });
+                              },
+                        child: Icon(
+                          Icons.playlist_add,
+                          color: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
+                        )),
                   ),
-                ],
-              ),
-              //Remove all mods from game
-              Stack(
-                children: [
-                  Visibility(
-                    visible: isModViewModsRemoving,
-                    child: const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(),
-                    ),
+                ),
+              ],
+            ),
+            //Remove selected mods from game
+            Stack(
+              children: [
+                Visibility(
+                  visible: isModViewModsRemoving,
+                  child: const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(),
                   ),
-                  Visibility(
-                    visible: !isModViewModsRemoving,
-                    child: ModManTooltip(
-                      message: curLangText!.uiHoldToRemoveAllAppliedMods,
-                      child: InkWell(
-                          onLongPress: appliedItemList.isEmpty
-                              ? null
-                              : () {
-                                  isModViewModsRemoving = true;
-                                  isModViewModsApplying = true;
-                                  setState(() {});
-                                  Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                    unapplyAllMods(context).then((value) {
-                                      isModViewModsRemoving = false;
-                                      isModViewModsApplying = false;
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                      setState(() {});
-                                    });
+                ),
+                Visibility(
+                  visible: !isModViewModsRemoving,
+                  child: ModManTooltip(
+                    message: curLangText!.uiHoldToRemoveSelectedMods,
+                    child: InkWell(
+                        onLongPress: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty
+                            ? null
+                            : () {
+                                isModViewModsRemoving = true;
+                                isModViewModsApplying = true;
+                                setState(() {});
+                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                  unapplySelectedAppliedMods(context).then((value) {
+                                    isModViewModsRemoving = false;
+                                    isModViewModsApplying = false;
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
+                                    setState(() {});
                                   });
-                                },
-                          child: Icon(
-                            Icons.playlist_remove,
-                            color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-                          )),
-                    ),
+                                });
+                              },
+                        child: Icon(
+                          Icons.playlist_remove,
+                          color: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
+                        )),
                   ),
-                ],
-              ),
-              //Add to mod set
-              ModManTooltip(
-                message: curLangText!.uiAddAllAppliedModsToSets,
-                child: InkWell(
-                    onTap: appliedItemList.isEmpty
-                        ? null
-                        : () {
-                            isModSetAdding = true;
-                            isModViewListHidden = true;
-                            Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                            setState(() {});
-                          },
-                    child: Icon(
-                      FontAwesomeIcons.folderPlus,
-                      size: 18,
-                      color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-                    )),
-              ),
-            ]),
-          )
+                ),
+              ],
+            ),
+            //Add selected to mod set
+            MenuAnchor(
+                builder: (BuildContext context, MenuController controller, Widget? child) {
+                  return ModManTooltip(
+                    message: curLangText!.uiAddSelectedModsToModSets,
+                    child: InkWell(
+                      onTap: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty
+                          ? null
+                          : () {
+                              if (controller.isOpen) {
+                                controller.close();
+                              } else {
+                                controller.open();
+                              }
+                            },
+                      child: Icon(
+                        Icons.create_new_folder_outlined,
+                        color: appliedItemList.isEmpty || selectedModFilesInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
+                      ),
+                    ),
+                  );
+                },
+                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                }), shape: MaterialStateProperty.resolveWith((states) {
+                  return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                })),
+                menuChildren: modSetsMenuItemButtons(context, selectedModFilesInAppliedList))
+          ]),
+          const SizedBox(
+            width: 10,
+          ),
+          // const VerticalDivider(
+          //   width: 10,
+          //   thickness: 1,
+          //   indent: 2,
+          //   endIndent: 2,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 5),
+          //   child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 5, children: [
+          //     //Reapply all applied mods to game
+          //     Stack(
+          //       children: [
+          //         Visibility(
+          //           visible: isModViewModsApplying,
+          //           child: const SizedBox(
+          //             width: 20,
+          //             height: 20,
+          //             child: CircularProgressIndicator(),
+          //           ),
+          //         ),
+          //         Visibility(
+          //           visible: !isModViewModsApplying,
+          //           child: ModManTooltip(
+          //             message: curLangText!.uiHoldToReapplyAllModsInAppliedList,
+          //             child: InkWell(
+          //                 onLongPress: appliedItemList.isEmpty
+          //                     ? null
+          //                     : () {
+          //                         isModViewModsRemoving = true;
+          //                         isModViewModsApplying = true;
+          //                         setState(() {});
+          //                         Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
+          //                           reapplyAppliedMods(context).then((value) {
+          //                             isModViewModsRemoving = false;
+          //                             isModViewModsApplying = false;
+          //                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
+          //                             setState(() {});
+          //                           });
+          //                         });
+          //                       },
+          //                 child: Icon(
+          //                   Icons.playlist_add,
+          //                   color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+          //                 )),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     //Remove all mods from game
+          //     Stack(
+          //       children: [
+          //         Visibility(
+          //           visible: isModViewModsRemoving,
+          //           child: const SizedBox(
+          //             width: 20,
+          //             height: 20,
+          //             child: CircularProgressIndicator(),
+          //           ),
+          //         ),
+          //         Visibility(
+          //           visible: !isModViewModsRemoving,
+          //           child: ModManTooltip(
+          //             message: curLangText!.uiHoldToRemoveAllAppliedMods,
+          //             child: InkWell(
+          //                 onLongPress: appliedItemList.isEmpty
+          //                     ? null
+          //                     : () {
+          //                         isModViewModsRemoving = true;
+          //                         isModViewModsApplying = true;
+          //                         setState(() {});
+          //                         Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+          //                           unapplyAllMods(context).then((value) {
+          //                             isModViewModsRemoving = false;
+          //                             isModViewModsApplying = false;
+          //                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
+          //                             setState(() {});
+          //                           });
+          //                         });
+          //                       },
+          //                 child: Icon(
+          //                   Icons.playlist_remove,
+          //                   color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+          //                 )),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     //Add to mod set
+          //     ModManTooltip(
+          //       message: curLangText!.uiAddAllAppliedModsToSets,
+          //       child: InkWell(
+          //           onTap: appliedItemList.isEmpty
+          //               ? null
+          //               : () {
+          //                   isModSetAdding = true;
+          //                   isModViewListHidden = true;
+          //                   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+          //                   setState(() {});
+          //                 },
+          //           child: Icon(
+          //             FontAwesomeIcons.folderPlus,
+          //             size: 18,
+          //             color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
+          //           )),
+          //     ),
+          //   ]),
+          // )
         ],
         title: Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 5),
@@ -4142,7 +4335,7 @@ class _HomePageState extends State<HomePage> {
                                                       border: Border.all(color: Theme.of(context).highlightColor),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                     ),
-                                                    child: curCategory.items.length < 2
+                                                    child: curCategory.items.where((element) => element.applyStatus).length < 2
                                                         ? Text('${curCategory.items.where((element) => element.applyStatus).length} ${curLangText!.uiItem}',
                                                             style: const TextStyle(
                                                               fontSize: 15,
@@ -4311,6 +4504,32 @@ class _HomePageState extends State<HomePage> {
                                                                       runAlignment: WrapAlignment.center,
                                                                       spacing: 5,
                                                                       children: [
+                                                                        //checkbox
+                                                                        ModManTooltip(
+                                                                          message: modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
+                                                                              ? '${curLangText!.uiDeselect} ${applyingModNames[m]}'
+                                                                              : '${curLangText!.uiSelect} ${applyingModNames[m]}',
+                                                                          child: InkWell(
+                                                                            onTap: () async {
+                                                                              if (modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])) {
+                                                                                for (var modFile in allAppliedModFiles[m]) {
+                                                                                  selectedModFilesInAppliedList.removeWhere((element) => element.location == modFile.location);
+                                                                                }
+                                                                              } else {
+                                                                                selectedModFilesInAppliedList.addAll(allAppliedModFiles[m]);
+                                                                              }
+                                                                              setState(() {});
+                                                                            },
+                                                                            child: Icon(
+                                                                              size: 28,
+                                                                              color: modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m]) ? Colors.green : null,
+                                                                              modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
+                                                                                  ? Icons.check_box_outlined
+                                                                                  : Icons.check_box_outline_blank_outlined,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+
                                                                         if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
                                                                           Stack(
                                                                             children: [
@@ -4608,7 +4827,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(left: 5, bottom: 5, right: 5),
               child: Text(curLangText!.uiModSets),
             ),
-            //Search
+            //New name
             Expanded(
                 child: TextField(
               controller: newSetTextController,
@@ -4951,26 +5170,26 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ],
                                               ),
-                                            ModManTooltip(
-                                              message: curLangText!.uiAddToThisSet,
-                                              child: InkWell(
-                                                  onTap: !isModSetAdding
-                                                      ? null
-                                                      : () {
-                                                          removeModSetNameFromItems(curSet.setName, curSet.setItems);
-                                                          curSet.setItems = itemsFromAppliedListFetch(appliedItemList);
-                                                          setModSetNameToItems(curSet.setName, curSet.setItems);
-                                                          isModSetAdding = false;
-                                                          saveSetListToJson();
-                                                          saveModdedItemListToJson();
-                                                          setState(() {});
-                                                        },
-                                                  child: Icon(
-                                                    FontAwesomeIcons.folderPlus,
-                                                    size: 22,
-                                                    color: !isModSetAdding ? Theme.of(context).disabledColor : null,
-                                                  )),
-                                            ),
+                                            // ModManTooltip(
+                                            //   message: curLangText!.uiAddToThisSet,
+                                            //   child: InkWell(
+                                            //       onTap: !isModSetAdding
+                                            //           ? null
+                                            //           : () {
+                                            //               removeModSetNameFromItems(curSet.setName, curSet.setItems);
+                                            //               curSet.setItems = itemsFromAppliedListFetch(appliedItemList);
+                                            //               setModSetNameToItems(curSet.setName, curSet.setItems);
+                                            //               isModSetAdding = false;
+                                            //               saveSetListToJson();
+                                            //               saveModdedItemListToJson();
+                                            //               setState(() {});
+                                            //             },
+                                            //       child: Icon(
+                                            //         FontAwesomeIcons.folderPlus,
+                                            //         size: 22,
+                                            //         color: !isModSetAdding ? Theme.of(context).disabledColor : null,
+                                            //       )),
+                                            // ),
                                             //Delete
                                             ModManTooltip(
                                               message: '${curLangText!.uiHoldToRemove} ${curSet.setName} ${curLangText!.uiFromMM}',
@@ -5131,13 +5350,11 @@ class _HomePageState extends State<HomePage> {
                                                                             child: const Icon(Icons.folder_open),
                                                                             onTap: () async => await launchUrl(Uri.file(curItem.location)),
                                                                           )),
-                                                                      //delete
+                                                                      //remove from set
                                                                       ModManTooltip(
                                                                           message: '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromThisSet}',
                                                                           child: InkWell(
-                                                                            onLongPress: curItem.applyStatus
-                                                                                ? null
-                                                                                : () {
+                                                                            onLongPress: () {
                                                                                     String tempItemName = curItem.itemName.replaceAll('_', '/');
                                                                                     removeModSetNameFromItems(curSet.setName, [curItem]);
                                                                                     modViewItem = null;
@@ -5148,7 +5365,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         '${curLangText!.uiSuccessfullyRemoved} $tempItemName ${curLangText!.uiFrom} ${curSet.setName}', 3000));
                                                                                     setState(() {});
                                                                                   },
-                                                                            child: Icon(Icons.delete_forever_outlined, color: curItem.applyStatus ? Theme.of(context).disabledColor : null),
+                                                                            child: const Icon(Icons.delete_forever_outlined),
                                                                           )),
                                                                     ],
                                                                   ),

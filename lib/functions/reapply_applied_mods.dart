@@ -32,3 +32,15 @@ Future<List<String>> reapplyAppliedMods(context) async {
   }
   return ['${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyAppliedAllModsIn}\n${reappliedFileNames.join('\n')}'];
 }
+
+Future<List<String>> reapplySelectedAppliedMods(context) async {
+  List<String> reappliedFileNames = [];
+  for (var modFile in selectedModFilesInAppliedList) {
+    await modFileApply(context, modFile);
+    String reappliedString = '${modFile.itemName} > ${modFile.modName} > ${modFile.submodName}';
+    if (!reappliedFileNames.contains(reappliedString)) {
+      reappliedFileNames.add(reappliedString);
+    }
+  }
+  return ['${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyAppliedAllModsIn}\n${reappliedFileNames.join('\n')}'];
+}
