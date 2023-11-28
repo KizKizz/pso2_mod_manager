@@ -207,7 +207,13 @@ class TranslationText {
       uiRemoveBoundaryRadius = 'Remove boundary radius',
       uiRemoveFromMM = 'Remove from Mod Manager',
       uiAddToModSets = 'Add to Mod Sets',
-      uiRemoveFromThisSet = 'Remove from this set';
+      uiRemoveFromThisSet = 'Remove from this set',
+      uiSelect = "Select",
+      uiDeselect = "Deselect", 
+      uiSelectAllAppliedMods = "Select all applied mods",
+      uiDeselectAllAppliedMods = "Deselect all applied mods",
+      uiSelectAll = "Select All",
+      uiDeselectAll = "Deselect All";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
