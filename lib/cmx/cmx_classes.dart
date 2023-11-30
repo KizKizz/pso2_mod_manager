@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
+
 class CmxModData {
   CmxModData(this.type, this.id, this.i20, this.i24, this.i28, this.i2C, this.costumeSoundId, this.headId, this.i38, this.i3C, this.linkedInnerId, this.i44, this.legLength, this.f4C, this.f50,
       this.f54, this.f58, this.f5C, this.f60, this.i64, this.redMaskMapping, this.greenMaskMapping, this.blueMaskMapping, this.alphaMaskMapping);
@@ -17,7 +19,7 @@ class CmxBody {
       this.f58, this.f5C, this.f60, this.i64, this.redMaskMapping, this.greenMaskMapping, this.blueMaskMapping, this.alphaMaskMapping, this.startIndex, this.endIndex);
   String type;
   int id, i20, i24, i28, i2C, costumeSoundId, headId, i38, i3C, linkedInnerId, i44, i64, redMaskMapping, greenMaskMapping, blueMaskMapping, alphaMaskMapping;
-  Float32x4 legLength;
+  double legLength;
   double f4C, f50, f54, f58, f5C, f60;
   int startIndex, endIndex;
 
@@ -35,13 +37,13 @@ class CmxBody {
             cmxData[19],
             cmxData[20],
             cmxData[21],
-            Float32x4.splat(cmxData[22].toDouble()),
-            cmxData[23].toDouble(),
-            cmxData[24].toDouble(),
-            cmxData[25].toDouble(),
-            cmxData[26].toDouble(),
-            cmxData[27].toDouble(),
-            cmxData[28].toDouble(),
+            ByteData.sublistView(int32bytes(cmxData[22])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[23])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[24])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[25])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[26])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[27])).getFloat32(0, Endian.little),
+            ByteData.sublistView(int32bytes(cmxData[28])).getFloat32(0, Endian.little),
             cmxData[29],
             cmxData[9],
             cmxData[10],
@@ -49,4 +51,7 @@ class CmxBody {
             cmxData[12],
             startIndex,
             endIndex);
+
+  
 }
+

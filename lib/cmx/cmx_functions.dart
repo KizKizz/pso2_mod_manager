@@ -36,7 +36,7 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
   Int32List? cmxData = await cmxFileData();
   bool headerRemoved = false;
   int startIndex = 0;
-  while (startIndex <= cmxData!.length) {
+  while (startIndex < cmxData!.length) {
     //remove header
     if (!headerRemoved) {
       int headerEndIndex = cmxData.indexWhere((element) => element == -1);
@@ -48,29 +48,19 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
       //listing costume cmx
       int firstSeparatorIndex = -1;
       int curIndex = startIndex;
-      while (firstSeparatorIndex == -1) {
-        if (cmxData[curIndex] != cmxCostumeSeparationValue) {
-          curIndex++;
-        } else {
-          debugPrint('${cmxData[curIndex + 1]}\n${cmxData[curIndex + 2]}\n${cmxData[curIndex + 3]}');
-
-          if (cmxData[curIndex + 1] == cmxCostumeSeparationValue && cmxData[curIndex + 2] == cmxCostumeSeparationValue && cmxData[curIndex + 3] == cmxCostumeSeparationValue) {
-            
-            cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
-            firstSeparatorIndex = curIndex;
-            startIndex = 99999999999999999;
-            break;
-          } else {
-            curIndex++;
-          }
+      while (firstSeparatorIndex == -1 && curIndex < cmxData.length) {
+        if (cmxData[curIndex] == cmxCostumeSeparationValue &&
+            cmxData[curIndex + 1] == cmxCostumeSeparationValue &&
+            cmxData[curIndex + 2] == cmxCostumeSeparationValue &&
+            cmxData[curIndex + 3] == cmxCostumeSeparationValue) {
+          cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
+          firstSeparatorIndex = curIndex;
+          curIndex += 3;
+          //break;
         }
+        curIndex++;
       }
-      // if (firstSeparatorIndex != -1) {
-      //   List<int> valueList = cmxIntList.getRange(0, firstSeparatorIndex).toList();
-      //   cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', valueList, startIndex, firstSeparatorIndex + startIndex - 1));
-      //   startIndex = firstSeparatorIndex + startIndex - 1;
-      //   cmxIntList.removeRange(0, firstSeparatorIndex + 4);
-      // }
+      startIndex = curIndex;
     }
   }
 
@@ -92,3 +82,5 @@ Future<Int32List?> cmxFileData() async {
 
   return null;
 }
+
+Uint8List int32bytes(int value) => Uint8List(4)..buffer.asInt32List()[0] = value;
