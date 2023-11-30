@@ -1,13 +1,13 @@
-import 'dart:io';
+// import 'dart:io';
 
-import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
-import 'package:pso2_mod_manager/functions/json_write.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
+// import 'package:pso2_mod_manager/classes/mod_file_class.dart';
+// import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+// import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+// import 'package:pso2_mod_manager/functions/json_write.dart';
+// import 'package:pso2_mod_manager/global_variables.dart';
+// import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+// // ignore: depend_on_referenced_packages
+// import 'package:path/path.dart' as p;
 
 // Future<List<ModFile>> modFilesUnapply(context, List<ModFile> modFiles) async {
 //   //apply mods
