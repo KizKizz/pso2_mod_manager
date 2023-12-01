@@ -4,11 +4,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/cmx/cmx_classes.dart';
+import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
-
-int cmxCostumeSeparationValue = -1082130432;
 
 Future<bool> cmxModPatch(String cmxModPath) async {
   //parse cmx from mod
@@ -27,70 +26,92 @@ Future<bool> cmxModPatch(String cmxModPath) async {
   //CmxModData cmxModData = CmxModData.parseCmxFromMod(cmxDataFromMod);
   List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
   (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList) = await cmxToObjects();
-  final testCmx = cmxOuterwearList.where((element) => element.id == 20001);
+  final testCmx = cmxOuterwearList.where((element) => element.id == 20000).toList();
 
   return true;
 }
 
 Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>)> cmxToObjects() async {
   List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
+  List<int> costumeOuterwearSepValues = List.generate(11, (index) => 100);
+  List<int> bodySepValues = List.generate(4, (index) => -1082130432);
   Int32List? cmxData = await cmxFileData();
+  List<int> costumeIndexes = [], outerwearIndexes = [], basewearIndexes = [];
   bool headerRemoved = false;
   int startIndex = 0;
   String curDataMark = 'costume';
-  while (startIndex < cmxData!.length) {
-    //remove header
-    if (!headerRemoved) {
-      int headerEndIndex = cmxData.indexWhere((element) => element == -1);
-      if (headerEndIndex != -1) {
-        startIndex = headerEndIndex + 1;
-        headerRemoved = true;
-      }
-    } else {
-      //listing costume cmx
-      int firstSeparatorIndex = -1;
-      int curIndex = startIndex;
-      while (firstSeparatorIndex == -1 && curIndex < cmxData.length) {
-        //costume and outer break
-        if (cmxData[curIndex] == 100 && cmxData[curIndex + 10] == 100 && cmxData[curIndex + 11] != 0) {
-          curDataMark = 'outerwear';
-          curIndex += 11;
-          startIndex = curIndex;
-        }
 
-        if (cmxData[startIndex] == 299901) {
-          debugPrint('299901');
-        }
-
-        //item break
-        if (cmxData[curIndex] == cmxCostumeSeparationValue &&
-            cmxData[curIndex + 1] == cmxCostumeSeparationValue &&
-            cmxData[curIndex + 2] == cmxCostumeSeparationValue &&
-            cmxData[curIndex + 3] == cmxCostumeSeparationValue) {
-          //outer and basewear break
-          if (cmxData[startIndex] == 20000 && cmxOuterwearList.indexWhere((element) => element.id == 20000) != -1) {
-            curDataMark = 'basewear';
-          }
-
-          //parse data
-          if (curDataMark == 'costume') {
-            cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
-          } else if (curDataMark == 'outerwear') {
-            cmxOuterwearList.add(CmxBody.parseFromCostumeDataList('outerwear', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
-          } else if (curDataMark == 'basewear') {
-            cmxBasewearList.add(CmxBody.parseFromCostumeDataList('basewear', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
-          }
-          firstSeparatorIndex = curIndex;
-          curIndex += 3;
-        }
-        curIndex++;
-      }
-      startIndex = curIndex;
+  //remove header
+  if (!headerRemoved) {
+    int headerEndIndex = cmxData!.indexWhere((element) => element == -1);
+    if (headerEndIndex != -1) {
+      startIndex = headerEndIndex++;
+      costumeIndexes.add(headerEndIndex++);
     }
+  }
+
+  while (startIndex < cmxData.length) {
+    int costumeOuterSepIndex = cmxData.indexOfSeparatorElements(costumeOuterwearSepValues, startIndex);
+    if (costumeOuterSepIndex != -1) {
+      curDataMark = 'outerwear';
+      outerwearIndexes.add(costumeOuterSepIndex);
+    }
+
+    int itemIndex = cmxData.indexOfSeparatorElements(bodySepValues, startIndex);
+    if (itemIndex != -1) {
+      //outer and basewear break
+      if (cmxData[itemIndex] == 20000 && outerwearIndexes.indexWhere((index) => cmxData[index] == 20000) != -1) {
+        curDataMark = 'basewear';
+      }
+      if (curDataMark == 'costume') {
+        costumeIndexes.add(itemIndex);
+      } else if (curDataMark == 'outerwear') {
+        outerwearIndexes.add(itemIndex);
+      } else if (curDataMark == 'basewear') {
+        basewearIndexes.add(itemIndex);
+      }
+      startIndex = itemIndex;
+    } else {
+      startIndex++;
+    }
+  }
+
+  for (int i = 0; i < costumeIndexes.length; i++) {
+    int start = costumeIndexes[i];
+    int last = 0;
+    if (i + 1 == costumeIndexes.length) {
+      last = costumeIndexes[i] + 50;
+    } else {
+      last = costumeIndexes[i + 1] - 1;
+    }
+    cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(start, last), start, last));
+  }
+
+  for (int i = 0; i < outerwearIndexes.length; i++) {
+    int start = outerwearIndexes[i];
+    int last = 0;
+    if (i + 1 == outerwearIndexes.length) {
+      last = outerwearIndexes[i] + 50;
+    } else {
+      last = outerwearIndexes[i + 1] - 1;
+    }
+    cmxOuterwearList.add(CmxBody.parseFromCostumeDataList('outerwear', cmxData.sublist(start, last), start, last));
+  }
+
+  for (int i = 0; i < basewearIndexes.length; i++) {
+    int start = basewearIndexes[i];
+    int last = 0;
+    if (i + 1 == basewearIndexes.length) {
+      last = basewearIndexes[i] + 50;
+    } else {
+      last = basewearIndexes[i + 1] - 1;
+    }
+    cmxBasewearList.add(CmxBody.parseFromCostumeDataList('basewear', cmxData.sublist(start, last), start, last));
   }
 
   return (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList);
 }
+
 
 Future<Int32List?> cmxFileData() async {
   File cmxIceFile = File(Uri.file('$modManPso2binPath/data/win32/1c5f7a7fbcdd873336048eaf6e26cd87').toFilePath());
@@ -109,3 +130,25 @@ Future<Int32List?> cmxFileData() async {
 }
 
 Uint8List int32bytes(int value) => Uint8List(4)..buffer.asInt32List()[0] = value;
+
+extension IndexOfSeparatorElements<T> on List<T> {
+  int indexOfSeparatorElements(List<T> elements, [int start = 0]) {
+    if (start + elements.length > length) return -1;
+
+    List<bool> found = List.generate(elements.length, (index) => false);
+
+    int traverseIndex = start;
+    for (int i = 0; i < elements.length; i++) {
+      if (this[traverseIndex] == elements[i]) {
+        found[i] = true;
+      }
+      traverseIndex++;
+    }
+
+    if (found.where((element) => element == false).isEmpty) {
+      return traverseIndex++;
+    } else {
+      return -1;
+    }
+  }
+}
