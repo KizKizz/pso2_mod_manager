@@ -25,17 +25,19 @@ Future<bool> cmxModPatch(String cmxModPath) async {
   // });
 
   //CmxModData cmxModData = CmxModData.parseCmxFromMod(cmxDataFromMod);
-  List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [];
-  (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList) = await cmxToObjects();
+  List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
+  (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList) = await cmxToObjects();
+  final testCmx = cmxOuterwearList.where((element) => element.id == 20001);
 
   return true;
 }
 
-Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>)> cmxToObjects() async {
-  List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [];
+Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>)> cmxToObjects() async {
+  List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
   Int32List? cmxData = await cmxFileData();
   bool headerRemoved = false;
   int startIndex = 0;
+  String curDataMark = 'costume';
   while (startIndex < cmxData!.length) {
     //remove header
     if (!headerRemoved) {
@@ -49,14 +51,37 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
       int firstSeparatorIndex = -1;
       int curIndex = startIndex;
       while (firstSeparatorIndex == -1 && curIndex < cmxData.length) {
+        //costume and outer break
+        if (cmxData[curIndex] == 100 && cmxData[curIndex + 10] == 100 && cmxData[curIndex + 11] != 0) {
+          curDataMark = 'outerwear';
+          curIndex += 11;
+          startIndex = curIndex;
+        }
+
+        if (cmxData[startIndex] == 299901) {
+          debugPrint('299901');
+        }
+
+        //item break
         if (cmxData[curIndex] == cmxCostumeSeparationValue &&
             cmxData[curIndex + 1] == cmxCostumeSeparationValue &&
             cmxData[curIndex + 2] == cmxCostumeSeparationValue &&
             cmxData[curIndex + 3] == cmxCostumeSeparationValue) {
-          cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
+          //outer and basewear break
+          if (cmxData[startIndex] == 20000 && cmxOuterwearList.indexWhere((element) => element.id == 20000) != -1) {
+            curDataMark = 'basewear';
+          }
+
+          //parse data
+          if (curDataMark == 'costume') {
+            cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
+          } else if (curDataMark == 'outerwear') {
+            cmxOuterwearList.add(CmxBody.parseFromCostumeDataList('outerwear', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
+          } else if (curDataMark == 'basewear') {
+            cmxBasewearList.add(CmxBody.parseFromCostumeDataList('basewear', cmxData.sublist(startIndex, curIndex), startIndex, curIndex - 1));
+          }
           firstSeparatorIndex = curIndex;
           curIndex += 3;
-          //break;
         }
         curIndex++;
       }
@@ -64,7 +89,7 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
     }
   }
 
-  return (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList);
+  return (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList);
 }
 
 Future<Int32List?> cmxFileData() async {
