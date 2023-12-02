@@ -2565,6 +2565,7 @@ class _HomePageState extends State<HomePage> {
                                                                     setState(() {});
                                                                   }
                                                                 }
+                                                                setState(() {});
                                                               });
                                                             },
                                                           ),
@@ -3009,6 +3010,7 @@ class _HomePageState extends State<HomePage> {
                                                                   //       setState(() {});
                                                                   //     });
                                                                 }
+                                                                setState(() {});
                                                               });
                                                             },
                                                           ),
@@ -3457,6 +3459,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 setState(() {});
                                                                               }
                                                                             }
+                                                                            setState(() {});
                                                                           });
                                                                         },
                                                                         child: const Icon(
@@ -3777,6 +3780,7 @@ class _HomePageState extends State<HomePage> {
                                                                               setState(() {});
                                                                             });
                                                                           }
+                                                                          setState(() {});
                                                                         },
                                                                       ),
                                                                     ),
@@ -4689,6 +4693,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     setState(() {});
                                                                                   });
                                                                                 }
+                                                                                setState(() {});
                                                                               },
                                                                               child: const Icon(
                                                                                 FontAwesomeIcons.squarePlus,
@@ -5160,6 +5165,7 @@ class _HomePageState extends State<HomePage> {
                                                                 setState(() {});
                                                               });
                                                             }
+                                                            setState(() {});
                                                           });
                                                         },
                                                         child: const Icon(
@@ -5355,16 +5361,16 @@ class _HomePageState extends State<HomePage> {
                                                                           message: '${curLangText!.uiHoldToRemove} ${curItem.itemName.replaceAll('_', '/')} ${curLangText!.uiFromThisSet}',
                                                                           child: InkWell(
                                                                             onLongPress: () {
-                                                                                    String tempItemName = curItem.itemName.replaceAll('_', '/');
-                                                                                    removeModSetNameFromItems(curSet.setName, [curItem]);
-                                                                                    modViewItem = null;
-                                                                                    curSet.setItems.remove(curItem);
-                                                                                    saveSetListToJson();
-                                                                                    saveModdedItemListToJson();
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                        '${curLangText!.uiSuccessfullyRemoved} $tempItemName ${curLangText!.uiFrom} ${curSet.setName}', 3000));
-                                                                                    setState(() {});
-                                                                                  },
+                                                                              String tempItemName = curItem.itemName.replaceAll('_', '/');
+                                                                              removeModSetNameFromItems(curSet.setName, [curItem]);
+                                                                              modViewItem = null;
+                                                                              curSet.setItems.remove(curItem);
+                                                                              saveSetListToJson();
+                                                                              saveModdedItemListToJson();
+                                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                  '${curLangText!.uiSuccessfullyRemoved} $tempItemName ${curLangText!.uiFrom} ${curSet.setName}', 3000));
+                                                                              setState(() {});
+                                                                            },
                                                                             child: const Icon(Icons.delete_forever_outlined),
                                                                           )),
                                                                     ],
@@ -5550,6 +5556,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     saveModdedItemListToJson();
                                                                                   });
                                                                                 }
+                                                                                setState(() {});
                                                                               },
                                                                               child: const Icon(
                                                                                 FontAwesomeIcons.squarePlus,
