@@ -1,13 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.4",
+    "version": "2.5.5",
     "description": [
-        "Added check boxes in Applied List to select certain mods to reapply - unapply or add to Mod Sets in bulk",
-        "Added an option to create new mod set in adding menu",
-        "Other minor bug fixes",
-        "適用済みリストにチェックボックスを追加し、特定のMODを選択して再適用したり、適用解除したり、一括でMODセットに追加できるようにした。",
-        "追加メニューに新しいMODセットを作成するオプションを追加",
-        "その他細かいバグ修正"
+        "Minor bug fixes",
+        "軽微なバグ修正"
     ],
     "windows_file": "",
     "linux_file": ""

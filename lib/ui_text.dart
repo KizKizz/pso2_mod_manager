@@ -216,7 +216,11 @@ class TranslationText {
       uiDeselectAll = "Deselect All",
       uiHoldToReapplySelectedMods = "Hold to reapply selected mods to the game",
       uiHoldToRemoveSelectedMods = "Hold to remove selected mods from the game",
-      uiAddSelectedModsToModSets = "Add selected mods to Mod Sets";
+      uiAddSelectedModsToModSets = "Add selected mods to Mod Sets",
+      uiFailed = "Failed",
+      uiFailedToRemove = "Failed to remove", 
+      uiUnknownErrorWhenRemovingModFromTheGame = "Unknown error when trying to remove mod files from the game",
+      uiSuccessWithErrors = 'Success with Errors';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

@@ -247,6 +247,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiHoldToRemoveSelectedMods'] as String
       ..uiAddSelectedModsToModSets =
           json['uiAddSelectedModsToModSets'] as String
+      ..uiFailed = json['uiFailed'] as String
+      ..uiFailedToRemove = json['uiFailedToRemove'] as String
+      ..uiUnknownErrorWhenRemovingModFromTheGame =
+          json['uiUnknownErrorWhenRemovingModFromTheGame'] as String
+      ..uiSuccessWithErrors = json['uiSuccessWithErrors'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -672,6 +677,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiHoldToReapplySelectedMods': instance.uiHoldToReapplySelectedMods,
       'uiHoldToRemoveSelectedMods': instance.uiHoldToRemoveSelectedMods,
       'uiAddSelectedModsToModSets': instance.uiAddSelectedModsToModSets,
+      'uiFailed': instance.uiFailed,
+      'uiFailedToRemove': instance.uiFailedToRemove,
+      'uiUnknownErrorWhenRemovingModFromTheGame':
+          instance.uiUnknownErrorWhenRemovingModFromTheGame,
+      'uiSuccessWithErrors': instance.uiSuccessWithErrors,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,

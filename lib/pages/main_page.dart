@@ -7,9 +7,11 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
@@ -1424,6 +1426,37 @@ class _MainPageState extends State<MainPage> {
                       padding: const EdgeInsets.only(top: 1.5),
                       child: Row(
                         children: [
+                          //test button
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons && kDebugMode,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: ModManTooltip(
+                                message: curLangText!.uiAddNewModsToMM,
+                                child: SizedBox(
+                                  //width: curActiveLang == 'JP' ? 110 : 105,
+                                  child: MaterialButton(
+                                    color: Colors.redAccent,
+                                    onPressed: () async {
+                                      //final XFile? selectedFile = await openFile();
+                                      cmxModPatch('');
+                                    },
+                                    child: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.deblur,
+                                          size: 18,
+                                        ),
+                                        SizedBox(width: 2.5),
+                                        Text('Destruct', style: TextStyle(fontWeight: FontWeight.w400))
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          
                           //Add Items/Mods
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,
