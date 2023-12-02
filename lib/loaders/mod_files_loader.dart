@@ -213,6 +213,9 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
             } else {
               item.isNew = true;
             }
+            if (item.applyStatus && item.mods.where((element) => element.applyStatus).isEmpty) {
+              item.applyStatus = false;
+            }
           }
           cate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
         }
@@ -510,19 +513,29 @@ void ogModFilesLoader() {
         .toList();
   }
   if (ogWin32RebootFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).existsSync()) {
-    ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath())
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where((element) => p.extension(element.path) == '')
-        .map((e) => e.path)
-        .toList();
+    final mainDirs = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath()).listSync().whereType<Directory>().where((element) => p.basename(element.path).length == 2);
+    for (var dir in mainDirs) {
+      ogWin32RebootFilePaths.addAll(dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList());
+    }
+
+    // ogWin32RebootFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot').toFilePath())
+    //     .listSync(recursive: true)
+    //     .whereType<File>()
+    //     .where((element) => p.extension(element.path) == '')
+    //     .map((e) => e.path)
+    //     .toList();
   }
   if (ogWin32RebootNAFilePaths.isEmpty && Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).existsSync()) {
-    ogWin32RebootNAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where((element) => p.extension(element.path) == '')
-        .map((e) => e.path)
-        .toList();
+    final mainDirs = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath()).listSync().whereType<Directory>().where((element) => p.basename(element.path).length == 2);
+    for (var dir in mainDirs) {
+      ogWin32RebootNAFilePaths.addAll(dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '').map((e) => e.path).toList());
+    }
+
+    // ogWin32RebootNAFilePaths = Directory(Uri.file('$modManPso2binPath/data/win32reboot_na').toFilePath())
+    //     .listSync(recursive: true)
+    //     .whereType<File>()
+    //     .where((element) => p.extension(element.path) == '')
+    //     .map((e) => e.path)
+    //     .toList();
   }
 }

@@ -42,6 +42,7 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
       return true;
     });
   } catch (e) {
+    isModViewModsApplying = false;
     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
   }
 

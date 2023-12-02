@@ -123,3 +123,36 @@ Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) a
     }
   }
 }
+
+void filesRestoredMessage(context, List<ModFile> curModFiles, List<ModFile> unappliedModFiles) {
+  List<String> successFiles = [], failedFiles = [];
+  String successMessage = '', failedMessage = '', message = '';
+  for (var modFile in curModFiles) {
+    if (unappliedModFiles.indexWhere((element) => element.modFileName == modFile.modFileName) != -1) {
+      successFiles.add(modFile.modFileName);
+    } else {
+      failedFiles.add(modFile.modFileName);
+    }
+  }
+
+  if (successFiles.isNotEmpty) {
+    successMessage = successFiles.join('\n');
+  }
+
+  if (failedMessage.isNotEmpty) {
+    failedMessage = failedFiles.join('\n');
+  }
+
+  if (successMessage.isNotEmpty && failedMessage.isEmpty) {
+    message = '${curLangText!.uiSuccessfullyRemoved} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$successMessage';
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', message.trim(), unappliedModFiles.length * 1000));
+  } else if (successMessage.isEmpty && failedMessage.isNotEmpty) {
+    message = '${curLangText!.uiFailedToRemove} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$failedMessage';
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', message.trim(), unappliedModFiles.length * 1000));
+  } else if (successMessage.isNotEmpty && failedMessage.isNotEmpty) {
+    message = '${curLangText!.uiSuccessfullyRemoved} ${curModFiles.first.modName} > ${curModFiles.first.submodName}:\n$successMessage\n${curLangText!.uiFailedToRemove}:\n$failedMessage';
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccessWithErrors}!', message.trim(), unappliedModFiles.length * 1000));
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiUnknownErrorWhenRemovingModFromTheGame, unappliedModFiles.length * 1000));
+  }
+}
