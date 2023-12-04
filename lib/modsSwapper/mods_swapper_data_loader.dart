@@ -255,7 +255,7 @@ Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, String 
   //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
   // }
   if (swapFromItemCategory == 'Setwears' || swapFromItemCategory == 'Basewears') {
-    return cvsDataInput.where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]'))).toList();
+    return cvsDataInput.where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]') || element.enName.contains('[Fu]'))).toList();
   }
   if (categorySymbol.isNotEmpty) {
     return cvsDataInput.where((element) => element.category == swapFromItemCategory && element.enName.contains(categorySymbol) && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
