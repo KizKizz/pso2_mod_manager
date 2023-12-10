@@ -82,6 +82,7 @@ Future<String> modsSwapperCategorySelect(context) async {
     'Cast Arm Parts',
     'Cast Body Parts',
     'Cast Leg Parts',
+    'Costumes',
     'Emotes',
     'Eyes',
     'Face Paints',

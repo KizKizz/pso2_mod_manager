@@ -371,33 +371,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-            //Add new cate group
-            // Visibility(
-            //   visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(left: 5, right: 5),
-            //     child: ModManTooltip(
-            //       message: curLangText!.uiAddNewCateGroup,
-            //       child: InkWell(
-            //           onTap: () async {
-            //             String newCateTypeName = await categoryGroupAdder(context);
-            //             if (newCateTypeName.isNotEmpty) {
-            //               moddedItemsList.insert(0, CategoryType(newCateTypeName, 0, true, true, []));
-            //               for (var cateType in moddedItemsList) {
-            //                 cateType.position = moddedItemsList.indexOf(cateType);
-            //               }
-            //               saveModdedItemListToJson();
-            //               setState(() {});
-            //             }
-            //           },
-            //           child: const Icon(
-            //             Icons.add_to_photos_outlined,
-            //             size: 20,
-            //           )),
-            //     ),
-            //   ),
-            // ),
-
             //Buttons Menu
             Visibility(
                 visible: !isFavListVisible && !isCateTypeReordering && !isShowHideCates && searchTextController.value.text.isEmpty,
@@ -599,6 +572,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                              subtitle: defaultCategoryTypes.contains(hiddenItemCategories[groupIndex].groupName) && curActiveLang == 'JP'
+                                  ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(hiddenItemCategories[groupIndex].groupName)])
+                                  : null,
                               initiallyExpanded: true,
                               children: [
                                 ListView.builder(
@@ -610,48 +586,52 @@ class _HomePageState extends State<HomePage> {
                                     return Visibility(
                                       visible: !curCategory.visible,
                                       child: SizedBox(
-                                        height: 63,
+                                        //height: 63,
                                         child: ListTile(
-                                            onTap: () {},
-                                            contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                                            tileColor: Colors.transparent,
-                                            minVerticalPadding: 5,
-                                            textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                                            trailing: ModManTooltip(
-                                              message: '${curLangText!.uiUnhide} ${curCategory.categoryName}',
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    showHiddenCategory(hiddenItemCategories, hiddenItemCategories[groupIndex], curCategory);
-                                                    setState(() {});
-                                                  },
-                                                  child: const Icon(
-                                                    FontAwesomeIcons.solidEye,
-                                                    size: 18,
-                                                  )),
-                                            ),
-                                            title: Row(
-                                              children: [
-                                                Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
-                                                  child: Container(
-                                                      padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                      ),
-                                                      child: curCategory.items.length < 2
-                                                          ? Text('${hiddenItemCategories[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
-                                                              style: const TextStyle(
-                                                                fontSize: 13,
-                                                              ))
-                                                          : Text('${curCategory.items.length} ${curLangText!.uiItems}',
-                                                              style: const TextStyle(
-                                                                fontSize: 13,
-                                                              ))),
-                                                ),
-                                              ],
-                                            )),
+                                          onTap: () {},
+                                          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                          tileColor: Colors.transparent,
+                                          minVerticalPadding: 5,
+                                          textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                                          trailing: ModManTooltip(
+                                            message: '${curLangText!.uiUnhide} ${curCategory.categoryName}',
+                                            child: InkWell(
+                                                onTap: () {
+                                                  showHiddenCategory(hiddenItemCategories, hiddenItemCategories[groupIndex], curCategory);
+                                                  setState(() {});
+                                                },
+                                                child: const Icon(
+                                                  FontAwesomeIcons.solidEye,
+                                                  size: 18,
+                                                )),
+                                          ),
+                                          title: Row(
+                                            children: [
+                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                                child: Container(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                    ),
+                                                    child: curCategory.items.length < 2
+                                                        ? Text('${hiddenItemCategories[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))
+                                                        : Text('${curCategory.items.length} ${curLangText!.uiItems}',
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                            ))),
+                                              ),
+                                            ],
+                                          ),
+                                          subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                              ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                              : null,
+                                        ),
                                       ),
                                     );
                                   },
@@ -696,6 +676,9 @@ class _HomePageState extends State<HomePage> {
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                                     onTap: () {},
                                     title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                    subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                        ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                        : null,
                                     trailing: const Icon(Icons.drag_handle_outlined),
                                   ),
                                 ),
@@ -769,6 +752,9 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
+                                        subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                            ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                            : null,
                                         initiallyExpanded: moddedItemsList[groupIndex].expanded,
                                         children: [
                                           //Main Normal Cate=========================================================
@@ -858,6 +844,9 @@ class _HomePageState extends State<HomePage> {
                                                           )
                                                         ],
                                                       ),
+                                                      subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                          ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                                          : null,
                                                       children: [
                                                         ListView.builder(
                                                             shrinkWrap: true,
@@ -1103,6 +1092,9 @@ class _HomePageState extends State<HomePage> {
                                                 setState(() {});
                                               },
                                               title: Text(searchedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                              subtitle: defaultCateforyDirs.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                                  ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(moddedItemsList[groupIndex].groupName)])
+                                                  : null,
                                               initiallyExpanded: searchedItemList[groupIndex].expanded,
                                               children: [
                                                 //Search Main Normal Cate=========================================================
@@ -1181,6 +1173,9 @@ class _HomePageState extends State<HomePage> {
                                                                 )
                                                               ],
                                                             ),
+                                                            subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                                ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                                                : null,
                                                             children: [
                                                               ListView.builder(
                                                                   shrinkWrap: true,
@@ -1523,6 +1518,9 @@ class _HomePageState extends State<HomePage> {
                                                       )
                                                     ],
                                                   ),
+                                                  subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                                      ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                                      : null,
                                                   trailing: !isCatesReordering[groupIndex]
                                                       ? null
                                                       : ModManTooltip(
@@ -1566,37 +1564,41 @@ class _HomePageState extends State<HomePage> {
                                                               key: Key('$categoryIndex'),
                                                               index: categoryIndex,
                                                               child: SizedBox(
-                                                                height: 63,
+                                                                //height: 63,
                                                                 child: ListTile(
-                                                                    onTap: () {},
-                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                                                                    tileColor: Colors.transparent,
-                                                                    minVerticalPadding: 5,
-                                                                    textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                                                                    trailing: const Icon(Icons.drag_handle_outlined),
-                                                                    title: Row(
-                                                                      children: [
-                                                                        Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
-                                                                          child: Container(
-                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
-                                                                              decoration: BoxDecoration(
-                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                              ),
-                                                                              child: curCategory.items.length < 2
-                                                                                  ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
-                                                                                      style: const TextStyle(
-                                                                                        fontSize: 13,
-                                                                                      ))
-                                                                                  : Text('${curCategory.items.length} ${curLangText!.uiItems}',
-                                                                                      style: const TextStyle(
-                                                                                        fontSize: 13,
-                                                                                      ))),
-                                                                        ),
-                                                                      ],
-                                                                    )),
+                                                                  onTap: () {},
+                                                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                                                  tileColor: Colors.transparent,
+                                                                  minVerticalPadding: 5,
+                                                                  textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                                                                  trailing: const Icon(Icons.drag_handle_outlined),
+                                                                  title: Row(
+                                                                    children: [
+                                                                      Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
+                                                                        child: Container(
+                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                            decoration: BoxDecoration(
+                                                                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                            ),
+                                                                            child: curCategory.items.length < 2
+                                                                                ? Text('${moddedItemsList[groupIndex].categories[categoryIndex].items.length} ${curLangText!.uiItem}',
+                                                                                    style: const TextStyle(
+                                                                                      fontSize: 13,
+                                                                                    ))
+                                                                                : Text('${curCategory.items.length} ${curLangText!.uiItems}',
+                                                                                    style: const TextStyle(
+                                                                                      fontSize: 13,
+                                                                                    ))),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                                      ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                                                      : null,
+                                                                ),
                                                               ),
                                                             );
                                                           }),
@@ -1727,6 +1729,9 @@ class _HomePageState extends State<HomePage> {
                                                                       )
                                                                     ],
                                                                   ),
+                                                                  subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                                      ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                                                      : null,
                                                                   children: [
                                                                     ListView.builder(
                                                                         shrinkWrap: true,
@@ -3966,113 +3971,6 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(
             width: 10,
           ),
-          // const VerticalDivider(
-          //   width: 10,
-          //   thickness: 1,
-          //   indent: 2,
-          //   endIndent: 2,
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(right: 5),
-          //   child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, runAlignment: WrapAlignment.center, spacing: 5, children: [
-          //     //Reapply all applied mods to game
-          //     Stack(
-          //       children: [
-          //         Visibility(
-          //           visible: isModViewModsApplying,
-          //           child: const SizedBox(
-          //             width: 20,
-          //             height: 20,
-          //             child: CircularProgressIndicator(),
-          //           ),
-          //         ),
-          //         Visibility(
-          //           visible: !isModViewModsApplying,
-          //           child: ModManTooltip(
-          //             message: curLangText!.uiHoldToReapplyAllModsInAppliedList,
-          //             child: InkWell(
-          //                 onLongPress: appliedItemList.isEmpty
-          //                     ? null
-          //                     : () {
-          //                         isModViewModsRemoving = true;
-          //                         isModViewModsApplying = true;
-          //                         setState(() {});
-          //                         Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
-          //                           reapplyAppliedMods(context).then((value) {
-          //                             isModViewModsRemoving = false;
-          //                             isModViewModsApplying = false;
-          //                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-          //                             setState(() {});
-          //                           });
-          //                         });
-          //                       },
-          //                 child: Icon(
-          //                   Icons.playlist_add,
-          //                   color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-          //                 )),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //     //Remove all mods from game
-          //     Stack(
-          //       children: [
-          //         Visibility(
-          //           visible: isModViewModsRemoving,
-          //           child: const SizedBox(
-          //             width: 20,
-          //             height: 20,
-          //             child: CircularProgressIndicator(),
-          //           ),
-          //         ),
-          //         Visibility(
-          //           visible: !isModViewModsRemoving,
-          //           child: ModManTooltip(
-          //             message: curLangText!.uiHoldToRemoveAllAppliedMods,
-          //             child: InkWell(
-          //                 onLongPress: appliedItemList.isEmpty
-          //                     ? null
-          //                     : () {
-          //                         isModViewModsRemoving = true;
-          //                         isModViewModsApplying = true;
-          //                         setState(() {});
-          //                         Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-          //                           unapplyAllMods(context).then((value) {
-          //                             isModViewModsRemoving = false;
-          //                             isModViewModsApplying = false;
-          //                             ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-          //                             setState(() {});
-          //                           });
-          //                         });
-          //                       },
-          //                 child: Icon(
-          //                   Icons.playlist_remove,
-          //                   color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-          //                 )),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //     //Add to mod set
-          //     ModManTooltip(
-          //       message: curLangText!.uiAddAllAppliedModsToSets,
-          //       child: InkWell(
-          //           onTap: appliedItemList.isEmpty
-          //               ? null
-          //               : () {
-          //                   isModSetAdding = true;
-          //                   isModViewListHidden = true;
-          //                   Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-          //                   setState(() {});
-          //                 },
-          //           child: Icon(
-          //             FontAwesomeIcons.folderPlus,
-          //             size: 18,
-          //             color: appliedItemList.isEmpty ? Theme.of(context).disabledColor : null,
-          //           )),
-          //     ),
-          //   ]),
-          // )
         ],
         title: Padding(
           padding: const EdgeInsets.only(left: 5, bottom: 5),
@@ -4147,6 +4045,9 @@ class _HomePageState extends State<HomePage> {
                             collapsedTextColor: Theme.of(context).colorScheme.primary,
                             collapsedIconColor: Theme.of(context).colorScheme.primary,
                             title: Text(appliedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            subtitle: defaultCategoryTypes.contains(appliedItemList[groupIndex].groupName) && curActiveLang == 'JP'
+                                ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(appliedItemList[groupIndex].groupName)])
+                                : null,
                             initiallyExpanded: appliedItemList[groupIndex].expanded,
                             children: [
                               ListView.builder(
@@ -4194,6 +4095,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                       ),
+                                      subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                          ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
+                                          : null,
                                       children: [
                                         ListView.builder(
                                             shrinkWrap: true,
@@ -4867,8 +4771,6 @@ class _HomePageState extends State<HomePage> {
                                                           isModViewModsApplying = true;
                                                           setState(() {});
                                                           Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                            //bool allOGFilesFound = true;
-                                                            //get og file paths
                                                             List<ModFile> allAppliedModFiles = [];
                                                             for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
                                                               for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
@@ -4878,22 +4780,8 @@ class _HomePageState extends State<HomePage> {
                                                               }
                                                             }
 
-                                                            // for (var modFile in allAppliedModFiles) {
-                                                            //   modFile.ogLocations = fetchOriginalIcePaths(modFile.modFileName);
-                                                            //   if (modFile.ogLocations.isEmpty) {
-                                                            //     ScaffoldMessenger.of(context).showSnackBar(
-                                                            //         snackBarMessage(context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${modFile.modFileName}', 3000));
-                                                            //     allOGFilesFound = false;
-                                                            //     isModViewModsApplying = false;
-                                                            //     break;
-                                                            //   }
-                                                            // }
-
                                                             //apply mod files
                                                             if (await originalFilesCheck(context, allAppliedModFiles)) {
-                                                              //local original files backup
-                                                              //await localOriginalFilesBackup(allAppliedModFiles);
-
                                                               modFilesApply(context, allAppliedModFiles).then((value) async {
                                                                 if (value.indexWhere((element) => element.applyStatus) != -1) {
                                                                   for (var curItem in curSet.setItems) {
@@ -4944,26 +4832,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ],
                                               ),
-                                            // ModManTooltip(
-                                            //   message: curLangText!.uiAddToThisSet,
-                                            //   child: InkWell(
-                                            //       onTap: !isModSetAdding
-                                            //           ? null
-                                            //           : () {
-                                            //               removeModSetNameFromItems(curSet.setName, curSet.setItems);
-                                            //               curSet.setItems = itemsFromAppliedListFetch(appliedItemList);
-                                            //               setModSetNameToItems(curSet.setName, curSet.setItems);
-                                            //               isModSetAdding = false;
-                                            //               saveSetListToJson();
-                                            //               saveModdedItemListToJson();
-                                            //               setState(() {});
-                                            //             },
-                                            //       child: Icon(
-                                            //         FontAwesomeIcons.folderPlus,
-                                            //         size: 22,
-                                            //         color: !isModSetAdding ? Theme.of(context).disabledColor : null,
-                                            //       )),
-                                            // ),
+
                                             //Delete
                                             ModManTooltip(
                                               message: '${curLangText!.uiHoldToRemove} ${curSet.setName} ${curLangText!.uiFromMM}',

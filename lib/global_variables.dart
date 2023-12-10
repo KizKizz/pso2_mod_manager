@@ -58,6 +58,7 @@ bool isModViewFromApplied = false;
 List<Widget> previewImages = [];
 String previewModName = '';
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
+List<String> defaultCategoryTypesJP = ['キャストパーツ', 'レイヤリングウェア', 'その他'];
 //Default Mod Caterories
 List<String> defaultCateforyDirs = [
   'Accessories', //0
@@ -77,6 +78,25 @@ List<String> defaultCateforyDirs = [
   'Motions', //14
   'Outerwears', //15
   'Setwears' //16
+];
+List<String> defaultCateforyDirsJP = [
+  'アクセサリー', //0
+  'ベースウェア/フルセットウェア', //1
+  'ボディペイント', //2
+  'キャストアームパーツ', //3
+  'キャストボディパーツ', //4
+  'キャストレッグパーツ', //5
+  'コスチューム', //6
+  'ロビーアクション', //7
+  '瞳・まゆ・まつげ', //8
+  'メイクパターン', //9
+  'ヘアスタイル', //10
+  'インナーウェア', //11
+  'マグ', //12
+  'その他', //13
+  'モーション', //14
+  'アウターウェア', //15
+  'セットウェア' //16
 ];
 bool isModViewModsApplying = false;
 bool isModViewModsRemoving = false;
