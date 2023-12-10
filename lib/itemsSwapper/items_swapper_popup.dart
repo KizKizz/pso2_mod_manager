@@ -10,23 +10,6 @@ import 'package:pso2_mod_manager/state_provider.dart';
 String fromItemName = '';
 String toItemName = '';
 
-// List<String> swapCategoriesF = [
-//   'Accessories',
-//   'Basewears',
-//   'Body Paints',
-//   'Cast Arm Parts',
-//   'Cast Body Parts',
-//   'Cast Leg Parts',
-//   'Costumes',
-//   'Emotes',
-//   'Eyes',
-//   'Face Paints',
-//   'Hairs',
-//   'Innerwears',
-//   'Motions',
-//   'Outerwears',
-//   'Setwears'
-// ];
 List<String> swapCategoriesF = [
   'Accessories',
   'Basewears',
@@ -34,6 +17,7 @@ List<String> swapCategoriesF = [
   'Cast Arm Parts',
   'Cast Body Parts',
   'Cast Leg Parts',
+  'Costumes',
   'Emotes',
   'Eyes',
   'Face Paints',
@@ -43,6 +27,22 @@ List<String> swapCategoriesF = [
   'Outerwears',
   'Setwears'
 ];
+// List<String> swapCategoriesF = [
+//   'Accessories',
+//   'Basewears',
+//   'Body Paints',
+//   'Cast Arm Parts',
+//   'Cast Body Parts',
+//   'Cast Leg Parts',
+//   'Emotes',
+//   'Eyes',
+//   'Face Paints',
+//   'Hairs',
+//   'Innerwears',
+//   'Motions',
+//   'Outerwears',
+//   'Setwears'
+// ];
 
 String? selectedCategoryF;
 
