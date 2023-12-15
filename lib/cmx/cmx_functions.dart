@@ -11,24 +11,93 @@ import 'package:path/path.dart' as p;
 
 Future<bool> cmxModPatch(String cmxModPath) async {
   //parse cmx from mod
-  // List<String> cmxDataFromMod = [];
-  // await File(cmxModPath).openRead().transform(utf8.decoder).transform(const LineSplitter()).forEach((line) {
-  //   if (line.contains(':')) {
-  //     final lineSplit = line.split(':');
-  //     cmxDataFromMod.add(lineSplit.first.trim());
-  //     cmxDataFromMod.add(lineSplit.last.trim());
-  //   } else {
-  //     final lineSplit = line.split('=');
-  //     cmxDataFromMod.add(lineSplit.last.trim());
-  //   }
-  // });
+  List<String> cmxDataFromMod = [];
+  await File(
+          "E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Basewears\\Sola Beach_D [Ba]\\Sola Beach D - Tweaks #1 - Barefoot v1\\basewear_208380_cmxConfig.txt")
+      .openRead()
+      .transform(utf8.decoder)
+      .transform(const LineSplitter())
+      .forEach((line) {
+    if (line.contains(':')) {
+      final lineSplit = line.split(':');
+      cmxDataFromMod.add(lineSplit.first.trim());
+      cmxDataFromMod.add(lineSplit.last.trim());
+    } else {
+      final lineSplit = line.split('=');
+      cmxDataFromMod.add(lineSplit.last.trim());
+    }
+  });
+
+  final cmxMod = CmxModData.parseCmxFromModNoMask(cmxDataFromMod);
 
   //CmxModData cmxModData = CmxModData.parseCmxFromMod(cmxDataFromMod);
   List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
   (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList) = await cmxToObjects();
-  final testCmx = cmxOuterwearList.where((element) => element.id == 20000).toList();
+  //final testCmx = cmxOuterwearList.where((element) => element.id == 20000).toList();
+  List<CmxBody> matchingCmxData = [];
+  if (cmxMod.type == 'costume') {
+    matchingCmxData = cmxCostumeList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+  } else if (cmxMod.type == 'basewear') {
+    matchingCmxData = cmxBasewearList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+  } else if (cmxMod.type == 'outerwear') {
+    matchingCmxData = cmxOuterwearList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+  }
+
+  Int32List? cmxData = await cmxFileData();
+  for (var data in matchingCmxData) {
+    List<int> partialList = cmxData!.getRange(data.startIndex, data.endIndex).toList();
+    //replace data
+    partialList[8] = int.parse(cmxMod.i20);
+    partialList[13] = int.parse(cmxMod.i24);
+    partialList[14] = int.parse(cmxMod.i28);
+    partialList[15] = int.parse(cmxMod.i2C);
+    partialList[16] = int.parse(cmxMod.costumeSoundId);
+    partialList[17] = int.parse(cmxMod.headId);
+    partialList[18] = int.parse(cmxMod.i38);
+    partialList[19] = int.parse(cmxMod.i3C);
+    partialList[20] = int.parse(cmxMod.linkedInnerId);
+    partialList[21] = int.parse(cmxMod.i44);
+    partialList[22] = floatTo32bitInt(double.parse(cmxMod.legLength));
+    partialList[23] = floatTo32bitInt(double.parse(cmxMod.f4C));
+    partialList[24] = floatTo32bitInt(double.parse(cmxMod.f50));
+    partialList[25] = floatTo32bitInt(double.parse(cmxMod.f54));
+    partialList[26] = floatTo32bitInt(double.parse(cmxMod.f58));
+    partialList[27] = floatTo32bitInt(double.parse(cmxMod.f5C));
+    partialList[28] = floatTo32bitInt(double.parse(cmxMod.f60));
+    partialList[29] = int.parse(cmxMod.i64);
+    if (cmxMod.redMaskMapping.isNotEmpty) partialList[9] = int.parse(cmxMod.redMaskMapping);
+    if (cmxMod.greenMaskMapping.isNotEmpty) partialList[10] = int.parse(cmxMod.greenMaskMapping);
+    if (cmxMod.blueMaskMapping.isNotEmpty) partialList[11] = int.parse(cmxMod.blueMaskMapping);
+    if (cmxMod.alphaMaskMapping.isNotEmpty) partialList[12] = int.parse(cmxMod.alphaMaskMapping);
+
+    int pIndex = 0;
+    for (int i = data.startIndex; i < data.endIndex; i++) {
+      cmxData[i] = partialList[pIndex];
+      pIndex++;
+    }
+  }
+
+  //write
+  String modManTempCmxDirPath = Uri.file('${Directory.current.path}/tempCmx').toFilePath();
+  File cmxIceFile = File(Uri.file('$modManPso2binPath/data/win32/1c5f7a7fbcdd873336048eaf6e26cd87').toFilePath());
+  File cmxFile = File(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}_ext/group1/pl_data_info.cmx').toFilePath());
+  Uint8List newFileData = cmxData!.buffer.asUint8List();
+  await cmxFile.writeAsBytes(newFileData);
+  //pack
+  await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(cmxFile.parent.path)}"', [Uri.file(p.dirname(cmxFile.parent.path)).toFilePath()]);
+    File packedCmxIceFile = File(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}_ext.ice').toFilePath()).renameSync(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}').toFilePath());
+
+
 
   return true;
+}
+
+int floatTo32bitInt(double value) {
+  var valueFloat = Float32List(1);
+  valueFloat.first = value;
+  var listOfBytes = valueFloat.buffer.asInt32List();
+
+  return listOfBytes.first;
 }
 
 Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>)> cmxToObjects() async {
@@ -111,7 +180,6 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
 
   return (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList);
 }
-
 
 Future<Int32List?> cmxFileData() async {
   File cmxIceFile = File(Uri.file('$modManPso2binPath/data/win32/1c5f7a7fbcdd873336048eaf6e26cd87').toFilePath());

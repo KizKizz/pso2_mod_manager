@@ -9,9 +9,12 @@ class CmxModData {
   String id, i20, i24, i28, i2C, costumeSoundId, headId, i38, i3C, linkedInnerId, i44, legLength, i64, redMaskMapping, greenMaskMapping, blueMaskMapping, alphaMaskMapping;
   String f4C, f50, f54, f58, f5C, f60;
 
-  CmxModData.parseCmxFromMod(List<String> cmxData)
+  CmxModData.parseCmxFromModWithMasks(List<String> cmxData)
       : this(cmxData[0], cmxData[1], cmxData[2], cmxData[3], cmxData[4], cmxData[5], cmxData[6], cmxData[7], cmxData[8], cmxData[9], cmxData[10], cmxData[11], cmxData[12], cmxData[13], cmxData[14],
             cmxData[15], cmxData[16], cmxData[17], cmxData[18], cmxData[19], cmxData[20], cmxData[21], cmxData[22], cmxData[23]);
+  CmxModData.parseCmxFromModNoMask(List<String> cmxData)
+      : this(cmxData[0], cmxData[1], cmxData[2], cmxData[3], cmxData[4], cmxData[5], cmxData[6], cmxData[7], cmxData[8], cmxData[9], cmxData[10], cmxData[11], cmxData[12], cmxData[13], cmxData[14],
+            cmxData[15], cmxData[16], cmxData[17], cmxData[18], cmxData[19], '', '', '', '');
 }
 
 class CmxBody {
@@ -51,7 +54,5 @@ class CmxBody {
             cmxData[12],
             startIndex,
             endIndex);
-
-  
 }
 
