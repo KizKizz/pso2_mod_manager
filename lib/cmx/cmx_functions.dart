@@ -7,11 +7,10 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-Future<bool> cmxModPatch(String cmxModPath) async {
+Future<(int startIndex, int endIndex)> cmxModPatch(String cmxModPath) async {
   //parse cmx from mod
   List<String> cmxDataFromMod = [];
-  await File(
-          "E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Basewears\\Sola Beach_D [Ba]\\Sola Beach D - Tweaks #1 - Barefoot v1\\basewear_208380_cmxConfig.txt")
+  await File(cmxModPath)
       .openRead()
       .transform(utf8.decoder)
       .transform(const LineSplitter())
@@ -32,18 +31,17 @@ Future<bool> cmxModPatch(String cmxModPath) async {
   List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
   (cmxCostumeList, cmxBasewearList, cmxOuterwearList, cmxCastArmList, cmxCastLegList, cmxHairList) = await cmxToObjects();
   //final testCmx = cmxOuterwearList.where((element) => element.id == 20000).toList();
-  List<CmxBody> matchingCmxData = [];
+  CmxBody? matchingCmxData;
   if (cmxMod.type == 'costume') {
-    matchingCmxData = cmxCostumeList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+    matchingCmxData = cmxCostumeList.firstWhere((element) => element.id == int.parse(cmxMod.id));
   } else if (cmxMod.type == 'basewear') {
-    matchingCmxData = cmxBasewearList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+    matchingCmxData = cmxBasewearList.firstWhere((element) => element.id == int.parse(cmxMod.id));
   } else if (cmxMod.type == 'outerwear') {
-    matchingCmxData = cmxOuterwearList.where((element) => element.id == int.parse(cmxMod.id)).toList();
+    matchingCmxData = cmxOuterwearList.firstWhere((element) => element.id == int.parse(cmxMod.id));
   }
 
   Int32List? cmxData = await cmxFileData();
-  for (var data in matchingCmxData) {
-    List<int> partialList = cmxData!.getRange(data.startIndex, data.endIndex).toList();
+    List<int> partialList = cmxData!.getRange(matchingCmxData!.startIndex, matchingCmxData.endIndex).toList();
     //replace data
     partialList[8] = int.parse(cmxMod.i20);
     partialList[13] = int.parse(cmxMod.i24);
@@ -69,17 +67,16 @@ Future<bool> cmxModPatch(String cmxModPath) async {
     if (cmxMod.alphaMaskMapping.isNotEmpty) partialList[12] = int.parse(cmxMod.alphaMaskMapping);
 
     int pIndex = 0;
-    for (int i = data.startIndex; i < data.endIndex; i++) {
+    for (int i = matchingCmxData.startIndex; i < matchingCmxData.endIndex; i++) {
       cmxData[i] = partialList[pIndex];
       pIndex++;
-    }
   }
 
   //write
   String modManTempCmxDirPath = Uri.file('${Directory.current.path}/tempCmx').toFilePath();
   File cmxIceFile = File(Uri.file('$modManPso2binPath/data/win32/1c5f7a7fbcdd873336048eaf6e26cd87').toFilePath());
   File cmxFile = File(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}_ext/group1/pl_data_info.cmx').toFilePath());
-  Uint8List newFileData = cmxData!.buffer.asUint8List();
+  Uint8List newFileData = cmxData.buffer.asUint8List();
   await cmxFile.writeAsBytes(newFileData);
   //pack
   await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(cmxFile.parent.path)}"', [Uri.file(p.dirname(cmxFile.parent.path)).toFilePath()]);
@@ -89,7 +86,7 @@ Future<bool> cmxModPatch(String cmxModPath) async {
   await packedCmxIceFile.copy(cmxIceFile.path);
   
 
-  return true;
+  return (matchingCmxData.startIndex, matchingCmxData.endIndex);
 }
 
 int floatTo32bitInt(double value) {

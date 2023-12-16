@@ -2274,18 +2274,18 @@ class _HomePageState extends State<HomePage> {
                                                                     fontSize: 15,
                                                                   )),
                                                             ),
-                                                            if (curMod.submods.where((element) => element.isSet && element.hasCmx).isNotEmpty)
-                                                            Container(
-                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                              ),
-                                                              child: Text(curLangText!.uiCmx,
-                                                                  style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                  )),
-                                                            )
+                                                            if (curMod.submods.where((element) => element.isSet && element.hasCmx!).isNotEmpty)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: const TextStyle(
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              )
                                                           ],
                                                         )
                                                       : Wrap(
@@ -2305,18 +2305,18 @@ class _HomePageState extends State<HomePage> {
                                                                     fontSize: 15,
                                                                   )),
                                                             ),
-                                                            if (curMod.submods.where((element) => element.hasCmx).isNotEmpty)
-                                                            Container(
-                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                              ),
-                                                              child: Text(curLangText!.uiCmx,
-                                                                  style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                  )),
-                                                            )
+                                                            if (curMod.submods.where((element) => element.hasCmx!).isNotEmpty)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: const TextStyle(
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              )
                                                           ],
                                                         )
                                                 ],
@@ -2503,6 +2503,20 @@ class _HomePageState extends State<HomePage> {
                                               runAlignment: WrapAlignment.center,
                                               spacing: 5,
                                               children: [
+                                                //cmx indicator
+                                                if (curMod.submods.first.hasCmx!)
+                                                  Container(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(color: curMod.submods.first.cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                    ),
+                                                    child: Text(curLangText!.uiCmx,
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                        )),
+                                                  ),
+
                                                 //Add-Remove button
                                                 if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
                                                   Stack(
@@ -2872,6 +2886,21 @@ class _HomePageState extends State<HomePage> {
                                               runAlignment: WrapAlignment.center,
                                               spacing: 5,
                                               children: [
+                                                //cmx indicator
+                                                if (curMod.submods[modViewModSetSubModIndex].hasCmx!)
+                                                  Container(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                    ),
+                                                    child: Text(curLangText!.uiCmx,
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                        )),
+                                                  ),
+
                                                 //Add-Remove button
                                                 if (modViewModSetSubModIndex != -1 && curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1)
                                                   Stack(
@@ -3294,6 +3323,19 @@ class _HomePageState extends State<HomePage> {
                                                           runAlignment: WrapAlignment.center,
                                                           spacing: 5,
                                                           children: [
+                                                            //cmx indicator
+                                                            if (curSubmod.hasCmx!)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: const TextStyle(
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              ),
                                                             //Apply button in submod
                                                             //remove button
                                                             if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)

@@ -673,7 +673,7 @@ void modsAdderHomePage(context) {
                                                                                         if (Directory(p.dirname(processedFileList[index].itemDirPath)).listSync().isEmpty) {
                                                                                           Directory(p.dirname(processedFileList[index].itemDirPath)).deleteSync(recursive: true);
                                                                                         }
-                                                                                        processedFileList[index].setNewParentPathToChildren(newItemPath);
+                                                                                        processedFileList[index].setNewParentPathToChildren(newItemPath.trim());
                                                                                         processedFileList[index].itemDirPath = newItemPath;
                                                                                         processedFileList[index].category = value.toString();
                                                                                         debugPrint(processedFileList[index].itemDirPath);
@@ -767,7 +767,7 @@ void modsAdderHomePage(context) {
                                                                                                             var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
                                                                                                                 Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName')
                                                                                                                     .toFilePath());
-                                                                                                            processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                            processedFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
                                                                                                             processedFileList[index].itemIconPath = processedFileList[index]
                                                                                                                 .itemIconPath
                                                                                                                 .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
@@ -820,7 +820,7 @@ void modsAdderHomePage(context) {
                                                                                                               var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
                                                                                                                   Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName')
                                                                                                                       .toFilePath());
-                                                                                                              processedFileList[index].setNewParentPathToChildren(newItemDir.path);
+                                                                                                              processedFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
                                                                                                               processedFileList[index].itemIconPath = processedFileList[index]
                                                                                                                   .itemIconPath
                                                                                                                   .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
@@ -1060,7 +1060,7 @@ void modsAdderHomePage(context) {
                                                                                                           curMod.modName = renameTextBoxController.text;
                                                                                                           var newModDir = await Directory(curMod.modDirPath).rename(
                                                                                                               Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
-                                                                                                          curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                          curMod.setNewParentPathToChildren(newModDir.path.trim());
                                                                                                           curMod.modDirPath = newModDir.path;
                                                                                                         }
 
@@ -1092,7 +1092,7 @@ void modsAdderHomePage(context) {
                                                                                                             var newModDir = await Directory(curMod.modDirPath).rename(
                                                                                                                 Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}')
                                                                                                                     .toFilePath());
-                                                                                                            curMod.setNewParentPathToChildren(newModDir.path);
+                                                                                                            curMod.setNewParentPathToChildren(newModDir.path.trim());
                                                                                                             curMod.modDirPath = newModDir.path;
                                                                                                           }
 
@@ -2036,7 +2036,7 @@ Future<List<ModsAdderItem>> replaceNamesOfDuplicates(List<ModsAdderItem> process
         String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
         mod.modName = '${mod.modName}_$formattedDate';
         var newModDir = await Directory(mod.modDirPath).rename(Uri.file('${p.dirname(mod.modDirPath)}/${mod.modName}').toFilePath());
-        mod.setNewParentPathToChildren(newModDir.path);
+        mod.setNewParentPathToChildren(newModDir.path.trim());
         mod.modDirPath = newModDir.path;
       } else if (mod.isChildrenDuplicated) {
         for (var submod in mod.submodList) {

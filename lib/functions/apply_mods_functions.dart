@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -14,6 +15,18 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
   try {
     await modFilesApply(context, curSubmod.modFiles).then((value) async {
       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+        //aaply cmx
+        if (curSubmod.hasCmx!) {
+          for (var cmxPath in curSubmod.cmxFiles!) {
+            int startIndex = -1, endIndex = -1;
+            (startIndex, endIndex) = await cmxModPatch(cmxPath);
+            if (startIndex != -1 && endIndex != -1) {
+              curSubmod.cmxStartPos = startIndex;
+              curSubmod.cmxEndPos = endIndex;
+              curSubmod.cmxApplied = true;
+            }
+          }
+        }
         curSubmod.applyDate = DateTime.now();
         curItem.applyDate = DateTime.now();
         curMod.applyDate = DateTime.now();
