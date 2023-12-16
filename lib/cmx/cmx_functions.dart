@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/cmx/cmx_classes.dart';
-import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -85,9 +83,11 @@ Future<bool> cmxModPatch(String cmxModPath) async {
   await cmxFile.writeAsBytes(newFileData);
   //pack
   await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(cmxFile.parent.path)}"', [Uri.file(p.dirname(cmxFile.parent.path)).toFilePath()]);
-    File packedCmxIceFile = File(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}_ext.ice').toFilePath()).renameSync(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}').toFilePath());
-
-
+  File packedCmxIceFile =
+      File(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}_ext.ice').toFilePath()).renameSync(Uri.file('$modManTempCmxDirPath/${p.basename(cmxIceFile.path)}').toFilePath());
+  //copy
+  await packedCmxIceFile.copy(cmxIceFile.path);
+  
 
   return true;
 }

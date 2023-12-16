@@ -197,6 +197,7 @@
   "uiFailedToRemove": "削除に失敗",
   "uiUnknownErrorWhenRemovingModFromTheGame": "ゲームからMODファイルを削除しようとすると、不明なエラーが発生する。",
   "uiSuccessWithErrors": "エラーと成功",
+  "uiCmx": "cmx",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ、ZIPファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します。\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",

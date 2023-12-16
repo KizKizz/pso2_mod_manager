@@ -611,7 +611,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -801,7 +801,7 @@ class _HomePageState extends State<HomePage> {
                                                               Padding(
                                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                 child: Container(
-                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                     decoration: BoxDecoration(
                                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -918,7 +918,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     spacing: 5,
                                                                                     children: [
                                                                                       Container(
-                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                         decoration: BoxDecoration(
                                                                                           border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                           borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -931,7 +931,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         ),
                                                                                       ),
                                                                                       Container(
-                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                         decoration: BoxDecoration(
                                                                                           border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                           borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1143,7 +1143,7 @@ class _HomePageState extends State<HomePage> {
                                                                     Padding(
                                                                       padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                       child: Container(
-                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                           decoration: BoxDecoration(
                                                                             border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1248,7 +1248,7 @@ class _HomePageState extends State<HomePage> {
                                                                                           spacing: 5,
                                                                                           children: [
                                                                                             Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                               decoration: BoxDecoration(
                                                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1259,7 +1259,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               ),
                                                                                             ),
                                                                                             Container(
-                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                 decoration: BoxDecoration(
                                                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1578,7 +1578,7 @@ class _HomePageState extends State<HomePage> {
                                                                       Padding(
                                                                         padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                         child: Container(
-                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                             decoration: BoxDecoration(
                                                                               border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1651,7 +1651,7 @@ class _HomePageState extends State<HomePage> {
                                                                           Padding(
                                                                             padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                             child: Container(
-                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                 decoration: BoxDecoration(
                                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1803,7 +1803,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               spacing: 5,
                                                                                               children: [
                                                                                                 Container(
-                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                   decoration: BoxDecoration(
                                                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1816,7 +1816,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   ),
                                                                                                 ),
                                                                                                 Container(
-                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                   decoration: BoxDecoration(
                                                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2058,7 +2058,7 @@ class _HomePageState extends State<HomePage> {
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2071,7 +2071,7 @@ class _HomePageState extends State<HomePage> {
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2086,7 +2086,7 @@ class _HomePageState extends State<HomePage> {
                         //searching
                         if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2101,7 +2101,7 @@ class _HomePageState extends State<HomePage> {
                         //set
                         if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2252,21 +2252,73 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               Text(curMod.modName,
                                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: curMod.applyStatus ? Theme.of(context).colorScheme.primary : null)),
-                                              Column(
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
-                                                      ? Text(
-                                                          curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
-                                                              ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
-                                                              : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
-                                                          style: const TextStyle(
-                                                            fontSize: 15,
-                                                          ))
-                                                      : Text(curMod.submods.length < 2 ? '${curMod.submods.length} ${curLangText!.uiVariant}' : '${curMod.submods.length} ${curLangText!.uiVariants}',
-                                                          style: const TextStyle(
-                                                            fontSize: 15,
-                                                          )),
+                                                      ? Wrap(
+                                                          spacing: 5,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(
+                                                                  curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                                                      ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            ),
+                                                            if (curMod.submods.where((element) => element.isSet && element.hasCmx).isNotEmpty)
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(curLangText!.uiCmx,
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            )
+                                                          ],
+                                                        )
+                                                      : Wrap(
+                                                          spacing: 5,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(
+                                                                  curMod.submods.length < 2
+                                                                      ? '${curMod.submods.length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            ),
+                                                            if (curMod.submods.where((element) => element.hasCmx).isNotEmpty)
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(curLangText!.uiCmx,
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            )
+                                                          ],
+                                                        )
                                                 ],
                                               ),
                                             ],
@@ -3981,7 +4033,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Container(
-                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
+                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).colorScheme.primary),
                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -4076,7 +4128,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).highlightColor),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -4639,7 +4691,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).highlightColor),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),

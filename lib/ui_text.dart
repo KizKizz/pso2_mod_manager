@@ -220,7 +220,8 @@ class TranslationText {
       uiFailed = "Failed",
       uiFailedToRemove = "Failed to remove", 
       uiUnknownErrorWhenRemovingModFromTheGame = "Unknown error when trying to remove mod files from the game",
-      uiSuccessWithErrors = 'Success with Errors';
+      uiSuccessWithErrors = "Success with Errors",
+      uiCmx = "cmx";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
