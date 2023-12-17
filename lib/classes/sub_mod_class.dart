@@ -18,11 +18,11 @@ class SubMod {
   bool isNew;
   bool isFavorite;
   bool isSet;
-  bool? hasCmx;
-  bool? cmxApplied;
-  int? cmxStartPos;
-  int? cmxEndPos;
-  String? cmxFile;
+  bool? hasCmx = false;
+  bool? cmxApplied = false;
+  int? cmxStartPos = -1;
+  int? cmxEndPos = -1;
+  String? cmxFile = '';
   List<String> setNames;
   List<String> previewImages;
   List<String> previewVideos;
