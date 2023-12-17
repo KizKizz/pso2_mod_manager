@@ -1,11 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.6",
+    "version": "2.5.7",
     "description": [
-        "Added Japanese descriptions for item categories in Item List",
-        "Fixes an error when selecting pso2 classic costumes to swap",
-        "アイテムリストのアイテムカテゴリーに日本語表記を追加",
-        "交換するpso2クラシックコスチュームを選択する際のエラーを修正"
+        "Added support for mods that require cmx editing. (layering wears only)",
+        "Some minor bug fixes",
+        "cmx編集を必要とするMODのサポートを追加。(レイヤリングウェアのみ）",
+        "いくつかのマイナーバグの修正"
     ],
     "windows_file": "",
     "linux_file": ""

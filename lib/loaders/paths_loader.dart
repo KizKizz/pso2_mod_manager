@@ -47,6 +47,7 @@ String modManWin32NaChecksumMD5 = '';
 String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
 String modManVitalGaugeDirPath = '';
 String modManVitalGaugeOriginalsDirPath = '';
+String modManTempCmxDirPath = Uri.file('${Directory.current.path}/tempCmx').toFilePath();
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -151,6 +152,7 @@ Future<bool> pathsLoader(context) async {
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
+  Directory(modManTempCmxDirPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();
@@ -490,6 +492,7 @@ Future<bool> modManPathReloader(context) async {
   Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
   modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
   Directory(modManModsAdderPath).createSync(recursive: true);
+  Directory(modManTempCmxDirPath).createSync(recursive: true);
   //Create Json files
   modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
   File(modManModsListJsonPath).createSync();

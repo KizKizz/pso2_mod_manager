@@ -15,7 +15,7 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
   try {
     await modFilesApply(context, curSubmod.modFiles).then((value) async {
       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-        //aaply cmx
+        //apply cmx
         if (curSubmod.hasCmx!) {
           int startIndex = -1, endIndex = -1;
           (startIndex, endIndex) = await cmxModPatch(curSubmod.cmxFile!);
