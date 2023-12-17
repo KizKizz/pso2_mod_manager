@@ -1,9 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.7",
+    "version": "2.5.8",
     "description": [
+        "Hotfix for a bug in v2.5.7",
         "Added support for mods that require cmx editing. (Support costume cmx - basewear cmx - outerwear cmx and it's still in testing phrase)",
         "Some minor bug fixes",
+        "v2.5.7のバグの修正",
         "cmx編集を必要とするMODのサポートを追加。(サポートコスチュームcmx - ベースウェアcmx - アウターウェアcmx - まだテストフレーズです)",
         "いくつかのマイナーバグの修正"
     ],
