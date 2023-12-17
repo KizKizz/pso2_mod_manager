@@ -170,6 +170,11 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.submodName = curJsonSubmodsList[submodIndex].submodName;
                       //submod.previewImages = curJsonSubmodsList[submodIndex].previewImages;
                       //submod.previewVideos = curJsonSubmodsList[submodIndex].previewVideos;
+                      submod.hasCmx = curJsonSubmodsList[submodIndex].hasCmx;
+                      submod.cmxApplied = curJsonSubmodsList[submodIndex].cmxApplied;
+                      submod.cmxStartPos = curJsonSubmodsList[submodIndex].cmxStartPos;
+                      submod.cmxEndPos = curJsonSubmodsList[submodIndex].cmxEndPos;
+                      //submod.cmxFile = curJsonSubmodsList[submodIndex].cmxFile;
                       submod.isSet = curJsonSubmodsList[submodIndex].isSet;
                       submod.setNames = curJsonSubmodsList[submodIndex].setNames;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
@@ -446,7 +451,11 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
 
     //get cmx file
     bool hasCmx = false;
-    final cmxFile = Directory(modPath).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    final cmxFile = Directory(modPath)
+        .listSync(recursive: false)
+        .whereType<File>()
+        .firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File(''))
+        .path;
     if (cmxFile.isNotEmpty) {
       hasCmx = true;
     }
@@ -475,7 +484,11 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
 
     //get cmx file
     bool hasCmx = false;
-    final cmxFile = Directory(modPath).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    final cmxFile = Directory(modPath)
+        .listSync(recursive: false)
+        .whereType<File>()
+        .firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File(''))
+        .path;
     if (cmxFile.isNotEmpty) {
       hasCmx = true;
     }
