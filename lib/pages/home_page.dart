@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
+import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_all_available_mods.dart';
@@ -611,7 +612,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -801,7 +802,7 @@ class _HomePageState extends State<HomePage> {
                                                               Padding(
                                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                 child: Container(
-                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                     decoration: BoxDecoration(
                                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -918,7 +919,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     spacing: 5,
                                                                                     children: [
                                                                                       Container(
-                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                         decoration: BoxDecoration(
                                                                                           border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                           borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -931,7 +932,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         ),
                                                                                       ),
                                                                                       Container(
-                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                         decoration: BoxDecoration(
                                                                                           border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                           borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1143,7 +1144,7 @@ class _HomePageState extends State<HomePage> {
                                                                     Padding(
                                                                       padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                       child: Container(
-                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                          padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                           decoration: BoxDecoration(
                                                                             border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1248,7 +1249,7 @@ class _HomePageState extends State<HomePage> {
                                                                                           spacing: 5,
                                                                                           children: [
                                                                                             Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                               decoration: BoxDecoration(
                                                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1259,7 +1260,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               ),
                                                                                             ),
                                                                                             Container(
-                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                 decoration: BoxDecoration(
                                                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1578,7 +1579,7 @@ class _HomePageState extends State<HomePage> {
                                                                       Padding(
                                                                         padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                         child: Container(
-                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                             decoration: BoxDecoration(
                                                                               border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1651,7 +1652,7 @@ class _HomePageState extends State<HomePage> {
                                                                           Padding(
                                                                             padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                             child: Container(
-                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                 decoration: BoxDecoration(
                                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1803,7 +1804,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               spacing: 5,
                                                                                               children: [
                                                                                                 Container(
-                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                   decoration: BoxDecoration(
                                                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -1816,7 +1817,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   ),
                                                                                                 ),
                                                                                                 Container(
-                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                   decoration: BoxDecoration(
                                                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2058,7 +2059,7 @@ class _HomePageState extends State<HomePage> {
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2071,7 +2072,7 @@ class _HomePageState extends State<HomePage> {
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2086,7 +2087,7 @@ class _HomePageState extends State<HomePage> {
                         //searching
                         if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2101,7 +2102,7 @@ class _HomePageState extends State<HomePage> {
                         //set
                         if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Theme.of(context).primaryColorLight),
                               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -2252,21 +2253,81 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               Text(curMod.modName,
                                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: curMod.applyStatus ? Theme.of(context).colorScheme.primary : null)),
-                                              Column(
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
-                                                      ? Text(
-                                                          curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
-                                                              ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
-                                                              : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
-                                                          style: const TextStyle(
-                                                            fontSize: 15,
-                                                          ))
-                                                      : Text(curMod.submods.length < 2 ? '${curMod.submods.length} ${curLangText!.uiVariant}' : '${curMod.submods.length} ${curLangText!.uiVariants}',
-                                                          style: const TextStyle(
-                                                            fontSize: 15,
-                                                          )),
+                                                      ? Wrap(
+                                                          spacing: 5,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(
+                                                                  curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                                                      ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            ),
+                                                            if (curMod.submods.where((element) => element.isSet && element.hasCmx!).isNotEmpty)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
+                                                                          ? Theme.of(context).colorScheme.primary
+                                                                          : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: TextStyle(
+                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              )
+                                                          ],
+                                                        )
+                                                      : Wrap(
+                                                          spacing: 5,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                              ),
+                                                              child: Text(
+                                                                  curMod.submods.length < 2
+                                                                      ? '${curMod.submods.length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  )),
+                                                            ),
+                                                            if (curMod.submods.where((element) => element.hasCmx!).isNotEmpty)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
+                                                                          ? Theme.of(context).colorScheme.primary
+                                                                          : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: TextStyle(
+                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              )
+                                                          ],
+                                                        )
                                                 ],
                                               ),
                                             ],
@@ -2478,6 +2539,14 @@ class _HomePageState extends State<HomePage> {
 
                                                                 Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                   restoreOriginalFilesToTheGame(context, curMod.submods.first.modFiles).then((unappliedModFiles) async {
+                                                                    if (curMod.submods.first.cmxApplied!) {
+                                                                      bool status = await cmxModRemoval(curMod.submods.first.cmxStartPos!, curMod.submods.first.cmxEndPos!);
+                                                                      if (status) {
+                                                                        curMod.submods.first.cmxApplied = false;
+                                                                        curMod.submods.first.cmxStartPos = -1;
+                                                                        curMod.submods.first.cmxEndPos = -1;
+                                                                      }
+                                                                    }
                                                                     if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       curMod.submods.first.applyStatus = false;
                                                                     }
@@ -2820,6 +2889,22 @@ class _HomePageState extends State<HomePage> {
                                               runAlignment: WrapAlignment.center,
                                               spacing: 5,
                                               children: [
+                                                //cmx indicator
+                                                if (curMod.submods[modViewModSetSubModIndex].hasCmx!)
+                                                  Container(
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                    ),
+                                                    child: Text(curLangText!.uiCmx,
+                                                        style: TextStyle(
+                                                          color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : null,
+                                                          fontSize: 15,
+                                                        )),
+                                                  ),
+
                                                 //Add-Remove button
                                                 if (modViewModSetSubModIndex != -1 && curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1)
                                                   Stack(
@@ -2847,6 +2932,15 @@ class _HomePageState extends State<HomePage> {
                                                                 Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                   //status
                                                                   restoreOriginalFilesToTheGame(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
+                                                                    if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
+                                                                      bool status = await cmxModRemoval(
+                                                                          curMod.submods[modViewModSetSubModIndex].cmxStartPos!, curMod.submods[modViewModSetSubModIndex].cmxEndPos!);
+                                                                      if (status) {
+                                                                        curMod.submods[modViewModSetSubModIndex].cmxApplied = false;
+                                                                        curMod.submods[modViewModSetSubModIndex].cmxStartPos = -1;
+                                                                        curMod.submods[modViewModSetSubModIndex].cmxEndPos = -1;
+                                                                      }
+                                                                    }
                                                                     if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       curMod.submods[modViewModSetSubModIndex].applyStatus = false;
                                                                     }
@@ -3242,6 +3336,20 @@ class _HomePageState extends State<HomePage> {
                                                           runAlignment: WrapAlignment.center,
                                                           spacing: 5,
                                                           children: [
+                                                            //cmx indicator
+                                                            if (curSubmod.hasCmx!)
+                                                              Container(
+                                                                padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                ),
+                                                                child: Text(curLangText!.uiCmx,
+                                                                    style: TextStyle(
+                                                                      color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : null,
+                                                                      fontSize: 15,
+                                                                    )),
+                                                              ),
                                                             //Apply button in submod
                                                             //remove button
                                                             if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
@@ -3270,6 +3378,14 @@ class _HomePageState extends State<HomePage> {
                                                                           Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                             //status
                                                                             restoreOriginalFilesToTheGame(context, curSubmod.modFiles).then((value) async {
+                                                                              if (curSubmod.cmxApplied!) {
+                                                                                bool status = await cmxModRemoval(curSubmod.cmxStartPos!, curSubmod.cmxEndPos!);
+                                                                                if (status) {
+                                                                                  curSubmod.cmxApplied = false;
+                                                                                  curSubmod.cmxStartPos = -1;
+                                                                                  curSubmod.cmxEndPos = -1;
+                                                                                }
+                                                                              }
                                                                               if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                 curSubmod.applyStatus = false;
                                                                               }
@@ -3605,20 +3721,8 @@ class _HomePageState extends State<HomePage> {
                                                                           Icons.add,
                                                                         ),
                                                                         onTap: () async {
-                                                                          // bool allOGFilesFound = true;
-                                                                          //get og file paths
-                                                                          // curModFile.ogLocations = fetchOriginalIcePaths(curModFile.modFileName);
-                                                                          // if (curModFile.ogLocations.isEmpty) {
-                                                                          //   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          //       context, '${curLangText!.uiError}!', '${curLangText!.uiCouldntFindOGFileFor} ${curModFile.modFileName}', 3000));
-                                                                          //   allOGFilesFound = false;
-                                                                          // }
-
                                                                           //apply mod files
                                                                           if (await originalFilesCheck(context, [curModFile])) {
-                                                                            //local original files backup
-                                                                            //await localOriginalFilesBackup([curModFile]);
-
                                                                             modFilesApply(context, [curModFile]).then((value) async {
                                                                               if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
                                                                                 curSubmod.applyDate = DateTime.now();
@@ -3981,7 +4085,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Container(
-                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
+                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).colorScheme.primary),
                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -4076,7 +4180,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).highlightColor),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -4309,6 +4413,14 @@ class _HomePageState extends State<HomePage> {
                                                                                           for (var mod in curMods) {
                                                                                             for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                                               if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                if (submod.cmxApplied!) {
+                                                                                                  bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
+                                                                                                  if (status) {
+                                                                                                    submod.cmxApplied = false;
+                                                                                                    submod.cmxStartPos = -1;
+                                                                                                    submod.cmxEndPos = -1;
+                                                                                                  }
+                                                                                                }
                                                                                                 submod.applyStatus = false;
                                                                                                 submod.applyDate = DateTime(0);
                                                                                               }
@@ -4408,10 +4520,33 @@ class _HomePageState extends State<HomePage> {
                                                                   )
                                                                 ],
                                                               ),
-                                                            Text(
-                                                              '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
-                                                              //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
-                                                            ),
+                                                            Wrap(
+                                                              spacing: 5,
+                                                              children: [
+                                                                Text(
+                                                                  '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
+                                                                  //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                ),
+                                                                if (curMods.where((mod) => mod.submods.where((submod) => submod.hasCmx!).isNotEmpty).isNotEmpty)
+                                                                  Container(
+                                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                                    decoration: BoxDecoration(
+                                                                      border: Border.all(
+                                                                          color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
+                                                                              ? Theme.of(context).colorScheme.primary
+                                                                              : Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                    ),
+                                                                    child: Text(curLangText!.uiCmx,
+                                                                        style: TextStyle(
+                                                                          color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
+                                                                              ? Theme.of(context).colorScheme.primary
+                                                                              : null,
+                                                                          fontSize: 15,
+                                                                        )),
+                                                                  ),
+                                                              ],
+                                                            )
                                                           ],
                                                         ),
                                                       ),
@@ -4639,7 +4774,7 @@ class _HomePageState extends State<HomePage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 3),
+                                                    padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(color: Theme.of(context).highlightColor),
                                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -4704,6 +4839,14 @@ class _HomePageState extends State<HomePage> {
                                                                 for (var mod in item.mods) {
                                                                   for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                     if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                      if (submod.cmxApplied!) {
+                                                                        bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
+                                                                        if (status) {
+                                                                          submod.cmxApplied = false;
+                                                                          submod.cmxStartPos = -1;
+                                                                          submod.cmxEndPos = -1;
+                                                                        }
+                                                                      }
                                                                       submod.applyStatus = false;
                                                                     }
                                                                     if (submod.applyStatus) {
@@ -5062,13 +5205,20 @@ class _HomePageState extends State<HomePage> {
                                                                                       setState(() {});
                                                                                       Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
                                                                                         //status
-
                                                                                         restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
                                                                                           previewImages.clear();
                                                                                           // videoPlayer.remove(0);
                                                                                           for (var mod in curMods) {
                                                                                             for (var submod in mod.submods.where((element) => element.applyStatus)) {
                                                                                               if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                if (submod.cmxApplied!) {
+                                                                                                  bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
+                                                                                                  if (status) {
+                                                                                                    submod.cmxApplied = false;
+                                                                                                    submod.cmxStartPos = -1;
+                                                                                                    submod.cmxEndPos = -1;
+                                                                                                  }
+                                                                                                }
                                                                                                 submod.applyStatus = false;
                                                                                               }
                                                                                               if (submod.applyStatus) {

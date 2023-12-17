@@ -39,7 +39,7 @@ SubMod fromItemSubmodGet(List<String> iceFileNames) {
     //}
   }
 
-  return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], [], [], [], modFileList);
+  return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], modFileList);
 }
 
 Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> cvsAccDataInput, String category) async {

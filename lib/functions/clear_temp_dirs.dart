@@ -31,6 +31,13 @@ void clearAllTempDirs() {
       }
     });
   }
+  if (Directory(modManTempCmxDirPath).existsSync()) {
+    Directory(modManTempCmxDirPath).listSync(recursive: false).forEach((element) {
+      if (element.existsSync()) {
+        element.deleteSync(recursive: true);
+      }
+    });
+  }
 }
 
 void clearAllTempDirsBeforeGettingPath() {
@@ -58,6 +65,13 @@ void clearAllTempDirsBeforeGettingPath() {
   }
   if (Directory(Uri.file('${Directory.current.path}/swapper').toFilePath()).existsSync()) {
     Directory(Uri.file('${Directory.current.path}/swapper').toFilePath()).listSync(recursive: false).forEach((element) {
+      if (element.existsSync()) {
+        element.deleteSync(recursive: true);
+      }
+    });
+  }
+  if (Directory(Uri.file('${Directory.current.path}/tempCmx').toFilePath()).existsSync()) {
+    Directory(Uri.file('${Directory.current.path}/tempCmx').toFilePath()).listSync(recursive: false).forEach((element) {
       if (element.existsSync()) {
         element.deleteSync(recursive: true);
       }
