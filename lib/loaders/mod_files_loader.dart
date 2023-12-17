@@ -385,7 +385,7 @@ List<Mod> modsFetcher(String itemPath, String cateName) {
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, [], [],
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [],
         modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
@@ -446,13 +446,13 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
 
     //get cmx file
     bool hasCmx = false;
-    final cmxFiles = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig')).map((e) => e.path).toList();
-    if (cmxFiles.isNotEmpty) {
+    final cmxFile = Directory(modPath).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    if (cmxFile.isNotEmpty) {
       hasCmx = true;
     }
 
     if (modFiles.isNotEmpty) {
-      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFiles, [], modPreviewImages,
+      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
           modPreviewVideos, [], modFiles));
     }
   }
@@ -475,8 +475,8 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
 
     //get cmx file
     bool hasCmx = false;
-    final cmxFiles = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig')).map((e) => e.path).toList();
-    if (cmxFiles.isNotEmpty) {
+    final cmxFile = Directory(modPath).listSync(recursive: false).whereType<File>().firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File('')).path;
+    if (cmxFile.isNotEmpty) {
       hasCmx = true;
     }
 
@@ -499,7 +499,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     if (modFiles.isNotEmpty) {
       List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
-      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFiles, [], modPreviewImages,
+      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
           modPreviewVideos, [], modFiles));
     }
   }

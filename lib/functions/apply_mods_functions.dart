@@ -17,14 +17,12 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
       if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
         //aaply cmx
         if (curSubmod.hasCmx!) {
-          for (var cmxPath in curSubmod.cmxFiles!) {
-            int startIndex = -1, endIndex = -1;
-            (startIndex, endIndex) = await cmxModPatch(cmxPath);
-            if (startIndex != -1 && endIndex != -1) {
-              curSubmod.cmxStartPos = startIndex;
-              curSubmod.cmxEndPos = endIndex;
-              curSubmod.cmxApplied = true;
-            }
+          int startIndex = -1, endIndex = -1;
+          (startIndex, endIndex) = await cmxModPatch(curSubmod.cmxFile!);
+          if (startIndex != -1 && endIndex != -1) {
+            curSubmod.cmxStartPos = startIndex;
+            curSubmod.cmxEndPos = endIndex;
+            curSubmod.cmxApplied = true;
           }
         }
         curSubmod.applyDate = DateTime.now();
