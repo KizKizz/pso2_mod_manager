@@ -221,7 +221,8 @@ class TranslationText {
       uiFailedToRemove = "Failed to remove", 
       uiUnknownErrorWhenRemovingModFromTheGame = "Unknown error when trying to remove mod files from the game",
       uiSuccessWithErrors = "Success with Errors",
-      uiCmx = "cmx";
+      uiCmx = "cmx",
+      uiAddChangeCmxFile = "Add/Change cmx file";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

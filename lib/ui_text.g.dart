@@ -253,6 +253,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiUnknownErrorWhenRemovingModFromTheGame'] as String
       ..uiSuccessWithErrors = json['uiSuccessWithErrors'] as String
       ..uiCmx = json['uiCmx'] as String
+      ..uiAddChangeCmxFile = json['uiAddChangeCmxFile'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -684,6 +685,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
           instance.uiUnknownErrorWhenRemovingModFromTheGame,
       'uiSuccessWithErrors': instance.uiSuccessWithErrors,
       'uiCmx': instance.uiCmx,
+      'uiAddChangeCmxFile': instance.uiAddChangeCmxFile,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,

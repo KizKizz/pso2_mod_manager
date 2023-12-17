@@ -198,6 +198,7 @@
   "uiUnknownErrorWhenRemovingModFromTheGame": "Unknown error when trying to remove mod files from the game",
   "uiSuccessWithErrors": "Success with Errors",
   "uiCmx": "cmx",
+  "uiAddChangeCmxFile": "Add/Change cmx file",
   "uiPreparing": "Preparing",
   "uiDragDropFiles": "Drag and drop folders, zip files\nand .ice files here\nOr use the \"Add Folders/Files\" buttons to select folders/files\nMay take some time\nto process large amount of files",
   "uiAchiveCurrentlyNotSupported": "currently not supported. Open the archive file then drag the content in here instead",
