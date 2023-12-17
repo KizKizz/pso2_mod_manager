@@ -100,7 +100,9 @@ class _HomePageState extends State<HomePage> {
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
     });
+    
     super.initState();
+    
   }
 
   @override
