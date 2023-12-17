@@ -2,9 +2,9 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.5.7",
     "description": [
-        "Added support for mods that require cmx editing. (layering wears only)",
+        "Added support for mods that require cmx editing. (Layering wears only and still in testing phrase)",
         "Some minor bug fixes",
-        "cmx編集を必要とするMODのサポートを追加。(レイヤリングウェアのみ）",
+        "cmx編集を必要とするMODのサポートを追加。(レイヤリングウェアのみ、まだテスト中)",
         "いくつかのマイナーバグの修正"
     ],
     "windows_file": "",
