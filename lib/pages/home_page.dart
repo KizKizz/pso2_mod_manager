@@ -2690,28 +2690,34 @@ class _HomePageState extends State<HomePage> {
                                                       ),
 
                                                       // add or change cmx file
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.note_add_rounded,
-                                                        ),
-                                                        child: Text(curLangText!.uiAddChangeCmxFile),
-                                                        onPressed: () async {
-                                                          const XTypeGroup typeGroup = XTypeGroup(
-                                                            label: 'cmx file',
-                                                            extensions: <String>['txt'],
-                                                          );
-                                                          XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                          if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                            final copiedCmxFile =
-                                                                await File(selectedCmxFile.path).copy(Uri.file('${curMod.submods.first.location}/${selectedCmxFile.name}').toFilePath());
-                                                            if (copiedCmxFile.existsSync()) {
-                                                              curMod.submods.first.cmxFile = copiedCmxFile.path;
-                                                              curMod.submods.first.hasCmx = true;
-                                                              saveModdedItemListToJson();
-                                                            }
-                                                          }
-                                                        },
-                                                      ),
+                                                      Visibility(
+                                                          visible: curMod.submods.first.category == defaultCateforyDirs[1] ||
+                                                              curMod.submods.first.category == defaultCateforyDirs[6] ||
+                                                              curMod.submods.first.category == defaultCateforyDirs[11] ||
+                                                              curMod.submods.first.category == defaultCateforyDirs[15] ||
+                                                              curMod.submods.first.category == defaultCateforyDirs[16],
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.note_add_rounded,
+                                                            ),
+                                                            child: Text(curLangText!.uiAddChangeCmxFile),
+                                                            onPressed: () async {
+                                                              XTypeGroup typeGroup = XTypeGroup(
+                                                                label: curLangText!.uiCmxFile,
+                                                                extensions: const <String>['txt'],
+                                                              );
+                                                              XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                              if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
+                                                                final copiedCmxFile =
+                                                                    await File(selectedCmxFile.path).copy(Uri.file('${curMod.submods.first.location}/${selectedCmxFile.name}').toFilePath());
+                                                                if (copiedCmxFile.existsSync()) {
+                                                                  curMod.submods.first.cmxFile = copiedCmxFile.path;
+                                                                  curMod.submods.first.hasCmx = true;
+                                                                  saveModdedItemListToJson();
+                                                                }
+                                                              }
+                                                            },
+                                                          )),
 
                                                       // rename
                                                       MenuItemButton(
@@ -3108,27 +3114,34 @@ class _HomePageState extends State<HomePage> {
                                                       ),
 
                                                       // add or change cmx file
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.note_add_rounded,
-                                                        ),
-                                                        child: Text(curLangText!.uiAddChangeCmxFile),
-                                                        onPressed: () async {
-                                                          const XTypeGroup typeGroup = XTypeGroup(
-                                                            label: 'cmx file',
-                                                            extensions: <String>['txt'],
-                                                          );
-                                                          XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                          if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                            final copiedCmxFile = await File(selectedCmxFile.path)
-                                                                .copy(Uri.file('${curMod.submods[modViewModSetSubModIndex].location}/${selectedCmxFile.name}').toFilePath());
-                                                            if (copiedCmxFile.existsSync()) {
-                                                              curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
-                                                              curMod.submods[modViewModSetSubModIndex].hasCmx = true;
-                                                              saveModdedItemListToJson();
+                                                      Visibility(
+                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[1] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[6] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[11] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[15] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[16],
+                                                        child: MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.note_add_rounded,
+                                                          ),
+                                                          child: Text(curLangText!.uiAddChangeCmxFile),
+                                                          onPressed: () async {
+                                                            XTypeGroup typeGroup = XTypeGroup(
+                                                              label: curLangText!.uiCmxFile,
+                                                              extensions: const <String>['txt'],
+                                                            );
+                                                            XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                            if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
+                                                              final copiedCmxFile = await File(selectedCmxFile.path)
+                                                                  .copy(Uri.file('${curMod.submods[modViewModSetSubModIndex].location}/${selectedCmxFile.name}').toFilePath());
+                                                              if (copiedCmxFile.existsSync()) {
+                                                                curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
+                                                                curMod.submods[modViewModSetSubModIndex].hasCmx = true;
+                                                                saveModdedItemListToJson();
+                                                              }
                                                             }
-                                                          }
-                                                        },
+                                                          },
+                                                        ),
                                                       ),
 
                                                       // rename
@@ -3575,28 +3588,34 @@ class _HomePageState extends State<HomePage> {
                                                                   ),
 
                                                                   // add or change cmx file
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.note_add_rounded,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiAddChangeCmxFile),
-                                                                    onPressed: () async {
-                                                                      const XTypeGroup typeGroup = XTypeGroup(
-                                                                        label: 'cmx file',
-                                                                        extensions: <String>['txt'],
-                                                                      );
-                                                                      XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                                      if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                                        final copiedCmxFile =
-                                                                            await File(selectedCmxFile.path).copy(Uri.file('${curSubmod.location}/${selectedCmxFile.name}').toFilePath());
-                                                                        if (copiedCmxFile.existsSync()) {
-                                                                          curSubmod.cmxFile = copiedCmxFile.path;
-                                                                          curSubmod.hasCmx = true;
-                                                                          saveModdedItemListToJson();
-                                                                        }
-                                                                      }
-                                                                    },
-                                                                  ),
+                                                                  Visibility(
+                                                                      visible: curSubmod.category == defaultCateforyDirs[1] ||
+                                                                          curSubmod.category == defaultCateforyDirs[6] ||
+                                                                          curSubmod.category == defaultCateforyDirs[11] ||
+                                                                          curSubmod.category == defaultCateforyDirs[15] ||
+                                                                          curSubmod.category == defaultCateforyDirs[16],
+                                                                      child: MenuItemButton(
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.note_add_rounded,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiAddChangeCmxFile),
+                                                                        onPressed: () async {
+                                                                          XTypeGroup typeGroup = XTypeGroup(
+                                                                            label: curLangText!.uiCmxFile,
+                                                                            extensions: const <String>['txt'],
+                                                                          );
+                                                                          XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                                          if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
+                                                                            final copiedCmxFile =
+                                                                                await File(selectedCmxFile.path).copy(Uri.file('${curSubmod.location}/${selectedCmxFile.name}').toFilePath());
+                                                                            if (copiedCmxFile.existsSync()) {
+                                                                              curSubmod.cmxFile = copiedCmxFile.path;
+                                                                              curSubmod.hasCmx = true;
+                                                                              saveModdedItemListToJson();
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                      )),
 
                                                                   // rename
                                                                   MenuItemButton(

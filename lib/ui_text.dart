@@ -127,8 +127,8 @@ class TranslationText {
       uiRemoveProfanityFilter = "Profanity Filter Removal",
       uiExtras = 'Extras',
       uiOtherFeaturesOfPSO2NGSModManager = 'Other features of PSO2NGS Mod Manager',
-      uiAutoRadiusRemovalTooltip = 'Automatically remove boundary radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [Fu], and Cast parts',
-      uiAutoBoundaryRadiusRemoval = 'Auto Boundary Radius Removal',
+      uiAutoRadiusRemovalTooltip = 'Automatically remove bounding radius upon applying mods to the game\nThis applies to [Ba], [Ou], [Se], [Fu], and Cast parts',
+      uiAutoBoundaryRadiusRemoval = 'Auto Bounding Radius Removal',
       uiPrioritizeLocalBackupTooltip = 'Mod Manager will prioritize selected backup method, either from Sega servers or local',
       uiPrioritizeLocalBackups = 'Backup Priority: Local',
       uiPrioritizeSegaBackups = 'Backup Priority: Sega Servers ';
@@ -199,12 +199,12 @@ class TranslationText {
       uiHoldToApplyAllAvailableModsToTheGame =
           'Hold to apply all available mods to the game\nNote: this will apply the first variant of the first mod of all items to the game and ignores the ones that already have mods applied',
       uiHoldToReapplyAllModsInAppliedList = 'Hold to reapply all mods in Applied Mods list',
-      uiHoldToModifyBoundaryRadius = 'Hold to modify boundary radius',
+      uiHoldToModifyBoundaryRadius = 'Hold to modify bounding radius',
       uiAddToFavList = 'Add to Favorite List',
       uiRemoveFromFavList = 'Remove from Favorite List',
       uiMore = 'More',
       uiSwapToAnotherItem = 'Swap to another item',
-      uiRemoveBoundaryRadius = 'Remove boundary radius',
+      uiRemoveBoundaryRadius = 'Remove bounding radius',
       uiRemoveFromMM = 'Remove from Mod Manager',
       uiAddToModSets = 'Add to Mod Sets',
       uiRemoveFromThisSet = 'Remove from this set',
@@ -222,7 +222,8 @@ class TranslationText {
       uiUnknownErrorWhenRemovingModFromTheGame = "Unknown error when trying to remove mod files from the game",
       uiSuccessWithErrors = "Success with Errors",
       uiCmx = "cmx",
-      uiAddChangeCmxFile = "Add/Change cmx file";
+      uiAddChangeCmxFile = "Add/Change cmx file",
+      uiCmxFile = "cmx file";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -385,18 +386,18 @@ class TranslationText {
       uiGitHubPage = 'GitHub Page';
 
   //mods_boundary_edit.dart
-  String uiBoundaryRadiusModification = 'Boundary Radius Modification',
+  String uiBoundaryRadiusModification = 'Bounding Radius Modification',
       uiIndexingFiles = 'Indexing files',
       uispaceFoundExcl = ' found!',
       uiMatchingFilesFound = 'Matching files found',
       uiExtractingFiles = 'Extracting files',
       uiReadingspace = 'Reading ',
-      uiEditingBoundaryRadiusValue = 'Editing boundary radius value',
+      uiEditingBoundaryRadiusValue = 'Editing bounding radius value',
       uiPackingFiles = 'Packing files',
       uiReplacingModFiles = 'Replacing mod files',
       uiAllDone = 'All done',
       uiMakeSureToReapplyThisMod = 'Make sure to re-apply this mod',
-      uiBoundaryRadiusValueNotFound = 'Boundary radius value not found',
+      uiBoundaryRadiusValueNotFound = 'Bounding radius value not found',
       uiNoAqpFileFound = 'No .aqp file found',
       uiNoMatchingFileFound = 'No matching file found',
       uiOnlyBasewearsAndSetwearsCanBeModified = 'Only Basewears and Setwears can be modified';
