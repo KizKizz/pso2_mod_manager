@@ -470,8 +470,8 @@ class _MainPageState extends State<MainPage> {
                       //MM Path reselect
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {
-                          modManPathReloader(context);
+                        onPressed: (() async {
+                          await modManPathReloader(context);
                         }),
                         child: Row(
                           children: [
@@ -619,7 +619,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ),
-                      
+
                       //Auto fetching item icon on startup
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
@@ -724,7 +724,10 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON' : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply
+                                      ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON'
+                                      : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
@@ -1456,7 +1459,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
                           ),
-                          
+
                           //Add Items/Mods
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,

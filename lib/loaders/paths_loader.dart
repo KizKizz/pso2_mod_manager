@@ -9,14 +9,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
+import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/startup_icons_loader_popup.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
+import 'package:pso2_mod_manager/pages/home_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -452,6 +455,9 @@ Future<bool> modManPathReloader(context) async {
     return false;
   }
 
+  listsReloading = true;
+  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
+
   //Check modman folder
   // if (p.basename(modManDirParentDirPath) == 'PSO2 Mod Manager') {
   //   modManDirPath = modManDirParentDirPath;
@@ -555,16 +561,30 @@ Future<bool> modManPathReloader(context) async {
 
   //Get patch file lists
   await fetchOfficialPatchFileList();
+  // moddedItemsList = await modFileStructureLoader(context, true);
+  // appliedItemList = await appliedListBuilder(moddedItemsList);
+  // modSetList = await modSetLoader();
 
-  listsReloading = true;
-  Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
-  Future.delayed(const Duration(milliseconds: 500), () {
-    modFileStructureLoader(context, false).then((value) {
-      moddedItemsList = value;
-      listsReloading = false;
-      Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+  //listsReloading = true;
+
+  // Future.delayed(const Duration(milliseconds: 100), () {
+  modFileStructureLoader(context, false).then((mValue) {
+    moddedItemsList.clear();
+    moddedItemsList.addAll(mValue);
+    appliedListBuilder(moddedItemsList).then((aValue) {
+      appliedItemList.clear();
+      appliedItemList.addAll(aValue);
+      modSetLoader().then((sValue) {
+        modSetList.clear();
+        modSetList.addAll(sValue);
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+          listsReloading = false;
+        });
+      });
     });
   });
+  // });
 
   //Return true if all paths loaded
   return true;
