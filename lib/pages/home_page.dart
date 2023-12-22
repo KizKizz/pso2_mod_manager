@@ -2716,6 +2716,7 @@ class _HomePageState extends State<HomePage> {
                                                                   saveModdedItemListToJson();
                                                                 }
                                                               }
+                                                              setState(() {});
                                                             },
                                                           )),
 
@@ -3140,6 +3141,7 @@ class _HomePageState extends State<HomePage> {
                                                                 saveModdedItemListToJson();
                                                               }
                                                             }
+                                                            setState(() {});
                                                           },
                                                         ),
                                                       ),
@@ -3614,6 +3616,7 @@ class _HomePageState extends State<HomePage> {
                                                                               saveModdedItemListToJson();
                                                                             }
                                                                           }
+                                                                          setState(() {});
                                                                         },
                                                                       )),
 

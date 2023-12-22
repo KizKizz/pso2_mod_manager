@@ -1806,7 +1806,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     final infos = infoLine.split(',');
     String itemName = '';
     curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
-    itemName = itemName.replaceAll(RegExp(charToReplace), '_');
+    itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
 
     String itemCategory = infos[0];
     if (itemName.contains('[Se]')) {
