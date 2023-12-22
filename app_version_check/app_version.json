@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.9",
+    "version": "2.5.10",
     "description": [
-        "Added an option to add/change cmx file for layering wears category",
+        "Fixed a bug that prevented mods to be added into Mod Manager",
         "Some minor bug fixes",
-        "レイヤリングウェアのカテゴリーにcmxファイルを追加/変更するオプションを追加",
+        "MOD ManagerにMODを追加できないバグを修正",
         "いくつかのマイナーバグの修正"
     ],
     "windows_file": "",
