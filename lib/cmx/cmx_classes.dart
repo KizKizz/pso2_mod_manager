@@ -24,7 +24,7 @@ class CmxBody {
   int id, i20, i24, i28, i2C, costumeSoundId, headId, i38, i3C, linkedInnerId, i44, i64, redMaskMapping, greenMaskMapping, blueMaskMapping, alphaMaskMapping;
   double legLength;
   double f4C, f50, f54, f58, f5C, f60;
-  int startIndex, endIndex;
+  int startIndex = -1, endIndex = -1;
 
   CmxBody.parseFromCostumeDataList(String type, List<int> cmxData, int startIndex, int endIndex)
       : this(

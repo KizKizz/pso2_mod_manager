@@ -153,6 +153,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiPrioritizeLocalBackupTooltip'] as String
       ..uiPrioritizeLocalBackups = json['uiPrioritizeLocalBackups'] as String
       ..uiPrioritizeSegaBackups = json['uiPrioritizeSegaBackups'] as String
+      ..uiCmxRefreshToolTip = json['uiCmxRefreshToolTip'] as String
+      ..uiRefreshingCmx = json['uiRefreshingCmx'] as String
+      ..uiRefreshCmx = json['uiRefreshCmx'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -595,6 +598,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiPrioritizeLocalBackupTooltip': instance.uiPrioritizeLocalBackupTooltip,
       'uiPrioritizeLocalBackups': instance.uiPrioritizeLocalBackups,
       'uiPrioritizeSegaBackups': instance.uiPrioritizeSegaBackups,
+      'uiCmxRefreshToolTip': instance.uiCmxRefreshToolTip,
+      'uiRefreshingCmx': instance.uiRefreshingCmx,
+      'uiRefreshCmx': instance.uiRefreshCmx,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

@@ -15,9 +15,11 @@ import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -525,7 +527,7 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Path open
-                      //Open Backup removed due to backups being downloaded from sega
+                      //Open Backup
                       MaterialButton(
                         height: 40,
                         onPressed: (() async {
@@ -615,6 +617,31 @@ class _MainPageState extends State<MainPage> {
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup ? curLangText!.uiPrioritizeLocalBackups : curLangText!.uiPrioritizeSegaBackups,
                                   style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //cmx file refresh
+                      ModManTooltip(
+                        message: curLangText!.uiCmxRefreshToolTip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            cmxRefreshing = true;
+                            setState(() {});
+                            await cmxRefresh();
+                            cmxRefreshing = false;
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.rotate_left,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -1652,7 +1679,20 @@ class _MainPageState extends State<MainPage> {
                                   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
                                   Future.delayed(const Duration(milliseconds: 500), () {
                                     modFileStructureLoader(context, true).then((value) {
-                                      moddedItemsList = value;
+                                      moddedItemsList.clear();
+                                      moddedItemsList.addAll(value);
+                                      appliedListBuilder(moddedItemsList).then((aValue) {
+                                        appliedItemList.clear();
+                                        appliedItemList.addAll(aValue);
+                                        modSetLoader().then((sValue) {
+                                          modSetList.clear();
+                                          modSetList.addAll(sValue);
+                                          Future.delayed(const Duration(milliseconds: 100), () {
+                                            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                            listsReloading = false;
+                                          });
+                                        });
+                                      });
                                       listsReloading = false;
                                       modViewItem = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();

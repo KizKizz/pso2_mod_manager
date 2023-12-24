@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:pso2_mod_manager/cmx/cmx_classes.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/json_write.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -149,6 +151,33 @@ Future<bool> cmxModRemoval(int startIndex, int endIndex) async {
   }
 
   return true;
+}
+
+Future<bool> cmxRefresh() async {
+  File cmxFile = await swapperIceFileDownload(cmxIceFilePath, File(cmxIceFilePath).parent.path);
+  if (cmxFile.existsSync()) {
+    for (var type in appliedItemList) {
+      for (var cate in type.categories) {
+        for (var item in cate.items) {
+          for (var mod in item.mods) {
+            for (var submod in mod.submods) {
+              if (submod.hasCmx! && submod.cmxApplied!) {
+                int startPos = -1, endPos = -1;
+                (startPos, endPos) = await cmxModPatch(submod.cmxFile!);
+                if (startPos != -1 && endPos != -1) {
+                  submod.cmxStartPos = startPos;
+                  submod.cmxEndPos = endPos;
+                  saveModdedItemListToJson();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 int floatTo32bitInt(double value) {

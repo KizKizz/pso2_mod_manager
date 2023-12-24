@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.10",
+    "version": "2.5.11",
     "description": [
-        "Fixed a bug that prevented mods to be added into Mod Manager",
+        "Added an option to refresh cmx in Settings if it is not working correctly",
         "Some minor bug fixes",
-        "MOD ManagerにMODを追加できないバグを修正",
+        "cmxが正しく動作しない場合、設定で更新するオプションを追加",
         "いくつかのマイナーバグの修正"
     ],
     "windows_file": "",
