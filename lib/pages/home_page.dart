@@ -2713,6 +2713,14 @@ class _HomePageState extends State<HomePage> {
                                                                 if (copiedCmxFile.existsSync()) {
                                                                   curMod.submods.first.cmxFile = copiedCmxFile.path;
                                                                   curMod.submods.first.hasCmx = true;
+                                                                  if (curMod.submods.first.cmxApplied!) {
+                                                                    int startPos = -1, endPos = -1;
+                                                                    (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
+                                                                    if (startPos != -1 && endPos != -1) {
+                                                                      curMod.submods.first.cmxStartPos = startPos;
+                                                                      curMod.submods.first.cmxEndPos = endPos;
+                                                                    }
+                                                                  }
                                                                   saveModdedItemListToJson();
                                                                 }
                                                               }
@@ -3138,6 +3146,14 @@ class _HomePageState extends State<HomePage> {
                                                               if (copiedCmxFile.existsSync()) {
                                                                 curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
                                                                 curMod.submods[modViewModSetSubModIndex].hasCmx = true;
+                                                                if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
+                                                                  int startPos = -1, endPos = -1;
+                                                                  (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
+                                                                  if (startPos != -1 && endPos != -1) {
+                                                                    curMod.submods[modViewModSetSubModIndex].cmxStartPos = startPos;
+                                                                    curMod.submods[modViewModSetSubModIndex].cmxEndPos = endPos;
+                                                                  }
+                                                                }
                                                                 saveModdedItemListToJson();
                                                               }
                                                             }
@@ -3613,6 +3629,14 @@ class _HomePageState extends State<HomePage> {
                                                                             if (copiedCmxFile.existsSync()) {
                                                                               curSubmod.cmxFile = copiedCmxFile.path;
                                                                               curSubmod.hasCmx = true;
+                                                                              if (curSubmod.cmxApplied!) {
+                                                                                int startPos = -1, endPos = -1;
+                                                                                (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
+                                                                                if (startPos != -1 && endPos != -1) {
+                                                                                  curSubmod.cmxStartPos = startPos;
+                                                                                  curSubmod.cmxEndPos = endPos;
+                                                                                }
+                                                                              }
                                                                               saveModdedItemListToJson();
                                                                             }
                                                                           }

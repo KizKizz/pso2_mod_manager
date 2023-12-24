@@ -484,7 +484,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
 
     //get cmx file
     bool hasCmx = false;
-    final cmxFile = Directory(modPath)
+    final cmxFile = Directory(dir.path)
         .listSync(recursive: false)
         .whereType<File>()
         .firstWhere((element) => p.extension(element.path) == '.txt' && p.basename(element.path).contains('cmxConfig'), orElse: () => File(''))

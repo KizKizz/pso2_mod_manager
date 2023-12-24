@@ -131,7 +131,10 @@ class TranslationText {
       uiAutoBoundaryRadiusRemoval = 'Auto Bounding Radius Removal',
       uiPrioritizeLocalBackupTooltip = 'Mod Manager will prioritize selected backup method, either from Sega servers or local',
       uiPrioritizeLocalBackups = 'Backup Priority: Local',
-      uiPrioritizeSegaBackups = 'Backup Priority: Sega Servers ';
+      uiPrioritizeSegaBackups = 'Backup Priority: Sega Servers',
+      uiCmxRefreshToolTip = 'Refresh all cmx, use this if cmx settings are not working correctly',
+      uiRefreshingCmx = 'Refreshing cmx',
+      uiRefreshCmx = 'Refresh cmx';
 
   //homepage
   String uiItemList = 'Item List',
