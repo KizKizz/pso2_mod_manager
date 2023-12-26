@@ -1115,7 +1115,8 @@ class _HomePageState extends State<HomePage> {
                                                     }
                                                     int itemMatchingNum = cateItemSearchMatchesCheck(curCategory, searchTextController.value.text.toLowerCase());
                                                     return Visibility(
-                                                      visible: curCategory.visible && (curCategory.categoryName.contains(searchTextController.value.text.toLowerCase()) || itemMatchingNum > 0),
+                                                      visible: curCategory.visible &&
+                                                          (curCategory.categoryName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) || itemMatchingNum > 0),
                                                       child: InkResponse(
                                                         highlightShape: BoxShape.rectangle,
                                                         hoverColor: Colors.transparent,
@@ -1192,7 +1193,7 @@ class _HomePageState extends State<HomePage> {
                                                                     }
                                                                     int modMatchingNum = itemModSearchMatchesCheck(curItem, searchTextController.value.text.toLowerCase());
                                                                     return Visibility(
-                                                                      visible: curItem.itemName.contains(searchTextController.value.text.toLowerCase()) || modMatchingNum > 0,
+                                                                      visible: curItem.itemName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) || modMatchingNum > 0,
                                                                       child: SizedBox(
                                                                         height: 84,
                                                                         child: Container(
@@ -1250,17 +1251,34 @@ class _HomePageState extends State<HomePage> {
                                                                                           alignment: WrapAlignment.center,
                                                                                           spacing: 5,
                                                                                           children: [
-                                                                                            Container(
-                                                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                                                              decoration: BoxDecoration(
-                                                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                            if (modMatchingNum == 0)
+                                                                                              Container(
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                                decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                ),
+                                                                                                child: Text(
+                                                                                                  curItem.mods.length < 2
+                                                                                                      ? '${curItem.mods.length} ${curLangText!.uiMod}'
+                                                                                                      : '${curItem.mods.length} ${curLangText!.uiMods}',
+                                                                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                ),
                                                                                               ),
-                                                                                              child: Text(
-                                                                                                modMatchingNum < 2 ? '$modMatchingNum ${curLangText!.uiMod}' : '$modMatchingNum ${curLangText!.uiMods}',
-                                                                                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                            if (modMatchingNum > 0)
+                                                                                              Container(
+                                                                                                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                                                decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                                                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                                                ),
+                                                                                                child: Text(
+                                                                                                  modMatchingNum < 2
+                                                                                                      ? '$modMatchingNum ${curLangText!.uiMod}'
+                                                                                                      : '$modMatchingNum ${curLangText!.uiMods}',
+                                                                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                                                                                ),
                                                                                               ),
-                                                                                            ),
                                                                                             Container(
                                                                                                 padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                                                 decoration: BoxDecoration(
@@ -1962,6 +1980,14 @@ class _HomePageState extends State<HomePage> {
           }
         }
       }
+      //count all if 0 mod matched
+      if (appBarAppliedModNames.isEmpty) {
+        for (var mod in modViewItem!.mods.where((element) => element.applyStatus)) {
+          for (var sub in mod.submods.where((element) => element.applyStatus)) {
+            appBarAppliedModNames.add('${mod.modName} > ${sub.submodName}');
+          }
+        }
+      }
     }
     //set
     if (modViewItem != null && context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied) {
@@ -2087,7 +2113,19 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         //searching
-                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied)
+                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0)
+                          Container(
+                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Text(
+                              modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                            ),
+                          ),
+                        if (modViewItem != null && searchTextController.value.text.isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0)
                           Container(
                             padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                             decoration: BoxDecoration(
@@ -2174,11 +2212,13 @@ class _HomePageState extends State<HomePage> {
                           return Visibility(
                             visible: isFavListVisible && !isModViewFromApplied
                                 ? curMod.isFavorite
-                                : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied
+                                : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0
                                     ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
-                                    : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
-                                        ? curMod.isSet && curMod.setNames.contains(selectedModSetName)
-                                        : true,
+                                    : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0
+                                        ? true
+                                        : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
+                                            ? curMod.isSet && curMod.setNames.contains(selectedModSetName)
+                                            : true,
                             child: InkWell(
                               //Hover for preview
                               onTap: () {},
