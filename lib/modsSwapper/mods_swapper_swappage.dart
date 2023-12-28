@@ -16,7 +16,8 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
+Future<String> modsSwapperIceFilesGet(
+    context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName, String fromItemId, String toItemId) async {
   //clean
   if (Directory(modManSwapperOutputDirPath).existsSync()) {
     Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
@@ -149,7 +150,7 @@ Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, SubMod fr
         }
       }
     }
-    
+
     //group1 > group1
     List<File> renamedExtractedGroup1Files = [];
     if (extractedGroup1FilesF.isNotEmpty && extractedGroup1FilesT.isNotEmpty) {
@@ -207,12 +208,24 @@ Future<String> modsSwapperIceFilesGet(context, bool isVanillaItemSwap, SubMod fr
         File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
       }
     }
+    //cmx
+    if (fromSubmod.hasCmx! && fromSubmod.cmxFile!.isNotEmpty && File(fromSubmod.cmxFile!).existsSync()) {
+      File cmxFileF = File(fromSubmod.cmxFile!);
+      String cmxData = await cmxFileF.readAsString();
+      String newCmxData = cmxData.replaceFirst(fromItemId, toItemId);
+      File cmxFileT = File(Uri.file('$packDirPath/${p.basename(cmxFileF.path).replaceFirst(fromItemId, toItemId)}').toFilePath());
+      if (!cmxFileT.existsSync()) {
+        await cmxFileT.create(recursive: true);
+      }
+      await cmxFileT.writeAsString(newCmxData);
+    }
   }
 
   return Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
 }
 
-Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName) async {
+Future<void> swapperSwappingDialog(
+    context, bool isVanillaItemSwap, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces, String toItemName, String fromItemId, String toItemId) async {
   String swappedModPath = '';
   await showDialog(
       barrierDismissible: false,
@@ -223,7 +236,8 @@ Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, SubMod fromS
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
                 contentPadding: const EdgeInsets.all(16),
                 content: FutureBuilder(
-                    future: swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, isVanillaItemSwap, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName) : null,
+                    future:
+                        swappedModPath.isEmpty ? modsSwapperIceFilesGet(context, isVanillaItemSwap, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemId, toItemId) : null,
                     builder: (
                       BuildContext context,
                       AsyncSnapshot snapshot,
@@ -439,7 +453,8 @@ Future<void> swapperSwappingDialog(context, bool isVanillaItemSwap, SubMod fromS
                                                     // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // modAddHandler(context);
-                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
+                                                    modAdderDragDropFiles
+                                                        .add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
                                                     modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
