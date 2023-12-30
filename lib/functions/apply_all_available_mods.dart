@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -225,61 +227,47 @@ Future<void> applyAllCallBack(context) async {
 }
 
 Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod) async {
-  String appliedPath = '${item.category} > ${submod.itemName} > ${submod.modName} > ${submod.submodName}';
-  for (var modFile in submod.modFiles) {
-    if (modFile.ogLocations.isNotEmpty) {
-      final appliedFiles = await modFilesApply(context, [modFile]);
-      if (appliedFiles.where((element) => element.modFileName == modFile.modFileName).isNotEmpty) {
-        submod.applyDate = DateTime.now();
-        item.applyDate = DateTime.now();
-        mod.applyDate = DateTime.now();
-        submod.applyStatus = true;
-        submod.isNew = false;
-        mod.applyStatus = true;
-        mod.isNew = false;
-        item.applyStatus = true;
-        item.isNew = false;
+  if (await originalFilesCheck(context, submod.modFiles)) {
+    if (removeBoundaryRadiusOnModsApply) {
+      await removeBoundaryOnModsApply(context, submod);
+    }
+    String appliedPath = '${item.category} > ${submod.itemName} > ${submod.modName} > ${submod.submodName}';
+    for (var modFile in submod.modFiles) {
+      if (modFile.ogLocations.isNotEmpty) {
+        final appliedFiles = await modFilesApply(context, [modFile]);
+        if (appliedFiles.where((element) => element.modFileName == modFile.modFileName).isNotEmpty) {
+          submod.applyDate = DateTime.now();
+          item.applyDate = DateTime.now();
+          mod.applyDate = DateTime.now();
+          submod.applyStatus = true;
+          submod.isNew = false;
+          mod.applyStatus = true;
+          mod.isNew = false;
+          item.applyStatus = true;
+          item.isNew = false;
+          saveModdedItemListToJson();
+        }
+      }
+    }
+
+    //apply cmx
+    if (submod.hasCmx!) {
+      int startIndex = -1, endIndex = -1;
+      (startIndex, endIndex) = await cmxModPatch(submod.cmxFile!);
+      if (startIndex != -1 && endIndex != -1) {
+        submod.cmxStartPos = startIndex;
+        submod.cmxEndPos = endIndex;
+        submod.cmxApplied = true;
         saveModdedItemListToJson();
       }
     }
-  }
 
-  // bool allOGFilesFound = true;
-  // for (var modFile in submod.modFiles) {
-  //   if (modFile.ogLocations.isEmpty) {
-  //     allOGFilesFound = false;
-  //     break;
-  //   }
-  // }
-
-  // if (allOGFilesFound) {
-  //   //print(appliedPath);
-  //   modFilesApply(context, submod.modFiles).then((value) async {
-  //     if (submod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-  //       submod.applyDate = DateTime.now();
-  //       item.applyDate = DateTime.now();
-  //       mod.applyDate = DateTime.now();
-  //       submod.applyStatus = true;
-  //       submod.isNew = false;
-  //       mod.applyStatus = true;
-  //       mod.isNew = false;
-  //       item.applyStatus = true;
-  //       item.isNew = false;
-  //       appliedItemList = await appliedListBuilder(moddedItemsList);
-  //     }
-  //     saveModdedItemListToJson();
-  //     Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
-  //     Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
-  //     await Future.delayed(const Duration(milliseconds: 100));
-  //   });
-  //   return appliedPath;
-  // }
-
-  if (submod.applyStatus) {
-    Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
-    Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
-    await Future.delayed(const Duration(milliseconds: 100));
-    return appliedPath;
+    if (submod.applyStatus) {
+      Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
+      Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
+      await Future.delayed(const Duration(milliseconds: 100));
+      return appliedPath;
+    }
   }
 
   return '';
