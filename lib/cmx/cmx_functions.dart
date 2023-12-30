@@ -191,7 +191,17 @@ int floatTo32bitInt(double value) {
 Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>)> cmxToObjects() async {
   List<CmxBody> cmxCostumeList = [], cmxBasewearList = [], cmxOuterwearList = [], cmxCastArmList = [], cmxCastLegList = [], cmxHairList = [];
   List<int> costumeOuterwearSepValues = List.generate(11, (index) => 100);
-  List<int> bodySepValues = List.generate(4, (index) => -1082130432);
+  List<int> bodySepValues = List.generate(9, (index) => -1082130432);
+  bodySepValues[2] = 3950644;
+  bodySepValues[3] = 3950644;
+  bodySepValues[4] = 3950644;
+  List<int> bodySepValues2 = [-1082130432, 1065353216, 3950644, 3950644, 3950644, -1082130432, -1082130432, -1082130432, -1082130432];
+  List<int> bodySepValues3 = [-1082130432, -1082130432, 3950644, 3950644, 3950644, 1061158912, 1058642330, 1062836634, 1064849900];
+  List<int> bodySepValues4 = [-1082130432, 1065353216, 3950644, 3950644, 3950644, 1036831949, 1063675494, -1082130432, -1082130432];
+  List<int> bodySepValues5 = [-1082130432, -1082130432, 3950644, 3950644, 3950644, 1056964608, 1060320051, 1062836634, 1064849900];
+  List<int> bodySepValues6 = [-1082130432, -1082130432, 3950644, 3950644, 3950644, 1056964608, 1061158912, 1061158912, 1062836634];
+  List<int> bodySepValues7 = [-1082130432, -1082130432, 3950644, 3950644, 3950644, 1036831949, 1060320051, 1064514355, 1064849900];
+  //each item is 30 indexes
   Int32List? cmxData = await cmxFileData();
   List<int> costumeIndexes = [], outerwearIndexes = [], basewearIndexes = [];
   bool headerRemoved = false;
@@ -214,7 +224,23 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
       outerwearIndexes.add(costumeOuterSepIndex);
     }
 
-    int itemIndex = cmxData.indexOfSeparatorElements(bodySepValues, startIndex);
+    int itemIndex = -1;
+    if (cmxData.indexOfSeparatorElements(bodySepValues, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues2, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues2, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues3, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues3, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues4, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues4, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues5, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues5, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues6, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues6, startIndex);
+    } else if (cmxData.indexOfSeparatorElements(bodySepValues7, startIndex) != -1) {
+      itemIndex = cmxData.indexOfSeparatorElements(bodySepValues7, startIndex);
+    }
+
     if (itemIndex != -1) {
       //outer and basewear break
       if (cmxData[itemIndex] == 20000 && outerwearIndexes.indexWhere((index) => cmxData[index] == 20000) != -1) {
@@ -236,6 +262,13 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
   for (int i = 0; i < costumeIndexes.length; i++) {
     int start = costumeIndexes[i];
     int last = 0;
+    if (i == 0 && costumeIndexes[i] - 38 >= 0) {
+      int previous = costumeIndexes[i] - 38;
+      if (cmxCostumeList.indexWhere((element) => element.id == previous) == -1) {
+        cmxCostumeList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(previous, start), previous, start));
+      }
+    }
+
     if (i + 1 == costumeIndexes.length) {
       last = costumeIndexes[i] + 50;
     } else {
@@ -247,6 +280,13 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
   for (int i = 0; i < outerwearIndexes.length; i++) {
     int start = outerwearIndexes[i];
     int last = 0;
+    if (i == 0 && outerwearIndexes[i] - 38 >= 0) {
+      int previous = outerwearIndexes[i] - 38;
+      if (cmxOuterwearList.indexWhere((element) => element.id == previous) == -1) {
+        cmxOuterwearList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(previous, start), previous, start));
+      }
+    }
+
     if (i + 1 == outerwearIndexes.length) {
       last = outerwearIndexes[i] + 50;
     } else {
@@ -258,6 +298,13 @@ Future<(List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody>, List<CmxBody
   for (int i = 0; i < basewearIndexes.length; i++) {
     int start = basewearIndexes[i];
     int last = 0;
+    if (i == 0 && basewearIndexes[i] - 38 >= 0) {
+      int previous = basewearIndexes[i] - 38;
+      if (cmxBasewearList.indexWhere((element) => element.id == previous) == -1) {
+        cmxBasewearList.add(CmxBody.parseFromCostumeDataList('costume', cmxData.sublist(previous, start), previous, start));
+      }
+    }
+
     if (i + 1 == basewearIndexes.length) {
       last = basewearIndexes[i] + 50;
     } else {

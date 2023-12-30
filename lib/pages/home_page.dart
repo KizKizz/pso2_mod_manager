@@ -2753,6 +2753,7 @@ class _HomePageState extends State<HomePage> {
                                                                 if (copiedCmxFile.existsSync()) {
                                                                   curMod.submods.first.cmxFile = copiedCmxFile.path;
                                                                   curMod.submods.first.hasCmx = true;
+                                                                  saveModdedItemListToJson();
                                                                   if (curMod.submods.first.cmxApplied!) {
                                                                     int startPos = -1, endPos = -1;
                                                                     (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
@@ -3186,6 +3187,7 @@ class _HomePageState extends State<HomePage> {
                                                               if (copiedCmxFile.existsSync()) {
                                                                 curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
                                                                 curMod.submods[modViewModSetSubModIndex].hasCmx = true;
+                                                                saveModdedItemListToJson();
                                                                 if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
                                                                   int startPos = -1, endPos = -1;
                                                                   (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
@@ -3669,6 +3671,7 @@ class _HomePageState extends State<HomePage> {
                                                                             if (copiedCmxFile.existsSync()) {
                                                                               curSubmod.cmxFile = copiedCmxFile.path;
                                                                               curSubmod.hasCmx = true;
+                                                                              saveModdedItemListToJson();
                                                                               if (curSubmod.cmxApplied!) {
                                                                                 int startPos = -1, endPos = -1;
                                                                                 (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);

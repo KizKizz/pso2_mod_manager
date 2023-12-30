@@ -1,11 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.13",
+    "version": "2.5.14",
     "description": [
-        "Added a function to modify and include cmx to swapped item when swapping mods that contains cmx file",
-        "Some minor bug fixes",
-        "cmxファイルを含むMODをスワップする際、スワップされたアイテムにcmxを修正して含める機能を追加",
-        "いくつかのマイナーバグの修正"
+        "Fixed a bug where mod manager could not find cmx data for some Setwears",
+        "Other minor bug fixes",
+        "一部のSetwearについて、MOD Managerがcmxデータを見つけられなかったバグを修正。",
+        "その他の細かいバグ修正"
     ],
     "windows_file": "",
     "linux_file": ""
