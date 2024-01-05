@@ -6,7 +6,7 @@ import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 
 class PatchItemListLoadingPage extends StatefulWidget {
-  const PatchItemListLoadingPage({Key? key}) : super(key: key);
+  const PatchItemListLoadingPage({super.key});
 
   @override
   State<PatchItemListLoadingPage> createState() => _PatchItemListLoadingPageState();

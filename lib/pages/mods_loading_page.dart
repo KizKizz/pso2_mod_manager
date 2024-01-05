@@ -10,7 +10,7 @@ import 'package:window_manager/window_manager.dart';
 //late final Future modListLoader;
 
 class ModsLoadingPage extends StatefulWidget {
-  const ModsLoadingPage({Key? key}) : super(key: key);
+  const ModsLoadingPage({super.key});
 
   @override
   State<ModsLoadingPage> createState() => _ModsLoadingPageState();

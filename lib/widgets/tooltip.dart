@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
 class ModManTooltip extends StatelessWidget {
-  const ModManTooltip({Key? key, required this.message, required this.child}) : super(key: key);
+  const ModManTooltip({super.key, required this.message, required this.child});
 
   final String message;
   final Widget child;

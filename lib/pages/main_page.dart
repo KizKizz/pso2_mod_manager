@@ -48,7 +48,7 @@ List<String> saveValues = ['off', 'minimal', 'all'];
 List<bool> _selectedIconLoaderSwitches = <bool>[false, false, false];
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();

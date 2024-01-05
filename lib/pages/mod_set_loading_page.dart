@@ -8,7 +8,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ModSetsLoadingPage extends StatefulWidget {
-  const ModSetsLoadingPage({Key? key}) : super(key: key);
+  const ModSetsLoadingPage({super.key});
 
   @override
   State<ModSetsLoadingPage> createState() => _ModSetsLoadingPageState();

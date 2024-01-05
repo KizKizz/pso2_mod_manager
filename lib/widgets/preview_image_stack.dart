@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class PreviewImageStack extends StatelessWidget {
-  const PreviewImageStack({Key? key, required this.imagePath, required this.overlayText}) : super(key: key);
+  const PreviewImageStack({super.key, required this.imagePath, required this.overlayText});
 
   final String imagePath;
   final String overlayText;
