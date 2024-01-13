@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
+import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -1836,7 +1837,11 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //get item icon
     File newItemIcon = File('');
     if (itemCategory != defaultCateforyDirs[7] && itemCategory != defaultCateforyDirs[14]) {
-      String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+      List<String> ogIconIcePaths = itemCategory == defaultCateforyDirs[0] ? await originalFilePathGet(context, infos[4]) : await originalFilePathGet(context, infos[5]);
+      String ogIconIcePath = '';
+      if (ogIconIcePaths.isNotEmpty) {
+        ogIconIcePath = ogIconIcePaths.first;
+      }
       if (ogIconIcePath.isNotEmpty) {
         String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName/tempItemIconUnpack').toFilePath();
         final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);

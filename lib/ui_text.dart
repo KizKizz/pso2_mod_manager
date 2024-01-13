@@ -134,7 +134,7 @@ class TranslationText {
       uiPrioritizeSegaBackups = 'Backup Priority: Sega Servers',
       uiCmxRefreshToolTip = 'Refresh all cmx, use this if cmx settings are not working correctly',
       uiRefreshingCmx = 'Refreshing cmx',
-      uiRefreshCmx = 'Refresh cmx';
+      uiRefreshCmx = 'Refresh cmx Settings';
 
   //homepage
   String uiItemList = 'Item List',

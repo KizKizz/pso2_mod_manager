@@ -265,35 +265,35 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
 
   String webLinkPath = dataIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/').trim();
   String saveToPath = Uri.file('$saveToDirPath/${p.basenameWithoutExtension(dataIcePath)}').toFilePath();
+  File downloadedFile = File('');
   try {
     await dio.download('$patchURL$webLinkPath.pat', saveToPath);
     //debugPrint('$modManPso2binPath\\$path');
     dio.close();
     return File(saveToPath);
-  } catch (e) {
+  } on DioException {
     try {
       await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
-      dio.close();
-      return File(saveToPath);
-    } catch (e) {
+      downloadedFile = File(saveToPath);
+    } on DioException {
       try {
         final test = await dio.download('$masterURL$webLinkPath.pat', saveToPath);
         debugPrint(test.statusCode.toString());
-        dio.close();
-        return File(saveToPath);
-      } catch (e) {
+        downloadedFile = File(saveToPath);
+      } on DioException {
         try {
           await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
-          dio.close();
-          return File(saveToPath);
+          downloadedFile = File(saveToPath);
         } catch (e) {
           //debugPrint(e.toString());
-          dio.close();
-          return File('');
+          downloadedFile = File('');
         }
       }
     }
   }
+
+  dio.close();
+  return downloadedFile;
 }
 
 Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocation) async {

@@ -6,7 +6,7 @@ import 'package:window_manager/window_manager.dart';
 // ignore: depend_on_referenced_packages
 
 class PathsLoadingPage extends StatefulWidget {
-  const PathsLoadingPage({Key? key}) : super(key: key);
+  const PathsLoadingPage({super.key});
 
   @override
   State<PathsLoadingPage> createState() => _PathsLoadingPageState();

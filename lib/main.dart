@@ -109,7 +109,7 @@ Future<void> main(List<String> args) async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
   static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   // This widget is the root of your application.
@@ -125,25 +125,51 @@ class MyApp extends StatelessWidget {
             // darkTheme: ThemeData.dark(),
             //themeMode: ThemeMode.light, // Change it as you want
             theme: ThemeData(
+                useMaterial3: false,
+                brightness: Brightness.light,
                 primaryColor: lightModePrimaryColor,
                 primaryColorLight: lightModePrimaryColorLight,
                 primaryColorDark: lightModePrimaryColorDark,
-                brightness: Brightness.light,
                 canvasColor: lightModeCanvasColor,
                 //indicatorColor: Colors.white,
                 primarySwatch: lightModePrimarySwatch,
                 // next line is important!
                 appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark)),
             darkTheme: ThemeData(
+                useMaterial3: false,
+                brightness: Brightness.dark,
                 primaryColor: darkModePrimaryColor,
                 primaryColorLight: darkModePrimaryColorLight,
                 primaryColorDark: darkModePrimaryColorDark,
-                brightness: Brightness.dark,
                 canvasColor: darkModeCanvasColor,
                 //indicatorColor: Colors.white,
                 primarySwatch: darkModePrimarySwatch,
                 // next line is important!
                 appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)),
+            // darkTheme: ThemeData(
+            //     colorScheme: ColorScheme(
+            //         brightness: Brightness.dark,
+            //         primary: darkModePrimaryColor,
+            //         onPrimary: Colors.amber,
+            //         secondary: Colors.green,
+            //         onSecondary: Colors.yellow,
+            //         primaryContainer: Colors.amber,
+            //         onPrimaryContainer: Colors.green,
+            //         error: Colors.red,
+            //         onError: Colors.pink,
+            //         background: darkModeCanvasColor,
+            //         onBackground: null,
+            //         surface: darkModeCanvasColor,
+            //         onSurface: Colors.white),
+            //     //primaryColor: darkModePrimaryColor,
+            //     //primaryColorLight: darkModePrimaryColorLight,
+            //     //primaryColorDark: darkModePrimaryColorDark,
+            //     // brightness: Brightness.dark,
+            //     // canvasColor: darkModeCanvasColor,
+            //     //indicatorColor: Colors.white,
+            //     primarySwatch: darkModePrimarySwatch,
+            //     // next line is important!
+            //     appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light)),
 
             themeMode: currentMode,
             home: const MyHomePage(
@@ -155,7 +181,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -176,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getAppVer();
     miscCheck();
     getRefSheetsVersion();
-    ApplicationConfig().checkForUpdates(context);
+    checkForUpdates(context);
     super.initState();
   }
 

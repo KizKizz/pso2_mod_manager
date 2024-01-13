@@ -287,8 +287,12 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                             onChanged: (value) async {
                                               toAccSearchResults = availableAccCsvData
                                                   .where((element) => curActiveLang == 'JP'
-                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
-                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
+                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
+                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
                                                   .toList();
                                               setState(() {});
                                             },

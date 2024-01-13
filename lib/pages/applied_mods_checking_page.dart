@@ -16,7 +16,7 @@ List<bool> _reAppliedStatus = [];
 Future? getUnappliedFileList;
 
 class AppliedModsCheckingPage extends StatefulWidget {
-  const AppliedModsCheckingPage({Key? key}) : super(key: key);
+  const AppliedModsCheckingPage({super.key});
 
   @override
   State<AppliedModsCheckingPage> createState() => _AppliedModsCheckingPageState();

@@ -113,7 +113,7 @@
   "uiPrioritizeSegaBackups": "Backup Priority: Sega Servers",
   "uiCmxRefreshToolTip": "Refresh all cmx, use this if cmx settings are not working correctly",
   "uiRefreshingCmx": "Refreshing cmx",
-  "uiRefreshCmx": "Refresh cmx",
+  "uiRefreshCmx": "Refresh cmx Settings",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",

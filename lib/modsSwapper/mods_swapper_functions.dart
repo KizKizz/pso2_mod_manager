@@ -37,63 +37,65 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
         (element) => int.tryParse(element) != null,
         orElse: () => '',
       );
-      final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
-      // final matchingFileT =
-      //     tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
-      File matchingFileT = File('');
-      for (var fileT in tFiles) {
-        String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
-              (element) => int.tryParse(element) != null,
-              orElse: () => '',
-            );
-        final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
-        if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
-          matchingFileT = fileT;
-          break;
-        }
-      }
-      if (matchingFileT.path.isNotEmpty) {
-        String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
-        renamedFiles.add(await fileF.rename(newPath));
-      } else {
-        final matchingFileNameT = tFiles.firstWhere(
-            (element) =>
-                p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.basenameWithoutExtension(element.path).contains(p.basenameWithoutExtension(fileNamePartsWoId.last)),
-            orElse: () => File(''));
-        if (matchingFileNameT.path.isNotEmpty) {
-          String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileNameT.path));
-          renamedFiles.add(await fileF.rename(newPath));
-        } else if (p.extension(fileF.path) == '.aqm') {
-          final matchingFileNameT =
-              tFiles.firstWhere((element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn', orElse: () => File(''));
-          if (matchingFileNameT.path.isNotEmpty) {
-            String matchingFileIdF = p.basenameWithoutExtension(matchingFileNameT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
-            if (matchingFileIdF.isNotEmpty) {
-              String newPath = fileF.path.replaceFirst(fileIdF, matchingFileIdF);
-              renamedFiles.add(await fileF.rename(newPath));
-            }
-          } else {
-            if (toItemIds.isNotEmpty && toItemIds[1].isNotEmpty) {
-              String newPath = fileF.path.replaceFirst(fileIdF, toItemIds[1]);
-              renamedFiles.add(await fileF.rename(newPath));
-            } else if (toItemIds.isNotEmpty && toItemIds[0].isNotEmpty) {
-              String newPath = fileF.path.replaceFirst(fileIdF, toItemIds[0]);
-              renamedFiles.add(await fileF.rename(newPath));
-            } else if (toAccItemId.isNotEmpty) {
-              String newPath = fileF.path.replaceFirst(fileIdF, toAccItemId);
-              renamedFiles.add(await fileF.rename(newPath));
-            }
+      if (fileIdF.isNotEmpty) {
+        final fileNamePartsWoId = p.basename(fileF.path).split(fileIdF);
+        // final matchingFileT =
+        //     tFiles.firstWhere((element) => p.basename(element.path).contains(fileNamePartsWoId.first) && p.basename(element.path).split('_').last == fileNamePartsWoId.last.replaceAll('_', ''), orElse: () => File(''));
+        File matchingFileT = File('');
+        for (var fileT in tFiles) {
+          String fileIdT = p.basenameWithoutExtension(fileT.path).split('_').firstWhere(
+                (element) => int.tryParse(element) != null,
+                orElse: () => '',
+              );
+          final fileNamePartsWoIdT = p.basename(fileT.path).split(fileIdT);
+          if (fileNamePartsWoIdT.first == fileNamePartsWoId.first && fileNamePartsWoIdT.last == fileNamePartsWoId.last) {
+            matchingFileT = fileT;
+            break;
           }
-        } else if (p.extension(fileF.path) == '.dds') {
-          final ddsFilesT = tFiles.where((element) => p.extension(element.path) == '.dds');
-          if (ddsFilesT.isNotEmpty) {
-            final ddsFilePartsF = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
-            String matchingDdsFileIdT = ddsFilePartsF.firstWhere(
-              (element) => int.tryParse(element) != null,
-              orElse: () => '',
-            );
-            String newPath = fileF.path.replaceFirst(fileIdF, matchingDdsFileIdT);
+        }
+        if (matchingFileT.path.isNotEmpty) {
+          String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileT.path));
+          renamedFiles.add(await fileF.rename(newPath));
+        } else {
+          final matchingFileNameT = tFiles.firstWhere(
+              (element) =>
+                  p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.basenameWithoutExtension(element.path).contains(p.basenameWithoutExtension(fileNamePartsWoId.last)),
+              orElse: () => File(''));
+          if (matchingFileNameT.path.isNotEmpty) {
+            String newPath = fileF.path.replaceFirst(p.basenameWithoutExtension(fileF.path), p.basenameWithoutExtension(matchingFileNameT.path));
             renamedFiles.add(await fileF.rename(newPath));
+          } else if (p.extension(fileF.path) == '.aqm') {
+            final matchingFileNameT =
+                tFiles.firstWhere((element) => p.basenameWithoutExtension(element.path).contains(fileNamePartsWoId.first) && p.extension(element.path) == '.aqn', orElse: () => File(''));
+            if (matchingFileNameT.path.isNotEmpty) {
+              String matchingFileIdF = p.basenameWithoutExtension(matchingFileNameT.path).split('_').firstWhere((element) => int.tryParse(element) != null, orElse: () => '');
+              if (matchingFileIdF.isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, matchingFileIdF);
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            } else {
+              if (toItemIds.isNotEmpty && toItemIds[1].isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, toItemIds[1]);
+                renamedFiles.add(await fileF.rename(newPath));
+              } else if (toItemIds.isNotEmpty && toItemIds[0].isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, toItemIds[0]);
+                renamedFiles.add(await fileF.rename(newPath));
+              } else if (toAccItemId.isNotEmpty) {
+                String newPath = fileF.path.replaceFirst(fileIdF, toAccItemId);
+                renamedFiles.add(await fileF.rename(newPath));
+              }
+            }
+          } else if (p.extension(fileF.path) == '.dds') {
+            final ddsFilesT = tFiles.where((element) => p.extension(element.path) == '.dds');
+            if (ddsFilesT.isNotEmpty) {
+              final ddsFilePartsF = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
+              String matchingDdsFileIdT = ddsFilePartsF.firstWhere(
+                (element) => int.tryParse(element) != null,
+                orElse: () => '',
+              );
+              String newPath = fileF.path.replaceFirst(fileIdF, matchingDdsFileIdT);
+              renamedFiles.add(await fileF.rename(newPath));
+            }
           }
         }
       }

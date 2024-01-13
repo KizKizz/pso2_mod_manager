@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
 class UILanguageLoadingPage extends StatefulWidget {
-  const UILanguageLoadingPage({Key? key}) : super(key: key);
+  const UILanguageLoadingPage({super.key});
 
   @override
   State<UILanguageLoadingPage> createState() => _UILanguageLoadingPageState();

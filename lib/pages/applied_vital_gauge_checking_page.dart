@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppliedVitalGaugeCheckingPage extends StatefulWidget {
-  const AppliedVitalGaugeCheckingPage({Key? key}) : super(key: key);
+  const AppliedVitalGaugeCheckingPage({super.key});
 
   @override
   State<AppliedVitalGaugeCheckingPage> createState() => _AppliedVitalGaugeCheckingPageState();

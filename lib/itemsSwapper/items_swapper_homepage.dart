@@ -361,8 +361,12 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                             onChanged: (value) async {
                                               toItemSearchResults = availableItemsCsvData
                                                   .where((element) => curActiveLang == 'JP'
-                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
-                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
+                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
+                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
                                                   .toList();
                                               setState(() {});
                                             },
