@@ -102,7 +102,9 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
     List<String> fileTPaths = await originalFilePathGet(context, iceNameT);
     if (fileTPaths.isNotEmpty) {
       String icePathFromOgDataT = '';
-      icePathFromOgDataT = fileTPaths.first;
+      if (fileTPaths.isNotEmpty) {
+        icePathFromOgDataT = fileTPaths.first;
+      }
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
       final iceFileInTempT = await swapperIceFileDownload(icePathFromOgDataT, modManSwapperToItemDirPath);
