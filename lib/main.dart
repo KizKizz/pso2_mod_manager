@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     getAppVer();
     miscCheck();
     getRefSheetsVersion();
-    ApplicationConfig().checkForUpdates(context);
+    checkForUpdates(context);
     super.initState();
   }
 

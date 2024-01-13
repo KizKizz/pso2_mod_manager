@@ -51,6 +51,8 @@ Future<List<String>> originalFilePathGet(context, String iceName) async {
     for (var line in ogFilesFromServers) {
       ogPaths.add(Uri.file('$modManPso2binPath/$line').toFilePath());
     }
+  } else {
+    ogPaths.addAll(filePaths);
   }
 
   return ogPaths;

@@ -209,7 +209,7 @@ Future<bool> pathsLoader(context) async {
   // }
 
   //ref sheets check load files
-  if (kDebugMode) {
+  if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
     List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
     File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
@@ -218,7 +218,7 @@ Future<bool> pathsLoader(context) async {
 
   //ref sheets check
   modManRefSheetsLocalVersion = int.parse(File(modManRefSheetsLocalVerFilePath).readAsStringSync());
-  ApplicationConfig().checkRefSheetsForUpdates(context);
+  await checkRefSheetsForUpdates(context);
 
   //startup icons loader
   if (firstTimeUser) {

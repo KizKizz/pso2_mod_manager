@@ -11,7 +11,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> checksumChecker(context) async {
-  await ApplicationConfig().checkChecksumFileForUpdates(context);
+  await checkChecksumFileForUpdates(context);
   final prefs = await SharedPreferences.getInstance();
   modManChecksumFilePath = (prefs.getString('checksumFilePath') ?? '');
   if (!File(modManChecksumFilePath).existsSync()) {

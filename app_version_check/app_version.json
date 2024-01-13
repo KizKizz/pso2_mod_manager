@@ -1,11 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.14",
+    "version": "2.5.15",
     "description": [
-        "Fixed a bug where mod manager could not find cmx data for some Setwears",
-        "Other minor bug fixes",
-        "一部のSetwearについて、MOD Managerがcmxデータを見つけられなかったバグを修正。",
-        "その他の細かいバグ修正"
+        "Some bug fixes and improvements to item swapping systems",
+        "いくつかのバグ修正とアイテム交換システムの改善"
     ],
     "windows_file": "",
     "linux_file": ""
