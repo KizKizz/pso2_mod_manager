@@ -442,8 +442,22 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                             onChanged: (value) async {
                                               toIEmotesSearchResults = availableEmotesCsvData
                                                   .where((element) => curActiveLang == 'JP'
-                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
-                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
+                                                      ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
+                                                      : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
                                                   .toList();
                                               setState(() {});
                                             },
