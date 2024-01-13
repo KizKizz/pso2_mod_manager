@@ -40,6 +40,22 @@ Future<bool> originalFilesCheck(context, List<ModFile> modFiles) async {
   return true;
 }
 
+Future<List<String>> originalFilePathGet(context, String iceName) async {
+  List<String> filePaths = [];
+  List<String> ogPaths = [];
+
+  filePaths = fetchOriginalIcePaths(iceName);
+  if (filePaths.isEmpty) {
+    List<String> ogFilesFromServers = officialPatchFiles.where((element) => element.contains(iceName)).toList();
+    ogFilesFromServers.addAll(officialMasterFiles.where((element) => element.contains(iceName)));
+    for (var line in ogFilesFromServers) {
+      ogPaths.add(Uri.file('$modManPso2binPath/$line').toFilePath());
+    }
+  }
+
+  return ogPaths;
+}
+
 List<String> applyModsOgIcePathsFetcher(SubMod submod, String iceName) {
   List<String> ogPaths = [];
   if (submod.category == defaultCateforyDirs[7] && submod.category == defaultCateforyDirs[14]) {
