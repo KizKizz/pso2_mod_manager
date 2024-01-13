@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -102,27 +103,10 @@ Future<String> modsSwapperLaIceFilesGet(
     }
 
     //copy to temp toitem dir
-    String icePathFromOgDataT = '';
-    // final backupFiles = Directory(modManBackupsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '');
-    // icePathFromOgDataT = backupFiles
-    //     .firstWhere(
-    //       (element) => p.basename(element.path) == iceNameT,
-    //       orElse: () => File(''),
-    //     )
-    //     .path;
-    //look for og file if backup is not found
-    if (icePathFromOgDataT.isEmpty) {
-      for (var type in ogDataFilePaths) {
-        icePathFromOgDataT = type.firstWhere(
-          (element) => p.basename(element) == iceNameT,
-          orElse: () => '',
-        );
-        if (icePathFromOgDataT.isNotEmpty) {
-          break;
-        }
-      }
-    }
-    if (icePathFromOgDataT.isNotEmpty) {
+    List<String> fileTPaths = await originalFilePathGet(context, iceNameT);
+    if (fileTPaths.isNotEmpty) {
+      String icePathFromOgDataT = '';
+      icePathFromOgDataT = fileTPaths.first;
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
       final iceFileInTempT = await swapperIceFileDownload(icePathFromOgDataT, modManSwapperToItemDirPath);
