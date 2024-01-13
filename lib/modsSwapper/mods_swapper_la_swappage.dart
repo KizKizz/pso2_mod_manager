@@ -106,9 +106,7 @@ Future<String> modsSwapperLaIceFilesGet(
     List<String> fileTPaths = await originalFilePathGet(context, iceNameT);
     if (fileTPaths.isNotEmpty) {
       String icePathFromOgDataT = '';
-      if (fileTPaths.isNotEmpty) {
-        icePathFromOgDataT = fileTPaths.first;
-      }
+      icePathFromOgDataT = fileTPaths.first;
       //final iceFileInTempT = await File(icePathFromOgDataT).copy(Uri.file('$modManSwapperToItemDirPath/${p.basename(icePathFromOgDataT)}').toFilePath());
       //download from file from server
       final iceFileInTempT = await swapperIceFileDownload(icePathFromOgDataT, modManSwapperToItemDirPath);
@@ -524,7 +522,8 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                                     // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
                                                     // modAddHandler(context);
-                                                    modAdderDragDropFiles.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
+                                                    modAdderDragDropFiles
+                                                        .add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
                                                     modsAdderHomePage(context);
                                                   },
                                             child: Text(curLangText!.uiAddToModManager))
