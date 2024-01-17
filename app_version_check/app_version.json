@@ -3,7 +3,7 @@
     "version": "2.5.16",
     "description": [
         "More improvements to swapping feature:",
-        "Mod Manager can now swap innerwears to body paints and vice versa (some textures of the swapped item might not have the same colors as their originals)",
+        "Mod Manager can now swap Innerwears to Body Paints and vice versa (some textures of the swapped items might not have the same colors as their originals)",
         "No name items now show as Unknown Item in swap to item list(depends on their item category)",
         "スワッピング機能のさらなる改善：",
         "MODマネージャーはインナーウェアとボディペイントを交換できるようになりました。",
