@@ -16,6 +16,8 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+
 Future<String> modsSwapperLaIceFilesGet(
     context, bool isVanillaItemSwap, SubMod fromSubmod, String toSelectedItemName, List<String> fromEmotesAvailableIces, List<String> toEmotesAvailableIces, List<String> queueSwappedLaPaths) async {
   String newToSelectedItemName = toSelectedItemName;
@@ -94,11 +96,11 @@ Future<String> modsSwapperLaIceFilesGet(
       await Process.run('$modManZamboniExePath -outdir "$tempSubmodPathF"', [iceFileInTempF.path]);
       String extractedGroup1PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group1').toFilePath();
       if (Directory(extractedGroup1PathF).existsSync()) {
-        extractedGroup1FilesF = Directory(extractedGroup1PathF).listSync(recursive: true).whereType<File>().toList();
+        extractedGroup1FilesF = Directory(extractedGroup1PathF).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
       }
       String extractedGroup2PathF = Uri.file('$tempSubmodPathF/${iceNameF}_ext/group2').toFilePath();
       if (Directory(extractedGroup2PathF).existsSync()) {
-        extractedGroup2FilesF = Directory(extractedGroup2PathF).listSync(recursive: true).whereType<File>().toList();
+        extractedGroup2FilesF = Directory(extractedGroup2PathF).listSync(recursive: true).whereType<File>().where((element) => validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
       }
     }
 
@@ -208,7 +210,7 @@ Future<String> modsSwapperLaIceFilesGet(
       //bti in group 1 human hash
       String rebootHumanHashGroup1PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group1').toFilePath();
       if (Directory(rebootHumanHashGroup1PathF).existsSync()) {
-        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti').toList();
+        List<File> rebootHumanGroup1Bti = Directory(rebootHumanHashGroup1PathF).listSync().whereType<File>().where((element) => p.extension(element.path) == '.bti' && validCharacters.hasMatch(p.basenameWithoutExtension(element.path).split('_').first)).toList();
 
         //get new name for bti from aqm
         String rebootHumanHashGroup2PathF = Uri.file('$tempSubmodPathF/${rebootHumanHashIceNameF}_ext/group2').toFilePath();
