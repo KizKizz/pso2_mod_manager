@@ -88,12 +88,40 @@ Future<List<File>> modsSwapRename(List<File> fFiles, List<File> tFiles) async {
           } else if (p.extension(fileF.path) == '.dds') {
             final ddsFilesT = tFiles.where((element) => p.extension(element.path) == '.dds');
             if (ddsFilesT.isNotEmpty) {
-              final ddsFilePartsF = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
-              String matchingDdsFileIdT = ddsFilePartsF.firstWhere(
+              final ddsFilePartsT = p.basenameWithoutExtension(ddsFilesT.first.path).split('_');
+              String matchingDdsFileIdT = ddsFilePartsT.firstWhere(
                 (element) => int.tryParse(element) != null,
                 orElse: () => '',
               );
-              String newPath = fileF.path.replaceFirst(fileIdF, matchingDdsFileIdT);
+              List<String> newDdsFileParts = p.basename(fileF.path).split('_');
+              int indexOfItemIdInFileName = newDdsFileParts.indexOf(fileIdF);
+              if (indexOfItemIdInFileName != -1) {
+                newDdsFileParts[indexOfItemIdInFileName] = matchingDdsFileIdT;
+              }
+              //modification for body paints to inners
+              if (isBodyPaintToInnerwear) {
+                int rbaIndex = newDdsFileParts.indexOf('rba');
+                if (rbaIndex != -1) {
+                  newDdsFileParts[rbaIndex] = 'rbd';
+                }
+                if (indexOfItemIdInFileName != -1) {
+                  newDdsFileParts.insert(indexOfItemIdInFileName + 1, 'iw');
+                }
+              }
+              //modification for inners to body paints
+              if (isInnerwearToBodyPaint) {
+                int rbdIndex = newDdsFileParts.indexOf('rbd');
+                if (rbdIndex != -1) {
+                  newDdsFileParts[rbdIndex] = 'rba';
+                }
+                int iwIndex = newDdsFileParts.indexOf('iw');
+                if (iwIndex != -1) {
+                  newDdsFileParts.removeAt(iwIndex);
+                }
+              }
+              String newFileName = newDdsFileParts.join('_');
+              String newPath = Uri.file('${p.dirname(fileF.path)}/$newFileName').toFilePath();
+
               renamedFiles.add(await fileF.rename(newPath));
             }
           }

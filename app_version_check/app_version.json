@@ -1,13 +1,13 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.15",
+    "version": "2.5.16",
     "description": [
-        "Fixed a bug that causes file syntax error when swapping some textures",
-        "Swapping items now can be searched using their ice file names",
-        "Some bug fixes and improvements to all systems",
-        "一部のテクスチャをスワップする際にファイル構文エラーが発生するバグを修正",
-        "スワッピングアイテムがICEファイル名で検索できるようになりました",
-        "全システムのバグ修正と改善"
+        "More improvements to swapping feature:",
+        "Mod Manager can now swap innerwears to body paints and vice versa (some textures of the swapped item might not have the same colors as their originals)",
+        "No name items now show as Unknown Item in swap to item list(depends on their item category)",
+        "スワッピング機能のさらなる改善：",
+        "MODマネージャーはインナーウェアとボディペイントを交換できるようになりました。",
+        "名前のないアイテムはアイテムリストへのスワップで不明アイテムとして表示されるようになりました。"
     ],
     "windows_file": "",
     "linux_file": ""

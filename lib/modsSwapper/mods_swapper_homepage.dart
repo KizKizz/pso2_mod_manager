@@ -22,6 +22,8 @@ List<String> fromItemIds = [];
 List<String> toItemIds = [];
 List<String> fromItemAvailableIces = [];
 List<String> toItemAvailableIces = [];
+bool isBodyPaintToInnerwear = false;
+bool isInnerwearToBodyPaint = false;
 
 class ModsSwapperHomePage extends StatefulWidget {
   const ModsSwapperHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -492,6 +494,12 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromCsvFile != null && selectedToCsvFile != null) {
+                                            selectedFromCsvFile!.category == 'Body Paints' && selectedToCsvFile!.category == 'Innerwears'
+                                                ? isBodyPaintToInnerwear = true
+                                                : isBodyPaintToInnerwear = false;
+                                            selectedFromCsvFile!.category == 'Innerwears' && selectedToCsvFile!.category == 'Body Paints'
+                                                ? isInnerwearToBodyPaint = true
+                                                : isInnerwearToBodyPaint = false;
                                             swapperConfirmDialog(context, widget.fromSubmod, fromItemIds, fromItemAvailableIces, toItemIds, toItemAvailableIces);
                                           }
                                         },
