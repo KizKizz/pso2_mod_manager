@@ -1667,6 +1667,17 @@ class _MainPageState extends State<MainPage> {
                                 ]),
                           ),
 
+                          //divider
+                          Visibility(
+                              visible: context.watch<StateProvider>().showTitleBarButtons,
+                              child: VerticalDivider(
+                                width: 2,
+                                thickness: 1,
+                                indent: 2,
+                                endIndent: 2,
+                                color: Theme.of(context).disabledColor,
+                              )),
+
                           //Refresh
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,

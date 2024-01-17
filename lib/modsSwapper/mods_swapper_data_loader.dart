@@ -182,7 +182,13 @@ Future<String> modsSwapperCategorySelect(context) async {
 
 Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> modFilePaths) async {
   List<List<String>> csvList = [];
-  final csvFiles = await getCsvFiles(context, itemCategory, modFilePaths);
+  List<File> csvFiles = await getCsvFiles(context, itemCategory, modFilePaths);
+  if (itemCategory == 'Innerwears') {
+    csvFiles.addAll(await getCsvFiles(context, 'Body Paints', modFilePaths));
+  }
+  if (itemCategory == 'Body Paints') {
+    csvFiles.addAll(await getCsvFiles(context, 'Innerwears', modFilePaths));
+  }
 
   for (var file in csvFiles) {
     csvList.add([]);
@@ -256,7 +262,15 @@ Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, String 
   //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
   // }
   if (swapFromItemCategory == 'Setwears' || swapFromItemCategory == 'Basewears') {
-    return cvsDataInput.where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]') || element.enName.contains('[Fu]'))).toList();
+    return cvsDataInput
+        .where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]') || element.enName.contains('[Fu]')))
+        .toList();
+  }
+  if (swapFromItemCategory == 'Innerwears') {
+    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == 'Body Paints').toList();
+  }
+  if (swapFromItemCategory == 'Body Paints') {
+    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == 'Innerwears').toList();
   }
   if (categorySymbol.isNotEmpty) {
     return cvsDataInput.where((element) => element.category == swapFromItemCategory && element.enName.contains(categorySymbol) && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
