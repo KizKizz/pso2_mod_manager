@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
-import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 Future<bool> modFileApplyForReApply(context, ModFile modFile) async {
   //retore dublicate
