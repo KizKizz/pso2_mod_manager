@@ -19,7 +19,8 @@ Future<bool> modFileApplyForReApply(context, ModFile modFile) async {
     try {
       returnedFile = await File(modFile.location).copy(ogPath);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+      //ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+      debugPrint(e.toString());
     }
     if (returnedFile.path.isEmpty || returnedFile.path != ogPath) {
       return false;
@@ -40,15 +41,16 @@ Future<void> localOriginalFilesBackupForReApply(context, ModFile modFile) async 
         File(fileInBackupFolderPath).parent.createSync();
       }
       try {
-      final backupFile = await File(originalFilePath).copy(fileInBackupFolderPath);
-      backupFilePaths.add(backupFile.path);
-      //get md5 of og files
-      // String newOGMD5 = await getFileHash(backupFile.path);
-      // if (!modFile.ogMd5s.contains(newOGMD5)) {
-      //   modFile.ogMd5s.add(newOGMD5);
-      // }
+        final backupFile = await File(originalFilePath).copy(fileInBackupFolderPath);
+        backupFilePaths.add(backupFile.path);
+        //get md5 of og files
+        // String newOGMD5 = await getFileHash(backupFile.path);
+        // if (!modFile.ogMd5s.contains(newOGMD5)) {
+        //   modFile.ogMd5s.add(newOGMD5);
+        // }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+        //ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+        debugPrint(e.toString());
       }
     } else if (File(fileInBackupFolderPath).existsSync()) {
       backupFilePaths.add(fileInBackupFolderPath);
