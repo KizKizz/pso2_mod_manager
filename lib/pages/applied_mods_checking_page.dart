@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
-import 'package:pso2_mod_manager/functions/apply_mods.dart';
+import 'package:pso2_mod_manager/functions/applied_mods_reapply.dart';
 import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -197,9 +197,13 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                           setState(() {});
                                           for (int i = 0; i < result.length; i++) {
                                             // ignore: use_build_context_synchronously
-                                            bool replacedStatus = await modFileApply(context, result[i]);
+                                            bool replacedStatus = await modFileApplyForReApply(context, result[i]);
                                             if (replacedStatus) {
                                               _reAppliedStatus[i] = true;
+                                              await Future.delayed(const Duration(milliseconds: 100));
+                                              setState(() {});
+                                            } else {
+                                              _reAppliedStatus[i] = false;
                                               await Future.delayed(const Duration(milliseconds: 100));
                                               setState(() {});
                                             }
