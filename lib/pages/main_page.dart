@@ -276,6 +276,8 @@ class _MainPageState extends State<MainPage> {
                               if (lang.langInitial == value) {
                                 lang.selected = true;
                                 curActiveLang = lang.langInitial;
+                                final prefs = await SharedPreferences.getInstance();
+                                prefs.setString('curActiveLanguage', curActiveLang);
                                 var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
                                 curLangText = TranslationText.fromJson(jsonData);
                               } else {
