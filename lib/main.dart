@@ -336,6 +336,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       //Set app version
       savedAppVersion = prefs.getString('savedAppVersion') ?? '';
+      
+      //Current language set
+      curActiveLang = prefs.getString('curActiveLanguage') ?? '';
     });
   }
 

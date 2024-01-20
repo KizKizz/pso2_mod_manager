@@ -439,7 +439,7 @@ class TranslationText {
   String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set', uiReplaceAll = 'Replace All', uiReplaceDuplicateFilesOnly = 'Replace duplicate files only', uiNewModSet = "New Mod Set", uiCreateAndAddModsToThisSet = "Create and add mods to this set", uiAddNewSet = "Add New Set";
 
   //mods_rename_functions.dart
-  String enterNewName = 'Enter new name';
+  String enterNewName = 'Enter New Name';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
