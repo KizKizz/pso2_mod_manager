@@ -4,7 +4,7 @@
     "description": [
         "Mod Manager now automatically detects custom language translation files inside Language folder",
         "To add a new translation press and hold the language select button inside Settings. This will create a default language file can be found inside Language folder (where the .exe file is located)",
-        "MODマネージャがLanguageフォルダ内のカスタム言語翻訳ファイルを検出するようになりました。",
+        "MODマネージャがLanguageフォルダ内のカスタム言語翻訳ファイルを自動的に検出するようになりました。",
         "新しい翻訳を追加するには、設定内の言語選択ボタンを押したままにします。これにより、デフォルトの言語ファイルが作成され、Languageフォルダ.exeファイルがある場所に保存されます。"
     ],
     "windows_file": "",
