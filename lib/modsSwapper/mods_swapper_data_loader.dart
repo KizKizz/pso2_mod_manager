@@ -240,6 +240,10 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
         }
       } else if (item.split(',').first == defaultCateforyDirs[10]) {
         csvData.add(CsvIceFile.fromListHairs(item.split(',')));
+      } else if (item.split(',').first == defaultCateforyDirs[12]) {
+        if (item.split(',').length > 3) {
+          csvData.add(CsvIceFile.fromListMags(item.split(',')));
+        }
       } else {
         csvData.add(CsvIceFile.fromList(item.split(',')));
       }
@@ -257,6 +261,9 @@ Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, String 
   // } else
   if (swapFromItemCategory == 'Innerwears') {
     categorySymbol = '[In]';
+  } 
+  if (swapFromItemCategory == defaultCateforyDirs[12]) {
+    return cvsDataInput.where((element) => element.category == swapFromItemCategory).toList();
   }
   // if (swapFromItem.category == 'Setwears') {
   //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();

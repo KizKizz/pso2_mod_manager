@@ -1837,7 +1837,11 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //get item icon
     File newItemIcon = File('');
     if (itemCategory != defaultCateforyDirs[7] && itemCategory != defaultCateforyDirs[14]) {
-      List<String> ogIconIcePaths = itemCategory == defaultCateforyDirs[0] ? await originalFilePathGet(context, infos[4]) : await originalFilePathGet(context, infos[5]);
+      List<String> ogIconIcePaths = itemCategory == defaultCateforyDirs[0]
+          ? await originalFilePathGet(context, infos[4])
+          : itemCategory == defaultCateforyDirs[12]
+              ? []
+              : await originalFilePathGet(context, infos[5]);
       String ogIconIcePath = '';
       if (ogIconIcePaths.isNotEmpty) {
         ogIconIcePath = ogIconIcePaths.first;

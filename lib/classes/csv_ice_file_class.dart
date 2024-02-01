@@ -43,6 +43,29 @@ class CsvIceFile {
           items[18],
           items[19],
         );
+        
+  CsvIceFile.fromListMags(List<String> items)
+      : this(
+          items[0],
+          items[1].isEmpty ? '不明' : items[1],
+          items[2].isEmpty ? 'Unknown Item' : items[2],
+          0,
+          0,
+          '',
+          items[3].split('//').last.isEmpty ? items[3] : '',
+          items[3].split('//').last.isNotEmpty ? items[3].split('//').last : '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+        );
+  
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
   String jpName;
