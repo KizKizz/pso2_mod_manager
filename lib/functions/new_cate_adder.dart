@@ -113,7 +113,7 @@ Future<String> categoryAdder(context) async {
                     textAlignVertical: TextAlignVertical.center,
                     inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                     validator: (value) {
-                      if (moddedItemsList.where((group) => group.categories.where((element) => element.categoryName.contains(value!)).isNotEmpty).isNotEmpty) {
+                      if (moddedItemsList.where((group) => group.categories.where((element) => element.categoryName.toLowerCase() == value!.toLowerCase()).isNotEmpty).isNotEmpty) {
                         return curLangText!.uiNameAlreadyExisted;
                       }
                       return null;
@@ -210,6 +210,11 @@ void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
                   ElevatedButton(
                       onPressed: () {
                         modViewItem = null;
+                        for (var cate in cateTypeToDel.categories) {
+                          if (Directory(cate.location).existsSync()) {
+                            Directory(cate.location).deleteSync(recursive: true);
+                          }
+                        }
                         moddedItemsList.remove(cateTypeToDel);
                         for (var cateType in moddedItemsList) {
                           cateType.position = moddedItemsList.indexOf(cateType);

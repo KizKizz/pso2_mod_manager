@@ -354,10 +354,15 @@ class _HomePageState extends State<HomePage> {
                       child: ModManTooltip(
                         message: curLangText!.uiBack,
                         child: InkWell(
-                            onTap: isCatesReordering.indexWhere((element) => element) != -1
+                            onTap: !isCateTypeReordering
                                 ? null
                                 : () {
                                     if (isCateTypeReordering) {
+                                      int pos = 0;
+                                      for (var type in moddedItemsList) {
+                                        type.position = pos;
+                                        pos++;
+                                      }
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
@@ -1551,6 +1556,11 @@ class _HomePageState extends State<HomePage> {
                                                                 Icons.arrow_back_ios_new,
                                                               ),
                                                               onTap: () {
+                                                                int pos = 0;
+                                                                for (var cate in moddedItemsList[groupIndex].categories) {
+                                                                  cate.position = pos;
+                                                                  pos++;
+                                                                }
                                                                 //Save to json
                                                                 saveModdedItemListToJson();
                                                                 isCatesReordering[groupIndex] = false;

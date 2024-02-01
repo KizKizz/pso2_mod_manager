@@ -46,6 +46,11 @@ bool _disableFirstLoadingScreen = true;
 bool _isProcessingMoreFiles = false;
 
 void modsAdderHomePage(context) {
+  List<String> dropdownButtonCateList = [];
+  for (var type in moddedItemsList) {
+    dropdownButtonCateList.addAll(type.categories.map((e) => e.categoryName));
+  }
+  dropdownButtonCateList.sort();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -640,7 +645,7 @@ void modsAdderHomePage(context) {
                                                                                       menuItemStyleData: const MenuItemStyleData(
                                                                                         height: 30,
                                                                                       ),
-                                                                                      items: defaultCateforyDirs
+                                                                                      items: dropdownButtonCateList
                                                                                           .map((item) => DropdownMenuItem<String>(
                                                                                               value: item,
                                                                                               child: Row(
