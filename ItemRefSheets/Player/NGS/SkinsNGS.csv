@@ -1,6 +1,7 @@
 ﻿Japanese Name,English Name,Id,Adjusted Id,Icon,Normal Quality,High Quality,Normal Quality RP,High Quality RP,Linked Inner,HQ Linked Inner,Sounds,Cast Sounds,Material Anim,Material Anim Ex,Hand Textures,HQ Hand Textures
 ベースボディT1,Base Body T1,100000,0,c8d8fabb4ca6dfff68b9d884f248aa1e,f65a2a073f5550ddf04717ccd5267ccc,195fac68420e7a08fb37ae36403a419b,,,,,,,,,,
 マイティボディ,Buff Body,100010,0,9ef2d3000ee7265dff98b98595202d70,508482e9d5b01bfbd7d3d61e1363d8bb,a783f6d313241bd887568eec4b028197,,,,,,,,,,
+マスキュラーボディ,Muscular Body,100020,0,6349209688c203aa3034b7b6395d9043,d6a02afee00ae667f119c1e2a7628c01,de995dbb0d2c09bffb00893b66dfd6ac,,,,,,,,,,
 ￥[NPC]NPCガロア専用筋肉肌,,150000,0,,a1f58eabd55380f7536408cca1c0d7d2,ceb79c94b92ed0c24535d8a6d47ed3fa,,,,,,,,,,
 ,,199900,0,,5b3396a1534f1c9c370948635e7b6e67,994fa20de33eda175428714acc72747a,,,,,,,,,,
 ベースボディT2,Base Body T2,200000,0,2f1bf409e5cedb79c66922082ace89a9,af90e2fdc4e355ecb5e868a04e0e5491,be23da464641f6ea102f4366095fa5eb,,,,,,,,,,
