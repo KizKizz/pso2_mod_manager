@@ -178,7 +178,7 @@ class _MainPageState extends State<MainPage> {
                                     if (!File(newLangPath).existsSync()) {
                                       await File(newLangPath).create(recursive: true);
                                     }
-                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), 1, newLangPath, false);
                                     languageList.add(newLang);
                                     languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
                                     langDropDownList.add(newLangTextController.text.toUpperCase());
@@ -280,6 +280,26 @@ class _MainPageState extends State<MainPage> {
                                 prefs.setString('curActiveLanguage', curActiveLang);
                                 var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
                                 curLangText = TranslationText.fromJson(jsonData);
+                                defaultCategoryTypeNames = [curLangText!.dfCastParts, curLangText!.dfLayeringWears, curLangText!.dfOthers];
+                                defaultCategoryNames = [
+                                  curLangText!.dfAccessories, //0
+                                  curLangText!.dfBasewears, //1
+                                  curLangText!.dfBodyPaints, //2
+                                  curLangText!.dfCastArmParts, //3
+                                  curLangText!.dfCastBodyParts, //4
+                                  curLangText!.dfCastLegParts, //5
+                                  curLangText!.dfCostumes, //6
+                                  curLangText!.dfEmotes, //7
+                                  curLangText!.dfEyes, //8
+                                  curLangText!.dfFacePaints, //9
+                                  curLangText!.dfHairs, //10
+                                  curLangText!.dfInnerwears, //11
+                                  curLangText!.dfMags, //12
+                                  curLangText!.dfMisc, //13
+                                  curLangText!.dfMotions, //14
+                                  curLangText!.dfOuterwears, //15
+                                  curLangText!.dfSetwears //16
+                                ];
                               } else {
                                 lang.selected = false;
                               }

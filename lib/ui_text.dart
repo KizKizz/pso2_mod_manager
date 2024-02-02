@@ -4,9 +4,10 @@ part 'ui_text.g.dart';
 
 @JsonSerializable()
 class TranslationLanguage {
-  TranslationLanguage(this.langInitial, this.langFilePath, this.selected);
+  TranslationLanguage(this.langInitial, this.revision, this.langFilePath, this.selected);
 
   String langInitial;
+  int revision;
   String langFilePath;
   bool selected;
 
@@ -36,7 +37,37 @@ class TranslationText {
       uiON = 'ON',
       uiOFF = 'OFF',
       uiMove = 'Move',
-      uiContinue = 'Continue';
+      uiContinue = 'Continue',
+      uiUnknown = 'Unknown',
+      uiUnknownItem = 'Unknown Item',
+      uiUnknownAccessory = 'Unknown Accessory',
+      uiUnknownEmote = 'Unknown Emote',
+      uiUnknownMotion = 'Unknown Motion',
+      uiGenderMale = 'Male',
+      uiGenderFemale = 'Female',
+      uiGenderBoth = 'Both';
+
+  //Default category types
+  String dfCastParts = 'Cast Parts', dfLayeringWears = 'Layering Wears', dfOthers = 'Others';
+
+  //Default category names
+  String dfAccessories = 'Accessories', //0
+      dfBasewears = 'Basewears', //1
+      dfBodyPaints = 'Body Paints', //2
+      dfCastArmParts = 'Cast Arm Parts', //3
+      dfCastBodyParts = 'Cast Body Parts', //4
+      dfCastLegParts = 'Cast Leg Parts', //5
+      dfCostumes = 'Costumes', //6
+      dfEmotes = 'Emotes', //7
+      dfEyes = 'Eyes', //8
+      dfFacePaints = 'Face Paints', //9
+      dfHairs = 'Hairs', //10
+      dfInnerwears = 'Innerwears', //11
+      dfMags = 'Mags', //12
+      dfMisc = 'Misc', //13
+      dfMotions = 'Motions', //14
+      dfOuterwears = 'Outerwears', //15
+      dfSetwears = 'Setwears'; //16
 
   //main page
   String uiSettings = 'Settings',
@@ -212,7 +243,7 @@ class TranslationText {
       uiAddToModSets = 'Add to Mod Sets',
       uiRemoveFromThisSet = 'Remove from this set',
       uiSelect = "Select",
-      uiDeselect = "Deselect", 
+      uiDeselect = "Deselect",
       uiSelectAllAppliedMods = "Select all applied mods",
       uiDeselectAllAppliedMods = "Deselect all applied mods",
       uiSelectAll = "Select All",
@@ -221,12 +252,13 @@ class TranslationText {
       uiHoldToRemoveSelectedMods = "Hold to remove selected mods from the game",
       uiAddSelectedModsToModSets = "Add selected mods to Mod Sets",
       uiFailed = "Failed",
-      uiFailedToRemove = "Failed to remove", 
+      uiFailedToRemove = "Failed to remove",
       uiUnknownErrorWhenRemovingModFromTheGame = "Unknown error when trying to remove mod files from the game",
-      uiSuccessWithErrors = "Success with Errors",
+      uiSuccessWithErrors = "Success with errors",
       uiCmx = "cmx",
       uiAddChangeCmxFile = "Add/Change cmx file",
-      uiCmxFile = "cmx file";
+      uiCmxFile = "cmx file",
+      uiMoveThisCategoryToAnotherGroup = 'Move this category to another group';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -436,7 +468,12 @@ class TranslationText {
       uiNoGameDataFoundMessage = 'Could not locate files inside pso2_bin data folder.\nThis could be a permission issue, please restart the app and run it as administrator or reselect pso2_bin path';
 
   //mod_set_functions.dart
-  String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set', uiReplaceAll = 'Replace All', uiReplaceDuplicateFilesOnly = 'Replace duplicate files only', uiNewModSet = "New Mod Set", uiCreateAndAddModsToThisSet = "Create and add mods to this set", uiAddNewSet = "Add New Set";
+  String uiDuplicatesFoundInTheCurrentSet = 'Duplicates found in the current set',
+      uiReplaceAll = 'Replace All',
+      uiReplaceDuplicateFilesOnly = 'Replace duplicate files only',
+      uiNewModSet = "New Mod Set",
+      uiCreateAndAddModsToThisSet = "Create and add mods to this set",
+      uiAddNewSet = "Add New Set";
 
   //mods_rename_functions.dart
   String enterNewName = 'Enter New Name';

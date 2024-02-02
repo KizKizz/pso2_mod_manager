@@ -46,6 +46,11 @@ bool _disableFirstLoadingScreen = true;
 bool _isProcessingMoreFiles = false;
 
 void modsAdderHomePage(context) {
+  List<String> dropdownButtonCateList = [];
+  for (var type in moddedItemsList) {
+    dropdownButtonCateList.addAll(type.categories.map((e) => e.categoryName));
+  }
+  dropdownButtonCateList.sort();
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -640,7 +645,7 @@ void modsAdderHomePage(context) {
                                                                                       menuItemStyleData: const MenuItemStyleData(
                                                                                         height: 30,
                                                                                       ),
-                                                                                      items: defaultCateforyDirs
+                                                                                      items: dropdownButtonCateList
                                                                                           .map((item) => DropdownMenuItem<String>(
                                                                                               value: item,
                                                                                               child: Row(
@@ -1811,7 +1816,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
 
     String itemCategory = infos[0];
     if (itemName.contains('[Se]')) {
-      itemCategory = defaultCateforyDirs[16];
+      itemCategory = defaultCategoryDirs[16];
     }
     //move files from temp
     String newItemDirPath = '';
@@ -1836,8 +1841,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //
     //get item icon
     File newItemIcon = File('');
-    if (itemCategory != defaultCateforyDirs[7] && itemCategory != defaultCateforyDirs[14]) {
-      List<String> ogIconIcePaths = itemCategory == defaultCateforyDirs[0] ? await originalFilePathGet(context, infos[4]) : await originalFilePathGet(context, infos[5]);
+    if (itemCategory != defaultCategoryDirs[7] && itemCategory != defaultCategoryDirs[14]) {
+      List<String> ogIconIcePaths = itemCategory == defaultCategoryDirs[0]
+          ? await originalFilePathGet(context, infos[4])
+          : itemCategory == defaultCategoryDirs[12]
+              ? []
+              : await originalFilePathGet(context, infos[5]);
       String ogIconIcePath = '';
       if (ogIconIcePaths.isNotEmpty) {
         ogIconIcePath = ogIconIcePaths.first;

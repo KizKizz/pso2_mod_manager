@@ -354,10 +354,15 @@ class _HomePageState extends State<HomePage> {
                       child: ModManTooltip(
                         message: curLangText!.uiBack,
                         child: InkWell(
-                            onTap: isCatesReordering.indexWhere((element) => element) != -1
+                            onTap: !isCateTypeReordering
                                 ? null
                                 : () {
                                     if (isCateTypeReordering) {
+                                      int pos = 0;
+                                      for (var type in moddedItemsList) {
+                                        type.position = pos;
+                                        pos++;
+                                      }
                                       //Save to json
                                       saveModdedItemListToJson();
                                       isCateTypeReordering = false;
@@ -558,7 +563,11 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(hiddenItemCategories[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                  Text(
+                                      defaultCategoryTypes.contains(hiddenItemCategories[groupIndex].groupName)
+                                          ? defaultCategoryTypeNames[defaultCategoryTypes.indexOf(hiddenItemCategories[groupIndex].groupName)]
+                                          : hiddenItemCategories[groupIndex].groupName,
+                                      style: const TextStyle(fontWeight: FontWeight.w600)),
                                   ModManTooltip(
                                     message: '${curLangText!.uiUnhide} ${hiddenItemCategories[groupIndex].groupName}',
                                     child: InkWell(
@@ -575,9 +584,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              subtitle: defaultCategoryTypes.contains(hiddenItemCategories[groupIndex].groupName) && curActiveLang == 'JP'
-                                  ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(hiddenItemCategories[groupIndex].groupName)])
-                                  : null,
+                              // subtitle: defaultCategoryTypes.contains(hiddenItemCategories[groupIndex].groupName) && curActiveLang == 'JP'
+                              //     ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(hiddenItemCategories[groupIndex].groupName)])
+                              //     : null,
                               initiallyExpanded: true,
                               children: [
                                 ListView.builder(
@@ -610,7 +619,11 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           title: Row(
                                             children: [
-                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                              Text(
+                                                  defaultCategoryDirs.contains(curCategory.categoryName)
+                                                      ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                      : curCategory.categoryName,
+                                                  style: const TextStyle(fontWeight: FontWeight.w600)),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
@@ -631,9 +644,9 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ],
                                           ),
-                                          subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                              ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                              : null,
+                                          // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                          //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                          //     : null,
                                         ),
                                       ),
                                     );
@@ -678,10 +691,14 @@ class _HomePageState extends State<HomePage> {
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                                     onTap: () {},
-                                    title: Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                    subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
-                                        ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
-                                        : null,
+                                    title: Text(
+                                        defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName)
+                                            ? defaultCategoryTypeNames[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)]
+                                            : moddedItemsList[groupIndex].groupName,
+                                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                                    // subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                    //     ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                    //     : null,
                                     trailing: const Icon(Icons.drag_handle_outlined),
                                   ),
                                 ),
@@ -731,7 +748,11 @@ class _HomePageState extends State<HomePage> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                            Text(
+                                                defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName)
+                                                    ? defaultCategoryTypeNames[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)]
+                                                    : moddedItemsList[groupIndex].groupName,
+                                                style: const TextStyle(fontWeight: FontWeight.w600)),
                                             Wrap(
                                               crossAxisAlignment: WrapCrossAlignment.center,
                                               runAlignment: WrapAlignment.center,
@@ -755,9 +776,9 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
-                                        subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
-                                            ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
-                                            : null,
+                                        // subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                        //     ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                        //     : null,
                                         initiallyExpanded: moddedItemsList[groupIndex].expanded,
                                         children: [
                                           //Main Normal Cate=========================================================
@@ -800,7 +821,11 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           Row(
                                                             children: [
-                                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                              Text(
+                                                                  defaultCategoryDirs.contains(curCategory.categoryName)
+                                                                      ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                                      : curCategory.categoryName,
+                                                                  style: const TextStyle(fontWeight: FontWeight.w600)),
                                                               Padding(
                                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                 child: Container(
@@ -847,9 +872,9 @@ class _HomePageState extends State<HomePage> {
                                                           )
                                                         ],
                                                       ),
-                                                      subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                                          ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                                          : null,
+                                                      // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                      //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                                      //     : null,
                                                       children: [
                                                         ListView.builder(
                                                             shrinkWrap: true,
@@ -1094,10 +1119,14 @@ class _HomePageState extends State<HomePage> {
                                                 isCateTypeListExpanded[groupIndex] = value;
                                                 setState(() {});
                                               },
-                                              title: Text(searchedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                              subtitle: defaultCateforyDirs.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
-                                                  ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(moddedItemsList[groupIndex].groupName)])
-                                                  : null,
+                                              title: Text(
+                                                  defaultCategoryDirs.contains(moddedItemsList[groupIndex].groupName)
+                                                      ? defaultCategoryNames[defaultCategoryDirs.indexOf(moddedItemsList[groupIndex].groupName)]
+                                                      : moddedItemsList[groupIndex].groupName,
+                                                  style: const TextStyle(fontWeight: FontWeight.w600)),
+                                              // subtitle: defaultCategoryDirs.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                              //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(moddedItemsList[groupIndex].groupName)])
+                                              //     : null,
                                               initiallyExpanded: searchedItemList[groupIndex].expanded,
                                               children: [
                                                 //Search Main Normal Cate=========================================================
@@ -1143,7 +1172,11 @@ class _HomePageState extends State<HomePage> {
                                                               children: [
                                                                 Row(
                                                                   children: [
-                                                                    Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                    Text(
+                                                                        defaultCategoryDirs.contains(curCategory.categoryName)
+                                                                            ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                                            : curCategory.categoryName,
+                                                                        style: const TextStyle(fontWeight: FontWeight.w600)),
                                                                     Padding(
                                                                       padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                       child: Container(
@@ -1177,9 +1210,9 @@ class _HomePageState extends State<HomePage> {
                                                                 )
                                                               ],
                                                             ),
-                                                            subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                                                ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                                                : null,
+                                                            // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                            //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                                            //     : null,
                                                             children: [
                                                               ListView.builder(
                                                                   shrinkWrap: true,
@@ -1445,7 +1478,11 @@ class _HomePageState extends State<HomePage> {
                                                   title: Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Text(moddedItemsList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                      Text(
+                                                          defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName)
+                                                              ? defaultCategoryTypeNames[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)]
+                                                              : moddedItemsList[groupIndex].groupName,
+                                                          style: const TextStyle(fontWeight: FontWeight.w600)),
                                                       Visibility(
                                                         visible: cateTypeButtonsVisible[groupIndex],
                                                         child: Padding(
@@ -1539,9 +1576,9 @@ class _HomePageState extends State<HomePage> {
                                                       )
                                                     ],
                                                   ),
-                                                  subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
-                                                      ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
-                                                      : null,
+                                                  // subtitle: defaultCategoryTypes.contains(moddedItemsList[groupIndex].groupName) && curActiveLang == 'JP'
+                                                  //     ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(moddedItemsList[groupIndex].groupName)])
+                                                  //     : null,
                                                   trailing: !isCatesReordering[groupIndex]
                                                       ? null
                                                       : ModManTooltip(
@@ -1551,6 +1588,11 @@ class _HomePageState extends State<HomePage> {
                                                                 Icons.arrow_back_ios_new,
                                                               ),
                                                               onTap: () {
+                                                                int pos = 0;
+                                                                for (var cate in moddedItemsList[groupIndex].categories) {
+                                                                  cate.position = pos;
+                                                                  pos++;
+                                                                }
                                                                 //Save to json
                                                                 saveModdedItemListToJson();
                                                                 isCatesReordering[groupIndex] = false;
@@ -1595,7 +1637,11 @@ class _HomePageState extends State<HomePage> {
                                                                   trailing: const Icon(Icons.drag_handle_outlined),
                                                                   title: Row(
                                                                     children: [
-                                                                      Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                      Text(
+                                                                          defaultCategoryDirs.contains(curCategory.categoryName)
+                                                                              ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                                              : curCategory.categoryName,
+                                                                          style: const TextStyle(fontWeight: FontWeight.w600)),
                                                                       Padding(
                                                                         padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                         child: Container(
@@ -1616,9 +1662,9 @@ class _HomePageState extends State<HomePage> {
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                                                      ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                                                      : null,
+                                                                  // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                                  //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                                                  //     : null,
                                                                 ),
                                                               ),
                                                             );
@@ -1668,7 +1714,11 @@ class _HomePageState extends State<HomePage> {
                                                                     children: [
                                                                       Row(
                                                                         children: [
-                                                                          Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                                                          Text(
+                                                                              defaultCategoryDirs.contains(curCategory.categoryName)
+                                                                                  ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                                                  : curCategory.categoryName,
+                                                                              style: const TextStyle(fontWeight: FontWeight.w600)),
                                                                           Padding(
                                                                             padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                                             child: Container(
@@ -1698,7 +1748,7 @@ class _HomePageState extends State<HomePage> {
                                                                           children: [
                                                                             //Move cate
                                                                             ModManTooltip(
-                                                                              message: 'Move ${curCategory.categoryName} to another Category Group',
+                                                                              message: curLangText!.uiMoveThisCategoryToAnotherGroup,
                                                                               child: InkWell(
                                                                                   onTap: () async {
                                                                                     await categoryMover(context, moddedItemsList[groupIndex], curCategory);
@@ -1721,7 +1771,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   )),
                                                                             ),
                                                                             Visibility(
-                                                                              visible: !defaultCateforyDirs.contains(curCategory.categoryName),
+                                                                              visible: !defaultCategoryDirs.contains(curCategory.categoryName),
                                                                               child: ModManTooltip(
                                                                                 message:
                                                                                     '${curLangText!.uiHoldToRemove} ${curCategory.categoryName} ${curLangText!.uiFrom} ${moddedItemsList[groupIndex].groupName}',
@@ -1750,9 +1800,9 @@ class _HomePageState extends State<HomePage> {
                                                                       )
                                                                     ],
                                                                   ),
-                                                                  subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                                                      ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                                                      : null,
+                                                                  // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                                                  //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                                                  //     : null,
                                                                   children: [
                                                                     ListView.builder(
                                                                         shrinkWrap: true,
@@ -2731,11 +2781,11 @@ class _HomePageState extends State<HomePage> {
 
                                                       // add or change cmx file
                                                       Visibility(
-                                                          visible: curMod.submods.first.category == defaultCateforyDirs[1] ||
-                                                              curMod.submods.first.category == defaultCateforyDirs[6] ||
-                                                              curMod.submods.first.category == defaultCateforyDirs[11] ||
-                                                              curMod.submods.first.category == defaultCateforyDirs[15] ||
-                                                              curMod.submods.first.category == defaultCateforyDirs[16],
+                                                          visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[6] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[11] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[15] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[16],
                                                           child: MenuItemButton(
                                                             leadingIcon: const Icon(
                                                               Icons.note_add_rounded,
@@ -2855,12 +2905,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       // boundary
                                                       Visibility(
-                                                        visible: curMod.submods.first.category == defaultCateforyDirs[1] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[3] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[4] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[5] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[15] ||
-                                                            curMod.submods.first.category == defaultCateforyDirs[16],
+                                                        visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
+                                                            curMod.submods.first.category == defaultCategoryDirs[3] ||
+                                                            curMod.submods.first.category == defaultCategoryDirs[4] ||
+                                                            curMod.submods.first.category == defaultCategoryDirs[5] ||
+                                                            curMod.submods.first.category == defaultCategoryDirs[15] ||
+                                                            curMod.submods.first.category == defaultCategoryDirs[16],
                                                         child: MenuItemButton(
                                                           leadingIcon: const Icon(
                                                             Icons.radio_button_checked,
@@ -3165,11 +3215,11 @@ class _HomePageState extends State<HomePage> {
 
                                                       // add or change cmx file
                                                       Visibility(
-                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[1] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[6] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[11] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[15] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[16],
+                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[6] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[11] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
                                                         child: MenuItemButton(
                                                           leadingIcon: const Icon(
                                                             Icons.note_add_rounded,
@@ -3271,12 +3321,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       // boundary
                                                       Visibility(
-                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[1] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[3] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[4] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[5] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[15] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCateforyDirs[16],
+                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[3] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[4] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[5] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
+                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
                                                         child: MenuItemButton(
                                                           leadingIcon: const Icon(
                                                             Icons.radio_button_checked,
@@ -3649,11 +3699,11 @@ class _HomePageState extends State<HomePage> {
 
                                                                   // add or change cmx file
                                                                   Visibility(
-                                                                      visible: curSubmod.category == defaultCateforyDirs[1] ||
-                                                                          curSubmod.category == defaultCateforyDirs[6] ||
-                                                                          curSubmod.category == defaultCateforyDirs[11] ||
-                                                                          curSubmod.category == defaultCateforyDirs[15] ||
-                                                                          curSubmod.category == defaultCateforyDirs[16],
+                                                                      visible: curSubmod.category == defaultCategoryDirs[1] ||
+                                                                          curSubmod.category == defaultCategoryDirs[6] ||
+                                                                          curSubmod.category == defaultCategoryDirs[11] ||
+                                                                          curSubmod.category == defaultCategoryDirs[15] ||
+                                                                          curSubmod.category == defaultCategoryDirs[16],
                                                                       child: MenuItemButton(
                                                                         leadingIcon: const Icon(
                                                                           Icons.note_add_rounded,
@@ -3752,12 +3802,12 @@ class _HomePageState extends State<HomePage> {
 
                                                                   // boundary
                                                                   Visibility(
-                                                                    visible: curSubmod.category == defaultCateforyDirs[1] ||
-                                                                        curSubmod.category == defaultCateforyDirs[3] ||
-                                                                        curSubmod.category == defaultCateforyDirs[4] ||
-                                                                        curSubmod.category == defaultCateforyDirs[5] ||
-                                                                        curSubmod.category == defaultCateforyDirs[15] ||
-                                                                        curSubmod.category == defaultCateforyDirs[16],
+                                                                    visible: curSubmod.category == defaultCategoryDirs[1] ||
+                                                                        curSubmod.category == defaultCategoryDirs[3] ||
+                                                                        curSubmod.category == defaultCategoryDirs[4] ||
+                                                                        curSubmod.category == defaultCategoryDirs[5] ||
+                                                                        curSubmod.category == defaultCategoryDirs[15] ||
+                                                                        curSubmod.category == defaultCategoryDirs[16],
                                                                     child: MenuItemButton(
                                                                       leadingIcon: const Icon(
                                                                         Icons.radio_button_checked,
@@ -4311,10 +4361,14 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor: Colors.transparent,
                             collapsedTextColor: Theme.of(context).colorScheme.primary,
                             collapsedIconColor: Theme.of(context).colorScheme.primary,
-                            title: Text(appliedItemList[groupIndex].groupName, style: const TextStyle(fontWeight: FontWeight.w600)),
-                            subtitle: defaultCategoryTypes.contains(appliedItemList[groupIndex].groupName) && curActiveLang == 'JP'
-                                ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(appliedItemList[groupIndex].groupName)])
-                                : null,
+                            title: Text(
+                                defaultCategoryTypes.contains(appliedItemList[groupIndex].groupName)
+                                    ? defaultCategoryTypeNames[defaultCategoryTypes.indexOf(appliedItemList[groupIndex].groupName)]
+                                    : appliedItemList[groupIndex].groupName,
+                                style: const TextStyle(fontWeight: FontWeight.w600)),
+                            // subtitle: defaultCategoryTypes.contains(appliedItemList[groupIndex].groupName) && curActiveLang == 'JP'
+                            //     ? Text(defaultCategoryTypesJP[defaultCategoryTypes.indexOf(appliedItemList[groupIndex].groupName)])
+                            //     : null,
                             initiallyExpanded: appliedItemList[groupIndex].expanded,
                             children: [
                               ListView.builder(
@@ -4339,7 +4393,11 @@ class _HomePageState extends State<HomePage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Text(curCategory.categoryName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                              Text(
+                                                  defaultCategoryDirs.contains(curCategory.categoryName)
+                                                      ? defaultCategoryNames[defaultCategoryDirs.indexOf(curCategory.categoryName)]
+                                                      : curCategory.categoryName,
+                                                  style: const TextStyle(fontWeight: FontWeight.w600)),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 10, top: 18, bottom: 13),
                                                 child: Container(
@@ -4362,9 +4420,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                       ),
-                                      subtitle: defaultCateforyDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
-                                          ? Text(defaultCateforyDirsJP[defaultCateforyDirs.indexOf(curCategory.categoryName)])
-                                          : null,
+                                      // subtitle: defaultCategoryDirs.contains(curCategory.categoryName) && curActiveLang == 'JP'
+                                      //     ? Text(defaultCategoryDirsJP[defaultCategoryDirs.indexOf(curCategory.categoryName)])
+                                      //     : null,
                                       children: [
                                         ListView.builder(
                                             shrinkWrap: true,

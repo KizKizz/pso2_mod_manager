@@ -198,16 +198,16 @@ void boundaryEdit(context, SubMod submod) async {
     }
     String itemCategory = infos[0];
     if (itemName.contains('[Se]')) {
-      itemCategory = defaultCateforyDirs[16];
+      itemCategory = defaultCategoryDirs[16];
     }
 
     //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
-    if (itemCategory == defaultCateforyDirs[1] ||
-        itemCategory == defaultCateforyDirs[3] ||
-        itemCategory == defaultCateforyDirs[4] ||
-        itemCategory == defaultCateforyDirs[5] ||
-        itemCategory == defaultCateforyDirs[15] ||
-        itemCategory == defaultCateforyDirs[16] ||
+    if (itemCategory == defaultCategoryDirs[1] ||
+        itemCategory == defaultCategoryDirs[3] ||
+        itemCategory == defaultCategoryDirs[4] ||
+        itemCategory == defaultCategoryDirs[5] ||
+        itemCategory == defaultCategoryDirs[15] ||
+        itemCategory == defaultCategoryDirs[16] ||
         itemName.contains('[Fu]')) {
       Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('$itemCategory${curLangText!.uispaceFoundExcl}');
       await Future.delayed(const Duration(milliseconds: 100));

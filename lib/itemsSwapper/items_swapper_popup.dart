@@ -9,41 +9,44 @@ import 'package:pso2_mod_manager/state_provider.dart';
 
 String fromItemName = '';
 String toItemName = '';
+List<String> swapCategoriesF = defaultCategoryDirs.where((element) => element != defaultCategoryDirs[13]).toList();
 
-List<String> swapCategoriesF = [
-  'Accessories',
-  'Basewears',
-  'Body Paints',
-  'Cast Arm Parts',
-  'Cast Body Parts',
-  'Cast Leg Parts',
-  'Costumes',
-  'Emotes',
-  'Eyes',
-  'Face Paints',
-  'Hairs',
-  'Innerwears',
-  'Motions',
-  'Outerwears',
-  'Setwears'
-];
-List<String> jpSwapCategoriesF = [
-  'アクセサリー', //0
-  'ベースウェア/フルセットウェア', //1
-  'ボディペイント', //2
-  'キャストアームパーツ', //3
-  'キャストボディパーツ', //4
-  'キャストレッグパーツ', //5
-  'コスチューム', //6
-  'ロビーアクション', //7
-  '瞳・まゆ・まつげ', //8
-  'メイクパターン', //9
-  'ヘアスタイル', //10
-  'インナーウェア', //11
-  'モーション', //14
-  'アウターウェア', //15
-  'セットウェア' //16
-];
+// List<String> swapCategoriesF = [
+//   'Accessories',
+//   'Basewears',
+//   'Body Paints',
+//   'Cast Arm Parts',
+//   'Cast Body Parts',
+//   'Cast Leg Parts',
+//   'Costumes',
+//   'Emotes',
+//   'Eyes',
+//   'Face Paints',
+//   'Hairs',
+//   'Innerwears',
+//   'Mags',
+//   'Motions',
+//   'Outerwears',
+//   'Setwears'
+// ];
+// List<String> jpSwapCategoriesF = [
+//   'アクセサリー', //0
+//   'ベースウェア/フルセットウェア', //1
+//   'ボディペイント', //2
+//   'キャストアームパーツ', //3
+//   'キャストボディパーツ', //4
+//   'キャストレッグパーツ', //5
+//   'コスチューム', //6
+//   'ロビーアクション', //7
+//   '瞳・まゆ・まつげ', //8
+//   'メイクパターン', //9
+//   'ヘアスタイル', //10
+//   'インナーウェア', //11
+//   'マグ',
+//   'モーション', //14
+//   'アウターウェア', //15
+//   'セットウェア' //16
+// ];
 // List<String> swapCategoriesF = [
 //   'Accessories',
 //   'Basewears',
@@ -99,7 +102,7 @@ Future<void> itemsSwapperCategorySelect(context) async {
                   width: 200,
                   child: DropdownButtonHideUnderline(
                       child: DropdownButton2(
-                        hint: Text(curLangText!.uiItemCategories),
+                    hint: Text(curLangText!.uiItemCategories),
                     buttonStyleData: ButtonStyleData(
                       height: 30,
                       decoration: BoxDecoration(
@@ -132,31 +135,31 @@ Future<void> itemsSwapperCategorySelect(context) async {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 if (curActiveLang != 'JP')
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 3),
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                        //fontSize: 14,
-                                        //fontWeight: FontWeight.bold,
-                                        //color: Colors.white,
-                                        ),
-                                    overflow: TextOverflow.ellipsis,
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                          //fontSize: 14,
+                                          //fontWeight: FontWeight.bold,
+                                          //color: Colors.white,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                if (curActiveLang == 'JP')
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 3),
-                                  child: Text(
-                                    jpSwapCategoriesF[swapCategoriesF.indexOf(item)],
-                                    style: const TextStyle(
-                                        //fontSize: 14,
-                                        //fontWeight: FontWeight.bold,
-                                        //color: Colors.white,
-                                        ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
+                                if (curActiveLang != 'EN')
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: Text(
+                                      defaultCategoryNames[swapCategoriesF.indexOf(item)],
+                                      style: const TextStyle(
+                                          //fontSize: 14,
+                                          //fontWeight: FontWeight.bold,
+                                          //color: Colors.white,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
                               ],
                             )))
                         .toList(),

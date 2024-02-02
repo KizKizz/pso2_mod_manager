@@ -29,13 +29,13 @@ List<CsvIceFile> csvGeneralIndexFiles = [];
 // }
 
 Future<List<List<String>>> itemCsvFetcher(String refSheetsPath) async {
-  List<List<String>> csvReturnList = List.generate(defaultCateforyDirs.length, (index) => []);
+  List<List<String>> csvReturnList = List.generate(defaultCategoryDirs.length, (index) => []);
   final csvFilesFromPath = Directory(refSheetsPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv');
   for (var csvFile in csvFilesFromPath) {
     await csvFile.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(csvFile.path)).isNotEmpty);
       if (categoryIndex != -1) {
-        line = '${defaultCateforyDirs[categoryIndex]},$line';
+        line = '${defaultCategoryDirs[categoryIndex]},$line';
         csvReturnList[categoryIndex].add(line);
       } 
       // else {

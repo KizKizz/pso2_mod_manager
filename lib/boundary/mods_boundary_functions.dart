@@ -6,12 +6,12 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 Future<bool> removeBoundaryOnModsApply(context, SubMod curSubmod) async {
-  if (curSubmod.category == defaultCateforyDirs[1] ||
-      curSubmod.category == defaultCateforyDirs[3] ||
-      curSubmod.category == defaultCateforyDirs[4] ||
-      curSubmod.category == defaultCateforyDirs[5] ||
-      curSubmod.category == defaultCateforyDirs[15] ||
-      curSubmod.category == defaultCateforyDirs[16]) {
+  if (curSubmod.category == defaultCategoryDirs[1] ||
+      curSubmod.category == defaultCategoryDirs[3] ||
+      curSubmod.category == defaultCategoryDirs[4] ||
+      curSubmod.category == defaultCategoryDirs[5] ||
+      curSubmod.category == defaultCategoryDirs[15] ||
+      curSubmod.category == defaultCategoryDirs[16]) {
     Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
       element.deleteSync(recursive: true);
     });

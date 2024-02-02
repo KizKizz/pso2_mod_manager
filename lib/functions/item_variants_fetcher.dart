@@ -17,7 +17,7 @@ Future<List<String>> itemVariantsFetch(List<Mod> modList, String category, Strin
   }
   List<String> itemVariantCsvInfos = [];
   for (var modFileName in modFileNamesFromMods) {
-    int defaultCateIndex = defaultCateforyDirs.indexOf(category);
+    int defaultCateIndex = defaultCategoryDirs.indexOf(category);
     if (defaultCateIndex != -1) {
       itemVariantCsvInfos.addAll(csvInfosFromSheets[defaultCateIndex].where((element) => !itemVariantCsvInfos.contains(element) && element.contains(modFileName)));
     }

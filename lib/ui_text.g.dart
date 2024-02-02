@@ -9,6 +9,7 @@ part of 'ui_text.dart';
 TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) =>
     TranslationLanguage(
       json['langInitial'] as String,
+      json['revision'] as int,
       json['langFilePath'] as String,
       json['selected'] as bool,
     );
@@ -17,6 +18,7 @@ Map<String, dynamic> _$TranslationLanguageToJson(
         TranslationLanguage instance) =>
     <String, dynamic>{
       'langInitial': instance.langInitial,
+      'revision': instance.revision,
       'langFilePath': instance.langFilePath,
       'selected': instance.selected,
     };
@@ -42,6 +44,34 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiOFF = json['uiOFF'] as String
       ..uiMove = json['uiMove'] as String
       ..uiContinue = json['uiContinue'] as String
+      ..uiUnknown = json['uiUnknown'] as String
+      ..uiUnknownItem = json['uiUnknownItem'] as String
+      ..uiUnknownAccessory = json['uiUnknownAccessory'] as String
+      ..uiUnknownEmote = json['uiUnknownEmote'] as String
+      ..uiUnknownMotion = json['uiUnknownMotion'] as String
+      ..uiGenderMale = json['uiGenderMale'] as String
+      ..uiGenderFemale = json['uiGenderFemale'] as String
+      ..uiGenderBoth = json['uiGenderBoth'] as String
+      ..dfCastParts = json['dfCastParts'] as String
+      ..dfLayeringWears = json['dfLayeringWears'] as String
+      ..dfOthers = json['dfOthers'] as String
+      ..dfAccessories = json['dfAccessories'] as String
+      ..dfBasewears = json['dfBasewears'] as String
+      ..dfBodyPaints = json['dfBodyPaints'] as String
+      ..dfCastArmParts = json['dfCastArmParts'] as String
+      ..dfCastBodyParts = json['dfCastBodyParts'] as String
+      ..dfCastLegParts = json['dfCastLegParts'] as String
+      ..dfCostumes = json['dfCostumes'] as String
+      ..dfEmotes = json['dfEmotes'] as String
+      ..dfEyes = json['dfEyes'] as String
+      ..dfFacePaints = json['dfFacePaints'] as String
+      ..dfHairs = json['dfHairs'] as String
+      ..dfInnerwears = json['dfInnerwears'] as String
+      ..dfMags = json['dfMags'] as String
+      ..dfMisc = json['dfMisc'] as String
+      ..dfMotions = json['dfMotions'] as String
+      ..dfOuterwears = json['dfOuterwears'] as String
+      ..dfSetwears = json['dfSetwears'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -258,6 +288,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCmx = json['uiCmx'] as String
       ..uiAddChangeCmxFile = json['uiAddChangeCmxFile'] as String
       ..uiCmxFile = json['uiCmxFile'] as String
+      ..uiMoveThisCategoryToAnotherGroup =
+          json['uiMoveThisCategoryToAnotherGroup'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -500,6 +532,34 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiOFF': instance.uiOFF,
       'uiMove': instance.uiMove,
       'uiContinue': instance.uiContinue,
+      'uiUnknown': instance.uiUnknown,
+      'uiUnknownItem': instance.uiUnknownItem,
+      'uiUnknownAccessory': instance.uiUnknownAccessory,
+      'uiUnknownEmote': instance.uiUnknownEmote,
+      'uiUnknownMotion': instance.uiUnknownMotion,
+      'uiGenderMale': instance.uiGenderMale,
+      'uiGenderFemale': instance.uiGenderFemale,
+      'uiGenderBoth': instance.uiGenderBoth,
+      'dfCastParts': instance.dfCastParts,
+      'dfLayeringWears': instance.dfLayeringWears,
+      'dfOthers': instance.dfOthers,
+      'dfAccessories': instance.dfAccessories,
+      'dfBasewears': instance.dfBasewears,
+      'dfBodyPaints': instance.dfBodyPaints,
+      'dfCastArmParts': instance.dfCastArmParts,
+      'dfCastBodyParts': instance.dfCastBodyParts,
+      'dfCastLegParts': instance.dfCastLegParts,
+      'dfCostumes': instance.dfCostumes,
+      'dfEmotes': instance.dfEmotes,
+      'dfEyes': instance.dfEyes,
+      'dfFacePaints': instance.dfFacePaints,
+      'dfHairs': instance.dfHairs,
+      'dfInnerwears': instance.dfInnerwears,
+      'dfMags': instance.dfMags,
+      'dfMisc': instance.dfMisc,
+      'dfMotions': instance.dfMotions,
+      'dfOuterwears': instance.dfOuterwears,
+      'dfSetwears': instance.dfSetwears,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,
@@ -694,6 +754,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCmx': instance.uiCmx,
       'uiAddChangeCmxFile': instance.uiAddChangeCmxFile,
       'uiCmxFile': instance.uiCmxFile,
+      'uiMoveThisCategoryToAnotherGroup':
+          instance.uiMoveThisCategoryToAnotherGroup,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,

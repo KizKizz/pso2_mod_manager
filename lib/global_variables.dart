@@ -15,6 +15,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pso2_mod_manager/classes/profile_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 String curActiveLang = '';
 List<String> langDropDownList = [];
@@ -58,9 +59,29 @@ bool isModViewFromApplied = false;
 List<Widget> previewImages = [];
 String previewModName = '';
 List<String> defaultCategoryTypes = ['Cast Parts', 'Layering Wears', 'Others'];
-List<String> defaultCategoryTypesJP = ['キャストパーツ', 'レイヤリングウェア', 'その他'];
+List<String> defaultCategoryTypeNames = [curLangText!.dfCastParts, curLangText!.dfLayeringWears, curLangText!.dfOthers];
+//List<String> defaultCategoryTypesJP = ['キャストパーツ', 'レイヤリングウェア', 'その他'];
 //Default Mod Caterories
-List<String> defaultCateforyDirs = [
+List<String> defaultCategoryNames = [
+  curLangText!.dfAccessories, //0
+  curLangText!.dfBasewears, //1
+  curLangText!.dfBodyPaints, //2
+  curLangText!.dfCastArmParts, //3
+  curLangText!.dfCastBodyParts, //4
+  curLangText!.dfCastLegParts, //5
+  curLangText!.dfCostumes, //6
+  curLangText!.dfEmotes, //7
+  curLangText!.dfEyes, //8
+  curLangText!.dfFacePaints, //9
+  curLangText!.dfHairs, //10
+  curLangText!.dfInnerwears, //11
+  curLangText!.dfMags, //12
+  curLangText!.dfMisc, //13
+  curLangText!.dfMotions, //14
+  curLangText!.dfOuterwears, //15
+  curLangText!.dfSetwears //16
+];
+List<String> defaultCategoryDirs = [
   'Accessories', //0
   'Basewears', //1
   'Body Paints', //2
@@ -79,25 +100,25 @@ List<String> defaultCateforyDirs = [
   'Outerwears', //15
   'Setwears' //16
 ];
-List<String> defaultCateforyDirsJP = [
-  'アクセサリー', //0
-  'ベースウェア/フルセットウェア', //1
-  'ボディペイント', //2
-  'キャストアームパーツ', //3
-  'キャストボディパーツ', //4
-  'キャストレッグパーツ', //5
-  'コスチューム', //6
-  'ロビーアクション', //7
-  '瞳・まゆ・まつげ', //8
-  'メイクパターン', //9
-  'ヘアスタイル', //10
-  'インナーウェア', //11
-  'マグ', //12
-  'その他', //13
-  'モーション', //14
-  'アウターウェア', //15
-  'セットウェア' //16
-];
+// List<String> defaultCateforyDirsJP = [
+//   'アクセサリー', //0
+//   'ベースウェア/フルセットウェア', //1
+//   'ボディペイント', //2
+//   'キャストアームパーツ', //3
+//   'キャストボディパーツ', //4
+//   'キャストレッグパーツ', //5
+//   'コスチューム', //6
+//   'ロビーアクション', //7
+//   '瞳・まゆ・まつげ', //8
+//   'メイクパターン', //9
+//   'ヘアスタイル', //10
+//   'インナーウェア', //11
+//   'マグ', //12
+//   'その他', //13
+//   'モーション', //14
+//   'アウターウェア', //15
+//   'セットウェア' //16
+// ];
 bool isModViewModsApplying = false;
 bool isModViewModsRemoving = false;
 List<ModFile> startupReappliedModFiles = [];
