@@ -9,6 +9,7 @@ part of 'ui_text.dart';
 TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) =>
     TranslationLanguage(
       json['langInitial'] as String,
+      json['revision'] as int,
       json['langFilePath'] as String,
       json['selected'] as bool,
     );
@@ -17,6 +18,7 @@ Map<String, dynamic> _$TranslationLanguageToJson(
         TranslationLanguage instance) =>
     <String, dynamic>{
       'langInitial': instance.langInitial,
+      'revision': instance.revision,
       'langFilePath': instance.langFilePath,
       'selected': instance.selected,
     };

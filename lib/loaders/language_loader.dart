@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +28,7 @@ Future<TranslationText?> uiTextLoader() async {
     //Create default EN language json
     String enUITextJsonPath = Uri.file('$modManLanguageDirPath/EN.json').toFilePath();
     File(enUITextJsonPath).createSync();
-    languageList.add(TranslationLanguage('EN', enUITextJsonPath, true));
+    languageList.add(TranslationLanguage('EN', 1, enUITextJsonPath, true));
     TranslationText defaultENLanguage = TranslationText();
     //Write translation to json
     File(enUITextJsonPath).writeAsStringSync(encoder.convert(defaultENLanguage));
@@ -62,7 +63,7 @@ Future<TranslationText?> uiTextLoader() async {
         Directory(modManLanguageDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.json' && p.basenameWithoutExtension(element.path).length == 2);
     for (var langFile in localCustomLang) {
       if (languageList.where((element) => element.langInitial == p.basenameWithoutExtension(langFile.path) && element.langFilePath == langFile.path).isEmpty) {
-        languageList.add(TranslationLanguage(p.basenameWithoutExtension(langFile.path), langFile.path, curActiveLang == p.basenameWithoutExtension(langFile.path) ? true : false));
+        languageList.add(TranslationLanguage(p.basenameWithoutExtension(langFile.path), 1, langFile.path, curActiveLang == p.basenameWithoutExtension(langFile.path) ? true : false));
         File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
       }
     }
@@ -113,6 +114,37 @@ Future<TranslationText?> uiTextLoader() async {
       }
     }
   }
+
+  //Check and download lastest language files
+  await checkLanguageTranslationForUpdates(languageList);
+  //Load local json
+  var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath).readAsStringSync());
+  for (var lang in jsonData) {
+    final langInfo = TranslationLanguage.fromJson(lang);
+    if (languageList.where((element) => element.langFilePath == langInfo.langFilePath).isEmpty) {
+      languageList.add(langInfo);
+    }
+  }
+  //sort
+  languageList.sort((a, b) => a.langInitial.compareTo(b.langInitial));
+  for (var lang in languageList) {
+    //Rewrite language file path
+    if (!lang.langFilePath.contains(modManLanguageDirPath)) {
+      lang.langFilePath = Uri.file('$modManLanguageDirPath/${lang.langInitial}.json').toFilePath();
+      File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
+    }
+    if (!File(lang.langFilePath).existsSync()) {
+      //Uri enUITextJsonPath = Uri.file('$modManLanguageDirPath${lang.langInitial}.json');
+      File(lang.langFilePath).createSync();
+      TranslationText defaultENLanguage = TranslationText();
+      File(lang.langFilePath).writeAsStringSync(encoder.convert(defaultENLanguage));
+    }
+    if (!langDropDownList.contains(lang.langInitial)) {
+      langDropDownList.add(lang.langInitial);
+      langDropDownList.sort();
+    }
+  }
+  File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
 
   //check EN for update
   int enIndex = languageList.indexWhere((element) => element.langInitial == 'EN');
@@ -190,6 +222,5 @@ Future<TranslationText?> uiTextLoader() async {
       File(modManLanguageSettingsJsonPath).writeAsStringSync(encoder.convert(languageList));
       return TranslationText.fromJson(jsonData);
     }
-    
   }
 }

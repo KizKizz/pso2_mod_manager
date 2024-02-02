@@ -1,11 +1,17 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.19",
+    "version": "2.5.20",
     "description": [
-        "Mod Manager now automatically detects custom language translation files inside Language folder",
-        "To add a new translation press and hold the language select button inside Settings. This will create a default language file can be found inside Language folder (where the .exe file is located)",
-        "MODマネージャがLanguageフォルダ内のカスタム言語翻訳ファイルを自動的に検出するようになりました。",
-        "新しい翻訳を追加するには、設定内の言語選択ボタンを押したままにします。これにより、デフォルトの言語ファイルが作成され、Languageフォルダ.exeファイルがある場所に保存されます。"
+        "Fixed a bug where swapping mags would cause an error",
+        "Fixed a bug where custom categories would not show up when adding misc mods",
+        "Fixed a bug where sorting categories would cause incorrect positions being saved",
+        "Improved UI texts to display translations properly",
+        "Translation files now fetching updates directly from github",
+        "弾倉を交換するとエラーになるバグを修正",
+        "雑多なMODを追加する際、カスタムカテゴリーが表示されないバグを修正",
+        "カテゴリーをソートすると、誤った位置が保存されるバグを修正",
+        "翻訳を正しく表示するためにUIテキストを改善しました",
+        "翻訳ファイルがgithubから直接更新を取得するようになった"
     ],
     "windows_file": "",
     "linux_file": ""

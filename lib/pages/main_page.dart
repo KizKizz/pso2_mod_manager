@@ -178,7 +178,7 @@ class _MainPageState extends State<MainPage> {
                                     if (!File(newLangPath).existsSync()) {
                                       await File(newLangPath).create(recursive: true);
                                     }
-                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), newLangPath, false);
+                                    TranslationLanguage newLang = TranslationLanguage(newLangTextController.text.toUpperCase(), 1, newLangPath, false);
                                     languageList.add(newLang);
                                     languageList.sort(((a, b) => a.langInitial.compareTo(b.langInitial)));
                                     langDropDownList.add(newLangTextController.text.toUpperCase());

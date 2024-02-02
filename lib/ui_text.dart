@@ -4,9 +4,10 @@ part 'ui_text.g.dart';
 
 @JsonSerializable()
 class TranslationLanguage {
-  TranslationLanguage(this.langInitial, this.langFilePath, this.selected);
+  TranslationLanguage(this.langInitial, this.revision, this.langFilePath, this.selected);
 
   String langInitial;
+  int revision;
   String langFilePath;
   bool selected;
 

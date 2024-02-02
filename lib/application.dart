@@ -2,16 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String newVersion = '';
@@ -155,6 +158,49 @@ Future<Map<String, dynamic>> loadChecksumFileJsonFromGithub() async {
     http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
     if (response.statusCode == 200) {
       jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/app_version_check/checksum_version.json'));
+    }
+  } on TimeoutException catch (e) {
+    debugPrint('Timeout Error: $e');
+  } on SocketException catch (e) {
+    debugPrint('Socket Error: $e');
+  } on Error catch (e) {
+    debugPrint('General Error: $e');
+  }
+  return jsonDecode(jsonResponse);
+}
+
+//Language
+Future<void> checkLanguageTranslationForUpdates(List<TranslationLanguage> localLangList) async {
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  var jsonData = await loadLanguageTranslationJsonFromGithub();
+  for (var lang in jsonData) {
+    TranslationLanguage gitLangInfo = TranslationLanguage.fromJson(lang);
+    int localLangInfoIndex = localLangList.indexWhere((element) => element.langInitial == gitLangInfo.langInitial);
+    if (localLangInfoIndex != -1) {
+      TranslationLanguage localLangInfo = localLangList[localLangInfoIndex];
+      if (localLangInfo.langInitial == gitLangInfo.langInitial && localLangInfo.revision < gitLangInfo.revision) {
+        await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
+        localLangInfo.revision = gitLangInfo.revision;
+      } else if (localLangInfo.langInitial == gitLangInfo.langInitial && !File(Uri.file(localLangInfo.langFilePath).toFilePath()).existsSync()) {
+        await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
+        localLangInfo.revision = gitLangInfo.revision;
+      }
+    } else {
+      String newLangFilePath = Uri.file('$modManLanguageDirPath/${gitLangInfo.langInitial}.json').toFilePath();
+      await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(newLangFilePath).toFilePath());
+      gitLangInfo.langFilePath = newLangFilePath;
+      localLangList.add(gitLangInfo);
+    }
+  }
+  File(Uri.file('$modManLanguageDirPath/LanguageSettings.json').toFilePath()).writeAsStringSync(encoder.convert(localLangList));
+}
+
+Future<dynamic> loadLanguageTranslationJsonFromGithub() async {
+  String jsonResponse = '{"null": "null"}';
+  try {
+    http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/LanguageSettings.json'));
+    if (response.statusCode == 200) {
+      jsonResponse = await http.read(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/LanguageSettings.json'));
     }
   } on TimeoutException catch (e) {
     debugPrint('Timeout Error: $e');
