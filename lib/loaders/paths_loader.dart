@@ -122,7 +122,7 @@ Future<bool> pathsLoader(context) async {
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
   Directory(modManModsDirPath).createSync(recursive: true);
-  for (var name in defaultCateforyDirs) {
+  for (var name in defaultCategoryDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
   //Create Backups folder
@@ -469,7 +469,7 @@ Future<bool> modManPathReloader(context) async {
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
   Directory(modManModsDirPath).createSync(recursive: true);
-  for (var name in defaultCateforyDirs) {
+  for (var name in defaultCategoryDirs) {
     Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
   }
   //Create Backups folder

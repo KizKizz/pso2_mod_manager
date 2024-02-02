@@ -60,7 +60,7 @@ Future<List<String>> originalFilePathGet(context, String iceName) async {
 
 List<String> applyModsOgIcePathsFetcher(SubMod submod, String iceName) {
   List<String> ogPaths = [];
-  if (submod.category == defaultCateforyDirs[7] && submod.category == defaultCateforyDirs[14]) {
+  if (submod.category == defaultCategoryDirs[7] && submod.category == defaultCategoryDirs[14]) {
     List<String> win32RebootPaths = ogWin32RebootFilePaths.where((element) => p.basename(element) == iceName).toList();
     List<String> win32RebootNAPaths = ogWin32RebootNAFilePaths.where((element) => p.basename(element) == iceName).toList();
     if (win32RebootPaths.isNotEmpty) {
@@ -72,7 +72,7 @@ List<String> applyModsOgIcePathsFetcher(SubMod submod, String iceName) {
     if (ogPaths.isNotEmpty) {
       return ogPaths;
     }
-  } else if (submod.category != defaultCateforyDirs[13]) {
+  } else if (submod.category != defaultCategoryDirs[13]) {
     int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
     int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
     if (win32PathIndex != -1) {

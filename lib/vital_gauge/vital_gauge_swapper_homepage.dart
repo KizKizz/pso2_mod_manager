@@ -544,7 +544,7 @@ void vitalGaugeHomePage(context) {
                                                             children: [
                                                               Expanded(
                                                                 child: ElevatedButton(
-                                                                    onPressed: () async {
+                                                                    onLongPress: vgData.where((element) => element.isReplaced).isEmpty ? null : () async {
                                                                       Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                         element.deleteSync(recursive: true);
                                                                       });
@@ -580,6 +580,7 @@ void vitalGaugeHomePage(context) {
                                                                         element.deleteSync(recursive: true);
                                                                       });
                                                                     },
+                                                                    onPressed: vgData.where((element) => element.isReplaced).isEmpty ? null : () {},
                                                                     child: Text(curLangText!.uiRestoreAll)),
                                                               ),
                                                               const SizedBox(

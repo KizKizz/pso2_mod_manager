@@ -71,9 +71,19 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
     List<List<String>> csvInfos = [];
     bool includeHqLiIceOnly = false;
     bool includeNqLiIceOnly = false;
+    bool magHqIceFound = false;
+    bool magNqIceFound = false;
     for (var csvItemData in fromItemCsvData) {
       final data = csvItemData.getDetailedList().where((element) => element.split(': ').last.isNotEmpty).toList();
       final availableModFileData = data.where((element) => iceNamesFromSubmod.contains(element.split(': ').last)).toList();
+      if (widget.fromSubmod.category == defaultCategoryDirs[12]) {
+        if (csvItemData.nqIceName.isNotEmpty && !magNqIceFound) {
+          magNqIceFound = true;
+        }
+        if (csvItemData.hqIceName.isNotEmpty && !magHqIceFound) {
+          magHqIceFound = true;
+        }
+      }
       csvInfos.add(availableModFileData);
       //filter link inner items
       for (var line in availableModFileData) {
@@ -87,6 +97,13 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
           break;
         }
       }
+    }
+
+    if (magNqIceFound) {
+      availableItemsCsvData = availableItemsCsvData.where((element) => element.itemType == 'PSO2').toList();
+    }
+    if (magHqIceFound) {
+      availableItemsCsvData = availableItemsCsvData.where((element) => element.itemType == 'NGS').toList();
     }
 
     if (includeHqLiIceOnly) {
@@ -423,11 +440,18 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                         groupValue: selectedToCsvFile,
                                                         title: curActiveLang == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName)
-                                                                : Text(toItemSearchResults[i].jpName)
+                                                                ? Text(availableItemsCsvData[i].jpName.trim())
+                                                                : Text(toItemSearchResults[i].jpName.trim())
                                                             : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName)
-                                                                : Text(toItemSearchResults[i].enName),
+                                                                ? Text(availableItemsCsvData[i].enName.trim())
+                                                                : Text(toItemSearchResults[i].enName.trim()),
+                                                        subtitle: swapperSearchTextController.text.isEmpty
+                                                            ? availableItemsCsvData[i].itemType.isNotEmpty
+                                                                ? Text(availableItemsCsvData[i].itemType)
+                                                                : null
+                                                            : availableItemsCsvData[i].itemType.isNotEmpty
+                                                                ? Text(toItemSearchResults[i].enName)
+                                                                : null,
                                                         onChanged: (CsvIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToCsvFile = currentItem!;

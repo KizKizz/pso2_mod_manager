@@ -13,6 +13,8 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart' as mss;
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as ms;
+
 
 TextEditingController swapperSearchTextController = TextEditingController();
 TextEditingController swapperFromItemsSearchTextController = TextEditingController();
@@ -239,11 +241,11 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                     groupValue: selectedFromCsvFile,
                                                     title: curActiveLang == 'JP'
                                                         ? swapperFromItemsSearchTextController.text.isEmpty
-                                                            ? Text(fromItemCsvData[i].jpName)
-                                                            : Text(fromItemSearchResults[i].jpName)
+                                                            ? Text(fromItemCsvData[i].jpName.trim())
+                                                            : Text(fromItemSearchResults[i].jpName.trim())
                                                         : swapperFromItemsSearchTextController.text.isEmpty
-                                                            ? Text(fromItemCsvData[i].enName)
-                                                            : Text(fromItemSearchResults[i].enName),
+                                                            ? Text(fromItemCsvData[i].enName.trim())
+                                                            : Text(fromItemSearchResults[i].enName.trim()),
                                                     subtitle: swapperFromItemsSearchTextController.text.isEmpty
                                                         ? selectedFromCsvFile == fromItemCsvData[i]
                                                             ? Column(
@@ -269,7 +271,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                                 ],
                                                               )
                                                             : null,
-                                                    onChanged: (CsvIceFile? currentItem) {
+                                                    onChanged: (CsvIceFile? currentItem) async {
                                                       selectedFromCsvFile = currentItem!;
                                                       fromItemAvailableIces = selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
                                                       fromItemName = curActiveLang == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
@@ -282,6 +284,17 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                           if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
                                                             toItemAvailableIces.add(line);
                                                           }
+                                                        }
+                                                      }
+
+                                                      if (currentItem.category == defaultCategoryDirs[12]) {
+                                                        selectedToCsvFile = null;
+                                                        availableItemsCsvData = await ms.getSwapToCsvList(csvData, currentItem.category);
+                                                        if (currentItem.nqIceName.isNotEmpty) {
+                                                          availableItemsCsvData = availableItemsCsvData.where((element) => element.itemType == 'PSO2').toList();
+                                                        }
+                                                        if (currentItem.hqIceName.isNotEmpty) {
+                                                          availableItemsCsvData = availableItemsCsvData.where((element) => element.itemType == 'NGS').toList();
                                                         }
                                                       }
 
@@ -473,11 +486,11 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                         groupValue: selectedToCsvFile,
                                                         title: curActiveLang == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName)
-                                                                : Text(toItemSearchResults[i].jpName)
+                                                                ? Text(availableItemsCsvData[i].jpName.trim())
+                                                                : Text(toItemSearchResults[i].jpName.trim())
                                                             : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName)
-                                                                : Text(toItemSearchResults[i].enName),
+                                                                ? Text(availableItemsCsvData[i].enName.trim())
+                                                                : Text(toItemSearchResults[i].enName.trim()),
                                                         onChanged: (CsvIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToCsvFile = currentItem!;

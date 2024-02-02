@@ -24,7 +24,7 @@ String unlistedItemCategoryF = '';
 Future<List<File>> getCsvFiles(context, String categoryName, List<String> modFilePaths) async {
   List<File> csvFiles = [];
   String finalCategoryName = categoryName;
-  if (!defaultCateforyDirs.contains(categoryName) || categoryName == 'Misc') {
+  if (!defaultCategoryDirs.contains(categoryName) || categoryName == defaultCategoryDirs[13]) {
     //load sheets
     if (csvInfosFromSheets.isEmpty) {
       csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
@@ -63,7 +63,7 @@ Future<List<File>> getCsvFiles(context, String categoryName, List<String> modFil
 
   //get csv files
   if (finalCategoryName.isNotEmpty) {
-    int categoryIndex = defaultCateforyDirs.indexOf(finalCategoryName);
+    int categoryIndex = defaultCategoryDirs.indexOf(finalCategoryName);
     for (var csvFileName in csvFileList[categoryIndex]) {
       final csvFilesFromPath = Directory(modManRefSheetsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.basename(element.path) == csvFileName);
       for (var file in csvFilesFromPath) {
@@ -75,23 +75,25 @@ Future<List<File>> getCsvFiles(context, String categoryName, List<String> modFil
 }
 
 Future<String> modsSwapperCategorySelect(context) async {
-  List<String> swapCategoriesF = [
-    'Accessories',
-    'Basewears',
-    'Body Paints',
-    'Cast Arm Parts',
-    'Cast Body Parts',
-    'Cast Leg Parts',
-    'Costumes',
-    'Emotes',
-    'Eyes',
-    'Face Paints',
-    'Hairs',
-    'Innerwears',
-    'Motions',
-    'Outerwears',
-    'Setwears'
-  ];
+  // List<String> swapCategoriesF = [
+  //   'Accessories',
+  //   'Basewears',
+  //   'Body Paints',
+  //   'Cast Arm Parts',
+  //   'Cast Body Parts',
+  //   'Cast Leg Parts',
+  //   'Costumes',
+  //   'Emotes',
+  //   'Eyes',
+  //   'Face Paints',
+  //   'Hairs',
+  //   'Innerwears',
+  //   'Mags',
+  //   'Motions',
+  //   'Outerwears',
+  //   'Setwears'
+  // ];
+  List<String> swapCategoriesF = defaultCategoryDirs.where((element) => element != defaultCategoryDirs[13]).toList();
   String? selectedCategoryF;
 
   return await showDialog(
@@ -184,10 +186,10 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
   List<List<String>> csvList = [];
   List<File> csvFiles = await getCsvFiles(context, itemCategory, modFilePaths);
   if (itemCategory == 'Innerwears') {
-    csvFiles.addAll(await getCsvFiles(context, 'Body Paints', modFilePaths));
+    csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[2], modFilePaths));
   }
   if (itemCategory == 'Body Paints') {
-    csvFiles.addAll(await getCsvFiles(context, 'Innerwears', modFilePaths));
+    csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[11], modFilePaths));
   }
 
   for (var file in csvFiles) {
@@ -198,21 +200,21 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
       if (categoryIndex != -1) {
         if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Glide Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Glide Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Jump Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Jump Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Landing Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Landing Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Dash Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Dash Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Run Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Run Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Standby Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Standby Motion,$line';
         } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
-          line = '${defaultCateforyDirs[categoryIndex]},Swim Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Swim Motion,$line';
         } else {
-          line = '${defaultCateforyDirs[categoryIndex]},$line';
+          line = '${defaultCategoryDirs[categoryIndex]},$line';
         }
       }
       csvList.last.add(line);
@@ -222,9 +224,9 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
   for (var line in csvList) {
     for (var item in line) {
       //
-      if (item.split(',').first == defaultCateforyDirs[0]) {
+      if (item.split(',').first == defaultCategoryDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
-      } else if (item.split(',').first == defaultCateforyDirs[7]) {
+      } else if (item.split(',').first == defaultCategoryDirs[7]) {
         if (item.split(',').length != 15 && item.split(',').length != 19) {
           debugPrint('${item.split(',')[2]} _ ${item.split(',').length}');
           //
@@ -234,16 +236,19 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
         } else if (item.split(',').length == 19) {
           csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
         }
-      } else if (item.split(',').first == defaultCateforyDirs[14]) {
+      } else if (item.split(',').first == defaultCategoryDirs[14]) {
         if (item.split(',').length == 9) {
           csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
         }
-      } else if (item.split(',').first == defaultCateforyDirs[10]) {
+      } else if (item.split(',').first == defaultCategoryDirs[10]) {
         csvData.add(CsvIceFile.fromListHairs(item.split(',')));
-      } else if (item.split(',').first == defaultCateforyDirs[12]) {
-        if (item.split(',').length > 3) {
-          csvData.add(CsvIceFile.fromListMags(item.split(',')));
+      } else if (item.split(',').first == defaultCategoryDirs[12]) {
+        if (item.split(',')[1] == 'Debug') {
+          List<String> itemSplit = item.split(',');
+          itemSplit.insert(1, '');
+          item = itemSplit.join(',');
         }
+        csvData.add(CsvIceFile.fromListMags(item.split(',')));
       } else {
         csvData.add(CsvIceFile.fromList(item.split(',')));
       }
@@ -259,25 +264,25 @@ Future<List<CsvIceFile>> getSwapToCsvList(List<CsvIceFile> cvsDataInput, String 
   // } else if (swapFromItem.category == 'Setwears') {
   //   categorySymbol = '[Se]';
   // } else
-  if (swapFromItemCategory == 'Innerwears') {
+  if (swapFromItemCategory == defaultCategoryDirs[11]) {
     categorySymbol = '[In]';
-  } 
-  if (swapFromItemCategory == defaultCateforyDirs[12]) {
+  }
+  if (swapFromItemCategory == defaultCategoryDirs[12]) {
     return cvsDataInput.where((element) => element.category == swapFromItemCategory).toList();
   }
   // if (swapFromItem.category == 'Setwears') {
   //   return cvsDataInput.where((element) => element.enName.contains(categorySymbol)).toList();
   // }
-  if (swapFromItemCategory == 'Setwears' || swapFromItemCategory == 'Basewears') {
+  if (swapFromItemCategory == defaultCategoryDirs[16] || swapFromItemCategory == defaultCategoryDirs[1]) {
     return cvsDataInput
         .where((element) => element.enName.isNotEmpty && element.jpName.isNotEmpty && (element.enName.contains('[Ba]') || element.enName.contains('[Se]') || element.enName.contains('[Fu]')))
         .toList();
   }
-  if (swapFromItemCategory == 'Innerwears') {
-    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == 'Body Paints').toList();
+  if (swapFromItemCategory == defaultCategoryDirs[11]) {
+    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == defaultCategoryDirs[2]).toList();
   }
-  if (swapFromItemCategory == 'Body Paints') {
-    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == 'Innerwears').toList();
+  if (swapFromItemCategory == defaultCategoryDirs[2]) {
+    return cvsDataInput.where((element) => element.category == swapFromItemCategory || element.category == defaultCategoryDirs[11]).toList();
   }
   if (categorySymbol.isNotEmpty) {
     return cvsDataInput.where((element) => element.category == swapFromItemCategory && element.enName.contains(categorySymbol) && element.enName.isNotEmpty && element.jpName.isNotEmpty).toList();
@@ -380,13 +385,13 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
             } else {
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
-                      ? getSwapToCsvList(csvData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
+                      ? getSwapToCsvList(csvData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
                           ? getAccSwapToCsvList(
-                              csvAccData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
+                              csvAccData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
                               ? getEmotesSwapToCsvList(
-                                  csvEmotesData, !defaultCateforyDirs.contains(widget.fromItem.category) || widget.fromItem.category == 'Misc' ? unlistedItemCategoryF : widget.fromItem.category)
+                                  csvEmotesData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                               : null,
                   builder: (
                     BuildContext context,

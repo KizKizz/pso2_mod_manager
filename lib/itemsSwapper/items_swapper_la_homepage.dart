@@ -649,8 +649,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                         csvEmotesData.clear();
                                                         if (!isEmotesToStandbyMotions) {
                                                           isEmotesToStandbyMotions = true;
-                                                          await msdl.sheetListFetchFromFiles(context, defaultCateforyDirs[14], []);
-                                                          availableEmotesCsvData = await msdl.getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCateforyDirs[14]);
+                                                          await msdl.sheetListFetchFromFiles(context, defaultCategoryDirs[14], []);
+                                                          availableEmotesCsvData = await msdl.getEmotesToMotionsSwapToCsvList(csvEmotesData, defaultCategoryDirs[14]);
                                                         } else {
                                                           isEmotesToStandbyMotions = false;
                                                           await msdl.sheetListFetchFromFiles(context, selectedCategoryF!, []);

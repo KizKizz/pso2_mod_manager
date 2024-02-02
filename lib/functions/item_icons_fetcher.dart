@@ -50,9 +50,9 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   String itemName = '';
   curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
   if (itemName.contains('[Se]')) {
-    itemCategory = defaultCateforyDirs[16];
+    itemCategory = defaultCategoryDirs[16];
   }
-  String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+  String ogIconIcePath = itemCategory == defaultCategoryDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
   return ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '');
 }
 
@@ -77,11 +77,11 @@ Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod>
     String itemName = '';
     curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
     if (itemName.contains('[Se]')) {
-      itemCategory = defaultCateforyDirs[16];
+      itemCategory = defaultCategoryDirs[16];
     }
     itemName = itemName.replaceAll(RegExp(charToReplace), '_');
     if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == itemName).isEmpty) {
-      String ogIconIcePath = itemCategory == defaultCateforyDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
+      String ogIconIcePath = itemCategory == defaultCategoryDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
       if (ogIconIcePath.isNotEmpty) {
         ogIconPaths.add([itemName, ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '')]);
       }
