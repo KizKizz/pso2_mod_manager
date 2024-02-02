@@ -117,14 +117,7 @@ Future<TranslationText?> uiTextLoader() async {
 
   //Check and download lastest language files
   await checkLanguageTranslationForUpdates(languageList);
-  //Load local json
-  var jsonData = jsonDecode(File(modManLanguageSettingsJsonPath).readAsStringSync());
-  for (var lang in jsonData) {
-    final langInfo = TranslationLanguage.fromJson(lang);
-    if (languageList.where((element) => element.langFilePath == langInfo.langFilePath).isEmpty) {
-      languageList.add(langInfo);
-    }
-  }
+  
   //sort
   languageList.sort((a, b) => a.langInitial.compareTo(b.langInitial));
   for (var lang in languageList) {
