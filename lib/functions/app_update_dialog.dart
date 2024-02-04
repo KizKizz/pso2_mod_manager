@@ -80,9 +80,12 @@ Future<void> appDownloadDialog(context) async {
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
                         Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
                         asyncWrite: false);
-                    await patchFileGenerate();
-                    File patchLauncher = await patchFileLauncherGenerate();
-                    Process.run(patchLauncher.path, []);
+                    await dio.download("https://github.com/KizKizz/pso2_mod_manager/raw/main/updater/PSO2NGSMMUpdater.exe", Uri.file('${Directory.current.path}/appUpdate').toFilePath(),
+                        options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}));
+                    Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, Directory.current.path]);
+                    // await patchFileGenerate();
+                    // File patchLauncher = await patchFileLauncherGenerate();
+                    // Process.run(patchLauncher.path, []);
                     windowManager.destroy();
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
