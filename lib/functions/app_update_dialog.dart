@@ -80,19 +80,20 @@ Future<void> appDownloadDialog(context) async {
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
                         Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
                         asyncWrite: false);
-                    // try {
-                    //   await dio.download("https://github.com/KizKizz/pso2_mod_manager/raw/main/updater/updater.exe", Uri.file('${Directory.current.path}/appUpdate').toFilePath());
-                    // } catch (e) {
-                    //   _downloadErrorMsg = e.toString();
-                    // }
-                    
-                    // //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, Directory.current.path]);
-                    // Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
+                    try {
+                      await dio.download("https://github.com/KizKizz/pso2_mod_manager/raw/main/updater/updater.exe", Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath());
+                    } catch (e) {
+                      debugPrint(e.toString());
+                      _downloadErrorMsg = e.toString();
+                    }
 
-                    await patchFileGenerate();
-                    File patchLauncher = await patchFileLauncherGenerate();
-                    Process.run(patchLauncher.path, []);
-                    windowManager.destroy();
+                    Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, Directory.current.path]);
+                    //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
+
+                    // await patchFileGenerate();
+                    // File patchLauncher = await patchFileLauncherGenerate();
+                    // Process.run(patchLauncher.path, []);
+                    // windowManager.destroy();
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
