@@ -1,17 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.20",
+    "version": "2.5.21",
     "description": [
-        "Fixed a bug where swapping mags would cause an error",
-        "Fixed a bug where custom categories would not show up when adding misc mods",
-        "Fixed a bug where sorting categories would cause incorrect positions being saved",
-        "Improved UI texts to display translations properly",
-        "Translation files now fetching updates directly from github",
-        "弾倉を交換するとエラーになるバグを修正",
-        "雑多なMODを追加する際、カスタムカテゴリーが表示されないバグを修正",
-        "カテゴリーをソートすると、誤った位置が保存されるバグを修正",
-        "翻訳を正しく表示するためにUIテキストを改善しました",
-        "翻訳ファイルがgithubから直接更新を取得するようになった"
+        "Implemented a new way to update Mod Manager",
+        "Mod Managerの新しいアップデート方法を実装"
     ],
     "windows_file": "",
     "linux_file": ""
