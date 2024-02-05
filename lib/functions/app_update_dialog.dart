@@ -87,13 +87,13 @@ Future<void> appDownloadDialog(context) async {
                       _downloadErrorMsg = e.toString();
                     }
 
-                    Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, Directory.current.path]);
+                    Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, (Directory.current.path)]);
                     //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
 
                     // await patchFileGenerate();
                     // File patchLauncher = await patchFileLauncherGenerate();
                     // Process.run(patchLauncher.path, []);
-                    // windowManager.destroy();
+                    //windowManager.destroy();
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
