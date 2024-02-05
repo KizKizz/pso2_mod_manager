@@ -87,7 +87,7 @@ Future<void> appDownloadDialog(context) async {
                       _downloadErrorMsg = e.toString();
                     }
 
-                    Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, (Directory.current.path)], runInShell: true);
+                    Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, Directory.current.path]);
                     //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
 
                     // await patchFileGenerate();
