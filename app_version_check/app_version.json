@@ -4,7 +4,8 @@
     "description": [
         "Added an option to select language for item names in Settings\n(The app might prompt you to select your language again. Language for item names only applies to names in lists when adding mods or swapping mods and items)",
         "Fixed a bug where GitHub outages would prevend the app from loading language files",
-        "Mod Managerの新しいアップデート方法を実装"
+        "設定でアイテム名の言語を選択できるオプションを追加\n(アプリが再度言語を選択するよう促すかもしれません。アイテム名の言語は、MODの追加時やMODとアイテムの交換時にリスト内の名前にのみ適用されます)",
+        "GitHubが停止すると、アプリが言語ファイルを読み込まなくなるバグを修正しました"
     ],
     "windows_file": "",
     "linux_file": ""
