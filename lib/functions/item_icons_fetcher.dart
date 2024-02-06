@@ -48,7 +48,7 @@ Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList)
   final infos = csvInfo.split(',');
   String itemCategory = infos[0];
   String itemName = '';
-  curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+  modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
   if (itemName.contains('[Se]')) {
     itemCategory = defaultCategoryDirs[16];
   }
@@ -75,7 +75,7 @@ Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod>
     final infos = csvInfo.split(',');
     String itemCategory = infos[0];
     String itemName = '';
-    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
     if (itemName.contains('[Se]')) {
       itemCategory = defaultCategoryDirs[16];
     }

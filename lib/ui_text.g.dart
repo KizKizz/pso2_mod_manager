@@ -186,6 +186,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCmxRefreshToolTip = json['uiCmxRefreshToolTip'] as String
       ..uiRefreshingCmx = json['uiRefreshingCmx'] as String
       ..uiRefreshCmx = json['uiRefreshCmx'] as String
+      ..uiItemNameLanguage = json['uiItemNameLanguage'] as String
+      ..uiItemNameLanguageTooltip = json['uiItemNameLanguageTooltip'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -509,7 +511,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCreateAndAddModsToThisSet =
           json['uiCreateAndAddModsToThisSet'] as String
       ..uiAddNewSet = json['uiAddNewSet'] as String
-      ..enterNewName = json['enterNewName'] as String;
+      ..uiEnterNewName = json['uiEnterNewName'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -661,6 +663,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCmxRefreshToolTip': instance.uiCmxRefreshToolTip,
       'uiRefreshingCmx': instance.uiRefreshingCmx,
       'uiRefreshCmx': instance.uiRefreshCmx,
+      'uiItemNameLanguage': instance.uiItemNameLanguage,
+      'uiItemNameLanguageTooltip': instance.uiItemNameLanguageTooltip,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -942,5 +946,5 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiNewModSet': instance.uiNewModSet,
       'uiCreateAndAddModsToThisSet': instance.uiCreateAndAddModsToThisSet,
       'uiAddNewSet': instance.uiAddNewSet,
-      'enterNewName': instance.enterNewName,
+      'uiEnterNewName': instance.uiEnterNewName,
     };

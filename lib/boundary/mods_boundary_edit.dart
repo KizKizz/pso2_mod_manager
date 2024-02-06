@@ -192,7 +192,7 @@ void boundaryEdit(context, SubMod submod) async {
   for (var infoLine in csvFileInfos) {
     final infos = infoLine.split(',');
     String itemName = '';
-    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
     for (var char in charsToReplace) {
       itemName = itemName.replaceAll(char, '_');
     }

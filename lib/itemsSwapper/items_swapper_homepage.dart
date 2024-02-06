@@ -75,7 +75,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
             ((element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol)))
         // .where((element) => element.jpName.isNotEmpty && element.enName.isNotEmpty && (element.hqIceName.isNotEmpty || element.nqIceName.isNotEmpty) && element.jpName.contains(curCategorySymbol))
         .toList();
-    if (curActiveLang == 'JP') {
+    if (modManCurActiveItemNameLanguage == 'JP') {
       fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
     } else {
       fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
@@ -187,7 +187,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                               )),
                                           onChanged: (value) async {
                                             fromItemSearchResults = fromItemCsvData
-                                                .where((element) => curActiveLang == 'JP'
+                                                .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                     ? element.jpName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase())
                                                     : element.enName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase()))
                                                 .toList();
@@ -239,7 +239,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromCsvFile,
-                                                    title: curActiveLang == 'JP'
+                                                    title: modManCurActiveItemNameLanguage == 'JP'
                                                         ? swapperFromItemsSearchTextController.text.isEmpty
                                                             ? Text(fromItemCsvData[i].jpName.trim())
                                                             : Text(fromItemSearchResults[i].jpName.trim())
@@ -274,7 +274,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                     onChanged: (CsvIceFile? currentItem) async {
                                                       selectedFromCsvFile = currentItem!;
                                                       fromItemAvailableIces = selectedFromCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
-                                                      fromItemName = curActiveLang == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
+                                                      fromItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedFromCsvFile!.jpName : selectedFromCsvFile!.enName;
                                                       fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
                                                       //set infos
                                                       if (selectedToCsvFile != null) {
@@ -373,7 +373,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                 )),
                                             onChanged: (value) async {
                                               toItemSearchResults = availableItemsCsvData
-                                                  .where((element) => curActiveLang == 'JP'
+                                                  .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
@@ -484,7 +484,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
                                                         groupValue: selectedToCsvFile,
-                                                        title: curActiveLang == 'JP'
+                                                        title: modManCurActiveItemNameLanguage == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableItemsCsvData[i].jpName.trim())
                                                                 : Text(toItemSearchResults[i].jpName.trim())
@@ -494,7 +494,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                         onChanged: (CsvIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToCsvFile = currentItem!;
-                                                          toItemName = curActiveLang == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
+                                                          toItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
                                                           toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
                                                           if (fromItemAvailableIces.isNotEmpty) {
                                                             toItemAvailableIces.clear();

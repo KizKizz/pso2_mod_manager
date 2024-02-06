@@ -339,6 +339,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       
       //Current language set
       curActiveLang = prefs.getString('curActiveLanguage') ?? '';
+      
+      //Current item name language
+      modManCurActiveItemNameLanguage = prefs.getString('modManCurActiveItemNameLanguage') ?? '';
     });
   }
 

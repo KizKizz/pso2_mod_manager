@@ -1,8 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.21",
+    "version": "2.5.22",
     "description": [
-        "Implemented a new way to update Mod Manager",
+        "Added an option to select language for item names in Settings\n(The app might prompt you to select your language again. Language for item names only applies to names in lists when adding mods or swapping mods and items)",
+        "Fixed a bug where GitHub outages would prevend the app from loading language files",
         "Mod Managerの新しいアップデート方法を実装"
     ],
     "windows_file": "",

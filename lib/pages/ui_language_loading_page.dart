@@ -11,6 +11,9 @@ import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
+Future textLangLoader = uiTextLoader();
+String _selectedItemNameLang = '';
+
 class UILanguageLoadingPage extends StatefulWidget {
   const UILanguageLoadingPage({super.key});
 
@@ -22,7 +25,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: uiTextLoader(),
+        future: textLangLoader,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -86,7 +89,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
               );
             } else {
               curLangText = snapshot.data;
-              if (!firstTimeLanguageSet) {
+              if (!firstTimeLanguageSet || modManCurActiveItemNameLanguage.isEmpty || curActiveLang.isEmpty) {
                 return SizedBox(
                   width: double.infinity,
                   height: double.infinity,
@@ -100,7 +103,7 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                         const Padding(
                           padding: EdgeInsets.only(bottom: 10),
                           child: Text(
-                            'Select language\n言語を選択',
+                            'Select UI Language - UI言語の選択',
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                           ),
@@ -175,17 +178,112 @@ class _UILanguageLoadingPageState extends State<UILanguageLoadingPage> {
                           )),
                         ),
 
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            'Select Item Name Language - 項目名の言語を選択',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            '(Only applies to item names in lists when adding mods or swapping items)',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            '(MODの追加やアイテムの交換時に、リスト内のアイテム名にのみ適用される)',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                              child: MaterialButton(
+                                minWidth: 120,
+                                height: 30,
+                                //color: Theme.of(context).primaryColorDark,
+                                onPressed: _selectedItemNameLang == 'EN'
+                                    ? null
+                                    : () async {
+                                        _selectedItemNameLang = 'EN';
+                                        setState(() {});
+                                      },
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: _selectedItemNameLang == 'EN'
+                                            ? MyApp.themeNotifier.value == ThemeMode.light
+                                                ? Color(lightModePrimarySwatch.value)
+                                                : Color(darkModePrimarySwatch.value)
+                                            : Theme.of(context).hintColor),
+                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                child: Text('EN',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: _selectedItemNameLang == 'EN'
+                                            ? MyApp.themeNotifier.value == ThemeMode.light
+                                                ? Color(lightModePrimarySwatch.value)
+                                                : Color(darkModePrimarySwatch.value)
+                                            : Theme.of(context).hintColor)),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2.5),
+                              child: MaterialButton(
+                                minWidth: 120,
+                                height: 30,
+                                //color: Theme.of(context).primaryColorDark,
+                                onPressed: _selectedItemNameLang == 'JP'
+                                    ? null
+                                    : () async {
+                                        _selectedItemNameLang = 'JP';
+                                        setState(() {});
+                                      },
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: _selectedItemNameLang == 'JP'
+                                            ? MyApp.themeNotifier.value == ThemeMode.light
+                                                ? Color(lightModePrimarySwatch.value)
+                                                : Color(darkModePrimarySwatch.value)
+                                            : Theme.of(context).hintColor),
+                                    borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                child: Text('JP',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: _selectedItemNameLang == 'JP'
+                                            ? MyApp.themeNotifier.value == ThemeMode.light
+                                                ? Color(lightModePrimarySwatch.value)
+                                                : Color(darkModePrimarySwatch.value)
+                                            : Theme.of(context).hintColor)),
+                              ),
+                            ),
+                          ],
+                        ),
+
                         //button
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: ElevatedButton(
-                              onPressed: () async {
-                                final prefs = await SharedPreferences.getInstance();
-                                firstTimeLanguageSet = true;
-                                prefs.setBool('firstTimeLanguageSet', true);
-                                setState(() {});
-                              },
-                              child: Text(curLangText!.uiGotIt)),
+                              onPressed: _selectedItemNameLang.isEmpty || langDropDownSelected.isEmpty
+                                  ? null
+                                  : () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      firstTimeLanguageSet = true;
+                                      prefs.setString('curActiveLanguage', curActiveLang);
+                                      modManCurActiveItemNameLanguage = _selectedItemNameLang;
+                                      prefs.setString('modManCurActiveItemNameLanguage', _selectedItemNameLang);
+                                      prefs.setBool('firstTimeLanguageSet', true);
+                                      setState(() {});
+                                    },
+                              child: const Text('OK')),
                         ),
                       ],
                     ),

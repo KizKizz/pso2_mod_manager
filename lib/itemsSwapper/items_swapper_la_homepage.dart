@@ -114,7 +114,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                     element.rbVfxHashIceName.isNotEmpty))
             .toList();
       }
-      if (curActiveLang == 'JP') {
+      if (modManCurActiveItemNameLanguage == 'JP') {
         fromItemCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
       } else {
         fromItemCsvData.sort((a, b) => a.enName.compareTo(b.enName));
@@ -245,7 +245,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                               )),
                                           onChanged: (value) async {
                                             fromItemSearchResults = fromItemCsvData
-                                                .where((element) => curActiveLang == 'JP'
+                                                .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                     ? element.jpName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase())
                                                     : element.enName.toLowerCase().contains(swapperFromItemsSearchTextController.text.toLowerCase()))
                                                 .toList();
@@ -331,7 +331,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                   } else {
                                                     availableEmotesCsvData = csvEmotesData.where((element) => element.subCategory == dropDownSelectedMotionType).toList();
                                                   }
-                                                  if (curActiveLang == 'JP') {
+                                                  if (modManCurActiveItemNameLanguage == 'JP') {
                                                     availableEmotesCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
                                                   } else {
                                                     availableEmotesCsvData.sort((a, b) => a.enName.compareTo(b.enName));
@@ -367,7 +367,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromEmotesCsvFile,
-                                                    title: curActiveLang == 'JP'
+                                                    title: modManCurActiveItemNameLanguage == 'JP'
                                                         ? swapperFromItemsSearchTextController.text.isEmpty
                                                             ? Text(fromItemCsvData[i].jpName)
                                                             : Text(fromItemSearchResults[i].jpName)
@@ -406,7 +406,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                         : (CsvEmoteIceFile? currentItem) {
                                                             //print("Current ${moddedItemsList[i].groupName}");
                                                             selectedFromEmotesCsvFile = currentItem!;
-                                                            fromItemName = curActiveLang == 'JP' ? selectedFromEmotesCsvFile!.jpName : selectedFromEmotesCsvFile!.enName;
+                                                            fromItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedFromEmotesCsvFile!.jpName : selectedFromEmotesCsvFile!.enName;
                                                             fromEmotesAvailableIces =
                                                                 selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList();
                                                             //fromItemIds = [selectedFromEmotesCsvFile!.id.toString(), selectedFromEmotesCsvFile!.adjustedId.toString()];
@@ -595,7 +595,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                 )),
                                             onChanged: (value) async {
                                               toIEmotesSearchResults = availableEmotesCsvData
-                                                  .where((element) => curActiveLang == 'JP'
+                                                  .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
@@ -667,7 +667,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                           //   availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
                                                           // }
                                                         }
-                                                        if (curActiveLang == 'JP') {
+                                                        if (modManCurActiveItemNameLanguage == 'JP') {
                                                           availableEmotesCsvData.sort(
                                                             (a, b) => a.jpName.compareTo(b.jpName),
                                                           );
@@ -716,7 +716,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData[i] : toIEmotesSearchResults[i],
                                                         groupValue: selectedToEmotesCsvFile,
-                                                        title: curActiveLang == 'JP'
+                                                        title: modManCurActiveItemNameLanguage == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].jpName)
                                                                 : Text(toIEmotesSearchResults[i].jpName)
@@ -737,7 +737,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                             : (CsvEmoteIceFile? currentItem) {
                                                                 //print("Current ${moddedItemsList[i].groupName}");
                                                                 selectedToEmotesCsvFile = currentItem!;
-                                                                toItemName = curActiveLang == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
+                                                                toItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
                                                                 //toItemIds = [selectedToEmotesCsvFile!.id.toString(), selectedToEmotesCsvFile!.adjustedId.toString()];
                                                                 if (fromEmotesAvailableIces.isNotEmpty) {
                                                                   toEmotesAvailableIces.clear();
