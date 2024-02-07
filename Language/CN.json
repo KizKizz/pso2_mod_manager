@@ -284,7 +284,7 @@
   "uiMMPathReselectNoteCurrentPath": "注意: 此文件夹保存MOD和备份。\n当前路径: ",
   "uiCheckingAppliedMods": "确认应用模块",
   "uiErrorWhenCheckingAppliedMods": "检查应用的MOD文件时出错",
-  "uiReappliedModsAfterChecking": "以下MOD文件已失效，需要重新应用才能生效。",
+  "uiReappliedModsAfterChecking": "以下MOD文件已失效,需要重新应用才能生效。",
   "uireApplyingModFiles": "尝试重新应用以下文件",
   "uiDontReapplyRemoveFromAppliedList": "不重新应用,从已应用的MOD列表中删除。",
   "uiReapply": "将这些MOD文件重新应用于游戏",
