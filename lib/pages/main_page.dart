@@ -322,6 +322,104 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
+                      
+                      //Item Name Language
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.language,
+                                  size: 18,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text('${curLangText!.uiItemNameLanguage}:'),
+                              ],
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 22, bottom: 5),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: curLangText!.uiItemNameLanguageTooltip,
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveItemNameLanguage == 'EN'
+                                              ? null
+                                              : () async {
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveItemNameLanguage = 'EN';
+                                                  prefs.setString('modManCurActiveItemNameLanguage', modManCurActiveItemNameLanguage);
+                                                  setState(() {});
+                                                },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveItemNameLanguage == 'EN'
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text('EN',
+                                              style: TextStyle(
+                                                  color: modManCurActiveItemNameLanguage == 'EN'
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5, top: 5, bottom: 2.5),
+                                      child: ModManTooltip(
+                                        message: curLangText!.uiItemNameLanguageTooltip,
+                                        child: MaterialButton(
+                                          minWidth: 120,
+                                          height: 30,
+                                          //color: Theme.of(context).primaryColorDark,
+                                          onPressed: modManCurActiveItemNameLanguage == 'JP'
+                                              ? null
+                                              : () async {
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  modManCurActiveItemNameLanguage = 'JP';
+                                                  prefs.setString('modManCurActiveItemNameLanguage', modManCurActiveItemNameLanguage);
+                                                  setState(() {});
+                                                },
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: modManCurActiveItemNameLanguage == 'JP'
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor),
+                                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                          child: Text('JP',
+                                              style: TextStyle(
+                                                  color: modManCurActiveItemNameLanguage == 'JP'
+                                                      ? MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(lightModePrimarySwatch.value)
+                                                          : Color(darkModePrimarySwatch.value)
+                                                      : Theme.of(context).hintColor)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ),
 
                       //profiles select
                       Padding(

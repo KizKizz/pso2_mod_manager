@@ -165,7 +165,9 @@ class TranslationText {
       uiPrioritizeSegaBackups = 'Backup Priority: Sega Servers',
       uiCmxRefreshToolTip = 'Refresh all cmx, use this if cmx settings are not working correctly',
       uiRefreshingCmx = 'Refreshing cmx',
-      uiRefreshCmx = 'Refresh cmx Settings';
+      uiRefreshCmx = 'Refresh cmx Settings',
+      uiItemNameLanguage = 'Item Name Language',
+      uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items';
 
   //homepage
   String uiItemList = 'Item List',
@@ -476,7 +478,7 @@ class TranslationText {
       uiAddNewSet = "Add New Set";
 
   //mods_rename_functions.dart
-  String enterNewName = 'Enter New Name';
+  String uiEnterNewName = 'Enter New Name';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

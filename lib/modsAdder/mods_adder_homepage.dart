@@ -1811,7 +1811,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   for (var infoLine in csvFileInfos) {
     final infos = infoLine.split(',');
     String itemName = '';
-    curActiveLang == 'JP' ? itemName = infos[1] : itemName = infos[2];
+    modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
     itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
 
     String itemCategory = infos[0];
@@ -1896,7 +1896,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   bool isUnknownItemAdded = false;
   for (var iceFile in iceFileList) {
     if (!csvMatchedIceFiles.contains(iceFile)) {
-      String itemName = curActiveLang == 'JP' ? '不明な項目' : 'Unknown Item';
+      String itemName = curLangText!.uiUnknownItem;
       String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName').toFilePath();
       String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
       newIceFilePath = removeRebootPath(newIceFilePath);

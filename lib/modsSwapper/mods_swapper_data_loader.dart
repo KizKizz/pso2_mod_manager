@@ -461,7 +461,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                         // swap To item list
                         if (csvAccData.isNotEmpty) {
                           availableAccCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableAccCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );
@@ -476,7 +476,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           );
                         } else if (csvEmotesData.isNotEmpty) {
                           availableEmotesCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableEmotesCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );
@@ -491,7 +491,7 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           );
                         } else {
                           availableItemsCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableItemsCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );

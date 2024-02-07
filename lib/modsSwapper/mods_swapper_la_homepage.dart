@@ -241,7 +241,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: fromItemCsvData[i],
                                                     groupValue: selectedFromEmotesCsvFile,
-                                                    title: Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                    title: Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                     subtitle: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +339,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                               // for (int line = 0;
                                                               //     line < csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first)).length;
                                                               //     line++)
@@ -354,7 +354,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           Column(
                                                             crossAxisAlignment: CrossAxisAlignment.end,
                                                             children: [
-                                                              Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                               Text(queueToEmoteCsvFiles[i].gender,
                                                                   style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
                                                             ],
@@ -441,7 +441,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                 )),
                                             onChanged: (value) async {
                                               toIEmotesSearchResults = availableEmotesCsvData
-                                                  .where((element) => curActiveLang == 'JP'
+                                                  .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
@@ -512,7 +512,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                             availableEmotesCsvData = availableEmotesCsvData.where((element) => element.pso2VfxHashIceName.isNotEmpty).toList();
                                                           }
                                                         }
-                                                        if (curActiveLang == 'JP') {
+                                                        if (modManCurActiveItemNameLanguage == 'JP') {
                                                           availableEmotesCsvData.sort(
                                                             (a, b) => a.jpName.compareTo(b.jpName),
                                                           );
@@ -561,7 +561,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableEmotesCsvData[i] : toIEmotesSearchResults[i],
                                                         groupValue: selectedToEmotesCsvFile,
-                                                        title: curActiveLang == 'JP'
+                                                        title: modManCurActiveItemNameLanguage == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].jpName)
                                                                 : Text(toIEmotesSearchResults[i].jpName)
@@ -579,7 +579,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                             : (CsvEmoteIceFile? currentItem) {
                                                                 //print("Current ${moddedItemsList[i].groupName}");
                                                                 selectedToEmotesCsvFile = currentItem!;
-                                                                toItemName = curActiveLang == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
+                                                                toItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedToEmotesCsvFile!.jpName : selectedToEmotesCsvFile!.enName;
                                                                 //toItemIds = [selectedToEmotesCsvFile!.id.toString(), selectedToEmotesCsvFile!.adjustedId.toString()];
                                                                 if (fromEmotesAvailableIces.isNotEmpty) {
                                                                   toEmotesAvailableIces.clear();
@@ -810,7 +810,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
+                                          modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                     const SizedBox(
@@ -819,7 +819,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
+                                          modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                   ],

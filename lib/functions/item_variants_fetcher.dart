@@ -25,7 +25,7 @@ Future<List<String>> itemVariantsFetch(List<Mod> modList, String category, Strin
   List<String> itemVariantNames = [];
   for (var line in itemVariantCsvInfos) {
     final lineSplit = line.split(',');
-    if (curActiveLang == 'JP') {
+    if (modManCurActiveItemNameLanguage == 'JP') {
       if (itemName.replaceAll('_', '/') != lineSplit[1]) {
         itemVariantNames.add(lineSplit[1]);
       }

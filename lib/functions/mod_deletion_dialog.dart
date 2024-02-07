@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
@@ -18,9 +17,7 @@ Future<bool> modDeletionDialog(context, String modName) async {
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
               content: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: curActiveLang == 'JP'
-                ? Text('MODマネージャーから「$modName」を削除?') 
-                : Text('${curLangText!.uiRemove} "$modName" ${curLangText!.uiFromMM}?')
+                child: Text('${curLangText!.uiRemove} "$modName" ${curLangText!.uiFromMM}?')
               ),
               actions: <Widget>[
                 ElevatedButton(

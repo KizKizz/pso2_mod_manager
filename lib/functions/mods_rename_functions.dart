@@ -45,7 +45,7 @@ Future<String> modsRenameDialog(context, String parentLocationPath, String curLo
                       return null;
                     },
                     decoration: InputDecoration(
-                        labelText: curLangText!.enterNewName,
+                        labelText: curLangText!.uiEnterNewName,
                         hintText: curName,
                         suffix: MaterialButton(
                           minWidth: 20,

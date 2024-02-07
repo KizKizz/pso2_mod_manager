@@ -142,6 +142,8 @@
   "uiCmxRefreshToolTip": "Refresh all cmx, use this if cmx settings are not working correctly",
   "uiRefreshingCmx": "Refreshing cmx",
   "uiRefreshCmx": "Refresh cmx Settings",
+  "uiItemNameLanguage": "Item Name Language",
+  "uiItemNameLanguageTooltip": "Only applies to item names in list when adding mods or swapping items",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -400,5 +402,5 @@
   "uiNewModSet": "New Mod Set",
   "uiCreateAndAddModsToThisSet": "Create and add mods to this set",
   "uiAddNewSet": "Add New Set",
-  "enterNewName": "Enter New Name"
+  "uiEnterNewName": "Enter New Name"
 }

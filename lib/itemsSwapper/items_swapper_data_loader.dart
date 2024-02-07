@@ -16,7 +16,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as m
 
 SubMod fromItemSubmodGet(List<String> iceFileNames) {
   List<ModFile> modFileList = [];
-  String fromItemNameSwap = curActiveLang == 'JP' ? '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}' : '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}';
+  String fromItemNameSwap = modManCurActiveItemNameLanguage == 'JP' ? '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}' : '${fromItemName.replaceAll('/', '_')}_${curLangText!.uiSwap}';
   for (var iceNameWithType in iceFileNames) {
     String iceName = iceNameWithType.split(': ').last;
 
@@ -208,7 +208,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                         // swap To item list
                         if (csvAccData.isNotEmpty) {
                           availableAccCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableAccCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );
@@ -220,7 +220,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                           return const ItemsSwapperAccHomePage();
                         } else if (csvEmotesData.isNotEmpty) {
                           availableEmotesCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableEmotesCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );
@@ -232,7 +232,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                           return const ItemsSwapperEmotesHomePage();
                         } else {
                           availableItemsCsvData = snapshot.data;
-                          if (curActiveLang == 'JP') {
+                          if (modManCurActiveItemNameLanguage == 'JP') {
                             availableItemsCsvData.sort(
                               (a, b) => a.jpName.compareTo(b.jpName),
                             );

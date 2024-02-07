@@ -142,6 +142,8 @@
   "uiCmxRefreshToolTip": "cmxの設定が正しく機能していない場合に使用します。",
   "uiRefreshingCmx": "リフレッシュcmx",
   "uiRefreshCmx": "cmxをリフレッシュ",
+  "uiItemNameLanguage": "項目名 言語",
+  "uiItemNameLanguageTooltip": "MODの追加やアイテムの入れ替え時に、リスト内のアイテム名にのみ適用される",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -400,5 +402,5 @@
   "uiNewModSet": "新しいMODセット",
   "uiCreateAndAddModsToThisSet": "このセットにMODを作成して追加する",
   "uiAddNewSet": "新しいセットの追加",
-  "enterNewName": "新しい名前を入力"
+  "uiEnterNewName": "新しい名前を入力"
 }

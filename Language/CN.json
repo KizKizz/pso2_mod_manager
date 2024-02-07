@@ -142,6 +142,8 @@
   "uiCmxRefreshToolTip": "刷新CMX提示:当cmx设置无法正常工作时使用。",
   "uiRefreshingCmx": "cmx刷新中",
   "uiRefreshCmx": "刷新cmx",
+  "uiItemNameLanguage": "Item Name Language",
+  "uiItemNameLanguageTooltip": "Only applies to item names in list when adding mods or swapping items",
   "uiItemList": "物品列表",
   "uiLoadingUILanguage": "加载UI语言",
   "uiReloadingMods": "重新加载MOD",
@@ -256,7 +258,7 @@
   "uiAddingMods": "添加MOD",
   "uiPickAColor": "选择颜色",
   "uiDuplicatesInAppliedModsFound": "在应用的MOD中发现了重复的物品。",
-  "uiApplyingWouldReplaceModFiles": "注意：应用此MOD将替换这些已应用的MOD文件。",
+  "uiApplyingWouldReplaceModFiles": "注意:应用此MOD将替换这些已应用的MOD文件。",
   "uiNewCateGroup": "新建类别集",
   "uiNameAlreadyExisted": "名称已存在!",
   "uiNewCateGroupName": "新建类别集名称",
@@ -400,5 +402,5 @@
   "uiNewModSet": "新MOD组",
   "uiCreateAndAddModsToThisSet": "在此组中创建并添加MOD",
   "uiAddNewSet": "添加新组",
-  "enterNewName": "输入新名称"
+  "uiEnterNewName": "输入新名称"
 }

@@ -175,28 +175,30 @@ Future<void> checkLanguageTranslationForUpdates(List<TranslationLanguage> localL
   var jsonData = await loadLanguageTranslationJsonFromGithub();
   for (var lang in jsonData) {
     TranslationLanguage gitLangInfo = TranslationLanguage.fromJson(lang);
-    int localLangInfoIndex = localLangList.indexWhere((element) => element.langInitial == gitLangInfo.langInitial);
-    if (localLangInfoIndex != -1) {
-      TranslationLanguage localLangInfo = localLangList[localLangInfoIndex];
-      if (localLangInfo.langInitial == gitLangInfo.langInitial && localLangInfo.revision < gitLangInfo.revision) {
-        await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
-        localLangInfo.revision = gitLangInfo.revision;
-      } else if (localLangInfo.langInitial == gitLangInfo.langInitial && !File(Uri.file(localLangInfo.langFilePath).toFilePath()).existsSync()) {
-        await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
-        localLangInfo.revision = gitLangInfo.revision;
+    if (gitLangInfo.langInitial != 'null' && gitLangInfo.langFilePath != 'null' && gitLangInfo.revision != -1) {
+      int localLangInfoIndex = localLangList.indexWhere((element) => element.langInitial == gitLangInfo.langInitial);
+      if (localLangInfoIndex != -1) {
+        TranslationLanguage localLangInfo = localLangList[localLangInfoIndex];
+        if (localLangInfo.langInitial == gitLangInfo.langInitial && localLangInfo.revision < gitLangInfo.revision) {
+          await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
+          localLangInfo.revision = gitLangInfo.revision;
+        } else if (localLangInfo.langInitial == gitLangInfo.langInitial && !File(Uri.file(localLangInfo.langFilePath).toFilePath()).existsSync()) {
+          await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(localLangInfo.langFilePath).toFilePath());
+          localLangInfo.revision = gitLangInfo.revision;
+        }
+      } else {
+        String newLangFilePath = Uri.file('$modManLanguageDirPath/${gitLangInfo.langInitial}.json').toFilePath();
+        await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(newLangFilePath).toFilePath());
+        gitLangInfo.langFilePath = newLangFilePath;
+        localLangList.add(gitLangInfo);
       }
-    } else {
-      String newLangFilePath = Uri.file('$modManLanguageDirPath/${gitLangInfo.langInitial}.json').toFilePath();
-      await Dio().download('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/${gitLangInfo.langInitial}.json', Uri.file(newLangFilePath).toFilePath());
-      gitLangInfo.langFilePath = newLangFilePath;
-      localLangList.add(gitLangInfo);
     }
   }
   File(Uri.file('$modManLanguageDirPath/LanguageSettings.json').toFilePath()).writeAsStringSync(encoder.convert(localLangList));
 }
 
 Future<dynamic> loadLanguageTranslationJsonFromGithub() async {
-  String jsonResponse = '{"null": "null"}';
+  String jsonResponse = '[{"langInitial": "null", "revision": -1, "langFilePath": "null", "selected": false}]';
   try {
     http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/LanguageSettings.json'));
     if (response.statusCode == 200) {
@@ -204,10 +206,13 @@ Future<dynamic> loadLanguageTranslationJsonFromGithub() async {
     }
   } on TimeoutException catch (e) {
     debugPrint('Timeout Error: $e');
+    return jsonDecode(jsonResponse);
   } on SocketException catch (e) {
     debugPrint('Socket Error: $e');
+    return jsonDecode(jsonResponse);
   } on Error catch (e) {
     debugPrint('General Error: $e');
+    return jsonDecode(jsonResponse);
   }
   return jsonDecode(jsonResponse);
 }

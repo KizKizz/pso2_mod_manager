@@ -157,3 +157,4 @@ bool removeBoundaryRadiusOnModsApply = false;
 bool prioritizeLocalBackup = false;
 List<ModFile> selectedModFilesInAppliedList = [];
 bool cmxRefreshing = false;
+String modManCurActiveItemNameLanguage = '';

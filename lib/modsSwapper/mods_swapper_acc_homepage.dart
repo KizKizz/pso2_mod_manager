@@ -190,7 +190,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: fromItemCsvData[i],
                                                     groupValue: selectedFromAccCsvFile,
-                                                    title: Text(curActiveLang == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                    title: Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
                                                     subtitle: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,7 +286,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                 )),
                                             onChanged: (value) async {
                                               toAccSearchResults = availableAccCsvData
-                                                  .where((element) => curActiveLang == 'JP'
+                                                  .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.hqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.nqIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
@@ -397,7 +397,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableAccCsvData[i] : toAccSearchResults[i],
                                                         groupValue: selectedToAccCsvFile,
-                                                        title: curActiveLang == 'JP'
+                                                        title: modManCurActiveItemNameLanguage == 'JP'
                                                             ? swapperSearchTextController.text.isEmpty
                                                                 ? Text(availableAccCsvData[i].jpName)
                                                                 : Text(toAccSearchResults[i].jpName)
@@ -407,7 +407,7 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                         onChanged: (CsvAccessoryIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToAccCsvFile = currentItem!;
-                                                          toItemName = curActiveLang == 'JP' ? selectedToAccCsvFile!.jpName : selectedToAccCsvFile!.enName;
+                                                          toItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedToAccCsvFile!.jpName : selectedToAccCsvFile!.enName;
                                                           toAccItemId = selectedToAccCsvFile!.id.toString();
                                                           if (fromAccItemAvailableIces.isNotEmpty) {
                                                             toAccItemAvailableIces.clear();
