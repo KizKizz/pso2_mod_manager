@@ -174,8 +174,8 @@ Future<void> checkLanguageTranslationForUpdates(List<TranslationLanguage> localL
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   var jsonData = await loadLanguageTranslationJsonFromGithub();
   for (var lang in jsonData) {
-    if (lang[0] != null) {
-      TranslationLanguage gitLangInfo = TranslationLanguage.fromJson(lang);
+    TranslationLanguage gitLangInfo = TranslationLanguage.fromJson(lang);
+    if (gitLangInfo.langInitial != 'null' && gitLangInfo.langFilePath != 'null' && gitLangInfo.revision != -1) {
       int localLangInfoIndex = localLangList.indexWhere((element) => element.langInitial == gitLangInfo.langInitial);
       if (localLangInfoIndex != -1) {
         TranslationLanguage localLangInfo = localLangList[localLangInfoIndex];
@@ -198,7 +198,7 @@ Future<void> checkLanguageTranslationForUpdates(List<TranslationLanguage> localL
 }
 
 Future<dynamic> loadLanguageTranslationJsonFromGithub() async {
-  String jsonResponse = '[{"null": "null"}]';
+  String jsonResponse = '[{"langInitial": "null", "revision": -1, "langFilePath": "null", "selected": false}]';
   try {
     http.Response response = await http.get(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/Language/LanguageSettings.json'));
     if (response.statusCode == 200) {
