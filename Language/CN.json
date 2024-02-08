@@ -237,7 +237,7 @@
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、ZIP文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
   "uiAchiveCurrentlyNotSupported": "当前不支持的压缩文件类型。请解压存档文件后，再将内容拖到此处。",
-  "uiProcess": "加工",
+  "uiProcess": "整理",
   "uiWaitingForData": "等待数据",
   "uiErrorWhenLoadingAddModsData": "读取Mods Adder数据时出错。请重新启动应用程序。",
   "uiProcessingFiles": "整理文件中",
