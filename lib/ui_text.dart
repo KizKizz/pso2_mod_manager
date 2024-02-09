@@ -276,6 +276,7 @@ class TranslationText {
       uiApplyAllModsInXToTheGame = "Apply all mods in <x> to the game",
       uiRemoveAllModsInXFromTheGame = "Remove all mods in <x> from the game",
       uiHoldToRemoveXFromThisSet = "Hold to remove <x> from this Set",
+      uiSuccessfullyRemovedXFromY = "Successfully removed <x> > from <y>",
       uiSelectX = "Select <x>",
       uiDeselectX = "Deselect <x>";
 

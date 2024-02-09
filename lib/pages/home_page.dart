@@ -5365,7 +5365,7 @@ class _HomePageState extends State<HomePage> {
                                                                               saveSetListToJson();
                                                                               saveModdedItemListToJson();
                                                                               ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                  '${curLangText!.uiSuccessfullyRemoved} $tempItemName ${curLangText!.uiFrom} ${curSet.setName}', 3000));
+                                                                                  uiInTextArgs(curLangText!.uiSuccessfullyRemovedXFromY, ['<x>', '<y>'], [tempItemName, curSet.setName]), 3000));
                                                                               setState(() {});
                                                                             },
                                                                             child: const Icon(Icons.delete_forever_outlined),
@@ -5412,7 +5412,7 @@ class _HomePageState extends State<HomePage> {
                                                                               Visibility(
                                                                                 visible: !isModViewModsRemoving,
                                                                                 child: ModManTooltip(
-                                                                                  message: '${curLangText!.uiRemove} ${applyingModNames[m]} ${curLangText!.uiFromTheGame}',
+                                                                                  message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
                                                                                   child: InkWell(
                                                                                     child: const Icon(
                                                                                       FontAwesomeIcons.squareMinus,
@@ -5479,7 +5479,7 @@ class _HomePageState extends State<HomePage> {
                                                                         //Apply button in submod
                                                                         if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
                                                                           ModManTooltip(
-                                                                            message: '${curLangText!.uiApply} ${applyingModNames[m]} ${curLangText!.uiToTheGame}',
+                                                                            message: uiInTextArg(curLangText!.uiApplyXToTheGame, applyingModNames[m]),
                                                                             child: InkWell(
                                                                               onTap: () async {
                                                                                 //apply mod files
@@ -5507,7 +5507,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       String fileAppliedText = '';
                                                                                       for (var element in appliedModFiles) {
                                                                                         if (fileAppliedText.isEmpty) {
-                                                                                          fileAppliedText = '${curLangText!.uiSuccessfullyApplied} ${applyingModNames[m]}:\n';
+                                                                                          fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, applyingModNames[m]);
                                                                                         }
                                                                                         fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
                                                                                       }
