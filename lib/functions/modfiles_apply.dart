@@ -52,7 +52,7 @@ Future<List<ModFile>> modFilesApply(context, List<ModFile> modFiles) async {
           modFile.isNew = false;
         }
         appliedModFiles.add(modFile);
-      } 
+      }
     }
   }
 

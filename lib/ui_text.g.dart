@@ -315,6 +315,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiSuccessfullyRemovedXFromY'] as String
       ..uiSelectX = json['uiSelectX'] as String
       ..uiDeselectX = json['uiDeselectX'] as String
+      ..uiDirNotFound = json['uiDirNotFound'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -802,6 +803,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSuccessfullyRemovedXFromY': instance.uiSuccessfullyRemovedXFromY,
       'uiSelectX': instance.uiSelectX,
       'uiDeselectX': instance.uiDeselectX,
+      'uiDirNotFound': instance.uiDirNotFound,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
