@@ -21,6 +21,7 @@ Future<bool> modFileApply(context, ModFile modFile) async {
       returnedFile = await File(modFile.location).copy(ogPath);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', e.toString(), 5000));
+      return false;
     }
     if (returnedFile.path.isEmpty || returnedFile.path != ogPath) {
       return false;

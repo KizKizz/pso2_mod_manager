@@ -1539,7 +1539,7 @@ class _MainPageState extends State<MainPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               ModManTooltip(
-                                  message: '${curLangText!.uiVersion}: $appVersion | ${curLangText!.uiMadeBy} キス★',
+                                  message: '${curLangText!.uiVersion}: $appVersion | ${curLangText!.uiMadeBy} キス★ (KizKizz)',
                                   child: const Text(
                                     'PSO2NGS Mod Manager',
                                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
@@ -1634,59 +1634,6 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
                           ),
-
-                          //Vital gauge
-                          // Visibility(
-                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
-                          //   child: ModManTooltip(
-                          //     message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
-                          //     child: SizedBox(
-                          //       //width: 99,
-                          //       child: MaterialButton(
-                          //         onPressed: (() {
-                          //           clearAllTempDirs();
-                          //           vitalGaugeHomePage(context);
-                          //         }),
-                          //         child: Row(
-                          //           children: [
-                          //             const Icon(
-                          //               Icons.horizontal_split,
-                          //               size: 18,
-                          //             ),
-                          //             const SizedBox(width: 2.5),
-                          //             Text(curLangText!.uiVitalGauge, style: const TextStyle(fontWeight: FontWeight.w400))
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-
-                          //Item swapper
-                          // Visibility(
-                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
-                          //   child: ModManTooltip(
-                          //     message: curLangText!.uiSwapAnItemToAnotherItem,
-                          //     child: SizedBox(
-                          //       //width: 99,
-                          //       child: MaterialButton(
-                          //         onPressed: (() {
-                          //           itemsSwapperCategorySelect(context);
-                          //         }),
-                          //         child: Row(
-                          //           children: [
-                          //             const Icon(
-                          //               Icons.swap_horizontal_circle_outlined,
-                          //               size: 18,
-                          //             ),
-                          //             const SizedBox(width: 2.5),
-                          //             Text(curLangText!.uiSwapItems, style: const TextStyle(fontWeight: FontWeight.w400))
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
 
                           //Mod sets
                           Visibility(
@@ -2087,8 +2034,6 @@ class _MainPageState extends State<MainPage> {
                           ElevatedButton(
                               onPressed: (() {
                                 patchNotesDialog(context);
-                                //Provider.of<StateProvider>(context, listen: false).isUpdateAvailableFalse();
-                                //launchUrl(Uri.parse('https://github.com/KizKizz/pso2_mod_manager/releases'));
                               }),
                               child: Text(curLangText!.uiUpdate)),
                         ],

@@ -51,6 +51,17 @@ void showAllEmptyCategories(List<CategoryType> originalList) {
   }
 }
 
+List<CategoryType> getAllHiddenCategories(List<CategoryType> originalList) {
+  List<CategoryType> allHidden = [];
+  for (var cateType in originalList) {
+    if (cateType.categories.where((element) => !element.visible).isNotEmpty) {
+      allHidden.add(cateType);
+    }
+  }
+
+  return allHidden;
+}
+
 void showHiddenCategory(List<CategoryType> hiddenList, CategoryType categoryType, Category category) {
   category.visible = true;
   if (categoryType.categories.where((element) => element.visible).isNotEmpty) {
@@ -59,6 +70,16 @@ void showHiddenCategory(List<CategoryType> hiddenList, CategoryType categoryType
   if (categoryType.categories.where((element) => !element.visible).isEmpty) {
     hiddenList.remove(categoryType);
   }
+}
+
+void showHiddenType(List<CategoryType> hiddenList, CategoryType categoryType) {
+  categoryType.visible = true;
+  for (var cate in categoryType.categories) {
+    if (!cate.visible) {
+      cate.visible = true;
+    }
+  }
+  hiddenList.remove(categoryType);
 }
 
 void showAllHiddenCategory(List<CategoryType> hiddenList, CategoryType categoryType, Category category) {

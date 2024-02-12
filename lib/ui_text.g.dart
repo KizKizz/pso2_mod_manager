@@ -292,6 +292,30 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCmxFile = json['uiCmxFile'] as String
       ..uiMoveThisCategoryToAnotherGroup =
           json['uiMoveThisCategoryToAnotherGroup'] as String
+      ..uiUnhideX = json['uiUnhideX'] as String
+      ..uiRemoveXFromFav = json['uiRemoveXFromFav'] as String
+      ..uiOpenXInFileExplorer = json['uiOpenXInFileExplorer'] as String
+      ..uiHoldToRemoveXFromModMan = json['uiHoldToRemoveXFromModMan'] as String
+      ..uiSuccessfullyRemovedXFromModMan =
+          json['uiSuccessfullyRemovedXFromModMan'] as String
+      ..uiSuccessfullyAppliedX = json['uiSuccessfullyAppliedX'] as String
+      ..uiSuccessfullyAppliedXInY = json['uiSuccessfullyAppliedXInY'] as String
+      ..uiAddNewCateToXGroup = json['uiAddNewCateToXGroup'] as String
+      ..uiHoldToHideXFromItemList = json['uiHoldToHideXFromItemList'] as String
+      ..uiHoldToRemoveXfromY = json['uiHoldToRemoveXfromY'] as String
+      ..uiApplyXToTheGame = json['uiApplyXToTheGame'] as String
+      ..uiRemoveXFromTheGame = json['uiRemoveXFromTheGame'] as String
+      ..uiApplyAllModsInXToTheGame =
+          json['uiApplyAllModsInXToTheGame'] as String
+      ..uiRemoveAllModsInXFromTheGame =
+          json['uiRemoveAllModsInXFromTheGame'] as String
+      ..uiHoldToRemoveXFromThisSet =
+          json['uiHoldToRemoveXFromThisSet'] as String
+      ..uiSuccessfullyRemovedXFromY =
+          json['uiSuccessfullyRemovedXFromY'] as String
+      ..uiSelectX = json['uiSelectX'] as String
+      ..uiDeselectX = json['uiDeselectX'] as String
+      ..uiDirNotFound = json['uiDirNotFound'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -760,6 +784,26 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCmxFile': instance.uiCmxFile,
       'uiMoveThisCategoryToAnotherGroup':
           instance.uiMoveThisCategoryToAnotherGroup,
+      'uiUnhideX': instance.uiUnhideX,
+      'uiRemoveXFromFav': instance.uiRemoveXFromFav,
+      'uiOpenXInFileExplorer': instance.uiOpenXInFileExplorer,
+      'uiHoldToRemoveXFromModMan': instance.uiHoldToRemoveXFromModMan,
+      'uiSuccessfullyRemovedXFromModMan':
+          instance.uiSuccessfullyRemovedXFromModMan,
+      'uiSuccessfullyAppliedX': instance.uiSuccessfullyAppliedX,
+      'uiSuccessfullyAppliedXInY': instance.uiSuccessfullyAppliedXInY,
+      'uiAddNewCateToXGroup': instance.uiAddNewCateToXGroup,
+      'uiHoldToHideXFromItemList': instance.uiHoldToHideXFromItemList,
+      'uiHoldToRemoveXfromY': instance.uiHoldToRemoveXfromY,
+      'uiApplyXToTheGame': instance.uiApplyXToTheGame,
+      'uiRemoveXFromTheGame': instance.uiRemoveXFromTheGame,
+      'uiApplyAllModsInXToTheGame': instance.uiApplyAllModsInXToTheGame,
+      'uiRemoveAllModsInXFromTheGame': instance.uiRemoveAllModsInXFromTheGame,
+      'uiHoldToRemoveXFromThisSet': instance.uiHoldToRemoveXFromThisSet,
+      'uiSuccessfullyRemovedXFromY': instance.uiSuccessfullyRemovedXFromY,
+      'uiSelectX': instance.uiSelectX,
+      'uiDeselectX': instance.uiDeselectX,
+      'uiDirNotFound': instance.uiDirNotFound,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
