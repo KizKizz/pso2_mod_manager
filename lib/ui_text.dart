@@ -278,7 +278,8 @@ class TranslationText {
       uiHoldToRemoveXFromThisSet = "Hold to remove <x> from this Set",
       uiSuccessfullyRemovedXFromY = "Successfully removed <x> > from <y>",
       uiSelectX = "Select <x>",
-      uiDeselectX = "Deselect <x>";
+      uiDeselectX = "Deselect <x>",
+      uiDirNotFound = "Directory location not found";
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

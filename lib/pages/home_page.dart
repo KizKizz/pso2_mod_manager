@@ -2540,7 +2540,13 @@ class _HomePageState extends State<HomePage> {
                                                     Icons.folder_open_outlined,
                                                   ),
                                                   child: Text(curLangText!.uiOpenInFileExplorer),
-                                                  onPressed: () async => await launchUrl(Uri.file(curMod.location)),
+                                                  onPressed: () async {
+                                                    if (Directory(Uri.file(curMod.location).toFilePath()).existsSync()) {
+                                                      await launchUrl(Uri.file(curMod.location));
+                                                    } else {
+                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                    }
+                                                  },
                                                 ),
 
                                                 // delete
@@ -2903,7 +2909,13 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.folder_open_outlined,
                                                         ),
                                                         child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods.first.location)),
+                                                        onPressed: () async {
+                                                          if (Directory(Uri.file(curMod.submods.first.location).toFilePath()).existsSync()) {
+                                                            await launchUrl(Uri.file(curMod.submods.first.location));
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                          }
+                                                        },
                                                       ),
 
                                                       // boundary
@@ -3315,7 +3327,13 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.folder_open_outlined,
                                                         ),
                                                         child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async => await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location)),
+                                                        onPressed: () async {
+                                                          if (Directory(Uri.file(curMod.submods[modViewModSetSubModIndex].location).toFilePath()).existsSync()) {
+                                                            await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location));
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                          }
+                                                        },
                                                       ),
 
                                                       // boundary
@@ -3792,7 +3810,14 @@ class _HomePageState extends State<HomePage> {
                                                                       Icons.folder_open_outlined,
                                                                     ),
                                                                     child: Text(curLangText!.uiOpenInFileExplorer),
-                                                                    onPressed: () async => await launchUrl(Uri.file(curSubmod.location)),
+                                                                    onPressed: () async {
+                                                                      if (Directory(Uri.file(curSubmod.location).toFilePath()).existsSync()) {
+                                                                        await launchUrl(Uri.file(curSubmod.location));
+                                                                      } else {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                                      }
+                                                                    },
                                                                   ),
 
                                                                   // boundary
