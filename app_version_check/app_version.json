@@ -2,7 +2,7 @@
     "name": "PSO2NGS Mod Manager",
     "version": "2.5.24",
     "description": [
-        "Added \"Content\" folder path instead of \"pso2_bin\" for Windows Store version",
+        "Added support for \"Content\" folder path instead of \"pso2_bin\" for Windows Store version",
         "Windowsストア版のフォルダパスを\"pso2_bin\"から\"Content\"に変更しました。"
     ],
     "windows_file": "",
