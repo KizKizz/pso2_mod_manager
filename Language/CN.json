@@ -301,6 +301,7 @@
   "uiCurrentPath": "当前路径",
   "uiReselect": "重定向",
   "uiMMPathReselectNoteCurrentPath": "注意: 此文件夹保存MOD和备份。\n当前路径: ",
+  "uiWindowsStoreVerNote": "If you are playing on Windows Store version, it might be \"Content\" instead of \"pso2_bin\" folder",
   "uiCheckingAppliedMods": "确认应用MOD",
   "uiErrorWhenCheckingAppliedMods": "检查应用的MOD文件时出错",
   "uiReappliedModsAfterChecking": "以下MOD文件已失效,需要重新应用才能生效。",

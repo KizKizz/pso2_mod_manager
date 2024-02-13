@@ -256,7 +256,7 @@ Future<String?> pso2binPathGet(context) async {
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                curLangText!.uiPso2binFolderNotFoundSelect,
+                '${curLangText!.uiPso2binFolderNotFoundSelect}\n${curLangText!.uiWindowsStoreVerNote}',
               ),
               actions: <Widget>[
                 // if (Provider.of<StateProvider>(context, listen: false).reloadProfile)
@@ -410,7 +410,7 @@ Future<String?> pso2binPathReselect(context) async {
                 child: Text(curLangText!.uiReselectPso2binPath, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
-              content: Text('${curLangText!.uiCurrentPath}:\n$modManPso2binPath'),
+              content: Text('${curLangText!.uiWindowsStoreVerNote}\n${curLangText!.uiCurrentPath}:\n$modManPso2binPath'),
               actions: <Widget>[
                 ElevatedButton(
                     child: Text(curLangText!.uiReturn),
