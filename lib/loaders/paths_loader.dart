@@ -79,9 +79,9 @@ Future<bool> pathsLoader(context) async {
   if (!Directory(modManPso2binPath).existsSync()) {
     modManPso2binPath = '';
   }
-  while ((modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin')) {
+  while ((modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin') || p.basename(modManPso2binPath) != 'Content') {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
-    if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
+    if (pso2binPathFromPicker != null && (p.basename(pso2binPathFromPicker) == 'pso2_bin' || p.basename(pso2binPathFromPicker) == 'Content')) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
       prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     }
