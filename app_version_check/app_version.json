@@ -3,7 +3,7 @@
     "version": "2.5.24",
     "description": [
         "Added support for \"Content\" folder path instead of \"pso2_bin\" for Windows Store version",
-        "Windowsストア版のフォルダパスを\"pso2_bin\"から\"Content\"に変更しました。"
+        "Windowsストア版のフォルダパスを\"pso2_bin\"から\"Content\"に変更しました"
     ],
     "windows_file": "",
     "linux_file": ""
