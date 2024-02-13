@@ -79,9 +79,9 @@ Future<bool> pathsLoader(context) async {
   if (!Directory(modManPso2binPath).existsSync()) {
     modManPso2binPath = '';
   }
-  while ((modManPso2binPath.isEmpty || p.basename(modManPso2binPath) != 'pso2_bin')) {
+  while ((modManPso2binPath.isEmpty || (p.basename(modManPso2binPath) != 'pso2_bin') && p.basename(modManPso2binPath) != 'Content')) {
     String? pso2binPathFromPicker = await pso2binPathGet(context);
-    if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
+    if (pso2binPathFromPicker != null && (p.basename(pso2binPathFromPicker) == 'pso2_bin' || p.basename(pso2binPathFromPicker) == 'Content')) {
       modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
       prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     }
@@ -256,7 +256,7 @@ Future<String?> pso2binPathGet(context) async {
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16),
               content: Text(
-                curLangText!.uiPso2binFolderNotFoundSelect,
+                '${curLangText!.uiPso2binFolderNotFoundSelect}\n${curLangText!.uiWindowsStoreVerNote}',
               ),
               actions: <Widget>[
                 // if (Provider.of<StateProvider>(context, listen: false).reloadProfile)
@@ -333,7 +333,7 @@ Future<bool> pso2PathsReloader(context) async {
   final prefs = await SharedPreferences.getInstance();
   //pso2_bin path
   String? pso2binPathFromPicker = await pso2binPathReselect(context);
-  if (pso2binPathFromPicker != null && p.basename(pso2binPathFromPicker) == 'pso2_bin') {
+  if (pso2binPathFromPicker != null && (p.basename(pso2binPathFromPicker) == 'pso2_bin' || p.basename(pso2binPathFromPicker) == 'Content')) {
     modManPso2binPath = Uri.file(pso2binPathFromPicker).toFilePath();
     prefs.setString(modManCurActiveProfile == 1 ? 'binDirPath' : 'binDirPath_profile2', modManPso2binPath);
     modManChecksumFilePath = '';
@@ -410,7 +410,7 @@ Future<String?> pso2binPathReselect(context) async {
                 child: Text(curLangText!.uiReselectPso2binPath, style: const TextStyle(fontWeight: FontWeight.w700)),
               ),
               contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
-              content: Text('${curLangText!.uiCurrentPath}:\n$modManPso2binPath'),
+              content: Text('${curLangText!.uiWindowsStoreVerNote}\n${curLangText!.uiCurrentPath}:\n$modManPso2binPath'),
               actions: <Widget>[
                 ElevatedButton(
                     child: Text(curLangText!.uiReturn),
@@ -420,7 +420,7 @@ Future<String?> pso2binPathReselect(context) async {
                 ElevatedButton(
                     onPressed: () async {
                       getDirectoryPath().then((value) {
-                        if (value!.isNotEmpty && p.basename(value) == 'pso2_bin') {
+                        if (value!.isNotEmpty && (p.basename(value) == 'pso2_bin' || p.basename(value) == 'Content')) {
                           Navigator.pop(context, value);
                         }
                       });

@@ -301,6 +301,7 @@
   "uiCurrentPath": "現在のパス",
   "uiReselect": "リセレクト",
   "uiMMPathReselectNoteCurrentPath": "注:このフォルダはMODとバックアップを保存します。\n現在のパスです:",
+  "uiWindowsStoreVerNote": "Windowsストア版でプレイしている場合、\"pso2_bin\"フォルダではなく、\"Content\"フォルダになっている可能性があります。",
   "uiCheckingAppliedMods": "アプライドモッズの確認",
   "uiErrorWhenCheckingAppliedMods": "適用されたMODファイルのチェックでエラーになる",
   "uiReappliedModsAfterChecking": "以下のMODファイルはゲームから適用されていません。",

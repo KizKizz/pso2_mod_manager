@@ -379,6 +379,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiReselect = json['uiReselect'] as String
       ..uiMMPathReselectNoteCurrentPath =
           json['uiMMPathReselectNoteCurrentPath'] as String
+      ..uiWindowsStoreVerNote = json['uiWindowsStoreVerNote'] as String
       ..uiCheckingAppliedMods = json['uiCheckingAppliedMods'] as String
       ..uiErrorWhenCheckingAppliedMods =
           json['uiErrorWhenCheckingAppliedMods'] as String
@@ -855,6 +856,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReselect': instance.uiReselect,
       'uiMMPathReselectNoteCurrentPath':
           instance.uiMMPathReselectNoteCurrentPath,
+      'uiWindowsStoreVerNote': instance.uiWindowsStoreVerNote,
       'uiCheckingAppliedMods': instance.uiCheckingAppliedMods,
       'uiErrorWhenCheckingAppliedMods': instance.uiErrorWhenCheckingAppliedMods,
       'uiReappliedModsAfterChecking': instance.uiReappliedModsAfterChecking,

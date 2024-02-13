@@ -331,7 +331,7 @@ class TranslationText {
   String uiSuccessfullyRemovedTheseMods = 'Successfully removed these mods from the game';
 
   //paths_loader
-  String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?\nSelecting "Exit" would close the app',
+  String uiPso2binFolderNotFoundSelect = 'pso2_bin folder not found. Select it now?',
       uiSelectPso2binFolderPath = 'Select \'pso2_bin\' folder path',
       uiMMFolderNotFound = 'Mod Manager Folder not found',
       uiSelectPathToStoreMMFolder =
@@ -339,7 +339,8 @@ class TranslationText {
       uiSelectAFolderToStoreMMFolder = 'Select a folder to store Mod Manager folder',
       uiCurrentPath = 'Current path',
       uiReselect = 'Reselect',
-      uiMMPathReselectNoteCurrentPath = 'Note: This folder stores mods and backups\n\nCurrent path:';
+      uiMMPathReselectNoteCurrentPath = 'Note: This folder stores mods and backups\n\nCurrent path:',
+      uiWindowsStoreVerNote = 'If you are playing on Windows Store version, it might be "Content" instead of "pso2_bin" folder';
 
   //applied_mods_checking_page
   String uiCheckingAppliedMods = 'Checking Applied Mods',

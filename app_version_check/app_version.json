@@ -1,11 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.23",
+    "version": "2.5.24",
     "description": [
-        "Reworked some UI text elements for much easier translation",
-        "Minor bug fixes",
-        "翻訳しやすくするために、UIのテキスト要素を一部見直した",
-        "軽微なバグ修正"
+        "Added support for \"Content\" folder path instead of \"pso2_bin\" for Windows Store version",
+        "Windowsストア版のフォルダパスを\"pso2_bin\"から\"Content\"に変更しました"
     ],
     "windows_file": "",
     "linux_file": ""
