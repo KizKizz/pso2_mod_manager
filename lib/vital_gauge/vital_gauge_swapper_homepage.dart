@@ -507,7 +507,7 @@ void vitalGaugeHomePage(context) {
                                                                                     ),
                                                                             );
                                                                           },
-                                                                          onAccept: (data) {
+                                                                          onAcceptWithDetails: (data) {
                                                                             _loading[i] = true;
                                                                             setState(
                                                                               () {},
