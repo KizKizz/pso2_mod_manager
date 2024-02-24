@@ -515,7 +515,7 @@ void vitalGaugeHomePage(context) {
                                                                             Future.delayed(const Duration(milliseconds: 500), () {
                                                                               setState(
                                                                                 () {
-                                                                                  String imgPath = data as String;
+                                                                                  String imgPath = data.data.toString();
                                                                                   customVgBackgroundApply(imgPath, vgData[i]).then((value) {
                                                                                     if (value) {
                                                                                       vgData[i].replacedImagePath = imgPath;

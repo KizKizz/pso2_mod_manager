@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.24",
+    "version": "2.5.25",
     "description": [
-        "Added support for \"Content\" folder path instead of \"pso2_bin\" for Windows Store version",
-        "Windowsストア版のフォルダパスを\"pso2_bin\"から\"Content\"に変更しました"
+        "Fixed a bug where mod save files will not change location of items after reselect pso2_bin or Mod Manager folder path",
+        "pso2_binまたはMOD Managerのフォルダパスを再選択した後、MODセーブファイルがアイテムの場所を変更しないバグを修正"
     ],
     "windows_file": "",
     "linux_file": ""
