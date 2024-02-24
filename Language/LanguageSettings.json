@@ -1,20 +1,20 @@
 [
   {
     "langInitial": "CN",
-    "revision": 7,
-    "langFilePath": "C:\\Users\\kizkizz\\Documents\\GitHub\\pso2_mod_manager\\Language\\CN.json",
+    "revision": 8,
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\CN.json",
     "selected": false
   },
   {
     "langInitial": "EN",
     "revision": 1,
-    "langFilePath": "C:\\Users\\kizkizz\\Documents\\GitHub\\pso2_mod_manager\\Language\\EN.json",
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\EN.json",
     "selected": true
   },
   {
     "langInitial": "JP",
     "revision": 1,
-    "langFilePath": "C:\\Users\\kizkizz\\Documents\\GitHub\\pso2_mod_manager\\Language\\JP.json",
+    "langFilePath": "E:\\Flutter project\\pso2_mod_manager\\Language\\JP.json",
     "selected": false
   }
 ]
