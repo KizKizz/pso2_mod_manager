@@ -354,7 +354,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                           Column(
                                                             crossAxisAlignment: CrossAxisAlignment.end,
                                                             children: [
-                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                              Text(modManCurActiveItemNameLanguage == 'JP' ? queueToEmoteCsvFiles[i].jpName : queueToEmoteCsvFiles[i].enName),
                                                               Text(queueToEmoteCsvFiles[i].gender,
                                                                   style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
                                                             ],
@@ -819,7 +819,7 @@ Future<void> swapperLaQueueConfirmDialog(
                                     Expanded(
                                         flex: 1,
                                         child: Text(
-                                          modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName,
+                                          queueToItemNameList[i],
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                         )),
                                   ],
