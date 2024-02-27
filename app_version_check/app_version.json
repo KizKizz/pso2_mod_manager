@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.25",
+    "version": "2.5.26",
     "description": [
-        "Fixed a bug where mod save files will not change location of items after reselect pso2_bin or Mod Manager folder path",
-        "pso2_binまたはMOD Managerのフォルダパスを再選択した後、MODセーブファイルがアイテムの場所を変更しないバグを修正"
+        "Fixed a bug where loading mods on startup would cause a null error under some conditions",
+        "起動時にMODをロードすると、条件によってはNULLエラーが発生するバグを修正"
     ],
     "windows_file": "",
     "linux_file": ""
