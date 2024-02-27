@@ -170,7 +170,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.submodName = curJsonSubmodsList[submodIndex].submodName;
                       //submod.previewImages = curJsonSubmodsList[submodIndex].previewImages;
                       //submod.previewVideos = curJsonSubmodsList[submodIndex].previewVideos;
-                      if (curJsonSubmodsList[submodIndex].cmxApplied!) submod.hasCmx = curJsonSubmodsList[submodIndex].hasCmx;
+                      if (curJsonSubmodsList[submodIndex].cmxApplied != null && curJsonSubmodsList[submodIndex].cmxApplied == true) submod.hasCmx = curJsonSubmodsList[submodIndex].hasCmx;
                       submod.cmxApplied = curJsonSubmodsList[submodIndex].cmxApplied;
                       submod.cmxStartPos = curJsonSubmodsList[submodIndex].cmxStartPos;
                       submod.cmxEndPos = curJsonSubmodsList[submodIndex].cmxEndPos;
