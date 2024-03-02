@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.27",
+    "version": "2.5.28",
     "description": [
-        "Fixed a bug where adding emotes to swapping queue would display incorrect emote names",
-        "スワッピング・キューにエモートを追加すると、誤ったエモート名が表示されるバグを修正"
+        "Fixed a bug where certain items would cause path error when swapping",
+        "スワップ時に特定のアイテムがパスエラーを起こすバグを修正"
     ],
     "windows_file": "",
     "linux_file": ""
