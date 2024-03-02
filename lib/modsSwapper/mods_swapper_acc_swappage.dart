@@ -311,7 +311,7 @@ Future<String> modsSwapperAccIceFilesGet(context, bool isVanillaItemSwap, SubMod
 
     //pack
 
-    toItemName = toItemName.replaceAll(RegExp(charToReplace), '_');
+    toItemName = toItemName.replaceAll(RegExp(charToReplace), '_').trim();
     String packDirPath = '';
     if (fromSubmod.modName == fromSubmod.submodName) {
       packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
