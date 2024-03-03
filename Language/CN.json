@@ -302,7 +302,7 @@
   "uiReselect": "重定向",
   "uiMMPathReselectNoteCurrentPath": "注意: 此文件夹保存MOD和备份。\n当前路径: ",
   "uiWindowsStoreVerNote": "If you are playing on Windows Store version, it might be \"Content\" instead of \"pso2_bin\" folder",
-  "uiCheckingAppliedMods": "确认应用MOD",
+  "uiCheckingAppliedMods": "检查已应用的MOD",
   "uiErrorWhenCheckingAppliedMods": "检查应用的MOD文件时出错",
   "uiReappliedModsAfterChecking": "以下MOD文件已失效,需要重新应用才能生效。",
   "uireApplyingModFiles": "尝试重新应用以下MOD文件",
@@ -420,7 +420,7 @@
   "uiReplaceAll": "全部替换",
   "uiReplaceDuplicateFilesOnly": "仅替换重复文件",
   "uiNewModSet": "新MOD组",
-  "uiCreateAndAddModsToThisSet": "在此组中创建并添加MOD",
-  "uiAddNewSet": "添加新组",
+  "uiCreateAndAddModsToThisSet": "创建新组并将MOD加入组中",
+  "uiAddNewSet": "创建新组",
   "uiEnterNewName": "输入新名称"
 }
