@@ -268,22 +268,37 @@ void boundaryEdit(context, SubMod submod) async {
               } else {
                 Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
                 await Future.delayed(const Duration(milliseconds: 100));
+                if (isBoundaryEditDuringApply) {
+                  Navigator.pop(context, true);
+                }
               }
             }
           } else {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoAqpFileFound}');
             await Future.delayed(const Duration(milliseconds: 100));
+            if (isBoundaryEditDuringApply) {
+              Navigator.pop(context, true);
+            }
           }
         }
       } else {
         Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}');
         await Future.delayed(const Duration(milliseconds: 100));
+        if (isBoundaryEditDuringApply) {
+          Navigator.pop(context, true);
+        }
       }
     } else {
       Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiOnlyBasewearsAndSetwearsCanBeModified}');
       await Future.delayed(const Duration(milliseconds: 100));
+      if (isBoundaryEditDuringApply) {
+        Navigator.pop(context, true);
+      }
     }
   }
 
   isBoundaryEdited = true;
+  if (isBoundaryEditDuringApply) {
+    Navigator.pop(context, true);
+  }
 }

@@ -119,48 +119,6 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
 
 //Helpers
 Future<Item> newItemsFetcher(String catePath, String itemPath) async {
-  //load sheets
-  // if (csvInfosFromSheets.isEmpty) {
-  //   csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-  // }
-  //Get item icons
-  // List<Mod> modListToAdd = newModsFetcher(itemPath, p.basename(catePath), []);
-  // List<File> iceFilesInCurItemNoDup = [];
-
-  // int defaultCateIndex = defaultCateforyDirs.indexOf(p.basename(catePath));
-  // List<String> itemInCsv = [];
-  // List<String> itemCsvMissingIcons = [];
-  // for (var toAddMod in modListToAdd) {
-  //   iceFilesInCurItemNoDup.addAll(toAddMod.getDistinctModFilePaths().map((e) => File(e)));
-  // }
-  // if (defaultCateIndex != -1) {
-  //   itemInCsv = await modFileCsvFetcher(csvInfosFromSheets[defaultCateIndex], iceFilesInCurItemNoDup);
-  //   for (var line in itemInCsv) {
-  //     String csvItemIconName = curActiveLang == 'JP' ? line.split(',')[1] : line.split(',')[2];
-  //     List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-  //     if (csvItemIconName.isNotEmpty) {
-  //       for (var char in charToReplace) {
-  //         csvItemIconName = csvItemIconName.replaceAll(char, '_');
-  //       }
-  //       final imagesFoundInItemDir =
-  //           Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
-  //       if (imagesFoundInItemDir.where((element) => p.basenameWithoutExtension(element.path) == csvItemIconName).isEmpty) {
-  //         itemCsvMissingIcons.add(line);
-  //         //print(csvItemIconName);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // List<String> tempItemIconPaths = await modAdderItemIconFetch(itemCsvMissingIcons, p.basename(catePath));
-
-  // if (tempItemIconPaths.isNotEmpty) {
-  //   for (var tempItemIconPath in tempItemIconPaths) {
-  //     File(tempItemIconPath).copySync(Uri.file('$itemPath/${p.basename(tempItemIconPath)}').toFilePath());
-  //     //itemIcons.add(Uri.file('${dir.path}/${p.basename(tempItemIconPath)}').toFilePath());
-  //   }
-  // }
-
   //Get icons from dir
   List<String> itemIcons = [];
   final imagesFoundInItemDir = Directory(itemPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
@@ -225,15 +183,19 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   for (var dir in foldersInItemPath) {
     //Get preview images;
     List<String> modPreviewImages = [];
-    final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
-    for (var element in imagesInModDir) {
-      modPreviewImages.add(Uri.file(element.path).toFilePath());
-    }
-    //Get preview videos;
     List<String> modPreviewVideos = [];
-    final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
-    for (var element in videosInModDir) {
-      modPreviewVideos.add(Uri.file(element.path).toFilePath());
+    
+    if (dir.existsSync()) {
+      final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
+      for (var element in imagesInModDir) {
+        modPreviewImages.add(Uri.file(element.path).toFilePath());
+      }
+      //Get preview videos;
+
+      final videosInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4');
+      for (var element in videosInModDir) {
+        modPreviewVideos.add(Uri.file(element.path).toFilePath());
+      }
     }
 
     mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [],

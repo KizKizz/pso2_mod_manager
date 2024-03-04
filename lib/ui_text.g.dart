@@ -463,6 +463,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiGroupSameItemVariants = json['uiGroupSameItemVariants'] as String
       ..uiAddFolders = json['uiAddFolders'] as String
       ..uiAddFiles = json['uiAddFiles'] as String
+      ..uiCharacters = json['uiCharacters'] as String
+      ..uiPathTooLongError = json['uiPathTooLongError'] as String
       ..uiNewProfileName = json['uiNewProfileName'] as String
       ..uiApplyingAllAvailableMods =
           json['uiApplyingAllAvailableMods'] as String
@@ -930,6 +932,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiGroupSameItemVariants': instance.uiGroupSameItemVariants,
       'uiAddFolders': instance.uiAddFolders,
       'uiAddFiles': instance.uiAddFiles,
+      'uiCharacters': instance.uiCharacters,
+      'uiPathTooLongError': instance.uiPathTooLongError,
       'uiNewProfileName': instance.uiNewProfileName,
       'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
       'uiLocatingOriginalFiles': instance.uiLocatingOriginalFiles,

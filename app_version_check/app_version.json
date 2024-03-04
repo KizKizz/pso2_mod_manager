@@ -1,9 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.28",
+    "version": "2.5.29",
     "description": [
-        "Fixed a bug where certain items would cause path error when swapping",
-        "スワップ時に特定のアイテムがパスエラーを起こすバグを修正"
+        "Added number indicators and notifications for file path length when adding mods. The maximum length of a path is 259 characters for Windows",
+        "Bounding Radius Removal now auto dismiss if encounters errors on auto removal mode",
+        "MOD追加時にファイルパスの長さに関する数値インジケータと通知を追加。Windowsの場合、パスの最大長は259文字です",
+        "自動除去モードでエラーが発生した場合、バウンディング半径除去が自動解除されるようになりました"
     ],
     "windows_file": "",
     "linux_file": ""
