@@ -1014,9 +1014,9 @@ void modsAdderHomePage(context) {
                                                                                 // if (mainFolderRenameIndex.isEmpty || mainFolderRenameIndex.length != processedFileList[index].modList.length) {
                                                                                 //   mainFolderRenameIndex = List.generate(processedFileList[index].modList.length, (index) => false);
                                                                                 // }
-                                                                                if (pathCharLengthList[index].isNotEmpty) {
-                                                                                  pathCharLengthList[index].clear();
-                                                                                }
+                                                                                // if (pathCharLengthList[index].isNotEmpty) {
+                                                                                //   pathCharLengthList[index].clear();
+                                                                                // }
 
                                                                                 int pathLength = 0;
                                                                                 for (var sub in curMod.submodList) {
