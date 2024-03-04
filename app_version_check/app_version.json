@@ -1,11 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.29",
+    "version": "2.5.30",
     "description": [
-        "Added number indicators and notifications for file path length when adding mods. The maximum length of a path is 259 characters for Windows",
-        "Bounding Radius Removal now auto dismiss if encounters errors on auto removal mode",
-        "MOD追加時にファイルパスの長さに関する数値インジケータと通知を追加。Windowsの場合、パスの最大長は259文字です",
-        "自動除去モードでエラーが発生した場合、バウンディング半径除去が自動解除されるようになりました"
+        "More minor fixes to add mods function",
+        "MOD機能を追加するための細かい修正"
     ],
     "windows_file": "",
     "linux_file": ""
