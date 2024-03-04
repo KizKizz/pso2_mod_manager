@@ -425,7 +425,9 @@ class TranslationText {
       uiDuplicatedMods = ' duplicated mods',
       uiGroupSameItemVariants = 'Group Variants',
       uiAddFolders = 'Add Folders',
-      uiAddFiles = 'Add Files';
+      uiAddFiles = 'Add Files',
+      uiCharacters = 'Chars',
+      uiPathTooLongError = 'One or more mod paths are too long, rename to shorter names before add';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';

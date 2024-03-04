@@ -44,6 +44,7 @@ final _subItemFormValidate = GlobalKey<FormState>();
 bool _isAddingMods = false;
 bool _disableFirstLoadingScreen = true;
 bool _isProcessingMoreFiles = false;
+int _pathLengthInNameEdit = 0;
 
 void modsAdderHomePage(context) {
   List<String> dropdownButtonCateList = [];
@@ -51,6 +52,8 @@ void modsAdderHomePage(context) {
     dropdownButtonCateList.addAll(type.categories.map((e) => e.categoryName));
   }
   dropdownButtonCateList.sort();
+  List<List<int>> pathCharLengthList = [];
+
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -566,6 +569,8 @@ void modsAdderHomePage(context) {
                                                     //get duplicates
                                                     processedFileList = getDuplicates(processedFileList);
 
+                                                    pathCharLengthList = List.generate(processedFileList.length, (index) => []);
+
                                                     return Stack(
                                                       children: [
                                                         ScrollbarTheme(
@@ -899,29 +904,32 @@ void modsAdderHomePage(context) {
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
-                                                                                              SizedBox(
-                                                                                                width: 40,
-                                                                                                child: Tooltip(
-                                                                                                  message: curLangText!.uiEditName,
-                                                                                                  height: 25,
-                                                                                                  textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
-                                                                                                  waitDuration: const Duration(seconds: 1),
-                                                                                                  child: MaterialButton(
-                                                                                                    onPressed: !_isNameEditing && processedFileList[index].toBeAdded
-                                                                                                        ? () {
-                                                                                                            renameTextBoxController.text = processedFileList[index].itemName;
-                                                                                                            renameTextBoxController.selection = TextSelection(
-                                                                                                              baseOffset: 0,
-                                                                                                              extentOffset: renameTextBoxController.text.length,
-                                                                                                            );
-                                                                                                            _isNameEditing = true;
-                                                                                                            _itemNameRenameIndex[index] = true;
-                                                                                                            setState(
-                                                                                                              () {},
-                                                                                                            );
-                                                                                                          }
-                                                                                                        : null,
-                                                                                                    child: const Icon(Icons.edit),
+                                                                                              Visibility(
+                                                                                                visible: !defaultCategoryNames.contains( processedFileList[index].category) || processedFileList[index].category == defaultCategoryNames[13],
+                                                                                                child: SizedBox(
+                                                                                                  width: 40,
+                                                                                                  child: Tooltip(
+                                                                                                    message: curLangText!.uiEditName,
+                                                                                                    height: 25,
+                                                                                                    textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
+                                                                                                    waitDuration: const Duration(seconds: 1),
+                                                                                                    child: MaterialButton(
+                                                                                                      onPressed: !_isNameEditing && processedFileList[index].toBeAdded
+                                                                                                          ? () {
+                                                                                                              renameTextBoxController.text = processedFileList[index].itemName;
+                                                                                                              renameTextBoxController.selection = TextSelection(
+                                                                                                                baseOffset: 0,
+                                                                                                                extentOffset: renameTextBoxController.text.length,
+                                                                                                              );
+                                                                                                              _isNameEditing = true;
+                                                                                                              _itemNameRenameIndex[index] = true;
+                                                                                                              setState(
+                                                                                                                () {},
+                                                                                                              );
+                                                                                                            }
+                                                                                                          : null,
+                                                                                                      child: const Icon(Icons.edit),
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
                                                                                               ),
@@ -1006,6 +1014,22 @@ void modsAdderHomePage(context) {
                                                                                 // if (mainFolderRenameIndex.isEmpty || mainFolderRenameIndex.length != processedFileList[index].modList.length) {
                                                                                 //   mainFolderRenameIndex = List.generate(processedFileList[index].modList.length, (index) => false);
                                                                                 // }
+                                                                                if (pathCharLengthList[index].isNotEmpty) {
+                                                                                  pathCharLengthList[index].clear();
+                                                                                }
+
+                                                                                int pathLength = 0;
+                                                                                for (var sub in curMod.submodList) {
+                                                                                  for (var modFile in sub.files) {
+                                                                                    String tempPath = modFile.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                    if (tempPath.length > pathLength) {
+                                                                                      pathLength = tempPath.length;
+                                                                                    }
+                                                                                  }
+                                                                                }
+
+                                                                                pathCharLengthList[index].insert(mIndex, pathLength);
+
                                                                                 return ExpansionTile(
                                                                                   initiallyExpanded: false,
                                                                                   childrenPadding: const EdgeInsets.only(left: 15),
@@ -1055,6 +1079,19 @@ void modsAdderHomePage(context) {
                                                                                                       return null;
                                                                                                     },
                                                                                                     onChanged: (value) {
+                                                                                                      int pathLength = 0;
+                                                                                                      for (var sub in curMod.submodList) {
+                                                                                                        for (var modFile in sub.files) {
+                                                                                                          String tempPath = modFile.path
+                                                                                                              .replaceFirst(modManModsAdderPath, modManModsDirPath)
+                                                                                                              .replaceFirst(curMod.modName, value);
+                                                                                                          if (tempPath.length > pathLength) {
+                                                                                                            pathLength = tempPath.length;
+                                                                                                          }
+                                                                                                        }
+                                                                                                      }
+
+                                                                                                      _pathLengthInNameEdit = pathLength;
                                                                                                       setState(
                                                                                                         () {},
                                                                                                       );
@@ -1086,6 +1123,11 @@ void modsAdderHomePage(context) {
                                                                                             const SizedBox(
                                                                                               width: 5,
                                                                                             ),
+                                                                                            Text('$_pathLengthInNameEdit/259 ${curLangText!.uiCharacters}',
+                                                                                                style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null)),
+                                                                                            const SizedBox(
+                                                                                              width: 5,
+                                                                                            ),
                                                                                             SizedBox(
                                                                                               width: 40,
                                                                                               child: MaterialButton(
@@ -1105,6 +1147,7 @@ void modsAdderHomePage(context) {
                                                                                                           mainFolderRenameIndex[index][mIndex] = false;
                                                                                                           renameTextBoxController.clear();
                                                                                                           _isNameEditing = false;
+                                                                                                          _pathLengthInNameEdit = 0;
 
                                                                                                           setState(
                                                                                                             () {},
@@ -1124,6 +1167,7 @@ void modsAdderHomePage(context) {
                                                                                                   mainFolderRenameIndex[index][mIndex] = false;
                                                                                                   renameTextBoxController.clear();
                                                                                                   _isNameEditing = false;
+                                                                                                  _pathLengthInNameEdit = 0;
 
                                                                                                   setState(
                                                                                                     () {},
@@ -1143,6 +1187,13 @@ void modsAdderHomePage(context) {
                                                                                                       color: !curMod.toBeAdded
                                                                                                           ? Theme.of(context).disabledColor
                                                                                                           : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                                            ),
+                                                                                            const SizedBox(
+                                                                                              width: 5,
+                                                                                            ),
+                                                                                            Text(
+                                                                                              '${pathCharLengthList[index][mIndex]}/259 ${curLangText!.uiCharacters}',
+                                                                                              style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null),
                                                                                             ),
                                                                                             const SizedBox(
                                                                                               width: 5,
@@ -1197,6 +1248,7 @@ void modsAdderHomePage(context) {
                                                                                                           );
                                                                                                           _isNameEditing = true;
                                                                                                           mainFolderRenameIndex[index][mIndex] = true;
+                                                                                                          _pathLengthInNameEdit = pathCharLengthList[index][mIndex];
                                                                                                           setState(
                                                                                                             () {},
                                                                                                           );
@@ -1632,6 +1684,7 @@ void modsAdderHomePage(context) {
                                                             renameTextBoxController.clear();
                                                             Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                             _selectedCategories.clear();
+                                                            pathCharLengthList.clear();
 
                                                             setState(
                                                               () {},
@@ -1658,6 +1711,7 @@ void modsAdderHomePage(context) {
                                                               _selectedCategories.clear();
                                                               processedFileListLoad = null;
                                                               processedFileList.clear();
+                                                              pathCharLengthList.clear();
                                                               if (csvInfosFromSheets.isNotEmpty) {
                                                                 csvInfosFromSheets.clear();
                                                               }
@@ -1679,7 +1733,10 @@ void modsAdderHomePage(context) {
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(100)),
-                                                        onPressed: processedFileList.isEmpty || _isNameEditing || !context.watch<StateProvider>().modAdderReload
+                                                        onPressed: processedFileList.isEmpty ||
+                                                                _isNameEditing ||
+                                                                !context.watch<StateProvider>().modAdderReload ||
+                                                                pathCharLengthList.where((mod) => mod.where((element) => element > 259).isNotEmpty).isNotEmpty
                                                             ? null
                                                             : (() async {
                                                                 if (_duplicateCounter > 0) {
@@ -1704,6 +1761,7 @@ void modsAdderHomePage(context) {
                                                                         processedFileListLoad = null;
                                                                         processedFileList.clear();
                                                                         toAddList.clear();
+                                                                        pathCharLengthList.clear();
                                                                         _isAddingMods = false;
                                                                         //_exitConfirmDialog = false;
                                                                         // ignore: use_build_context_synchronously
@@ -1735,7 +1793,9 @@ void modsAdderHomePage(context) {
                                                             ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMod}')
                                                             : _duplicateCounter > 1
                                                                 ? Text('${curLangText!.uiClickToRename}$_duplicateCounter${curLangText!.uiDuplicatedMods}')
-                                                                : Text(curLangText!.uiAddAll)),
+                                                                : pathCharLengthList.where((mod) => mod.where((element) => element > 259).isNotEmpty).isNotEmpty
+                                                                    ? Text(curLangText!.uiPathTooLongError)
+                                                                    : Text(curLangText!.uiAddAll)),
                                                   ),
                                                 ),
                                               ),

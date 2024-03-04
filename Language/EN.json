@@ -369,6 +369,8 @@
   "uiGroupSameItemVariants": "Group Variants",
   "uiAddFolders": "Add Folders",
   "uiAddFiles": "Add Files",
+  "uiCharacters": "Chars",
+  "uiPathTooLongError": "One or more mod paths are too long, rename to shorter names before add",
   "uiNewProfileName": "New profile name",
   "uiApplyingAllAvailableMods": "Applying all available mods",
   "uiLocatingOriginalFiles": "Locating original files",

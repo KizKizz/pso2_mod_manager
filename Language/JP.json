@@ -369,6 +369,8 @@
   "uiGroupSameItemVariants": "同じ亜種のグループ",
   "uiAddFolders": "フォルダの追加",
   "uiAddFiles": "ファイルの追加",
+  "uiCharacters": "文字",
+  "uiPathTooLongError": "1つまたは複数のMODのパスが長すぎます",
   "uiNewProfileName": "新しいプロフィール名",
   "uiApplyingAllAvailableMods": "利用可能なすべての改造を適用する",
   "uiLocatingOriginalFiles": "オリジナルファイルの検索",
