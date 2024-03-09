@@ -905,7 +905,8 @@ void modsAdderHomePage(context) {
                                                                                                   ),
                                                                                                 ),
                                                                                               Visibility(
-                                                                                                visible: !defaultCategoryNames.contains( processedFileList[index].category) || processedFileList[index].category == defaultCategoryNames[13],
+                                                                                                visible: !defaultCategoryNames.contains(processedFileList[index].category) ||
+                                                                                                    processedFileList[index].category == defaultCategoryNames[13],
                                                                                                 child: SizedBox(
                                                                                                   width: 40,
                                                                                                   child: Tooltip(
@@ -1019,6 +1020,12 @@ void modsAdderHomePage(context) {
                                                                                 // }
 
                                                                                 int pathLength = 0;
+                                                                                for (var file in curMod.filesInMod) {
+                                                                                  String tempPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                  if (tempPath.length > pathLength) {
+                                                                                    pathLength = tempPath.length;
+                                                                                  }
+                                                                                }
                                                                                 for (var sub in curMod.submodList) {
                                                                                   for (var modFile in sub.files) {
                                                                                     String tempPath = modFile.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
@@ -1080,6 +1087,12 @@ void modsAdderHomePage(context) {
                                                                                                     },
                                                                                                     onChanged: (value) {
                                                                                                       int pathLength = 0;
+                                                                                                      for (var file in curMod.filesInMod) {
+                                                                                                        String tempPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                                        if (tempPath.length > pathLength) {
+                                                                                                          pathLength = tempPath.length;
+                                                                                                        }
+                                                                                                      }
                                                                                                       for (var sub in curMod.submodList) {
                                                                                                         for (var modFile in sub.files) {
                                                                                                           String tempPath = modFile.path
