@@ -371,7 +371,7 @@
   "uiAddFiles": "添加文件",
   "uiCharacters": "字符",
   "uiPathTooLongError": "一个或多个MOD路径过长，请重命名后再添加",
-  "uiNewProfileName": "新简介名称",
+  "uiNewProfileName": "新配置名称",
   "uiApplyingAllAvailableMods": "应用所有可用的MOD",
   "uiLocatingOriginalFiles": "查找原始文件",
   "uiErrorWhenLocatingOriginalFiles": "定位原始文件时发生错误",
