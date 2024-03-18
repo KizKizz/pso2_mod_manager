@@ -1898,7 +1898,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trimRight();
         String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
         newIceFilePath = removeRebootPath(newIceFilePath);
-        await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+        if (p.dirname(newIceFilePath) == newItemDirPath) {
+          await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
+          newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
+        } else {
+          await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+        }
         iceFile.copySync(newIceFilePath);
         csvMatchedIceFiles.add(iceFile);
         //fetch extra file in ice dir
@@ -1973,7 +1978,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName').toFilePath();
       String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
       newIceFilePath = removeRebootPath(newIceFilePath);
-      await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+      if (p.dirname(newIceFilePath) == newItemDirPath) {
+        await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
+        newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
+      } else {
+        await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+      }
       iceFile.copySync(newIceFilePath);
       //fetch extra file in ice dir
       final extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty);
