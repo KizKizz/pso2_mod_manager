@@ -298,7 +298,7 @@ void boundaryEdit(context, SubMod submod) async {
   }
 
   isBoundaryEdited = true;
-  if (isBoundaryEditDuringApply) {
-    Navigator.pop(context, true);
-  }
+  // if (isBoundaryEditDuringApply) {
+  //   Navigator.pop(context, true);
+  // }
 }

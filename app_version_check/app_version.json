@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.31",
+    "version": "2.5.32",
     "description": [
-        "Minor fixes to add mods and swapping functions",
-        "MODとスワッピング機能の追加に伴うマイナー修正"
+        "Minor fixes to add mods and bounding radius removal",
+        "MODの追加とバウンディング半径の削除のマイナー修正"
     ],
     "windows_file": "",
     "linux_file": ""
