@@ -1849,9 +1849,9 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   //listing ice files in temp
   List<File> iceFileList = [];
   for (var dir in Directory(modManAddModsTempDirPath).listSync(recursive: false).whereType<Directory>()) {
-    iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isEmpty));
+    iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0));
     //listing mods with no ices in root
-    if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty).isEmpty) {
+    if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0).isEmpty) {
       pathsWithNoIceInRoot.add(dir.path);
     }
   }
@@ -1907,7 +1907,11 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         iceFile.copySync(newIceFilePath);
         csvMatchedIceFiles.add(iceFile);
         //fetch extra file in ice dir
-        final extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty);
+        final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+        List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
+        if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
+          extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
+        }
         for (var extraFile in extraFiles) {
           String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
           if (!File(newExtraFilePath).existsSync()) {
@@ -1986,7 +1990,11 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       }
       iceFile.copySync(newIceFilePath);
       //fetch extra file in ice dir
-      final extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty);
+      final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+      List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
+      if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
+          extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
+        }
       for (var extraFile in extraFiles) {
         String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
         if (!File(newExtraFilePath).existsSync()) {

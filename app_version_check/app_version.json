@@ -1,9 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.5.32",
+    "version": "2.5.33",
     "description": [
-        "Minor fixes to add mods and bounding radius removal",
-        "MODの追加とバウンディング半径の削除のマイナー修正"
+        "Mod manager now ignores empty files when adding mods",
+        "Mod manager now ignores files that it cannot backup and applies the remaining files in a mod",
+        "MODを追加する際、MODマネージャーが空のファイルを無視するようになりました",
+        "MODマネージャーはバックアップできないファイルを無視し、MOD内の残りのファイルを適用するようになりました"
     ],
     "windows_file": "",
     "linux_file": ""
