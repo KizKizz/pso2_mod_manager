@@ -2292,10 +2292,10 @@ class _HomePageState extends State<HomePage> {
                                     hoveringOnSubmod = true;
                                     previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
                                     hoveringOnSubmod = true;
-                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewImages) {
+                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewImages.toSet()) {
                                       previewImages.add(PreviewImageStack(imagePath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
                                     }
-                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewVideos) {
+                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewVideos.toSet()) {
                                       previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
                                     }
                                   } else {
@@ -3475,10 +3475,10 @@ class _HomePageState extends State<HomePage> {
                                                     previewModName = curSubmod.submodName;
                                                     previewImages.clear();
                                                     // videoPlayer.remove(0);
-                                                    for (var path in curSubmod.previewImages) {
+                                                    for (var path in curSubmod.previewImages.toSet()) {
                                                       previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
                                                     }
-                                                    for (var path in curSubmod.previewVideos) {
+                                                    for (var path in curSubmod.previewVideos.toSet()) {
                                                       previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curSubmod.submodName));
                                                     }
                                                   } else {
@@ -5287,14 +5287,14 @@ class _HomePageState extends State<HomePage> {
                                                     previewModName = curItem.itemName.replaceAll('_', '/');
                                                     for (var mod in curMods) {
                                                       for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                        for (var path in submod.previewImages) {
+                                                        for (var path in submod.previewImages.toSet()) {
                                                           previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
                                                         }
                                                       }
                                                     }
                                                     for (var mod in curMods) {
                                                       for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                        for (var path in submod.previewVideos) {
+                                                        for (var path in submod.previewVideos.toSet()) {
                                                           previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
                                                         }
                                                       }
