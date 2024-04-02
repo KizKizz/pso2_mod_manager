@@ -502,6 +502,9 @@ class TranslationText {
   //mods_rename_functions.dart
   String uiEnterNewName = 'Enter New Name';
 
+  //mods_export.dart
+  String uiImported = 'Imported';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

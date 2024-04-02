@@ -55,6 +55,7 @@ String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toF
 String modManVitalGaugeDirPath = '';
 String modManVitalGaugeOriginalsDirPath = '';
 String modManTempCmxDirPath = Uri.file('${Directory.current.path}/tempCmx').toFilePath();
+String modManExportedPath = Uri.file('${Directory.current.path}/exported').toFilePath();
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -512,7 +513,7 @@ Future<bool> modManPathReloader(context) async {
   modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
   Directory(modManVitalGaugeDirPath).createSync();
   modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profiles2').toFilePath();
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
   Directory(modManVitalGaugeOriginalsDirPath).createSync();
   //Create Checksum folder
   modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
