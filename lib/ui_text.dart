@@ -279,7 +279,8 @@ class TranslationText {
       uiSuccessfullyRemovedXFromY = "Successfully removed <x> > from <y>",
       uiSelectX = "Select <x>",
       uiDeselectX = "Deselect <x>",
-      uiDirNotFound = "Directory location not found";
+      uiDirNotFound = "Directory location not found",
+      uiExportThisMod = 'Export this mod';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

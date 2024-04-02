@@ -51,11 +51,11 @@ String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
 String modManWin32ChecksumMD5 = '';
 String modManWin32NaChecksumMD5 = '';
-String modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
+String modManModsAdderPath = '';
 String modManVitalGaugeDirPath = '';
 String modManVitalGaugeOriginalsDirPath = '';
-String modManTempCmxDirPath = Uri.file('${Directory.current.path}/tempCmx').toFilePath();
-String modManExportedPath = Uri.file('${Directory.current.path}/exported').toFilePath();
+String modManTempCmxDirPath = '';
+String modManExportedDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -65,10 +65,10 @@ String modManVitalGaugeJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
-String modManSwapperDirPath = Uri.file('${Directory.current.path}/swapper').toFilePath();
-String modManSwapperFromItemDirPath = Uri.file('${Directory.current.path}/swapper/fromitem').toFilePath();
-String modManSwapperToItemDirPath = Uri.file('${Directory.current.path}/swapper/toitem').toFilePath();
-String modManSwapperOutputDirPath = Uri.file('${Directory.current.path}/swapper/Swapped Items').toFilePath();
+String modManSwapperDirPath = '';
+String modManSwapperFromItemDirPath = '';
+String modManSwapperToItemDirPath = '';
+String modManSwapperOutputDirPath = '';
 //sega patch server links
 String masterURL = '';
 String patchURL = '';
@@ -138,53 +138,9 @@ Future<bool> pathsLoader(context) async {
     }
   }
 
-  //Create Mods folder and default categories
-  modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
-  Directory(modManModsDirPath).createSync(recursive: true);
-  for (var name in defaultCategoryDirs) {
-    Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
-  }
-  //Create Backups folder
-  modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
-  Directory(modManBackupsDirPath).createSync();
-  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  for (var name in dataFolders) {
-    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
-  }
-  //Remove backup folder if existing
-  // if (Directory(Uri.file('$modManDirPath/Backups').toFilePath()).existsSync()) {
-  //   Directory(Uri.file('$modManDirPath/Backups').toFilePath()).deleteSync(recursive: true);
-  // }
-  //Create Vital gauge folder
-  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
-  Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
-  Directory(modManVitalGaugeOriginalsDirPath).createSync();
-  //Create Checksum folder
-  modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
-  Directory(modManChecksumDirPath).createSync();
-  //Create Deleted Items folder
-  modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
-  Directory(modManDeletedItemsDirPath);
-  //Create misc folders
-  modManAddModsTempDirPath = Uri.file('${Directory.current.path}/temp').toFilePath();
-  Directory(modManAddModsTempDirPath).createSync(recursive: true);
-  modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
-  Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
-  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
-  Directory(modManModsAdderPath).createSync(recursive: true);
-  Directory(modManTempCmxDirPath).createSync(recursive: true);
-  //Create Json files
-  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
-  File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
-  File(modManModSetsJsonPath).createSync();
-  modManVitalGaugeJsonPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
-  File(modManVitalGaugeJsonPath).createSync();
-  // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
-  // File(modManModSettingsJsonPath).createSync();
+  //create/load folders
+  createSubDirs();
+
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   if (!File(modManRefSheetListFilePath).existsSync()) {
     File(modManRefSheetListFilePath).createSync();
@@ -496,48 +452,52 @@ Future<bool> modManPathReloader(context) async {
   //   Directory(modManDirPath).createSync();
   // }
 
-  //Create Mods folder and default categories
-  modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
-  Directory(modManModsDirPath).createSync(recursive: true);
-  for (var name in defaultCategoryDirs) {
-    Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
-  }
-  //Create Backups folder
-  modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
-  Directory(modManBackupsDirPath).createSync();
-  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-  for (var name in dataFolders) {
-    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
-  }
-  //Create Vital gauge folder
-  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
-  Directory(modManVitalGaugeDirPath).createSync();
-  modManVitalGaugeOriginalsDirPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
-  Directory(modManVitalGaugeOriginalsDirPath).createSync();
-  //Create Checksum folder
-  modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
-  Directory(modManChecksumDirPath).createSync();
-  //Create Deleted Items folder
-  modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
-  Directory(modManDeletedItemsDirPath);
-  //Create misc folders
-  modManAddModsTempDirPath = Uri.file('${Directory.current.path}/temp').toFilePath();
-  Directory(modManAddModsTempDirPath).createSync(recursive: true);
-  modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
-  Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
-  modManModsAdderPath = Uri.file('${Directory.current.path}/modsAdder').toFilePath();
-  Directory(modManModsAdderPath).createSync(recursive: true);
-  Directory(modManTempCmxDirPath).createSync(recursive: true);
-  //Create Json files
-  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
-  File(modManModsListJsonPath).createSync();
-  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
-  File(modManModSetsJsonPath).createSync();
-  modManVitalGaugeJsonPath =
-      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
-  File(modManVitalGaugeJsonPath).createSync();
+  // //Create Mods folder and default categories
+  // modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
+  // Directory(modManModsDirPath).createSync(recursive: true);
+  // for (var name in defaultCategoryDirs) {
+  //   Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
+  // }
+  // //Create Backups folder
+  // modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
+  // Directory(modManBackupsDirPath).createSync();
+  // List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  // for (var name in dataFolders) {
+  //   Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  // }
+  // //Create Vital gauge folder
+  // modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  // Directory(modManVitalGaugeDirPath).createSync();
+  // modManVitalGaugeOriginalsDirPath =
+  //     modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
+  // Directory(modManVitalGaugeOriginalsDirPath).createSync();
+  // //Create Checksum folder
+  // modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
+  // Directory(modManChecksumDirPath).createSync();
+  // //Create Deleted Items folder
+  // modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
+  // Directory(modManDeletedItemsDirPath);
+  // //Create misc folders
+  // modManAddModsTempDirPath = Uri.file('${Directory.current.path}/temp').toFilePath();
+  // Directory(modManAddModsTempDirPath).createSync(recursive: true);
+  // modManAddModsUnpackDirPath = Uri.file('${Directory.current.path}/unpack').toFilePath();
+  // Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  // modManModsAdderPath = Uri.file('$modManDirPath/modsAdder').toFilePath();
+  // Directory(modManModsAdderPath).createSync(recursive: true);
+  // modManTempCmxDirPath = Uri.file('$modManDirPath/tempCmx').toFilePath();
+  // Directory(modManTempCmxDirPath).createSync(recursive: true);
+  // //Create Json files
+  // modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
+  // File(modManModsListJsonPath).createSync();
+  // modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
+  // File(modManModSetsJsonPath).createSync();
+  // modManVitalGaugeJsonPath =
+  //     modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  // File(modManVitalGaugeJsonPath).createSync();
 
+  //create/load folders
+  createSubDirs();
+  
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
@@ -855,4 +815,57 @@ Future<void> jsonPso2binPathsRename(String oldPso2binDirPath) async {
       }
     }
   }
+}
+
+void createSubDirs() {
+  //Create Mods folder and default categories
+  modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
+  Directory(modManModsDirPath).createSync(recursive: true);
+  for (var name in defaultCategoryDirs) {
+    Directory(Uri.file('$modManModsDirPath/$name').toFilePath()).createSync();
+  }
+  //Create Backups folder
+  modManBackupsDirPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Backups').toFilePath() : Uri.file('$modManDirPath/Backups_profile2').toFilePath();
+  Directory(modManBackupsDirPath).createSync();
+  List<String> dataFolders = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  for (var name in dataFolders) {
+    Directory(Uri.file('$modManBackupsDirPath/$name').toFilePath()).createSync();
+  }
+  //Create Vital gauge folder
+  modManVitalGaugeDirPath = Uri.file('$modManDirPath/Vital Gauge').toFilePath();
+  Directory(modManVitalGaugeDirPath).createSync();
+  modManVitalGaugeOriginalsDirPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/Vital Gauge/Originals').toFilePath() : Uri.file('$modManDirPath/Vital Gauge/Originals_profile2').toFilePath();
+  Directory(modManVitalGaugeOriginalsDirPath).createSync();
+  //Create Checksum folder
+  modManChecksumDirPath = Uri.file('$modManDirPath/Checksum').toFilePath();
+  Directory(modManChecksumDirPath).createSync();
+  //Create Deleted Items folder
+  modManDeletedItemsDirPath = Uri.file('$modManDirPath/Deleted Items').toFilePath();
+  Directory(modManDeletedItemsDirPath);
+  //Create misc folders
+  modManAddModsTempDirPath = Uri.file('$modManDirPath/temp').toFilePath();
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
+  modManAddModsUnpackDirPath = Uri.file('$modManDirPath/unpack').toFilePath();
+  Directory(modManAddModsUnpackDirPath).createSync(recursive: true);
+  modManModsAdderPath = Uri.file('$modManDirPath/modsAdder').toFilePath();
+  Directory(modManModsAdderPath).createSync(recursive: true);
+  modManTempCmxDirPath = Uri.file('$modManDirPath/tempCmx').toFilePath();
+  Directory(modManTempCmxDirPath).createSync(recursive: true);
+  //Create Json files
+  modManModsListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManModsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManModsList_profile2.json').toFilePath();
+  File(modManModsListJsonPath).createSync();
+  modManModSetsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManSetsList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManSetsList_profile2.json').toFilePath();
+  File(modManModSetsJsonPath).createSync();
+  modManVitalGaugeJsonPath =
+      modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManVitalGaugeList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManVitalGaugeList_profile2.json').toFilePath();
+  File(modManVitalGaugeJsonPath).createSync();
+  // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
+  // File(modManModSettingsJsonPath).createSync();
+
+  //Swapper paths
+  modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
+  modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();
+  modManSwapperToItemDirPath = Uri.file('$modManDirPath/swapper/toitem').toFilePath();
+  modManSwapperOutputDirPath = Uri.file('$modManDirPath/swapper/Swapped Items').toFilePath();
 }

@@ -46,6 +46,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/sharing/mods_export.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
@@ -2903,6 +2904,15 @@ class _HomePageState extends State<HomePage> {
                                                         onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                       ),
 
+                                                      // export
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.import_export,
+                                                        ),
+                                                        child: Text(curLangText!.uiExportThisMod),
+                                                        onPressed: () async => modExport(moddedItemsList, curMod.submods.first),
+                                                      ),
+
                                                       // open in file explorer
                                                       MenuItemButton(
                                                         leadingIcon: const Icon(
@@ -3802,6 +3812,15 @@ class _HomePageState extends State<HomePage> {
                                                                     ),
                                                                     child: Text(curLangText!.uiSwapToAnotherItem),
                                                                     onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                  ),
+
+                                                                  // export
+                                                                  MenuItemButton(
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.import_export,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiExportThisMod),
+                                                                    onPressed: () async => modExport(moddedItemsList, curSubmod),
                                                                   ),
 
                                                                   // open in file explorer

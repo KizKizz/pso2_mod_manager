@@ -1,54 +1,57 @@
 import 'dart:io';
 
-import 'package:pso2_mod_manager/classes/category_class.dart';
+import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
-import 'package:pso2_mod_manager/classes/item_class.dart';
-import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
 
-Future<void> modsExport(List<CategoryType> baseList, List<SubMod> exportSubmods) async {
-  await Directory(modManExportedPath).create(recursive: true);
-  List<Category> exportCateList = [];
-  for (var exportSub in exportSubmods) {
-    Directory exportingModDir = Directory(exportSub.location).parent;
-    Directory exportingItemDir = Directory(exportSub.location).parent.parent;
-    //item
-    Item exportingItem = Item('${exportSub.itemName} - ${curLangText!.uiImported}', [], icons, exportSub.category, expo, applyStatus, applyDate, position, isFavorite, isSet, isNew, setNames, mods)
-    //mod
-    
-    final exportingModImages =
-        exportingModDir.listSync(recursive: false).whereType<File>().where(((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png')).map((e) => e.path).toList();
-    final exportingModVids =
-        exportingModDir.listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '.webm' || p.extension(element.path) == '.mp4').map((e) => e.path).toList();
-    Mod exportingMod = Mod('${exportSub.modName} - ${curLangText!.uiImported}', exportSub.itemName, exportSub.category, exportingModDir.path, false, DateTime(0), 0, true, false, false, [],
-        exportingModImages, exportingModVids, [], []);
-    //submod
-    SubMod exportingSub = SubMod(
-        '${exportSub.submodName} - ${curLangText!.uiImported}',
-        '${exportSub.modName} - ${curLangText!.uiImported}',
-        exportSub.itemName,
-        exportSub.category,
-        exportSub.location,
-        false,
-        DateTime(0),
-        0,
-        true,
-        false,
-        false,
-        exportSub.hasCmx,
-        false,
-        0,
-        0,
-        exportSub.cmxFile,
-        [],
-        exportSub.previewImages.toList(),
-        exportSub.previewVideos.toList(),
-        [],
-        exportSub.modFiles.toList());
+Future<void> modExport(List<CategoryType> baseList, SubMod exportSubmod) async {
+  modManExportedDirPath = Uri.file('$modManDirPath/exported').toFilePath();
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+  String rootExportDir = '$modManExportedDirPath/PSO2NGSExportedMods_$formattedDate';
+  await Directory(rootExportDir).create(recursive: true);
+  for (var type in baseList) {
+    for (var cate in type.categories) {
+      if (cate.categoryName == exportSubmod.category && exportSubmod.location.contains(cate.location)) {
+        for (var item in cate.items) {
+          if (item.itemName == exportSubmod.itemName && exportSubmod.location.contains(item.location)) {
+            for (var mod in item.mods) {
+              if (mod.modName == exportSubmod.modName && exportSubmod.location.contains(mod.location)) {
+                Directory expCateDir = Directory(cate.location.replaceFirst(modManModsDirPath, rootExportDir));
+                expCateDir.createSync(recursive: true);
+                Directory expItemDir = Directory(item.location.replaceFirst(modManModsDirPath, rootExportDir));
+                expItemDir.createSync(recursive: true);
+                Directory expModDir = Directory(mod.location.replaceFirst(modManModsDirPath, rootExportDir));
+                expModDir.createSync(recursive: true);
+                Directory expSubmodDir = Directory(exportSubmod.location.replaceFirst(modManModsDirPath, rootExportDir));
+                expSubmodDir.createSync(recursive: true);
+                for (var modFile in exportSubmod.modFiles) {
+                  await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
+                }
+                //previews for submod
+                for (var filePath in exportSubmod.previewImages) {
+                  await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                }
+                for (var filePath in exportSubmod.previewVideos) {
+                  await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                }
+                //previews file for mod
+                for (var filePath in mod.previewImages.where((element) => File(element).parent.path == mod.location)) {
+                  await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                }
+                for (var filePath in mod.previewVideos.where((element) => File(element).parent.path == mod.location)) {
+                  await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                }
+              }
+            }
+            for (var iconPath in item.icons) {
+              await File(iconPath).copy(iconPath.replaceFirst(modManModsDirPath, rootExportDir));
+            }
+          }
+        }
+      }
+    }
   }
 }
