@@ -32,6 +32,7 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
+import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
@@ -322,7 +323,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      
+
                       //Item Name Language
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
@@ -1588,8 +1589,7 @@ class _MainPageState extends State<MainPage> {
                                   child: MaterialButton(
                                     color: Colors.redAccent,
                                     onPressed: () async {
-                                      //final XFile? selectedFile = await openFile();
-                                      cmxModPatch('');
+                                      modsImporterHomePage(context);
                                     },
                                     child: const Row(
                                       children: [

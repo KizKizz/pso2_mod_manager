@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:intl/intl.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-// ignore: depend_on_referenced_packages
 
 Future<void> modExport(List<CategoryType> baseList, SubMod exportSubmod) async {
   modManExportedDirPath = Uri.file('$modManDirPath/exported').toFilePath();
@@ -54,4 +54,8 @@ Future<void> modExport(List<CategoryType> baseList, SubMod exportSubmod) async {
       }
     }
   }
+  //zip
+  var encoder = ZipFileEncoder();
+  await encoder.zipDirectoryAsync(Directory(rootExportDir));
+  Directory(rootExportDir).deleteSync(recursive: true);
 }

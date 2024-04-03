@@ -56,6 +56,7 @@ String modManVitalGaugeDirPath = '';
 String modManVitalGaugeOriginalsDirPath = '';
 String modManTempCmxDirPath = '';
 String modManExportedDirPath = '';
+String modManImportedDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
