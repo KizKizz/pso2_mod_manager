@@ -1589,7 +1589,7 @@ class _MainPageState extends State<MainPage> {
                                   child: MaterialButton(
                                     color: Colors.redAccent,
                                     onPressed: () async {
-                                      modsImporterHomePage(context);
+                                      modsImportHomePage(context);
                                     },
                                     child: const Row(
                                       children: [

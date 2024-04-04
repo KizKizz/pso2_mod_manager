@@ -366,6 +366,9 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
           modSetList.sort(
             (a, b) => b.addedDate.compareTo(a.addedDate),
           );
+          for (var set in modSetList) {
+            set.position = modSetList.indexOf(set);
+          }
           saveSetListToJson();
           saveModdedItemListToJson();
           isModViewListHidden = true;

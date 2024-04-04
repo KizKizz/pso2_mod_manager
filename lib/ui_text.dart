@@ -506,6 +506,9 @@ class TranslationText {
   //mods_export.dart
   String uiImported = 'Imported';
 
+  //mod_export_add_function.dart
+  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiCreateSetAndImport = 'Create Set and Import';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

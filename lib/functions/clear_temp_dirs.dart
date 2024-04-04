@@ -38,6 +38,13 @@ void clearAllTempDirs() {
       }
     });
   }
+  if (Directory(modManImportedDirPath).existsSync()) {
+    Directory(modManImportedDirPath).listSync(recursive: false).forEach((element) {
+      if (element.existsSync()) {
+        element.deleteSync(recursive: true);
+      }
+    });
+  }
 }
 
 void clearAllTempDirsBeforeGettingPath() {

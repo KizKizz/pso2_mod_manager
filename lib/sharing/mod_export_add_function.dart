@@ -1,51 +1,57 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
+import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
 
 //Auto Files adder
-Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList) async {
+Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, String importedSetName) async {
   //List<List<String>> addedItems = [];
+  ModSet newSet = ModSet(importedSetName, 0, true, false, DateTime.now(), []);
   for (var item in itemsToAddList) {
     if (item.toBeAdded) {
       String category = item.category;
       String itemName = item.itemName;
       List<String> mainNames = [];
+      String rootPath = Directory(item.itemDirPath).parent.parent.path;
 
       //copy files to Mods
-      String newItemPath = item.itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+      String newItemPath = item.itemDirPath.replaceFirst(rootPath, modManModsDirPath);
       //copy files in item dir
       for (var file in Directory(item.itemDirPath).listSync().whereType<File>()) {
-        String newFileDirPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+        String newFileDirPath = file.path.replaceFirst(rootPath, modManModsDirPath);
         Directory(p.dirname(newFileDirPath)).createSync(recursive: true);
         file.copySync(newFileDirPath);
       }
       for (var mod in item.modList) {
         if (mod.toBeAdded) {
           mainNames.add(mod.modName);
-          String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+          String newmodDirPath = mod.modDirPath.replaceFirst(rootPath, modManModsDirPath);
           Directory(newmodDirPath).createSync(recursive: true);
           for (var file in mod.filesInMod) {
-            String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            String newFilePath = file.path.replaceFirst(rootPath, modManModsDirPath);
             file.copySync(newFilePath);
           }
           for (var submod in mod.submodList) {
             if (submod.toBeAdded) {
-              String newSubmodDirPath = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+              String newSubmodDirPath = submod.submodDirPath.replaceFirst(rootPath, modManModsDirPath);
               Directory(newSubmodDirPath).createSync(recursive: true);
               for (var file in submod.files) {
-                String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                String newFilePath = file.path.replaceFirst(rootPath, modManModsDirPath);
                 Directory(p.dirname(newFilePath)).createSync(recursive: true);
                 file.copySync(newFilePath);
               }
@@ -59,7 +65,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
         List<Directory> foldersInNewItemPath = [];
         for (var mod in item.modList) {
           if (mod.toBeAdded) {
-            String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
+            String newmodDirPath = mod.modDirPath.replaceFirst(rootPath, modManModsDirPath);
             if (foldersInNewItemPath.indexWhere((element) => element.path == newmodDirPath) == -1) {
               foldersInNewItemPath.add(Directory(newmodDirPath));
             }
@@ -73,24 +79,27 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
             Category cateInList = cateType.categories[cateIndex];
             int itemInListIndex = cateInList.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              cateInList.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+              Item newItem = await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath, importedSetName);
+              cateInList.items.add(newItem);
+              newSet.setItems.add(newItem);
             } else {
               Item itemInList = cateInList.items[itemInListIndex];
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
-                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName);
+                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName, importedSetName);
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
                 }
                 modInList.submods.addAll(extraSubmods);
                 modInList.isNew = true;
               } else {
-                itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath));
+                itemInList.mods.addAll(newModsFetcher(itemInList.location, cateInList.categoryName, foldersInNewItemPath, importedSetName));
               }
               itemInList.isNew = true;
               //Sort alpha
               itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              newSet.setItems.add(itemInList);
             }
             //Sort alpha
             cateInList.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
@@ -102,24 +111,27 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
             Category newCate = Category(category, cateType.groupName, Uri.file('$modManModsDirPath/$category').toFilePath(), cateType.categories.length, true, []);
             int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
             if (itemInListIndex == -1) {
-              newCate.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+              Item newItem = await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath, importedSetName);
+              newCate.items.add(newItem);
+              newSet.setItems.add(newItem);
             } else {
               Item itemInList = newCate.items[itemInListIndex];
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
-                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName);
+                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName, importedSetName);
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
                 }
                 modInList.submods.addAll(extraSubmods);
                 modInList.isNew = true;
               } else {
-                itemInList.mods.addAll(newModsFetcher(itemInList.location, newCate.categoryName, foldersInNewItemPath));
+                itemInList.mods.addAll(newModsFetcher(itemInList.location, newCate.categoryName, foldersInNewItemPath, importedSetName));
               }
               itemInList.isNew = true;
               //Sort alpha
               itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+              newSet.setItems.add(itemInList);
             }
             //Sort alpha
             newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
@@ -136,6 +148,13 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
     }
   }
 
+  //save to set
+  modSetList.insert(0, newSet);
+  for (var set in modSetList) {
+    set.position = modSetList.indexOf(set);
+  }
+  saveSetListToJson();
+
   //Save to json
   saveModdedItemListToJson();
 
@@ -148,7 +167,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
 }
 
 //Helpers
-Future<Item> newItemsFetcher(String catePath, String itemPath) async {
+Future<Item> newItemsFetcher(String catePath, String itemPath, String importedSetName) async {
   //Get icons from dir
   List<String> itemIcons = [];
   final imagesFoundInItemDir = Directory(itemPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png').toList();
@@ -158,11 +177,11 @@ Future<Item> newItemsFetcher(String catePath, String itemPath) async {
     itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(
-      p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, true, true, [importedSetName],
+      newModsFetcher(itemPath, p.basename(catePath), [], importedSetName));
 }
 
-List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {
+List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders, String importedSetName) {
   List<Directory> foldersInItemPath = [];
   if (newModFolders.isEmpty) {
     foldersInItemPath = Directory(itemPath).listSync(recursive: false).whereType<Directory>().toList();
@@ -176,8 +195,8 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
-      modFilesInItemDir.add(
-          ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, true, [], [], []));
+      modFilesInItemDir.add(ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, true,
+          true, [importedSetName], [], []));
     }
     //Get preview images;
     List<String> modPreviewImages = [];
@@ -202,11 +221,12 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [],
-        modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, false, false, -1, -1, '',
+        [importedSetName], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
-    mods.add(Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, [], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));
+    mods.add(
+        Mod(p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [], [subModInItemDir]));
   }
 
   // get submods in mod folders
@@ -228,8 +248,8 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
       }
     }
 
-    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, false, [], modPreviewImages, modPreviewVideos, [],
-        newSubModFetcher(dir.path, cateName, p.basename(itemPath))));
+    mods.add(Mod(p.basename(dir.path), p.basename(itemPath), cateName, dir.path, false, DateTime(0), 0, true, false, true, [importedSetName], modPreviewImages, modPreviewVideos, [],
+        newSubModFetcher(dir.path, cateName, p.basename(itemPath), importedSetName)));
   }
 
   //Sort alpha
@@ -238,7 +258,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   return mods;
 }
 
-List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) {
+List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, String importedSetName) {
   List<SubMod> submods = [];
   //ices in main mod dir
   final filesInMainModDir = Directory(modPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
@@ -250,7 +270,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, true, [], [], []));
+      modFiles
+          .add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -279,8 +300,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       hasCmx = true;
     }
 
-    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
-        modPreviewVideos, [], modFiles));
+    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName],
+        modPreviewImages, modPreviewVideos, [], modFiles));
   }
 
   //ices in sub dirs
@@ -322,7 +343,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, true, [], [], []));
+      modFiles.add(
+          ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -330,8 +352,8 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
     //Get submod name
     List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
     parentPaths.removeWhere((element) => element.isEmpty);
-    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
-        modPreviewVideos, [], modFiles));
+    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName],
+        modPreviewImages, modPreviewVideos, [], modFiles));
   }
 
   //remove empty submods
@@ -341,4 +363,78 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName) 
   submods.sort((a, b) => a.submodName.toLowerCase().compareTo(b.submodName.toLowerCase()));
 
   return submods;
+}
+
+Future<String> newImportModSetDialog(context) async {
+  TextEditingController newModSetName = TextEditingController();
+  final nameFormKey = GlobalKey<FormState>();
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                title: Text(curLangText!.uiCreateASetForImportedMods, style: const TextStyle(fontWeight: FontWeight.w700)),
+                contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                content: Form(
+                  key: nameFormKey,
+                  child: TextFormField(
+                    controller: newModSetName,
+                    maxLines: 1,
+                    textAlignVertical: TextAlignVertical.center,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                    validator: (value) {
+                      if (modSetList.where((element) => element.setName == newModSetName.text).isNotEmpty) {
+                        return curLangText!.uiNameAlreadyExisted;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: curLangText!.uiEnterImportedSetName,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        //isCollapsed: true,
+                        //isDense: true,
+                        contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                        constraints: const BoxConstraints.tightForFinite(),
+                        // Set border for enabled state (default)
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        // Set border for focused state
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                          borderRadius: BorderRadius.circular(2),
+                        )),
+                    onChanged: (value) async {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () async {
+                        Navigator.pop(context, '');
+                      }),
+                  ElevatedButton(
+                      onPressed: newModSetName.value.text.isEmpty
+                          ? null
+                          : () async {
+                              if (nameFormKey.currentState!.validate()) {
+                                Navigator.pop(context, newModSetName.text);
+                              }
+                            },
+                      child: Text(curLangText!.uiCreateSetAndImport))
+                ]);
+          }));
 }

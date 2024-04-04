@@ -1510,12 +1510,12 @@ class _HomePageState extends State<HomePage> {
                                                                   // message: '${curLangText!.uiHoldToDelete} ${moddedItemsList[groupIndex].groupName} ${curLangText!.uiFromMM}',
                                                                   child: InkWell(
                                                                       child: const Icon(Icons.delete_forever_outlined),
-                                                                      onLongPress: () {
+                                                                      onLongPress: () async {
                                                                         if (moddedItemsList[groupIndex].categories.isEmpty) {
                                                                           modViewItem = null;
                                                                           moddedItemsList.remove(moddedItemsList[groupIndex]);
                                                                         } else {
-                                                                          categoryGroupRemover(context, moddedItemsList[groupIndex]);
+                                                                          await categoryGroupRemover(context, moddedItemsList[groupIndex]);
                                                                         }
                                                                         saveModdedItemListToJson();
                                                                         setState(() {});
@@ -1786,7 +1786,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 message: uiInTextArgs(curLangText!.uiHoldToRemoveXfromY, ['<x>', '<y>'],
                                                                                     [curCategory.categoryName, moddedItemsList[groupIndex].groupName]),
                                                                                 child: InkWell(
-                                                                                    onLongPress: () {
+                                                                                    onLongPress: () async {
                                                                                       if (curCategory.items.isEmpty) {
                                                                                         Directory(curCategory.location).deleteSync(recursive: true);
                                                                                         moddedItemsList[groupIndex].categories.remove(curCategory);
@@ -1795,7 +1795,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         }
                                                                                         modViewItem = null;
                                                                                       } else {
-                                                                                        categoryRemover(context, moddedItemsList[groupIndex], curCategory);
+                                                                                        await categoryRemover(context, moddedItemsList[groupIndex], curCategory);
                                                                                       }
                                                                                       saveModdedItemListToJson();
                                                                                       setState(() {});
@@ -4910,6 +4910,9 @@ class _HomePageState extends State<HomePage> {
                             modSetList.sort(
                               (a, b) => b.addedDate.compareTo(a.addedDate),
                             );
+                            for (var set in modSetList) {
+                              set.position = modSetList.indexOf(set);
+                            }
                             saveSetListToJson();
                             newSetTextController.clear();
                             setState(() {});
