@@ -2910,7 +2910,7 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.import_export,
                                                         ),
                                                         child: Text(curLangText!.uiExportThisMod),
-                                                        onPressed: () async => modExport(moddedItemsList, curMod.submods.first),
+                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first]),
                                                       ),
 
                                                       // open in file explorer
@@ -3329,6 +3329,15 @@ class _HomePageState extends State<HomePage> {
                                                         ),
                                                         child: Text(curLangText!.uiSwapToAnotherItem),
                                                         onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                      ),
+
+                                                      // export
+                                                      MenuItemButton(
+                                                        leadingIcon: const Icon(
+                                                          Icons.import_export,
+                                                        ),
+                                                        child: Text(curLangText!.uiExportThisMod),
+                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]]),
                                                       ),
 
                                                       // open in file explorer
@@ -3820,7 +3829,7 @@ class _HomePageState extends State<HomePage> {
                                                                       Icons.import_export,
                                                                     ),
                                                                     child: Text(curLangText!.uiExportThisMod),
-                                                                    onPressed: () async => modExport(moddedItemsList, curSubmod),
+                                                                    onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod]),
                                                                   ),
 
                                                                   // open in file explorer
@@ -4177,6 +4186,7 @@ class _HomePageState extends State<HomePage> {
                                       if (mod.applyStatus) {
                                         for (var submod in mod.submods) {
                                           if (submod.applyStatus) {
+                                            selectedSubmodsInAppliedList.add(submod);
                                             selectedModFilesInAppliedList.addAll(submod.modFiles.where((element) => element.applyStatus));
                                           }
                                         }
@@ -4187,6 +4197,7 @@ class _HomePageState extends State<HomePage> {
                               }
                             }
                           } else {
+                            selectedSubmodsInAppliedList.clear();
                             selectedModFilesInAppliedList.clear();
                           }
                           setState(() {});
@@ -4323,7 +4334,21 @@ class _HomePageState extends State<HomePage> {
                 }), shape: MaterialStateProperty.resolveWith((states) {
                   return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                 })),
-                menuChildren: modSetsMenuItemButtons(context, selectedModFilesInAppliedList))
+                menuChildren: modSetsMenuItemButtons(context, selectedModFilesInAppliedList)),
+            //Export selected mods
+            ModManTooltip(
+              message: curLangText!.uiExportSelectedMods,
+              child: InkWell(
+                  onTap: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty
+                      ? null
+                      : () {
+                          modExportHomePage(context, moddedItemsList, selectedSubmodsInAppliedList);
+                        },
+                  child: Icon(
+                    Icons.import_export,
+                    color: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
+                  )),
+            ),
           ]),
           const SizedBox(
             width: 10,
@@ -4629,8 +4654,27 @@ class _HomePageState extends State<HomePage> {
                                                                                 for (var modFile in allAppliedModFiles[m]) {
                                                                                   selectedModFilesInAppliedList.removeWhere((element) => element.location == modFile.location);
                                                                                 }
+                                                                                selectedSubmodsInAppliedList
+                                                                                    .removeWhere((element) => element.location == File(allAppliedModFiles[m].first.location).parent.path);
                                                                               } else {
                                                                                 selectedModFilesInAppliedList.addAll(allAppliedModFiles[m]);
+                                                                                for (var type in appliedItemList) {
+                                                                                  for (var cate in type.categories) {
+                                                                                    for (var item in cate.items) {
+                                                                                      if (item.applyStatus) {
+                                                                                        for (var mod in item.mods) {
+                                                                                          if (mod.applyStatus) {
+                                                                                            for (var submod in mod.submods) {
+                                                                                              if (submod.applyStatus && submod.location == File(allAppliedModFiles[m].first.location).parent.path) {
+                                                                                                selectedSubmodsInAppliedList.add(submod);
+                                                                                              }
+                                                                                            }
+                                                                                          }
+                                                                                        }
+                                                                                      }
+                                                                                    }
+                                                                                  }
+                                                                                }
                                                                               }
                                                                               setState(() {});
                                                                             },

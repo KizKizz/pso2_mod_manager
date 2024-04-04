@@ -627,6 +627,30 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() async {
+                          await launchUrl(Uri.file(modManDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenMainModManFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
                           await launchUrl(Uri.file(modManModsDirPath));
                         }),
                         child: Row(
@@ -663,6 +687,30 @@ class _MainPageState extends State<MainPage> {
                             const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenBackupFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManExportedDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenExportedModsFolder,
                               style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -765,53 +813,6 @@ class _MainPageState extends State<MainPage> {
                               Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
-                        ),
-                      ),
-
-                      //Auto fetching item icon on startup
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.auto_awesome_motion,
-                                  size: 18,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10, left: 25, bottom: 5),
-                              child: ToggleButtons(
-                                onPressed: (int index) async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  prefs.setString('isAutoFetchingIconsOnStartup', saveValues[index]);
-                                  isAutoFetchingIconsOnStartup = saveValues[index];
-                                  setState(() {
-                                    for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
-                                      _selectedIconLoaderSwitches[i] = i == index;
-                                    }
-                                  });
-                                },
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                selectedBorderColor: Theme.of(context).colorScheme.primary,
-                                constraints: const BoxConstraints(
-                                  minHeight: 25.0,
-                                  minWidth: 74.0,
-                                ),
-                                isSelected: _selectedIconLoaderSwitches,
-                                children: iconLoaderSwitches,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
 
@@ -941,6 +942,53 @@ class _MainPageState extends State<MainPage> {
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
+                        ),
+                      ),
+
+                      //Auto fetching item icon on startup
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.auto_awesome_motion,
+                                  size: 18,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10, left: 25, bottom: 5),
+                              child: ToggleButtons(
+                                onPressed: (int index) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('isAutoFetchingIconsOnStartup', saveValues[index]);
+                                  isAutoFetchingIconsOnStartup = saveValues[index];
+                                  setState(() {
+                                    for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
+                                      _selectedIconLoaderSwitches[i] = i == index;
+                                    }
+                                  });
+                                },
+                                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                selectedBorderColor: Theme.of(context).colorScheme.primary,
+                                constraints: const BoxConstraints(
+                                  minHeight: 25.0,
+                                  minWidth: 74.0,
+                                ),
+                                isSelected: _selectedIconLoaderSwitches,
+                                children: iconLoaderSwitches,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 

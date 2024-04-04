@@ -498,7 +498,7 @@ Future<bool> modManPathReloader(context) async {
 
   //create/load folders
   createSubDirs();
-  
+
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
@@ -869,4 +869,7 @@ void createSubDirs() {
   modManSwapperFromItemDirPath = Uri.file('$modManDirPath/swapper/fromitem').toFilePath();
   modManSwapperToItemDirPath = Uri.file('$modManDirPath/swapper/toitem').toFilePath();
   modManSwapperOutputDirPath = Uri.file('$modManDirPath/swapper/Swapped Items').toFilePath();
+  //exporter path
+  modManExportedDirPath = Uri.file('$modManDirPath/exported').toFilePath();
+  Directory(modManExportedDirPath).createSync(recursive: true);
 }

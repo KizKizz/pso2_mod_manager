@@ -167,7 +167,9 @@ class TranslationText {
       uiRefreshingCmx = 'Refreshing cmx',
       uiRefreshCmx = 'Refresh cmx Settings',
       uiItemNameLanguage = 'Item Name Language',
-      uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items';
+      uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items',
+      uiOpenMainModManFolder = 'Open Main Mod Manager Folder',
+      uiOpenExportedModsFolder = 'Open Exported Mods Folder';
 
   //homepage
   String uiItemList = 'Item List',
@@ -280,7 +282,8 @@ class TranslationText {
       uiSelectX = "Select <x>",
       uiDeselectX = "Deselect <x>",
       uiDirNotFound = "Directory location not found",
-      uiExportThisMod = 'Export this mod';
+      uiExportThisMod = 'Export this mod',
+      uiExportSelectedMods = 'Export selected mods';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -504,10 +507,18 @@ class TranslationText {
   String uiEnterNewName = 'Enter New Name';
 
   //mods_export.dart
-  String uiImported = 'Imported';
+  String uiModExport = 'Mod Export',
+      uiExportingMods = 'Exporting Mods',
+      uiErrorWhenExportingMods = 'Error when exporting mods',
+      uiExport = 'Export',
+      uiWaiting = 'Waiting',
+      uiExportedNote = 'ExportedNote';
+
+  //mods_import.dart
+  String uiFilesNotSupported = 'Only .zip files exported by Mod Manager are supported', uiImportModDragDrop = 'Drag and drop exported .zip files here to import mods';
 
   //mod_export_add_function.dart
-  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiCreateSetAndImport = 'Create Set and Import';
+  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

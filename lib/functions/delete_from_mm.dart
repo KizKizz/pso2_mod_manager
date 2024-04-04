@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -45,6 +46,8 @@ Future<List<String>> deleteModFileFromModMan(String iceFilePath, String submodPa
     });
   }
 
+  await modSetLoader();
+
   return deletedPaths;
 }
 
@@ -62,11 +65,13 @@ Future<List<String>> deleteModFromModMan(String modPath, String itemPath) async 
     Directory(p.dirname(deletedPath)).createSync(recursive: true);
     File(filePath).copy(deletedPath).then((value) {
       File(filePath).deleteSync();
-      if (Directory(modPath).existsSync()&& Directory(modPath).listSync(recursive: true).whereType<File>().isEmpty) {
+      if (Directory(modPath).existsSync() && Directory(modPath).listSync(recursive: true).whereType<File>().isEmpty) {
         Directory(modPath).deleteSync(recursive: true);
       }
     });
   }
+
+  await modSetLoader();
 
   return deletedPaths;
 }
@@ -88,11 +93,13 @@ Future<List<String>> deleteSubmodFromModMan(String submodPath, String modPath) a
       if (Directory(submodPath).existsSync() && Directory(submodPath).listSync(recursive: true).whereType<File>().isEmpty) {
         Directory(submodPath).deleteSync(recursive: true);
       }
-      if (Directory(modPath).existsSync()&& Directory(modPath).listSync(recursive: true).whereType<File>().isEmpty) {
+      if (Directory(modPath).existsSync() && Directory(modPath).listSync(recursive: true).whereType<File>().isEmpty) {
         Directory(modPath).deleteSync(recursive: true);
       }
     });
   }
+
+  await modSetLoader();
 
   return deletedPaths;
 }
@@ -116,6 +123,7 @@ Future<List<String>> deleteItemFromModMan(String itemPath) async {
       }
     });
   }
+  await modSetLoader();
 
   return deletedPaths;
 }

@@ -10,16 +10,21 @@ import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
+import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
+import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/ui_translation_helper.dart';
+import 'package:pso2_mod_manager/widgets/snackbar.dart';
 
 //Auto Files adder
-Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, String importedSetName) async {
+Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, String importedSetName, bool applyImported) async {
   //List<List<String>> addedItems = [];
   ModSet newSet = ModSet(importedSetName, 0, true, false, DateTime.now(), []);
   for (var item in itemsToAddList) {
@@ -59,7 +64,6 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
           }
         }
       }
-      //io.copyPathSync(item.itemDirPath, newItemPath);
 
       if (mainNames.isNotEmpty) {
         List<Directory> foldersInNewItemPath = [];
@@ -84,9 +88,17 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
               newSet.setItems.add(newItem);
             } else {
               Item itemInList = cateInList.items[itemInListIndex];
+              itemInList.isSet = true;
+              if (!itemInList.setNames.contains(importedSetName)) {
+                itemInList.setNames.add(importedSetName);
+              }
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
+                modInList.isSet = true;
+                if (!modInList.setNames.contains(importedSetName)) {
+                  modInList.setNames.add(importedSetName);
+                }
                 List<SubMod> extraSubmods = newSubModFetcher(modInList.location, cateInList.categoryName, itemInList.itemName, importedSetName);
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
@@ -116,9 +128,17 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
               newSet.setItems.add(newItem);
             } else {
               Item itemInList = newCate.items[itemInListIndex];
+              itemInList.isSet = true;
+              if (!itemInList.setNames.contains(importedSetName)) {
+                itemInList.setNames.add(importedSetName);
+              }
               int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
               if (modInListIndex != -1) {
                 Mod modInList = itemInList.mods[modInListIndex];
+                modInList.isSet = true;
+                if (!modInList.setNames.contains(importedSetName)) {
+                  modInList.setNames.add(importedSetName);
+                }
                 List<SubMod> extraSubmods = newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName, importedSetName);
                 for (var subModInCurMod in modInList.submods) {
                   extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
@@ -154,6 +174,11 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
     set.position = modSetList.indexOf(set);
   }
   saveSetListToJson();
+
+  //apply
+  if (applyImported) {
+    await applyImportedMods(context, newSet);
+  }
 
   //Save to json
   saveModdedItemListToJson();
@@ -365,7 +390,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
   return submods;
 }
 
-Future<String> newImportModSetDialog(context) async {
+Future<(String, bool)> newImportModSetDialog(context) async {
   TextEditingController newModSetName = TextEditingController();
   final nameFormKey = GlobalKey<FormState>();
   return await showDialog(
@@ -431,10 +456,72 @@ Future<String> newImportModSetDialog(context) async {
                           ? null
                           : () async {
                               if (nameFormKey.currentState!.validate()) {
-                                Navigator.pop(context, newModSetName.text);
+                                Navigator.pop(context, (newModSetName.text, false));
                               }
                             },
-                      child: Text(curLangText!.uiCreateSetAndImport))
+                      child: Text(curLangText!.uiImport)),
+                  ElevatedButton(
+                      onPressed: newModSetName.value.text.isEmpty
+                          ? null
+                          : () async {
+                              if (nameFormKey.currentState!.validate()) {
+                                Navigator.pop(context, (newModSetName.text, true));
+                              }
+                            },
+                      child: Text(curLangText!.uiImportAndApply))
                 ]);
           }));
+}
+
+Future<void> applyImportedMods(context, ModSet curSet) async {
+  isModViewModsApplying = true;
+  Future.delayed(const Duration(milliseconds: 200), () async {
+    List<ModFile> allAppliedModFiles = [];
+    for (var item in curSet.setItems.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+      for (var mod in item.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+        for (var submod in mod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+          allAppliedModFiles.addAll(submod.modFiles.where((element) => !element.applyStatus));
+        }
+      }
+    }
+
+    //apply mod files
+    if (await originalFilesCheck(context, allAppliedModFiles)) {
+      modFilesApply(context, allAppliedModFiles).then((value) async {
+        if (value.indexWhere((element) => element.applyStatus) != -1) {
+          for (var curItem in curSet.setItems) {
+            int curModIndex = curItem.mods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
+            int curSubModIndex = curItem.mods[curModIndex].submods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
+            curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+            curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
+            curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
+            curItem.mods[curModIndex].applyStatus = true;
+            curItem.mods[curModIndex].isNew = false;
+            curItem.mods[curModIndex].applyDate = DateTime.now();
+
+            curItem.applyStatus = true;
+            if (curItem.mods.where((element) => element.isNew).isEmpty) {
+              curItem.isNew = false;
+            }
+            curItem.applyDate = DateTime.now();
+          }
+          appliedItemList = await appliedListBuilder(moddedItemsList);
+          List<ModFile> appliedModFiles = value;
+          String fileAppliedText = '';
+
+          for (var element in appliedModFiles.where((e) => e.applyStatus)) {
+            if (fileAppliedText.isEmpty) {
+              fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, curSet.setName);
+            }
+            if (!fileAppliedText.contains('${element.itemName} > ${element.modName} > ${element.submodName}\n')) {
+              fileAppliedText += '${element.itemName} > ${element.modName} > ${element.submodName}\n';
+            }
+          }
+          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+        }
+        isModViewModsApplying = false;
+        saveModdedItemListToJson();
+      });
+    }
+  });
 }

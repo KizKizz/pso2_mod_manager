@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
@@ -23,22 +25,22 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_add_function.dart';
-import 'package:pso2_mod_manager/sharing/mod_export_add_function.dart';
+import 'package:pso2_mod_manager/sharing/mod_import_add_function.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:io/io.dart' as io;
 
-bool dropZoneMax = true;
+bool importDropZoneMax = true;
 bool _newModDragging = false;
-List<XFile> modAdderDragDropFiles = [];
-Future? processedFileListLoad;
-List<ModsAdderItem> processedFileList = [];
+List<XFile> importModDragDropFiles = [];
+Future? processedImportedFileListLoad;
+List<ModsAdderItem> processedImportFileList = [];
 List<String> _selectedCategories = [];
-TextEditingController renameTextBoxController = TextEditingController();
+TextEditingController renameImportTextBoxController = TextEditingController();
 List<bool> _itemNameRenameIndex = [];
-List<List<bool>> mainFolderRenameIndex = [];
-List<List<List<bool>>> subFoldersRenameIndex = [];
+List<List<bool>> mainImportedFolderRenameIndex = [];
+List<List<List<bool>>> subImportedFoldersRenameIndex = [];
 bool _isNameEditing = false;
 int _duplicateCounter = 0;
 final _subItemFormValidate = GlobalKey<FormState>();
@@ -155,9 +157,9 @@ void modsImportHomePage(context) {
                                     color: Theme.of(context).textTheme.bodySmall!.color,
                                   ),
                                   SizedBox(
-                                      width: dropZoneMax
+                                      width: importDropZoneMax
                                           ? constraints.maxWidth * 0.7
-                                          : modAdderDragDropFiles.isEmpty
+                                          : importModDragDropFiles.isEmpty
                                               ? constraints.maxWidth * 0.3
                                               : constraints.maxWidth * 0.45,
                                       child: Column(
@@ -168,8 +170,8 @@ void modsImportHomePage(context) {
                                               for (var element in detail.files) {
                                                 if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
                                                   modsAdderUnsupportedFileTypeDialog(context, p.basename(element.path));
-                                                } else if (modAdderDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
-                                                  modAdderDragDropFiles.add(element);
+                                                } else if (importModDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
+                                                  importModDragDropFiles.add(element);
                                                   //newModMainFolderList.add(element);
                                                 }
                                               }
@@ -195,20 +197,20 @@ void modsImportHomePage(context) {
                                                     border: Border.all(color: Theme.of(context).hintColor),
                                                     color: _newModDragging ? Colors.blue.withOpacity(0.4) : Colors.black26.withAlpha(20),
                                                   ),
-                                                  height: dropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 75,
+                                                  height: importDropZoneMax ? constraints.maxHeight - 42 : constraints.maxHeight - 75,
                                                   //width: constraints.maxWidth * 0.45,
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      if (modAdderDragDropFiles.isEmpty)
+                                                      if (importModDragDropFiles.isEmpty)
                                                         Center(
                                                             child: Text(
-                                                          curLangText!.uiDragDropFiles,
+                                                          curLangText!.uiImportModDragDrop,
                                                           style: const TextStyle(fontSize: 20),
                                                           textAlign: TextAlign.center,
                                                         )),
-                                                      if (modAdderDragDropFiles.isNotEmpty)
+                                                      if (importModDragDropFiles.isNotEmpty)
                                                         Expanded(
                                                           child: Padding(
                                                             padding: const EdgeInsets.only(right: 5),
@@ -218,7 +220,7 @@ void modsImportHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(horizontal: 0),
                                                                   child: ListView.builder(
-                                                                      itemCount: modAdderDragDropFiles.length,
+                                                                      itemCount: importModDragDropFiles.length,
                                                                       itemBuilder: (BuildContext context, int index) {
                                                                         return ListTile(
                                                                           //dense: true,
@@ -231,7 +233,7 @@ void modsImportHomePage(context) {
                                                                               child: MaterialButton(
                                                                                 child: const Icon(Icons.remove_circle),
                                                                                 onPressed: () {
-                                                                                  modAdderDragDropFiles.removeAt(index);
+                                                                                  importModDragDropFiles.removeAt(index);
                                                                                   setState(
                                                                                     () {},
                                                                                   );
@@ -239,9 +241,9 @@ void modsImportHomePage(context) {
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          title: Text(modAdderDragDropFiles[index].name),
+                                                                          title: Text(importModDragDropFiles[index].name),
                                                                           subtitle: Text(
-                                                                            modAdderDragDropFiles[index].path,
+                                                                            importModDragDropFiles[index].path,
                                                                             maxLines: 1,
                                                                             overflow: TextOverflow.ellipsis,
                                                                             softWrap: false,
@@ -256,7 +258,7 @@ void modsImportHomePage(context) {
                                             ),
                                           ),
                                           Visibility(
-                                            visible: !dropZoneMax,
+                                            visible: !importDropZoneMax,
                                             child: Padding(
                                               padding: const EdgeInsets.only(top: 5),
                                               child: Row(
@@ -268,7 +270,7 @@ void modsImportHomePage(context) {
                                                   //         onPressed: (() async {
                                                   //           List<String?> selectedDirPaths = await getDirectoryPaths();
                                                   //           if (selectedDirPaths.isNotEmpty) {
-                                                  //             modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
+                                                  //             importModDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
                                                   //           }
                                                   //           setState(
                                                   //             () {},
@@ -285,9 +287,13 @@ void modsImportHomePage(context) {
                                                       width: double.infinity,
                                                       child: ElevatedButton(
                                                           onPressed: (() async {
-                                                            List<XFile?> selectedDirPaths = await openFiles();
+                                                            XTypeGroup typeGroup = const XTypeGroup(
+                                                              label: '.zip',
+                                                              extensions: <String>['zip'],
+                                                            );
+                                                            List<XFile?> selectedDirPaths = await openFiles(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                             if (selectedDirPaths.isNotEmpty) {
-                                                              modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
+                                                              importModDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
                                                             }
                                                             setState(
                                                               () {},
@@ -301,13 +307,13 @@ void modsImportHomePage(context) {
                                             ),
                                           ),
                                           // Visibility(
-                                          //   visible: !dropZoneMax,
+                                          //   visible: !importDropZoneMax,
                                           //   child: Padding(
                                           //     padding: const EdgeInsets.only(top: 5),
                                           //     child: SizedBox(
                                           //       width: double.infinity,
                                           //       child: ElevatedButton(
-                                          //           onPressed: modAdderDragDropFiles.isNotEmpty
+                                          //           onPressed: importModDragDropFiles.isNotEmpty
                                           //               ? (() async {
                                           //                   final prefs = await SharedPreferences.getInstance();
                                           //                   if (modsAdderGroupSameItemVariants) {
@@ -337,9 +343,9 @@ void modsImportHomePage(context) {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   ElevatedButton(
-                                                      onPressed: modAdderDragDropFiles.isNotEmpty
+                                                      onPressed: importModDragDropFiles.isNotEmpty
                                                           ? (() {
-                                                              modAdderDragDropFiles.clear();
+                                                              importModDragDropFiles.clear();
                                                               //newModMainFolderList.clear();
                                                               setState(
                                                                 () {},
@@ -351,12 +357,12 @@ void modsImportHomePage(context) {
                                                     width: 5,
                                                   ),
                                                   // Visibility(
-                                                  //   visible: dropZoneMax,
+                                                  //   visible: importDropZoneMax,
                                                   //   child: Expanded(
                                                   //     child: Padding(
                                                   //       padding: const EdgeInsets.only(right: 5),
                                                   //       child: ElevatedButton(
-                                                  //           onPressed: modAdderDragDropFiles.isNotEmpty
+                                                  //           onPressed: importModDragDropFiles.isNotEmpty
                                                   //               ? (() async {
                                                   //                   final prefs = await SharedPreferences.getInstance();
                                                   //                   if (modsAdderGroupSameItemVariants) {
@@ -378,7 +384,7 @@ void modsImportHomePage(context) {
                                                   //   ),
                                                   // ),
                                                   // Visibility(
-                                                  //   visible: dropZoneMax,
+                                                  //   visible: importDropZoneMax,
                                                   //   child: Expanded(
                                                   //     child: Padding(
                                                   //       padding: const EdgeInsets.only(right: 5),
@@ -386,7 +392,7 @@ void modsImportHomePage(context) {
                                                   //           onPressed: (() async {
                                                   //             List<String?> selectedDirPaths = await getDirectoryPaths();
                                                   //             if (selectedDirPaths.isNotEmpty) {
-                                                  //               modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
+                                                  //               importModDragDropFiles.addAll(selectedDirPaths.map((e) => XFile(e!)));
                                                   //             }
                                                   //             setState(
                                                   //               () {},
@@ -397,15 +403,19 @@ void modsImportHomePage(context) {
                                                   //   ),
                                                   // ),
                                                   Visibility(
-                                                    visible: dropZoneMax,
+                                                    visible: importDropZoneMax,
                                                     child: Expanded(
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(right: 5),
                                                         child: ElevatedButton(
                                                             onPressed: (() async {
-                                                              List<XFile?> selectedDirPaths = await openFiles();
+                                                              XTypeGroup typeGroup = const XTypeGroup(
+                                                                label: '.zip',
+                                                                extensions: <String>['zip'],
+                                                              );
+                                                              List<XFile?> selectedDirPaths = await openFiles(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                               if (selectedDirPaths.isNotEmpty) {
-                                                                modAdderDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
+                                                                importModDragDropFiles.addAll(selectedDirPaths.map((e) => e!));
                                                               }
                                                               setState(
                                                                 () {},
@@ -418,17 +428,17 @@ void modsImportHomePage(context) {
                                                   Expanded(
                                                     child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(150)),
-                                                        onPressed: modAdderDragDropFiles.isNotEmpty
+                                                        onPressed: importModDragDropFiles.isNotEmpty
                                                             ? (() async {
-                                                                if (processedFileList.isNotEmpty) {
+                                                                if (processedImportFileList.isNotEmpty) {
                                                                   _isProcessingMoreFiles = true;
                                                                   setState(
                                                                     () {},
                                                                   );
                                                                 }
-                                                                processedFileListLoad = modsImportFilesProcess(context, modAdderDragDropFiles.toList());
-                                                                modAdderDragDropFiles.clear();
-                                                                dropZoneMax = false;
+                                                                processedImportedFileListLoad = modsImportFilesProcess(context, importModDragDropFiles.toList());
+                                                                importModDragDropFiles.clear();
+                                                                importDropZoneMax = false;
                                                                 setState(
                                                                   () {},
                                                                 );
@@ -457,12 +467,12 @@ void modsImportHomePage(context) {
                                         child: SizedBox(
                                           height: constraints.maxHeight - 42,
                                           child: FutureBuilder(
-                                              future: processedFileListLoad,
+                                              future: processedImportedFileListLoad,
                                               builder: (
                                                 BuildContext context,
                                                 AsyncSnapshot snapshot,
                                               ) {
-                                                if (snapshot.connectionState == ConnectionState.none && processedFileList.isEmpty) {
+                                                if (snapshot.connectionState == ConnectionState.none && processedImportFileList.isEmpty) {
                                                   return Center(
                                                     child: Column(
                                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -523,14 +533,14 @@ void modsImportHomePage(context) {
                                                     bool renameModDifferencesFound = false;
                                                     //sort item to add list
                                                     for (ModsAdderItem element in snapshot.data) {
-                                                      int matchingItemIndex = processedFileList.indexWhere((item) => item.itemDirPath == element.itemDirPath);
+                                                      int matchingItemIndex = processedImportFileList.indexWhere((item) => item.itemDirPath == element.itemDirPath);
                                                       if (matchingItemIndex == -1 && Directory(element.itemDirPath).existsSync()) {
-                                                        processedFileList.add(element);
+                                                        processedImportFileList.add(element);
                                                       } else if (matchingItemIndex != -1) {
-                                                        int ogModListLength = processedFileList[matchingItemIndex].modList.length;
-                                                        processedFileList[matchingItemIndex].modList.addAll(
-                                                            element.modList.where((mod) => processedFileList[matchingItemIndex].modList.indexWhere((e) => e.modDirPath == mod.modDirPath) == -1));
-                                                        if (ogModListLength < processedFileList[matchingItemIndex].modList.length) {
+                                                        int ogModListLength = processedImportFileList[matchingItemIndex].modList.length;
+                                                        processedImportFileList[matchingItemIndex].modList.addAll(
+                                                            element.modList.where((mod) => processedImportFileList[matchingItemIndex].modList.indexWhere((e) => e.modDirPath == mod.modDirPath) == -1));
+                                                        if (ogModListLength < processedImportFileList[matchingItemIndex].modList.length) {
                                                           renameModDifferencesFound = true;
                                                         }
                                                       }
@@ -538,39 +548,39 @@ void modsImportHomePage(context) {
 
                                                     //rename trigger
 
-                                                    if (_itemNameRenameIndex.isNotEmpty && _itemNameRenameIndex.length != processedFileList.length) {
-                                                      for (int i = 0; i < mainFolderRenameIndex.length; i++) {
-                                                        if (processedFileList[i].modList.length != mainFolderRenameIndex[i].length) {
+                                                    if (_itemNameRenameIndex.isNotEmpty && _itemNameRenameIndex.length != processedImportFileList.length) {
+                                                      for (int i = 0; i < mainImportedFolderRenameIndex.length; i++) {
+                                                        if (processedImportFileList[i].modList.length != mainImportedFolderRenameIndex[i].length) {
                                                           renameModDifferencesFound = true;
                                                           break;
                                                         }
                                                       }
                                                     }
-                                                    if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedFileList.length || renameModDifferencesFound) {
+                                                    if (_itemNameRenameIndex.isEmpty || _itemNameRenameIndex.length != processedImportFileList.length || renameModDifferencesFound) {
                                                       renameModDifferencesFound = false;
-                                                      _itemNameRenameIndex = List.generate(processedFileList.length, (index) => false);
-                                                      mainFolderRenameIndex =
-                                                          List.generate(processedFileList.length, (index) => List.generate(processedFileList[index].modList.length, (mIndex) => false));
-                                                      subFoldersRenameIndex = List.generate(
-                                                          processedFileList.length,
-                                                          (index) => List.generate(processedFileList[index].modList.length,
-                                                              (mIndex) => List.generate(processedFileList[index].modList[mIndex].submodList.length, (sIndex) => false)));
+                                                      _itemNameRenameIndex = List.generate(processedImportFileList.length, (index) => false);
+                                                      mainImportedFolderRenameIndex =
+                                                          List.generate(processedImportFileList.length, (index) => List.generate(processedImportFileList[index].modList.length, (mIndex) => false));
+                                                      subImportedFoldersRenameIndex = List.generate(
+                                                          processedImportFileList.length,
+                                                          (index) => List.generate(processedImportFileList[index].modList.length,
+                                                              (mIndex) => List.generate(processedImportFileList[index].modList[mIndex].submodList.length, (sIndex) => false)));
                                                     }
                                                     //misc dropdown
                                                     if (_selectedCategories.isEmpty) {
-                                                      for (var element in processedFileList) {
+                                                      for (var element in processedImportFileList) {
                                                         _selectedCategories.add(element.category);
                                                       }
-                                                    } else if (_selectedCategories.isNotEmpty && _selectedCategories.length < processedFileList.length) {
+                                                    } else if (_selectedCategories.isNotEmpty && _selectedCategories.length < processedImportFileList.length) {
                                                       _selectedCategories.clear();
-                                                      for (var element in processedFileList) {
+                                                      for (var element in processedImportFileList) {
                                                         _selectedCategories.add(element.category);
                                                       }
                                                     }
                                                     //get duplicates
-                                                    processedFileList = getDuplicates(processedFileList);
+                                                    processedImportFileList = getDuplicates(processedImportFileList);
 
-                                                    pathCharLengthList = List.generate(processedFileList.length, (index) => []);
+                                                    pathCharLengthList = List.generate(processedImportFileList.length, (index) => []);
 
                                                     return Stack(
                                                       children: [
@@ -587,9 +597,9 @@ void modsImportHomePage(context) {
                                                               child: ListView.builder(
                                                                   shrinkWrap: true,
                                                                   physics: const NeverScrollableScrollPhysics(),
-                                                                  itemCount: processedFileList.length,
+                                                                  itemCount: processedImportFileList.length,
                                                                   itemBuilder: (context, index) {
-                                                                    //debugPrint(processedFileList[index].itemDirPath);
+                                                                    //debugPrint(processedImportFileList[index].itemDirPath);
                                                                     return Card(
                                                                       margin: const EdgeInsets.only(top: 0, bottom: 2, left: 0, right: 0),
                                                                       color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -610,13 +620,13 @@ void modsImportHomePage(context) {
                                                                                   borderRadius: BorderRadius.circular(3),
                                                                                   border: Border.all(color: Theme.of(context).hintColor),
                                                                                 ),
-                                                                                child: processedFileList[index].itemIconPath.isEmpty
+                                                                                child: processedImportFileList[index].itemIconPath.isEmpty
                                                                                     ? Image.asset(
                                                                                         'assets/img/placeholdersquare.png',
                                                                                         fit: BoxFit.fitWidth,
                                                                                       )
                                                                                     : Image.file(
-                                                                                        File(processedFileList[index].itemIconPath),
+                                                                                        File(processedImportFileList[index].itemIconPath),
                                                                                         fit: BoxFit.fitWidth,
                                                                                       ),
                                                                               ),
@@ -626,7 +636,7 @@ void modsImportHomePage(context) {
                                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                 children: [
-                                                                                  if (processedFileList[index].isUnknown)
+                                                                                  if (processedImportFileList[index].isUnknown)
                                                                                     DropdownButton2(
                                                                                       hint: Text(curLangText!.uiSelectACategory),
                                                                                       underline: const SizedBox(),
@@ -675,35 +685,35 @@ void modsImportHomePage(context) {
                                                                                       value: _selectedCategories[index],
                                                                                       onChanged: (value) async {
                                                                                         _selectedCategories[index] = value.toString();
-                                                                                        String newItemPath = processedFileList[index].itemDirPath.replaceFirst(
-                                                                                            p.dirname(processedFileList[index].itemDirPath),
+                                                                                        String newItemPath = processedImportFileList[index].itemDirPath.replaceFirst(
+                                                                                            p.dirname(processedImportFileList[index].itemDirPath),
                                                                                             Uri.file('$modManModsAdderPath/${_selectedCategories[index]}').toFilePath());
-                                                                                        await io.copyPath(processedFileList[index].itemDirPath, newItemPath);
+                                                                                        await io.copyPath(processedImportFileList[index].itemDirPath, newItemPath);
                                                                                         //delete item dir
-                                                                                        Directory(processedFileList[index].itemDirPath).deleteSync(recursive: true);
+                                                                                        Directory(processedImportFileList[index].itemDirPath).deleteSync(recursive: true);
                                                                                         //delete parent dir if empty
-                                                                                        if (Directory(p.dirname(processedFileList[index].itemDirPath)).listSync().isEmpty) {
-                                                                                          Directory(p.dirname(processedFileList[index].itemDirPath)).deleteSync(recursive: true);
+                                                                                        if (Directory(p.dirname(processedImportFileList[index].itemDirPath)).listSync().isEmpty) {
+                                                                                          Directory(p.dirname(processedImportFileList[index].itemDirPath)).deleteSync(recursive: true);
                                                                                         }
-                                                                                        processedFileList[index].setNewParentPathToChildren(newItemPath.trim());
-                                                                                        processedFileList[index].itemDirPath = newItemPath;
-                                                                                        processedFileList[index].category = value.toString();
-                                                                                        debugPrint(processedFileList[index].itemDirPath);
+                                                                                        processedImportFileList[index].setNewParentPathToChildren(newItemPath.trim());
+                                                                                        processedImportFileList[index].itemDirPath = newItemPath;
+                                                                                        processedImportFileList[index].category = value.toString();
+                                                                                        debugPrint(processedImportFileList[index].itemDirPath);
                                                                                         setState(
                                                                                           () {},
                                                                                         );
                                                                                       },
                                                                                     ),
-                                                                                  if (!processedFileList[index].isUnknown)
+                                                                                  if (!processedImportFileList[index].isUnknown)
                                                                                     SizedBox(
                                                                                       width: 150,
                                                                                       height: 40,
                                                                                       child: Padding(
                                                                                         padding: const EdgeInsets.only(top: 10),
-                                                                                        child: Text(processedFileList[index].category,
+                                                                                        child: Text(processedImportFileList[index].category,
                                                                                             style: TextStyle(
                                                                                                 fontWeight: FontWeight.w600,
-                                                                                                color: !processedFileList[index].toBeAdded
+                                                                                                color: !processedImportFileList[index].toBeAdded
                                                                                                     ? Theme.of(context).disabledColor
                                                                                                     : Theme.of(context).textTheme.bodyMedium!.color)),
                                                                                       ),
@@ -721,13 +731,13 @@ void modsImportHomePage(context) {
                                                                                                     key: _subItemFormValidate,
                                                                                                     child: TextFormField(
                                                                                                       autofocus: true,
-                                                                                                      controller: renameTextBoxController,
+                                                                                                      controller: renameImportTextBoxController,
                                                                                                       maxLines: 1,
                                                                                                       maxLength: 50,
                                                                                                       decoration: InputDecoration(
                                                                                                         contentPadding: const EdgeInsets.only(left: 10, top: 10),
                                                                                                         border: const OutlineInputBorder(),
-                                                                                                        hintText: processedFileList[index].itemName,
+                                                                                                        hintText: processedImportFileList[index].itemName,
                                                                                                         counterText: '',
                                                                                                       ),
                                                                                                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
@@ -737,7 +747,7 @@ void modsImportHomePage(context) {
                                                                                                           return curLangText!.uiNameCannotBeEmpty;
                                                                                                         }
 
-                                                                                                        if (Directory(p.dirname(processedFileList[index].itemDirPath))
+                                                                                                        if (Directory(p.dirname(processedImportFileList[index].itemDirPath))
                                                                                                             .listSync()
                                                                                                             .whereType<Directory>()
                                                                                                             .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
@@ -754,46 +764,49 @@ void modsImportHomePage(context) {
                                                                                                         );
                                                                                                       },
                                                                                                       onEditingComplete: () async {
-                                                                                                        if (renameTextBoxController.text != processedFileList[index].itemName &&
+                                                                                                        if (renameImportTextBoxController.text != processedImportFileList[index].itemName &&
                                                                                                             _subItemFormValidate.currentState!.validate()) {
-                                                                                                          if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                          if (renameImportTextBoxController.text.isNotEmpty) {
                                                                                                             //rename text
-                                                                                                            String newItemName = renameTextBoxController.text.trim();
-                                                                                                            if (processedFileList[index].category == 'Basewears' &&
-                                                                                                                !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                            String newItemName = renameImportTextBoxController.text.trim();
+                                                                                                            if (processedImportFileList[index].category == 'Basewears' &&
+                                                                                                                !renameImportTextBoxController.text.contains('[Ba]')) {
                                                                                                               newItemName += ' [Ba]';
-                                                                                                            } else if (processedFileList[index].category == 'Innerwears' &&
-                                                                                                                !renameTextBoxController.text.contains('[In]')) {
+                                                                                                            } else if (processedImportFileList[index].category == 'Innerwears' &&
+                                                                                                                !renameImportTextBoxController.text.contains('[In]')) {
                                                                                                               newItemName += ' [In]';
-                                                                                                            } else if (processedFileList[index].category == 'Outerwears' &&
-                                                                                                                !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                            } else if (processedImportFileList[index].category == 'Outerwears' &&
+                                                                                                                !renameImportTextBoxController.text.contains('[Ou]')) {
                                                                                                               newItemName += ' [Ou]';
-                                                                                                            } else if (processedFileList[index].category == 'Setwears' &&
-                                                                                                                !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                            } else if (processedImportFileList[index].category == 'Setwears' &&
+                                                                                                                !renameImportTextBoxController.text.contains('[Se]')) {
                                                                                                               newItemName += ' [Se]';
                                                                                                             } else {
-                                                                                                              newItemName = renameTextBoxController.text;
+                                                                                                              newItemName = renameImportTextBoxController.text;
                                                                                                             }
                                                                                                             //change dir name
-                                                                                                            processedFileList[index].itemName = newItemName;
-                                                                                                            var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
-                                                                                                                Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName')
+                                                                                                            processedImportFileList[index].itemName = newItemName;
+                                                                                                            var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
+                                                                                                                Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName')
                                                                                                                     .toFilePath());
-                                                                                                            processedFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
-                                                                                                            processedFileList[index].itemIconPath = processedFileList[index]
+                                                                                                            processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
+                                                                                                            processedImportFileList[index].itemIconPath = processedImportFileList[index]
                                                                                                                 .itemIconPath
-                                                                                                                .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
-                                                                                                            processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                                .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
+                                                                                                            processedImportFileList[index].itemDirPath = newItemDir.path;
                                                                                                           }
 
                                                                                                           _itemNameRenameIndex[index] = false;
-                                                                                                          renameTextBoxController.clear();
+                                                                                                          renameImportTextBoxController.clear();
                                                                                                           _isNameEditing = false;
 
                                                                                                           setState(
                                                                                                             () {},
                                                                                                           );
                                                                                                         }
+                                                                                                        setState(
+                                                                                                          () {},
+                                                                                                        );
                                                                                                       },
                                                                                                     ),
                                                                                                   ),
@@ -805,42 +818,42 @@ void modsImportHomePage(context) {
                                                                                               SizedBox(
                                                                                                 width: 40,
                                                                                                 child: MaterialButton(
-                                                                                                  onPressed: renameTextBoxController.text == processedFileList[index].itemName
+                                                                                                  onPressed: renameImportTextBoxController.text == processedImportFileList[index].itemName
                                                                                                       ? null
                                                                                                       : () async {
                                                                                                           if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                            if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                            if (renameImportTextBoxController.text.isNotEmpty) {
                                                                                                               //rename text
-                                                                                                              String newItemName = renameTextBoxController.text.trim();
-                                                                                                              if (processedFileList[index].category == 'Basewears' &&
-                                                                                                                  !renameTextBoxController.text.contains('[Ba]')) {
+                                                                                                              String newItemName = renameImportTextBoxController.text.trim();
+                                                                                                              if (processedImportFileList[index].category == 'Basewears' &&
+                                                                                                                  !renameImportTextBoxController.text.contains('[Ba]')) {
                                                                                                                 newItemName += ' [Ba]';
-                                                                                                              } else if (processedFileList[index].category == 'Innerwears' &&
-                                                                                                                  !renameTextBoxController.text.contains('[In]')) {
+                                                                                                              } else if (processedImportFileList[index].category == 'Innerwears' &&
+                                                                                                                  !renameImportTextBoxController.text.contains('[In]')) {
                                                                                                                 newItemName += ' [In]';
-                                                                                                              } else if (processedFileList[index].category == 'Outerwears' &&
-                                                                                                                  !renameTextBoxController.text.contains('[Ou]')) {
+                                                                                                              } else if (processedImportFileList[index].category == 'Outerwears' &&
+                                                                                                                  !renameImportTextBoxController.text.contains('[Ou]')) {
                                                                                                                 newItemName += ' [Ou]';
-                                                                                                              } else if (processedFileList[index].category == 'Setwears' &&
-                                                                                                                  !renameTextBoxController.text.contains('[Se]')) {
+                                                                                                              } else if (processedImportFileList[index].category == 'Setwears' &&
+                                                                                                                  !renameImportTextBoxController.text.contains('[Se]')) {
                                                                                                                 newItemName += ' [Se]';
                                                                                                               } else {
-                                                                                                                newItemName = renameTextBoxController.text;
+                                                                                                                newItemName = renameImportTextBoxController.text;
                                                                                                               }
                                                                                                               //change dir name
-                                                                                                              processedFileList[index].itemName = newItemName;
-                                                                                                              var newItemDir = await Directory(processedFileList[index].itemDirPath).rename(
-                                                                                                                  Uri.file('${p.dirname(processedFileList[index].itemDirPath)}/$newItemName')
+                                                                                                              processedImportFileList[index].itemName = newItemName;
+                                                                                                              var newItemDir = await Directory(processedImportFileList[index].itemDirPath).rename(
+                                                                                                                  Uri.file('${p.dirname(processedImportFileList[index].itemDirPath)}/$newItemName')
                                                                                                                       .toFilePath());
-                                                                                                              processedFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
-                                                                                                              processedFileList[index].itemIconPath = processedFileList[index]
+                                                                                                              processedImportFileList[index].setNewParentPathToChildren(newItemDir.path.trim());
+                                                                                                              processedImportFileList[index].itemIconPath = processedImportFileList[index]
                                                                                                                   .itemIconPath
-                                                                                                                  .replaceFirst(processedFileList[index].itemDirPath, newItemDir.path);
-                                                                                                              processedFileList[index].itemDirPath = newItemDir.path;
+                                                                                                                  .replaceFirst(processedImportFileList[index].itemDirPath, newItemDir.path);
+                                                                                                              processedImportFileList[index].itemDirPath = newItemDir.path;
                                                                                                             }
 
                                                                                                             _itemNameRenameIndex[index] = false;
-                                                                                                            renameTextBoxController.clear();
+                                                                                                            renameImportTextBoxController.clear();
                                                                                                             _isNameEditing = false;
 
                                                                                                             setState(
@@ -859,7 +872,7 @@ void modsImportHomePage(context) {
                                                                                                 child: MaterialButton(
                                                                                                   onPressed: () {
                                                                                                     _itemNameRenameIndex[index] = false;
-                                                                                                    renameTextBoxController.clear();
+                                                                                                    renameImportTextBoxController.clear();
                                                                                                     _isNameEditing = false;
 
                                                                                                     setState(
@@ -876,10 +889,10 @@ void modsImportHomePage(context) {
                                                                                               Expanded(
                                                                                                 child: Padding(
                                                                                                   padding: const EdgeInsets.only(bottom: 3),
-                                                                                                  child: Text(processedFileList[index].itemName.replaceAll('_', '/'),
+                                                                                                  child: Text(processedImportFileList[index].itemName.replaceAll('_', '/'),
                                                                                                       style: TextStyle(
                                                                                                           fontWeight: FontWeight.w600,
-                                                                                                          color: !processedFileList[index].toBeAdded
+                                                                                                          color: !processedImportFileList[index].toBeAdded
                                                                                                               ? Theme.of(context).disabledColor
                                                                                                               : Theme.of(context).textTheme.bodyMedium!.color)),
                                                                                                 ),
@@ -887,7 +900,7 @@ void modsImportHomePage(context) {
                                                                                               const SizedBox(
                                                                                                 width: 5,
                                                                                               ),
-                                                                                              if (processedFileList[index].isChildrenDuplicated)
+                                                                                              if (processedImportFileList[index].isChildrenDuplicated)
                                                                                                 Padding(
                                                                                                   padding: const EdgeInsets.only(right: 5),
                                                                                                   child: Container(
@@ -906,8 +919,8 @@ void modsImportHomePage(context) {
                                                                                                   ),
                                                                                                 ),
                                                                                               Visibility(
-                                                                                                visible: !defaultCategoryNames.contains(processedFileList[index].category) ||
-                                                                                                    processedFileList[index].category == defaultCategoryNames[13],
+                                                                                                visible: !defaultCategoryNames.contains(processedImportFileList[index].category) ||
+                                                                                                    processedImportFileList[index].category == defaultCategoryNames[13],
                                                                                                 child: SizedBox(
                                                                                                   width: 40,
                                                                                                   child: Tooltip(
@@ -916,12 +929,12 @@ void modsImportHomePage(context) {
                                                                                                     textStyle: TextStyle(fontSize: 15, color: Theme.of(context).canvasColor),
                                                                                                     waitDuration: const Duration(seconds: 1),
                                                                                                     child: MaterialButton(
-                                                                                                      onPressed: !_isNameEditing && processedFileList[index].toBeAdded
+                                                                                                      onPressed: !_isNameEditing && processedImportFileList[index].toBeAdded
                                                                                                           ? () {
-                                                                                                              renameTextBoxController.text = processedFileList[index].itemName;
-                                                                                                              renameTextBoxController.selection = TextSelection(
+                                                                                                              renameImportTextBoxController.text = processedImportFileList[index].itemName;
+                                                                                                              renameImportTextBoxController.selection = TextSelection(
                                                                                                                 baseOffset: 0,
-                                                                                                                extentOffset: renameTextBoxController.text.length,
+                                                                                                                extentOffset: renameImportTextBoxController.text.length,
                                                                                                               );
                                                                                                               _isNameEditing = true;
                                                                                                               _itemNameRenameIndex[index] = true;
@@ -938,15 +951,15 @@ void modsImportHomePage(context) {
                                                                                               const SizedBox(
                                                                                                 width: 5,
                                                                                               ),
-                                                                                              if (processedFileList[index].toBeAdded)
+                                                                                              if (processedImportFileList[index].toBeAdded)
                                                                                                 SizedBox(
                                                                                                   width: 40,
                                                                                                   child: ModManTooltip(
                                                                                                     message: curLangText!.uiMarkThisNotToBeAdded,
                                                                                                     child: MaterialButton(
                                                                                                       onPressed: () {
-                                                                                                        processedFileList[index].toBeAdded = false;
-                                                                                                        for (var mod in processedFileList[index].modList) {
+                                                                                                        processedImportFileList[index].toBeAdded = false;
+                                                                                                        for (var mod in processedImportFileList[index].modList) {
                                                                                                           mod.toBeAdded = false;
                                                                                                           for (var submod in mod.submodList) {
                                                                                                             submod.toBeAdded = false;
@@ -963,15 +976,15 @@ void modsImportHomePage(context) {
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
-                                                                                              if (!processedFileList[index].toBeAdded)
+                                                                                              if (!processedImportFileList[index].toBeAdded)
                                                                                                 SizedBox(
                                                                                                   width: 40,
                                                                                                   child: ModManTooltip(
                                                                                                     message: curLangText!.uiMarkThisToBeAdded,
                                                                                                     child: MaterialButton(
                                                                                                       onPressed: () {
-                                                                                                        processedFileList[index].toBeAdded = true;
-                                                                                                        for (var mod in processedFileList[index].modList) {
+                                                                                                        processedImportFileList[index].toBeAdded = true;
+                                                                                                        for (var mod in processedImportFileList[index].modList) {
                                                                                                           mod.toBeAdded = true;
                                                                                                           for (var submod in mod.submodList) {
                                                                                                             submod.toBeAdded = true;
@@ -1007,14 +1020,14 @@ void modsImportHomePage(context) {
                                                                           ListView.builder(
                                                                               shrinkWrap: true,
                                                                               physics: const NeverScrollableScrollPhysics(),
-                                                                              itemCount: processedFileList[index].modList.length,
+                                                                              itemCount: processedImportFileList[index].modList.length,
                                                                               itemBuilder: (context, mIndex) {
-                                                                                var curMod = processedFileList[index].modList[mIndex];
+                                                                                var curMod = processedImportFileList[index].modList[mIndex];
                                                                                 _isProcessingMoreFiles = false;
                                                                                 //rename trigger
-                                                                                // //List<bool> mainFolderRenameIndex = [];
-                                                                                // if (mainFolderRenameIndex.isEmpty || mainFolderRenameIndex.length != processedFileList[index].modList.length) {
-                                                                                //   mainFolderRenameIndex = List.generate(processedFileList[index].modList.length, (index) => false);
+                                                                                // //List<bool> mainImportedFolderRenameIndex = [];
+                                                                                // if (mainImportedFolderRenameIndex.isEmpty || mainImportedFolderRenameIndex.length != processedImportFileList[index].modList.length) {
+                                                                                //   mainImportedFolderRenameIndex = List.generate(processedImportFileList[index].modList.length, (index) => false);
                                                                                 // }
                                                                                 // if (pathCharLengthList[index].isNotEmpty) {
                                                                                 //   pathCharLengthList[index].clear();
@@ -1048,7 +1061,7 @@ void modsImportHomePage(context) {
                                                                                   collapsedTextColor:
                                                                                       MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColor : Theme.of(context).iconTheme.color,
                                                                                   //Edit Name
-                                                                                  title: mainFolderRenameIndex[index][mIndex]
+                                                                                  title: mainImportedFolderRenameIndex[index][mIndex]
                                                                                       ? Row(
                                                                                           children: [
                                                                                             Expanded(
@@ -1059,7 +1072,7 @@ void modsImportHomePage(context) {
                                                                                                   key: _subItemFormValidate,
                                                                                                   child: TextFormField(
                                                                                                     autofocus: true,
-                                                                                                    controller: renameTextBoxController,
+                                                                                                    controller: renameImportTextBoxController,
                                                                                                     maxLines: 1,
                                                                                                     maxLength: 50,
                                                                                                     decoration: InputDecoration(
@@ -1075,7 +1088,7 @@ void modsImportHomePage(context) {
                                                                                                         return curLangText!.uiNameCannotBeEmpty;
                                                                                                       }
 
-                                                                                                      if (Directory(processedFileList[index].itemDirPath)
+                                                                                                      if (Directory(processedImportFileList[index].itemDirPath)
                                                                                                           .listSync()
                                                                                                           .whereType<Directory>()
                                                                                                           .where((element) => p.basename(element.path).toLowerCase() == value.toLowerCase())
@@ -1111,24 +1124,27 @@ void modsImportHomePage(context) {
                                                                                                       );
                                                                                                     },
                                                                                                     onEditingComplete: () async {
-                                                                                                      if (renameTextBoxController.text != curMod.modName &&
+                                                                                                      if (renameImportTextBoxController.text != curMod.modName &&
                                                                                                           _subItemFormValidate.currentState!.validate()) {
-                                                                                                        if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                          curMod.modName = renameTextBoxController.text;
+                                                                                                        if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                          curMod.modName = renameImportTextBoxController.text;
                                                                                                           var newModDir = await Directory(curMod.modDirPath).rename(
-                                                                                                              Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}').toFilePath());
+                                                                                                              Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}').toFilePath());
                                                                                                           curMod.setNewParentPathToChildren(newModDir.path.trim());
                                                                                                           curMod.modDirPath = newModDir.path;
                                                                                                         }
 
-                                                                                                        mainFolderRenameIndex[index][mIndex] = false;
-                                                                                                        renameTextBoxController.clear();
+                                                                                                        mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                                        renameImportTextBoxController.clear();
                                                                                                         _isNameEditing = false;
 
                                                                                                         setState(
                                                                                                           () {},
                                                                                                         );
                                                                                                       }
+                                                                                                      setState(
+                                                                                                        () {},
+                                                                                                      );
                                                                                                     },
                                                                                                   ),
                                                                                                 ),
@@ -1145,21 +1161,21 @@ void modsImportHomePage(context) {
                                                                                             SizedBox(
                                                                                               width: 40,
                                                                                               child: MaterialButton(
-                                                                                                onPressed: renameTextBoxController.text == curMod.modName
+                                                                                                onPressed: renameImportTextBoxController.text == curMod.modName
                                                                                                     ? null
                                                                                                     : () async {
                                                                                                         if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                          if (renameTextBoxController.text.isNotEmpty) {
-                                                                                                            curMod.modName = renameTextBoxController.text;
+                                                                                                          if (renameImportTextBoxController.text.isNotEmpty) {
+                                                                                                            curMod.modName = renameImportTextBoxController.text;
                                                                                                             var newModDir = await Directory(curMod.modDirPath).rename(
-                                                                                                                Uri.file('${p.dirname(curMod.modDirPath)}/${renameTextBoxController.text}')
+                                                                                                                Uri.file('${p.dirname(curMod.modDirPath)}/${renameImportTextBoxController.text}')
                                                                                                                     .toFilePath());
                                                                                                             curMod.setNewParentPathToChildren(newModDir.path.trim());
                                                                                                             curMod.modDirPath = newModDir.path;
                                                                                                           }
 
-                                                                                                          mainFolderRenameIndex[index][mIndex] = false;
-                                                                                                          renameTextBoxController.clear();
+                                                                                                          mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                                          renameImportTextBoxController.clear();
                                                                                                           _isNameEditing = false;
                                                                                                           _pathLengthInNameEdit = 0;
 
@@ -1178,8 +1194,8 @@ void modsImportHomePage(context) {
                                                                                               width: 40,
                                                                                               child: MaterialButton(
                                                                                                 onPressed: () {
-                                                                                                  mainFolderRenameIndex[index][mIndex] = false;
-                                                                                                  renameTextBoxController.clear();
+                                                                                                  mainImportedFolderRenameIndex[index][mIndex] = false;
+                                                                                                  renameImportTextBoxController.clear();
                                                                                                   _isNameEditing = false;
                                                                                                   _pathLengthInNameEdit = 0;
 
@@ -1255,13 +1271,13 @@ void modsImportHomePage(context) {
                                                                                                 child: MaterialButton(
                                                                                                   onPressed: !_isNameEditing && curMod.toBeAdded
                                                                                                       ? () {
-                                                                                                          renameTextBoxController.text = curMod.modName;
-                                                                                                          renameTextBoxController.selection = TextSelection(
+                                                                                                          renameImportTextBoxController.text = curMod.modName;
+                                                                                                          renameImportTextBoxController.selection = TextSelection(
                                                                                                             baseOffset: 0,
-                                                                                                            extentOffset: renameTextBoxController.text.length,
+                                                                                                            extentOffset: renameImportTextBoxController.text.length,
                                                                                                           );
                                                                                                           _isNameEditing = true;
-                                                                                                          mainFolderRenameIndex[index][mIndex] = true;
+                                                                                                          mainImportedFolderRenameIndex[index][mIndex] = true;
                                                                                                           _pathLengthInNameEdit = pathCharLengthList[index][mIndex];
                                                                                                           setState(
                                                                                                             () {},
@@ -1289,8 +1305,8 @@ void modsImportHomePage(context) {
                                                                                                       for (var submod in curMod.submodList) {
                                                                                                         submod.toBeAdded = false;
                                                                                                       }
-                                                                                                      if (processedFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
-                                                                                                        processedFileList[index].toBeAdded = false;
+                                                                                                      if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                        processedImportFileList[index].toBeAdded = false;
                                                                                                       }
                                                                                                       setState(
                                                                                                         () {},
@@ -1317,8 +1333,8 @@ void modsImportHomePage(context) {
                                                                                                       for (var submod in curMod.submodList) {
                                                                                                         submod.toBeAdded = true;
                                                                                                       }
-                                                                                                      if (processedFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
-                                                                                                        processedFileList[index].toBeAdded = true;
+                                                                                                      if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isNotEmpty) {
+                                                                                                        processedImportFileList[index].toBeAdded = true;
                                                                                                       }
                                                                                                       setState(
                                                                                                         () {},
@@ -1370,7 +1386,7 @@ void modsImportHomePage(context) {
                                                                                                   ? Theme.of(context).primaryColor
                                                                                                   : Theme.of(context).iconTheme.color,
                                                                                               //Edit Sub Name
-                                                                                              title: subFoldersRenameIndex[index][mIndex][sIndex]
+                                                                                              title: subImportedFoldersRenameIndex[index][mIndex][sIndex]
                                                                                                   ? Row(
                                                                                                       children: [
                                                                                                         Expanded(
@@ -1380,7 +1396,7 @@ void modsImportHomePage(context) {
                                                                                                               key: _subItemFormValidate,
                                                                                                               child: TextFormField(
                                                                                                                 autofocus: true,
-                                                                                                                controller: renameTextBoxController,
+                                                                                                                controller: renameImportTextBoxController,
                                                                                                                 maxLines: 1,
                                                                                                                 maxLength: 50,
                                                                                                                 decoration: InputDecoration(
@@ -1415,15 +1431,15 @@ void modsImportHomePage(context) {
                                                                                                                   );
                                                                                                                 },
                                                                                                                 onEditingComplete: (() async {
-                                                                                                                  if (renameTextBoxController.text != curSubmod.submodName.split(' > ').last &&
+                                                                                                                  if (renameImportTextBoxController.text != curSubmod.submodName.split(' > ').last &&
                                                                                                                       _subItemFormValidate.currentState!.validate()) {
-                                                                                                                    if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                                    if (renameImportTextBoxController.text.isNotEmpty) {
                                                                                                                       List<String> submodNameParts = curSubmod.submodName.split(' > ');
                                                                                                                       submodNameParts.removeLast();
-                                                                                                                      submodNameParts.add(renameTextBoxController.text);
+                                                                                                                      submodNameParts.add(renameImportTextBoxController.text);
                                                                                                                       curSubmod.submodName = submodNameParts.join(' > ');
                                                                                                                       var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
-                                                                                                                              '${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
+                                                                                                                              '${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
                                                                                                                           .toFilePath());
                                                                                                                       curSubmod.files =
                                                                                                                           newSubmodDir.listSync(recursive: true).whereType<File>().toList();
@@ -1433,13 +1449,16 @@ void modsImportHomePage(context) {
                                                                                                                     //Clear
                                                                                                                     // ignore: use_build_context_synchronously
                                                                                                                     Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
-                                                                                                                    subFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                                    renameTextBoxController.clear();
+                                                                                                                    subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                                    renameImportTextBoxController.clear();
                                                                                                                     _isNameEditing = false;
                                                                                                                     setState(
                                                                                                                       () {},
                                                                                                                     );
                                                                                                                   }
+                                                                                                                  setState(
+                                                                                                                    () {},
+                                                                                                                  );
                                                                                                                 }),
                                                                                                               ),
                                                                                                             ),
@@ -1451,17 +1470,17 @@ void modsImportHomePage(context) {
                                                                                                         SizedBox(
                                                                                                           width: 40,
                                                                                                           child: MaterialButton(
-                                                                                                            onPressed: renameTextBoxController.text == curSubmod.submodName
+                                                                                                            onPressed: renameImportTextBoxController.text == curSubmod.submodName
                                                                                                                 ? null
                                                                                                                 : () async {
                                                                                                                     if (_subItemFormValidate.currentState!.validate()) {
-                                                                                                                      if (renameTextBoxController.text.isNotEmpty) {
+                                                                                                                      if (renameImportTextBoxController.text.isNotEmpty) {
                                                                                                                         List<String> submodNameParts = curSubmod.submodName.split(' > ');
                                                                                                                         submodNameParts.removeLast();
-                                                                                                                        submodNameParts.add(renameTextBoxController.text);
+                                                                                                                        submodNameParts.add(renameImportTextBoxController.text);
                                                                                                                         curSubmod.submodName = submodNameParts.join(' > ');
                                                                                                                         var newSubmodDir = await Directory(curSubmod.submodDirPath).rename(Uri.file(
-                                                                                                                                '${p.dirname(curSubmod.submodDirPath)}/${renameTextBoxController.text}')
+                                                                                                                                '${p.dirname(curSubmod.submodDirPath)}/${renameImportTextBoxController.text}')
                                                                                                                             .toFilePath());
                                                                                                                         curSubmod.files =
                                                                                                                             newSubmodDir.listSync(recursive: true).whereType<File>().toList();
@@ -1469,8 +1488,8 @@ void modsImportHomePage(context) {
                                                                                                                       }
 
                                                                                                                       //Clear
-                                                                                                                      subFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                                      renameTextBoxController.clear();
+                                                                                                                      subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                                      renameImportTextBoxController.clear();
                                                                                                                       _isNameEditing = false;
                                                                                                                       // ignore: use_build_context_synchronously
                                                                                                                       Provider.of<StateProvider>(context, listen: false)
@@ -1490,8 +1509,8 @@ void modsImportHomePage(context) {
                                                                                                           width: 40,
                                                                                                           child: MaterialButton(
                                                                                                             onPressed: () {
-                                                                                                              subFoldersRenameIndex[index][mIndex][sIndex] = false;
-                                                                                                              renameTextBoxController.clear();
+                                                                                                              subImportedFoldersRenameIndex[index][mIndex][sIndex] = false;
+                                                                                                              renameImportTextBoxController.clear();
                                                                                                               _isNameEditing = false;
                                                                                                               // ignore: use_build_context_synchronously
                                                                                                               Provider.of<StateProvider>(context, listen: false).itemAdderSubItemETHeightSet(40);
@@ -1546,12 +1565,12 @@ void modsImportHomePage(context) {
                                                                                                             child: MaterialButton(
                                                                                                               onPressed: !_isNameEditing && curSubmod.toBeAdded
                                                                                                                   ? () {
-                                                                                                                      renameTextBoxController.text = curSubmod.submodName.split(' > ').last;
-                                                                                                                      renameTextBoxController.selection = TextSelection(
+                                                                                                                      renameImportTextBoxController.text = curSubmod.submodName.split(' > ').last;
+                                                                                                                      renameImportTextBoxController.selection = TextSelection(
                                                                                                                         baseOffset: 0,
-                                                                                                                        extentOffset: renameTextBoxController.text.length,
+                                                                                                                        extentOffset: renameImportTextBoxController.text.length,
                                                                                                                       );
-                                                                                                                      subFoldersRenameIndex[index][mIndex][sIndex] = true;
+                                                                                                                      subImportedFoldersRenameIndex[index][mIndex][sIndex] = true;
                                                                                                                       _isNameEditing = true;
                                                                                                                       setState(
                                                                                                                         () {},
@@ -1579,8 +1598,8 @@ void modsImportHomePage(context) {
                                                                                                                   if (curMod.submodList.where((element) => element.toBeAdded).isEmpty) {
                                                                                                                     curMod.toBeAdded = false;
                                                                                                                   }
-                                                                                                                  if (processedFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
-                                                                                                                    processedFileList[index].toBeAdded = false;
+                                                                                                                  if (processedImportFileList[index].modList.where((element) => element.toBeAdded).isEmpty) {
+                                                                                                                    processedImportFileList[index].toBeAdded = false;
                                                                                                                   }
                                                                                                                   setState(
                                                                                                                     () {},
@@ -1607,11 +1626,11 @@ void modsImportHomePage(context) {
                                                                                                                   if (curMod.submodList.where((element) => element.toBeAdded).isNotEmpty) {
                                                                                                                     curMod.toBeAdded = true;
                                                                                                                   }
-                                                                                                                  if (processedFileList[index]
+                                                                                                                  if (processedImportFileList[index]
                                                                                                                       .modList
                                                                                                                       .where((element) => element.toBeAdded)
                                                                                                                       .isNotEmpty) {
-                                                                                                                    processedFileList[index].toBeAdded = true;
+                                                                                                                    processedImportFileList[index].toBeAdded = true;
                                                                                                                   }
                                                                                                                   setState(
                                                                                                                     () {},
@@ -1683,19 +1702,19 @@ void modsImportHomePage(context) {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Expanded(
-                                                flex: dropZoneMax ? 1 : 0,
+                                                flex: importDropZoneMax ? 1 : 0,
                                                 child: ElevatedButton(
                                                     onPressed: _isAddingMods
                                                         ? null
                                                         : (() async {
                                                             clearAllTempDirs();
                                                             //clear lists
-                                                            processedFileListLoad = null;
-                                                            processedFileList.clear();
+                                                            processedImportedFileListLoad = null;
+                                                            processedImportFileList.clear();
                                                             _itemNameRenameIndex.clear();
-                                                            subFoldersRenameIndex.clear();
-                                                            mainFolderRenameIndex.clear();
-                                                            renameTextBoxController.clear();
+                                                            subImportedFoldersRenameIndex.clear();
+                                                            mainImportedFolderRenameIndex.clear();
+                                                            renameImportTextBoxController.clear();
                                                             Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                             _selectedCategories.clear();
                                                             pathCharLengthList.clear();
@@ -1703,28 +1722,28 @@ void modsImportHomePage(context) {
                                                             setState(
                                                               () {},
                                                             );
-                                                            dropZoneMax = true;
+                                                            importDropZoneMax = true;
                                                             Navigator.of(context).pop();
                                                             //}
                                                           }),
                                                     child: Text(curLangText!.uiClose)),
                                               ),
                                               Visibility(
-                                                visible: !dropZoneMax,
+                                                visible: !importDropZoneMax,
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(left: 5),
                                                   child: ElevatedButton(
-                                                      onPressed: processedFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
+                                                      onPressed: processedImportFileList.isEmpty || !context.watch<StateProvider>().modAdderReload
                                                           ? null
                                                           : (() {
                                                               clearAllTempDirs();
                                                               _itemNameRenameIndex.clear();
-                                                              renameTextBoxController.clear();
-                                                              mainFolderRenameIndex.clear();
-                                                              subFoldersRenameIndex.clear();
+                                                              renameImportTextBoxController.clear();
+                                                              mainImportedFolderRenameIndex.clear();
+                                                              subImportedFoldersRenameIndex.clear();
                                                               _selectedCategories.clear();
-                                                              processedFileListLoad = null;
-                                                              processedFileList.clear();
+                                                              processedImportedFileListLoad = null;
+                                                              processedImportFileList.clear();
                                                               pathCharLengthList.clear();
                                                               if (csvInfosFromSheets.isNotEmpty) {
                                                                 csvInfosFromSheets.clear();
@@ -1732,7 +1751,7 @@ void modsImportHomePage(context) {
                                                               //_exitConfirmDialog = false;
                                                               Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                               _isNameEditing = false;
-                                                              dropZoneMax = true;
+                                                              importDropZoneMax = true;
                                                               setState(
                                                                 () {},
                                                               );
@@ -1741,65 +1760,68 @@ void modsImportHomePage(context) {
                                                 ),
                                               ),
                                               Visibility(
-                                                visible: !dropZoneMax,
+                                                visible: !importDropZoneMax,
                                                 child: Expanded(
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: ElevatedButton(
                                                         style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary.withBlue(100)),
-                                                        onPressed: processedFileList.isEmpty ||
+                                                        onPressed: processedImportFileList.isEmpty ||
                                                                 _isNameEditing ||
                                                                 !context.watch<StateProvider>().modAdderReload ||
                                                                 pathCharLengthList.where((mod) => mod.where((element) => element > 259).isNotEmpty).isNotEmpty
                                                             ? null
                                                             : (() async {
                                                                 if (_duplicateCounter > 0) {
-                                                                  processedFileList = await replaceNamesOfDuplicates(processedFileList);
+                                                                  processedImportFileList = await replaceNamesOfDuplicates(processedImportFileList);
                                                                 } else {
-                                                                  List<ModsAdderItem> toAddList = processedFileList.toList();
-                                                                  processedFileListLoad = null;
-                                                                  processedFileList.clear();
-                                                                  _isAddingMods = true;
-                                                                  setState(
-                                                                    () {},
-                                                                  );
-                                                                  // ignore: use_build_context_synchronously
-                                                                  modsImportFilesAdder(context, toAddList, await newImportModSetDialog(context)).then(
-                                                                    (value) {
-                                                                      if (value) {
-                                                                        //clear values
-                                                                        clearAllTempDirs();
-                                                                        _itemNameRenameIndex.clear();
-                                                                        mainFolderRenameIndex.clear();
-                                                                        renameTextBoxController.clear();
-                                                                        subFoldersRenameIndex.clear();
-                                                                        _selectedCategories.clear();
-                                                                        processedFileListLoad = null;
-                                                                        processedFileList.clear();
-                                                                        toAddList.clear();
-                                                                        pathCharLengthList.clear();
-                                                                        _isAddingMods = false;
-                                                                        //_exitConfirmDialog = false;
-                                                                        // ignore: use_build_context_synchronously
-                                                                        Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
-                                                                        _isNameEditing = false;
-                                                                        dropZoneMax = true;
-                                                                        if (csvInfosFromSheets.isNotEmpty) {
-                                                                          csvInfosFromSheets.clear();
+                                                                  var (setName, applyImported) = await newImportModSetDialog(context);
+                                                                  if (setName.isNotEmpty) {
+                                                                    List<ModsAdderItem> toAddList = processedImportFileList.toList();
+                                                                    processedImportedFileListLoad = null;
+                                                                    processedImportFileList.clear();
+                                                                    _isAddingMods = true;
+                                                                    setState(
+                                                                      () {},
+                                                                    );
+                                                                    // ignore: use_build_context_synchronously
+                                                                    modsImportFilesAdder(context, toAddList, setName, applyImported).then(
+                                                                      (value) {
+                                                                        if (value) {
+                                                                          //clear values
+                                                                          clearAllTempDirs();
+                                                                          _itemNameRenameIndex.clear();
+                                                                          mainImportedFolderRenameIndex.clear();
+                                                                          renameImportTextBoxController.clear();
+                                                                          subImportedFoldersRenameIndex.clear();
+                                                                          _selectedCategories.clear();
+                                                                          processedImportedFileListLoad = null;
+                                                                          processedImportFileList.clear();
+                                                                          toAddList.clear();
+                                                                          pathCharLengthList.clear();
+                                                                          _isAddingMods = false;
+                                                                          //_exitConfirmDialog = false;
+                                                                          // ignore: use_build_context_synchronously
+                                                                          Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
+                                                                          _isNameEditing = false;
+                                                                          importDropZoneMax = true;
+                                                                          if (csvInfosFromSheets.isNotEmpty) {
+                                                                            csvInfosFromSheets.clear();
+                                                                          }
+                                                                        } else {
+                                                                          processedImportFileList = toAddList.toList();
+                                                                          toAddList.clear();
+                                                                          _isAddingMods = false;
                                                                         }
-                                                                      } else {
-                                                                        processedFileList = toAddList.toList();
-                                                                        toAddList.clear();
-                                                                        _isAddingMods = false;
-                                                                      }
-                                                                      setState(
-                                                                        () {},
-                                                                      );
-                                                                    },
-                                                                  );
+                                                                        setState(
+                                                                          () {},
+                                                                        );
+                                                                      },
+                                                                    );
 
-                                                                  // ignore: use_build_context_synchronously
-                                                                  //Navigator.of(context).pop();
+                                                                    // ignore: use_build_context_synchronously
+                                                                    //Navigator.of(context).pop();
+                                                                  }
                                                                 }
                                                                 setState(
                                                                   () {},
@@ -1839,7 +1861,7 @@ Future<List<ModsAdderItem>> modsImportFilesProcess(context, List<XFile> xFilePat
   Directory importedDir = Directory(modManImportedDirPath);
   importedDir.createSync(recursive: true);
   List<ModsAdderItem> modsImportItemList = [];
-  List<String> pathsWithNoIceInRoot = [];
+  // List<String> pathsWithNoIceInRoot = [];
   List<Directory> extractedImportDirs = [];
   //copy files to temp
   for (var xFile in xFilePaths) {
@@ -2210,7 +2232,7 @@ void modsAdderUnsupportedFileTypeDialog(context, String fileName) {
             titlePadding: const EdgeInsets.all(16),
             title: Text(curLangText!.uiError),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            content: Text('"$fileName" ${curLangText!.uiAchiveCurrentlyNotSupported}'),
+            content: Text('"$fileName" ${curLangText!.uiFilesNotSupported}'),
             actionsPadding: const EdgeInsets.all(16),
             actions: [
               ElevatedButton(
