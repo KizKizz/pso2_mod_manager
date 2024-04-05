@@ -403,6 +403,7 @@ Future<(String, bool)> newImportModSetDialog(context) async {
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiCreateASetForImportedMods, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                actionsPadding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
                 content: Form(
                   key: nameFormKey,
                   child: TextFormField(

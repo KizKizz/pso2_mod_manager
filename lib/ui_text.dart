@@ -283,7 +283,10 @@ class TranslationText {
       uiDeselectX = "Deselect <x>",
       uiDirNotFound = "Directory location not found",
       uiExportThisMod = 'Export this mod',
-      uiExportSelectedMods = 'Export selected mods';
+      uiExportSelectedMods = 'Export selected mods',
+      uiRenameThisSet = 'Rename this Set',
+      uiModSetRename = 'Mod Set Rename',
+      uiImportMods = 'Import Mods';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

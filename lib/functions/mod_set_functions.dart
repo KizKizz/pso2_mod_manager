@@ -70,7 +70,7 @@ List<Item> itemsFromAppliedListFetch(List<CategoryType> appliedList) {
   return newItemList;
 }
 
-void setModSetNameToItems(String modSetName, List<Item> items) {
+Future<void> setModSetNameToItems(String modSetName, List<Item> items) async {
   for (var item in items) {
     if (item.applyStatus) {
       item.isSet = true;
@@ -105,7 +105,30 @@ void setModSetNameToItems(String modSetName, List<Item> items) {
   }
 }
 
-void removeModSetNameFromItems(String modSetName, List<Item> items) {
+Future<void> resetModSetNameToItems(String oldModSetName, String newModSetName, List<Item> items) async {
+  for (var item in items) {
+    if (item.isSet && item.setNames.contains(oldModSetName)) {
+      item.setNames[item.setNames.indexOf(oldModSetName)] = newModSetName;
+      for (var mod in item.mods) {
+        if (mod.isSet && mod.setNames.contains(oldModSetName)) {
+          mod.setNames[mod.setNames.indexOf(oldModSetName)] = newModSetName;
+          for (var submod in mod.submods) {
+            if (submod.isSet && submod.setNames.contains(oldModSetName)) {
+              submod.setNames[submod.setNames.indexOf(oldModSetName)] = newModSetName;
+              for (var modFile in submod.modFiles) {
+                if (modFile.isSet && modFile.setNames.contains(oldModSetName)) {
+                  modFile.setNames[modFile.setNames.indexOf(oldModSetName)] = newModSetName;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+Future<void> removeModSetNameFromItems(String modSetName, List<Item> items) async {
   for (var item in items) {
     if (item.isSet) {
       item.setNames.removeWhere(
@@ -583,6 +606,7 @@ Future<String> newModSetDialog(context) async {
                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
                 title: Text(curLangText!.uiNewModSet, style: const TextStyle(fontWeight: FontWeight.w700)),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                actionsPadding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
                 content: Form(
                   key: nameFormKey,
                   child: TextFormField(
@@ -640,6 +664,92 @@ Future<String> newModSetDialog(context) async {
                               }
                             },
                       child: Text(curLangText!.uiCreateAndAddModsToThisSet))
+                ]);
+          }));
+}
+
+Future<void> modsetRename(context, ModSet modSetToRename) async {
+  String newSetName = await renameModSetDialog(context, modSetToRename.setName);
+  if (newSetName.isNotEmpty) {
+    await resetModSetNameToItems(modSetToRename.setName, newSetName, modSetToRename.setItems);
+    modSetToRename.setName = newSetName;
+    saveSetListToJson();
+    saveModdedItemListToJson();
+  }
+}
+
+Future<String> renameModSetDialog(context, String curModSetName) async {
+  TextEditingController newModSetName = TextEditingController();
+  final nameFormKey = GlobalKey<FormState>();
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                title: Text(curLangText!.uiModSetRename, style: const TextStyle(fontWeight: FontWeight.w700)),
+                contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                actionsPadding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+                content: Form(
+                  key: nameFormKey,
+                  child: TextFormField(
+                    controller: newModSetName,
+                    maxLines: 1,
+                    textAlignVertical: TextAlignVertical.center,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
+                    validator: (value) {
+                      if (modSetList.where((element) => element.setName == newModSetName.text).isNotEmpty) {
+                        return curLangText!.uiNameAlreadyExisted;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: curLangText!.uiEnterNewModSetName,
+                        hintText: curModSetName,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.error),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        //isCollapsed: true,
+                        //isDense: true,
+                        contentPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+                        constraints: const BoxConstraints.tightForFinite(),
+                        // Set border for enabled state (default)
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).hintColor),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        // Set border for focused state
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Theme.of(context).colorScheme.primary),
+                          borderRadius: BorderRadius.circular(2),
+                        )),
+                    onChanged: (value) async {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                      child: Text(curLangText!.uiReturn),
+                      onPressed: () async {
+                        Navigator.pop(context, '');
+                      }),
+                  ElevatedButton(
+                      onPressed: newModSetName.value.text.isEmpty
+                          ? null
+                          : () async {
+                              if (nameFormKey.currentState!.validate()) {
+                                Navigator.pop(context, newModSetName.text);
+                              }
+                            },
+                      child: Text(curLangText!.uiRename))
                 ]);
           }));
 }

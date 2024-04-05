@@ -1655,7 +1655,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
 
-                          //Add Items/Mods
+                          //add mods
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,
                             child: ModManTooltip(
@@ -1669,6 +1669,8 @@ class _MainPageState extends State<MainPage> {
                                     modsAdderHomePage(context);
                                   },
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       const Icon(
                                         Icons.add_circle_outline,
@@ -1676,6 +1678,38 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                       const SizedBox(width: 2.5),
                                       Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 2.5,
+                          ),
+
+                          //import
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiAddNewModsToMM,
+                              child: SizedBox(
+                                //width: curActiveLang == 'JP' ? 110 : 105,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withRed(100).withOpacity(0.6),
+                                  onPressed: () {
+                                    modsImportHomePage(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.import_export,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiImportMods, style: const TextStyle(fontWeight: FontWeight.w400))
                                     ],
                                   ),
                                 ),
@@ -1703,6 +1737,8 @@ class _MainPageState extends State<MainPage> {
                                     }
                                   }),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
                                         const Icon(
@@ -1740,6 +1776,8 @@ class _MainPageState extends State<MainPage> {
                                         }
                                       },
                                       child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.extension_outlined,
@@ -1826,6 +1864,8 @@ class _MainPageState extends State<MainPage> {
                                   });
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.refresh,
@@ -1897,6 +1937,8 @@ class _MainPageState extends State<MainPage> {
                                 }),
                                 child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                     ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.fingerprint,
@@ -1912,6 +1954,8 @@ class _MainPageState extends State<MainPage> {
                                         ],
                                       )
                                     : Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.fingerprint,
@@ -1962,6 +2006,8 @@ class _MainPageState extends State<MainPage> {
                                   }
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.preview_outlined,
@@ -1995,6 +2041,8 @@ class _MainPageState extends State<MainPage> {
                                   _scaffoldKey.currentState!.openEndDrawer();
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.settings,

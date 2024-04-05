@@ -4307,6 +4307,20 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            //Export selected mods
+            ModManTooltip(
+              message: curLangText!.uiExportSelectedMods,
+              child: InkWell(
+                  onTap: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty
+                      ? null
+                      : () {
+                          modExportHomePage(context, moddedItemsList, selectedSubmodsInAppliedList);
+                        },
+                  child: Icon(
+                    Icons.import_export,
+                    color: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
+                  )),
+            ),
             //Add selected to mod set
             MenuAnchor(
                 builder: (BuildContext context, MenuController controller, Widget? child) {
@@ -4335,20 +4349,6 @@ class _HomePageState extends State<HomePage> {
                   return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                 })),
                 menuChildren: modSetsMenuItemButtons(context, selectedModFilesInAppliedList)),
-            //Export selected mods
-            ModManTooltip(
-              message: curLangText!.uiExportSelectedMods,
-              child: InkWell(
-                  onTap: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty
-                      ? null
-                      : () {
-                          modExportHomePage(context, moddedItemsList, selectedSubmodsInAppliedList);
-                        },
-                  child: Icon(
-                    Icons.import_export,
-                    color: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty ? Theme.of(context).disabledColor : null,
-                  )),
-            ),
           ]),
           const SizedBox(
             width: 10,
@@ -5283,6 +5283,24 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ],
                                               ),
+
+                                            //Rename
+                                            ModManTooltip(
+                                              message: curLangText!.uiRenameThisSet,
+                                              child: InkWell(
+                                                onTap:
+                                                  
+                                                    () async {
+                                                  await modsetRename(context, curSet);
+                                                  setState(() {});
+                                                },
+                                                child: const Icon(
+                                                  Icons.edit,
+                                                  size: 26,
+                                                  //color: curSet.setItems.where((element) => element.applyStatus).isNotEmpty ? Theme.of(context).disabledColor : null,
+                                                ),
+                                              ),
+                                            ),
 
                                             //Delete
                                             ModManTooltip(

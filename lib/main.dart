@@ -197,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
-    clearAllTempDirsBeforeGettingPath();
+    // clearAllTempDirsBeforeGettingPath();
     clearAppUpdateFolder();
     getAppVer();
     miscCheck();

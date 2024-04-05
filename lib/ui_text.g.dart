@@ -188,6 +188,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiRefreshCmx = json['uiRefreshCmx'] as String
       ..uiItemNameLanguage = json['uiItemNameLanguage'] as String
       ..uiItemNameLanguageTooltip = json['uiItemNameLanguageTooltip'] as String
+      ..uiOpenMainModManFolder = json['uiOpenMainModManFolder'] as String
+      ..uiOpenExportedModsFolder = json['uiOpenExportedModsFolder'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -316,6 +318,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSelectX = json['uiSelectX'] as String
       ..uiDeselectX = json['uiDeselectX'] as String
       ..uiDirNotFound = json['uiDirNotFound'] as String
+      ..uiExportThisMod = json['uiExportThisMod'] as String
+      ..uiExportSelectedMods = json['uiExportSelectedMods'] as String
+      ..uiRenameThisSet = json['uiRenameThisSet'] as String
+      ..uiModSetRename = json['uiModSetRename'] as String
+      ..uiImportMods = json['uiImportMods'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -538,7 +545,20 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiCreateAndAddModsToThisSet =
           json['uiCreateAndAddModsToThisSet'] as String
       ..uiAddNewSet = json['uiAddNewSet'] as String
-      ..uiEnterNewName = json['uiEnterNewName'] as String;
+      ..uiEnterNewName = json['uiEnterNewName'] as String
+      ..uiModExport = json['uiModExport'] as String
+      ..uiExportingMods = json['uiExportingMods'] as String
+      ..uiErrorWhenExportingMods = json['uiErrorWhenExportingMods'] as String
+      ..uiExport = json['uiExport'] as String
+      ..uiWaiting = json['uiWaiting'] as String
+      ..uiExportedNote = json['uiExportedNote'] as String
+      ..uiFilesNotSupported = json['uiFilesNotSupported'] as String
+      ..uiImportModDragDrop = json['uiImportModDragDrop'] as String
+      ..uiCreateASetForImportedMods =
+          json['uiCreateASetForImportedMods'] as String
+      ..uiEnterImportedSetName = json['uiEnterImportedSetName'] as String
+      ..uiImport = json['uiImport'] as String
+      ..uiImportAndApply = json['uiImportAndApply'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -692,6 +712,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiRefreshCmx': instance.uiRefreshCmx,
       'uiItemNameLanguage': instance.uiItemNameLanguage,
       'uiItemNameLanguageTooltip': instance.uiItemNameLanguageTooltip,
+      'uiOpenMainModManFolder': instance.uiOpenMainModManFolder,
+      'uiOpenExportedModsFolder': instance.uiOpenExportedModsFolder,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -807,6 +829,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSelectX': instance.uiSelectX,
       'uiDeselectX': instance.uiDeselectX,
       'uiDirNotFound': instance.uiDirNotFound,
+      'uiExportThisMod': instance.uiExportThisMod,
+      'uiExportSelectedMods': instance.uiExportSelectedMods,
+      'uiRenameThisSet': instance.uiRenameThisSet,
+      'uiModSetRename': instance.uiModSetRename,
+      'uiImportMods': instance.uiImportMods,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -997,4 +1024,16 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiCreateAndAddModsToThisSet': instance.uiCreateAndAddModsToThisSet,
       'uiAddNewSet': instance.uiAddNewSet,
       'uiEnterNewName': instance.uiEnterNewName,
+      'uiModExport': instance.uiModExport,
+      'uiExportingMods': instance.uiExportingMods,
+      'uiErrorWhenExportingMods': instance.uiErrorWhenExportingMods,
+      'uiExport': instance.uiExport,
+      'uiWaiting': instance.uiWaiting,
+      'uiExportedNote': instance.uiExportedNote,
+      'uiFilesNotSupported': instance.uiFilesNotSupported,
+      'uiImportModDragDrop': instance.uiImportModDragDrop,
+      'uiCreateASetForImportedMods': instance.uiCreateASetForImportedMods,
+      'uiEnterImportedSetName': instance.uiEnterImportedSetName,
+      'uiImport': instance.uiImport,
+      'uiImportAndApply': instance.uiImportAndApply,
     };

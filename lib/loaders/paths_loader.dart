@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/apply_mods.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
+import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -214,6 +215,9 @@ Future<bool> pathsLoader(context) async {
     backupMasterURL = patchLinks.firstWhere((element) => element.contains('BackupMasterURL=')).split('=').last.trim();
     backupPatchURL = patchLinks.firstWhere((element) => element.contains('BackupPatchURL=')).split('=').last.trim();
   }
+
+  //clear
+  clearAllTempDirsBeforeGettingPath();
 
   //Get patch file lists
   //await fetchOfficialPatchFileList();
