@@ -23,7 +23,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
           return AlertDialog(
               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
               backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-              contentPadding: const EdgeInsets.all(5),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
               content: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 200, minWidth: 200, maxHeight: double.infinity, maxWidth: double.infinity),
                 child: Column(
@@ -117,7 +117,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
 Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods) async {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
-  String rootExportDir = '$modManExportedDirPath/PSO2NGSExportedMods_$formattedDate';
+  String rootExportDir = '$modManExportedDirPath/PSO2NGSMMExportedMods_$formattedDate';
   List<String> exportedLog = [];
   await Directory(rootExportDir).create(recursive: true);
   for (var type in baseList) {
@@ -171,7 +171,7 @@ Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods
   }
   //Save logs
   File logFile = File(Uri.file('$rootExportDir/${curLangText!.uiExportedNote}.txt').toFilePath());
-  await logFile.create();
+  await logFile.create(recursive: true);
   await logFile.writeAsString(exportedLog.join('\n'));
   //zip
   var encoder = ZipFileEncoder();
