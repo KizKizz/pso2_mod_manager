@@ -177,7 +177,7 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
 
   //apply
   if (applyImported) {
-    await applyImportedMods(context, newSet);
+    await applyingImportedModLoader(context, newSet);
   }
 
   //Save to json
@@ -491,20 +491,21 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
       modFilesApply(context, allAppliedModFiles).then((value) async {
         if (value.indexWhere((element) => element.applyStatus) != -1) {
           for (var curItem in curSet.setItems) {
-            int curModIndex = curItem.mods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
-            int curSubModIndex = curItem.mods[curModIndex].submods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
-            curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
-            curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
-            curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
-            curItem.mods[curModIndex].applyStatus = true;
-            curItem.mods[curModIndex].isNew = false;
-            curItem.mods[curModIndex].applyDate = DateTime.now();
-
+            for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+              for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                curSubmod.applyStatus = true;
+                curSubmod.isNew = false;
+                curSubmod.applyDate = DateTime.now();
+              }
+              curMod.applyStatus = true;
+              curMod.isNew = false;
+              curMod.applyDate = DateTime.now();
+            }
+            curItem.applyDate = DateTime.now();
             curItem.applyStatus = true;
             if (curItem.mods.where((element) => element.isNew).isEmpty) {
               curItem.isNew = false;
             }
-            curItem.applyDate = DateTime.now();
           }
           appliedItemList = await appliedListBuilder(moddedItemsList);
           List<ModFile> appliedModFiles = value;
@@ -522,7 +523,58 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
         }
         isModViewModsApplying = false;
         saveModdedItemListToJson();
+        await Future.delayed(const Duration(seconds: 10));
+        Navigator.pop(context);
       });
     }
   });
+}
+
+Future<void> applyingImportedModLoader(context, ModSet curSet) async {
+  return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await applyImportedMods(context, curSet);
+          // ignore: use_build_context_synchronously
+        });
+        return StatefulBuilder(builder: (dialogContext, setState) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+              backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              content: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 200, minWidth: 200, maxHeight: double.infinity, maxWidth: double.infinity),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 5),
+                    //   child: Text(
+                    //     curLangText!.uiim,
+                    //     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    //   ),
+                    // ),
+                    Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 5),
+                            Text(
+                              curLangText!.uiApplyingImportedMods,
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        )),
+                  ],
+                ),
+              ));
+        });
+      });
 }

@@ -520,8 +520,8 @@ class TranslationText {
   //mods_import.dart
   String uiFilesNotSupported = 'Only .zip files exported by Mod Manager are supported', uiImportModDragDrop = 'Drag and drop exported .zip files here to import mods';
 
-  //mod_export_add_function.dart
-  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods';
+  //mod_import_add_function.dart
+  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods', uiApplyingImportedMods = 'Applying imported mods';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

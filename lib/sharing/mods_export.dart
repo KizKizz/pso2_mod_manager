@@ -10,8 +10,10 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
-Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod> exportSubmods) async {
+Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod> exportSubmods, appliedModsExport) async {
   File exportedZip = File('');
   bool isWaiting = true;
   List<String> exportNames = exportSubmods.map((e) => '${e.itemName} > ${e.modName} > ${e.submodName}').toList();
@@ -82,7 +84,7 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
                                 child: ElevatedButton(
                                     onPressed: () async {
                                       isWaiting = false;
-                                      String exportedZipPath = await modExport(baseList, exportSubmods);
+                                      String exportedZipPath = await modExport(baseList, exportSubmods, appliedModsExport);
                                       exportedZip = File(exportedZipPath);
                                       setState(
                                         () {},
@@ -114,59 +116,67 @@ Future<void> modExportHomePage(context, List<CategoryType> baseList, List<SubMod
       });
 }
 
-Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods) async {
+Future<String> modExport(List<CategoryType> baseList, List<SubMod> exportSubmods, bool appliedModsExport) async {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
   String rootExportDir = '$modManExportedDirPath/PSO2NGSMMExportedMods_$formattedDate';
   List<String> exportedLog = [];
   await Directory(rootExportDir).create(recursive: true);
   for (var type in baseList) {
-    for (var cate in type.categories) {
-      for (var exportSubmod in exportSubmods) {
+    for (var exportSubmod in exportSubmods) {
+      for (var cate in type.categories) {
         if (cate.categoryName == exportSubmod.category && exportSubmod.location.contains(cate.location)) {
           String log = exportSubmod.category;
+          Directory expCateDir = Directory(cate.location.replaceFirst(modManModsDirPath, rootExportDir));
+          expCateDir.createSync(recursive: true);
           for (var item in cate.items) {
             if (item.itemName == exportSubmod.itemName && exportSubmod.location.contains(item.location)) {
               log += ' > ${exportSubmod.itemName}';
+              Directory expItemDir = Directory(item.location.replaceFirst(modManModsDirPath, rootExportDir));
+              expItemDir.createSync(recursive: true);
+              for (var iconPath in item.icons) {
+                File icon = File(iconPath);
+                if (icon.existsSync() && p.basename(icon.path) != 'placeholdersquare.png') await icon.copy(icon.path.replaceFirst(icon.parent.path, expItemDir.path));
+              }
               for (var mod in item.mods) {
                 if (mod.modName == exportSubmod.modName && exportSubmod.location.contains(mod.location)) {
-        //           log += ' > ${exportSubmod.modName} > ${exportSubmod.submodName}';
-        //           Directory expCateDir = Directory(cate.location.replaceFirst(modManModsDirPath, rootExportDir));
-        //           expCateDir.createSync(recursive: true);
-        //           Directory expItemDir = Directory(item.location.replaceFirst(modManModsDirPath, rootExportDir));
-        //           expItemDir.createSync(recursive: true);
-        //           Directory expModDir = Directory(mod.location.replaceFirst(modManModsDirPath, rootExportDir));
-        //           expModDir.createSync(recursive: true);
-        //           Directory expSubmodDir = Directory(exportSubmod.location.replaceFirst(modManModsDirPath, rootExportDir));
-        //           expSubmodDir.createSync(recursive: true);
+                  log += ' > ${exportSubmod.modName} > ${exportSubmod.submodName}';
+                  Directory expModDir = Directory(mod.location.replaceFirst(modManModsDirPath, rootExportDir));
+                  expModDir.createSync(recursive: true);
+                  Directory expSubmodDir = Directory(exportSubmod.location.replaceFirst(modManModsDirPath, rootExportDir));
+                  expSubmodDir.createSync(recursive: true);
                   for (var modFile in exportSubmod.modFiles) {
-        //             await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
-        //           }
-        //           //previews for submod
-        //           for (var filePath in exportSubmod.previewImages) {
-        //             await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-        //           }
-        //           for (var filePath in exportSubmod.previewVideos) {
-        //             await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-        //           }
-        //           //previews file for mod
-        //           for (var filePath in mod.previewImages.where((element) => File(element).parent.path == mod.location)) {
-        //             await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-        //           }
-        //           for (var filePath in mod.previewVideos.where((element) => File(element).parent.path == mod.location)) {
-        //             await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
-        //           }
-        //           exportedLog.add(log);
-        //           log = '';
+                    if (appliedModsExport) {
+                      if (modFile.applyStatus) await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
+                    } else {
+                      await File(modFile.location).copy(modFile.location.replaceFirst(modManModsDirPath, rootExportDir));
+                    }
+                    //previews for submod
+                    for (var filePath in exportSubmod.previewImages) {
+                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                    }
+                    for (var filePath in exportSubmod.previewVideos) {
+                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                    }
+                    //previews file for mod
+                    for (var filePath in mod.previewImages.where((element) => File(element).parent.path == mod.location)) {
+                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                    }
+                    for (var filePath in mod.previewVideos.where((element) => File(element).parent.path == mod.location)) {
+                      await File(filePath).copy(filePath.replaceFirst(modManModsDirPath, rootExportDir));
+                    }
+                    if (log.isNotEmpty) {
+                      exportedLog.add(log);
+                    }
+                    log = '';
+                  }
                 }
-              }
-        //       for (var iconPath in item.icons) {
-        //         await File(iconPath).copy(iconPath.replaceFirst(modManModsDirPath, rootExportDir));
               }
             }
           }
         }
       }
+      await Future.delayed(const Duration(milliseconds: 100));
     }
   }
   //Save logs

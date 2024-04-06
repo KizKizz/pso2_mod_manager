@@ -57,6 +57,7 @@ import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -2910,7 +2911,7 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.import_export,
                                                         ),
                                                         child: Text(curLangText!.uiExportThisMod),
-                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first]),
+                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first], false),
                                                       ),
 
                                                       // open in file explorer
@@ -3063,7 +3064,9 @@ class _HomePageState extends State<HomePage> {
                                                   ),
 
                                                 //Add-Remove button
-                                                if (modViewModSetSubModIndex != -1 && curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                                if (modViewModSetSubModIndex != -1 &&
+                                                    curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1 &&
+                                                    curMod.submods.length == 1)
                                                   Stack(
                                                     children: [
                                                       Visibility(
@@ -3122,7 +3125,9 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ),
 
-                                                if (modViewModSetSubModIndex != -1 && curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                if (modViewModSetSubModIndex != -1 &&
+                                                    curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == false) != -1 &&
+                                                    curMod.submods.length == 1)
                                                   Stack(
                                                     children: [
                                                       Visibility(
@@ -3337,7 +3342,7 @@ class _HomePageState extends State<HomePage> {
                                                           Icons.import_export,
                                                         ),
                                                         child: Text(curLangText!.uiExportThisMod),
-                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]]),
+                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]], false),
                                                       ),
 
                                                       // open in file explorer
@@ -3829,7 +3834,7 @@ class _HomePageState extends State<HomePage> {
                                                                       Icons.import_export,
                                                                     ),
                                                                     child: Text(curLangText!.uiExportThisMod),
-                                                                    onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod]),
+                                                                    onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod], false),
                                                                   ),
 
                                                                   // open in file explorer
@@ -4314,7 +4319,8 @@ class _HomePageState extends State<HomePage> {
                   onTap: appliedItemList.isEmpty || selectedSubmodsInAppliedList.isEmpty
                       ? null
                       : () {
-                          modExportHomePage(context, moddedItemsList, selectedSubmodsInAppliedList);
+                          selectedSubmodsInAppliedList.removeWhere((element) => !element.applyStatus);
+                          modExportHomePage(context, moddedItemsList, selectedSubmodsInAppliedList, true);
                         },
                   child: Icon(
                     Icons.import_export,
@@ -4653,9 +4659,8 @@ class _HomePageState extends State<HomePage> {
                                                                               if (modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])) {
                                                                                 for (var modFile in allAppliedModFiles[m]) {
                                                                                   selectedModFilesInAppliedList.removeWhere((element) => element.location == modFile.location);
+                                                                                  selectedSubmodsInAppliedList.removeWhere((element) => element.location == p.dirname(modFile.location));
                                                                                 }
-                                                                                selectedSubmodsInAppliedList
-                                                                                    .removeWhere((element) => element.location == File(allAppliedModFiles[m].first.location).parent.path);
                                                                               } else {
                                                                                 selectedModFilesInAppliedList.addAll(allAppliedModFiles[m]);
                                                                                 for (var type in appliedItemList) {
@@ -5144,8 +5149,9 @@ class _HomePageState extends State<HomePage> {
                                                               previewImages.clear();
                                                               // videoPlayer.remove(0);
                                                               for (var item in curSet.setItems) {
-                                                                for (var mod in item.mods) {
-                                                                  for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                                for (var mod in item.mods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                  for (var submod
+                                                                      in mod.submods.where((element) => element.applyStatus && element.isSet && element.setNames.contains(curSet.setName))) {
                                                                     if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                       if (submod.cmxApplied!) {
                                                                         bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
@@ -5236,21 +5242,21 @@ class _HomePageState extends State<HomePage> {
                                                               modFilesApply(context, allAppliedModFiles).then((value) async {
                                                                 if (value.indexWhere((element) => element.applyStatus) != -1) {
                                                                   for (var curItem in curSet.setItems) {
-                                                                    int curModIndex = curItem.mods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
-                                                                    int curSubModIndex =
-                                                                        curItem.mods[curModIndex].submods.indexWhere((element) => element.isSet && element.setNames.contains(curSet.setName));
-                                                                    curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
-                                                                    curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
-                                                                    curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
-                                                                    curItem.mods[curModIndex].applyStatus = true;
-                                                                    curItem.mods[curModIndex].isNew = false;
-                                                                    curItem.mods[curModIndex].applyDate = DateTime.now();
-
+                                                                    for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                      for (var curSubmod in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                        curSubmod.applyStatus = true;
+                                                                        curSubmod.isNew = false;
+                                                                        curSubmod.applyDate = DateTime.now();
+                                                                      }
+                                                                      curMod.applyStatus = true;
+                                                                      curMod.isNew = false;
+                                                                      curMod.applyDate = DateTime.now();
+                                                                    }
+                                                                    curItem.applyDate = DateTime.now();
                                                                     curItem.applyStatus = true;
                                                                     if (curItem.mods.where((element) => element.isNew).isEmpty) {
                                                                       curItem.isNew = false;
                                                                     }
-                                                                    curItem.applyDate = DateTime.now();
                                                                   }
                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                   List<ModFile> appliedModFiles = value;
@@ -5288,9 +5294,7 @@ class _HomePageState extends State<HomePage> {
                                             ModManTooltip(
                                               message: curLangText!.uiRenameThisSet,
                                               child: InkWell(
-                                                onTap:
-                                                  
-                                                    () async {
+                                                onTap: () async {
                                                   await modsetRename(context, curSet);
                                                   setState(() {});
                                                 },
@@ -5597,6 +5601,23 @@ class _HomePageState extends State<HomePage> {
                                                                                   //await localOriginalFilesBackup(allAppliedModFiles[m]);
                                                                                   modFilesApply(context, allAppliedModFiles[m]).then((value) async {
                                                                                     if (value.indexWhere((element) => element.applyStatus) != -1) {
+                                                                                      // for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                                      //   for (var curSubmod
+                                                                                      //       in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                                      //     curSubmod.applyStatus = true;
+                                                                                      //     curSubmod.isNew = false;
+                                                                                      //     curSubmod.applyDate = DateTime.now();
+                                                                                      //   }
+                                                                                      //   curMod.applyStatus = true;
+                                                                                      //   curMod.isNew = false;
+                                                                                      //   curMod.applyDate = DateTime.now();
+                                                                                      // }
+                                                                                      // curItem.applyDate = DateTime.now();
+                                                                                      // curItem.applyStatus = true;
+                                                                                      // if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                      //   curItem.isNew = false;
+                                                                                      // }
+
                                                                                       int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
                                                                                       int curSubModIndex = curItem.mods[curModIndex].submods
                                                                                           .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
