@@ -146,6 +146,7 @@
   "uiItemNameLanguageTooltip": "Only applies to item names in list when adding mods or swapping items",
   "uiOpenMainModManFolder": "Open Main Mod Manager Folder",
   "uiOpenExportedModsFolder": "Open Exported Mods Folder",
+  "uiImportExportedMods": "Import mods that exported from PSO2NGS Mod Manager",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -443,5 +444,6 @@
   "uiCreateASetForImportedMods": "Create a Set for imported mods",
   "uiEnterImportedSetName": "Enter a name for your imported Set",
   "uiImport": "Import",
-  "uiImportAndApply": "Import and Apply Mods"
+  "uiImportAndApply": "Import and Apply Mods",
+  "uiApplyingImportedMods": "Applying imported mods"
 }

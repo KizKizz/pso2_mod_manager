@@ -523,7 +523,6 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
         }
         isModViewModsApplying = false;
         saveModdedItemListToJson();
-        await Future.delayed(const Duration(seconds: 10));
         Navigator.pop(context);
       });
     }
@@ -531,14 +530,14 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
 }
 
 Future<void> applyingImportedModLoader(context, ModSet curSet) async {
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await applyImportedMods(context, curSet);
+    // ignore: use_build_context_synchronously
+  });
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await applyImportedMods(context, curSet);
-          // ignore: use_build_context_synchronously
-        });
         return StatefulBuilder(builder: (dialogContext, setState) {
           return AlertDialog(
               shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -551,13 +550,6 @@ Future<void> applyingImportedModLoader(context, ModSet curSet) async {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 5),
-                    //   child: Text(
-                    //     curLangText!.uiim,
-                    //     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    //   ),
-                    // ),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Column(

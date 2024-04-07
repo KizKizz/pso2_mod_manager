@@ -169,7 +169,8 @@ class TranslationText {
       uiItemNameLanguage = 'Item Name Language',
       uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items',
       uiOpenMainModManFolder = 'Open Main Mod Manager Folder',
-      uiOpenExportedModsFolder = 'Open Exported Mods Folder';
+      uiOpenExportedModsFolder = 'Open Exported Mods Folder',
+      uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager';
 
   //homepage
   String uiItemList = 'Item List',

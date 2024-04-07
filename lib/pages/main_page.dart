@@ -1692,7 +1692,7 @@ class _MainPageState extends State<MainPage> {
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,
                             child: ModManTooltip(
-                              message: curLangText!.uiAddNewModsToMM,
+                              message: curLangText!.uiImportExportedMods,
                               child: SizedBox(
                                 //width: curActiveLang == 'JP' ? 110 : 105,
                                 child: MaterialButton(

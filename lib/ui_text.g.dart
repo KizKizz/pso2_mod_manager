@@ -190,6 +190,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiItemNameLanguageTooltip = json['uiItemNameLanguageTooltip'] as String
       ..uiOpenMainModManFolder = json['uiOpenMainModManFolder'] as String
       ..uiOpenExportedModsFolder = json['uiOpenExportedModsFolder'] as String
+      ..uiImportExportedMods = json['uiImportExportedMods'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -558,7 +559,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiCreateASetForImportedMods'] as String
       ..uiEnterImportedSetName = json['uiEnterImportedSetName'] as String
       ..uiImport = json['uiImport'] as String
-      ..uiImportAndApply = json['uiImportAndApply'] as String;
+      ..uiImportAndApply = json['uiImportAndApply'] as String
+      ..uiApplyingImportedMods = json['uiApplyingImportedMods'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -714,6 +716,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiItemNameLanguageTooltip': instance.uiItemNameLanguageTooltip,
       'uiOpenMainModManFolder': instance.uiOpenMainModManFolder,
       'uiOpenExportedModsFolder': instance.uiOpenExportedModsFolder,
+      'uiImportExportedMods': instance.uiImportExportedMods,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -1036,4 +1039,5 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiEnterImportedSetName': instance.uiEnterImportedSetName,
       'uiImport': instance.uiImport,
       'uiImportAndApply': instance.uiImportAndApply,
+      'uiApplyingImportedMods': instance.uiApplyingImportedMods,
     };

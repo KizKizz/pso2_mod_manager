@@ -146,6 +146,7 @@
   "uiItemNameLanguageTooltip": "注：仅对添加MOD或幻化时列表中的物品名称生效",
   "uiOpenMainModManFolder": "Open Main Mod Manager Folder",
   "uiOpenExportedModsFolder": "Open Exported Mods Folder",
+  "uiImportExportedMods": "Import mods that exported from PSO2NGS Mod Manager",
   "uiItemList": "物品列表",
   "uiLoadingUILanguage": "加载UI语言",
   "uiReloadingMods": "重新加载MOD",
@@ -443,5 +444,6 @@
   "uiCreateASetForImportedMods": "Create a Set for imported mods",
   "uiEnterImportedSetName": "Enter a name for your imported Set",
   "uiImport": "Import",
-  "uiImportAndApply": "Import and Apply Mods"
+  "uiImportAndApply": "Import and Apply Mods",
+  "uiApplyingImportedMods": "Applying imported mods"
 }
