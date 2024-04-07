@@ -83,6 +83,7 @@ More improvements and features
 Flutter and various libraries from [pub.dev](https://pub.dev/packages)
 
 [Zamboni](https://github.com/Shadowth117/Zamboni)
+[7-zip](www.7-zip.org)
 
 Found a bug? [Leave a message here](https://github.com/KizKizz/pso2_mod_manager/issues)
 
