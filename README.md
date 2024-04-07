@@ -47,11 +47,22 @@ and more..
    ![Screenshot 2022-06-26 143206-crop](https://user-images.githubusercontent.com/101075148/175836423-3b2b0ed6-b6b1-401c-9b71-2c7cb911db82.png)
    
 
+***Guides***
+
+**Export mods:**
+
+https://github.com/KizKizz/pso2_mod_manager/assets/101075148/81239572-7548-4efb-83f0-4584143fd549
+
+https://github.com/KizKizz/pso2_mod_manager/assets/101075148/8a822b3e-90e3-45ae-9bb5-e515728a55fc
+
+**Import mods:**
+
+https://github.com/KizKizz/pso2_mod_manager/assets/101075148/d6efe6fe-4c69-472e-abf5-72642b414967
 
 **Adding mods:**
 
 **Note**: 
-- Supporting .zip files, folders, .ice files, drag and drop to add
+- Supporting .zip files (.rar and .7z in v2.6.0), folders, .ice files, drag and drop to add
 - Mods can also be added by copying your mod folders into each category folder in ```...\PSO2 Mod Manager\Mods``` then refresh or restart the app
 
 [addmods.webm](https://github.com/KizKizz/pso2_mod_manager/assets/101075148/16846f2e-f631-4323-8358-4dfb0b4635c6)
