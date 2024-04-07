@@ -3,7 +3,7 @@
     "version": "2.6.0",
     "description": [
         "Added support for .rar and .7z files through 7-zip",
-        "Added export mods feature (Individual mods and applied mods in Applied Mods, hope it would be easier to share mods)",
+        "Added export mods feature (Individual mods and applied mods in Applied Mods, hope it would make it easier to share mods)",
         "Added import mods feature (Imported mods will be automatically added to Mod Sets and can be applied right away)",
         "Added rename function to Mod Sets",
         "Some bug fixes and improvements (Thank you for reporting bugs!)",
