@@ -46,6 +46,7 @@ String modManAddModsTempDirPath = '';
 String modManAddModsUnpackDirPath = '';
 String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
 String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
+String modMan7zipExePath = Uri.file('${Directory.current.path}/7zip-x64/7z.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
 String modManWin32CheckSumFilePath = '';
 String modManWin32NaCheckSumFilePath = '';

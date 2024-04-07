@@ -2569,6 +2569,14 @@ class _HomePageState extends State<HomePage> {
                                                                 if (modViewItem!.mods.length < 2) {
                                                                   deleteItemFromModMan(modViewItem!.location).then((value) {
                                                                     String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                    if (modViewItem!.isSet) {
+                                                                      for (var setName in modViewItem!.setNames) {
+                                                                        int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                        if (setIndex != -1) {
+                                                                          modSetList[setIndex].setItems.remove(modViewItem);
+                                                                        }
+                                                                      }
+                                                                    }
                                                                     modViewCate!.items.remove(modViewItem);
                                                                     modViewItem = null;
                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -2989,6 +2997,14 @@ class _HomePageState extends State<HomePage> {
                                                                   if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
                                                                     deleteItemFromModMan(modViewItem!.location).then((value) {
                                                                       String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                      if (modViewItem!.isSet) {
+                                                                        for (var setName in modViewItem!.setNames) {
+                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                          if (setIndex != -1) {
+                                                                            modSetList[setIndex].setItems.remove(modViewItem);
+                                                                          }
+                                                                        }
+                                                                      }
                                                                       modViewCate!.items.remove(modViewItem);
                                                                       modViewItem = null;
                                                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -3419,6 +3435,14 @@ class _HomePageState extends State<HomePage> {
                                                                   if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
                                                                     deleteItemFromModMan(modViewItem!.location).then((value) {
                                                                       String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                      if (modViewItem!.isSet) {
+                                                                        for (var setName in modViewItem!.setNames) {
+                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                          if (setIndex != -1) {
+                                                                            modSetList[setIndex].setItems.remove(modViewItem);
+                                                                          }
+                                                                        }
+                                                                      }
                                                                       modViewCate!.items.remove(modViewItem);
                                                                       modViewItem = null;
                                                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -3912,6 +3936,14 @@ class _HomePageState extends State<HomePage> {
                                                                               if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
                                                                                 deleteItemFromModMan(modViewItem!.location).then((value) {
                                                                                   String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                                  if (modViewItem!.isSet) {
+                                                                                    for (var setName in modViewItem!.setNames) {
+                                                                                      int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                                      if (setIndex != -1) {
+                                                                                        modSetList[setIndex].setItems.remove(modViewItem);
+                                                                                      }
+                                                                                    }
+                                                                                  }
                                                                                   modViewCate!.items.remove(modViewItem);
                                                                                   modViewItem = null;
                                                                                   previewModName = '';

@@ -165,9 +165,10 @@ void modsAdderHomePage(context) {
                                             //enable: true,
                                             onDragDone: (detail) async {
                                               for (var element in detail.files) {
-                                                if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
-                                                  modsAdderUnsupportedFileTypeDialog(context, p.basename(element.path));
-                                                } else if (modAdderDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
+                                                // if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
+                                                //   modsAdderUnsupportedFileTypeDialog(context, p.basename(element.path));
+                                                // } else 
+                                                if (modAdderDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
                                                   modAdderDragDropFiles.add(element);
                                                   //newModMainFolderList.add(element);
                                                 }
@@ -1838,6 +1839,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   for (var xFile in xFilePaths) {
     if (p.extension(xFile.path) == '.zip') {
       await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: false);
+    } else if (p.extension(xFile.path) == '.rar') {
+      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.rar', '')}').toFilePath()}', '-r']);
+    } else if (p.extension(xFile.path) == '.7z') {
+      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.7z', '')}').toFilePath()}', '-r']);
     } else if (File(xFile.path).statSync().type == FileSystemEntityType.directory) {
       await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name}').toFilePath());
     } else {

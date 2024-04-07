@@ -291,7 +291,7 @@ class TranslationText {
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
-      uiDragDropFiles = 'Drag and drop folders, zip files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
+      uiDragDropFiles = 'Drag and drop folders, .zip, .rar, .7z files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
@@ -522,7 +522,7 @@ class TranslationText {
   String uiFilesNotSupported = 'Only .zip files exported by Mod Manager are supported', uiImportModDragDrop = 'Drag and drop exported .zip files here to import mods';
 
   //mod_import_add_function.dart
-  String uiCreateASetForImportedMods = 'Create a Set for imported mods', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods', uiApplyingImportedMods = 'Applying imported mods';
+  String uiCreateASetForImportedMods = 'Save imported mods to Mod Sets', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods', uiApplyingImportedMods = 'Applying imported mods';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

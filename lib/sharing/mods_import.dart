@@ -547,7 +547,6 @@ void modsImportHomePage(context) {
                                                     }
 
                                                     //rename trigger
-
                                                     if (_itemNameRenameIndex.isNotEmpty && _itemNameRenameIndex.length != processedImportFileList.length) {
                                                       for (int i = 0; i < mainImportedFolderRenameIndex.length; i++) {
                                                         if (processedImportFileList[i].modList.length != mainImportedFolderRenameIndex[i].length) {
@@ -687,7 +686,7 @@ void modsImportHomePage(context) {
                                                                                         _selectedCategories[index] = value.toString();
                                                                                         String newItemPath = processedImportFileList[index].itemDirPath.replaceFirst(
                                                                                             p.dirname(processedImportFileList[index].itemDirPath),
-                                                                                            Uri.file('$modManModsAdderPath/${_selectedCategories[index]}').toFilePath());
+                                                                                            Uri.file('$modManImportedDirPath/${_selectedCategories[index]}').toFilePath());
                                                                                         await io.copyPath(processedImportFileList[index].itemDirPath, newItemPath);
                                                                                         //delete item dir
                                                                                         Directory(processedImportFileList[index].itemDirPath).deleteSync(recursive: true);
@@ -1035,14 +1034,14 @@ void modsImportHomePage(context) {
 
                                                                                 int pathLength = 0;
                                                                                 for (var file in curMod.filesInMod) {
-                                                                                  String tempPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                  String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
                                                                                   if (tempPath.length > pathLength) {
                                                                                     pathLength = tempPath.length;
                                                                                   }
                                                                                 }
                                                                                 for (var sub in curMod.submodList) {
                                                                                   for (var modFile in sub.files) {
-                                                                                    String tempPath = modFile.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                    String tempPath = modFile.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
                                                                                     if (tempPath.length > pathLength) {
                                                                                       pathLength = tempPath.length;
                                                                                     }
@@ -1102,7 +1101,7 @@ void modsImportHomePage(context) {
                                                                                                     onChanged: (value) {
                                                                                                       int pathLength = 0;
                                                                                                       for (var file in curMod.filesInMod) {
-                                                                                                        String tempPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                                                                                                        String tempPath = file.path.replaceFirst(modManImportedDirPath, modManModsDirPath);
                                                                                                         if (tempPath.length > pathLength) {
                                                                                                           pathLength = tempPath.length;
                                                                                                         }
@@ -1110,7 +1109,7 @@ void modsImportHomePage(context) {
                                                                                                       for (var sub in curMod.submodList) {
                                                                                                         for (var modFile in sub.files) {
                                                                                                           String tempPath = modFile.path
-                                                                                                              .replaceFirst(modManModsAdderPath, modManModsDirPath)
+                                                                                                              .replaceFirst(modManImportedDirPath, modManModsDirPath)
                                                                                                               .replaceFirst(curMod.modName, value);
                                                                                                           if (tempPath.length > pathLength) {
                                                                                                             pathLength = tempPath.length;
@@ -1910,12 +1909,12 @@ Future<List<ModsAdderItem>> modsImportFilesProcess(context, List<XFile> xFilePat
   // List<File> csvMatchedIceFiles = [];
   for (var rootDir in extractedImportDirs) {
     for (var cate in rootDir.listSync().whereType<Directory>()) {
-      String itemCategory = p.basenameWithoutExtension(cate.path);
+      String itemCategory = p.basename(cate.path);
       if (defaultCategoryDirs.contains(p.basename(cate.path))) {
         itemCategory = defaultCategoryNames[defaultCategoryDirs.indexOf(p.basename(cate.path))];
       }
       for (var item in cate.listSync().whereType<Directory>()) {
-        String itemName = p.basenameWithoutExtension(item.path);
+        String itemName = p.basename(item.path);
         //look for item names
         for (var csvFile in csvInfosFromSheets) {
           bool found = false;
