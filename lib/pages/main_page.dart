@@ -32,6 +32,7 @@ import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
+import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
@@ -322,7 +323,7 @@ class _MainPageState extends State<MainPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      
+
                       //Item Name Language
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 8),
@@ -626,6 +627,30 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() async {
+                          await launchUrl(Uri.file(modManDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenMainModManFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
                           await launchUrl(Uri.file(modManModsDirPath));
                         }),
                         child: Row(
@@ -662,6 +687,30 @@ class _MainPageState extends State<MainPage> {
                             const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenBackupFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManExportedDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenExportedModsFolder,
                               style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -764,53 +813,6 @@ class _MainPageState extends State<MainPage> {
                               Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
-                        ),
-                      ),
-
-                      //Auto fetching item icon on startup
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.auto_awesome_motion,
-                                  size: 18,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10, left: 25, bottom: 5),
-                              child: ToggleButtons(
-                                onPressed: (int index) async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  prefs.setString('isAutoFetchingIconsOnStartup', saveValues[index]);
-                                  isAutoFetchingIconsOnStartup = saveValues[index];
-                                  setState(() {
-                                    for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
-                                      _selectedIconLoaderSwitches[i] = i == index;
-                                    }
-                                  });
-                                },
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                selectedBorderColor: Theme.of(context).colorScheme.primary,
-                                constraints: const BoxConstraints(
-                                  minHeight: 25.0,
-                                  minWidth: 74.0,
-                                ),
-                                isSelected: _selectedIconLoaderSwitches,
-                                children: iconLoaderSwitches,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
 
@@ -940,6 +942,53 @@ class _MainPageState extends State<MainPage> {
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
+                        ),
+                      ),
+
+                      //Auto fetching item icon on startup
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.auto_awesome_motion,
+                                  size: 18,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text('${curLangText!.uiStartupItemIconsFetching}:'),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10, left: 25, bottom: 5),
+                              child: ToggleButtons(
+                                onPressed: (int index) async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('isAutoFetchingIconsOnStartup', saveValues[index]);
+                                  isAutoFetchingIconsOnStartup = saveValues[index];
+                                  setState(() {
+                                    for (int i = 0; i < _selectedIconLoaderSwitches.length; i++) {
+                                      _selectedIconLoaderSwitches[i] = i == index;
+                                    }
+                                  });
+                                },
+                                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                selectedBorderColor: Theme.of(context).colorScheme.primary,
+                                constraints: const BoxConstraints(
+                                  minHeight: 25.0,
+                                  minWidth: 74.0,
+                                ),
+                                isSelected: _selectedIconLoaderSwitches,
+                                children: iconLoaderSwitches,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -1588,8 +1637,7 @@ class _MainPageState extends State<MainPage> {
                                   child: MaterialButton(
                                     color: Colors.redAccent,
                                     onPressed: () async {
-                                      //final XFile? selectedFile = await openFile();
-                                      cmxModPatch('');
+                                      modsImportHomePage(context);
                                     },
                                     child: const Row(
                                       children: [
@@ -1607,7 +1655,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
 
-                          //Add Items/Mods
+                          //add mods
                           Visibility(
                             visible: context.watch<StateProvider>().showTitleBarButtons,
                             child: ModManTooltip(
@@ -1621,6 +1669,8 @@ class _MainPageState extends State<MainPage> {
                                     modsAdderHomePage(context);
                                   },
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       const Icon(
                                         Icons.add_circle_outline,
@@ -1628,6 +1678,38 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                       const SizedBox(width: 2.5),
                                       Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 2.5,
+                          ),
+
+                          //import
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: ModManTooltip(
+                              message: curLangText!.uiImportExportedMods,
+                              child: SizedBox(
+                                //width: curActiveLang == 'JP' ? 110 : 105,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withRed(100).withOpacity(0.6),
+                                  onPressed: () {
+                                    modsImportHomePage(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.import_export,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiImportMods, style: const TextStyle(fontWeight: FontWeight.w400))
                                     ],
                                   ),
                                 ),
@@ -1655,6 +1737,8 @@ class _MainPageState extends State<MainPage> {
                                     }
                                   }),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
                                         const Icon(
@@ -1692,6 +1776,8 @@ class _MainPageState extends State<MainPage> {
                                         }
                                       },
                                       child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.extension_outlined,
@@ -1778,6 +1864,8 @@ class _MainPageState extends State<MainPage> {
                                   });
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.refresh,
@@ -1849,6 +1937,8 @@ class _MainPageState extends State<MainPage> {
                                 }),
                                 child: modManChecksumFilePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).isChecksumMD5Match
                                     ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.fingerprint,
@@ -1864,6 +1954,8 @@ class _MainPageState extends State<MainPage> {
                                         ],
                                       )
                                     : Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.fingerprint,
@@ -1914,6 +2006,8 @@ class _MainPageState extends State<MainPage> {
                                   }
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.preview_outlined,
@@ -1947,6 +2041,8 @@ class _MainPageState extends State<MainPage> {
                                   _scaffoldKey.currentState!.openEndDrawer();
                                 }),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.settings,

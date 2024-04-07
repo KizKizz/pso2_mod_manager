@@ -98,6 +98,36 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
             cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
 
             break;
+          } else if (cateType.groupName == defaultCategoryTypeNames[2]) {
+            Category newCate = Category(category, cateType.groupName, Uri.file('$modManModsDirPath/$category').toFilePath(), cateType.categories.length, true, []);
+            int itemInListIndex = newCate.items.indexWhere((element) => element.itemName.toLowerCase() == itemName.toLowerCase());
+            if (itemInListIndex == -1) {
+              newCate.items.add(await newItemsFetcher(Uri.file('$modManModsDirPath/$category').toFilePath(), newItemPath));
+            } else {
+              Item itemInList = newCate.items[itemInListIndex];
+              int modInListIndex = itemInList.mods.indexWhere((element) => mainNames.where((name) => name.toLowerCase() == element.modName.toLowerCase()).isNotEmpty);
+              if (modInListIndex != -1) {
+                Mod modInList = itemInList.mods[modInListIndex];
+                List<SubMod> extraSubmods = newSubModFetcher(modInList.location, newCate.categoryName, itemInList.itemName);
+                for (var subModInCurMod in modInList.submods) {
+                  extraSubmods.removeWhere((element) => element.submodName.toLowerCase() == subModInCurMod.submodName.toLowerCase());
+                }
+                modInList.submods.addAll(extraSubmods);
+                modInList.isNew = true;
+              } else {
+                itemInList.mods.addAll(newModsFetcher(itemInList.location, newCate.categoryName, foldersInNewItemPath));
+              }
+              itemInList.isNew = true;
+              //Sort alpha
+              itemInList.mods.sort((a, b) => a.modName.toLowerCase().compareTo(b.modName.toLowerCase()));
+            }
+            //Sort alpha
+            newCate.items.sort((a, b) => a.itemName.toLowerCase().compareTo(b.itemName.toLowerCase()));
+            newCate.visible = newCate.items.isNotEmpty ? true : false;
+            cateType.categories.add(newCate);
+            cateType.visible = cateType.categories.where((element) => element.items.isNotEmpty).isNotEmpty ? true : false;
+
+            break;
           }
         }
 
@@ -184,7 +214,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
     //Get preview images;
     List<String> modPreviewImages = [];
     List<String> modPreviewVideos = [];
-    
+
     if (dir.existsSync()) {
       final imagesInModDir = Directory(dir.path).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.jpg' || p.extension(element.path) == '.png');
       for (var element in imagesInModDir) {

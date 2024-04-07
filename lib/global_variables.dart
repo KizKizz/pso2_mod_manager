@@ -156,5 +156,6 @@ bool profanityFilterRemove = false;
 bool removeBoundaryRadiusOnModsApply = false;
 bool prioritizeLocalBackup = false;
 List<ModFile> selectedModFilesInAppliedList = [];
+List<SubMod> selectedSubmodsInAppliedList = [];
 bool cmxRefreshing = false;
 String modManCurActiveItemNameLanguage = '';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -74,7 +75,7 @@ Future<void> categoryMover(context, CategoryType curCateType, Category cateToMov
                         Navigator.pop(context);
                       }),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         selectedType.categories.insert(0, cateToMove);
                         cateToMove.group = selectedType.groupName;
                         for (var cate in selectedType.categories) {
@@ -84,7 +85,9 @@ Future<void> categoryMover(context, CategoryType curCateType, Category cateToMov
                         for (var cate in curCateType.categories) {
                           cate.position = curCateType.categories.indexOf(cate);
                         }
+                        appliedItemList = await appliedListBuilder(moddedItemsList);
                         saveModdedItemListToJson();
+                        // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       },
                       child: Text(curLangText!.uiMove))

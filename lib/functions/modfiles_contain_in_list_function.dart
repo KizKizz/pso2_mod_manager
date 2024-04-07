@@ -5,10 +5,10 @@ bool modFilesInList(List<ModFile> list, List<ModFile> modFiles) {
     return false;
   }
   for (var modFile in modFiles) {
-    if (list.where((element) => element.location == modFile.location).isEmpty) {
-      return false;
+    if (list.where((element) => element.location == modFile.location).isNotEmpty) {
+      return true;
     }
   }
 
-  return true;
+  return false;
 }

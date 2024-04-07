@@ -168,7 +168,7 @@ Future<String> categoryAdder(context) async {
           }));
 }
 
-void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
+Future<void> categoryGroupRemover(context, CategoryType cateTypeToDel) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -227,7 +227,7 @@ void categoryGroupRemover(context, CategoryType cateTypeToDel) async {
           }));
 }
 
-void categoryRemover(context, CategoryType cateTypeToDel, Category cateToDel) async {
+Future<void> categoryRemover(context, CategoryType cateTypeToDel, Category cateToDel) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
