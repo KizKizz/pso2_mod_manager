@@ -1,7 +1,13 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.0",
+    "version": "2.6.1",
     "description": [
+        "v2.6.1:",
+        "Added adding progress text to Add Mods - Thanks Melodii (@melo.dii) for the suggestion!",
+        "Hot-fixes for v2.6.0",
+        "MODの追加にプログレス・テキストを追加 - 提案してくれたMelodii (@melo.dii) に感謝！",
+        "2.6.0のホットフィックス",
+        "v2.6.0:",
         "Added support for .rar and .7z files through 7-zip",
         "Added export mods feature (Individual mods and applied mods in Applied Mods, hope it would make it easier to share mods)",
         "Added import mods feature (Imported mods will be automatically added to Mod Sets and can be applied right away)",
