@@ -167,7 +167,7 @@ void modsAdderHomePage(context) {
                                               for (var element in detail.files) {
                                                 // if (p.extension(element.path) == '.rar' || p.extension(element.path) == '.7z') {
                                                 //   modsAdderUnsupportedFileTypeDialog(context, p.basename(element.path));
-                                                // } else 
+                                                // } else
                                                 if (modAdderDragDropFiles.indexWhere((file) => file.path == element.path) == -1) {
                                                   modAdderDragDropFiles.add(element);
                                                   //newModMainFolderList.add(element);
@@ -476,6 +476,13 @@ void modsAdderHomePage(context) {
                                                           height: 20,
                                                         ),
                                                         const CircularProgressIndicator(),
+                                                        if (_isAddingMods)
+                                                          Padding(
+                                                              padding: const EdgeInsets.only(top: 15),
+                                                              child: Text(
+                                                                context.watch<StateProvider>().modAdderProgressStatus,
+                                                                textAlign: TextAlign.center,
+                                                              ))
                                                       ],
                                                     ),
                                                   );
@@ -1998,8 +2005,8 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
       List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
       if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
-          extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
-        }
+        extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
+      }
       for (var extraFile in extraFiles) {
         String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
         if (!File(newExtraFilePath).existsSync()) {

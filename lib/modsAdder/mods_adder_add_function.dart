@@ -16,6 +16,7 @@ import 'package:pso2_mod_manager/state_provider.dart';
 
 //Auto Files adder
 Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList) async {
+  Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('');
   //List<List<String>> addedItems = [];
   for (var item in itemsToAddList) {
     if (item.toBeAdded) {
@@ -48,6 +49,8 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
                 String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
                 Directory(p.dirname(newFilePath)).createSync(recursive: true);
                 file.copySync(newFilePath);
+                Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('$category > $itemName > ${mod.modName} > ${submod.submodName} > ${p.basename(file.path)}');
+                await Future.delayed(const Duration(milliseconds: 10));
               }
             }
           }

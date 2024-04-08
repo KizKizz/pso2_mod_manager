@@ -36,6 +36,7 @@ class StateProvider with ChangeNotifier {
   bool _profanityFilterRemove = false;
   bool _removeBoundaryRadiusOnModsApply = false;
   bool _prioritizeLocalBackup = false;
+  String _modAdderProgressStatus = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -71,6 +72,12 @@ class StateProvider with ChangeNotifier {
   bool get profanityFilterRemove => _profanityFilterRemove;
   bool get removeBoundaryRadiusOnModsApply => _removeBoundaryRadiusOnModsApply;
   bool get prioritizeLocalBackup => _prioritizeLocalBackup;
+  String get modAdderProgressStatus => _modAdderProgressStatus;
+
+  void setModAdderProgressStatus(String status) {
+    _modAdderProgressStatus = status;
+    notifyListeners();
+  }
 
   void prioritizeLocalBackupTrue() {
     _prioritizeLocalBackup = true;
