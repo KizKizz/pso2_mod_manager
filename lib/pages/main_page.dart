@@ -700,6 +700,7 @@ class _MainPageState extends State<MainPage> {
                       MaterialButton(
                         height: 40,
                         onPressed: (() async {
+                          print(Uri.directory(modManExportedDirPath).toFilePath());
                           await launchUrl(Uri.file(modManExportedDirPath));
                         }),
                         child: Row(

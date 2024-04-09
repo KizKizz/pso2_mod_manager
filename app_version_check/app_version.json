@@ -1,7 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.1",
+    "version": "2.6.2",
     "description": [
+        "v2.6.2:",
+        "More bug fixes",
+        "その他のバグ修正",
         "v2.6.1:",
         "Added adding progress text to Add Mods - Thanks Melodii (@melo.dii) for the suggestion!",
         "Hot-fixes for v2.6.0",
