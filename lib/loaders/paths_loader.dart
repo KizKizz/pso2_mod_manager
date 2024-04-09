@@ -103,7 +103,9 @@ Future<bool> pathsLoader(context) async {
   jsonPso2binPathsRename(oldPso2binDirPath);
 
   //modman dir path
-  modManDirParentDirPath = Uri.file(prefs.getString('mainModManDirPath') ?? '').toFilePath();
+  String savedModManDirParentDirPath = prefs.getString('mainModManDirPath') ?? '';
+  if (savedModManDirParentDirPath.endsWith(':')) savedModManDirParentDirPath += '\\';
+  modManDirParentDirPath = Uri.file(savedModManDirParentDirPath).toFilePath();
   if (modManDirParentDirPath.endsWith('\\')) {
     modManDirParentDirPath = modManDirParentDirPath.replaceRange(modManDirParentDirPath.length - 1, null, '');
   }
