@@ -2272,7 +2272,8 @@ class _HomePageState extends State<HomePage> {
                             visible: isFavListVisible && !isModViewFromApplied
                                 ? curMod.isFavorite
                                 : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0
-                                    ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                    ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                        curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isNotEmpty
                                     : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0
                                         ? true
                                         : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
@@ -3506,7 +3507,9 @@ class _HomePageState extends State<HomePage> {
                                                   ? curSubmod.isFavorite
                                                   : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
-                                                      : true,
+                                                      : searchTextController.value.text.toLowerCase().isNotEmpty
+                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                                          : true,
                                               child: InkWell(
                                                 //submod preview images
                                                 onTap: () {},
