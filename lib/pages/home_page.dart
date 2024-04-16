@@ -2272,7 +2272,8 @@ class _HomePageState extends State<HomePage> {
                             visible: isFavListVisible && !isModViewFromApplied
                                 ? curMod.isFavorite
                                 : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) > 0
-                                    ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                    ? curMod.modName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                        curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isNotEmpty
                                     : searchTextController.value.text.toLowerCase().isNotEmpty && !isModViewFromApplied && itemModSearchMatchesCheck(modViewItem!, searchTextController.value.text) == 0
                                         ? true
                                         : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
@@ -2403,7 +2404,15 @@ class _HomePageState extends State<HomePage> {
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                               ),
-                                                              child: Text(
+                                                              child: searchTextController.value.text.isNotEmpty
+                                                              ? Text(
+                                                                  curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length < 2
+                                                                      ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  ))
+                                                              :Text(
                                                                   curMod.submods.length < 2
                                                                       ? '${curMod.submods.length} ${curLangText!.uiVariant}'
                                                                       : '${curMod.submods.length} ${curLangText!.uiVariants}',
@@ -3506,7 +3515,9 @@ class _HomePageState extends State<HomePage> {
                                                   ? curSubmod.isFavorite
                                                   : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
-                                                      : true,
+                                                      : searchTextController.value.text.toLowerCase().isNotEmpty
+                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                                          : true,
                                               child: InkWell(
                                                 //submod preview images
                                                 onTap: () {},
