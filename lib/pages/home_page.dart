@@ -2404,7 +2404,15 @@ class _HomePageState extends State<HomePage> {
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                               ),
-                                                              child: Text(
+                                                              child: searchTextController.value.text.isNotEmpty
+                                                              ? Text(
+                                                                  curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length < 2
+                                                                      ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
+                                                                      : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  ))
+                                                              :Text(
                                                                   curMod.submods.length < 2
                                                                       ? '${curMod.submods.length} ${curLangText!.uiVariant}'
                                                                       : '${curMod.submods.length} ${curLangText!.uiVariants}',
