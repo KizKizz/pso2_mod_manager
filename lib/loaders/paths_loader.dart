@@ -198,6 +198,12 @@ Future<bool> pathsLoader(context) async {
   //   }
   // }
 
+  // get edition
+  File editionFile = File(Uri.file('$modManPso2binPath/edition.txt').toFilePath());
+  if (editionFile.existsSync()) {
+    Provider.of<StateProvider>(context, listen: false).setGameEdition((await editionFile.readAsString()).trim());
+  }
+
   //ref sheets check load files
   if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
     final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
@@ -366,6 +372,12 @@ Future<bool> pso2PathsReloader(context) async {
   //     await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
   //   }
   // }
+
+  // get edition
+  File editionFile = File(Uri.file('$modManPso2binPath/edition.txt').toFilePath());
+  if (editionFile.existsSync()) {
+    Provider.of<StateProvider>(context, listen: false).setGameEdition((await editionFile.readAsString()).trim());
+  }
 
   //Apply mods to new data folder
   for (var type in appliedItemList) {
@@ -558,6 +570,12 @@ Future<bool> modManPathReloader(context) async {
   //     await File(Uri.file('$modManPso2binPath/data/win32_na/$profanityFilterIce').toFilePath()).delete();
   //   }
   // }
+
+  // get edition
+  File editionFile = File(Uri.file('$modManPso2binPath/edition.txt').toFilePath());
+  if (editionFile.existsSync()) {
+    Provider.of<StateProvider>(context, listen: false).setGameEdition((await editionFile.readAsString()).trim());
+  }
 
   //sega patch server loader
   final patchLinks = await getPatchServerList();

@@ -170,7 +170,10 @@ class TranslationText {
       uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items',
       uiOpenMainModManFolder = 'Open Main Mod Manager Folder',
       uiOpenExportedModsFolder = 'Open Exported Mods Folder',
-      uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager';
+      uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager', 
+      uiStartPSO2 = 'Start PSO2',
+      uiLaunchGameJPVerOnly = 'Launch the game bypassing official launcher (JP ver only)',
+      uiIfGameNotLaunching = 'If the game is not launching, close and run the Mod Manager as administration and try again';
 
   //homepage
   String uiItemList = 'Item List',

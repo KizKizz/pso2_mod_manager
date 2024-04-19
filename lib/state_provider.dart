@@ -37,6 +37,7 @@ class StateProvider with ChangeNotifier {
   bool _removeBoundaryRadiusOnModsApply = false;
   bool _prioritizeLocalBackup = false;
   String _modAdderProgressStatus = '';
+  String _gameEdition = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -73,6 +74,12 @@ class StateProvider with ChangeNotifier {
   bool get removeBoundaryRadiusOnModsApply => _removeBoundaryRadiusOnModsApply;
   bool get prioritizeLocalBackup => _prioritizeLocalBackup;
   String get modAdderProgressStatus => _modAdderProgressStatus;
+  String get gameEdition => _gameEdition;
+
+  void setGameEdition(String edition) {
+    _gameEdition = edition;
+    notifyListeners();
+  }
 
   void setModAdderProgressStatus(String status) {
     _modAdderProgressStatus = status;
@@ -85,7 +92,7 @@ class StateProvider with ChangeNotifier {
   }
 
   void prioritizeLocalBackupFalse() {
-    _prioritizeLocalBackup= false;
+    _prioritizeLocalBackup = false;
     notifyListeners();
   }
 

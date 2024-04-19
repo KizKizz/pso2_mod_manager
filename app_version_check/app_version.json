@@ -1,26 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.4",
+    "version": "2.6.5",
     "description": [
-        "v2.6.2 + v2.6.3 + 2.6.4:",
-        "More bug fixes",
-        "その他のバグ修正",
-        "v2.6.1:",
-        "Added adding progress text to Add Mods - Thanks Melodii (@melo.dii) for the suggestion!",
-        "Hot-fixes for v2.6.0",
-        "MODの追加にプログレス・テキストを追加 - 提案してくれたMelodii (@melo.dii) に感謝！",
-        "2.6.0のホットフィックス",
-        "v2.6.0:",
-        "Added support for .rar and .7z files through 7-zip",
-        "Added export mods feature (Individual mods and applied mods in Applied Mods, hope it would make it easier to share mods)",
-        "Added import mods feature (Imported mods will be automatically added to Mod Sets and can be applied right away)",
-        "Added rename function to Mod Sets",
-        "Some bug fixes and improvements (Thank you for reporting bugs!)",
-        "7-zipによる.rarファイルと.7zファイルのサポートを追加",
-        "MODのエクスポート機能を追加(個別MODと応用MODは応用MODに)",
-        "MODのインポート機能を追加(インポートされたMODは自動的にMODセットに追加され、すぐに適用できます)",
-        "MODセットにリネーム機能を追加",
-        "いくつかのバグ修正と改善（バグのご報告ありがとうございました）"
+        "Added a button to launch the JP version of the game directly without official launcher (to bypass startup file check in JP version)",
+        "公式ランチャーを使わずにJP版を直接起動するボタンを追加(JP版の起動ファイルチェックを避けるため)"
     ],
     "windows_file": "",
     "linux_file": ""
