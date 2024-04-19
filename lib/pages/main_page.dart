@@ -7,7 +7,6 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
@@ -36,6 +35,7 @@ import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
+import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1625,28 +1625,70 @@ class _MainPageState extends State<MainPage> {
                       padding: const EdgeInsets.only(top: 1.5),
                       child: Row(
                         children: [
-                          //test button
+                          // test button
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons && kDebugMode,
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(right: 5),
+                          //     child: ModManTooltip(
+                          //       message: curLangText!.uiAddNewModsToMM,
+                          //       child: SizedBox(
+                          //         //width: curActiveLang == 'JP' ? 110 : 105,
+                          //         child: MaterialButton(
+                          //           color: Colors.redAccent,
+                          //           onPressed: () async {
+                          //             modsImportHomePage(context);
+                          //           },
+                          //           child: const Row(
+                          //             children: [
+                          //               Icon(
+                          //                 Icons.deblur,
+                          //                 size: 18,
+                          //               ),
+                          //               SizedBox(width: 2.5),
+                          //               Text('Destruct', style: TextStyle(fontWeight: FontWeight.w400))
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+
+                          // jp ver start button
                           Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons && kDebugMode,
+                            visible: context.watch<StateProvider>().showTitleBarButtons && context.watch<StateProvider>().gameEdition == 'jp',
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 5),
+                              padding: const EdgeInsets.only(right: 2.5),
                               child: ModManTooltip(
-                                message: curLangText!.uiAddNewModsToMM,
+                                message: curLangText!.uiLaunchGameJPVerOnly,
                                 child: SizedBox(
                                   //width: curActiveLang == 'JP' ? 110 : 105,
                                   child: MaterialButton(
-                                    color: Colors.redAccent,
+                                    color: Colors.blue,
                                     onPressed: () async {
-                                      modsImportHomePage(context);
+                                      File startBatch = File(Uri.file('$modManDirPath/startpso2jp.bat').toFilePath());
+                                      if (!startBatch.existsSync()) await startBatch.create(recursive: true);
+                                      if (startBatch.existsSync()) {
+                                        //check for checksum
+                                        await applyModsChecksumChecker(context);
+                                        //create start file
+                                        await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $modManPso2binPath/pso2.exe +0x33aca2b9 -reboot -optimize');
+                                        await Process.run(startBatch.path, []);
+                                        startBatch.deleteSync();
+                                      } else {
+                                        Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
+                                      }
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
-                                        Icon(
-                                          Icons.deblur,
+                                        const Icon(
+                                          Icons.play_arrow,
                                           size: 18,
                                         ),
-                                        SizedBox(width: 2.5),
-                                        Text('Destruct', style: TextStyle(fontWeight: FontWeight.w400))
+                                        const SizedBox(width: 2.5),
+                                        Text(curLangText!.uiStartPSO2, style: const TextStyle(fontWeight: FontWeight.w400))
                                       ],
                                     ),
                                   ),

@@ -191,6 +191,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiOpenMainModManFolder = json['uiOpenMainModManFolder'] as String
       ..uiOpenExportedModsFolder = json['uiOpenExportedModsFolder'] as String
       ..uiImportExportedMods = json['uiImportExportedMods'] as String
+      ..uiStartPSO2 = json['uiStartPSO2'] as String
+      ..uiLaunchGameJPVerOnly = json['uiLaunchGameJPVerOnly'] as String
+      ..uiIfGameNotLaunching = json['uiIfGameNotLaunching'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -717,6 +720,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiOpenMainModManFolder': instance.uiOpenMainModManFolder,
       'uiOpenExportedModsFolder': instance.uiOpenExportedModsFolder,
       'uiImportExportedMods': instance.uiImportExportedMods,
+      'uiStartPSO2': instance.uiStartPSO2,
+      'uiLaunchGameJPVerOnly': instance.uiLaunchGameJPVerOnly,
+      'uiIfGameNotLaunching': instance.uiIfGameNotLaunching,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
