@@ -1855,7 +1855,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     } else {
       final tempPath = Uri.file('$modManAddModsTempDirPath/${p.basename(File(xFile.path).parent.path)}').toFilePath();
       Directory(tempPath).createSync(recursive: true);
-      File(xFile.path).copySync(Uri.file('$tempPath/${xFile.name}').toFilePath());
+      if (File(xFile.path).existsSync()) File(xFile.path).copySync(Uri.file('$tempPath/${xFile.name}').toFilePath());
     }
   }
   //listing ice files in temp
@@ -1906,7 +1906,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //move files from temp
     String newItemDirPath = '';
     for (var iceFile in iceFileList) {
-      if (infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
+      if (iceFile.existsSync() && infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
         newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trimRight();
         String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
         newIceFilePath = removeRebootPath(newIceFilePath);
@@ -1926,7 +1926,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         }
         for (var extraFile in extraFiles) {
           String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
-          if (!File(newExtraFilePath).existsSync()) {
+          if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
             extraFile.copySync(newExtraFilePath);
           }
         }
@@ -1976,7 +1976,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
       if (index != -1) {
         for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-          extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
+          if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
         }
       }
     }
@@ -1989,7 +1989,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   //move unmatched ice files to misc
   bool isUnknownItemAdded = false;
   for (var iceFile in iceFileList) {
-    if (!csvMatchedIceFiles.contains(iceFile)) {
+    if (iceFile.existsSync() && !csvMatchedIceFiles.contains(iceFile)) {
       String itemName = curLangText!.uiUnknownItem;
       String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName').toFilePath();
       String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
@@ -2009,7 +2009,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       }
       for (var extraFile in extraFiles) {
         String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
-        if (!File(newExtraFilePath).existsSync()) {
+        if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
           extraFile.copySync(newExtraFilePath);
         }
       }
@@ -2018,7 +2018,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
         if (index != -1) {
           for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-            extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
+            if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
           }
         }
       }

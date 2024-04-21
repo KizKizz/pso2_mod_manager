@@ -28,9 +28,11 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
       String newItemPath = item.itemDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
       //copy files in item dir
       for (var file in Directory(item.itemDirPath).listSync().whereType<File>()) {
-        String newFileDirPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
-        Directory(p.dirname(newFileDirPath)).createSync(recursive: true);
-        file.copySync(newFileDirPath);
+        if (file.existsSync()) {
+          String newFileDirPath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+          Directory(p.dirname(newFileDirPath)).createSync(recursive: true);
+          file.copySync(newFileDirPath);
+        }
       }
       for (var mod in item.modList) {
         if (mod.toBeAdded) {
@@ -38,19 +40,23 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
           String newmodDirPath = mod.modDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
           Directory(newmodDirPath).createSync(recursive: true);
           for (var file in mod.filesInMod) {
-            String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
-            file.copySync(newFilePath);
+            if (file.existsSync()) {
+              String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+              file.copySync(newFilePath);
+            }
           }
           for (var submod in mod.submodList) {
             if (submod.toBeAdded) {
               String newSubmodDirPath = submod.submodDirPath.replaceFirst(modManModsAdderPath, modManModsDirPath);
               Directory(newSubmodDirPath).createSync(recursive: true);
               for (var file in submod.files) {
-                String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
-                Directory(p.dirname(newFilePath)).createSync(recursive: true);
-                file.copySync(newFilePath);
-                Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('$category > $itemName > ${mod.modName} > ${submod.submodName} > ${p.basename(file.path)}');
-                await Future.delayed(const Duration(milliseconds: 10));
+                if (file.existsSync()) {
+                  String newFilePath = file.path.replaceFirst(modManModsAdderPath, modManModsDirPath);
+                  Directory(p.dirname(newFilePath)).createSync(recursive: true);
+                  file.copySync(newFilePath);
+                  Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('$category > $itemName > ${mod.modName} > ${submod.submodName} > ${p.basename(file.path)}');
+                  await Future.delayed(const Duration(milliseconds: 10));
+                }
               }
             }
           }

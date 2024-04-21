@@ -56,19 +56,21 @@ void clearAllTempDirsBeforeGettingPath() {
     });
   }
   if (Directory(Uri.file('$modManDirPath/unpack').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/unpack').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    // Directory(Uri.file('$modManDirPath/unpack').toFilePath()).listSync(recursive: false).forEach((element) {
+    //   if (element.existsSync()) {
+    //     element.deleteSync(recursive: true);
+    //   }
+    // });
+    Directory(Uri.file('$modManDirPath/unpack').toFilePath()).deleteSync(recursive: true);
   }
   if (Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).existsSync()) {
     //Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).deleteSync(recursive: true);
-    Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    // Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).listSync(recursive: true).whereType<File>().forEach((element) {
+    //   if (element.existsSync()) {
+    //     element.deleteSync(recursive: true);
+    //   }
+    // });
+    Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).deleteSync(recursive: true);
   }
   if (Directory(Uri.file('$modManDirPath/swapper').toFilePath()).existsSync()) {
     Directory(Uri.file('$modManDirPath/swapper').toFilePath()).listSync(recursive: false).forEach((element) {
