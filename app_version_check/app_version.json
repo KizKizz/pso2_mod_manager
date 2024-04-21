@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.5",
+    "version": "2.6.6",
     "description": [
-        "Added a button to launch the JP version of the game directly without official launcher (to bypass startup file check in JP version)",
-        "公式ランチャーを使わずにJP版を直接起動するボタンを追加(JP版の起動ファイルチェックを避けるため)"
+        "Some bug fixes",
+        "いくつかのバグ修正"
     ],
     "windows_file": "",
     "linux_file": ""

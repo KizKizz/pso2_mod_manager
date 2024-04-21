@@ -1673,10 +1673,19 @@ class _MainPageState extends State<MainPage> {
                                         //check for checksum
                                         await applyModsChecksumChecker(context);
                                         //create start file
-                                        await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $modManPso2binPath/pso2.exe +0x33aca2b9 -reboot -optimize');
+                                        String pathToExe = modManPso2binPath;
+                                        List<String> paths = modManPso2binPath.split(p.separator);
+                                        for (var i = 0; i < paths.length; i++) {
+                                          if (paths[i].contains(" ")) {
+                                            paths[i] = "\"${paths[i]}\"";
+                                          }
+                                        }
+                                        pathToExe = p.joinAll(paths);
+                                        await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
                                         await Process.run(startBatch.path, []);
                                         startBatch.deleteSync();
                                       } else {
+                                        await applyModsChecksumChecker(context);
                                         Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
                                         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
                                       }
