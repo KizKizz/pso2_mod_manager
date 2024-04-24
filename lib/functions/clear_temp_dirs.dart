@@ -47,52 +47,13 @@ void clearAllTempDirs() {
   }
 }
 
-void clearAllTempDirsBeforeGettingPath() {
-  if (Directory(Uri.file('$modManDirPath/temp').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/temp').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
-  }
-  if (Directory(Uri.file('$modManDirPath/unpack').toFilePath()).existsSync()) {
-    // Directory(Uri.file('$modManDirPath/unpack').toFilePath()).listSync(recursive: false).forEach((element) {
-    //   if (element.existsSync()) {
-    //     element.deleteSync(recursive: true);
-    //   }
-    // });
-    Directory(Uri.file('$modManDirPath/unpack').toFilePath()).deleteSync(recursive: true);
-  }
-  if (Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).existsSync()) {
-    //Directory(Uri.file('${Directory.current.path}/modsAdder').toFilePath()).deleteSync(recursive: true);
-    // Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).listSync(recursive: true).whereType<File>().forEach((element) {
-    //   if (element.existsSync()) {
-    //     element.deleteSync(recursive: true);
-    //   }
-    // });
-    Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).deleteSync(recursive: true);
-  }
-  if (Directory(Uri.file('$modManDirPath/swapper').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/swapper').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
-  }
-  if (Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
-  }
-  if (Directory(Uri.file('$modManDirPath/exported').toFilePath()).existsSync()) {
-    Directory(Uri.file('$modManDirPath/exported').toFilePath()).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
-  }
+Future<void> clearAllTempDirsBeforeGettingPath() async {
+  if (await Directory(Uri.file('$modManDirPath/temp').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/temp').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/exported').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/exported').toFilePath()).delete(recursive: true);
 }
 
 void clearAppUpdateFolder() {
