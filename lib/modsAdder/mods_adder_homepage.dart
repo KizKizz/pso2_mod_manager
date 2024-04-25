@@ -1975,7 +1975,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
       int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
       if (index != -1) {
-        for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
+        for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
           if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
         }
       }
@@ -2017,7 +2017,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
         int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
         if (index != -1) {
-          for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
+          for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
             if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
           }
         }
