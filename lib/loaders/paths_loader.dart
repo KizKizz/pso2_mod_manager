@@ -150,7 +150,7 @@ Future<bool> pathsLoader(context) async {
   }
 
   //create/load folders
-  createSubDirs();
+  await createSubDirs();
 
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   if (!File(modManRefSheetListFilePath).existsSync()) {
@@ -232,7 +232,7 @@ Future<bool> pathsLoader(context) async {
   }
 
   //clear
-  clearAllTempDirsBeforeGettingPath();
+  // clearAllTempDirsBeforeGettingPath();
 
   //Get patch file lists
   //await fetchOfficialPatchFileList();
@@ -525,7 +525,7 @@ Future<bool> modManPathReloader(context) async {
   // File(modManVitalGaugeJsonPath).createSync();
 
   //create/load folders
-  createSubDirs();
+  await createSubDirs();
 
   modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   File(modManRefSheetListFilePath).createSync();
@@ -852,7 +852,8 @@ Future<void> jsonPso2binPathsRename(String oldPso2binDirPath) async {
   }
 }
 
-void createSubDirs() {
+Future<void> createSubDirs() async {
+  await clearAllTempDirsBeforeGettingPath();
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
   Directory(modManModsDirPath).createSync(recursive: true);
