@@ -2404,7 +2404,7 @@ class _HomePageState extends State<HomePage> {
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                               ),
-                                                              child: searchTextController.value.text.isNotEmpty
+                                                              child: searchTextController.value.text.isNotEmpty && curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isNotEmpty
                                                               ? Text(
                                                                   curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length < 2
                                                                       ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
@@ -3516,7 +3516,7 @@ class _HomePageState extends State<HomePage> {
                                                   : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
                                                       : searchTextController.value.text.toLowerCase().isNotEmpty
-                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())
+                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) || curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isEmpty
                                                           : true,
                                               child: InkWell(
                                                 //submod preview images
