@@ -1,8 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.8",
+    "version": "2.6.9",
     "description": [
+        "Another attempt to fix path not found bug when loading paths on startup",
         "Some bug fixes",
+        "起動時にパスを読み込む際にパスが見つからないバグを修正する別の試み",
         "いくつかのバグ修正"
     ],
     "windows_file": "",
