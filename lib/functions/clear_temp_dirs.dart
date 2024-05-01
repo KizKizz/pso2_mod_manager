@@ -4,61 +4,101 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 void clearAllTempDirs() {
   if (Directory(modManAddModsTempDirPath).existsSync()) {
-    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManAddModsTempDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManAddModsTempDirPath)], runInShell: true);
+    }
   }
   if (Directory(modManAddModsUnpackDirPath).existsSync()) {
-    Directory(modManAddModsUnpackDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManAddModsUnpackDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManAddModsUnpackDirPath)], runInShell: true);
+    }
   }
   if (Directory(modManModsAdderPath).existsSync()) {
-    Directory(modManModsAdderPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManModsAdderPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManModsAdderPath)], runInShell: true);
+    }
   }
   if (Directory(modManSwapperDirPath).existsSync()) {
-    Directory(modManSwapperDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManSwapperDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManSwapperDirPath)], runInShell: true);
+    }
   }
   if (Directory(modManTempCmxDirPath).existsSync()) {
-    Directory(modManTempCmxDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManTempCmxDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManTempCmxDirPath)], runInShell: true);
+    }
   }
   if (Directory(modManImportedDirPath).existsSync()) {
-    Directory(modManImportedDirPath).listSync(recursive: false).forEach((element) {
-      if (element.existsSync()) {
-        element.deleteSync(recursive: true);
-      }
-    });
+    try {
+      Directory(modManImportedDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManImportedDirPath)], runInShell: true);
+    }
   }
 }
 
 Future<void> clearAllTempDirsBeforeGettingPath() async {
-  if (await Directory(Uri.file('$modManDirPath/temp').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/temp').toFilePath()).delete(recursive: true);
-  if (await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).delete(recursive: true);
-  if (await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).delete(recursive: true);
-  if (await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).delete(recursive: true);
-  if (await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).delete(recursive: true);
-  if (await Directory(Uri.file('$modManDirPath/exported').toFilePath()).exists()) await Directory(Uri.file('$modManDirPath/exported').toFilePath()).delete(recursive: true);
+  if (await Directory(Uri.file('$modManDirPath/temp').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/temp').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/temp').toFilePath())], runInShell: true);
+    }
+  }
+  if (await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/unpack').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/temp').toFilePath())], runInShell: true);
+    }
+  }
+  if (await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/modsAdder').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/modsAdder').toFilePath())], runInShell: true);
+    }
+  }
+  if (await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/swapper').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/swapper').toFilePath())], runInShell: true);
+    }
+  }
+  if (await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/tempCmx').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/tempCmx').toFilePath())], runInShell: true);
+    }
+  }
+  if (await Directory(Uri.file('$modManDirPath/exported').toFilePath()).exists()) {
+    try {
+      await Directory(Uri.file('$modManDirPath/exported').toFilePath()).delete(recursive: true);
+    } catch (e) {
+      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/exported').toFilePath())], runInShell: true);
+    }
+  }
 }
 
 void clearAppUpdateFolder() {
   String appUpdatePath = Uri.file('${Directory.current.path}/appUpdate').toFilePath();
   if (Directory(appUpdatePath).existsSync()) {
-    Directory(appUpdatePath).deleteSync(recursive: true);
+    try {
+      Directory(appUpdatePath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (Uri.file('${Directory.current.path}/appUpdate').toFilePath())], runInShell: true);
+    }
   }
 }
