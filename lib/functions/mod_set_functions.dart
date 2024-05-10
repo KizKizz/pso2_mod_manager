@@ -270,6 +270,9 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
     ),
   );
 
+  //separator
+    menuButtonList.add(Divider(height: 2, indent: 5, endIndent: 5, thickness: 1, color: Theme.of(context).primaryColorLight));
+
   //modSets
   for (var set in modSetList) {
     menuButtonList.add(

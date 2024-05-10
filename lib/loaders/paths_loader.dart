@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/classes/mod_set_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
-import 'package:pso2_mod_manager/functions/apply_mods.dart';
+import 'package:pso2_mod_manager/functions/apply_mod_file.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';

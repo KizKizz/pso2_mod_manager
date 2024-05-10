@@ -170,7 +170,7 @@ class TranslationText {
       uiItemNameLanguageTooltip = 'Only applies to item names in list when adding mods or swapping items',
       uiOpenMainModManFolder = 'Open Main Mod Manager Folder',
       uiOpenExportedModsFolder = 'Open Exported Mods Folder',
-      uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager', 
+      uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager',
       uiStartPSO2 = 'Start PSO2',
       uiLaunchGameJPVerOnly = 'Launch the game bypassing official launcher (JP ver only)',
       uiIfGameNotLaunching = 'If the game is not launching, close and run the Mod Manager as administration and try again';
@@ -290,11 +290,14 @@ class TranslationText {
       uiExportSelectedMods = 'Export selected mods',
       uiRenameThisSet = 'Rename this Set',
       uiModSetRename = 'Mod Set Rename',
-      uiImportMods = 'Import Mods';
+      uiImportMods = 'Import Mods',
+      uiSelectApplyingLocations = 'Select applying locations',
+      uiApplyToAllLocations = 'Apply to all locations';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
-      uiDragDropFiles = 'Drag and drop folders, .zip, .rar, .7z files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
+      uiDragDropFiles =
+          'Drag and drop folders, .zip, .rar, .7z files\nand .ice files here\nOr use the "Add Folders/Files" buttons to select folders/files\nMay take some time\nto process large amount of files',
       uiAchiveCurrentlyNotSupported = 'currently not supported. Open the archive file then drag the content in here instead',
       uiProcess = 'Process',
       uiWaitingForData = 'Waiting for data',
@@ -525,7 +528,14 @@ class TranslationText {
   String uiFilesNotSupported = 'Only .zip files exported by Mod Manager are supported', uiImportModDragDrop = 'Drag and drop exported .zip files here to import mods';
 
   //mod_import_add_function.dart
-  String uiCreateASetForImportedMods = 'Save imported mods to Mod Sets', uiEnterImportedSetName = 'Enter a name for your imported Set', uiImport = 'Import', uiImportAndApply = 'Import and Apply Mods', uiApplyingImportedMods = 'Applying imported mods';
+  String uiCreateASetForImportedMods = 'Save imported mods to Mod Sets',
+      uiEnterImportedSetName = 'Enter a name for your imported Set',
+      uiImport = 'Import',
+      uiImportAndApply = 'Import and Apply Mods',
+      uiApplyingImportedMods = 'Applying imported mods';
+
+  //add_mod_file.dart
+  String uiNoFilesInGameDataToReplace = 'No matching files in game data to replace. Check applying locations of the mod';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

@@ -17,6 +17,7 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/mod_set_class.dart';
+import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
@@ -2392,7 +2393,8 @@ class _HomePageState extends State<HomePage> {
                                                                       color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
                                                                       fontSize: 15,
                                                                     )),
-                                                              )
+                                                              ),
+                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
                                                           ],
                                                         )
                                                       : Wrap(
@@ -2404,21 +2406,27 @@ class _HomePageState extends State<HomePage> {
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                               ),
-                                                              child: searchTextController.value.text.isNotEmpty && curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isNotEmpty
-                                                              ? Text(
-                                                                  curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length < 2
-                                                                      ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
-                                                                      : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
-                                                                  style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                  ))
-                                                              :Text(
-                                                                  curMod.submods.length < 2
-                                                                      ? '${curMod.submods.length} ${curLangText!.uiVariant}'
-                                                                      : '${curMod.submods.length} ${curLangText!.uiVariants}',
-                                                                  style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                  )),
+                                                              child: searchTextController.value.text.isNotEmpty &&
+                                                                      curMod.submods
+                                                                          .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
+                                                                          .isNotEmpty
+                                                                  ? Text(
+                                                                      curMod.submods
+                                                                                  .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
+                                                                                  .length <
+                                                                              2
+                                                                          ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
+                                                                          : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
+                                                                      style: const TextStyle(
+                                                                        fontSize: 15,
+                                                                      ))
+                                                                  : Text(
+                                                                      curMod.submods.length < 2
+                                                                          ? '${curMod.submods.length} ${curLangText!.uiVariant}'
+                                                                          : '${curMod.submods.length} ${curLangText!.uiVariants}',
+                                                                      style: const TextStyle(
+                                                                        fontSize: 15,
+                                                                      )),
                                                             ),
                                                             if (curMod.submods.where((element) => element.hasCmx!).isNotEmpty)
                                                               Container(
@@ -2435,7 +2443,8 @@ class _HomePageState extends State<HomePage> {
                                                                       color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
                                                                       fontSize: 15,
                                                                     )),
-                                                              )
+                                                              ),
+                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
                                                           ],
                                                         )
                                                 ],
@@ -2799,12 +2808,34 @@ class _HomePageState extends State<HomePage> {
 
                                                       //Add to set
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods.first),
                                                         leadingIcon: const Icon(
                                                           Icons.list_alt_outlined,
                                                         ),
                                                         child: Text(curLangText!.uiAddToModSets),
+                                                      ),
+
+                                                      // Apply location select
+                                                      SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
+                                                        alignmentOffset: const Offset(0, 8),
+                                                        menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods.first),
+                                                        leadingIcon: const Icon(
+                                                          Icons.add_location_alt_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiSelectApplyingLocations),
                                                       ),
 
                                                       // add or change cmx file
@@ -3256,12 +3287,34 @@ class _HomePageState extends State<HomePage> {
 
                                                       //Add to set
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]),
                                                         leadingIcon: const Icon(
                                                           Icons.list_alt_outlined,
                                                         ),
                                                         child: Text(curLangText!.uiAddToModSets),
+                                                      ),
+
+                                                      // Apply location select
+                                                      SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
+                                                        alignmentOffset: const Offset(0, 8),
+                                                        menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods[modViewModSetSubModIndex]),
+                                                        leadingIcon: const Icon(
+                                                          Icons.add_location_alt_outlined,
+                                                        ),
+                                                        child: Text(curLangText!.uiSelectApplyingLocations),
                                                       ),
 
                                                       // add or change cmx file
@@ -3516,7 +3569,8 @@ class _HomePageState extends State<HomePage> {
                                                   : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
                                                       ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
                                                       : searchTextController.value.text.toLowerCase().isNotEmpty
-                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) || curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isEmpty
+                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                                              curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isEmpty
                                                           : true,
                                               child: InkWell(
                                                 //submod preview images
@@ -3599,6 +3653,9 @@ class _HomePageState extends State<HomePage> {
                                                                       fontSize: 15,
                                                                     )),
                                                               ),
+                                                            // apply locations
+                                                            if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
+
                                                             //Apply button in submod
                                                             //remove button
                                                             if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
@@ -3761,12 +3818,34 @@ class _HomePageState extends State<HomePage> {
 
                                                                   //Add to set
                                                                   SubmenuButton(
+                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                      return RoundedRectangleBorder(
+                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                    })),
                                                                     alignmentOffset: const Offset(0, 8),
                                                                     menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curSubmod),
                                                                     leadingIcon: const Icon(
                                                                       Icons.list_alt_outlined,
                                                                     ),
                                                                     child: Text(curLangText!.uiAddToModSets),
+                                                                  ),
+
+                                                                  // Apply location select
+                                                                  SubmenuButton(
+                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                      return RoundedRectangleBorder(
+                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                    })),
+                                                                    alignmentOffset: const Offset(0, 8),
+                                                                    menuChildren: modApplyingLocationsMenuButtons(context, curSubmod),
+                                                                    leadingIcon: const Icon(
+                                                                      Icons.add_location_alt_outlined,
+                                                                    ),
+                                                                    child: Text(curLangText!.uiSelectApplyingLocations),
                                                                   ),
 
                                                                   // add or change cmx file
@@ -5721,5 +5800,71 @@ class _HomePageState extends State<HomePage> {
                         ]);
                       }))))
     ]);
+  }
+
+//WIDGETS=============================================================================
+  List<Widget> modApplyingLocationsMenuButtons(context, SubMod submod) {
+    List<Widget> menuButtonList = [];
+    List<String> gameDataPaths = Directory(Uri.file("$modManPso2binPath/data").toFilePath())
+        .listSync()
+        .whereType<Directory>()
+        .where((element) => p.basename(element.path).contains('win32'))
+        .map((e) => Uri.directory(e.path).toFilePath())
+        .toList();
+    gameDataPaths.sort((a, b) => a.compareTo(b));
+
+    for (var dataPath in gameDataPaths) {
+      menuButtonList.add(
+        MenuItemButton(
+            closeOnActivate: false,
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+              return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+            })),
+            leadingIcon: submod.applyLocations!.contains(dataPath) ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank_rounded),
+            child: Text(p.basename(dataPath)),
+            onPressed: () async {
+              if (submod.applyLocations!.contains(dataPath)) {
+                submod.applyLocations!.remove(dataPath);
+                for (var modFile in submod.modFiles) {
+                  modFile.applyLocations!.remove(dataPath);
+                }
+              } else {
+                submod.applyLocations!.add(dataPath);
+                for (var modFile in submod.modFiles) {
+                  if (!modFile.applyLocations!.contains(dataPath)) {
+                    modFile.applyLocations!.add(dataPath);
+                  }
+                }
+              }
+              saveModdedItemListToJson();
+              setState(() {});
+            }),
+      );
+    }
+
+    //separator
+    menuButtonList.add(Divider(height: 2, indent: 5, endIndent: 5, thickness: 1, color: Theme.of(context).primaryColorLight));
+
+    //reset
+    menuButtonList.add(
+      MenuItemButton(
+          closeOnActivate: false,
+          style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+          })),
+          leadingIcon: submod.applyLocations == null || submod.applyLocations!.isEmpty ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank_rounded),
+          child: Text(curLangText!.uiApplyToAllLocations),
+          onPressed: () async {
+            if (submod.applyLocations != null || submod.applyLocations!.isNotEmpty) {
+              submod.applyLocations!.clear();
+              for (var modFile in submod.modFiles) {
+                modFile.applyLocations!.clear();
+              }
+            }
+            saveModdedItemListToJson();
+            setState(() {});
+          }),
+    );
+    return menuButtonList;
   }
 }

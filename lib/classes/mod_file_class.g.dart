@@ -22,6 +22,9 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
       json['isSet'] as bool,
       json['isNew'] as bool,
       (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['applyLocations'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       (json['ogLocations'] as List<dynamic>).map((e) => e as String).toList(),
       (json['bkLocations'] as List<dynamic>).map((e) => e as String).toList(),
     );
@@ -42,6 +45,7 @@ Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
       'isSet': instance.isSet,
       'isNew': instance.isNew,
       'setNames': instance.setNames,
+      'applyLocations': instance.applyLocations,
       'ogLocations': instance.ogLocations,
       'bkLocations': instance.bkLocations,
     };

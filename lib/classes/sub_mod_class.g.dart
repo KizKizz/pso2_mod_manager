@@ -24,6 +24,9 @@ SubMod _$SubModFromJson(Map<String, dynamic> json) => SubMod(
       json['cmxEndPos'] as int?,
       json['cmxFile'] as String?,
       (json['setNames'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['applyLocations'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       (json['previewImages'] as List<dynamic>).map((e) => e as String).toList(),
       (json['previewVideos'] as List<dynamic>).map((e) => e as String).toList(),
       (json['appliedModFiles'] as List<dynamic>)
@@ -52,6 +55,7 @@ Map<String, dynamic> _$SubModToJson(SubMod instance) => <String, dynamic>{
       'cmxEndPos': instance.cmxEndPos,
       'cmxFile': instance.cmxFile,
       'setNames': instance.setNames,
+      'applyLocations': instance.applyLocations,
       'previewImages': instance.previewImages,
       'previewVideos': instance.previewVideos,
       'appliedModFiles': instance.appliedModFiles,

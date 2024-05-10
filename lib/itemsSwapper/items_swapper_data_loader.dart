@@ -33,13 +33,13 @@ SubMod fromItemSubmodGet(List<String> iceFileNames) {
         orElse: () => '',
       );
       if (p.basename(icePathFromOgData) == iceName) {
-        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], []));
+        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], [], []));
       }
     }
     //}
   }
 
-  return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], modFileList);
+  return SubMod(fromItemNameSwap, fromItemNameSwap, fromItemName, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [], [], [], [], modFileList);
 }
 
 Future<List<CsvAccessoryIceFile>> getAccSwapToCsvList(List<CsvAccessoryIceFile> cvsAccDataInput, String category) async {

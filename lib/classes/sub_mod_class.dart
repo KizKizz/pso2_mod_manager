@@ -6,7 +6,7 @@ part 'sub_mod_class.g.dart';
 @JsonSerializable()
 class SubMod {
   SubMod(this.submodName, this.modName, this.itemName, this.category, this.location, this.applyStatus, this.applyDate, this.position, this.isNew, this.isFavorite, this.isSet, this.hasCmx,
-      this.cmxApplied, this.cmxStartPos, this.cmxEndPos, this.cmxFile, this.setNames, this.previewImages, this.previewVideos, this.appliedModFiles, this.modFiles);
+      this.cmxApplied, this.cmxStartPos, this.cmxEndPos, this.cmxFile, this.setNames, this.applyLocations, this.previewImages, this.previewVideos, this.appliedModFiles, this.modFiles);
   String submodName;
   String modName;
   String itemName;
@@ -24,6 +24,7 @@ class SubMod {
   int? cmxEndPos = -1;
   String? cmxFile = '';
   List<String> setNames;
+  List<String>? applyLocations = [];
   List<String> previewImages;
   List<String> previewVideos;
   List<ModFile> appliedModFiles;

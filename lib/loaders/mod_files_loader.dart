@@ -177,6 +177,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.cmxFile = curJsonSubmodsList[submodIndex].cmxFile;
                       submod.isSet = curJsonSubmodsList[submodIndex].isSet;
                       submod.setNames = curJsonSubmodsList[submodIndex].setNames;
+                      submod.applyLocations = curJsonSubmodsList[submodIndex].applyLocations!;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
                       for (var modFile in submod.modFiles) {
                         int modFileIndex = curJsonModFilesList.indexWhere((element) => element.location == modFile.location);
@@ -195,6 +196,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                           modFile.ogLocations = curJsonModFilesList[modFileIndex].ogLocations;
                           modFile.ogMd5s = curJsonModFilesList[modFileIndex].ogMd5s;
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
+                          modFile.applyLocations = curJsonModFilesList[modFileIndex].applyLocations!;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
                         } else {
@@ -364,8 +366,8 @@ List<Mod> modsFetcher(String itemPath, String cateName) {
   List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
-      modFilesInItemDir.add(
-          ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFilesInItemDir.add(ModFile(
+          p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, false, [], [], [], []));
     }
     //Get preview images;
     List<String> modPreviewImages = [];
@@ -390,7 +392,7 @@ List<Mod> modsFetcher(String itemPath, String cateName) {
     }
 
     //add to submod
-    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [],
+    SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, false, false, false, -1, -1, '', [], [],
         modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
@@ -433,7 +435,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       // for (var element in ogFiles) {
       //   ogFilePaths.add(element.path);
       // }
-      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], [], []));
     }
 
     //Get preview images;
@@ -461,7 +463,7 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
     }
 
     if (modFiles.isNotEmpty) {
-      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
+      submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [], modPreviewImages,
           modPreviewVideos, [], modFiles));
     }
   }
@@ -505,15 +507,15 @@ List<SubMod> subModFetcher(String modPath, String cateName, String itemName) {
       List<String> parentPaths = file.parent.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
 
-      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], []));
+      modFiles.add(ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, false, false, [], [], [], []));
     }
 
     //Get submod name
     if (modFiles.isNotEmpty) {
       List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
       parentPaths.removeWhere((element) => element.isEmpty);
-      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], modPreviewImages,
-          modPreviewVideos, [], modFiles));
+      submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, false, false, false, hasCmx, false, -1, -1, cmxFile, [], [],
+          modPreviewImages, modPreviewVideos, [], modFiles));
     }
   }
 
