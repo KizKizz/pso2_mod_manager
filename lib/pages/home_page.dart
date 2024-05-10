@@ -2393,7 +2393,8 @@ class _HomePageState extends State<HomePage> {
                                                                       color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
                                                                       fontSize: 15,
                                                                     )),
-                                                              )
+                                                              ),
+                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
                                                           ],
                                                         )
                                                       : Wrap(
@@ -2442,7 +2443,8 @@ class _HomePageState extends State<HomePage> {
                                                                       color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
                                                                       fontSize: 15,
                                                                     )),
-                                                              )
+                                                              ),
+                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
                                                           ],
                                                         )
                                                 ],
@@ -2806,6 +2808,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       //Add to set
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods.first),
                                                         leadingIcon: const Icon(
@@ -2816,6 +2824,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       // Apply location select
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods.first),
                                                         leadingIcon: const Icon(
@@ -3273,6 +3287,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       //Add to set
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]),
                                                         leadingIcon: const Icon(
@@ -3283,6 +3303,12 @@ class _HomePageState extends State<HomePage> {
 
                                                       // Apply location select
                                                       SubmenuButton(
+                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          return RoundedRectangleBorder(
+                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                        })),
                                                         alignmentOffset: const Offset(0, 8),
                                                         menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods[modViewModSetSubModIndex]),
                                                         leadingIcon: const Icon(
@@ -3627,6 +3653,9 @@ class _HomePageState extends State<HomePage> {
                                                                       fontSize: 15,
                                                                     )),
                                                               ),
+                                                            // apply locations
+                                                            if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
+
                                                             //Apply button in submod
                                                             //remove button
                                                             if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
@@ -3789,6 +3818,12 @@ class _HomePageState extends State<HomePage> {
 
                                                                   //Add to set
                                                                   SubmenuButton(
+                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                      return RoundedRectangleBorder(
+                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                    })),
                                                                     alignmentOffset: const Offset(0, 8),
                                                                     menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curSubmod),
                                                                     leadingIcon: const Icon(
@@ -3799,6 +3834,12 @@ class _HomePageState extends State<HomePage> {
 
                                                                   // Apply location select
                                                                   SubmenuButton(
+                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                      return RoundedRectangleBorder(
+                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                    })),
                                                                     alignmentOffset: const Offset(0, 8),
                                                                     menuChildren: modApplyingLocationsMenuButtons(context, curSubmod),
                                                                     leadingIcon: const Icon(
@@ -5764,7 +5805,12 @@ class _HomePageState extends State<HomePage> {
 //WIDGETS=============================================================================
   List<Widget> modApplyingLocationsMenuButtons(context, SubMod submod) {
     List<Widget> menuButtonList = [];
-    List<String> gameDataPaths = Directory(Uri.file("$modManPso2binPath/data").toFilePath()).listSync().whereType<Directory>().map((e) => e.path).toList();
+    List<String> gameDataPaths = Directory(Uri.file("$modManPso2binPath/data").toFilePath())
+        .listSync()
+        .whereType<Directory>()
+        .where((element) => p.basename(element.path).contains('win32'))
+        .map((e) => Uri.directory(e.path).toFilePath())
+        .toList();
     gameDataPaths.sort((a, b) => a.compareTo(b));
 
     for (var dataPath in gameDataPaths) {
@@ -5779,16 +5825,46 @@ class _HomePageState extends State<HomePage> {
             onPressed: () async {
               if (submod.applyLocations!.contains(dataPath)) {
                 submod.applyLocations!.remove(dataPath);
+                for (var modFile in submod.modFiles) {
+                  modFile.applyLocations!.remove(dataPath);
+                }
               } else {
                 submod.applyLocations!.add(dataPath);
+                for (var modFile in submod.modFiles) {
+                  if (!modFile.applyLocations!.contains(dataPath)) {
+                    modFile.applyLocations!.add(dataPath);
+                  }
+                }
               }
               saveModdedItemListToJson();
               setState(() {});
             }),
       );
     }
+
+    //separator
+    menuButtonList.add(Divider(height: 2, indent: 5, endIndent: 5, thickness: 1, color: Theme.of(context).primaryColorLight));
+
+    //reset
+    menuButtonList.add(
+      MenuItemButton(
+          closeOnActivate: false,
+          style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+          })),
+          leadingIcon: submod.applyLocations == null || submod.applyLocations!.isEmpty ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank_rounded),
+          child: Text(curLangText!.uiApplyToAllLocations),
+          onPressed: () async {
+            if (submod.applyLocations != null || submod.applyLocations!.isNotEmpty) {
+              submod.applyLocations!.clear();
+              for (var modFile in submod.modFiles) {
+                modFile.applyLocations!.clear();
+              }
+            }
+            saveModdedItemListToJson();
+            setState(() {});
+          }),
+    );
     return menuButtonList;
   }
-  
-  
 }

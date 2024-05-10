@@ -217,7 +217,7 @@
   "uiHoldToModifyBoundaryRadius": "ホールドして境界半径を変更",
   "uiAddToFavList": "お気に入りリストに追加",
   "uiRemoveFromFavList": "お気に入りリストから削除",
-  "uiMore": "もっと見る",
+  "uiMore": "もっと",
   "uiSwapToAnotherItem": "別のアイテムに交換する",
   "uiRemoveBoundaryRadius": "外接半径の削除",
   "uiRemoveFromMM": "MODマネージャーから削除する",
@@ -264,7 +264,8 @@
   "uiRenameThisSet": "このセットの名前を変更する ",
   "uiModSetRename": "MODセット名変更",
   "uiImportMods": "インポートMOD",
-  "uiSelectApplyingLocations": "Select applying locations",
+  "uiSelectApplyingLocations": "応募場所の選択",
+  "uiApplyToAllLocations": "全拠点に適用",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ(.zip)(.rar)(.7z)ファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します。\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",
@@ -449,5 +450,6 @@
   "uiEnterImportedSetName": "インポートしたセットの名前を入力します。",
   "uiImport": "輸入",
   "uiImportAndApply": "MODのインポートと適用",
-  "uiApplyingImportedMods": "インポートしたMODを適用する"
+  "uiApplyingImportedMods": "インポートしたMODを適用する",
+  "uiNoFilesInGameDataToReplace": "置換するゲームデータに一致するファイルがありません。MODの適用場所を確認する"
 }

@@ -1,4 +1,3 @@
-
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 
@@ -56,7 +55,19 @@ Future<ModFile?> modFileAppliedDupCheck(List<CategoryType> appliedList, ModFile 
                   if (modFileIndex != -1 && submod.modFiles[modFileIndex].applyStatus && submod.modFiles[modFileIndex].location != modFile.location) {
                     //submod.modFiles[modFileIndex].applyStatus = false;
                     //submod.modFiles[modFileIndex] = await modFileUnapply(submod.modFiles[modFileIndex]);
-                    return submod.modFiles[modFileIndex];
+                    if (modFile.applyLocations!.isEmpty) {
+                      return submod.modFiles[modFileIndex];
+                    } else {
+                      if (submod.modFiles[modFileIndex].applyLocations!.isNotEmpty) {
+                        for (var path in modFile.applyLocations!) {
+                          if (submod.modFiles[modFileIndex].applyLocations!.contains(path)) {
+                            return submod.modFiles[modFileIndex];
+                          }
+                        }
+                      } else {
+                        return submod.modFiles[modFileIndex];
+                      }
+                    }
                   }
                 }
               }

@@ -13,7 +13,20 @@ Future<bool> modFileApply(context, ModFile modFile) async {
   //retore dublicate
   //await modFileRestore(moddedItemsList, modFile);
   //modFile = await modFileBackup(modFile);
+  if (modFile.applyLocations!.isNotEmpty) {
+    List<String> tempOgPaths = [];
+    for (var path in modFile.applyLocations!) {
+      for (var ogPath in modFile.ogLocations) {
+        if (ogPath.contains(path) && !tempOgPaths.contains(ogPath)) {
+          tempOgPaths.add(ogPath);
+        }
+      }
+    }
+    modFile.ogLocations = tempOgPaths;
+    saveModdedItemListToJson();
+  }
   if (modFile.ogLocations.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${modFile.modFileName}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
     return false;
   }
   await localOriginalFilesBackup(context, modFile);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
-import 'package:pso2_mod_manager/functions/apply_mods.dart';
+import 'package:pso2_mod_manager/functions/apply_mod_file.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/modfile_applied_dup.dart';
 import 'package:pso2_mod_manager/global_variables.dart';

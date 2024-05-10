@@ -265,6 +265,7 @@
   "uiModSetRename": "重命名MOD组",
   "uiImportMods": "导入MOD",
   "uiSelectApplyingLocations": "Select applying locations",
+  "uiApplyToAllLocations": "Apply to all locations",
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、.zip、.rar、.7z文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
   "uiAchiveCurrentlyNotSupported": "当前不支持的压缩文件类型。请解压存档文件后，再将内容拖到此处。",
@@ -449,5 +450,6 @@
   "uiEnterImportedSetName": "为导入的MOD添加一个组名",
   "uiImport": "导入",
   "uiImportAndApply": "导入并应用MOD",
-  "uiApplyingImportedMods": "应用已导入的MOD"
+  "uiApplyingImportedMods": "应用已导入的MOD",
+  "uiNoFilesInGameDataToReplace": "No matching files in game data to replace. Check applying locations of the mod"
 }
