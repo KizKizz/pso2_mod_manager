@@ -177,7 +177,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                       //submod.cmxFile = curJsonSubmodsList[submodIndex].cmxFile;
                       submod.isSet = curJsonSubmodsList[submodIndex].isSet;
                       submod.setNames = curJsonSubmodsList[submodIndex].setNames;
-                      submod.applyLocations = curJsonSubmodsList[submodIndex].applyLocations!;
+                      if (curJsonSubmodsList[submodIndex].applyLocations != null) submod.applyLocations = curJsonSubmodsList[submodIndex].applyLocations;
                       final curJsonModFilesList = curJsonSubmodsList[submodIndex].modFiles;
                       for (var modFile in submod.modFiles) {
                         int modFileIndex = curJsonModFilesList.indexWhere((element) => element.location == modFile.location);
@@ -196,7 +196,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                           modFile.ogLocations = curJsonModFilesList[modFileIndex].ogLocations;
                           modFile.ogMd5s = curJsonModFilesList[modFileIndex].ogMd5s;
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
-                          modFile.applyLocations = curJsonModFilesList[modFileIndex].applyLocations!;
+                          if (curJsonModFilesList[modFileIndex].applyLocations != null) modFile.applyLocations = curJsonModFilesList[modFileIndex].applyLocations;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
                         } else {

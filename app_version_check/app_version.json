@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.9",
+    "version": "2.6.11",
     "description": [
         "Added an option to specify the locations to apply each mod. This option can be found in the More button (three dots) of each mod",
         "Some bug fixes",
