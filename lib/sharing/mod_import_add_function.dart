@@ -247,7 +247,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
 
     //add to submod
     SubMod subModInItemDir = SubMod(p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, itemPath, false, DateTime(0), 0, false, false, true, false, false, -1, -1, '',
-        [importedSetName], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
+        [importedSetName], [], modPreviewImages, modPreviewVideos, [], modFilesInItemDir);
 
     //add to mod
     mods.add(
@@ -325,7 +325,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       hasCmx = true;
     }
 
-    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName],
+    submods.add(SubMod(p.basename(modPath), p.basename(modPath), itemName, cateName, modPath, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName], [],
         modPreviewImages, modPreviewVideos, [], modFiles));
   }
 
@@ -377,7 +377,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
     //Get submod name
     List<String> parentPaths = dir.path.split(modPath).last.trim().split(Uri.file('/').toFilePath());
     parentPaths.removeWhere((element) => element.isEmpty);
-    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName],
+    submods.add(SubMod(parentPaths.join(' > '), p.basename(modPath), itemName, cateName, dir.path, false, DateTime(0), 0, true, false, true, hasCmx, false, -1, -1, cmxFile, [importedSetName], [],
         modPreviewImages, modPreviewVideos, [], modFiles));
   }
 

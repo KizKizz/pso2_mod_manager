@@ -264,6 +264,7 @@
   "uiRenameThisSet": "このセットの名前を変更する ",
   "uiModSetRename": "MODセット名変更",
   "uiImportMods": "インポートMOD",
+  "uiSelectApplyingLocations": "Select applying locations",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ(.zip)(.rar)(.7z)ファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します。\n大量のファイルの処理に時間がかかる場合があります。",
   "uiAchiveCurrentlyNotSupported": "現在、サポートされていません。アーカイブファイルを開き、代わりにコンテンツをここにドラッグしてください。",

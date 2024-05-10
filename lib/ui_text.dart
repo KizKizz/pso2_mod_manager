@@ -290,7 +290,8 @@ class TranslationText {
       uiExportSelectedMods = 'Export selected mods',
       uiRenameThisSet = 'Rename this Set',
       uiModSetRename = 'Mod Set Rename',
-      uiImportMods = 'Import Mods';
+      uiImportMods = 'Import Mods',
+      uiSelectApplyingLocations = 'Select applying locations';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
