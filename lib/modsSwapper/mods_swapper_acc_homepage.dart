@@ -397,13 +397,48 @@ class _ModsSwapperAccHomePageState extends State<ModsSwapperAccHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableAccCsvData[i] : toAccSearchResults[i],
                                                         groupValue: selectedToAccCsvFile,
-                                                        title: modManCurActiveItemNameLanguage == 'JP'
-                                                            ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableAccCsvData[i].jpName)
-                                                                : Text(toAccSearchResults[i].jpName)
-                                                            : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableAccCsvData[i].enName)
-                                                                : Text(toAccSearchResults[i].enName),
+                                                        title: Row(children: [
+                                                          //icon
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                            child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(3),
+                                                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                                ),
+                                                                child: swapperSearchTextController.text.isEmpty
+                                                                    ? Image.network(
+                                                                        '$modManIconDatabaseLink/Player/Accessories/${availableAccCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )
+                                                                    : Image.network(
+                                                                        '$modManIconDatabaseLink/Player/Accessories/${toAccSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )),
+                                                          ),
+                                                          //name
+                                                          modManCurActiveItemNameLanguage == 'JP'
+                                                              ? swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableAccCsvData[i].jpName)
+                                                                  : Text(toAccSearchResults[i].jpName)
+                                                              : swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableAccCsvData[i].enName)
+                                                                  : Text(toAccSearchResults[i].enName)
+                                                        ]),
                                                         onChanged: (CsvAccessoryIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToAccCsvFile = currentItem!;

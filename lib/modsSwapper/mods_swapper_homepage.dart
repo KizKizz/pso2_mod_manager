@@ -431,6 +431,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                   //physics: const BouncingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
                                                   itemBuilder: (context, i) {
+                                                    String cate = availableItemsCsvData[i].itemType;
+                                                    debugPrint(cate);
                                                     return Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 2),
                                                       child: RadioListTile(
@@ -438,13 +440,48 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
                                                         groupValue: selectedToCsvFile,
-                                                        title: modManCurActiveItemNameLanguage == 'JP'
-                                                            ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName.trim())
-                                                                : Text(toItemSearchResults[i].jpName.trim())
-                                                            : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName.trim())
-                                                                : Text(toItemSearchResults[i].enName.trim()),
+                                                        title: Row(children: [
+                                                          //icon
+                                                          // Padding(
+                                                          //   padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                          //   child: Container(
+                                                          //       width: 80,
+                                                          //       height: 80,
+                                                          //       decoration: BoxDecoration(
+                                                          //         borderRadius: BorderRadius.circular(3),
+                                                          //         border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                          //       ),
+                                                          //       child: swapperSearchTextController.text.isEmpty
+                                                          //           ? Image.network(
+                                                          //               '$modManIconDatabaseLink/Player/Accessories/${availableAccCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                          //               errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                          //                 'assets/img/placeholdersquare.png',
+                                                          //                 filterQuality: FilterQuality.none,
+                                                          //                 fit: BoxFit.fitWidth,
+                                                          //               ),
+                                                          //               filterQuality: FilterQuality.none,
+                                                          //               fit: BoxFit.fitWidth,
+                                                          //             )
+                                                          //           : Image.network(
+                                                          //               '$modManIconDatabaseLink/Player/Accessories/${toItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                          //               errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                          //                 'assets/img/placeholdersquare.png',
+                                                          //                 filterQuality: FilterQuality.none,
+                                                          //                 fit: BoxFit.fitWidth,
+                                                          //               ),
+                                                          //               filterQuality: FilterQuality.none,
+                                                          //               fit: BoxFit.fitWidth,
+                                                          //             )),
+                                                          // ),
+                                                          //name
+                                                          modManCurActiveItemNameLanguage == 'JP'
+                                                              ? swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].jpName.trim())
+                                                                  : Text(toItemSearchResults[i].jpName.trim())
+                                                              : swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].enName.trim())
+                                                                  : Text(toItemSearchResults[i].enName.trim()),
+                                                        ]),
                                                         subtitle: swapperSearchTextController.text.isEmpty
                                                             ? availableItemsCsvData[i].itemType.isNotEmpty
                                                                 ? Text(availableItemsCsvData[i].itemType)

@@ -77,6 +77,8 @@ String masterURL = '';
 String patchURL = '';
 String backupMasterURL = '';
 String backupPatchURL = '';
+//extras
+String modManIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/icons';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
