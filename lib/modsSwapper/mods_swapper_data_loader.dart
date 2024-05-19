@@ -200,21 +200,21 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
       if (categoryIndex != -1) {
         if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Glide Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Glide Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Jump Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Jump Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Landing Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Landing Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Dash Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Dash Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Run Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Run Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Standby Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Standby Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Swim Motion,$line';
+          line = '${defaultCategoryDirs[categoryIndex]},Swim Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         } else {
-          line = '${defaultCategoryDirs[categoryIndex]},$line';
+          line = '${defaultCategoryDirs[categoryIndex]},$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
         }
       }
       csvList.last.add(line);
@@ -227,17 +227,17 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
       if (item.split(',').first == defaultCategoryDirs[0]) {
         csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
       } else if (item.split(',').first == defaultCategoryDirs[7]) {
-        if (item.split(',').length != 15 && item.split(',').length != 19) {
+        if (item.split(',').length != 16 && item.split(',').length != 20) {
           debugPrint('${item.split(',')[2]} _ ${item.split(',').length}');
           //
         }
-        if (item.split(',').length == 15) {
+        if (item.split(',').length == 16) {
           csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
-        } else if (item.split(',').length == 19) {
+        } else if (item.split(',').length == 20) {
           csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
         }
       } else if (item.split(',').first == defaultCategoryDirs[14]) {
-        if (item.split(',').length == 9) {
+        if (item.split(',').length == 10) {
           csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
         }
       } else if (item.split(',').first == defaultCategoryDirs[10]) {
@@ -385,13 +385,14 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
             } else {
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
-                      ? getSwapToCsvList(csvData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
+                      ? getSwapToCsvList(
+                          csvData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                       : availableAccCsvData.isEmpty && csvAccData.isNotEmpty
-                          ? getAccSwapToCsvList(
-                              csvAccData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
+                          ? getAccSwapToCsvList(csvAccData,
+                              !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
-                              ? getEmotesSwapToCsvList(
-                                  csvEmotesData, !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
+                              ? getEmotesSwapToCsvList(csvEmotesData,
+                                  !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
                               : null,
                   builder: (
                     BuildContext context,

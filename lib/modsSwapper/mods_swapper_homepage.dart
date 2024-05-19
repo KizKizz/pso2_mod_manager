@@ -24,6 +24,8 @@ List<String> fromItemAvailableIces = [];
 List<String> toItemAvailableIces = [];
 bool isBodyPaintToInnerwear = false;
 bool isInnerwearToBodyPaint = false;
+String fromItemIconLink = '';
+String toItemIconLink = '';
 
 class ModsSwapperHomePage extends StatefulWidget {
   const ModsSwapperHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -230,7 +232,30 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: fromItemCsvData[i],
                                                     groupValue: selectedFromCsvFile,
-                                                    title: Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName),
+                                                    title: Row(children: [
+                                                      if (fromItemCsvData.length > 1)
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                        child: Container(
+                                                            width: 80,
+                                                            height: 80,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(3),
+                                                              border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                            ),
+                                                            child: Image.network(
+                                                              '$modManIconDatabaseLink${fromItemCsvData[i].sheetLocation.replaceAll('\\', '/')}/${fromItemCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                              errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                'assets/img/placeholdersquare.png',
+                                                                filterQuality: FilterQuality.none,
+                                                                fit: BoxFit.fitWidth,
+                                                              ),
+                                                              filterQuality: FilterQuality.none,
+                                                              fit: BoxFit.fitWidth,
+                                                            )),
+                                                      ),
+                                                      Text(modManCurActiveItemNameLanguage == 'JP' ? fromItemCsvData[i].jpName : fromItemCsvData[i].enName)
+                                                    ]),
                                                     subtitle: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,6 +276,10 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                           }
                                                         }
                                                       }
+
+                                                      //confirm icon set
+                                                      fromItemIconLink =
+                                                          '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
 
                                                       setState(
                                                         () {},
@@ -431,6 +460,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                   //physics: const BouncingScrollPhysics(),
                                                   itemCount: swapperSearchTextController.text.isEmpty ? availableItemsCsvData.length : toItemSearchResults.length,
                                                   itemBuilder: (context, i) {
+                                                    String cate = availableItemsCsvData[i].itemType;
+                                                    debugPrint(cate);
                                                     return Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 2),
                                                       child: RadioListTile(
@@ -438,13 +469,48 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
                                                         groupValue: selectedToCsvFile,
-                                                        title: modManCurActiveItemNameLanguage == 'JP'
-                                                            ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName.trim())
-                                                                : Text(toItemSearchResults[i].jpName.trim())
-                                                            : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName.trim())
-                                                                : Text(toItemSearchResults[i].enName.trim()),
+                                                        title: Row(children: [
+                                                          //icon
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                            child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(3),
+                                                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                                ),
+                                                                child: swapperSearchTextController.text.isEmpty
+                                                                    ? Image.network(
+                                                                        '$modManIconDatabaseLink${availableItemsCsvData[i].sheetLocation.replaceAll('\\', '/')}/${availableItemsCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )
+                                                                    : Image.network(
+                                                                        '$modManIconDatabaseLink${toItemSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${toItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )),
+                                                          ),
+                                                          //name
+                                                          modManCurActiveItemNameLanguage == 'JP'
+                                                              ? swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].jpName.trim())
+                                                                  : Text(toItemSearchResults[i].jpName.trim())
+                                                              : swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].enName.trim())
+                                                                  : Text(toItemSearchResults[i].enName.trim()),
+                                                        ]),
                                                         subtitle: swapperSearchTextController.text.isEmpty
                                                             ? availableItemsCsvData[i].itemType.isNotEmpty
                                                                 ? Text(availableItemsCsvData[i].itemType)
@@ -470,6 +536,10 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                               }
                                                             }
                                                           }
+                                                          //confirm icon set
+                                                          toItemIconLink =
+                                                              '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+
                                                           setState(
                                                             () {},
                                                           );
@@ -555,8 +625,58 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: Text(fromSubmod.itemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
-                    Expanded(flex: 1, child: Center(child: Text(toItemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
+                    Expanded(
+                        flex: 1,
+                        child: Center(
+                            child: Column(children: [
+                          Text(fromSubmod.itemName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                ),
+                                child: Image.network(
+                                  fromItemIconLink,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/img/placeholdersquare.png',
+                                    filterQuality: FilterQuality.none,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  filterQuality: FilterQuality.none,
+                                  fit: BoxFit.fitWidth,
+                                )),
+                          ),
+                        ]))),
+                    Expanded(
+                        flex: 1,
+                        child: Center(
+                            child: Column(children: [
+                          Text(toItemName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                ),
+                                child: Image.network(
+                                  toItemIconLink,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/img/placeholdersquare.png',
+                                    filterQuality: FilterQuality.none,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  filterQuality: FilterQuality.none,
+                                  fit: BoxFit.fitWidth,
+                                )),
+                          ),
+                        ]))),
                   ],
                 ),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
