@@ -2,74 +2,90 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
 class CsvIceFile {
   CsvIceFile(this.category, this.jpName, this.enName, this.id, this.adjustedId, this.iconIceName, this.nqIceName, this.hqIceName, this.nqRpIceName, this.hqRpIceName, this.nqLiIceName,
-      this.hqLiIceName, this.soundIceName, this.castSoundIceName, this.maIceName, this.maExIceName, this.handTextureIceName, this.hqhandTextureIceName, this.itemType);
+      this.hqLiIceName, this.soundIceName, this.castSoundIceName, this.maIceName, this.maExIceName, this.handTextureIceName, this.hqhandTextureIceName, this.itemType, this.sheetLocation);
   CsvIceFile.fromList(List<String> items)
       : this(
-          items[0],
-          items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
-          items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
-          items[3].isNotEmpty ? int.tryParse(items[3]) != null ? int.parse(items[3]) : -1 : -1,
-          items[4].isNotEmpty ? int.tryParse(items[4]) != null ? int.parse(items[4]) : -1 : -1,
-          items[5],
-          items[6],
-          items[7],
-          items[8],
-          items[9],
-          items[10],
-          items[11],
-          items[12],
-          items[13],
-          items[14],
-          items[15],
-          items[16],
-          items[17],
-          ''
-        );
+            items[0],
+            items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
+            items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
+            items[3].isNotEmpty
+                ? int.tryParse(items[3]) != null
+                    ? int.parse(items[3])
+                    : -1
+                : -1,
+            items[4].isNotEmpty
+                ? int.tryParse(items[4]) != null
+                    ? int.parse(items[4])
+                    : -1
+                : -1,
+            items[5],
+            items[6],
+            items[7],
+            items[8],
+            items[9],
+            items[10],
+            items[11],
+            items[12],
+            items[13],
+            items[14],
+            items[15],
+            items[16],
+            items[17],
+            '',
+            items[18]);
   CsvIceFile.fromListHairs(List<String> items)
       : this(
-          items[0],
-          items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
-          items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
-          items[3].isNotEmpty ? int.tryParse(items[3]) != null ? int.parse(items[3]) : -1 : -1,
-          items[4].isNotEmpty ? int.tryParse(items[4]) != null ? int.parse(items[4]) : -1 : -1,
-          items[5],
-          items[8],
-          items[9],
-          items[10],
-          items[11],
-          items[12],
-          items[13],
-          items[14],
-          items[15],
-          items[16],
-          items[17],
-          items[18],
-          items[19],
-          ''
-        );
+            items[0],
+            items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
+            items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
+            items[3].isNotEmpty
+                ? int.tryParse(items[3]) != null
+                    ? int.parse(items[3])
+                    : -1
+                : -1,
+            items[4].isNotEmpty
+                ? int.tryParse(items[4]) != null
+                    ? int.parse(items[4])
+                    : -1
+                : -1,
+            items[5],
+            items[8],
+            items[9],
+            items[10],
+            items[11],
+            items[12],
+            items[13],
+            items[14],
+            items[15],
+            items[16],
+            items[17],
+            items[18],
+            items[19],
+            '',
+            items[20]);
 
   CsvIceFile.fromListMags(List<String> items)
       : this(
-          items[0],
-          items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
-          items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
-          0,
-          0,
-          '',
-          items[4].split(Uri.file('\\').toFilePath()).length <= 1 ? items[4] : '',
-          items[4].split(Uri.file('\\').toFilePath()).length > 1 ? items[4].split(Uri.file('\\').toFilePath()).last : '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          items[4].split(Uri.file('\\').toFilePath()).length > 1 ? 'NGS' : 'PSO2'
-        );
+            items[0],
+            items[1].isEmpty ? curLangText!.uiUnknownItem : items[1],
+            items[2].isEmpty ? curLangText!.uiUnknownItem : items[2],
+            0,
+            0,
+            '',
+            items[4].split(Uri.file('\\').toFilePath()).length <= 1 ? items[4] : '',
+            items[4].split(Uri.file('\\').toFilePath()).length > 1 ? items[4].split(Uri.file('\\').toFilePath()).last : '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            items[4].split(Uri.file('\\').toFilePath()).length > 1 ? 'NGS' : 'PSO2',
+            items[5]);
 
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
@@ -91,6 +107,7 @@ class CsvIceFile {
   String handTextureIceName;
   String hqhandTextureIceName;
   String itemType;
+  String sheetLocation;
 
   List<String> getDetailedList() {
     return [
@@ -134,17 +151,10 @@ class CsvIceFile {
 }
 
 class CsvAccessoryIceFile {
-  CsvAccessoryIceFile(this.category, this.jpName, this.enName, this.id, this.iconIceName, this.nqIceName, this.hqIceName);
+  CsvAccessoryIceFile(this.category, this.jpName, this.enName, this.id, this.iconIceName, this.nqIceName, this.hqIceName, this.sheetLocation);
   CsvAccessoryIceFile.fromList(List<String> items)
-      : this(
-          items[0],
-          items[1].isEmpty ? curLangText!.uiUnknownAccessory : items[1],
-          items[2].isEmpty ? curLangText!.uiUnknownAccessory : items[2],
-          int.tryParse(items[3]) == null ? -1 : int.parse(items[3]),
-          items[4],
-          items[5],
-          items[6],
-        );
+      : this(items[0], items[1].isEmpty ? curLangText!.uiUnknownAccessory : items[1], items[2].isEmpty ? curLangText!.uiUnknownAccessory : items[2],
+            int.tryParse(items[3]) == null ? -1 : int.parse(items[3]), items[4], items[5], items[6], items.length == 8 ? items[7] : items[24]);
   //np = normal quality, hq = high quality
   String category;
   String jpName;
@@ -153,6 +163,7 @@ class CsvAccessoryIceFile {
   String iconIceName;
   String nqIceName;
   String hqIceName;
+  String sheetLocation;
 
   List<String> getDetailedList() {
     return ['Category: $category', 'JP Name: $jpName', 'EN Name: $enName', 'ID: $id', 'Icon Ice: $iconIceName', 'Normal Quality Ice: $nqIceName', 'High Quality Ice: $hqIceName'];
@@ -165,13 +176,26 @@ class CsvAccessoryIceFile {
 
 class CsvEmoteIceFile {
   CsvEmoteIceFile(this.category, this.subCategory, this.jpName, this.enName, this.command, this.pso2HashIceName, this.rbHumanHashIceName, this.rbCastMaleHashIceName, this.rbCastFemaleHashIceName,
-      this.rbFigHashIceName, this.pso2VfxHashIceName, this.rbVfxHashIceName, this.gender);
+      this.rbFigHashIceName, this.pso2VfxHashIceName, this.rbVfxHashIceName, this.gender, this.sheetLocation);
   CsvEmoteIceFile.fromListPso2(List<String> items)
-      : this(items[0], '', items[1].isEmpty ? curLangText!.uiUnknownEmote : items[1], items[2].isEmpty ? curLangText!.uiUnknownEmote : items[2], items[3], items[5].split('\\').last, items[7].split('\\').last,
-            items[9].split('\\').last, items[11].split('\\').last, items[13].split('\\').last, items[15].split('\\').last, items[17].split('\\').last, items[18].isNotEmpty ? items[18] : 'Both');
+      : this(
+            items[0],
+            '',
+            items[1].isEmpty ? curLangText!.uiUnknownEmote : items[1],
+            items[2].isEmpty ? curLangText!.uiUnknownEmote : items[2],
+            items[3],
+            items[5].split('\\').last,
+            items[7].split('\\').last,
+            items[9].split('\\').last,
+            items[11].split('\\').last,
+            items[13].split('\\').last,
+            items[15].split('\\').last,
+            items[17].split('\\').last,
+            items[18].isNotEmpty ? items[18] : 'Both',
+            items[19]);
   CsvEmoteIceFile.fromListNgs(List<String> items)
-      : this(items[0], '', items[1].isEmpty ? curLangText!.uiUnknownEmote : items[1], items[2].isEmpty ? curLangText!.uiUnknownEmote : items[2], items[3], '', items[5].split('\\').last, items[7].split('\\').last,
-            items[9].split('\\').last, items[11].split('\\').last, '', items[13].split('\\').last, items[14].isNotEmpty ? items[14] : curLangText!.uiGenderBoth);
+      : this(items[0], '', items[1].isEmpty ? curLangText!.uiUnknownEmote : items[1], items[2].isEmpty ? curLangText!.uiUnknownEmote : items[2], items[3], '', items[5].split('\\').last,
+            items[7].split('\\').last, items[9].split('\\').last, items[11].split('\\').last, '', items[13].split('\\').last, items[14].isNotEmpty ? items[14] : curLangText!.uiGenderBoth, items[15]);
   CsvEmoteIceFile.fromListMotion(List<String> items)
       : this(
           items[0],
@@ -187,6 +211,7 @@ class CsvEmoteIceFile {
           '',
           '',
           '',
+          items[9]
         );
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
@@ -202,6 +227,7 @@ class CsvEmoteIceFile {
   String pso2VfxHashIceName;
   String rbVfxHashIceName;
   String gender;
+  String sheetLocation;
 
   List<String> getDetailedList() {
     return [

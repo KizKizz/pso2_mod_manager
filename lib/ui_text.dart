@@ -386,8 +386,8 @@ class TranslationText {
   String uiModsLoader = 'Mods Loader', uiAutoFetchItemIcons = 'Automatically fetch missing item icons on startup?', uiOneIconEachItem = 'One icon for each item', uiFetchAll = 'Fetch All';
 
 //mods_swapper_homepage
-  String uiChooseAVariantFoundBellow = 'Choose a variant found bellow',
-      uiChooseAnItemBellowToSwap = 'Choose an item below to swap',
+  String uiChooseAVariantFoundBellow = 'Select a variant found bellow (Preferably linked inner variant)',
+      uiChooseAnItemBellowToSwap = 'Select an item to swap the mod onto',
       uiSearchSwapItems = 'Search items',
       uiReplaceNQwithHQ = 'Replace LQ ices with HQ',
       uiSwapAllFilesInsideIce = 'Copy all files to destination ices',
@@ -422,7 +422,7 @@ class TranslationText {
   String uiExperimental = 'Experimental';
 
   //items_swapper_homepage
-  String uiChooseAnItemBelow = 'Choose an item below';
+  String uiChooseAnItemBelow = 'Select the main item', uiSelectAnItemToBeReplaced = 'Select an item to be replaced by the main item';
 
   //items_swapper_popup
   String uiItemCategories = 'Item categories';

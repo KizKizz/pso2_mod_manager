@@ -15,7 +15,6 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart' as ms;
 
-
 TextEditingController swapperSearchTextController = TextEditingController();
 TextEditingController swapperFromItemsSearchTextController = TextEditingController();
 List<CsvIceFile> toItemSearchResults = [];
@@ -26,6 +25,8 @@ List<String> fromItemIds = [];
 List<String> toItemIds = [];
 List<String> fromItemAvailableIces = [];
 List<String> toItemAvailableIces = [];
+String fromItemIconLink = '';
+String toItemIconLink = '';
 
 class ItemsSwapperHomePage extends StatefulWidget {
   const ItemsSwapperHomePage({super.key});
@@ -239,13 +240,48 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                         RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                     value: swapperFromItemsSearchTextController.text.isEmpty ? fromItemCsvData[i] : fromItemSearchResults[i],
                                                     groupValue: selectedFromCsvFile,
-                                                    title: modManCurActiveItemNameLanguage == 'JP'
-                                                        ? swapperFromItemsSearchTextController.text.isEmpty
-                                                            ? Text(fromItemCsvData[i].jpName.trim())
-                                                            : Text(fromItemSearchResults[i].jpName.trim())
-                                                        : swapperFromItemsSearchTextController.text.isEmpty
-                                                            ? Text(fromItemCsvData[i].enName.trim())
-                                                            : Text(fromItemSearchResults[i].enName.trim()),
+                                                    title: Row(children: [
+                                                      //icon
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                        child: Container(
+                                                            width: 80,
+                                                            height: 80,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(3),
+                                                              border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                            ),
+                                                            child: swapperSearchTextController.text.isEmpty
+                                                                ? Image.network(
+                                                                    '$modManIconDatabaseLink${fromItemCsvData[i].sheetLocation.replaceAll('\\', '/')}/${fromItemCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                      'assets/img/placeholdersquare.png',
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.fitWidth,
+                                                                    ),
+                                                                    filterQuality: FilterQuality.none,
+                                                                    fit: BoxFit.fitWidth,
+                                                                  )
+                                                                : Image.network(
+                                                                    '$modManIconDatabaseLink${fromItemSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${fromItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                      'assets/img/placeholdersquare.png',
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.fitWidth,
+                                                                    ),
+                                                                    filterQuality: FilterQuality.none,
+                                                                    fit: BoxFit.fitWidth,
+                                                                  )),
+                                                      ),
+                                                      //name
+                                                      modManCurActiveItemNameLanguage == 'JP'
+                                                          ? swapperFromItemsSearchTextController.text.isEmpty
+                                                              ? Text(fromItemCsvData[i].jpName.trim())
+                                                              : Text(fromItemSearchResults[i].jpName.trim())
+                                                          : swapperFromItemsSearchTextController.text.isEmpty
+                                                              ? Text(fromItemCsvData[i].enName.trim())
+                                                              : Text(fromItemSearchResults[i].enName.trim()),
+                                                    ]),
                                                     subtitle: swapperFromItemsSearchTextController.text.isEmpty
                                                         ? selectedFromCsvFile == fromItemCsvData[i]
                                                             ? Column(
@@ -298,6 +334,10 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                         }
                                                       }
 
+                                                      //confirm icon set
+                                                      fromItemIconLink =
+                                                          '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+
                                                       setState(
                                                         () {},
                                                       );
@@ -331,7 +371,7 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                     height: 92,
                                     child: ListTile(
                                       minVerticalPadding: 15,
-                                      title: Text(curLangText!.uiChooseAnItemBellowToSwap),
+                                      title: Text(curLangText!.uiSelectAnItemToBeReplaced),
                                       subtitle: Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: SizedBox(
@@ -484,13 +524,48 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                         value: swapperSearchTextController.text.isEmpty ? availableItemsCsvData[i] : toItemSearchResults[i],
                                                         groupValue: selectedToCsvFile,
-                                                        title: modManCurActiveItemNameLanguage == 'JP'
-                                                            ? swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].jpName.trim())
-                                                                : Text(toItemSearchResults[i].jpName.trim())
-                                                            : swapperSearchTextController.text.isEmpty
-                                                                ? Text(availableItemsCsvData[i].enName.trim())
-                                                                : Text(toItemSearchResults[i].enName.trim()),
+                                                        title: Row(children: [
+                                                          //icon
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                            child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(3),
+                                                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                                                ),
+                                                                child: swapperSearchTextController.text.isEmpty
+                                                                    ? Image.network(
+                                                                        '$modManIconDatabaseLink${availableItemsCsvData[i].sheetLocation.replaceAll('\\', '/')}/${availableItemsCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )
+                                                                    : Image.network(
+                                                                        '$modManIconDatabaseLink${toItemSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${toItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
+                                                                        filterQuality: FilterQuality.none,
+                                                                        fit: BoxFit.fitWidth,
+                                                                      )),
+                                                          ),
+                                                          //name
+                                                          modManCurActiveItemNameLanguage == 'JP'
+                                                              ? swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].jpName.trim())
+                                                                  : Text(toItemSearchResults[i].jpName.trim())
+                                                              : swapperSearchTextController.text.isEmpty
+                                                                  ? Text(availableItemsCsvData[i].enName.trim())
+                                                                  : Text(toItemSearchResults[i].enName.trim()),
+                                                        ]),
                                                         onChanged: (CsvIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToCsvFile = currentItem!;
@@ -509,6 +584,11 @@ class _ItemsSwapperHomePageState extends State<ItemsSwapperHomePage> {
                                                               }
                                                             }
                                                           }
+
+                                                          //confirm icon set
+                                                          toItemIconLink =
+                                                              '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+
                                                           setState(
                                                             () {},
                                                           );
@@ -590,8 +670,58 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: Text(fromSubmod.itemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
-                    Expanded(flex: 1, child: Center(child: Text(toItemName, style: const TextStyle(fontWeight: FontWeight.w700)))),
+                    Expanded(
+                        flex: 1,
+                        child: Center(
+                            child: Column(children: [
+                          Text(fromSubmod.itemName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                ),
+                                child: Image.network(
+                                  fromItemIconLink,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/img/placeholdersquare.png',
+                                    filterQuality: FilterQuality.none,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  filterQuality: FilterQuality.none,
+                                  fit: BoxFit.fitWidth,
+                                )),
+                          ),
+                        ]))),
+                    Expanded(
+                        flex: 1,
+                        child: Center(
+                            child: Column(children: [
+                          Text(toItemName, style: const TextStyle(fontWeight: FontWeight.w700)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Theme.of(context).hintColor, width: 1),
+                                ),
+                                child: Image.network(
+                                  toItemIconLink,
+                                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                                    'assets/img/placeholdersquare.png',
+                                    filterQuality: FilterQuality.none,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  filterQuality: FilterQuality.none,
+                                  fit: BoxFit.fitWidth,
+                                )),
+                          ),
+                        ]))),
                   ],
                 ),
                 contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),

@@ -1,10 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.11",
+    "version": "2.6.12",
     "description": [
-        "Added an option to specify the locations to apply each mod. This option can be found in the More button (three dots) of each mod",
+        "Added item icons to swapping item lists in both mod swapper and item swapper",
         "Some bug fixes",
-        "各MODの適用場所を指定するオプションを追加しました。このオプションは各MODのもっとボタン(3つの点)にあります",
+        "MODスワッパーとアイテムスワッパーのスワッピングアイテムリストにアイテムアイコンを追加",
         "いくつかのバグ修正"
     ],
     "windows_file": "",
