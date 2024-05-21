@@ -212,8 +212,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                         color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                           data: ScrollbarThemeData(
-                                            thumbColor: MaterialStateProperty.resolveWith((states) {
-                                              if (states.contains(MaterialState.hovered)) {
+                                            thumbColor: WidgetStateProperty.resolveWith((states) {
+                                              if (states.contains(WidgetState.hovered)) {
                                                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                               }
                                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -447,8 +447,8 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                           color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                           child: ScrollbarTheme(
                                               data: ScrollbarThemeData(
-                                                thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                  if (states.contains(MaterialState.hovered)) {
+                                                thumbColor: WidgetStateProperty.resolveWith((states) {
+                                                  if (states.contains(WidgetState.hovered)) {
                                                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                   }
                                                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
