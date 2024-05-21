@@ -212,8 +212,8 @@ void vitalGaugeHomePage(context) {
                                                         Expanded(
                                                             child: ScrollbarTheme(
                                                                 data: ScrollbarThemeData(
-                                                                  thumbColor: WidgetStateProperty.resolveWith((states) {
-                                                                    if (states.contains(WidgetState.hovered)) {
+                                                                  thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                                    if (states.contains(MaterialState.hovered)) {
                                                                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                                     }
                                                                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -383,8 +383,8 @@ void vitalGaugeHomePage(context) {
                                                         Expanded(
                                                             child: ScrollbarTheme(
                                                                 data: ScrollbarThemeData(
-                                                                  thumbColor: WidgetStateProperty.resolveWith((states) {
-                                                                    if (states.contains(WidgetState.hovered)) {
+                                                                  thumbColor: MaterialStateProperty.resolveWith((states) {
+                                                                    if (states.contains(MaterialState.hovered)) {
                                                                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                                     }
                                                                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);

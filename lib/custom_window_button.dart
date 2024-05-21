@@ -20,7 +20,7 @@ class _WindowButtonsState extends State<WindowButtons> {
   Widget build(BuildContext context) {
     final buttonColors = WindowButtonColors(
         iconNormal: Theme.of(context).textTheme.labelLarge!.color,
-        mouseOver: Theme.of(context).buttonTheme.colorScheme!.surface,
+        mouseOver: Theme.of(context).buttonTheme.colorScheme!.background,
         mouseDown: Theme.of(context).highlightColor,
         iconMouseOver: Theme.of(context).textTheme.labelLarge!.color,
         iconMouseDown: Theme.of(context).textTheme.labelLarge!.color);
