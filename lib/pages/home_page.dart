@@ -36,6 +36,7 @@ import 'package:pso2_mod_manager/functions/mods_rename_functions.dart';
 import 'package:pso2_mod_manager/functions/new_cate_adder.dart';
 import 'package:pso2_mod_manager/functions/og_files_perm_checker.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/preview_dialog.dart';
 import 'package:pso2_mod_manager/functions/reapply_applied_mods.dart';
 import 'package:pso2_mod_manager/functions/restore_functions.dart';
@@ -104,6 +105,9 @@ class _HomePageState extends State<HomePage> {
       }
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
+      if (!File(modManPlayerItemDataPath).existsSync()) {
+        downloadPlayerItemData(context);
+      }
     });
 
     super.initState();

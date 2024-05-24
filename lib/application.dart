@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -83,29 +84,53 @@ Future<Map<String, dynamic>> loadJsonFromGithub() async {
 }
 
 //Ref Sheets version check
-Future<void> checkRefSheetsForUpdates(context) async {
-  List<File> sheetFiles = [];
-  int sheetFilesCount = 0;
-  if (Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
-    sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv').toList();
-    final sheetFileList = await File(modManRefSheetListFilePath).readAsLines();
-    sheetFilesCount = sheetFileList.length;
-  }
-  if (sheetFiles.isEmpty || (sheetFilesCount > 0 && sheetFiles.length != sheetFilesCount)) {
+// Future<void> checkRefSheetsForUpdates(context) async {
+//   List<File> sheetFiles = [];
+//   int sheetFilesCount = 0;
+//   if (Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
+//     sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv').toList();
+//     final sheetFileList = await File(modManRefSheetListFilePath).readAsLines();
+//     sheetFilesCount = sheetFileList.length;
+//   }
+//   if (sheetFiles.isEmpty || (sheetFilesCount > 0 && sheetFiles.length != sheetFilesCount)) {
+//     final jsonVal = await loadRefSheetsJsonFromGithub();
+//     if (jsonVal.entries.first.key != 'null') {
+//       String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
+//       refSheetsNewVersion = int.parse(newVersionValue);
+//     }
+//     Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+//     //auto download
+//     downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
+//       final prefs = await SharedPreferences.getInstance();
+//       prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+//       //print('complete');
+//       Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+//       Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
+//     });
+//   } else {
+//     final jsonVal = await loadRefSheetsJsonFromGithub();
+//     if (jsonVal.entries.first.key != 'null') {
+//       String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
+//       if (refSheetsVersion < int.parse(newVersionValue) || modManRefSheetsLocalVersion < int.parse(newVersionValue)) {
+//         refSheetsNewVersion = int.parse(newVersionValue);
+//         Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
+//       }
+//     }
+//   }
+// }
+
+// player item data ver check
+Future<void> checkPlayerItemdataForUpdates(context) async {
+  File playerItemDataJson = File(modManPlayerItemDataPath);
+  if (!playerItemDataJson.existsSync()) {
     final jsonVal = await loadRefSheetsJsonFromGithub();
     if (jsonVal.entries.first.key != 'null') {
       String newVersionValue = jsonVal.entries.firstWhere((element) => element.key == 'version').value;
       refSheetsNewVersion = int.parse(newVersionValue);
     }
     Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableTrue();
-    //auto download
-    downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setInt('refSheetsVersion', refSheetsNewVersion);
-      //print('complete');
-      Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
-      Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
-    });
+    // await Future.delayed(const Duration(milliseconds: 50));
+    // downloadPlayerItemData(context);
   } else {
     final jsonVal = await loadRefSheetsJsonFromGithub();
     if (jsonVal.entries.first.key != 'null') {

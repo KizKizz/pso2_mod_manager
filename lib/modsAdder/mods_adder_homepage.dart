@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
+import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
@@ -13,11 +14,13 @@ import 'package:file_selector/file_selector.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -45,6 +48,8 @@ bool _isAddingMods = false;
 bool _disableFirstLoadingScreen = true;
 bool _isProcessingMoreFiles = false;
 int _pathLengthInNameEdit = 0;
+List<CsvItem> playerItemData = [];
+String _errorMessage = '';
 
 void modsAdderHomePage(context) {
   List<String> dropdownButtonCateList = [];
@@ -70,12 +75,12 @@ void modsAdderHomePage(context) {
                   backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
                   body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                     return FutureBuilder(
-                        future: itemCsvFetcher(modManRefSheetsDirPath),
+                        future: playerItemDataGet(),
                         builder: ((
                           BuildContext context,
                           AsyncSnapshot snapshot,
                         ) {
-                          if (snapshot.connectionState == ConnectionState.waiting && csvInfosFromSheets.isEmpty && !_disableFirstLoadingScreen) {
+                          if (snapshot.connectionState == ConnectionState.waiting && playerItemData.isEmpty && !_disableFirstLoadingScreen) {
                             return Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -110,12 +115,6 @@ void modsAdderHomePage(context) {
                                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
                                     ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          clearAllTempDirs();
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text(curLangText!.uiReturn))
                                   ],
                                 ),
                               );
@@ -137,7 +136,7 @@ void modsAdderHomePage(context) {
                                 ),
                               );
                             } else {
-                              csvInfosFromSheets = snapshot.data;
+                              playerItemData = snapshot.data;
                               return Row(
                                 children: [
                                   RotatedBox(
@@ -494,18 +493,13 @@ void modsAdderHomePage(context) {
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            curLangText!.uiErrorWhenLoadingAddModsData,
+                                                            curLangText!.uiError,
                                                             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                           ),
-                                                          const SizedBox(
-                                                            height: 5,
+                                                          Text(
+                                                            _errorMessage,
+                                                            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
                                                           ),
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                clearAllTempDirs();
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: Text(curLangText!.uiReturn))
                                                         ],
                                                       ),
                                                     );
@@ -1733,6 +1727,7 @@ void modsAdderHomePage(context) {
                                                               processedFileListLoad = null;
                                                               processedFileList.clear();
                                                               pathCharLengthList.clear();
+                                                              playerItemData.clear();
                                                               if (csvInfosFromSheets.isNotEmpty) {
                                                                 csvInfosFromSheets.clear();
                                                               }
@@ -1774,6 +1769,7 @@ void modsAdderHomePage(context) {
                                                                     (value) {
                                                                       if (value) {
                                                                         clearAllTempDirs();
+                                                                        playerItemData.clear();
                                                                         _itemNameRenameIndex.clear();
                                                                         mainFolderRenameIndex.clear();
                                                                         renameTextBoxController.clear();
@@ -1841,196 +1837,333 @@ void modsAdderHomePage(context) {
 //suport functions
 Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePaths) async {
   List<ModsAdderItem> modsAdderItemList = [];
-  List<String> pathsWithNoIceInRoot = [];
+  // List<String> pathsWithNoIceInRoot = [];
   //copy files to temp
   for (var xFile in xFilePaths) {
+    String tempModDirName = p.basenameWithoutExtension(xFile.path);
+    if (Directory(modManAddModsTempDirPath).existsSync() && Directory(modManAddModsTempDirPath).listSync().where((element) => p.basenameWithoutExtension(element.path) == tempModDirName).isNotEmpty) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+      tempModDirName += '_$formattedDate';
+    }
     if (p.extension(xFile.path) == '.zip') {
-      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.zip', '')}').toFilePath(), asyncWrite: false);
+      await extractFileToDisk(xFile.path, Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath(), asyncWrite: false);
     } else if (p.extension(xFile.path) == '.rar') {
-      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.rar', '')}').toFilePath()}', '-r']);
+      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath()}', '-r']);
     } else if (p.extension(xFile.path) == '.7z') {
-      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/${xFile.name.replaceAll('.7z', '')}').toFilePath()}', '-r']);
+      await Process.run(modMan7zipExePath, ['x', xFile.path, '-o${Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath()}', '-r']);
     } else if (File(xFile.path).statSync().type == FileSystemEntityType.directory) {
-      await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/${xFile.name}').toFilePath());
+      await io.copyPath(xFile.path, Uri.file('$modManAddModsTempDirPath/$tempModDirName').toFilePath());
     } else {
-      final tempPath = Uri.file('$modManAddModsTempDirPath/${p.basename(File(xFile.path).parent.path)}').toFilePath();
+      Directory(modManAddModsTempDirPath).createSync();
+      String tempPath = Uri.file('$modManAddModsTempDirPath/${p.basename(File(xFile.path).parent.path)}').toFilePath();
+      if (Directory(modManAddModsTempDirPath).listSync().where((element) => p.basenameWithoutExtension(element.path) == tempPath).isNotEmpty) {
+        DateTime now = DateTime.now();
+        String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+        tempPath += '_$formattedDate';
+      }
       Directory(tempPath).createSync(recursive: true);
       if (File(xFile.path).existsSync()) File(xFile.path).copySync(Uri.file('$tempPath/${xFile.name}').toFilePath());
     }
   }
+
   //listing ice files in temp
   List<File> iceFileList = [];
   for (var dir in Directory(modManAddModsTempDirPath).listSync(recursive: false).whereType<Directory>()) {
     iceFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0));
     //listing mods with no ices in root
-    if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0).isEmpty) {
-      pathsWithNoIceInRoot.add(dir.path);
-    }
+    // if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0).isEmpty) {
+    //   pathsWithNoIceInRoot.add(dir.path);
+    // }
   }
-  //fetch csv
-  if (csvInfosFromSheets.isEmpty) {
-    csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+
+  //listing other files in temp
+  List<File> extraFileList = [];
+  for (var dir in Directory(modManAddModsTempDirPath).listSync(recursive: false).whereType<Directory>()) {
+    extraFileList.addAll(dir.listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty && element.lengthSync() > 0));
+    //listing mods with no ices in root
+    // if (dir.listSync().whereType<File>().where((element) => p.extension(element.path).isEmpty && element.lengthSync() > 0).isEmpty) {
+    //   pathsWithNoIceInRoot.add(dir.path);
+    // }
   }
-  List<String> csvFileInfos = [];
+
+  //get data for each ice
+  List<CsvItem> foundItemData = [];
+  List<File> iceFilesNotInItemData = [];
   for (var iceFile in iceFileList) {
-    //look in csv infos
-    if (modsAdderGroupSameItemVariants && csvFileInfos.where((element) => element.contains(p.basename(iceFile.path))).isEmpty) {
-      for (var csvFile in csvInfosFromSheets) {
-        final csv = csvFile.firstWhere(
-          (line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty,
-          orElse: () => '',
-        );
-        if (csv.isNotEmpty) {
-          csvFileInfos.add(csv);
-        }
-      }
-    } else if (!modsAdderGroupSameItemVariants) {
-      for (var csvFile in csvInfosFromSheets) {
-        csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(iceFile.path)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
+    bool isFound = false;
+    for (var itemData in playerItemData) {
+      if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) &&
+          (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty) &&
+          foundItemData.where((element) => element.getENName() == itemData.getENName() || element.getJPName() == itemData.getJPName()).isEmpty) {
+        foundItemData.add(itemData);
+        isFound = true;
+      } else if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) && (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty)) {
+        isFound = true;
       }
     }
+    if (!isFound) iceFilesNotInItemData.add(iceFile);
   }
 
-  //create new item structures
-  List<File> csvMatchedIceFiles = [];
-  for (var infoLine in csvFileInfos) {
-    final infos = infoLine.split(',');
+  //create file structures
+  List<CsvItem> copiedCsvItems = [];
+  for (var data in foundItemData) {
+    String itemCategory = '';
     String itemName = '';
-    modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
-    itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
 
-    String itemCategory = infos[0];
-    if (itemName.contains('[Se]')) {
-      itemCategory = defaultCategoryDirs[16];
+    int matchingIndex =
+        copiedCsvItems.indexWhere((element) => element.getENName().split('/').first == data.getENName().split('/').first || element.getJPName().split('/').first == data.getJPName().split('/').first);
+    if (matchingIndex == -1) {
+      //construct item name
+      itemName = data.getENName();
+      if ((modManCurActiveItemNameLanguage == 'JP' && data.getJPName().isNotEmpty) || itemName.isEmpty) {
+        itemName = data.getJPName();
+      }
+      itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
+
+      //construct category
+      itemCategory = data.category;
+      if (itemName.contains('[Se]')) itemCategory = defaultCategoryDirs[16];
+    } else {
+      CsvItem matchingCsvItem = copiedCsvItems[matchingIndex];
+      //construct item name
+      itemName = matchingCsvItem.getENName();
+      if ((modManCurActiveItemNameLanguage == 'JP' && matchingCsvItem.getJPName().isNotEmpty) || itemName.isEmpty) {
+        itemName = matchingCsvItem.getJPName();
+      }
+      itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
+
+      //construct category
+      itemCategory = matchingCsvItem.category;
+      if (itemName.contains('[Se]')) itemCategory = defaultCategoryDirs[16];
     }
-    //move files from temp
-    String newItemDirPath = '';
-    for (var iceFile in iceFileList) {
-      if (iceFile.existsSync() && infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
-        newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trimRight();
-        String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
-        newIceFilePath = removeRebootPath(newIceFilePath);
-        if (p.dirname(newIceFilePath) == newItemDirPath) {
-          await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
-          newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
-        } else {
-          await Directory(p.dirname(newIceFilePath)).create(recursive: true);
-        }
-        iceFile.copySync(newIceFilePath);
-        csvMatchedIceFiles.add(iceFile);
-        //fetch extra file in ice dir
-        final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-        List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
-        if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
-          extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
-        }
-        for (var extraFile in extraFiles) {
-          String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
-          if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
-            extraFile.copySync(newExtraFilePath);
-          }
+
+    //construct file structures
+    String modAdderItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trim();
+    for (var file in iceFileList) {
+      if (data.infos.values.contains(p.basenameWithoutExtension(file.path))) {
+        String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
+        newFilePath = removeRebootPath(newFilePath);
+        await File(newFilePath).parent.create(recursive: true);
+        try {
+          file.copySync(newFilePath);
+        } catch (e) {
+          _errorMessage = e.toString();
         }
       }
     }
-    //
-    //get item icon
-    File newItemIcon = File('');
-    if (itemCategory != defaultCategoryDirs[7] && itemCategory != defaultCategoryDirs[14]) {
-      List<String> ogIconIcePaths = itemCategory == defaultCategoryDirs[0]
-          ? await originalFilePathGet(context, infos[4])
-          : itemCategory == defaultCategoryDirs[12]
-              ? []
-              : await originalFilePathGet(context, infos[5]);
-      String ogIconIcePath = '';
-      if (ogIconIcePaths.isNotEmpty) {
-        ogIconIcePath = ogIconIcePaths.first;
-      }
-      if (ogIconIcePath.isNotEmpty) {
-        String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName/tempItemIconUnpack').toFilePath();
-        final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
-        //unpack and convert dds to png
-        if (downloadedconIcePath.isNotEmpty && File(downloadedconIcePath).existsSync()) {
-          //debugPrint(downloadedconIcePath);
-          await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
-          if (Directory('${downloadedconIcePath}_ext').existsSync()) {
-            File ddsItemIcon =
-                Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-            if (ddsItemIcon.path.isNotEmpty) {
-              newItemIcon = File(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
-              await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
-              // File pngItemIcon =
-              //     Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
-              // if (pngItemIcon.path.isNotEmpty) {
-              //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
-              // }
-            }
-          }
-          if (Directory(tempIconUnpackDirPath).existsSync()) {
-            Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
-          }
+    //extra files copy
+    for (var file in extraFileList) {
+      String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
+      newFilePath = removeRebootPath(newFilePath);
+      if (File(newFilePath).parent.existsSync()) {
+        try {
+          file.copySync(newFilePath);
+        } catch (e) {
+          _errorMessage = e.toString();
         }
       }
     }
-    //move more extra files
-    for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
-      int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
-      if (index != -1) {
-        for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-          if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
-        }
-      }
+
+    //download item icon from item database
+    String itemIconPath = '$modAdderItemDirPath/$itemName.png';
+    if (data.iconImagePath.isNotEmpty) {
+      final dio = Dio();
+      String iconLink = modManMAIconDatabaseLink + data.iconImagePath.replaceAll('\\', '/');
+      await dio.download(iconLink, itemIconPath);
+      if (!File(itemIconPath).existsSync()) itemIconPath = '';
     }
+
+    if (modsAdderGroupSameItemVariants) copiedCsvItems.add(data);
+
     //create new item object
-    ModsAdderItem newItem = ModsAdderItem(itemCategory, itemName, newItemDirPath, newItemIcon.path, false, true, false, []);
+    ModsAdderItem newItem = ModsAdderItem(itemCategory, itemName, modAdderItemDirPath, itemIconPath, false, true, false, []);
     if (modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
       modsAdderItemList.add(newItem);
     }
   }
-  //move unmatched ice files to misc
-  bool isUnknownItemAdded = false;
-  for (var iceFile in iceFileList) {
-    if (iceFile.existsSync() && !csvMatchedIceFiles.contains(iceFile)) {
-      String itemName = curLangText!.uiUnknownItem;
-      String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName').toFilePath();
-      String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
-      newIceFilePath = removeRebootPath(newIceFilePath);
-      if (p.dirname(newIceFilePath) == newItemDirPath) {
-        await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
-        newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
-      } else {
-        await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+
+  //ice files not in item data
+  if (iceFilesNotInItemData.isNotEmpty) {
+    List<String> miscFilePaths = [];
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
+    String unknownItemName = '${curLangText!.uiUnknown}_$formattedDate';
+    String modAdderMiscItemDirPath = Uri.file('$modManModsAdderPath/${defaultCategoryDirs[13]}/$unknownItemName').toFilePath().trim();
+    for (var file in iceFilesNotInItemData) {
+      String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderMiscItemDirPath);
+      newFilePath = removeRebootPath(newFilePath);
+      await File(newFilePath).parent.create(recursive: true);
+      try {
+        file.copySync(newFilePath);
+        if (!miscFilePaths.contains(modAdderMiscItemDirPath)) miscFilePaths.add(modAdderMiscItemDirPath);
+      } catch (e) {
+        _errorMessage = e.toString();
       }
-      iceFile.copySync(newIceFilePath);
-      //fetch extra file in ice dir
-      final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
-      List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
-      if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
-        extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
-      }
-      for (var extraFile in extraFiles) {
-        String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
-        if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
-          extraFile.copySync(newExtraFilePath);
-        }
-      }
-      //move more extra files
-      for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
-        int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
-        if (index != -1) {
-          for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
-            if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync()) extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
+    }
+    //extra files copy
+    for (var file in extraFileList) {
+      for (var path in miscFilePaths) {
+        String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, path);
+        newFilePath = removeRebootPath(newFilePath);
+        if (File(newFilePath).parent.existsSync()) {
+          try {
+            file.copySync(newFilePath);
+          } catch (e) {
+            _errorMessage = e.toString();
           }
         }
       }
-      //add to list
-      ModsAdderItem newItem = ModsAdderItem('Misc', itemName, newItemDirPath, '', true, true, false, []);
-      if (!isUnknownItemAdded &&
-          modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
-        modsAdderItemList.add(newItem);
-        isUnknownItemAdded = true;
-      }
+    }
+    //create new item object
+    ModsAdderItem newItem = ModsAdderItem(defaultCategoryDirs[13], unknownItemName, modAdderMiscItemDirPath, '', false, true, false, []);
+    if (modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
+      modsAdderItemList.add(newItem);
     }
   }
+
+  //create new item structures
+  // List<File> csvMatchedIceFiles = [];
+  // for (var infoLine in csvFileInfos) {
+  //   final infos = infoLine.split(',');
+  //   String itemName = '';
+  //   modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
+  //   itemName = itemName.replaceAll(RegExp(charToReplace), '_').trim();
+
+  //   String itemCategory = infos[0];
+  //   if (itemName.contains('[Se]')) {
+  //     itemCategory = defaultCategoryDirs[16];
+  //   }
+  //   //move files from temp
+  //   String newItemDirPath = '';
+  //   for (var iceFile in iceFileList) {
+  //     if (iceFile.existsSync() && infoLine.contains(p.basenameWithoutExtension(iceFile.path))) {
+  //       newItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trimRight();
+  //       String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+  //       newIceFilePath = removeRebootPath(newIceFilePath);
+  //       if (p.dirname(newIceFilePath) == newItemDirPath) {
+  //         await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
+  //         newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
+  //       } else {
+  //         await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+  //       }
+  //       iceFile.copySync(newIceFilePath);
+  //       csvMatchedIceFiles.add(iceFile);
+  //       //fetch extra file in ice dir
+  //       final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  //       List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
+  //       if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
+  //         extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
+  //       }
+  //       for (var extraFile in extraFiles) {
+  //         String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
+  //         if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
+  //           extraFile.copySync(newExtraFilePath);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   //
+  //   //get item icon
+  //   File newItemIcon = File('');
+  //   if (itemCategory != defaultCategoryDirs[7] && itemCategory != defaultCategoryDirs[14]) {
+  //     List<String> ogIconIcePaths = itemCategory == defaultCategoryDirs[0]
+  //         ? await originalFilePathGet(context, infos[4])
+  //         : itemCategory == defaultCategoryDirs[12]
+  //             ? []
+  //             : await originalFilePathGet(context, infos[5]);
+  //     String ogIconIcePath = '';
+  //     if (ogIconIcePaths.isNotEmpty) {
+  //       ogIconIcePath = ogIconIcePaths.first;
+  //     }
+  //     if (ogIconIcePath.isNotEmpty) {
+  //       String tempIconUnpackDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName/tempItemIconUnpack').toFilePath();
+  //       final downloadedconIcePath = await downloadIconIceFromOfficial(ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), tempIconUnpackDirPath);
+  //       //unpack and convert dds to png
+  //       if (downloadedconIcePath.isNotEmpty && File(downloadedconIcePath).existsSync()) {
+  //         //debugPrint(downloadedconIcePath);
+  //         await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
+  //         if (Directory('${downloadedconIcePath}_ext').existsSync()) {
+  //           File ddsItemIcon =
+  //               Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
+  //           if (ddsItemIcon.path.isNotEmpty) {
+  //             newItemIcon = File(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+  //             await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
+  //             // File pngItemIcon =
+  //             //     Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.png', orElse: () => File(''));
+  //             // if (pngItemIcon.path.isNotEmpty) {
+  //             //   newItemIcon = pngItemIcon.renameSync(Uri.file('$modManModsAdderPath/$itemCategory/$itemName/$itemName.png').toFilePath());
+  //             // }
+  //           }
+  //         }
+  //         if (Directory(tempIconUnpackDirPath).existsSync()) {
+  //           Directory(tempIconUnpackDirPath).deleteSync(recursive: true);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   //move more extra files
+  //   for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
+  //     int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
+  //     if (index != -1) {
+  //       for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
+  //         if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync())
+  //           extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
+  //       }
+  //     }
+  //   }
+  //   //create new item object
+  //   ModsAdderItem newItem = ModsAdderItem(itemCategory, itemName, newItemDirPath, newItemIcon.path, false, true, false, []);
+  //   if (modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
+  //     modsAdderItemList.add(newItem);
+  //   }
+  // }
+  // //move unmatched ice files to misc
+  // bool isUnknownItemAdded = false;
+  // for (var iceFile in iceFileList) {
+  //   if (iceFile.existsSync() && !csvMatchedIceFiles.contains(iceFile)) {
+  //     String itemName = curLangText!.uiUnknownItem;
+  //     String newItemDirPath = Uri.file('$modManModsAdderPath/Misc/$itemName').toFilePath();
+  //     String newIceFilePath = Uri.file('$newItemDirPath${iceFile.path.replaceFirst(modManAddModsTempDirPath, '')}').toFilePath();
+  //     newIceFilePath = removeRebootPath(newIceFilePath);
+  //     if (p.dirname(newIceFilePath) == newItemDirPath) {
+  //       await Directory('${p.dirname(newIceFilePath)}/$itemName').create(recursive: true);
+  //       newIceFilePath = newIceFilePath.replaceFirst(p.dirname(newIceFilePath), '${p.dirname(newIceFilePath)}/$itemName');
+  //     } else {
+  //       await Directory(p.dirname(newIceFilePath)).create(recursive: true);
+  //     }
+  //     iceFile.copySync(newIceFilePath);
+  //     //fetch extra file in ice dir
+  //     final specialParentDirNames = ['win32', 'win32_na', 'win32reboot', 'win32reboot_na'];
+  //     List<File> extraFiles = Directory(iceFile.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty).toList();
+  //     if (specialParentDirNames.contains(p.basename(iceFile.parent.path)) && p.basename(iceFile.parent.parent.path) != p.basename(modManAddModsTempDirPath)) {
+  //       extraFiles.addAll(Directory(iceFile.parent.parent.path).listSync().whereType<File>().where((element) => p.extension(element.path).isNotEmpty));
+  //     }
+  //     for (var extraFile in extraFiles) {
+  //       String newExtraFilePath = Uri.file('${p.dirname(newIceFilePath)}/${p.basename(extraFile.path)}').toFilePath();
+  //       if (extraFile.existsSync() && !File(newExtraFilePath).existsSync()) {
+  //         extraFile.copySync(newExtraFilePath);
+  //       }
+  //     }
+  //     //move more extra files
+  //     for (var modDir in Directory(newItemDirPath).listSync().whereType<Directory>()) {
+  //       int index = pathsWithNoIceInRoot.indexWhere((element) => element.contains(p.basename(modDir.path)));
+  //       if (index != -1) {
+  //         for (var extraFile in Directory(pathsWithNoIceInRoot[index]).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path).isNotEmpty)) {
+  //           if (extraFile.existsSync() && !File(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath()).existsSync())
+  //             extraFile.copySync(Uri.file('${modDir.path}/${p.basename(extraFile.path)}').toFilePath());
+  //         }
+  //       }
+  //     }
+  //     //add to list
+  //     ModsAdderItem newItem = ModsAdderItem('Misc', itemName, newItemDirPath, '', true, true, false, []);
+  //     if (!isUnknownItemAdded &&
+  //         modsAdderItemList.where((element) => element.category == newItem.category && element.itemName == newItem.itemName && element.itemDirPath == newItem.itemDirPath).isEmpty) {
+  //       modsAdderItemList.add(newItem);
+  //       isUnknownItemAdded = true;
+  //     }
+  //   }
+  // }
 
   //Sort to list
   for (var item in modsAdderItemList) {

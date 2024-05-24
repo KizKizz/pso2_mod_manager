@@ -48,6 +48,7 @@ String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zambon
 String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
 String modMan7zipExePath = Uri.file('${Directory.current.path}/7zip-x64/7z.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
+String modManPlayerItemDataPath = Uri.file('${Directory.current.path}/ItemRefSheets/playerItemData.json').toFilePath();
 String modManWin32CheckSumFilePath = '';
 String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
@@ -79,6 +80,7 @@ String backupMasterURL = '';
 String backupPatchURL = '';
 //extras
 String modManIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/icons';
+String modManMAIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
@@ -216,7 +218,7 @@ Future<bool> pathsLoader(context) async {
 
   //ref sheets check
   modManRefSheetsLocalVersion = int.parse(File(modManRefSheetsLocalVerFilePath).readAsStringSync());
-  await checkRefSheetsForUpdates(context);
+  await checkPlayerItemdataForUpdates(context);
 
   //startup icons loader
   if (firstTimeUser) {
