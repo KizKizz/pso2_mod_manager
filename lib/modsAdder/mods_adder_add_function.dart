@@ -149,9 +149,9 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
   saveModdedItemListToJson();
 
   //clear sheets
-  if (csvInfosFromSheets.isNotEmpty) {
-    csvInfosFromSheets.clear();
-  }
+  // if (csvInfosFromSheets.isNotEmpty) {
+  //   csvInfosFromSheets.clear();
+  // }
 
   return true;
 }

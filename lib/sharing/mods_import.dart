@@ -1654,9 +1654,9 @@ void modsImportHomePage(context) {
                                                     processedImportedFileListLoad = null;
                                                     processedImportFileList.clear();
                                                     pathCharLengthList.clear();
-                                                    if (csvInfosFromSheets.isNotEmpty) {
-                                                      csvInfosFromSheets.clear();
-                                                    }
+                                                    // if (csvInfosFromSheets.isNotEmpty) {
+                                                    //   csvInfosFromSheets.clear();
+                                                    // }
                                                     //_exitConfirmDialog = false;
                                                     Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                     _isNameEditing = false;
@@ -1714,9 +1714,9 @@ void modsImportHomePage(context) {
                                                                 Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                                 _isNameEditing = false;
                                                                 importDropZoneMax = true;
-                                                                if (csvInfosFromSheets.isNotEmpty) {
-                                                                  csvInfosFromSheets.clear();
-                                                                }
+                                                                // if (csvInfosFromSheets.isNotEmpty) {
+                                                                //   csvInfosFromSheets.clear();
+                                                                // }
                                                               } else {
                                                                 processedImportFileList = toAddList.toList();
                                                                 toAddList.clear();

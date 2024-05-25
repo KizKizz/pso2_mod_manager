@@ -28,24 +28,24 @@ List<CsvIceFile> csvGeneralIndexFiles = [];
 //   return csvReturnList;
 // }
 
-Future<List<List<String>>> itemCsvFetcher(String refSheetsPath) async {
-  List<List<String>> csvReturnList = List.generate(defaultCategoryDirs.length, (index) => []);
-  final csvFilesFromPath = Directory(refSheetsPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv');
-  for (var csvFile in csvFilesFromPath) {
-    await csvFile.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
-      int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(csvFile.path)).isNotEmpty);
-      if (categoryIndex != -1) {
-        line = '${defaultCategoryDirs[categoryIndex]},$line';
-        csvReturnList[categoryIndex].add(line);
-      } 
-      // else {
-      //   line = curActiveLang == 'JP' ? '未知,$line' :'Unknown,$line';
-      // }
+// Future<List<List<String>>> itemCsvFetcher(String refSheetsPath) async {
+//   List<List<String>> csvReturnList = List.generate(defaultCategoryDirs.length, (index) => []);
+//   final csvFilesFromPath = Directory(refSheetsPath).listSync(recursive: true).whereType<File>().where((element) => p.extension(element.path) == '.csv');
+//   for (var csvFile in csvFilesFromPath) {
+//     await csvFile.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
+//       int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(csvFile.path)).isNotEmpty);
+//       if (categoryIndex != -1) {
+//         line = '${defaultCategoryDirs[categoryIndex]},$line';
+//         csvReturnList[categoryIndex].add(line);
+//       } 
+//       // else {
+//       //   line = curActiveLang == 'JP' ? '未知,$line' :'Unknown,$line';
+//       // }
       
-    });
-  }
-  return csvReturnList;
-}
+//     });
+//   }
+//   return csvReturnList;
+// }
 
 Future<List<String>> modFileCsvFetcher(List<String> itemCsvList, List<File> iceFiles) async {
   List<String> csvReturnList = [];

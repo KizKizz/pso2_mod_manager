@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 part 'csv_item_class.g.dart';
 
 @JsonSerializable()
@@ -25,6 +26,16 @@ class CsvItem {
 
   String getIconImagePath() {
     return infos.entries.firstWhere((element) => element.key.contains('iconImagePath')).value;
+  }
+
+  List<String> getInfos() {
+    List<String> returnInfos = [];
+    returnInfos.add(category);
+    if (category == defaultCategoryDirs[14]) returnInfos.add(subCategory);
+    returnInfos.addAll(infos.values);
+    returnInfos.add(iconImagePath);
+
+    return returnInfos;
   }
 
   bool containsCategory(List<String> filters) {
@@ -120,8 +131,10 @@ class CsvItem {
     return false;
   }
 
-  CsvItem.fromMap(String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, String subCategory, int categoryIndex, String iconImagePath, Map<String, String> infos)
-      : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, subCategory = subCategory, categoryIndex = categoryIndex, iconImagePath = iconImagePath, infos = infos);
+  CsvItem.fromMap(
+      String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, String subCategory, int categoryIndex, String iconImagePath, Map<String, String> infos)
+      : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, subCategory = subCategory, categoryIndex = categoryIndex,
+            iconImagePath = iconImagePath, infos = infos);
 
   factory CsvItem.fromJson(Map<String, dynamic> json) => _$CsvItemFromJson(json);
   Map<String, dynamic> toJson() => _$CsvItemToJson(this);

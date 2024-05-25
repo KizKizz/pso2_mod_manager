@@ -79,7 +79,6 @@ String patchURL = '';
 String backupMasterURL = '';
 String backupPatchURL = '';
 //extras
-String modManIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/icons';
 String modManMAIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main';
 
 Future<bool> pathsLoader(context) async {

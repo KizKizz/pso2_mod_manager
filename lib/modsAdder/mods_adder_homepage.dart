@@ -1728,9 +1728,9 @@ void modsAdderHomePage(context) {
                                                               processedFileList.clear();
                                                               pathCharLengthList.clear();
                                                               playerItemData.clear();
-                                                              if (csvInfosFromSheets.isNotEmpty) {
-                                                                csvInfosFromSheets.clear();
-                                                              }
+                                                              // if (csvInfosFromSheets.isNotEmpty) {
+                                                              //   csvInfosFromSheets.clear();
+                                                              // }
                                                               //_exitConfirmDialog = false;
                                                               Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                               _isNameEditing = false;
@@ -1785,9 +1785,9 @@ void modsAdderHomePage(context) {
                                                                         Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                                         _isNameEditing = false;
                                                                         dropZoneMax = true;
-                                                                        if (csvInfosFromSheets.isNotEmpty) {
-                                                                          csvInfosFromSheets.clear();
-                                                                        }
+                                                                        // if (csvInfosFromSheets.isNotEmpty) {
+                                                                        //   csvInfosFromSheets.clear();
+                                                                        // }
                                                                       } else {
                                                                         processedFileList = toAddList.toList();
                                                                         toAddList.clear();

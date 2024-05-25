@@ -125,7 +125,7 @@ List<ModFile> startupReappliedModFiles = [];
 List<Widget> previewDialogImages = [];
 String previewDialogModName = '';
 String isAutoFetchingIconsOnStartup = 'minimal';
-List<List<String>> csvInfosFromSheets = [];
+//List<List<String>> csvInfosFromSheets = [];
 //swapper
 bool isReplacingNQWithHQ = false;
 bool isCopyAll = false;

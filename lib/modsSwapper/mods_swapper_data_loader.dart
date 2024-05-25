@@ -5,10 +5,12 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/csv_files_index.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -21,239 +23,278 @@ import 'package:pso2_mod_manager/state_provider.dart';
 
 String unlistedItemCategoryF = '';
 
-Future<List<File>> getCsvFiles(context, String categoryName, List<String> modFilePaths) async {
-  List<File> csvFiles = [];
-  String finalCategoryName = categoryName;
-  if (!defaultCategoryDirs.contains(categoryName) || categoryName == defaultCategoryDirs[13]) {
-    //load sheets
-    if (csvInfosFromSheets.isEmpty) {
-      csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-    }
+// Future<List<File>> getCsvFiles(context, String categoryName, List<String> modFilePaths) async {
+//   List<File> csvFiles = [];
+//   String finalCategoryName = categoryName;
+//   if (!defaultCategoryDirs.contains(categoryName) || categoryName == defaultCategoryDirs[13]) {
+//     //load sheets
+//     if (csvInfosFromSheets.isEmpty) {
+//       csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+//     }
 
-    String csvItemInfo = '';
-    for (var csv in csvInfosFromSheets) {
-      for (var line in csv) {
-        bool allFilesMatched = true;
-        for (var path in modFilePaths) {
-          if (!line.split(',').contains(p.basename(path))) {
-            allFilesMatched = false;
-          }
-        }
-        if (allFilesMatched) {
-          csvItemInfo = line;
-          break;
-        }
-      }
-    }
-    //unload sheets
-    if (csvInfosFromSheets.isNotEmpty) {
-      csvInfosFromSheets.clear();
-    }
-    if (csvItemInfo.isNotEmpty) {
-      finalCategoryName = csvItemInfo.split(',').first;
-      unlistedItemCategoryF = finalCategoryName;
-    } else {
-      finalCategoryName = await modsSwapperCategorySelect(context);
-      unlistedItemCategoryF = finalCategoryName;
-      if (finalCategoryName.isEmpty) {
-        Navigator.pop(context);
-      }
-    }
-  }
+//     String csvItemInfo = '';
+//     for (var csv in csvInfosFromSheets) {
+//       for (var line in csv) {
+//         bool allFilesMatched = true;
+//         for (var path in modFilePaths) {
+//           if (!line.split(',').contains(p.basename(path))) {
+//             allFilesMatched = false;
+//           }
+//         }
+//         if (allFilesMatched) {
+//           csvItemInfo = line;
+//           break;
+//         }
+//       }
+//     }
+//     //unload sheets
+//     if (csvInfosFromSheets.isNotEmpty) {
+//       csvInfosFromSheets.clear();
+//     }
+//     if (csvItemInfo.isNotEmpty) {
+//       finalCategoryName = csvItemInfo.split(',').first;
+//       unlistedItemCategoryF = finalCategoryName;
+//     } else {
+//       finalCategoryName = await modsSwapperCategorySelect(context);
+//       unlistedItemCategoryF = finalCategoryName;
+//       if (finalCategoryName.isEmpty) {
+//         Navigator.pop(context);
+//       }
+//     }
+//   }
 
-  //get csv files
-  if (finalCategoryName.isNotEmpty) {
-    int categoryIndex = defaultCategoryDirs.indexOf(finalCategoryName);
-    for (var csvFileName in csvFileList[categoryIndex]) {
-      final csvFilesFromPath = Directory(modManRefSheetsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.basename(element.path) == csvFileName);
-      for (var file in csvFilesFromPath) {
-        csvFiles.add(file);
-      }
-    }
-  }
-  return csvFiles;
-}
+//   //get csv files
+//   if (finalCategoryName.isNotEmpty) {
+//     int categoryIndex = defaultCategoryDirs.indexOf(finalCategoryName);
+//     for (var csvFileName in csvFileList[categoryIndex]) {
+//       final csvFilesFromPath = Directory(modManRefSheetsDirPath).listSync(recursive: true).whereType<File>().where((element) => p.basename(element.path) == csvFileName);
+//       for (var file in csvFilesFromPath) {
+//         csvFiles.add(file);
+//       }
+//     }
+//   }
+//   return csvFiles;
+// }
 
-Future<String> modsSwapperCategorySelect(context) async {
-  // List<String> swapCategoriesF = [
-  //   'Accessories',
-  //   'Basewears',
-  //   'Body Paints',
-  //   'Cast Arm Parts',
-  //   'Cast Body Parts',
-  //   'Cast Leg Parts',
-  //   'Costumes',
-  //   'Emotes',
-  //   'Eyes',
-  //   'Face Paints',
-  //   'Hairs',
-  //   'Innerwears',
-  //   'Mags',
-  //   'Motions',
-  //   'Outerwears',
-  //   'Setwears'
-  // ];
-  List<String> swapCategoriesF = defaultCategoryDirs.where((element) => element != defaultCategoryDirs[13]).toList();
-  String? selectedCategoryF;
+// Future<String> modsSwapperCategorySelect(context) async {
+//   // List<String> swapCategoriesF = [
+//   //   'Accessories',
+//   //   'Basewears',
+//   //   'Body Paints',
+//   //   'Cast Arm Parts',
+//   //   'Cast Body Parts',
+//   //   'Cast Leg Parts',
+//   //   'Costumes',
+//   //   'Emotes',
+//   //   'Eyes',
+//   //   'Face Paints',
+//   //   'Hairs',
+//   //   'Innerwears',
+//   //   'Mags',
+//   //   'Motions',
+//   //   'Outerwears',
+//   //   'Setwears'
+//   // ];
+//   List<String> swapCategoriesF = defaultCategoryDirs.where((element) => element != defaultCategoryDirs[13]).toList();
+//   String? selectedCategoryF;
 
-  return await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-                title: Text(curLangText!.uiItemCategoryNotFound, style: const TextStyle(fontWeight: FontWeight.w700)),
-                contentPadding: const EdgeInsets.only(left: 16, right: 16),
-                content: SizedBox(
-                  width: 200,
-                  child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                    hint: Text(curLangText!.uiSelectACategory),
-                    buttonStyleData: ButtonStyleData(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: Theme.of(context).hintColor,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    dropdownStyleData: DropdownStyleData(
-                      maxHeight: windowsHeight * 0.5,
-                      elevation: 3,
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        color: Theme.of(context).cardColor,
-                      ),
-                    ),
-                    iconStyleData: const IconStyleData(iconSize: 15),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 25,
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                    ),
-                    isDense: true,
-                    items: swapCategoriesF
-                        .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(bottom: 3),
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                        //fontSize: 14,
-                                        //fontWeight: FontWeight.bold,
-                                        //color: Colors.white,
-                                        ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            )))
-                        .toList(),
-                    value: selectedCategoryF,
-                    onChanged: (value) async {
-                      selectedCategoryF = value.toString();
+//   return await showDialog(
+//       barrierDismissible: false,
+//       context: context,
+//       builder: (context) => StatefulBuilder(builder: (context, setState) {
+//             return AlertDialog(
+//                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+//                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+//                 titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+//                 title: Text(curLangText!.uiItemCategoryNotFound, style: const TextStyle(fontWeight: FontWeight.w700)),
+//                 contentPadding: const EdgeInsets.only(left: 16, right: 16),
+//                 content: SizedBox(
+//                   width: 200,
+//                   child: DropdownButtonHideUnderline(
+//                       child: DropdownButton2(
+//                     hint: Text(curLangText!.uiSelectACategory),
+//                     buttonStyleData: ButtonStyleData(
+//                       height: 30,
+//                       decoration: BoxDecoration(
+//                         border: Border.all(
+//                           width: 1,
+//                           color: Theme.of(context).hintColor,
+//                         ),
+//                         borderRadius: BorderRadius.circular(10),
+//                       ),
+//                     ),
+//                     dropdownStyleData: DropdownStyleData(
+//                       maxHeight: windowsHeight * 0.5,
+//                       elevation: 3,
+//                       padding: const EdgeInsets.symmetric(vertical: 2),
+//                       decoration: BoxDecoration(
+//                         borderRadius: BorderRadius.circular(3),
+//                         color: Theme.of(context).cardColor,
+//                       ),
+//                     ),
+//                     iconStyleData: const IconStyleData(iconSize: 15),
+//                     menuItemStyleData: const MenuItemStyleData(
+//                       height: 25,
+//                       padding: EdgeInsets.symmetric(horizontal: 5),
+//                     ),
+//                     isDense: true,
+//                     items: swapCategoriesF
+//                         .map((item) => DropdownMenuItem<String>(
+//                             value: item,
+//                             child: Row(
+//                               mainAxisAlignment: MainAxisAlignment.start,
+//                               children: [
+//                                 Container(
+//                                   padding: const EdgeInsets.only(bottom: 3),
+//                                   child: Text(
+//                                     item,
+//                                     style: const TextStyle(
+//                                         //fontSize: 14,
+//                                         //fontWeight: FontWeight.bold,
+//                                         //color: Colors.white,
+//                                         ),
+//                                     overflow: TextOverflow.ellipsis,
+//                                   ),
+//                                 )
+//                               ],
+//                             )))
+//                         .toList(),
+//                     value: selectedCategoryF,
+//                     onChanged: (value) async {
+//                       selectedCategoryF = value.toString();
 
-                      setState(() {});
-                    },
-                  )),
-                ),
-                actions: <Widget>[
-                  ElevatedButton(
-                      child: Text(curLangText!.uiReturn),
-                      onPressed: () {
-                        Navigator.pop(context, '');
-                      }),
-                  ElevatedButton(
-                      onPressed: selectedCategoryF == null
-                          ? null
-                          : () {
-                              Navigator.pop(context, selectedCategoryF);
-                            },
-                      child: Text(curLangText!.uiNext))
-                ]);
-          }));
-}
+//                       setState(() {});
+//                     },
+//                   )),
+//                 ),
+//                 actions: <Widget>[
+//                   ElevatedButton(
+//                       child: Text(curLangText!.uiReturn),
+//                       onPressed: () {
+//                         Navigator.pop(context, '');
+//                       }),
+//                   ElevatedButton(
+//                       onPressed: selectedCategoryF == null
+//                           ? null
+//                           : () {
+//                               Navigator.pop(context, selectedCategoryF);
+//                             },
+//                       child: Text(curLangText!.uiNext))
+//                 ]);
+//           }));
+// }
 
 Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> modFilePaths) async {
-  List<List<String>> csvList = [];
-  List<File> csvFiles = await getCsvFiles(context, itemCategory, modFilePaths);
-  if (itemCategory == 'Innerwears') {
-    csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[2], modFilePaths));
-  }
-  if (itemCategory == 'Body Paints') {
-    csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[11], modFilePaths));
-  }
+  // List<List<String>> csvList = [];
+  // List<File> csvFiles = await getCsvFiles(context, itemCategory, modFilePaths);
+  // if (itemCategory == 'Innerwears') {
+  //   csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[2], modFilePaths));
+  // }
+  // if (itemCategory == 'Body Paints') {
+  //   csvFiles.addAll(await getCsvFiles(context, defaultCategoryDirs[11], modFilePaths));
+  // }
 
-  for (var file in csvFiles) {
-    csvList.add([]);
-    //csvList.last.add(p.basename(file.path));
-    await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
-      line = line.replaceAll('"', '');
-      int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
-      if (categoryIndex != -1) {
-        if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Glide Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Jump Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Landing Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Dash Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Run Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Standby Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
-          line = '${defaultCategoryDirs[categoryIndex]},Swim Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        } else {
-          line = '${defaultCategoryDirs[categoryIndex]},$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
-        }
-      }
-      csvList.last.add(line);
-    });
-  }
+  // for (var file in csvFiles) {
+  //   csvList.add([]);
+  //   //csvList.last.add(p.basename(file.path));
+  //   await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).skip(1).forEach((line) {
+  //     line = line.replaceAll('"', '');
+  //     int categoryIndex = csvFileList.indexWhere((element) => element.where((e) => e == p.basename(file.path)).isNotEmpty);
+  //     if (categoryIndex != -1) {
+  //       if (p.basename(file.path) == 'SubstituteMotionGlide.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Glide Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionJump.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Jump Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionLanding.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Landing Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionPhotonDash.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Dash Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionRun.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Run Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionStandby.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Standby Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else if (p.basename(file.path) == 'SubstituteMotionSwim.csv') {
+  //         line = '${defaultCategoryDirs[categoryIndex]},Swim Motion,$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       } else {
+  //         line = '${defaultCategoryDirs[categoryIndex]},$line,${p.dirname(file.path).replaceFirst(modManRefSheetsDirPath, '')}${p.separator}${p.basenameWithoutExtension(file.path)}';
+  //       }
+  //     }
+  //     csvList.last.add(line);
+  //   });
+  // }
 
-  for (var line in csvList) {
-    for (var item in line) {
-      //
-      if (item.split(',').first == defaultCategoryDirs[0]) {
-        csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
-      } else if (item.split(',').first == defaultCategoryDirs[7]) {
-        if (item.split(',').length != 16 && item.split(',').length != 20) {
-          debugPrint('${item.split(',')[2]} _ ${item.split(',').length}');
-          //
-        }
-        if (item.split(',').length == 16) {
-          csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
-        } else if (item.split(',').length == 20) {
-          csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
-        }
-      } else if (item.split(',').first == defaultCategoryDirs[14]) {
-        if (item.split(',').length == 10) {
-          csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
-        }
-      } else if (item.split(',').first == defaultCategoryDirs[10]) {
-        csvData.add(CsvIceFile.fromListHairs(item.split(',')));
-      } else if (item.split(',').first == defaultCategoryDirs[12]) {
-        if (item.split(',')[1] == 'Debug') {
-          List<String> itemSplit = item.split(',');
-          itemSplit.insert(1, '');
-          item = itemSplit.join(',');
-        }
-        csvData.add(CsvIceFile.fromListMags(item.split(',')));
-      } else {
-        csvData.add(CsvIceFile.fromList(item.split(',')));
+  // for (var line in csvList) {
+  //   for (var item in line) {
+  //     //
+  //     if (item.split(',').first == defaultCategoryDirs[0]) {
+  //       csvAccData.add(CsvAccessoryIceFile.fromList(item.split(',')));
+  //     } else if (item.split(',').first == defaultCategoryDirs[7]) {
+  //       if (item.split(',').length != 16 && item.split(',').length != 20) {
+  //         debugPrint('${item.split(',')[2]} _ ${item.split(',').length}');
+  //         //
+  //       }
+  //       if (item.split(',').length == 16) {
+  //         csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.split(',')));
+  //       } else if (item.split(',').length == 20) {
+  //         csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.split(',')));
+  //       }
+  //     } else if (item.split(',').first == defaultCategoryDirs[14]) {
+  //       if (item.split(',').length == 10) {
+  //         csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.split(',')));
+  //       }
+  //     } else if (item.split(',').first == defaultCategoryDirs[10]) {
+  //       csvData.add(CsvIceFile.fromListHairs(item.split(',')));
+  //     } else if (item.split(',').first == defaultCategoryDirs[12]) {
+  //       if (item.split(',')[1] == 'Debug') {
+  //         List<String> itemSplit = item.split(',');
+  //         itemSplit.insert(1, '');
+  //         item = itemSplit.join(',');
+  //       }
+  //       csvData.add(CsvIceFile.fromListMags(item.split(',')));
+  //     } else {
+  //       csvData.add(CsvIceFile.fromList(item.split(',')));
+  //     }
+  //   }
+  // }
+
+  List<CsvItem> playerItemData = await playerItemDataGet();
+  List<CsvItem> selectedPlayerItemData = playerItemData.where((element) => element.category == itemCategory).toList();
+  if (itemCategory == defaultCategoryDirs[11]) {
+    selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[2]));
+  } else if (itemCategory == defaultCategoryDirs[2]) {
+    selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[11]));
+  }
+  for (var item in selectedPlayerItemData) {
+    if (itemCategory == defaultCategoryDirs[0]) {
+      csvAccData.add(CsvAccessoryIceFile.fromList(item.getInfos()));
+    } else if (itemCategory == defaultCategoryDirs[7]) {
+      if (item.getInfos().length != 16 && item.getInfos().length != 20) {
+        debugPrint('${item.getInfos()[2]} _ ${item.getInfos().length}');
+        //
       }
+      if (item.getInfos().length == 16) {
+        csvEmotesData.add(CsvEmoteIceFile.fromListNgs(item.getInfos()));
+      } else if (item.getInfos().length == 20) {
+        csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.getInfos()));
+      }
+    } else if (itemCategory == defaultCategoryDirs[14]) {
+      if (item.getInfos().length == 10) {
+        csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.getInfos()));
+      }
+    } else if (itemCategory == defaultCategoryDirs[10]) {
+      csvData.add(CsvIceFile.fromListHairs(item.getInfos()));
+    } else if (itemCategory == defaultCategoryDirs[12]) {
+      // if (item.getInfos()[1] == 'Debug') {
+      //   List<String> itemSplit = item.getInfos();
+      //   itemSplit.insert(1, '');
+      //   item = itemSplit.join(',');
+      // }
+      csvData.add(CsvIceFile.fromListMags(item.getInfos()));
+    } else {
+      csvData.add(CsvIceFile.fromList(item.getInfos()));
     }
   }
+
   return true;
 }
 

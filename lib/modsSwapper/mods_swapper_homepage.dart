@@ -244,7 +244,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                               border: Border.all(color: Theme.of(context).hintColor, width: 1),
                                                             ),
                                                             child: Image.network(
-                                                              '$modManIconDatabaseLink${fromItemCsvData[i].sheetLocation.replaceAll('\\', '/')}/${fromItemCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                              '$modManMAIconDatabaseLink${fromItemCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                               errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                 'assets/img/placeholdersquare.png',
                                                                 filterQuality: FilterQuality.none,
@@ -279,7 +279,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
 
                                                       //confirm icon set
                                                       fromItemIconLink =
-                                                          '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+                                                          '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                       setState(
                                                         () {},
@@ -482,7 +482,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                                 ),
                                                                 child: swapperSearchTextController.text.isEmpty
                                                                     ? Image.network(
-                                                                        '$modManIconDatabaseLink${availableItemsCsvData[i].sheetLocation.replaceAll('\\', '/')}/${availableItemsCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        '$modManMAIconDatabaseLink${availableItemsCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                         errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                           'assets/img/placeholdersquare.png',
                                                                           filterQuality: FilterQuality.none,
@@ -492,7 +492,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                                         fit: BoxFit.fitWidth,
                                                                       )
                                                                     : Image.network(
-                                                                        '$modManIconDatabaseLink${toItemSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${toItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        '$modManMAIconDatabaseLink${toItemSearchResults[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                         errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                           'assets/img/placeholdersquare.png',
                                                                           filterQuality: FilterQuality.none,
@@ -538,7 +538,7 @@ class _ModsSwapperHomePageState extends State<ModsSwapperHomePage> {
                                                           }
                                                           //confirm icon set
                                                           toItemIconLink =
-                                                              '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+                                                              '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                           setState(
                                                             () {},
