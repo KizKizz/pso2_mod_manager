@@ -7,11 +7,13 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -544,42 +546,44 @@ void vitalGaugeHomePage(context) {
                                                             children: [
                                                               Expanded(
                                                                 child: ElevatedButton(
-                                                                    onLongPress: vgData.where((element) => element.isReplaced).isEmpty ? null : () async {
-                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                        element.deleteSync(recursive: true);
-                                                                      });
-                                                                      for (var vg in vgData) {
-                                                                        if (vg.isReplaced) {
-                                                                          int index = vgData.indexOf(vg);
-                                                                          _loading[index] = true;
-                                                                          Future.delayed(const Duration(milliseconds: 500), () async {
-                                                                            String downloadedFilePath = await downloadIconIceFromOfficial(
-                                                                                vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                            File(downloadedFilePath).copySync(vg.icePath);
-                                                                            vg.replacedMd5 = '';
-                                                                            vg.replacedImagePath = '';
-                                                                            vg.replacedImageName = '';
-                                                                            vg.isReplaced = false;
-                                                                            saveVitalGaugesInfoToJson(vgData);
-                                                                            _loading[index] = false;
-                                                                            setState(() {});
-                                                                          });
-                                                                        } else {
-                                                                          int index = vgData.indexOf(vg);
-                                                                          _loading[index] = true;
-                                                                          Future.delayed(const Duration(milliseconds: 500), () async {
-                                                                            String downloadedFilePath = await downloadIconIceFromOfficial(
-                                                                                vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                            File(downloadedFilePath).copySync(vg.icePath);
-                                                                            _loading[index] = false;
-                                                                            setState(() {});
-                                                                          });
-                                                                        }
-                                                                      }
-                                                                      Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                        element.deleteSync(recursive: true);
-                                                                      });
-                                                                    },
+                                                                    onLongPress: vgData.where((element) => element.isReplaced).isEmpty
+                                                                        ? null
+                                                                        : () async {
+                                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                              element.deleteSync(recursive: true);
+                                                                            });
+                                                                            for (var vg in vgData) {
+                                                                              if (vg.isReplaced) {
+                                                                                int index = vgData.indexOf(vg);
+                                                                                _loading[index] = true;
+                                                                                Future.delayed(const Duration(milliseconds: 500), () async {
+                                                                                  String downloadedFilePath = await downloadIconIceFromOfficial(
+                                                                                      vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                  File(downloadedFilePath).copySync(vg.icePath);
+                                                                                  vg.replacedMd5 = '';
+                                                                                  vg.replacedImagePath = '';
+                                                                                  vg.replacedImageName = '';
+                                                                                  vg.isReplaced = false;
+                                                                                  saveVitalGaugesInfoToJson(vgData);
+                                                                                  _loading[index] = false;
+                                                                                  setState(() {});
+                                                                                });
+                                                                              } else {
+                                                                                int index = vgData.indexOf(vg);
+                                                                                _loading[index] = true;
+                                                                                Future.delayed(const Duration(milliseconds: 500), () async {
+                                                                                  String downloadedFilePath = await downloadIconIceFromOfficial(
+                                                                                      vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+                                                                                  File(downloadedFilePath).copySync(vg.icePath);
+                                                                                  _loading[index] = false;
+                                                                                  setState(() {});
+                                                                                });
+                                                                              }
+                                                                            }
+                                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                              element.deleteSync(recursive: true);
+                                                                            });
+                                                                          },
                                                                     onPressed: vgData.where((element) => element.isReplaced).isEmpty ? null : () {},
                                                                     child: Text(curLangText!.uiRestoreAll)),
                                                               ),
@@ -769,11 +773,14 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
 
 Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
   //get info from csv
-  List<String> vgCsvInfoList = [];
-  File vitalGaugeCsv = File(Uri.file('$modManRefSheetsDirPath/Player/Vital_Gauge.csv').toFilePath());
-  await vitalGaugeCsv.openRead().transform(utf8.decoder).transform(const LineSplitter()).forEach((line) {
-    vgCsvInfoList.add(line);
-  });
+  // List<String> vgCsvInfoList = [];
+  // File vitalGaugeCsv = File(Uri.file('$modManRefSheetsDirPath/Player/Vital_Gauge.csv').toFilePath());
+  // await vitalGaugeCsv.openRead().transform(utf8.decoder).transform(const LineSplitter()).forEach((line) {
+  //   vgCsvInfoList.add(line);
+  // });
+  List<CsvItem> playerItemData = await playerItemDataGet();
+  List<CsvItem> vgData = playerItemData.where((element) => element.csvFileName == 'Vital Gauge.csv').toList();
+  
 
   //Load list from json
   List<VitalGaugeBackground> vitalGaugesData = [];

@@ -82,6 +82,8 @@ Future<bool> modsBoundaryEditHomePage(context, SubMod submod) async {
 }
 
 void boundaryEdit(context, SubMod submod) async {
+  List<String> boundaryRemovedFiles = [];
+  List<String> boundaryNotFoundFiles = [];
   //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
   // if (itemCategory == defaultCategoryDirs[1] ||
   //     itemCategory == defaultCategoryDirs[3] ||
@@ -136,29 +138,36 @@ void boundaryEdit(context, SubMod submod) async {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
             await Future.delayed(const Duration(milliseconds: 100));
             File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
-            await renamedFile.copy(modFile.location);
-            if (modFile.modFileName == matchingFiles.last.modFileName) {
-              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(
-                  modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
-              await Future.delayed(const Duration(milliseconds: 100));
-              if (isBoundaryEditDuringApply) {
-                Navigator.pop(context, true);
-              }
+            try {
+              await renamedFile.copy(modFile.location);
+            } catch (e) {
+              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
             }
+            boundaryRemovedFiles.add(modFile.modFileName);
+            // if (modFile.modFileName == matchingFiles.last.modFileName) {
+            //   Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(
+            //       modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
+            //   await Future.delayed(const Duration(milliseconds: 100));
+            //   if (isBoundaryEditDuringApply) {
+            //     Navigator.pop(context, true);
+            //   }
+            // }
           } else {
-            Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
-            await Future.delayed(const Duration(milliseconds: 100));
-            if (isBoundaryEditDuringApply) {
-              Navigator.pop(context, true);
-            }
+            boundaryNotFoundFiles.add(modFile.modFileName);
+            // Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
+            // await Future.delayed(const Duration(milliseconds: 100));
+            // if (isBoundaryEditDuringApply) {
+            //   Navigator.pop(context, true);
+            // }
           }
         }
       } else {
-        Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoAqpFileFound}');
-        await Future.delayed(const Duration(milliseconds: 100));
-        if (isBoundaryEditDuringApply) {
-          Navigator.pop(context, true);
-        }
+        boundaryNotFoundFiles.add(modFile.modFileName);
+        // Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoAqpFileFound}');
+        // await Future.delayed(const Duration(milliseconds: 100));
+        // if (isBoundaryEditDuringApply) {
+        //   Navigator.pop(context, true);
+        // }
       }
     }
   } else {
@@ -175,6 +184,22 @@ void boundaryEdit(context, SubMod submod) async {
   //     Navigator.pop(context, true);
   //   }
   // }
+  if (boundaryRemovedFiles.isNotEmpty && boundaryNotFoundFiles.isNotEmpty) {
+    Provider.of<StateProvider>(context, listen: false)
+        .setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}\n${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
+    await Future.delayed(const Duration(milliseconds: 100));
+  } else if (boundaryRemovedFiles.isNotEmpty && boundaryNotFoundFiles.isEmpty) {
+    Provider.of<StateProvider>(context, listen: false)
+        .setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}');
+    await Future.delayed(const Duration(milliseconds: 100));
+  } else if (boundaryRemovedFiles.isEmpty && boundaryNotFoundFiles.isNotEmpty) {
+    Provider.of<StateProvider>(context, listen: false)
+        .setBoundaryEditProgressStatus('${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+  if (isBoundaryEditDuringApply) {
+    Navigator.pop(context, true);
+  }
 
   isBoundaryEdited = true;
   // if (isBoundaryEditDuringApply) {
