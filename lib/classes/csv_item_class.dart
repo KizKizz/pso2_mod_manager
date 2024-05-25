@@ -3,13 +3,14 @@ part 'csv_item_class.g.dart';
 
 @JsonSerializable()
 class CsvItem {
-  CsvItem(this.csvFileName, this.csvFilePath, this.itemType, this.itemCategories, this.category, this.categoryIndex, this.iconImagePath, this.infos);
+  CsvItem(this.csvFileName, this.csvFilePath, this.itemType, this.itemCategories, this.category, this.subCategory, this.categoryIndex, this.iconImagePath, this.infos);
 
   String csvFileName;
   String csvFilePath;
   String itemType;
   List<String> itemCategories;
   String category;
+  String subCategory;
   int categoryIndex;
   String iconImagePath;
   Map<String, String> infos = {};
@@ -119,8 +120,8 @@ class CsvItem {
     return false;
   }
 
-  CsvItem.fromMap(String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, int categoryIndex, String iconImagePath, Map<String, String> infos)
-      : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, categoryIndex = categoryIndex, iconImagePath = iconImagePath, infos = infos);
+  CsvItem.fromMap(String csvFileName, String csvFilePath, String itemType, List<String> itemCategories, String category, String subCategory, int categoryIndex, String iconImagePath, Map<String, String> infos)
+      : this(csvFileName = csvFileName, csvFilePath = csvFilePath, itemType = itemType, itemCategories = itemCategories, category = category, subCategory = subCategory, categoryIndex = categoryIndex, iconImagePath = iconImagePath, infos = infos);
 
   factory CsvItem.fromJson(Map<String, dynamic> json) => _$CsvItemFromJson(json);
   Map<String, dynamic> toJson() => _$CsvItemToJson(this);

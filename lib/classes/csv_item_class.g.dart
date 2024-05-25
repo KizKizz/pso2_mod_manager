@@ -14,6 +14,7 @@ CsvItem _$CsvItemFromJson(Map<String, dynamic> json) => CsvItem(
           .map((e) => e as String)
           .toList(),
       json['category'] as String,
+      json['subCategory'] as String,
       json['categoryIndex'] as int,
       json['iconImagePath'] as String,
       Map<String, String>.from(json['infos'] as Map),
@@ -25,6 +26,7 @@ Map<String, dynamic> _$CsvItemToJson(CsvItem instance) => <String, dynamic>{
       'itemType': instance.itemType,
       'itemCategories': instance.itemCategories,
       'category': instance.category,
+      'subCategory': instance.subCategory,
       'categoryIndex': instance.categoryIndex,
       'iconImagePath': instance.iconImagePath,
       'infos': instance.infos,
