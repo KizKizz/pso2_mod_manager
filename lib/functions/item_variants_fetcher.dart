@@ -1,7 +1,7 @@
-import 'package:pso2_mod_manager/classes/mod_class.dart';
-import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
+// import 'package:pso2_mod_manager/classes/mod_class.dart';
+// import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
+// import 'package:pso2_mod_manager/global_variables.dart';
+// import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
 // Future<List<String>> itemVariantsFetch(List<Mod> modList, String category, String itemName) async {
 //   //load sheets

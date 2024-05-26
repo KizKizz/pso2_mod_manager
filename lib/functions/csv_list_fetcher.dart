@@ -1,15 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
+// import 'dart:convert';
+// import 'dart:io';
 
-import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
-import 'package:pso2_mod_manager/functions/csv_files_index.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
+// import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
+// import 'package:pso2_mod_manager/functions/csv_files_index.dart';
+// import 'package:pso2_mod_manager/global_variables.dart';
+// // ignore: depend_on_referenced_packages
+// import 'package:path/path.dart' as p;
 
-List<CsvAccessoryIceFile> csvAccessoryIndexFiles = [];
-List<CsvEmoteIceFile> csvEmoteIndexFiles = [];
-List<CsvIceFile> csvGeneralIndexFiles = [];
+// List<CsvAccessoryIceFile> csvAccessoryIndexFiles = [];
+// List<CsvEmoteIceFile> csvEmoteIndexFiles = [];
+// List<CsvIceFile> csvGeneralIndexFiles = [];
 
 // Future<List<String>> itemCsvFetcher(String refSheetsPath) async {
 //   List<String> csvReturnList = [];
@@ -47,15 +47,15 @@ List<CsvIceFile> csvGeneralIndexFiles = [];
 //   return csvReturnList;
 // }
 
-Future<List<String>> modFileCsvFetcher(List<String> itemCsvList, List<File> iceFiles) async {
-  List<String> csvReturnList = [];
-  for (var iceFile in iceFiles) {
-    for (var csvString in itemCsvList) {
-      if (csvReturnList.where((e) => e.contains(p.basename(iceFile.path))).isEmpty && csvString.contains(p.basename(iceFile.path))) {
-        csvReturnList.add(csvString);
-      }
-    }
-  }
+// Future<List<String>> modFileCsvFetcher(List<String> itemCsvList, List<File> iceFiles) async {
+//   List<String> csvReturnList = [];
+//   for (var iceFile in iceFiles) {
+//     for (var csvString in itemCsvList) {
+//       if (csvReturnList.where((e) => e.contains(p.basename(iceFile.path))).isEmpty && csvString.contains(p.basename(iceFile.path))) {
+//         csvReturnList.add(csvString);
+//       }
+//     }
+//   }
 
-  return csvReturnList;
-}
+//   return csvReturnList;
+// }

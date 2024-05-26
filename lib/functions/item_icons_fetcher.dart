@@ -8,10 +8,8 @@ import 'package:path/path.dart' as p;
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
-import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 
 List<String> itemIconRefSheetsList = [];
 

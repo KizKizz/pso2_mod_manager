@@ -208,12 +208,12 @@ Future<bool> pathsLoader(context) async {
   }
 
   //ref sheets check load files
-  if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
-    final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
-    List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
-    File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
-    File(modManRefSheetsLocalVerFilePath).writeAsStringSync(refSheetsVersion.toString());
-  }
+  // if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
+  //   final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
+  //   List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
+  //   File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
+  //   File(modManRefSheetsLocalVerFilePath).writeAsStringSync(refSheetsVersion.toString());
+  // }
 
   //ref sheets check
   modManRefSheetsLocalVersion = int.parse(File(modManRefSheetsLocalVerFilePath).readAsStringSync());
@@ -530,8 +530,8 @@ Future<bool> modManPathReloader(context) async {
   //create/load folders
   await createSubDirs();
 
-  modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
-  File(modManRefSheetListFilePath).createSync();
+  // modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
+  // File(modManRefSheetListFilePath).createSync();
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();

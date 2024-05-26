@@ -45,7 +45,6 @@ bool _isNameEditing = false;
 int _duplicateCounter = 0;
 final _subItemFormValidate = GlobalKey<FormState>();
 bool _isAddingMods = false;
-bool _disableFirstLoadingScreen = true;
 bool _isProcessingMoreFiles = false;
 int _pathLengthInNameEdit = 0;
 
@@ -2000,11 +1999,11 @@ Future<List<ModsAdderItem>> modsImportFilesProcess(context, List<XFile> xFilePat
     item.modList.addAll(mods);
   }
 
-  Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    if (element.existsSync()) {
-      element.deleteSync(recursive: true);
-    }
-  });
+  // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+  //   if (element.existsSync()) {
+  //     element.deleteSync(recursive: true);
+  //   }
+  // });
 
   if (modsImportItemList.isNotEmpty) {
     Provider.of<StateProvider>(context, listen: false).modAdderReloadTrue();

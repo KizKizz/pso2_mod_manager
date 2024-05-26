@@ -4,10 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
-import 'package:dio/dio.dart';
-import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/state_provider.dart';
 
 import 'package:path/path.dart' as p;
 
