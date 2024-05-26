@@ -192,13 +192,13 @@ class CsvEmoteIceFile {
             items[15].split('\\').last,
             items[17].split('\\').last,
             items[18].isNotEmpty ? items[18] : 'Both',
-            items[19]);
+            '');
   CsvEmoteIceFile.fromListNgs(List<String> items)
       : this(items[0], '', items[1].isEmpty ? curLangText!.uiUnknownEmote : items[1], items[2].isEmpty ? curLangText!.uiUnknownEmote : items[2], items[3], '', items[5].split('\\').last,
-            items[7].split('\\').last, items[9].split('\\').last, items[11].split('\\').last, '', items[13].split('\\').last, items[14].isNotEmpty ? items[14] : curLangText!.uiGenderBoth, items[15]);
+            items[7].split('\\').last, items[9].split('\\').last, items[11].split('\\').last, '', items[13].split('\\').last, items[14].isNotEmpty ? items[14] : curLangText!.uiGenderBoth, '');
   CsvEmoteIceFile.fromListMotion(List<String> items)
       : this(items[0], items[1].isEmpty ? curLangText!.uiUnknownMotion : items[1], items[2].isEmpty ? curLangText!.uiUnknownMotion : items[2], items[3], '', '', items[5].split('\\').last,
-            items[6].split('\\').last, items[7].split('\\').last, items[8].split('\\').last, '', '', '', items[9]);
+            items[6].split('\\').last, items[7].split('\\').last, items[8].split('\\').last, '', '', '', '');
   //np = normal quality, hq = high quality, li = linked inner, ma = material animation
   String category;
   String subCategory;

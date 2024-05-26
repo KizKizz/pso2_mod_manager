@@ -457,9 +457,6 @@ void vitalGaugeHomePage(context) {
                                                                                                     ),
                                                                                                   ),
                                                                                                   onLongPress: () async {
-                                                                                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                                      element.deleteSync(recursive: true);
-                                                                                                    });
                                                                                                     String downloadedFilePath = await downloadIconIceFromOfficial(
                                                                                                         vgData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                         modManAddModsTempDirPath);
@@ -469,9 +466,6 @@ void vitalGaugeHomePage(context) {
                                                                                                     vgData[i].replacedImageName = '';
                                                                                                     vgData[i].isReplaced = false;
                                                                                                     saveVitalGaugesInfoToJson(vgData);
-                                                                                                    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                                                      element.deleteSync(recursive: true);
-                                                                                                    });
                                                                                                     setState(() {});
                                                                                                   },
                                                                                                 ),
@@ -819,6 +813,7 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
     (a, b) => a.ddsName.compareTo(b.ddsName),
   );
   saveVitalGaugesInfoToJson(newVGInfoList);
+  playerItemData.clear();
 
   return newVGInfoList;
 

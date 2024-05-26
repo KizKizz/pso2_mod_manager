@@ -269,7 +269,7 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
         csvEmotesData.add(CsvEmoteIceFile.fromListPso2(item.getInfos()));
       }
     } else if (itemCategory == defaultCategoryDirs[14]) {
-      if (item.getInfos().length == 10) {
+      if (item.getInfos().length == 12) {
         csvEmotesData.add(CsvEmoteIceFile.fromListMotion(item.getInfos()));
       }
     } else if (itemCategory == defaultCategoryDirs[10]) {
