@@ -1888,18 +1888,24 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   List<CsvItem> foundItemData = [];
   List<File> iceFilesNotInItemData = [];
   for (var iceFile in iceFileList) {
-    bool isFound = false;
-    for (var itemData in playerItemData) {
-      if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) &&
-          (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty) &&
-          foundItemData.where((element) => element.getENName() == itemData.getENName() || element.getJPName() == itemData.getJPName()).isEmpty) {
-        foundItemData.add(itemData);
-        isFound = true;
-      } else if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) && (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty)) {
-        isFound = true;
-      }
+    final matchData = playerItemData.where((element) => element.containsIce(p.basenameWithoutExtension(iceFile.path)));
+    if (matchData.isNotEmpty) {
+      foundItemData.addAll(matchData);
+    } else {
+      iceFilesNotInItemData.add(iceFile);
     }
-    if (!isFound) iceFilesNotInItemData.add(iceFile);
+    // bool isFound = false;
+    // for (var itemData in playerItemData) {
+    //   if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) && (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty)
+    //     &&
+    //     foundItemData.where((element) => element.getENName() == itemData.getENName() || element.getJPName() == itemData.getJPName()).isEmpty) {
+    //     foundItemData.add(itemData);
+    //     isFound = true;
+    //     // } else if (itemData.containsIce(p.basenameWithoutExtension(iceFile.path)) && (itemData.getENName().isNotEmpty || itemData.getJPName().isNotEmpty)) {
+    //     //   isFound = true;
+    //   }
+    // }
+    // if (!isFound) iceFilesNotInItemData.add(iceFile);
   }
 
   //create file structures
@@ -1937,18 +1943,32 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
 
     //construct file structures
     String modAdderItemDirPath = Uri.file('$modManModsAdderPath/$itemCategory/$itemName').toFilePath().trim();
-    for (var file in iceFileList) {
-      if (data.infos.values.contains(p.basenameWithoutExtension(file.path))) {
-        String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
+    for (var value in data.infos.values) {
+      final matchingIceFiles = iceFileList.where((element) => value.contains(p.basenameWithoutExtension(element.path)));
+      for (var iceFile in matchingIceFiles) {
+        String newFilePath = iceFile.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
         newFilePath = removeRebootPath(newFilePath);
         await File(newFilePath).parent.create(recursive: true);
         try {
-          file.copySync(newFilePath);
+          iceFile.copySync(newFilePath);
         } catch (e) {
           _errorMessage = e.toString();
         }
       }
     }
+
+    // for (var file in iceFileList) {
+    //   if (data.infos.values.contains(p.basenameWithoutExtension(file.path))) {
+    //     String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
+    //     newFilePath = removeRebootPath(newFilePath);
+    //     await File(newFilePath).parent.create(recursive: true);
+    //     try {
+    //       file.copySync(newFilePath);
+    //     } catch (e) {
+    //       _errorMessage = e.toString();
+    //     }
+    //   }
+    // }
     //extra files copy
     for (var file in extraFileList) {
       String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
@@ -1963,12 +1983,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     }
 
     //download item icon from item database
-    String itemIconPath = '$modAdderItemDirPath/$itemName.png';
+    String itemIconPath = '';
     if (data.iconImagePath.isNotEmpty) {
+      itemIconPath = '$modAdderItemDirPath/$itemName.png';
       final dio = Dio();
       String iconLink = modManMAIconDatabaseLink + data.iconImagePath.replaceAll('\\', '/');
       await dio.download(iconLink, itemIconPath);
-      if (!File(itemIconPath).existsSync()) itemIconPath = '';
     }
 
     if (modsAdderGroupSameItemVariants) copiedCsvItems.add(data);

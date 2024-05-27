@@ -124,10 +124,13 @@ class CsvItem {
 
   bool containsIce(String iceName) {
     for (int i = 0; i < infos.entries.length; i++) {
-      if (infos.entries.elementAt(i).value == iceName) {
+      if (infos.entries.elementAt(i).value.contains(iceName)) {
         return true;
       }
     }
+    // if (infos.values.contains(iceName)) {
+    //   return true;
+    // }
     return false;
   }
 
