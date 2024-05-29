@@ -450,7 +450,7 @@ Future<(String, bool)> newImportModSetDialog(context) async {
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
                       onPressed: () async {
-                        Navigator.pop(context, '');
+                        Navigator.pop(context, ('', false));
                       }),
                   ElevatedButton(
                       onPressed: newModSetName.value.text.isEmpty

@@ -385,6 +385,12 @@
   "uiAddFiles": "ファイルの追加",
   "uiCharacters": "文字",
   "uiPathTooLongError": "1つまたは複数のMODのパスが長すぎます",
+  "uiExtracting": "抽出",
+  "uiCopying": "コピー",
+  "uiSorting": "ソート",
+  "uiSortingIceFiles": ".iceファイルの並べ替え",
+  "uiSortingOtherFiles": "他のファイルの並べ替え",
+  "uiProcessing": "Processing",
   "uiNewProfileName": "新しいプロフィール名",
   "uiApplyingAllAvailableMods": "利用可能なすべての改造を適用する",
   "uiLocatingOriginalFiles": "オリジナルファイルの検索",
@@ -452,5 +458,7 @@
   "uiImport": "輸入",
   "uiImportAndApply": "MODのインポートと適用",
   "uiApplyingImportedMods": "インポートしたMODを適用する",
-  "uiNoFilesInGameDataToReplace": "置換するゲームデータに一致するファイルがありません。MODの適用場所を確認する"
+  "uiNoFilesInGameDataToReplace": "置換するゲームデータに一致するファイルがありません。MODの適用場所を確認する",
+  "uiLoadingPlayerItemData": "選手アイテムデータの読み込み",
+  "uiErrorWhenLoadingPlayerItemData": "プレイヤー・アイテム・データのロード時のエラー"
 }

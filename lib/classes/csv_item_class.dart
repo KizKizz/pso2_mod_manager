@@ -38,6 +38,26 @@ class CsvItem {
     return returnInfos;
   }
 
+  String getBaseItemENName() {
+    List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
+    String name = getENName();
+    // name = name.split('/').first;
+    for (var affix in toRemove) {
+      name = name.replaceFirst(affix, '');
+    }
+    return name.trim();
+  }
+
+  String getBaseItemJPName() {
+    List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
+    String name = getJPName();
+    // name = name.split('/').first;
+    for (var affix in toRemove) {
+      name = name.replaceFirst(affix, '');
+    }
+    return name.trim();
+  }
+
   bool containsCategory(List<String> filters) {
     for (var cateName in itemCategories) {
       if (filters.contains(cateName.replaceAll('NGS', '').replaceAll('PSO2', '').trim())) {

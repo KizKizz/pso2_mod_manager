@@ -35,13 +35,14 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   List<CategoryType> cateTypes = [];
   List<CsvItem> playerItemData = [];
 
-  if (isAutoFetchingIconsOnStartup != 'off') {
+  if (isAutoFetchingIconsOnStartup != 'off' && playerItemData.isEmpty) {
     playerItemData = await playerItemDataGet();
-    //load sheets
-    // if (csvInfosFromSheets.isEmpty) {
-    //   csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-    // }
   }
+  //load sheets
+  // if (csvInfosFromSheets.isEmpty) {
+  //   csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+  // }
+  // }
 
   //Load list from json
   if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {

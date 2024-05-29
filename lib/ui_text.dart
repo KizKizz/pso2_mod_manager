@@ -441,7 +441,13 @@ class TranslationText {
       uiAddFolders = 'Add Folders',
       uiAddFiles = 'Add Files',
       uiCharacters = 'Chars',
-      uiPathTooLongError = 'One or more mod paths are too long, rename to shorter names before add';
+      uiPathTooLongError = 'One or more mod paths are too long, rename to shorter names before add',
+      uiExtracting = 'Extracting',
+      uiCopying = 'Copying',
+      uiSorting = 'Sorting',
+      uiSortingIceFiles = 'Sorting .ice files',
+      uiSortingOtherFiles = 'Sorting other files',
+      uiProcessing = 'Processing';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';
@@ -536,6 +542,9 @@ class TranslationText {
 
   //add_mod_file.dart
   String uiNoFilesInGameDataToReplace = 'No matching files in game data to replace. Check applying locations of the mod';
+
+  //player_item_data_preload_page.dart
+  String uiLoadingPlayerItemData = 'Loading Player Item Data', uiErrorWhenLoadingPlayerItemData = 'Error when loading player item data';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

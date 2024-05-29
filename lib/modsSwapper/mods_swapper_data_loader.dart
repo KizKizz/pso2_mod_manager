@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
@@ -248,7 +247,8 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
   //   }
   // }
 
-  List<CsvItem> playerItemData = await playerItemDataGet();
+  // List<CsvItem> playerItemData = await playerItemDataGet();
+  if (playerItemData.isEmpty) playerItemDataGet();
   List<CsvItem> selectedPlayerItemData = playerItemData.where((element) => element.category == itemCategory).toList();
   if (itemCategory == defaultCategoryDirs[11]) {
     selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[2]));

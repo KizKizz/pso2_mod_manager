@@ -3,9 +3,9 @@
     "version": "2.7.0",
     "description": [
         "Switched to a new item database",
-        "Some bug fixes",
-        "MODスワッパーとアイテムスワッパーのスワッピングアイテムリストにアイテムアイコンを追加",
-        "いくつかのバグ修正"
+        "Overhauled some core systems",
+        "新しいアイテム・データベースに変更",
+        "いくつかの基幹システムをオーバーホール"
     ],
     "windows_file": "",
     "linux_file": ""

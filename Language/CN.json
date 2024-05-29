@@ -385,6 +385,12 @@
   "uiAddFiles": "添加文件",
   "uiCharacters": "字符已使用",
   "uiPathTooLongError": "一个或多个MOD路径过长，请重命名后再添加",
+  "uiExtracting": "Extracting",
+  "uiCopying": "Copying",
+  "uiSorting": "Sorting",
+  "uiSortingIceFiles": "Sorting .ice files",
+  "uiSortingOtherFiles": "Sorting other files",
+  "uiProcessing": "Processing",
   "uiNewProfileName": "新配置名称",
   "uiApplyingAllAvailableMods": "应用所有可用的MOD",
   "uiLocatingOriginalFiles": "查找原始文件",
@@ -452,5 +458,7 @@
   "uiImport": "导入",
   "uiImportAndApply": "导入并应用MOD",
   "uiApplyingImportedMods": "应用已导入的MOD",
-  "uiNoFilesInGameDataToReplace": "No matching files in game data to replace. Check applying locations of the mod"
+  "uiNoFilesInGameDataToReplace": "No matching files in game data to replace. Check applying locations of the mod",
+  "uiLoadingPlayerItemData": "Loading Player Item Data",
+  "uiErrorWhenLoadingPlayerItemData": "Error when loading player item data"
 }

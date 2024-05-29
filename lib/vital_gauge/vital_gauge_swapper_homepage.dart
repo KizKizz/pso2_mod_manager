@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -775,7 +776,9 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
   // });
 
   //Load vg from playerItemdata
-  List<CsvItem> playerItemData = await playerItemDataGet();
+  if (playerItemData.isEmpty) {
+    await playerItemDataGet();
+  }
   List<CsvItem> vgData = playerItemData.where((element) => element.csvFileName == 'Vital Gauge.csv').toList();
   List<VitalGaugeBackground> newVGInfoList = [];
   for (var data in vgData) {
@@ -813,7 +816,6 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
     (a, b) => a.ddsName.compareTo(b.ddsName),
   );
   saveVitalGaugesInfoToJson(newVGInfoList);
-  playerItemData.clear();
 
   return newVGInfoList;
 

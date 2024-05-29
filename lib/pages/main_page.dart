@@ -29,7 +29,7 @@ import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
-import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/player_item_data_preload_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -2284,7 +2284,7 @@ class _MainPageState extends State<MainPage> {
             color: Theme.of(context).dividerColor,
           ),
 
-          Expanded(child: Provider.of<StateProvider>(context, listen: false).reloadProfile ? const ProfileLoader() : const ModsLoadingPage())
+          Expanded(child: Provider.of<StateProvider>(context, listen: false).reloadProfile ? const ProfileLoader() : const PlayerItemDataPreloadingPage())
           // Expanded(
           //     child: isStartupModsLoad
           //         ? const ModsLoadingPage()
