@@ -69,6 +69,12 @@ Future<void> appDownloadDialog(context) async {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (_downloadPercent <= 0 && _downloadErrorMsg.isEmpty) {
             try {
+              await dio.download("https://github.com/KizKizz/pso2_mod_manager/raw/main/updater/updater.exe", Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath());
+            } catch (e) {
+              debugPrint(e.toString());
+              _downloadErrorMsg = e.toString();
+            }
+            try {
               await dio.download('https://github.com/KizKizz/pso2_mod_manager/releases/download/v$newVersion/PSO2NGSModManager_v$newVersion.zip',
                   Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(), options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
                   onReceiveProgress: (received, total) async {
@@ -79,17 +85,19 @@ Future<void> appDownloadDialog(context) async {
                     await extractFileToDisk(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion.zip').toFilePath(),
                         Uri.file('${Directory.current.path}/appUpdate/PSO2NGSModManager_v$newVersion').toFilePath(),
                         asyncWrite: false);
-                    try {
-                      await dio.download("https://github.com/KizKizz/pso2_mod_manager/raw/main/updater/updater.exe", Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath());
-                    } catch (e) {
-                      debugPrint(e.toString());
-                      _downloadErrorMsg = e.toString();
-                    }
-                    if (File(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath()).existsSync()) {
-                      await Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, '"${Directory.current.path}"'], runInShell: true);
+                    //create launcher bat
+                    File patchLauncher = await patchFileLauncherGenerate();
+                    if (patchLauncher.existsSync()) {
+                      Process.run(patchLauncher.path, []);
                     } else {
                       _downloadErrorMsg = curLangText!.uiDownloadingUpdateError;
                     }
+
+                    // if (File(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath()).existsSync()) {
+                    //   Process.run(Uri.file('${Directory.current.path}/appUpdate/updater.exe').toFilePath(), ['PSO2NGSModManager', newVersion, '"${Directory.current.path}"'], runInShell: true);
+                    // } else {
+                    //   _downloadErrorMsg = curLangText!.uiDownloadingUpdateError;
+                    // }
                     //Process.run(Uri.file('${Directory.current.path}/appUpdate/PSO2NGSMMUpdater.exe').toFilePath(), []);
 
                     // await patchFileGenerate();
@@ -159,7 +167,7 @@ Future<File> patchFileLauncherGenerate() async {
   if (!patchFile.existsSync()) {
     patchFile.createSync(recursive: true);
   }
-  String commands = 'start "" /D "${Uri.file('${Directory.current.path}/appUpdate/').toFilePath().toString()}" /MIN filesPatcher.bat';
+  String commands = 'start /B /D "${Uri.file('${Directory.current.path}/appUpdate/').toFilePath()}" updater.exe PSO2NGSModManager $newVersion "${Directory.current.path}"';
   await patchFile.writeAsString(commands);
 
   return patchFile;
