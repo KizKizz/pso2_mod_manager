@@ -25,9 +25,6 @@ class PlayerItemDataPreloadingPage extends StatefulWidget {
 class _PlayerItemDataPreloadingPageState extends State<PlayerItemDataPreloadingPage> {
   @override
   Widget build(BuildContext context) {
-    if (!File(modManPlayerItemDataPath).existsSync()) {
-      downloadPlayerItemData(context);
-    }
     return FutureBuilder(
         future: playerItemDataPreload,
         builder: (

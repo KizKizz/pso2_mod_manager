@@ -155,10 +155,10 @@ Future<bool> pathsLoader(context) async {
   //create/load folders
   await createSubDirs();
 
-  modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
-  if (!File(modManRefSheetListFilePath).existsSync()) {
-    File(modManRefSheetListFilePath).createSync();
-  }
+  // modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
+  // if (!File(modManRefSheetListFilePath).existsSync()) {
+  //   File(modManRefSheetListFilePath).createSync();
+  // }
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();
