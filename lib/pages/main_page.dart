@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => pickerColor = color);
   }
 
-  int totalSheetFilesCount = File(modManRefSheetListFilePath).readAsLinesSync().length;
+  // int totalSheetFilesCount = File(modManRefSheetListFilePath).readAsLinesSync().length;
 
   @override
   Widget build(BuildContext context) {
