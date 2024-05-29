@@ -20,16 +20,16 @@ import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
-import 'package:pso2_mod_manager/item_ref.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
-import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/player_item_data_preload_page.dart';
 import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => pickerColor = color);
   }
 
-  int totalSheetFilesCount = File(modManRefSheetListFilePath).readAsLinesSync().length;
+  // int totalSheetFilesCount = File(modManRefSheetListFilePath).readAsLinesSync().length;
 
   @override
   Widget build(BuildContext context) {
@@ -2213,30 +2213,21 @@ class _MainPageState extends State<MainPage> {
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (context.watch<StateProvider>().refSheetsCount < 1)
+                      if (context.watch<StateProvider>().playerItemDataDownloadPercent < 1)
                         Text(
                           curLangText!.uiNewRefSheetsUpdate,
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
-                      if (context.watch<StateProvider>().refSheetsCount > 0)
+                      if (context.watch<StateProvider>().playerItemDataDownloadPercent > 0)
                         Text(
-                          '${curLangText!.uiDownloading} ${context.watch<StateProvider>().refSheetsCount} ${curLangText!.uiOf} $totalSheetFilesCount ${curLangText!.uiRefSheetsDownloadingCount}',
+                          '${curLangText!.uiDownloading}: ${context.watch<StateProvider>().playerItemDataDownloadPercent} / 100%',
                           style: TextStyle(color: MyApp.themeNotifier.value == ThemeMode.light ? Theme.of(context).primaryColorDark : Colors.amberAccent, fontWeight: FontWeight.w500),
                         ),
                       ElevatedButton(
-                          onPressed: context.watch<StateProvider>().refSheetsCount < 1
-                              ? (() {
-                                  downloadNewRefSheets(context, File(modManRefSheetListFilePath)).then((_) async {
-                                    final prefs = await SharedPreferences.getInstance();
-                                    prefs.setInt('refSheetsVersion', refSheetsNewVersion);
-                                    refSheetsVersion = refSheetsNewVersion;
-                                    modManRefSheetsLocalVersion = refSheetsNewVersion;
-                                    File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsNewVersion.toString());
-                                    //print('complete');
-                                    Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
-                                    Provider.of<StateProvider>(context, listen: false).refSheetsCountReset();
-                                  });
-
+                          onPressed: context.watch<StateProvider>().playerItemDataDownloadPercent < 1 && File(modManPlayerItemDataPath).existsSync()
+                              ? (() async {
+                                  await downloadPlayerItemData(context);
+                                  playerItemData = await playerItemDataGet();
                                   setState(() {});
                                 })
                               : null,
@@ -2294,7 +2285,7 @@ class _MainPageState extends State<MainPage> {
             color: Theme.of(context).dividerColor,
           ),
 
-          Expanded(child: Provider.of<StateProvider>(context, listen: false).reloadProfile ? const ProfileLoader() : const ModsLoadingPage())
+          Expanded(child: Provider.of<StateProvider>(context, listen: false).reloadProfile ? const ProfileLoader() : const PlayerItemDataPreloadingPage())
           // Expanded(
           //     child: isStartupModsLoad
           //         ? const ModsLoadingPage()

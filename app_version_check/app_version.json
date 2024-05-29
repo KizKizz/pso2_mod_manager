@@ -1,11 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.6.12",
+    "version": "2.7.0",
     "description": [
-        "Added item icons to swapping item lists in both mod swapper and item swapper",
-        "Some bug fixes",
-        "MODスワッパーとアイテムスワッパーのスワッピングアイテムリストにアイテムアイコンを追加",
-        "いくつかのバグ修正"
+        "Switched to a new item database",
+        "Overhauled some core systems",
+        "新しいアイテム・データベースに変更",
+        "いくつかの基幹システムをオーバーホール"
     ],
     "windows_file": "",
     "linux_file": ""

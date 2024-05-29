@@ -212,7 +212,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                             ),
                                                             child: swapperSearchTextController.text.isEmpty
                                                                 ? Image.network(
-                                                                    '$modManIconDatabaseLink${fromItemCsvData[i].sheetLocation.replaceAll('\\', '/')}/${fromItemCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                    '$modManMAIconDatabaseLink${fromItemCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                     errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                       'assets/img/placeholdersquare.png',
                                                                       filterQuality: FilterQuality.none,
@@ -222,7 +222,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                                     fit: BoxFit.fitWidth,
                                                                   )
                                                                 : Image.network(
-                                                                    '$modManIconDatabaseLink${fromItemSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${fromItemSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                    '$modManMAIconDatabaseLink${fromItemSearchResults[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                     errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                       'assets/img/placeholdersquare.png',
                                                                       filterQuality: FilterQuality.none,
@@ -284,7 +284,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                       }
                                                       //confirm icon set
                                                       fromItemIconLink =
-                                                          '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+                                                          '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                       setState(
                                                         () {},
@@ -485,7 +485,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                                 ),
                                                                 child: swapperSearchTextController.text.isEmpty
                                                                     ? Image.network(
-                                                                        '$modManIconDatabaseLink${availableAccCsvData[i].sheetLocation.replaceAll('\\', '/')}/${availableAccCsvData[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        '$modManMAIconDatabaseLink${availableAccCsvData[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                         errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                           'assets/img/placeholdersquare.png',
                                                                           filterQuality: FilterQuality.none,
@@ -495,7 +495,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                                         fit: BoxFit.fitWidth,
                                                                       )
                                                                     : Image.network(
-                                                                        '$modManIconDatabaseLink${toAccSearchResults[i].sheetLocation.replaceAll('\\', '/')}/${toAccSearchResults[i].enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png',
+                                                                        '$modManMAIconDatabaseLink${toAccSearchResults[i].iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}',
                                                                         errorBuilder: (context, error, stackTrace) => Image.asset(
                                                                           'assets/img/placeholdersquare.png',
                                                                           filterQuality: FilterQuality.none,
@@ -534,7 +534,7 @@ class _ItemsSwapperAccHomePageState extends State<ItemsSwapperAccHomePage> {
                                                           }
                                                           //confirm icon set
                                                           toItemIconLink =
-                                                              '$modManIconDatabaseLink${currentItem.sheetLocation.replaceAll('\\', '/')}/${currentItem.enName.replaceAll(' ', '%20').replaceAll(RegExp(charToReplace), '_').trim()}.png';
+                                                              '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
 
                                                           setState(
                                                             () {},

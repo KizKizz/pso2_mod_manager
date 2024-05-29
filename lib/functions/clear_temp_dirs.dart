@@ -83,13 +83,13 @@ Future<void> clearAllTempDirsBeforeGettingPath() async {
       await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/tempCmx').toFilePath())], runInShell: true);
     }
   }
-  if (await Directory(Uri.file('$modManDirPath/exported').toFilePath()).exists()) {
-    try {
-      await Directory(Uri.file('$modManDirPath/exported').toFilePath()).delete(recursive: true);
-    } catch (e) {
-      await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/exported').toFilePath())], runInShell: true);
-    }
-  }
+  // if (await Directory(Uri.file('$modManDirPath/exported').toFilePath()).exists()) {
+  //   try {
+  //     await Directory(Uri.file('$modManDirPath/exported').toFilePath()).delete(recursive: true);
+  //   } catch (e) {
+  //     await Process.run('cmd', ['rd', '/q', '/s', (Uri.file('$modManDirPath/exported').toFilePath())], runInShell: true);
+  //   }
+  // }
 }
 
 void clearAppUpdateFolder() {

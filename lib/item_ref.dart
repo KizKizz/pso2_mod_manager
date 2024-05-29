@@ -4,10 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
-import 'package:dio/dio.dart';
-import 'package:provider/provider.dart';
-import 'package:pso2_mod_manager/loaders/paths_loader.dart';
-import 'package:pso2_mod_manager/state_provider.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -28,14 +24,14 @@ Future<List<List<String>>> popSheetsList(String csvDirPath) async {
   return csvList;
 }
 
-Future<void> downloadNewRefSheets(context, File refSheetListFile) async {
-  final dio = Dio();
-  final fileList = refSheetListFile.readAsLinesSync();
-  for (var path in fileList) {
-    String localPath = path.replaceAll(Uri.file('/').toFilePath(), '/');
-    String githubPath = 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets$localPath';
+// Future<void> downloadNewRefSheets(context, File refSheetListFile) async {
+//   final dio = Dio();
+//   final fileList = refSheetListFile.readAsLinesSync();
+//   for (var path in fileList) {
+//     String localPath = path.replaceAll(Uri.file('/').toFilePath(), '/');
+//     String githubPath = 'https://raw.githubusercontent.com/KizKizz/pso2_mod_manager/main/ItemRefSheets$localPath';
 
-    await dio.download(githubPath, Uri.file('$modManRefSheetsDirPath$path').toFilePath());
-    Provider.of<StateProvider>(context, listen: false).refSheetsCountUp();
-  }
-}
+//     await dio.download(githubPath, Uri.file('$modManRefSheetsDirPath$path').toFilePath());
+//     Provider.of<StateProvider>(context, listen: false).refSheetsCountUp();
+//   }
+// }

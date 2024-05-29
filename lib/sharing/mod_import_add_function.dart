@@ -184,9 +184,9 @@ Future<bool> modsImportFilesAdder(context, List<ModsAdderItem> itemsToAddList, S
   saveModdedItemListToJson();
 
   //clear sheets
-  if (csvInfosFromSheets.isNotEmpty) {
-    csvInfosFromSheets.clear();
-  }
+  // if (csvInfosFromSheets.isNotEmpty) {
+  //   csvInfosFromSheets.clear();
+  // }
 
   return true;
 }
@@ -450,7 +450,7 @@ Future<(String, bool)> newImportModSetDialog(context) async {
                   ElevatedButton(
                       child: Text(curLangText!.uiReturn),
                       onPressed: () async {
-                        Navigator.pop(context, '');
+                        Navigator.pop(context, ('', false));
                       }),
                   ElevatedButton(
                       onPressed: newModSetName.value.text.isEmpty

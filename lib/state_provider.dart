@@ -13,7 +13,7 @@ class StateProvider with ChangeNotifier {
   bool _listDataCheck = false;
   bool _modAdderReload = false;
   int _cateListItemCount = 0;
-  int _refSheetsCount = 0;
+  double _playerItemDataDownloadPercent = 0;
   String _newItemDropDisplay = '';
   String _newSingleItemDropDisplay = '';
   String _newModDropDisplay = '';
@@ -50,7 +50,7 @@ class StateProvider with ChangeNotifier {
   bool get listDataCheck => _listDataCheck;
   bool get modAdderReload => _modAdderReload;
   int get cateListItemCount => _cateListItemCount;
-  int get refSheetsCount => _refSheetsCount;
+  double get playerItemDataDownloadPercent => _playerItemDataDownloadPercent;
   String get newItemDropDisplay => _newItemDropDisplay;
   String get newSingleItemDropDisplay => _newSingleItemDropDisplay;
   String get newModDropDisplay => _newModDropDisplay;
@@ -261,13 +261,13 @@ class StateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void refSheetsCountUp() {
-    _refSheetsCount++;
+  void playerItemDataDownloadPercentSet(double percent) {
+    _playerItemDataDownloadPercent = percent;
     notifyListeners();
   }
 
-  void refSheetsCountReset() {
-    _refSheetsCount = 0;
+  void playerItemDataDownloadPercentReset() {
+    _playerItemDataDownloadPercent = 0;
     notifyListeners();
   }
 

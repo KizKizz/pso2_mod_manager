@@ -387,7 +387,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                                         selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
                                                                 ],
                                                               )
-                                                            : null
+                                                            : Text(fromItemCsvData[i].gender)
                                                         : selectedFromEmotesCsvFile == fromItemSearchResults[i]
                                                             ? Column(
                                                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -400,7 +400,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                                         selectedFromEmotesCsvFile!.getDetailedListIceInfosOnly().where((element) => element.split(': ').last.isNotEmpty).toList()[line])
                                                                 ],
                                                               )
-                                                            : null,
+                                                            : Text(fromItemSearchResults[i].gender),
                                                     onChanged: queueFromEmoteCsvFiles.contains(fromItemCsvData[i])
                                                         ? null
                                                         : (CsvEmoteIceFile? currentItem) {
@@ -494,6 +494,9 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(queueFromEmoteCsvFiles[i].enName),
+                                                              Text(queueFromEmoteCsvFiles[i].gender,
+                                                                  style: TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize, color: Theme.of(context).hintColor)),
+
                                                               // for (int line = 0;
                                                               //     line < csvInfos.firstWhere((element) => queueFromEmoteCsvFiles[i].getDetailedList().contains(element.first)).length;
                                                               //     line++)

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -19,6 +20,7 @@ import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
+import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -31,13 +33,16 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
 
   List<CategoryType> structureFromJson = [];
   List<CategoryType> cateTypes = [];
+  List<CsvItem> playerItemData = [];
 
-  if (isAutoFetchingIconsOnStartup != 'off') {
-    //load sheets
-    if (csvInfosFromSheets.isEmpty) {
-      csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
-    }
+  if (isAutoFetchingIconsOnStartup != 'off' && playerItemData.isEmpty) {
+    playerItemData = await playerItemDataGet();
   }
+  //load sheets
+  // if (csvInfosFromSheets.isEmpty) {
+  //   csvInfosFromSheets = await itemCsvFetcher(modManRefSheetsDirPath);
+  // }
+  // }
 
   //Load list from json
   if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
@@ -69,10 +74,11 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
     }
 
     if (cateTypes.indexWhere((element) => element.groupName == group) == -1) {
-      cateTypes.add(CategoryType(group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, dir.path, reload))]));
+      cateTypes.add(CategoryType(
+          group, groupPosition, true, true, [Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, playerItemData, dir.path, reload))]));
     } else {
       int index = cateTypes.indexWhere((element) => element.groupName == group);
-      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, dir.path, reload)));
+      cateTypes[index].categories.add(Category(p.basename(dir.path), group, Uri.file(dir.path).toFilePath(), 0, true, await itemsFetcher(context, playerItemData, dir.path, reload)));
     }
   }
 
@@ -252,9 +258,11 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   // if (itemIconRefSheetsList.isNotEmpty) {
   //   itemIconRefSheetsList.clear();
   // }
-  if (csvInfosFromSheets.isNotEmpty) {
-    csvInfosFromSheets.clear();
-  }
+  // if (csvInfosFromSheets.isNotEmpty) {
+  //   csvInfosFromSheets.clear();
+  // }
+
+  playerItemData.clear();
 
   //Get hidden catetypes and cates
   if (isEmptyCatesHide) {
@@ -265,7 +273,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   return cateTypes;
 }
 
-Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
+Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String catePath, bool reload) async {
   final itemInCategory = Directory(catePath).listSync(recursive: false).whereType<Directory>();
   List<Item> items = [];
   //List<String> charToReplace = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
@@ -296,45 +304,17 @@ Future<List<Item>> itemsFetcher(context, String catePath, bool reload) async {
         if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isNotEmpty) {
           itemIcons.addAll(iconFilesInDir.map((e) => e.path));
         } else {
-          final iconIceDownloadPath = await autoItemIconFetcherMinimal(dir.path, modList);
-          if (iconIceDownloadPath.isNotEmpty) {
-            String tempIconUnpackDirPath = Uri.file('$modManAddModsTempDirPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
-            final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath, tempIconUnpackDirPath);
-            //unpack and convert dds to png
-            if (downloadedconIcePath.isNotEmpty) {
-              //debugPrint(downloadedconIcePath);
-              await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
-              File ddsItemIcon =
-                  Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-              if (ddsItemIcon.path.isNotEmpty) {
-                File newItemIcon = File(Uri.file('${dir.path}/${p.basename(dir.path)}.png').toFilePath());
-                await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
-                itemIcons.add(newItemIcon.path);
-              }
-            }
+          final downloadedIconPath = await autoItemIconFetcherMinimal(playerItemData, dir.path, modList);
+          if (downloadedIconPath.isNotEmpty) {
+            itemIcons.add(downloadedIconPath);
           }
         }
       } else if (isAutoFetchingIconsOnStartup == 'all') {
         itemIcons.addAll(iconFilesInDir.map((e) => e.path));
         if (!reload) {
-          final iconIceDownloadPaths = await autoItemIconFetcherFull(dir.path, modList, iconFilesInDir.toList());
-          if (iconIceDownloadPaths.isNotEmpty) {
-            for (var iconIceDownloadPath in iconIceDownloadPaths) {
-              String tempIconUnpackDirPath = Uri.file('$modManAddModsTempDirPath/${p.basename(dir.path)}/tempItemIconUnpack').toFilePath();
-              final downloadedconIcePath = await downloadIconIceFromOfficial(iconIceDownloadPath.last, tempIconUnpackDirPath);
-              //unpack and convert dds to png
-              if (downloadedconIcePath.isNotEmpty) {
-                //debugPrint(downloadedconIcePath);
-                await Process.run('$modManZamboniExePath -outdir "$tempIconUnpackDirPath"', [downloadedconIcePath]);
-                File ddsItemIcon =
-                    Directory('${downloadedconIcePath}_ext').listSync(recursive: true).whereType<File>().firstWhere((element) => p.extension(element.path) == '.dds', orElse: () => File(''));
-                if (ddsItemIcon.path.isNotEmpty) {
-                  File newItemIcon = File(Uri.file('${dir.path}/${iconIceDownloadPath.first}.png').toFilePath());
-                  await Process.run(modManDdsPngToolExePath, [ddsItemIcon.path, newItemIcon.path, '-ddstopng']);
-                  itemIcons.add(newItemIcon.path);
-                }
-              }
-            }
+          final downloadedIconPaths = await autoItemIconFetcherFull(playerItemData, dir.path, modList);
+          if (downloadedIconPaths.isNotEmpty) {
+            itemIcons.addAll(downloadedIconPaths);
           }
         }
       }

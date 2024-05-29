@@ -480,6 +480,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiAddFiles = json['uiAddFiles'] as String
       ..uiCharacters = json['uiCharacters'] as String
       ..uiPathTooLongError = json['uiPathTooLongError'] as String
+      ..uiExtracting = json['uiExtracting'] as String
+      ..uiCopying = json['uiCopying'] as String
+      ..uiSorting = json['uiSorting'] as String
+      ..uiSortingIceFiles = json['uiSortingIceFiles'] as String
+      ..uiSortingOtherFiles = json['uiSortingOtherFiles'] as String
+      ..uiProcessing = json['uiProcessing'] as String
       ..uiNewProfileName = json['uiNewProfileName'] as String
       ..uiApplyingAllAvailableMods =
           json['uiApplyingAllAvailableMods'] as String
@@ -569,7 +575,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiImportAndApply = json['uiImportAndApply'] as String
       ..uiApplyingImportedMods = json['uiApplyingImportedMods'] as String
       ..uiNoFilesInGameDataToReplace =
-          json['uiNoFilesInGameDataToReplace'] as String;
+          json['uiNoFilesInGameDataToReplace'] as String
+      ..uiLoadingPlayerItemData = json['uiLoadingPlayerItemData'] as String
+      ..uiErrorWhenLoadingPlayerItemData =
+          json['uiErrorWhenLoadingPlayerItemData'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -979,6 +988,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAddFiles': instance.uiAddFiles,
       'uiCharacters': instance.uiCharacters,
       'uiPathTooLongError': instance.uiPathTooLongError,
+      'uiExtracting': instance.uiExtracting,
+      'uiCopying': instance.uiCopying,
+      'uiSorting': instance.uiSorting,
+      'uiSortingIceFiles': instance.uiSortingIceFiles,
+      'uiSortingOtherFiles': instance.uiSortingOtherFiles,
+      'uiProcessing': instance.uiProcessing,
       'uiNewProfileName': instance.uiNewProfileName,
       'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
       'uiLocatingOriginalFiles': instance.uiLocatingOriginalFiles,
@@ -1056,4 +1071,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiImportAndApply': instance.uiImportAndApply,
       'uiApplyingImportedMods': instance.uiApplyingImportedMods,
       'uiNoFilesInGameDataToReplace': instance.uiNoFilesInGameDataToReplace,
+      'uiLoadingPlayerItemData': instance.uiLoadingPlayerItemData,
+      'uiErrorWhenLoadingPlayerItemData':
+          instance.uiErrorWhenLoadingPlayerItemData,
     };

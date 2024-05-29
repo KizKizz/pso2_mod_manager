@@ -1,94 +1,84 @@
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
-import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
-import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 
 List<String> itemIconRefSheetsList = [];
 
-Future<String> autoItemIconFetcherMinimal(String itemDirPath, List<Mod> modList) async {
-  String csvInfo = '';
-  //get csvInfo from item name
-  for (var csvFile in csvInfosFromSheets) {
-    csvInfo = csvFile.firstWhere(
-      (element) => element.contains(p.basenameWithoutExtension(itemDirPath)),
-      orElse: () => '',
-    );
-    if (csvInfo.isNotEmpty) {
-      break;
+Future<String> autoItemIconFetcherMinimal(List<CsvItem> playerItemData, String itemDirPath, List<Mod> modList) async {
+  int itemDataIndex = playerItemData.indexWhere((element) => element.getENName() == p.basenameWithoutExtension(itemDirPath) || element.getJPName() == p.basenameWithoutExtension(itemDirPath));
+  if (itemDataIndex != -1 && playerItemData[itemDataIndex].iconImagePath.isNotEmpty) {
+    try {
+      final dio = Dio();
+      String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[itemDataIndex].iconImagePath.replaceAll('\\', '/')}';
+      String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[itemDataIndex].iconImagePath);
+      await dio.download(iconImageLink, iconImagePath);
+      if (File(iconImagePath).existsSync()) return iconImagePath;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  } else {
+    for (var mod in modList) {
+      for (var submod in mod.submods) {
+        for (var modFile in submod.modFiles) {
+          int index = playerItemData.indexWhere(
+              (element) => element.infos.entries.where((e) => (e.key == 'Normal Quality' && e.value == modFile.modFileName) || (e.key == 'High Quality' && e.value == modFile.modFileName)).isNotEmpty);
+          if (index != -1 && playerItemData[index].iconImagePath.isNotEmpty) {
+            try {
+              final dio = Dio();
+              String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
+              String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+              await dio.download(iconImageLink, iconImagePath);
+              if (File(iconImagePath).existsSync()) return iconImagePath;
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          }
+        }
+      }
     }
   }
 
-  //get csvInfo from ice files
-  if (csvInfo.isEmpty) {
-    //get ice file names
-    List<String> uniqueIcePaths = [];
-    for (var mod in modList) {
-      uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
-    }
-    List<String> csvFileInfos = [];
-    for (var icePath in uniqueIcePaths) {
-      for (var csvFile in csvInfosFromSheets) {
-        csvFileInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvFileInfos.contains(line) && line.split(',')[1].isNotEmpty));
-      }
-    }
-    if (csvFileInfos.isNotEmpty) {
-      csvInfo = csvFileInfos.first;
-    }
-  }
-  if (csvInfo.isEmpty) {
-    return '';
-  }
-  final infos = csvInfo.split(',');
-  String itemCategory = infos[0];
-  String itemName = '';
-  modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
-  if (itemName.contains('[Se]')) {
-    itemCategory = defaultCategoryDirs[16];
-  }
-  String ogIconIcePath = itemCategory == defaultCategoryDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
-  return ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '');
+  return '';
 }
 
-Future<List<List<String>>> autoItemIconFetcherFull(String itemDirPath, List<Mod> modList, List<File> iconFilesInDir) async {
-  List<String> csvInfos = [];
-  //get csvInfo from ice files
-  //get ice file names
-  List<String> uniqueIcePaths = [];
+Future<List<String>> autoItemIconFetcherFull(List<CsvItem> playerItemData, String itemDirPath, List<Mod> modList) async {
+  List<String> iconPaths = [];
   for (var mod in modList) {
-    uniqueIcePaths.addAll(mod.getDistinctModFilePaths());
-  }
-  for (var icePath in uniqueIcePaths) {
-    for (var csvFile in csvInfosFromSheets) {
-      csvInfos.addAll(csvFile.where((line) => line.contains(p.basenameWithoutExtension(icePath)) && !csvInfos.contains(line) && line.split(',')[1].isNotEmpty));
-    }
-  }
-
-  List<List<String>> ogIconPaths = [];
-  for (var csvInfo in csvInfos) {
-    final infos = csvInfo.split(',');
-    String itemCategory = infos[0];
-    String itemName = '';
-    modManCurActiveItemNameLanguage == 'JP' ? itemName = infos[1] : itemName = infos[2];
-    if (itemName.contains('[Se]')) {
-      itemCategory = defaultCategoryDirs[16];
-    }
-    itemName = itemName.replaceAll(RegExp(charToReplace), '_');
-    if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == itemName).isEmpty) {
-      String ogIconIcePath = itemCategory == defaultCategoryDirs[0] ? findIcePathInGameData(infos[4]) : findIcePathInGameData(infos[5]);
-      if (ogIconIcePath.isNotEmpty) {
-        ogIconPaths.add([itemName, ogIconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '')]);
+    bool isFound = false;
+    for (var submod in mod.submods) {
+      for (var modFile in submod.modFiles) {
+        int index = playerItemData.indexWhere(
+            (element) => element.infos.entries.where((e) => (e.key == 'Normal Quality' && e.value == modFile.modFileName) || (e.key == 'High Quality' && e.value == modFile.modFileName)).isNotEmpty);
+        if (index != -1 && playerItemData[index].iconImagePath.isNotEmpty) {
+          try {
+            final dio = Dio();
+            String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
+            String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+            await dio.download(iconImageLink, itemDirPath);
+            if (File(iconImagePath).existsSync() && !iconPaths.contains(iconImagePath)) {
+              iconPaths.add(iconImagePath);
+              isFound = true;
+              break;
+            }
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+        }
       }
+      if (isFound) break;
     }
   }
 
-  return ogIconPaths;
+  return iconPaths;
 }
 
 // Future<List<String>> modLoaderItemIconFetch(List<String> itemInCsv, String category) async {

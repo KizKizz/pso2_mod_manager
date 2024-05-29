@@ -48,6 +48,7 @@ String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zambon
 String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
 String modMan7zipExePath = Uri.file('${Directory.current.path}/7zip-x64/7z.exe').toFilePath();
 String modManRefSheetsDirPath = Uri.file('${Directory.current.path}/ItemRefSheets').toFilePath();
+String modManPlayerItemDataPath = Uri.file('${Directory.current.path}/ItemRefSheets/playerItemData.json').toFilePath();
 String modManWin32CheckSumFilePath = '';
 String modManWin32NaCheckSumFilePath = '';
 String modManLocalChecksumMD5 = '';
@@ -62,7 +63,7 @@ String modManImportedDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
-String modManRefSheetListFilePath = '';
+// String modManRefSheetListFilePath = '';
 String modManRefSheetsLocalVerFilePath = '';
 String modManVitalGaugeJsonPath = '';
 //Log file path
@@ -78,7 +79,7 @@ String patchURL = '';
 String backupMasterURL = '';
 String backupPatchURL = '';
 //extras
-String modManIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/icons';
+String modManMAIconDatabaseLink = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main';
 
 Future<bool> pathsLoader(context) async {
   final prefs = await SharedPreferences.getInstance();
@@ -154,10 +155,10 @@ Future<bool> pathsLoader(context) async {
   //create/load folders
   await createSubDirs();
 
-  modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
-  if (!File(modManRefSheetListFilePath).existsSync()) {
-    File(modManRefSheetListFilePath).createSync();
-  }
+  // modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
+  // if (!File(modManRefSheetListFilePath).existsSync()) {
+  //   File(modManRefSheetListFilePath).createSync();
+  // }
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();
@@ -207,16 +208,16 @@ Future<bool> pathsLoader(context) async {
   }
 
   //ref sheets check load files
-  if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
-    final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
-    List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
-    File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
-    File(modManRefSheetsLocalVerFilePath).writeAsStringSync(refSheetsVersion.toString());
-  }
+  // if (kDebugMode && Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).existsSync()) {
+  //   final sheetFiles = Directory(Uri.file('$modManRefSheetsDirPath/Player').toFilePath()).listSync(recursive: true).where((element) => p.extension(element.path) == '.csv');
+  //   List<String> sheetPaths = sheetFiles.map((e) => Uri.file(e.path.replaceAll(modManRefSheetsDirPath, '')).toFilePath()).toList();
+  //   File(modManRefSheetListFilePath).writeAsStringSync(sheetPaths.join('\n').trim());
+  //   File(modManRefSheetsLocalVerFilePath).writeAsStringSync(refSheetsVersion.toString());
+  // }
 
   //ref sheets check
   modManRefSheetsLocalVersion = int.parse(File(modManRefSheetsLocalVerFilePath).readAsStringSync());
-  await checkRefSheetsForUpdates(context);
+  await checkPlayerItemdataForUpdates(context);
 
   //startup icons loader
   if (firstTimeUser) {
@@ -529,8 +530,8 @@ Future<bool> modManPathReloader(context) async {
   //create/load folders
   await createSubDirs();
 
-  modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
-  File(modManRefSheetListFilePath).createSync();
+  // modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
+  // File(modManRefSheetListFilePath).createSync();
   modManRefSheetsLocalVerFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetsVer.txt').toFilePath();
   if (!File(modManRefSheetsLocalVerFilePath).existsSync()) {
     File(modManRefSheetsLocalVerFilePath).createSync();
