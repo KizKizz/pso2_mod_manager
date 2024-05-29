@@ -32,6 +32,9 @@ Future<void> downloadPlayerItemData(context) async {
     Provider.of<StateProvider>(context, listen: false).playerItemDataDownloadPercentReset();
     debugPrint('itemdatajson size: $totalCount');
     totalCount = 0;
+    if (playerItemData.isEmpty) {
+      playerItemData = await playerItemDataGet();
+    }
   }
 }
 
