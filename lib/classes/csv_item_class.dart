@@ -58,6 +58,10 @@ class CsvItem {
     return name.trim();
   }
 
+  String getIconIceName() {
+    return infos.entries.firstWhere((element) => element.key.contains('Icon')).value; 
+  }
+
   bool containsCategory(List<String> filters) {
     for (var cateName in itemCategories) {
       if (filters.contains(cateName.replaceAll('NGS', '').replaceAll('PSO2', '').trim())) {

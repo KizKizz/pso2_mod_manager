@@ -32,7 +32,7 @@ dependencies:
   shared_preferences: ^2.0.15
   bitsdojo_window: ^0.1.5
   multi_split_view: ^2.0.1
-  carousel_slider: ^4.1.1
+  carousel_slider: ^4.2.1
   provider: ^6.0.3
   dropdown_button2: ^2.1.2
   desktop_drop: ^0.4.0
@@ -65,6 +65,8 @@ dependencies:
   crop_image: ^1.0.10
   image: ^4.0.17
   windows_single_instance: ^1.0.0
+  info_popup: ^4.3.1
+  flutter_image_slideshow: ^0.1.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -99,6 +101,8 @@ flutter:
   uses-material-design: true
   assets:
       - assets/img/placeholdersquare.png
+      - assets/img/icon_overlay.png
+      - assets/img/icon_overlay_l.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -202,7 +202,7 @@ Future<Item> newItemsFetcher(String catePath, String itemPath, String importedSe
     itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, true, true, [importedSetName],
+  return Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, true, true, [importedSetName],
       newModsFetcher(itemPath, p.basename(catePath), [], importedSetName));
 }
 

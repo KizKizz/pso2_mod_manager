@@ -658,7 +658,7 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                           isEmotesToStandbyMotions = false;
                                                           await msdl.sheetListFetchFromFiles(context, selectedCategoryF!, []);
                                                           //shell Item
-                                                          Item tempItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
+                                                          Item tempItem = Item('', [], [], '', '', '', false, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
                                                           availableEmotesCsvData = await msdl.getEmotesSwapToCsvList(csvEmotesData, tempItem.category);
                                                           if (selectedMotionType.isNotEmpty) {
                                                             availableEmotesCsvData = availableEmotesCsvData.where((element) => element.subCategory == selectedMotionType).toList();

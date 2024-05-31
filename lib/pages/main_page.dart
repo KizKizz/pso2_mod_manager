@@ -623,6 +623,15 @@ class _MainPageState extends State<MainPage> {
                         height: 5,
                       ),
 
+                      //Open settings
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        child: Text(
+                          '${curLangText!.uiLocations}:',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+
                       //Path open
                       MaterialButton(
                         height: 40,
@@ -758,6 +767,13 @@ class _MainPageState extends State<MainPage> {
                       ),
 
                       //Other options
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        child: Text(
+                          '${curLangText!.uiOtherSettings}:',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
 
                       //Backup Priority
                       ModManTooltip(
@@ -785,6 +801,39 @@ class _MainPageState extends State<MainPage> {
                               ),
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).prioritizeLocalBackup ? curLangText!.uiPrioritizeLocalBackups : curLangText!.uiPrioritizeSegaBackups,
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //overlay icons
+                      ModManTooltip(
+                        message: curLangText!.uiMarkModdedItemOnIconInGame,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                              prefs.setBool('markModdedItem', false);
+                              Provider.of<StateProvider>(context, listen: false).markModdedItemSet(false);
+                            } else {
+                              prefs.setBool('markModdedItem', true);
+                              Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.image_aspect_ratio_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).markModdedItem
+                                      ? '${curLangText!.uiMarkModdedItemInGame}: ON'
+                                      : '${curLangText!.uiMarkModdedItemInGame}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
@@ -939,6 +988,39 @@ class _MainPageState extends State<MainPage> {
                                   Provider.of<StateProvider>(context, listen: false).profanityFilterRemove
                                       ? '${curLangText!.uiRemoveProfanityFilter}: ON'
                                       : '${curLangText!.uiRemoveProfanityFilter}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //show hide preview panel
+                      ModManTooltip(
+                        message: curLangText!.uiPreviewShowHide,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
+                              prefs.setBool('showPreviewPanel', false);
+                              Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+                            } else {
+                              prefs.setBool('showPreviewPanel', true);
+                              Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.preview_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanel
+                                      ? '${curLangText!.uiPreviewWindow}: ON'
+                                      : '${curLangText!.uiPreviewWindow}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

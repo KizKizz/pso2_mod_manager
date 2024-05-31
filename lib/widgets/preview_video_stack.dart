@@ -13,8 +13,9 @@ class PreviewVideoStack extends StatefulWidget {
 }
 
 class _PreviewVideoStackState extends State<PreviewVideoStack> {
-  final Player videoPlayer = Player();
+  // final Player videoPlayer = Player();
   bool showPlayButton = false;
+  final Player videoPlayer = Player();
 
   @override
   void dispose() {
@@ -24,7 +25,6 @@ class _PreviewVideoStackState extends State<PreviewVideoStack> {
 
   @override
   Widget build(BuildContext context) {
-    final VideoController vidPlayercontroller = VideoController(videoPlayer);
     videoPlayer.open(Media(widget.videoPath));
     videoPlayer.setVolume(0);
     videoPlayer.stream.completed.listen((event) {
@@ -40,7 +40,7 @@ class _PreviewVideoStackState extends State<PreviewVideoStack> {
         Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            Video(controller: vidPlayercontroller),
+            Video(controller: VideoController(videoPlayer)),
             // Visibility(
             //   visible: previewDialogModName.isNotEmpty && videoPlayer.state.completed,
             //   child: MaterialButton(
@@ -79,41 +79,3 @@ class _PreviewVideoStackState extends State<PreviewVideoStack> {
     );
   }
 }
-
-// class PreviewVideoStack extends StatelessWidget {
-//   const PreviewVideoStack({Key? key, required this.videoPath, required this.overlayText}) : super(key: key);
-
-//   final String videoPath;
-//   final String overlayText;
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final Player videoPlayer = Player();
-//     final VideoController vidPlayercontroller = VideoController(videoPlayer);
-//     videoPlayer.open(Media(videoPath));
-//     videoPlayer.setVolume(0);
-//     //videoPlayer.pause();
-//     return Stack(
-//       alignment: Alignment.bottomCenter,
-//       children: [
-//         Video(controller: vidPlayercontroller),
-//         FittedBox(
-//           fit: BoxFit.fitWidth,
-//           child: Container(
-//               decoration: BoxDecoration(
-//                 color: Theme.of(context).canvasColor.withOpacity(0.5),
-//                 borderRadius: BorderRadius.circular(3),
-//                 border: Border.all(color: Theme.of(context).hintColor),
-//               ),
-//               height: 25,
-//               child: Center(
-//                   child: Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 5),
-//                 child: Text(overlayText, style: const TextStyle(fontSize: 17)),
-//               ))),
-//         )
-//       ],
-//     );
-//   }
-// }

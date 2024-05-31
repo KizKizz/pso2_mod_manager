@@ -168,7 +168,7 @@ Future<Item> newItemsFetcher(String catePath, String itemPath) async {
   }
 
   return Item(
-      p.basename(itemPath), [], itemIcons, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+      p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {

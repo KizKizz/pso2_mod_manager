@@ -302,7 +302,7 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
 
   String downloadedIceFile = '';
 
-  String webLinkPath = iconIcePath.replaceAll('\\', '/');
+  String webLinkPath = iconIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/');
 
   if (officialPatchFiles.contains(webLinkPath)) {
     try {

@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 List<String> itemIconRefSheetsList = [];
 
 Future<String> autoItemIconFetcherMinimal(List<CsvItem> playerItemData, String itemDirPath, List<Mod> modList) async {
-  int itemDataIndex = playerItemData.indexWhere((element) => element.getENName() == p.basenameWithoutExtension(itemDirPath) || element.getJPName() == p.basenameWithoutExtension(itemDirPath));
+  int itemDataIndex = playerItemData.indexWhere((element) => p.basenameWithoutExtension(element.iconImagePath) == p.basenameWithoutExtension(itemDirPath) || element.getENName() == p.basenameWithoutExtension(itemDirPath).replaceAll('_', '/') || element.getJPName() == p.basenameWithoutExtension(itemDirPath).replaceAll('_', '/'));
   if (itemDataIndex != -1 && playerItemData[itemDataIndex].iconImagePath.isNotEmpty) {
     try {
       final dio = Dio();

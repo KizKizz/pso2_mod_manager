@@ -194,6 +194,12 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiStartPSO2 = json['uiStartPSO2'] as String
       ..uiLaunchGameJPVerOnly = json['uiLaunchGameJPVerOnly'] as String
       ..uiIfGameNotLaunching = json['uiIfGameNotLaunching'] as String
+      ..uiPreviewWindow = json['uiPreviewWindow'] as String
+      ..uiOtherSettings = json['uiOtherSettings'] as String
+      ..uiLocations = json['uiLocations'] as String
+      ..uiMarkModdedItemOnIconInGame =
+          json['uiMarkModdedItemOnIconInGame'] as String
+      ..uiMarkModdedItemInGame = json['uiMarkModdedItemInGame'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -738,6 +744,11 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiStartPSO2': instance.uiStartPSO2,
       'uiLaunchGameJPVerOnly': instance.uiLaunchGameJPVerOnly,
       'uiIfGameNotLaunching': instance.uiIfGameNotLaunching,
+      'uiPreviewWindow': instance.uiPreviewWindow,
+      'uiOtherSettings': instance.uiOtherSettings,
+      'uiLocations': instance.uiLocations,
+      'uiMarkModdedItemOnIconInGame': instance.uiMarkModdedItemOnIconInGame,
+      'uiMarkModdedItemInGame': instance.uiMarkModdedItemInGame,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

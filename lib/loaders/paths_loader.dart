@@ -60,6 +60,7 @@ String modManVitalGaugeOriginalsDirPath = '';
 String modManTempCmxDirPath = '';
 String modManExportedDirPath = '';
 String modManImportedDirPath = '';
+String modManOverlayedItemIconsDirPath = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -910,4 +911,7 @@ Future<void> createSubDirs() async {
   //exporter path
   modManExportedDirPath = Uri.file('$modManDirPath/exported').toFilePath();
   Directory(modManExportedDirPath).createSync(recursive: true);
+  //overlayed icon path
+  modManOverlayedItemIconsDirPath = Uri.file('$modManDirPath/overlayed_item_icons').toFilePath();
+  Directory(modManOverlayedItemIconsDirPath).createSync(recursive: true);
 }

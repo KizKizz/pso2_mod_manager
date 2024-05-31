@@ -124,7 +124,7 @@ Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) a
   }
 }
 
-void filesRestoredMessage(context, List<ModFile> curModFiles, List<ModFile> unappliedModFiles) {
+Future<void> filesRestoredMessage(context, List<ModFile> curModFiles, List<ModFile> unappliedModFiles) async {
   List<String> successFiles = [], failedFiles = [];
   String successMessage = '', failedMessage = '', message = '';
   for (var modFile in curModFiles) {
