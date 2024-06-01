@@ -131,7 +131,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                 ),
               );
             } else {
-              Item fromItem = Item('', [], [], selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
+              Item fromItem = Item('', [], [], '', '', '', false, selectedCategoryF!, '', false, DateTime(0), 0, false, false, false, [], []);
               return FutureBuilder(
                   future: availableItemsCsvData.isEmpty && csvData.isNotEmpty
                       ? ms.getSwapToCsvList(csvData, fromItem.category)

@@ -38,6 +38,9 @@ class StateProvider with ChangeNotifier {
   bool _prioritizeLocalBackup = false;
   String _modAdderProgressStatus = '';
   String _gameEdition = '';
+  bool _showPreviewPanel = false;
+  bool _markModdedItem = true;
+  bool _isStartupLoadingFinish = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -75,6 +78,24 @@ class StateProvider with ChangeNotifier {
   bool get prioritizeLocalBackup => _prioritizeLocalBackup;
   String get modAdderProgressStatus => _modAdderProgressStatus;
   String get gameEdition => _gameEdition;
+  bool get showPreviewPanel => _showPreviewPanel;
+  bool get markModdedItem => _markModdedItem;
+  bool get isStartupLoadingFinish => _isStartupLoadingFinish;
+
+  void startupLoadingFinishSet(bool state) {
+    _isStartupLoadingFinish = state;
+    notifyListeners();
+  }
+
+  void markModdedItemSet(bool state) {
+    _markModdedItem = state;
+    notifyListeners();
+  }
+
+  void showPreviewPanelSet(bool state) {
+    _showPreviewPanel = state;
+    notifyListeners();
+  }
 
   void setGameEdition(String edition) {
     _gameEdition = edition;

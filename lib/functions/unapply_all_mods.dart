@@ -3,6 +3,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -122,6 +123,9 @@ Future<List<String>> unapplySelectedAppliedMods(context) async {
         if (item.mods.where((element) => element.applyStatus).isEmpty) {
           item.applyStatus = false;
           item.applyDate = DateTime(0);
+          if (item.isOverlayedIconApplied!) {
+            await restoreOverlayedIcon(item);
+          }
         }
       }
     }

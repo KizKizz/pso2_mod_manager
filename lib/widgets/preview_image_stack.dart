@@ -15,6 +15,8 @@ class PreviewImageStack extends StatelessWidget {
       children: [
         Image.file(
           File(imagePath),
+          width: double.infinity,
+          height: double.infinity,
           //fit: BoxFit.cover,
         ),
         FittedBox(

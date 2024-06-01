@@ -134,6 +134,10 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
               //item.category = curJsonItemsList[itemIndex].category;
               //item.itemName = curJsonItemsList[itemIndex].itemName;
               //item.icon = curJsonItemsList[itemIndex].icon;
+              if (curJsonItemsList[itemIndex].iconPath != null) item.iconPath = curJsonItemsList[itemIndex].iconPath;
+              if (curJsonItemsList[itemIndex].overlayedIconPath != null) item.overlayedIconPath = curJsonItemsList[itemIndex].overlayedIconPath;
+              if (curJsonItemsList[itemIndex].backupIconPath != null) item.backupIconPath = curJsonItemsList[itemIndex].backupIconPath;
+              if (curJsonItemsList[itemIndex].isOverlayedIconApplied != null) item.isOverlayedIconApplied = curJsonItemsList[itemIndex].isOverlayedIconApplied;
               item.isFavorite = curJsonItemsList[itemIndex].isFavorite;
               item.isNew = curJsonItemsList[itemIndex].isNew;
               item.isSet = curJsonItemsList[itemIndex].isSet;
@@ -323,7 +327,7 @@ Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String ca
       }
     }
 
-    items.add(Item(p.basename(dir.path), nameVariants, itemIcons, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
+    items.add(Item(p.basename(dir.path), nameVariants, itemIcons, '', '', '', false, p.basename(catePath), Uri.file(dir.path).toFilePath(), false, DateTime(0), 0, false, false, false, [], modList));
     if (isAutoFetchingIconsOnStartup != 'off' && !reload) {
       Provider.of<StateProvider>(context, listen: false).setModsLoaderProgressStatus('${p.basename(dir.parent.path)}\n${p.basename(dir.path)}');
       await Future.delayed(const Duration(milliseconds: 10));

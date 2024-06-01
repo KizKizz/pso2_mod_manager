@@ -7,6 +7,7 @@ import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
@@ -250,19 +251,20 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
       }
     }
 
-    //apply cmx
-    if (submod.hasCmx!) {
-      int startIndex = -1, endIndex = -1;
-      (startIndex, endIndex) = await cmxModPatch(submod.cmxFile!);
-      if (startIndex != -1 && endIndex != -1) {
-        submod.cmxStartPos = startIndex;
-        submod.cmxEndPos = endIndex;
-        submod.cmxApplied = true;
-        saveModdedItemListToJson();
-      }
-    }
-
     if (submod.applyStatus) {
+      //apply cmx
+      if (submod.hasCmx!) {
+        int startIndex = -1, endIndex = -1;
+        (startIndex, endIndex) = await cmxModPatch(submod.cmxFile!);
+        if (startIndex != -1 && endIndex != -1) {
+          submod.cmxStartPos = startIndex;
+          submod.cmxEndPos = endIndex;
+          submod.cmxApplied = true;
+          saveModdedItemListToJson();
+        }
+      }
+      await applyOverlayedIcon(context, item);
+
       Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
       Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);
       await Future.delayed(const Duration(milliseconds: 100));

@@ -26,6 +26,7 @@ import 'package:pso2_mod_manager/functions/apply_mods_functions.dart';
 import 'package:pso2_mod_manager/functions/cate_mover.dart';
 import 'package:pso2_mod_manager/functions/delete_from_mm.dart';
 import 'package:pso2_mod_manager/functions/fav_list.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/dotnet_check.dart';
 import 'package:pso2_mod_manager/functions/mod_deletion_dialog.dart';
@@ -47,11 +48,13 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_export.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/widgets/item_icons_carousel.dart';
 import 'package:pso2_mod_manager/widgets/preview_image_stack.dart';
+import 'package:pso2_mod_manager/widgets/preview_tooltip.dart';
 import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
@@ -104,6 +107,7 @@ class _HomePageState extends State<HomePage> {
       }
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
+      Provider.of<StateProvider>(context, listen: false).startupLoadingFinishSet(true);
     });
 
     super.initState();
@@ -128,8 +132,8 @@ class _HomePageState extends State<HomePage> {
         //if (!context.watch<StateProvider>().setsWindowVisible)
         modsView(),
         //if (context.watch<StateProvider>().setsWindowVisible) modInSetList(),
-        if (!context.watch<StateProvider>().previewWindowVisible) appliedModsView(),
-        if (context.watch<StateProvider>().previewWindowVisible)
+        if (!context.watch<StateProvider>().previewWindowVisible || !context.watch<StateProvider>().showPreviewPanel) appliedModsView(),
+        if (context.watch<StateProvider>().previewWindowVisible && context.watch<StateProvider>().showPreviewPanel)
           MultiSplitView(
             axis: Axis.vertical,
             controller: _verticalViewsController,
@@ -2324,527 +2328,1009 @@ class _HomePageState extends State<HomePage> {
                                   hoveringOnSubmod = false;
                                   previewModName = '';
                                   previewImages.clear();
-                                  // videoPlayer.remove(0);
                                 }
                                 setState(() {});
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 1),
-                                child: Card(
-                                  margin: EdgeInsets.zero,
-                                  color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                  //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(width: curMod.isNew ? 2 : 1, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight),
-                                      borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                  child: AdvanceExpansionTile(
-                                    backgroundColor: Colors.transparent,
-                                    textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                    iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                    collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                    key: modViewETKeys[modIndex],
-                                    onExpansionChanged: (value) {
-                                      isModViewItemListExpanded[modIndex] = value;
-                                      setState(() {});
-                                    },
-                                    title: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(curMod.modName,
-                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: curMod.applyStatus ? Theme.of(context).colorScheme.primary : null)),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
-                                                      ? Wrap(
-                                                          spacing: 5,
-                                                          children: [
-                                                            Container(
-                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                              ),
-                                                              child: Text(
-                                                                  curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
-                                                                      ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
-                                                                      : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
-                                                                  style: const TextStyle(
-                                                                    fontSize: 15,
-                                                                  )),
-                                                            ),
-                                                            if (curMod.submods.where((element) => element.isSet && element.hasCmx!).isNotEmpty)
+                                child: ModManPreviewTooltip(
+                                  child: Card(
+                                    margin: EdgeInsets.zero,
+                                    color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                    //color: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(width: curMod.isNew ? 2 : 1, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight),
+                                        borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                    child: AdvanceExpansionTile(
+                                      backgroundColor: Colors.transparent,
+                                      textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                      iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                      collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                      key: modViewETKeys[modIndex],
+                                      onExpansionChanged: (value) {
+                                        isModViewItemListExpanded[modIndex] = value;
+                                        setState(() {});
+                                      },
+                                      title: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(curMod.modName,
+                                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: curMod.applyStatus ? Theme.of(context).colorScheme.primary : null)),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
+                                                        ? Wrap(
+                                                            spacing: 5,
+                                                            children: [
                                                               Container(
                                                                 padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                 decoration: BoxDecoration(
-                                                                  border: Border.all(
-                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
-                                                                          ? Theme.of(context).colorScheme.primary
-                                                                          : Theme.of(context).primaryColorLight),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                 ),
-                                                                child: Text(curLangText!.uiCmx,
-                                                                    style: TextStyle(
-                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
+                                                                child: Text(
+                                                                    curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length < 2
+                                                                        ? '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariant}'
+                                                                        : '${curMod.submods.where((element) => element.isSet && element.setNames.contains(selectedModSetName)).length} ${curLangText!.uiVariants}',
+                                                                    style: const TextStyle(
                                                                       fontSize: 15,
                                                                     )),
                                                               ),
-                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
-                                                          ],
-                                                        )
-                                                      : Wrap(
-                                                          spacing: 5,
-                                                          children: [
-                                                            Container(
-                                                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(color: Theme.of(context).primaryColorLight),
-                                                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                              ),
-                                                              child: searchTextController.value.text.isNotEmpty &&
-                                                                      curMod.submods
-                                                                          .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
-                                                                          .isNotEmpty
-                                                                  ? Text(
-                                                                      curMod.submods
-                                                                                  .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
-                                                                                  .length <
-                                                                              2
-                                                                          ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
-                                                                          : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
-                                                                      style: const TextStyle(
-                                                                        fontSize: 15,
-                                                                      ))
-                                                                  : Text(
-                                                                      curMod.submods.length < 2
-                                                                          ? '${curMod.submods.length} ${curLangText!.uiVariant}'
-                                                                          : '${curMod.submods.length} ${curLangText!.uiVariants}',
-                                                                      style: const TextStyle(
+                                                              if (curMod.submods.where((element) => element.isSet && element.hasCmx!).isNotEmpty)
+                                                                Container(
+                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
+                                                                            ? Theme.of(context).colorScheme.primary
+                                                                            : Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                  ),
+                                                                  child: Text(curLangText!.uiCmx,
+                                                                      style: TextStyle(
+                                                                        color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
                                                                         fontSize: 15,
                                                                       )),
-                                                            ),
-                                                            if (curMod.submods.where((element) => element.hasCmx!).isNotEmpty)
+                                                                ),
+                                                              if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
+                                                            ],
+                                                          )
+                                                        : Wrap(
+                                                            spacing: 5,
+                                                            children: [
                                                               Container(
                                                                 padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
                                                                 decoration: BoxDecoration(
-                                                                  border: Border.all(
-                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
-                                                                          ? Theme.of(context).colorScheme.primary
-                                                                          : Theme.of(context).primaryColorLight),
+                                                                  border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                 ),
-                                                                child: Text(curLangText!.uiCmx,
-                                                                    style: TextStyle(
-                                                                      color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
-                                                                      fontSize: 15,
-                                                                    )),
+                                                                child: searchTextController.value.text.isNotEmpty &&
+                                                                        curMod.submods
+                                                                            .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
+                                                                            .isNotEmpty
+                                                                    ? Text(
+                                                                        curMod.submods
+                                                                                    .where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()))
+                                                                                    .length <
+                                                                                2
+                                                                            ? '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariant}'
+                                                                            : '${curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).length} ${curLangText!.uiVariants}',
+                                                                        style: const TextStyle(
+                                                                          fontSize: 15,
+                                                                        ))
+                                                                    : Text(
+                                                                        curMod.submods.length < 2
+                                                                            ? '${curMod.submods.length} ${curLangText!.uiVariant}'
+                                                                            : '${curMod.submods.length} ${curLangText!.uiVariants}',
+                                                                        style: const TextStyle(
+                                                                          fontSize: 15,
+                                                                        )),
                                                               ),
-                                                            if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
-                                                          ],
-                                                        )
-                                                ],
-                                              ),
-                                            ],
+                                                              if (curMod.submods.where((element) => element.hasCmx!).isNotEmpty)
+                                                                Container(
+                                                                  padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty
+                                                                            ? Theme.of(context).colorScheme.primary
+                                                                            : Theme.of(context).primaryColorLight),
+                                                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                  ),
+                                                                  child: Text(curLangText!.uiCmx,
+                                                                      style: TextStyle(
+                                                                        color: curMod.submods.where((element) => element.cmxApplied!).isNotEmpty ? Theme.of(context).colorScheme.primary : null,
+                                                                        fontSize: 15,
+                                                                      )),
+                                                                ),
+                                                              if (curMod.submods.where((element) => element.applyLocations!.isNotEmpty).isNotEmpty) const Icon(Icons.location_on_outlined),
+                                                            ],
+                                                          )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
 
-                                        //More menu for normal mods
-                                        if (curMod.submods.length > 1 && !context.watch<StateProvider>().setsWindowVisible ||
-                                            isModViewFromApplied && curMod.submods.length > 1 ||
-                                            curMod.submods.length == 1 && isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
-                                            isModViewFromApplied && curMod.submods.length == 1 && isModViewItemListExpanded[modIndex])
-                                          MenuAnchor(
-                                              builder: (BuildContext context, MenuController controller, Widget? child) {
-                                                return ModManTooltip(
-                                                  message: curLangText!.uiMore,
-                                                  child: InkWell(
-                                                    child: const Icon(
-                                                      Icons.more_vert,
+                                          //More menu for normal mods
+                                          if (curMod.submods.length > 1 && !context.watch<StateProvider>().setsWindowVisible ||
+                                              isModViewFromApplied && curMod.submods.length > 1 ||
+                                              curMod.submods.length == 1 && isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                              isModViewFromApplied && curMod.submods.length == 1 && isModViewItemListExpanded[modIndex])
+                                            MenuAnchor(
+                                                builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                  return ModManTooltip(
+                                                    message: curLangText!.uiMore,
+                                                    child: InkWell(
+                                                      child: const Icon(
+                                                        Icons.more_vert,
+                                                      ),
+                                                      onTap: () {
+                                                        if (controller.isOpen) {
+                                                          controller.close();
+                                                        } else {
+                                                          controller.open();
+                                                        }
+                                                      },
                                                     ),
-                                                    onTap: () {
-                                                      if (controller.isOpen) {
-                                                        controller.close();
-                                                      } else {
-                                                        controller.open();
+                                                  );
+                                                },
+                                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                }), shape: MaterialStateProperty.resolveWith((states) {
+                                                  return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                })),
+                                                menuChildren: [
+                                                  // rename
+                                                  MenuItemButton(
+                                                    leadingIcon: const Icon(
+                                                      Icons.edit_note,
+                                                    ),
+                                                    child: Text(curLangText!.uiRename),
+                                                    onPressed: () async {
+                                                      String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                      if (newName.isNotEmpty) {
+                                                        //change paths
+                                                        String oldModPath = curMod.location;
+                                                        String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
+                                                        if (oldModPath == modViewItem!.location) {
+                                                          await Directory(newModPath).create(recursive: true);
+                                                          curMod.modName = newName;
+                                                          curMod.location = newModPath;
+                                                          curMod.previewImages.clear();
+                                                          curMod.previewVideos.clear();
+                                                          renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
+                                                          for (var submod in curMod.submods) {
+                                                            submod.modName = newName;
+                                                            submod.submodName = newName;
+                                                            submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                            submod.previewImages.clear();
+                                                            submod.previewVideos.clear();
+                                                            renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
+                                                            for (var modFile in submod.modFiles) {
+                                                              final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
+                                                              modFile.modName = newName;
+                                                              modFile.submodName = newName;
+                                                              modFile.location = movedFile.path;
+                                                            }
+                                                          }
+                                                        } else {
+                                                          await Directory(oldModPath).rename(newModPath);
+                                                          curMod.modName = newName;
+                                                          curMod.location = newModPath;
+                                                          for (var imagePath in curMod.previewImages) {
+                                                            imagePath = imagePath.replaceFirst(oldModPath, newModPath);
+                                                          }
+                                                          for (var videoPath in curMod.previewVideos) {
+                                                            videoPath = videoPath.replaceFirst(oldModPath, newModPath);
+                                                          }
+                                                          for (var submod in curMod.submods) {
+                                                            submod.modName = newName;
+                                                            if (submod.location == oldModPath) {
+                                                              submod.submodName = newName;
+                                                            }
+                                                            submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                            for (var imagePath in submod.previewImages) {
+                                                              imagePath = imagePath.replaceFirst(oldModPath, newModPath);
+                                                            }
+                                                            for (var videoPath in submod.previewVideos) {
+                                                              videoPath = videoPath.replaceFirst(oldModPath, newModPath);
+                                                            }
+                                                            for (var modFile in submod.modFiles) {
+                                                              modFile.modName = newName;
+                                                              if (submod.location == curMod.location) {
+                                                                modFile.submodName = newName;
+                                                              }
+                                                              modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
+                                                            }
+                                                          }
+                                                        }
+                                                        await modSetLoader();
+                                                        saveSetListToJson();
+                                                        saveModdedItemListToJson();
+                                                        setState(() {});
                                                       }
                                                     },
                                                   ),
-                                                );
-                                              },
-                                              style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                              }), shape: MaterialStateProperty.resolveWith((states) {
-                                                return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                              })),
-                                              menuChildren: [
-                                                // rename
-                                                MenuItemButton(
-                                                  leadingIcon: const Icon(
-                                                    Icons.edit_note,
-                                                  ),
-                                                  child: Text(curLangText!.uiRename),
-                                                  onPressed: () async {
-                                                    String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
-                                                    if (newName.isNotEmpty) {
-                                                      //change paths
-                                                      String oldModPath = curMod.location;
-                                                      String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
-                                                      if (oldModPath == modViewItem!.location) {
-                                                        await Directory(newModPath).create(recursive: true);
-                                                        curMod.modName = newName;
-                                                        curMod.location = newModPath;
-                                                        curMod.previewImages.clear();
-                                                        curMod.previewVideos.clear();
-                                                        renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
-                                                        for (var submod in curMod.submods) {
-                                                          submod.modName = newName;
-                                                          submod.submodName = newName;
-                                                          submod.location = submod.location.replaceFirst(oldModPath, newModPath);
-                                                          submod.previewImages.clear();
-                                                          submod.previewVideos.clear();
-                                                          renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
-                                                          for (var modFile in submod.modFiles) {
-                                                            final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
-                                                            modFile.modName = newName;
-                                                            modFile.submodName = newName;
-                                                            modFile.location = movedFile.path;
-                                                          }
-                                                        }
+
+                                                  // open in file explorer
+                                                  MenuItemButton(
+                                                    leadingIcon: const Icon(
+                                                      Icons.folder_open_outlined,
+                                                    ),
+                                                    child: Text(curLangText!.uiOpenInFileExplorer),
+                                                    onPressed: () async {
+                                                      if (Directory(Uri.file(curMod.location).toFilePath()).existsSync()) {
+                                                        await launchUrl(Uri.file(curMod.location));
                                                       } else {
-                                                        await Directory(oldModPath).rename(newModPath);
-                                                        curMod.modName = newName;
-                                                        curMod.location = newModPath;
-                                                        for (var imagePath in curMod.previewImages) {
-                                                          imagePath = imagePath.replaceFirst(oldModPath, newModPath);
-                                                        }
-                                                        for (var videoPath in curMod.previewVideos) {
-                                                          videoPath = videoPath.replaceFirst(oldModPath, newModPath);
-                                                        }
-                                                        for (var submod in curMod.submods) {
-                                                          submod.modName = newName;
-                                                          if (submod.location == oldModPath) {
-                                                            submod.submodName = newName;
-                                                          }
-                                                          submod.location = submod.location.replaceFirst(oldModPath, newModPath);
-                                                          for (var imagePath in submod.previewImages) {
-                                                            imagePath = imagePath.replaceFirst(oldModPath, newModPath);
-                                                          }
-                                                          for (var videoPath in submod.previewVideos) {
-                                                            videoPath = videoPath.replaceFirst(oldModPath, newModPath);
-                                                          }
-                                                          for (var modFile in submod.modFiles) {
-                                                            modFile.modName = newName;
-                                                            if (submod.location == curMod.location) {
-                                                              modFile.submodName = newName;
-                                                            }
-                                                            modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
-                                                          }
-                                                        }
+                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
                                                       }
-                                                      await modSetLoader();
-                                                      saveSetListToJson();
-                                                      saveModdedItemListToJson();
-                                                      setState(() {});
-                                                    }
-                                                  },
-                                                ),
-
-                                                // open in file explorer
-                                                MenuItemButton(
-                                                  leadingIcon: const Icon(
-                                                    Icons.folder_open_outlined,
+                                                    },
                                                   ),
-                                                  child: Text(curLangText!.uiOpenInFileExplorer),
-                                                  onPressed: () async {
-                                                    if (Directory(Uri.file(curMod.location).toFilePath()).existsSync()) {
-                                                      await launchUrl(Uri.file(curMod.location));
-                                                    } else {
-                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
-                                                    }
-                                                  },
-                                                ),
 
-                                                // delete
-                                                MenuItemButton(
-                                                  leadingIcon: Icon(
-                                                    Icons.delete_forever_outlined,
-                                                    color: curMod.applyStatus ||
+                                                  // delete
+                                                  MenuItemButton(
+                                                    leadingIcon: Icon(
+                                                      Icons.delete_forever_outlined,
+                                                      color: curMod.applyStatus ||
+                                                              curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                          ? Theme.of(context).disabledColor
+                                                          : Colors.red,
+                                                    ),
+                                                    onPressed: curMod.applyStatus ||
                                                             curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                        ? Theme.of(context).disabledColor
-                                                        : Colors.red,
-                                                  ),
-                                                  onPressed:
-                                                      curMod.applyStatus || curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                          ? null
-                                                          : () async {
-                                                              bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
-                                                              if (deleteConfirm) {
-                                                                if (modViewItem!.mods.length < 2) {
-                                                                  deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                    String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                    if (modViewItem!.isSet) {
-                                                                      for (var setName in modViewItem!.setNames) {
-                                                                        int setIndex = modSetList.indexWhere((element) => element.setName == setName);
-                                                                        if (setIndex != -1) {
-                                                                          modSetList[setIndex].setItems.remove(modViewItem);
-                                                                        }
+                                                        ? null
+                                                        : () async {
+                                                            bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
+                                                            if (deleteConfirm) {
+                                                              if (modViewItem!.mods.length < 2) {
+                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                  if (modViewItem!.isSet) {
+                                                                    for (var setName in modViewItem!.setNames) {
+                                                                      int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                      if (setIndex != -1) {
+                                                                        modSetList[setIndex].setItems.remove(modViewItem);
                                                                       }
                                                                     }
+                                                                  }
+                                                                  modViewCate!.items.remove(modViewItem);
+                                                                  modViewItem = null;
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                      context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                  previewModName = '';
+                                                                  previewImages.clear();
+                                                                  saveModdedItemListToJson();
+                                                                  setState(() {});
+                                                                });
+                                                              } else {
+                                                                deleteModFromModMan(curMod.location, modViewItem!.location).then((value) {
+                                                                  String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                                  modViewItem!.mods.remove(curMod);
+                                                                  if (modViewItem!.mods.isEmpty) {
                                                                     modViewCate!.items.remove(modViewItem);
                                                                     modViewItem = null;
-                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                        context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                    previewModName = '';
-                                                                    previewImages.clear();
-                                                                    saveModdedItemListToJson();
-                                                                    setState(() {});
-                                                                  });
-                                                                } else {
-                                                                  deleteModFromModMan(curMod.location, modViewItem!.location).then((value) {
-                                                                    String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                    modViewItem!.mods.remove(curMod);
-                                                                    if (modViewItem!.mods.isEmpty) {
-                                                                      modViewCate!.items.remove(modViewItem);
-                                                                      modViewItem = null;
-                                                                    } else {
-                                                                      modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                    }
-                                                                    previewModName = '';
-                                                                    previewImages.clear();
-                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                        context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                    saveModdedItemListToJson();
-                                                                    setState(() {});
-                                                                  });
-                                                                }
-                                                              }
-                                                            },
-                                                  child: Text(
-                                                    curLangText!.uiRemoveFromMM,
-                                                    style: TextStyle(
-                                                        color: curMod.applyStatus ||
-                                                                curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                            ? Theme.of(context).disabledColor
-                                                            : Colors.red),
-                                                  ),
-                                                ),
-                                              ]),
-
-                                        //normal
-                                        if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
-                                            isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: Wrap(
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              runAlignment: WrapAlignment.center,
-                                              spacing: 5,
-                                              children: [
-                                                //Add-Remove button
-                                                if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
-                                                  Stack(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: isModViewModsRemoving,
-                                                        child: const SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child: CircularProgressIndicator(),
-                                                        ),
-                                                      ),
-                                                      Visibility(
-                                                        visible: !isModViewModsRemoving,
-                                                        child: ModManTooltip(
-                                                          message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curMod.submods.first.submodName),
-                                                          child: InkWell(
-                                                              child: const Icon(
-                                                                FontAwesomeIcons.squareMinus,
-                                                              ),
-                                                              onTap: () async {
-                                                                isModViewModsRemoving = true;
-                                                                setState(() {});
-                                                                //status
-
-                                                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                                                  restoreOriginalFilesToTheGame(context, curMod.submods.first.modFiles).then((unappliedModFiles) async {
-                                                                    if (curMod.submods.first.cmxApplied!) {
-                                                                      bool status = await cmxModRemoval(curMod.submods.first.cmxStartPos!, curMod.submods.first.cmxEndPos!);
-                                                                      if (status) {
-                                                                        curMod.submods.first.cmxApplied = false;
-                                                                        curMod.submods.first.cmxStartPos = -1;
-                                                                        curMod.submods.first.cmxEndPos = -1;
-                                                                      }
-                                                                    }
-                                                                    if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      curMod.submods.first.applyStatus = false;
-                                                                    }
-                                                                    if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      curMod.applyStatus = false;
-                                                                    }
-                                                                    if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      modViewItem!.applyStatus = false;
-                                                                    }
-
-                                                                    filesRestoredMessage(context, curMod.submods.first.modFiles, unappliedModFiles);
-                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                    isModViewModsRemoving = false;
-                                                                    saveModdedItemListToJson();
-                                                                    setState(() {});
-                                                                  });
-                                                                  //}
+                                                                  } else {
+                                                                    modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                  }
+                                                                  previewModName = '';
+                                                                  previewImages.clear();
+                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                      context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                  saveModdedItemListToJson();
+                                                                  setState(() {});
                                                                 });
-                                                              }),
-                                                        ),
-                                                      ),
-                                                    ],
+                                                              }
+                                                            }
+                                                          },
+                                                    child: Text(
+                                                      curLangText!.uiRemoveFromMM,
+                                                      style: TextStyle(
+                                                          color: curMod.applyStatus ||
+                                                                  curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                              ? Theme.of(context).disabledColor
+                                                              : Colors.red),
+                                                    ),
                                                   ),
+                                                ]),
 
-                                                if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
-                                                  Stack(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: isModViewModsApplying,
-                                                        child: const SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child: CircularProgressIndicator(),
+                                          //normal
+                                          if (curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex] && !context.watch<StateProvider>().setsWindowVisible ||
+                                              isModViewFromApplied && curMod.submods.length == 1 && !isModViewItemListExpanded[modIndex])
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 5),
+                                              child: Wrap(
+                                                crossAxisAlignment: WrapCrossAlignment.center,
+                                                runAlignment: WrapAlignment.center,
+                                                spacing: 5,
+                                                children: [
+                                                  //Add-Remove button
+                                                  if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                                    Stack(
+                                                      children: [
+                                                        Visibility(
+                                                          visible: isModViewModsRemoving,
+                                                          child: const SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: CircularProgressIndicator(),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Visibility(
-                                                        visible: !isModViewModsApplying,
-                                                        child: ModManTooltip(
-                                                          message: uiInTextArg(curLangText!.uiApplyXToTheGame, curMod.submods.first.submodName),
-                                                          child: InkWell(
-                                                            child: const Icon(
-                                                              FontAwesomeIcons.squarePlus,
-                                                            ),
-                                                            onTap: () async {
-                                                              isModViewModsApplying = true;
-                                                              setState(() {});
-                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                                //apply mod files
-                                                                if (await originalFilesCheck(context, curMod.submods.first.modFiles)) {
-                                                                  //local backup
-                                                                  //await localOriginalFilesBackup(curMod.submods.first.modFiles);
-                                                                  //apply auto radius removal if on
-                                                                  if (removeBoundaryRadiusOnModsApply) {
-                                                                    removeBoundaryOnModsApply(context, curMod.submods.first).then((value) async {
-                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
+                                                        Visibility(
+                                                          visible: !isModViewModsRemoving,
+                                                          child: ModManTooltip(
+                                                            message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curMod.submods.first.submodName),
+                                                            child: InkWell(
+                                                                child: const Icon(
+                                                                  FontAwesomeIcons.squareMinus,
+                                                                ),
+                                                                onTap: () async {
+                                                                  isModViewModsRemoving = true;
+                                                                  setState(() {});
+                                                                  //status
+                                                                  Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                                                    restoreOriginalFilesToTheGame(context, curMod.submods.first.modFiles).then((unappliedModFiles) async {
+                                                                      if (curMod.submods.first.cmxApplied!) {
+                                                                        bool status = await cmxModRemoval(curMod.submods.first.cmxStartPos!, curMod.submods.first.cmxEndPos!);
+                                                                        if (status) {
+                                                                          curMod.submods.first.cmxApplied = false;
+                                                                          curMod.submods.first.cmxStartPos = -1;
+                                                                          curMod.submods.first.cmxEndPos = -1;
+                                                                        }
+                                                                      }
+                                                                      if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        curMod.submods.first.applyStatus = false;
+                                                                      }
+                                                                      if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        curMod.applyStatus = false;
+                                                                      }
+                                                                      if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        modViewItem!.applyStatus = false;
+                                                                        await restoreOverlayedIcon(modViewItem!);
+                                                                      }
+
+                                                                      await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods.first.modFiles, unappliedModFiles);
+                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                      isModViewModsRemoving = false;
+                                                                      saveModdedItemListToJson();
                                                                       setState(() {});
                                                                     });
-                                                                  } else {
-                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
-                                                                    setState(() {});
+                                                                    //}
+                                                                  });
+                                                                }),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                  if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                    Stack(
+                                                      children: [
+                                                        Visibility(
+                                                          visible: isModViewModsApplying,
+                                                          child: const SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: CircularProgressIndicator(),
+                                                          ),
+                                                        ),
+                                                        Visibility(
+                                                          visible: !isModViewModsApplying,
+                                                          child: ModManTooltip(
+                                                            message: uiInTextArg(curLangText!.uiApplyXToTheGame, curMod.submods.first.submodName),
+                                                            child: InkWell(
+                                                              child: const Icon(
+                                                                FontAwesomeIcons.squarePlus,
+                                                              ),
+                                                              onTap: () async {
+                                                                isModViewModsApplying = true;
+                                                                setState(() {});
+                                                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                                                                  //apply mod files
+                                                                  if (await originalFilesCheck(context, curMod.submods.first.modFiles)) {
+                                                                    //local backup
+                                                                    //await localOriginalFilesBackup(curMod.submods.first.modFiles);
+                                                                    //apply auto radius removal if on
+                                                                    if (removeBoundaryRadiusOnModsApply) {
+                                                                      removeBoundaryOnModsApply(context, curMod.submods.first).then((value) async {
+                                                                        await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
+                                                                        setState(() {});
+                                                                      });
+                                                                    } else {
+                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
+                                                                      setState(() {});
+                                                                    }
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                  }
+                                                                  setState(() {});
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                  //More menu
+                                                  MenuAnchor(
+                                                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                        return ModManTooltip(
+                                                          message: curLangText!.uiMore,
+                                                          child: InkWell(
+                                                            child: const Icon(
+                                                              Icons.more_vert,
+                                                            ),
+                                                            onTap: () {
+                                                              if (controller.isOpen) {
+                                                                controller.close();
+                                                              } else {
+                                                                controller.open();
+                                                              }
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
+                                                      style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                        return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                      }), shape: MaterialStateProperty.resolveWith((states) {
+                                                        return RoundedRectangleBorder(
+                                                            side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                      })),
+                                                      menuChildren: [
+                                                        // favorite
+                                                        MenuItemButton(
+                                                          leadingIcon: Icon(
+                                                            curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                            //size: 18,
+                                                          ),
+                                                          child: Text(
+                                                            curMod.submods.first.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                          ),
+                                                          onPressed: () async {
+                                                            if (curMod.submods.first.isFavorite) {
+                                                              curMod.submods.first.isFavorite = false;
+                                                              if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                                curMod.isFavorite = false;
+                                                              }
+                                                              if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                                modViewItem!.isFavorite = false;
+                                                                modViewItem = null;
+                                                              }
+                                                            } else {
+                                                              curMod.submods.first.isFavorite = true;
+                                                              curMod.isFavorite = true;
+                                                              modViewItem!.isFavorite = true;
+                                                            }
+                                                            saveModdedItemListToJson();
+                                                            setState(() {});
+                                                          },
+                                                        ),
+
+                                                        //Add to set
+                                                        SubmenuButton(
+                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                            return RoundedRectangleBorder(
+                                                                side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                          })),
+                                                          alignmentOffset: const Offset(0, 8),
+                                                          menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods.first),
+                                                          leadingIcon: const Icon(
+                                                            Icons.list_alt_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiAddToModSets),
+                                                        ),
+
+                                                        // Apply location select
+                                                        SubmenuButton(
+                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                            return RoundedRectangleBorder(
+                                                                side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                          })),
+                                                          alignmentOffset: const Offset(0, 8),
+                                                          menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods.first),
+                                                          leadingIcon: const Icon(
+                                                            Icons.add_location_alt_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiSelectApplyingLocations),
+                                                        ),
+
+                                                        // add or change cmx file
+                                                        Visibility(
+                                                            visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
+                                                                curMod.submods.first.category == defaultCategoryDirs[6] ||
+                                                                curMod.submods.first.category == defaultCategoryDirs[11] ||
+                                                                curMod.submods.first.category == defaultCategoryDirs[15] ||
+                                                                curMod.submods.first.category == defaultCategoryDirs[16],
+                                                            child: MenuItemButton(
+                                                              leadingIcon: const Icon(
+                                                                Icons.note_add_rounded,
+                                                              ),
+                                                              child: Text(curLangText!.uiAddChangeCmxFile),
+                                                              onPressed: () async {
+                                                                XTypeGroup typeGroup = XTypeGroup(
+                                                                  label: curLangText!.uiCmxFile,
+                                                                  extensions: const <String>['txt'],
+                                                                );
+                                                                XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                                if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
+                                                                  final copiedCmxFile =
+                                                                      await File(selectedCmxFile.path).copy(Uri.file('${curMod.submods.first.location}/${selectedCmxFile.name}').toFilePath());
+                                                                  if (copiedCmxFile.existsSync()) {
+                                                                    curMod.submods.first.cmxFile = copiedCmxFile.path;
+                                                                    curMod.submods.first.hasCmx = true;
+                                                                    saveModdedItemListToJson();
+                                                                    if (curMod.submods.first.cmxApplied!) {
+                                                                      int startPos = -1, endPos = -1;
+                                                                      (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
+                                                                      if (startPos != -1 && endPos != -1) {
+                                                                        curMod.submods.first.cmxStartPos = startPos;
+                                                                        curMod.submods.first.cmxEndPos = endPos;
+                                                                      }
+                                                                    }
+                                                                    saveModdedItemListToJson();
                                                                   }
                                                                 }
                                                                 setState(() {});
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                              },
+                                                            )),
 
-                                                //More menu
-                                                MenuAnchor(
-                                                    builder: (BuildContext context, MenuController controller, Widget? child) {
-                                                      return ModManTooltip(
-                                                        message: curLangText!.uiMore,
-                                                        child: InkWell(
-                                                          child: const Icon(
-                                                            Icons.more_vert,
+                                                        // rename
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.edit_note,
                                                           ),
-                                                          onTap: () {
-                                                            if (controller.isOpen) {
-                                                              controller.close();
-                                                            } else {
-                                                              controller.open();
+                                                          child: Text(curLangText!.uiRename),
+                                                          onPressed: () async {
+                                                            String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                            if (newName.isNotEmpty) {
+                                                              //change paths
+                                                              String oldModPath = curMod.location;
+                                                              String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
+                                                              if (oldModPath == modViewItem!.location) {
+                                                                await Directory(newModPath).create(recursive: true);
+                                                                curMod.modName = newName;
+                                                                curMod.location = newModPath;
+                                                                curMod.previewImages.clear();
+                                                                curMod.previewVideos.clear();
+                                                                renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
+                                                                for (var submod in curMod.submods) {
+                                                                  submod.modName = newName;
+                                                                  submod.submodName = newName;
+                                                                  submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                  submod.previewImages.clear();
+                                                                  submod.previewVideos.clear();
+                                                                  renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
+                                                                  for (var modFile in submod.modFiles) {
+                                                                    final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
+                                                                    modFile.modName = newName;
+                                                                    modFile.submodName = newName;
+                                                                    modFile.location = movedFile.path;
+                                                                  }
+                                                                }
+                                                              } else {
+                                                                await Directory(oldModPath).rename(newModPath);
+                                                                curMod.modName = newName;
+                                                                curMod.location = newModPath;
+                                                                curMod.previewImages.clear();
+                                                                curMod.previewVideos.clear();
+                                                                renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
+                                                                for (var submod in curMod.submods) {
+                                                                  submod.modName = newName;
+                                                                  if (submod.location == oldModPath) {
+                                                                    submod.submodName = newName;
+                                                                  }
+                                                                  submod.location = submod.location.replaceFirst(oldModPath, newModPath);
+                                                                  submod.previewImages.clear();
+                                                                  submod.previewVideos.clear();
+                                                                  renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
+                                                                  for (var modFile in submod.modFiles) {
+                                                                    modFile.modName = newName;
+                                                                    if (submod.location == curMod.location) {
+                                                                      modFile.submodName = newName;
+                                                                    }
+                                                                    modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
+                                                                  }
+                                                                }
+                                                              }
+                                                              await modSetLoader();
+                                                              saveSetListToJson();
+                                                              saveModdedItemListToJson();
+                                                              setState(() {});
                                                             }
                                                           },
                                                         ),
-                                                      );
-                                                    },
-                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                    }), shape: MaterialStateProperty.resolveWith((states) {
-                                                      return RoundedRectangleBorder(
-                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                    })),
-                                                    menuChildren: [
-                                                      // favorite
-                                                      MenuItemButton(
-                                                        leadingIcon: Icon(
-                                                          curMod.submods.first.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
-                                                          //size: 18,
+
+                                                        // swap
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.swap_horizontal_circle_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiSwapToAnotherItem),
+                                                          onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
                                                         ),
-                                                        child: Text(
-                                                          curMod.submods.first.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+
+                                                        // export
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.import_export,
+                                                          ),
+                                                          child: Text(curLangText!.uiExportThisMod),
+                                                          onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first], false),
                                                         ),
-                                                        onPressed: () async {
-                                                          if (curMod.submods.first.isFavorite) {
-                                                            curMod.submods.first.isFavorite = false;
-                                                            if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                              curMod.isFavorite = false;
+
+                                                        // open in file explorer
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.folder_open_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiOpenInFileExplorer),
+                                                          onPressed: () async {
+                                                            if (Directory(Uri.file(curMod.submods.first.location).toFilePath()).existsSync()) {
+                                                              await launchUrl(Uri.file(curMod.submods.first.location));
+                                                            } else {
+                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
                                                             }
-                                                            if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                              modViewItem!.isFavorite = false;
-                                                              modViewItem = null;
-                                                            }
-                                                          } else {
-                                                            curMod.submods.first.isFavorite = true;
-                                                            curMod.isFavorite = true;
-                                                            modViewItem!.isFavorite = true;
-                                                          }
-                                                          saveModdedItemListToJson();
-                                                          setState(() {});
-                                                        },
-                                                      ),
-
-                                                      //Add to set
-                                                      SubmenuButton(
-                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                        }), shape: MaterialStateProperty.resolveWith((states) {
-                                                          return RoundedRectangleBorder(
-                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                        })),
-                                                        alignmentOffset: const Offset(0, 8),
-                                                        menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods.first),
-                                                        leadingIcon: const Icon(
-                                                          Icons.list_alt_outlined,
+                                                          },
                                                         ),
-                                                        child: Text(curLangText!.uiAddToModSets),
-                                                      ),
 
-                                                      // Apply location select
-                                                      SubmenuButton(
-                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                        }), shape: MaterialStateProperty.resolveWith((states) {
-                                                          return RoundedRectangleBorder(
-                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                        })),
-                                                        alignmentOffset: const Offset(0, 8),
-                                                        menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods.first),
-                                                        leadingIcon: const Icon(
-                                                          Icons.add_location_alt_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiSelectApplyingLocations),
-                                                      ),
-
-                                                      // add or change cmx file
-                                                      Visibility(
+                                                        // boundary
+                                                        Visibility(
                                                           visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
-                                                              curMod.submods.first.category == defaultCategoryDirs[6] ||
-                                                              curMod.submods.first.category == defaultCategoryDirs[11] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[3] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[4] ||
+                                                              curMod.submods.first.category == defaultCategoryDirs[5] ||
                                                               curMod.submods.first.category == defaultCategoryDirs[15] ||
                                                               curMod.submods.first.category == defaultCategoryDirs[16],
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.radio_button_checked,
+                                                            ),
+                                                            child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                            onPressed: () {
+                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              isBoundaryEdited = false;
+                                                              modsBoundaryEditHomePage(context, curMod.submods.first);
+                                                            },
+                                                          ),
+                                                        ),
+
+                                                        //remove from set
+                                                        Visibility(
+                                                          visible: context.watch<StateProvider>().setsWindowVisible && curMod.submods.first.isSet,
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.delete_forever_outlined,
+                                                            ),
+                                                            onPressed: () {
+                                                              removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods.first);
+                                                              saveSetListToJson();
+                                                              saveModdedItemListToJson();
+                                                              setState(() {});
+                                                            },
+                                                            child: Text(
+                                                              curLangText!.uiRemoveFromThisSet,
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        // delete
+                                                        MenuItemButton(
+                                                          leadingIcon: Icon(
+                                                            Icons.delete_forever_outlined,
+                                                            color: curMod.applyStatus ||
+                                                                    curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                ? Theme.of(context).disabledColor
+                                                                : Colors.red,
+                                                          ),
+                                                          onPressed: curMod.applyStatus ||
+                                                                  curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                              ? null
+                                                              : () async {
+                                                                  bool deleteConfirm = await modDeletionDialog(context, curMod.submods.first.submodName);
+                                                                  if (deleteConfirm) {
+                                                                    if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                      deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                        String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                        if (modViewItem!.isSet) {
+                                                                          for (var setName in modViewItem!.setNames) {
+                                                                            int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                            if (setIndex != -1) {
+                                                                              modSetList[setIndex].setItems.remove(modViewItem);
+                                                                            }
+                                                                          }
+                                                                        }
+                                                                        modViewCate!.items.remove(modViewItem);
+                                                                        modViewItem = null;
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                            context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                        previewModName = '';
+                                                                        previewImages.clear();
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      });
+                                                                    } else {
+                                                                      deleteSubmodFromModMan(curMod.submods.first.location, curMod.location).then((value) {
+                                                                        String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
+                                                                        curMod.submods.remove(curMod.submods.first);
+                                                                        if (curMod.submods.isEmpty) {
+                                                                          modViewItem!.mods.remove(curMod);
+                                                                        } else {
+                                                                          curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                        }
+
+                                                                        if (modViewItem!.mods.isEmpty) {
+                                                                          modViewCate!.items.remove(modViewItem);
+                                                                          modViewItem = null;
+                                                                        } else {
+                                                                          modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                        }
+                                                                        previewModName = '';
+                                                                        previewImages.clear();
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                            context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      });
+                                                                    }
+                                                                  }
+                                                                },
+                                                          child: Text(
+                                                            curLangText!.uiRemoveFromMM,
+                                                            style: TextStyle(
+                                                                color: curMod.applyStatus ||
+                                                                        curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                    ? Theme.of(context).disabledColor
+                                                                    : Colors.red),
+                                                          ),
+                                                        ),
+                                                      ])
+                                                ],
+                                              ),
+                                            ),
+
+                                          //ModSet
+                                          if (!isModViewFromApplied && !isModViewItemListExpanded[modIndex] && modViewModSetSubModIndex != -1 && context.watch<StateProvider>().setsWindowVisible)
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 5),
+                                              child: Wrap(
+                                                crossAxisAlignment: WrapCrossAlignment.center,
+                                                runAlignment: WrapAlignment.center,
+                                                spacing: 5,
+                                                children: [
+                                                  //cmx indicator
+                                                  if (curMod.submods[modViewModSetSubModIndex].hasCmx!)
+                                                    Container(
+                                                      padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                      ),
+                                                      child: Text(curLangText!.uiCmx,
+                                                          style: TextStyle(
+                                                            color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : null,
+                                                            fontSize: 15,
+                                                          )),
+                                                    ),
+
+                                                  //Add-Remove button
+                                                  if (modViewModSetSubModIndex != -1 &&
+                                                      curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1 &&
+                                                      curMod.submods.length == 1)
+                                                    Stack(
+                                                      children: [
+                                                        Visibility(
+                                                          visible: isModViewModsRemoving,
+                                                          child: const SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: CircularProgressIndicator(),
+                                                          ),
+                                                        ),
+                                                        Visibility(
+                                                          visible: !isModViewModsRemoving,
+                                                          child: ModManTooltip(
+                                                            message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curMod.submods[modViewModSetSubModIndex].submodName),
+                                                            child: InkWell(
+                                                                child: const Icon(
+                                                                  FontAwesomeIcons.squareMinus,
+                                                                ),
+                                                                onTap: () async {
+                                                                  isModViewModsRemoving = true;
+                                                                  setState(() {});
+
+                                                                  Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                                                    //status
+                                                                    restoreOriginalFilesToTheGame(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
+                                                                      if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
+                                                                        bool status = await cmxModRemoval(
+                                                                            curMod.submods[modViewModSetSubModIndex].cmxStartPos!, curMod.submods[modViewModSetSubModIndex].cmxEndPos!);
+                                                                        if (status) {
+                                                                          curMod.submods[modViewModSetSubModIndex].cmxApplied = false;
+                                                                          curMod.submods[modViewModSetSubModIndex].cmxStartPos = -1;
+                                                                          curMod.submods[modViewModSetSubModIndex].cmxEndPos = -1;
+                                                                        }
+                                                                      }
+                                                                      if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        curMod.submods[modViewModSetSubModIndex].applyStatus = false;
+                                                                      }
+                                                                      if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        curMod.applyStatus = false;
+                                                                      }
+                                                                      if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                        modViewItem!.applyStatus = false;
+                                                                        await restoreOverlayedIcon(modViewItem!);
+                                                                      }
+
+                                                                      await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods[modViewModSetSubModIndex].modFiles, value);
+                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                      isModViewModsRemoving = false;
+                                                                      saveModdedItemListToJson();
+                                                                      setState(() {});
+                                                                    });
+                                                                    //}
+                                                                  });
+                                                                }),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                  if (modViewModSetSubModIndex != -1 &&
+                                                      curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == false) != -1 &&
+                                                      curMod.submods.length == 1)
+                                                    Stack(
+                                                      children: [
+                                                        Visibility(
+                                                          visible: isModViewModsApplying,
+                                                          child: const SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: CircularProgressIndicator(),
+                                                          ),
+                                                        ),
+                                                        Visibility(
+                                                          visible: !isModViewModsApplying,
+                                                          child: ModManTooltip(
+                                                            message: uiInTextArg(curLangText!.uiApplyXToTheGame, curMod.submods[modViewModSetSubModIndex].submodName),
+                                                            child: InkWell(
+                                                              child: const Icon(
+                                                                FontAwesomeIcons.squarePlus,
+                                                              ),
+                                                              onTap: () async {
+                                                                isModViewModsApplying = true;
+                                                                setState(() {});
+                                                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                                                                  //apply mod files
+                                                                  if (await originalFilesCheck(context, curMod.submods[modViewModSetSubModIndex].modFiles)) {
+                                                                    //local original files backup
+                                                                    //await localOriginalFilesBackup(curMod.submods[modViewModSetSubModIndex].modFiles);
+                                                                    //apply auto radius removal if on
+                                                                    if (removeBoundaryRadiusOnModsApply) {
+                                                                      removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]).then((value) async {
+                                                                        await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
+                                                                        setState(() {});
+                                                                      });
+                                                                    } else {
+                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
+                                                                      setState(() {});
+                                                                    }
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                  }
+                                                                  setState(() {});
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                  //More menu
+                                                  MenuAnchor(
+                                                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                        return ModManTooltip(
+                                                          message: curLangText!.uiMore,
+                                                          child: InkWell(
+                                                            child: const Icon(
+                                                              Icons.more_vert,
+                                                            ),
+                                                            onTap: () {
+                                                              if (controller.isOpen) {
+                                                                controller.close();
+                                                              } else {
+                                                                controller.open();
+                                                              }
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
+                                                      style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                        return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                      }), shape: MaterialStateProperty.resolveWith((states) {
+                                                        return RoundedRectangleBorder(
+                                                            side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                      })),
+                                                      menuChildren: [
+                                                        // favorite
+                                                        MenuItemButton(
+                                                          leadingIcon: Icon(
+                                                            curMod.submods[modViewModSetSubModIndex].isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                            //size: 18,
+                                                          ),
+                                                          child: Text(
+                                                            curMod.submods[modViewModSetSubModIndex].isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                          ),
+                                                          onPressed: () async {
+                                                            if (curMod.submods[modViewModSetSubModIndex].isFavorite) {
+                                                              curMod.submods[modViewModSetSubModIndex].isFavorite = false;
+                                                              if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                                curMod.isFavorite = false;
+                                                              }
+                                                              if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                                modViewItem!.isFavorite = false;
+                                                                modViewItem = null;
+                                                              }
+                                                            } else {
+                                                              curMod.submods[modViewModSetSubModIndex].isFavorite = true;
+                                                              curMod.isFavorite = true;
+                                                              modViewItem!.isFavorite = true;
+                                                            }
+                                                            saveModdedItemListToJson();
+                                                            setState(() {});
+                                                          },
+                                                        ),
+
+                                                        //Add to set
+                                                        SubmenuButton(
+                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                            return RoundedRectangleBorder(
+                                                                side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                          })),
+                                                          alignmentOffset: const Offset(0, 8),
+                                                          menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]),
+                                                          leadingIcon: const Icon(
+                                                            Icons.list_alt_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiAddToModSets),
+                                                        ),
+
+                                                        // Apply location select
+                                                        SubmenuButton(
+                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                            return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                            return RoundedRectangleBorder(
+                                                                side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                          })),
+                                                          alignmentOffset: const Offset(0, 8),
+                                                          menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods[modViewModSetSubModIndex]),
+                                                          leadingIcon: const Icon(
+                                                            Icons.add_location_alt_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiSelectApplyingLocations),
+                                                        ),
+
+                                                        // add or change cmx file
+                                                        Visibility(
+                                                          visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[6] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[11] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
                                                           child: MenuItemButton(
                                                             leadingIcon: const Icon(
                                                               Icons.note_add_rounded,
@@ -2857,18 +3343,18 @@ class _HomePageState extends State<HomePage> {
                                                               );
                                                               XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                               if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                                final copiedCmxFile =
-                                                                    await File(selectedCmxFile.path).copy(Uri.file('${curMod.submods.first.location}/${selectedCmxFile.name}').toFilePath());
+                                                                final copiedCmxFile = await File(selectedCmxFile.path)
+                                                                    .copy(Uri.file('${curMod.submods[modViewModSetSubModIndex].location}/${selectedCmxFile.name}').toFilePath());
                                                                 if (copiedCmxFile.existsSync()) {
-                                                                  curMod.submods.first.cmxFile = copiedCmxFile.path;
-                                                                  curMod.submods.first.hasCmx = true;
+                                                                  curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
+                                                                  curMod.submods[modViewModSetSubModIndex].hasCmx = true;
                                                                   saveModdedItemListToJson();
-                                                                  if (curMod.submods.first.cmxApplied!) {
+                                                                  if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
                                                                     int startPos = -1, endPos = -1;
                                                                     (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
                                                                     if (startPos != -1 && endPos != -1) {
-                                                                      curMod.submods.first.cmxStartPos = startPos;
-                                                                      curMod.submods.first.cmxEndPos = endPos;
+                                                                      curMod.submods[modViewModSetSubModIndex].cmxStartPos = startPos;
+                                                                      curMod.submods[modViewModSetSubModIndex].cmxEndPos = endPos;
                                                                     }
                                                                   }
                                                                   saveModdedItemListToJson();
@@ -2876,139 +3362,119 @@ class _HomePageState extends State<HomePage> {
                                                               }
                                                               setState(() {});
                                                             },
-                                                          )),
-
-                                                      // rename
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.edit_note,
+                                                          ),
                                                         ),
-                                                        child: Text(curLangText!.uiRename),
-                                                        onPressed: () async {
-                                                          String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
-                                                          if (newName.isNotEmpty) {
-                                                            //change paths
-                                                            String oldModPath = curMod.location;
-                                                            String newModPath = Uri.file('${modViewItem!.location}/$newName').toFilePath();
-                                                            if (oldModPath == modViewItem!.location) {
-                                                              await Directory(newModPath).create(recursive: true);
-                                                              curMod.modName = newName;
-                                                              curMod.location = newModPath;
-                                                              curMod.previewImages.clear();
-                                                              curMod.previewVideos.clear();
-                                                              renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
-                                                              for (var submod in curMod.submods) {
-                                                                submod.modName = newName;
-                                                                submod.submodName = newName;
-                                                                submod.location = submod.location.replaceFirst(oldModPath, newModPath);
-                                                                submod.previewImages.clear();
-                                                                submod.previewVideos.clear();
-                                                                renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
-                                                                for (var modFile in submod.modFiles) {
-                                                                  final movedFile = await File(modFile.location).rename(modFile.location.replaceFirst(oldModPath, newModPath));
-                                                                  modFile.modName = newName;
+
+                                                        // rename
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.edit_note,
+                                                          ),
+                                                          child: Text(curLangText!.uiRename),
+                                                          onPressed: () async {
+                                                            String newName = await modsRenameDialog(context, curMod.location, curMod.submods[modViewModSetSubModIndex].location);
+                                                            if (newName.isNotEmpty) {
+                                                              //change paths
+                                                              String oldSubmodPath = curMod.submods[modViewModSetSubModIndex].location;
+                                                              String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
+                                                              if (oldSubmodPath == curMod.location) {
+                                                                await Directory(newSubmodPath).create(recursive: true);
+                                                                curMod.submods[modViewModSetSubModIndex].submodName = newName;
+                                                                curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                                curMod.submods[modViewModSetSubModIndex].previewImages.clear();
+                                                                curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
+                                                                renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
+                                                                    curMod.submods[modViewModSetSubModIndex].previewVideos);
+                                                                for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
                                                                   modFile.submodName = newName;
+                                                                  String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                  final movedFile = await File(modFile.location).rename(newModFilePath);
                                                                   modFile.location = movedFile.path;
                                                                 }
-                                                              }
-                                                            } else {
-                                                              await Directory(oldModPath).rename(newModPath);
-                                                              curMod.modName = newName;
-                                                              curMod.location = newModPath;
-                                                              curMod.previewImages.clear();
-                                                              curMod.previewVideos.clear();
-                                                              renamedPreviewPathsGet(curMod.location, curMod.previewImages, curMod.previewVideos);
-                                                              for (var submod in curMod.submods) {
-                                                                submod.modName = newName;
-                                                                if (submod.location == oldModPath) {
-                                                                  submod.submodName = newName;
-                                                                }
-                                                                submod.location = submod.location.replaceFirst(oldModPath, newModPath);
-                                                                submod.previewImages.clear();
-                                                                submod.previewVideos.clear();
-                                                                renamedPreviewPathsGet(submod.location, submod.previewImages, submod.previewVideos);
-                                                                for (var modFile in submod.modFiles) {
-                                                                  modFile.modName = newName;
-                                                                  if (submod.location == curMod.location) {
-                                                                    modFile.submodName = newName;
-                                                                  }
-                                                                  modFile.location = modFile.location.replaceFirst(oldModPath, newModPath);
+                                                              } else {
+                                                                await Directory(oldSubmodPath).rename(newSubmodPath);
+                                                                curMod.submods[modViewModSetSubModIndex].submodName = newName;
+                                                                curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
+                                                                curMod.submods[modViewModSetSubModIndex].previewImages.clear();
+                                                                curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
+                                                                renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
+                                                                    curMod.submods[modViewModSetSubModIndex].previewVideos);
+                                                                for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
+                                                                  modFile.submodName = newName;
+                                                                  modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
                                                                 }
                                                               }
+                                                              await modSetLoader();
+                                                              saveSetListToJson();
+                                                              saveModdedItemListToJson();
+                                                              setState(() {});
                                                             }
-                                                            await modSetLoader();
-                                                            saveSetListToJson();
-                                                            saveModdedItemListToJson();
-                                                            setState(() {});
-                                                          }
-                                                        },
-                                                      ),
-
-                                                      // swap
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.swap_horizontal_circle_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiSwapToAnotherItem),
-                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
-                                                      ),
-
-                                                      // export
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.import_export,
-                                                        ),
-                                                        child: Text(curLangText!.uiExportThisMod),
-                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods.first], false),
-                                                      ),
-
-                                                      // open in file explorer
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.folder_open_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async {
-                                                          if (Directory(Uri.file(curMod.submods.first.location).toFilePath()).existsSync()) {
-                                                            await launchUrl(Uri.file(curMod.submods.first.location));
-                                                          } else {
-                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
-                                                          }
-                                                        },
-                                                      ),
-
-                                                      // boundary
-                                                      Visibility(
-                                                        visible: curMod.submods.first.category == defaultCategoryDirs[1] ||
-                                                            curMod.submods.first.category == defaultCategoryDirs[3] ||
-                                                            curMod.submods.first.category == defaultCategoryDirs[4] ||
-                                                            curMod.submods.first.category == defaultCategoryDirs[5] ||
-                                                            curMod.submods.first.category == defaultCategoryDirs[15] ||
-                                                            curMod.submods.first.category == defaultCategoryDirs[16],
-                                                        child: MenuItemButton(
-                                                          leadingIcon: const Icon(
-                                                            Icons.radio_button_checked,
-                                                          ),
-                                                          child: Text(curLangText!.uiRemoveBoundaryRadius),
-                                                          onPressed: () {
-                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            isBoundaryEdited = false;
-                                                            modsBoundaryEditHomePage(context, curMod.submods.first);
                                                           },
                                                         ),
-                                                      ),
 
-                                                      //remove from set
-                                                      Visibility(
-                                                        visible: context.watch<StateProvider>().setsWindowVisible && curMod.submods.first.isSet,
-                                                        child: MenuItemButton(
+                                                        // swap
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.swap_horizontal_circle_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiSwapToAnotherItem),
+                                                          onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                        ),
+
+                                                        // export
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.import_export,
+                                                          ),
+                                                          child: Text(curLangText!.uiExportThisMod),
+                                                          onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]], false),
+                                                        ),
+
+                                                        // open in file explorer
+                                                        MenuItemButton(
+                                                          leadingIcon: const Icon(
+                                                            Icons.folder_open_outlined,
+                                                          ),
+                                                          child: Text(curLangText!.uiOpenInFileExplorer),
+                                                          onPressed: () async {
+                                                            if (Directory(Uri.file(curMod.submods[modViewModSetSubModIndex].location).toFilePath()).existsSync()) {
+                                                              await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location));
+                                                            } else {
+                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                            }
+                                                          },
+                                                        ),
+
+                                                        // boundary
+                                                        Visibility(
+                                                          visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[3] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[4] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[5] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.radio_button_checked,
+                                                            ),
+                                                            child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                            onPressed: () {
+                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                element.deleteSync(recursive: true);
+                                                              });
+                                                              isBoundaryEdited = false;
+                                                              modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                            },
+                                                          ),
+                                                        ),
+
+                                                        // remove from modset
+                                                        MenuItemButton(
                                                           leadingIcon: const Icon(
                                                             Icons.delete_forever_outlined,
                                                           ),
                                                           onPressed: () {
-                                                            removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods.first);
+                                                            removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                             saveSetListToJson();
                                                             saveModdedItemListToJson();
                                                             setState(() {});
@@ -3017,1251 +3483,803 @@ class _HomePageState extends State<HomePage> {
                                                             curLangText!.uiRemoveFromThisSet,
                                                           ),
                                                         ),
-                                                      ),
 
-                                                      // delete
-                                                      MenuItemButton(
-                                                        leadingIcon: Icon(
-                                                          Icons.delete_forever_outlined,
-                                                          color: curMod.applyStatus ||
-                                                                  curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                              ? Theme.of(context).disabledColor
-                                                              : Colors.red,
-                                                        ),
-                                                        onPressed: curMod.applyStatus ||
-                                                                curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                            ? null
-                                                            : () async {
-                                                                bool deleteConfirm = await modDeletionDialog(context, curMod.submods.first.submodName);
-                                                                if (deleteConfirm) {
-                                                                  if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                      if (modViewItem!.isSet) {
-                                                                        for (var setName in modViewItem!.setNames) {
-                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
-                                                                          if (setIndex != -1) {
-                                                                            modSetList[setIndex].setItems.remove(modViewItem);
-                                                                          }
-                                                                        }
-                                                                      }
-                                                                      modViewCate!.items.remove(modViewItem);
-                                                                      modViewItem = null;
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
-                                                                  } else {
-                                                                    deleteSubmodFromModMan(curMod.submods.first.location, curMod.location).then((value) {
-                                                                      String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
-                                                                      curMod.submods.remove(curMod.submods.first);
-                                                                      if (curMod.submods.isEmpty) {
-                                                                        modViewItem!.mods.remove(curMod);
-                                                                      } else {
-                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                      }
-
-                                                                      if (modViewItem!.mods.isEmpty) {
-                                                                        modViewCate!.items.remove(modViewItem);
-                                                                        modViewItem = null;
-                                                                      } else {
-                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                      }
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
-                                                                  }
-                                                                }
-                                                              },
-                                                        child: Text(
-                                                          curLangText!.uiRemoveFromMM,
-                                                          style: TextStyle(
-                                                              color: curMod.applyStatus ||
-                                                                      curMod.submods.first.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                                  ? Theme.of(context).disabledColor
-                                                                  : Colors.red),
-                                                        ),
-                                                      ),
-                                                    ])
-                                              ],
-                                            ),
-                                          ),
-
-                                        //ModSet
-                                        if (!isModViewFromApplied && !isModViewItemListExpanded[modIndex] && modViewModSetSubModIndex != -1 && context.watch<StateProvider>().setsWindowVisible)
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: Wrap(
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              runAlignment: WrapAlignment.center,
-                                              spacing: 5,
-                                              children: [
-                                                //cmx indicator
-                                                if (curMod.submods[modViewModSetSubModIndex].hasCmx!)
-                                                  Container(
-                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
-                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                    ),
-                                                    child: Text(curLangText!.uiCmx,
-                                                        style: TextStyle(
-                                                          color: curMod.submods[modViewModSetSubModIndex].cmxApplied! ? Theme.of(context).colorScheme.primary : null,
-                                                          fontSize: 15,
-                                                        )),
-                                                  ),
-
-                                                //Add-Remove button
-                                                if (modViewModSetSubModIndex != -1 &&
-                                                    curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == true) != -1 &&
-                                                    curMod.submods.length == 1)
-                                                  Stack(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: isModViewModsRemoving,
-                                                        child: const SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child: CircularProgressIndicator(),
-                                                        ),
-                                                      ),
-                                                      Visibility(
-                                                        visible: !isModViewModsRemoving,
-                                                        child: ModManTooltip(
-                                                          message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curMod.submods[modViewModSetSubModIndex].submodName),
-                                                          child: InkWell(
-                                                              child: const Icon(
-                                                                FontAwesomeIcons.squareMinus,
-                                                              ),
-                                                              onTap: () async {
-                                                                isModViewModsRemoving = true;
-                                                                setState(() {});
-
-                                                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                                                  //status
-                                                                  restoreOriginalFilesToTheGame(context, curMod.submods[modViewModSetSubModIndex].modFiles).then((value) async {
-                                                                    if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
-                                                                      bool status = await cmxModRemoval(
-                                                                          curMod.submods[modViewModSetSubModIndex].cmxStartPos!, curMod.submods[modViewModSetSubModIndex].cmxEndPos!);
-                                                                      if (status) {
-                                                                        curMod.submods[modViewModSetSubModIndex].cmxApplied = false;
-                                                                        curMod.submods[modViewModSetSubModIndex].cmxStartPos = -1;
-                                                                        curMod.submods[modViewModSetSubModIndex].cmxEndPos = -1;
-                                                                      }
-                                                                    }
-                                                                    if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      curMod.submods[modViewModSetSubModIndex].applyStatus = false;
-                                                                    }
-                                                                    if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      curMod.applyStatus = false;
-                                                                    }
-                                                                    if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                      modViewItem!.applyStatus = false;
-                                                                    }
-
-                                                                    filesRestoredMessage(context, curMod.submods[modViewModSetSubModIndex].modFiles, value);
-                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                    isModViewModsRemoving = false;
-                                                                    saveModdedItemListToJson();
-                                                                    setState(() {});
-                                                                  });
-                                                                  //}
-                                                                });
-                                                              }),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                if (modViewModSetSubModIndex != -1 &&
-                                                    curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus == false) != -1 &&
-                                                    curMod.submods.length == 1)
-                                                  Stack(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: isModViewModsApplying,
-                                                        child: const SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child: CircularProgressIndicator(),
-                                                        ),
-                                                      ),
-                                                      Visibility(
-                                                        visible: !isModViewModsApplying,
-                                                        child: ModManTooltip(
-                                                          message: uiInTextArg(curLangText!.uiApplyXToTheGame, curMod.submods[modViewModSetSubModIndex].submodName),
-                                                          child: InkWell(
-                                                            child: const Icon(
-                                                              FontAwesomeIcons.squarePlus,
-                                                            ),
-                                                            onTap: () async {
-                                                              isModViewModsApplying = true;
-                                                              setState(() {});
-                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                                //apply mod files
-                                                                if (await originalFilesCheck(context, curMod.submods[modViewModSetSubModIndex].modFiles)) {
-                                                                  //local original files backup
-                                                                  //await localOriginalFilesBackup(curMod.submods[modViewModSetSubModIndex].modFiles);
-                                                                  //apply auto radius removal if on
-                                                                  if (removeBoundaryRadiusOnModsApply) {
-                                                                    removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]).then((value) async {
-                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
-                                                                      setState(() {});
-                                                                    });
-                                                                  } else {
-                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
-                                                                    setState(() {});
-                                                                  }
-                                                                }
-                                                                setState(() {});
-                                                              });
-                                                            },
+                                                        // delete
+                                                        MenuItemButton(
+                                                          leadingIcon: Icon(
+                                                            Icons.delete_forever_outlined,
+                                                            color: curMod.applyStatus ||
+                                                                    curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
+                                                                        Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                ? Theme.of(context).disabledColor
+                                                                : Colors.red,
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                //More menu
-                                                MenuAnchor(
-                                                    builder: (BuildContext context, MenuController controller, Widget? child) {
-                                                      return ModManTooltip(
-                                                        message: curLangText!.uiMore,
-                                                        child: InkWell(
-                                                          child: const Icon(
-                                                            Icons.more_vert,
-                                                          ),
-                                                          onTap: () {
-                                                            if (controller.isOpen) {
-                                                              controller.close();
-                                                            } else {
-                                                              controller.open();
-                                                            }
-                                                          },
-                                                        ),
-                                                      );
-                                                    },
-                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                    }), shape: MaterialStateProperty.resolveWith((states) {
-                                                      return RoundedRectangleBorder(
-                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                    })),
-                                                    menuChildren: [
-                                                      // favorite
-                                                      MenuItemButton(
-                                                        leadingIcon: Icon(
-                                                          curMod.submods[modViewModSetSubModIndex].isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
-                                                          //size: 18,
-                                                        ),
-                                                        child: Text(
-                                                          curMod.submods[modViewModSetSubModIndex].isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
-                                                        ),
-                                                        onPressed: () async {
-                                                          if (curMod.submods[modViewModSetSubModIndex].isFavorite) {
-                                                            curMod.submods[modViewModSetSubModIndex].isFavorite = false;
-                                                            if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                              curMod.isFavorite = false;
-                                                            }
-                                                            if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                              modViewItem!.isFavorite = false;
-                                                              modViewItem = null;
-                                                            }
-                                                          } else {
-                                                            curMod.submods[modViewModSetSubModIndex].isFavorite = true;
-                                                            curMod.isFavorite = true;
-                                                            modViewItem!.isFavorite = true;
-                                                          }
-                                                          saveModdedItemListToJson();
-                                                          setState(() {});
-                                                        },
-                                                      ),
-
-                                                      //Add to set
-                                                      SubmenuButton(
-                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                        }), shape: MaterialStateProperty.resolveWith((states) {
-                                                          return RoundedRectangleBorder(
-                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                        })),
-                                                        alignmentOffset: const Offset(0, 8),
-                                                        menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]),
-                                                        leadingIcon: const Icon(
-                                                          Icons.list_alt_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiAddToModSets),
-                                                      ),
-
-                                                      // Apply location select
-                                                      SubmenuButton(
-                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                        }), shape: MaterialStateProperty.resolveWith((states) {
-                                                          return RoundedRectangleBorder(
-                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                        })),
-                                                        alignmentOffset: const Offset(0, 8),
-                                                        menuChildren: modApplyingLocationsMenuButtons(context, curMod.submods[modViewModSetSubModIndex]),
-                                                        leadingIcon: const Icon(
-                                                          Icons.add_location_alt_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiSelectApplyingLocations),
-                                                      ),
-
-                                                      // add or change cmx file
-                                                      Visibility(
-                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[6] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[11] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
-                                                        child: MenuItemButton(
-                                                          leadingIcon: const Icon(
-                                                            Icons.note_add_rounded,
-                                                          ),
-                                                          child: Text(curLangText!.uiAddChangeCmxFile),
-                                                          onPressed: () async {
-                                                            XTypeGroup typeGroup = XTypeGroup(
-                                                              label: curLangText!.uiCmxFile,
-                                                              extensions: const <String>['txt'],
-                                                            );
-                                                            XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                            if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                              final copiedCmxFile = await File(selectedCmxFile.path)
-                                                                  .copy(Uri.file('${curMod.submods[modViewModSetSubModIndex].location}/${selectedCmxFile.name}').toFilePath());
-                                                              if (copiedCmxFile.existsSync()) {
-                                                                curMod.submods[modViewModSetSubModIndex].cmxFile = copiedCmxFile.path;
-                                                                curMod.submods[modViewModSetSubModIndex].hasCmx = true;
-                                                                saveModdedItemListToJson();
-                                                                if (curMod.submods[modViewModSetSubModIndex].cmxApplied!) {
-                                                                  int startPos = -1, endPos = -1;
-                                                                  (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
-                                                                  if (startPos != -1 && endPos != -1) {
-                                                                    curMod.submods[modViewModSetSubModIndex].cmxStartPos = startPos;
-                                                                    curMod.submods[modViewModSetSubModIndex].cmxEndPos = endPos;
-                                                                  }
-                                                                }
-                                                                saveModdedItemListToJson();
-                                                              }
-                                                            }
-                                                            setState(() {});
-                                                          },
-                                                        ),
-                                                      ),
-
-                                                      // rename
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.edit_note,
-                                                        ),
-                                                        child: Text(curLangText!.uiRename),
-                                                        onPressed: () async {
-                                                          String newName = await modsRenameDialog(context, curMod.location, curMod.submods[modViewModSetSubModIndex].location);
-                                                          if (newName.isNotEmpty) {
-                                                            //change paths
-                                                            String oldSubmodPath = curMod.submods[modViewModSetSubModIndex].location;
-                                                            String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
-                                                            if (oldSubmodPath == curMod.location) {
-                                                              await Directory(newSubmodPath).create(recursive: true);
-                                                              curMod.submods[modViewModSetSubModIndex].submodName = newName;
-                                                              curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
-                                                              curMod.submods[modViewModSetSubModIndex].previewImages.clear();
-                                                              curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
-                                                              renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
-                                                                  curMod.submods[modViewModSetSubModIndex].previewVideos);
-                                                              for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
-                                                                modFile.submodName = newName;
-                                                                String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
-                                                                final movedFile = await File(modFile.location).rename(newModFilePath);
-                                                                modFile.location = movedFile.path;
-                                                              }
-                                                            } else {
-                                                              await Directory(oldSubmodPath).rename(newSubmodPath);
-                                                              curMod.submods[modViewModSetSubModIndex].submodName = newName;
-                                                              curMod.submods[modViewModSetSubModIndex].location = newSubmodPath;
-                                                              curMod.submods[modViewModSetSubModIndex].previewImages.clear();
-                                                              curMod.submods[modViewModSetSubModIndex].previewVideos.clear();
-                                                              renamedPreviewPathsGet(curMod.submods[modViewModSetSubModIndex].location, curMod.submods[modViewModSetSubModIndex].previewImages,
-                                                                  curMod.submods[modViewModSetSubModIndex].previewVideos);
-                                                              for (var modFile in curMod.submods[modViewModSetSubModIndex].modFiles) {
-                                                                modFile.submodName = newName;
-                                                                modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
-                                                              }
-                                                            }
-                                                            await modSetLoader();
-                                                            saveSetListToJson();
-                                                            saveModdedItemListToJson();
-                                                            setState(() {});
-                                                          }
-                                                        },
-                                                      ),
-
-                                                      // swap
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.swap_horizontal_circle_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiSwapToAnotherItem),
-                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
-                                                      ),
-
-                                                      // export
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.import_export,
-                                                        ),
-                                                        child: Text(curLangText!.uiExportThisMod),
-                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curMod.submods[modViewModSetSubModIndex]], false),
-                                                      ),
-
-                                                      // open in file explorer
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.folder_open_outlined,
-                                                        ),
-                                                        child: Text(curLangText!.uiOpenInFileExplorer),
-                                                        onPressed: () async {
-                                                          if (Directory(Uri.file(curMod.submods[modViewModSetSubModIndex].location).toFilePath()).existsSync()) {
-                                                            await launchUrl(Uri.file(curMod.submods[modViewModSetSubModIndex].location));
-                                                          } else {
-                                                            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
-                                                          }
-                                                        },
-                                                      ),
-
-                                                      // boundary
-                                                      Visibility(
-                                                        visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[3] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[4] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[5] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[15] ||
-                                                            curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
-                                                        child: MenuItemButton(
-                                                          leadingIcon: const Icon(
-                                                            Icons.radio_button_checked,
-                                                          ),
-                                                          child: Text(curLangText!.uiRemoveBoundaryRadius),
-                                                          onPressed: () {
-                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                              element.deleteSync(recursive: true);
-                                                            });
-                                                            isBoundaryEdited = false;
-                                                            modsBoundaryEditHomePage(context, curMod.submods[modViewModSetSubModIndex]);
-                                                          },
-                                                        ),
-                                                      ),
-
-                                                      // remove from modset
-                                                      MenuItemButton(
-                                                        leadingIcon: const Icon(
-                                                          Icons.delete_forever_outlined,
-                                                        ),
-                                                        onPressed: () {
-                                                          removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
-                                                          saveSetListToJson();
-                                                          saveModdedItemListToJson();
-                                                          setState(() {});
-                                                        },
-                                                        child: Text(
-                                                          curLangText!.uiRemoveFromThisSet,
-                                                        ),
-                                                      ),
-
-                                                      // delete
-                                                      MenuItemButton(
-                                                        leadingIcon: Icon(
-                                                          Icons.delete_forever_outlined,
-                                                          color: curMod.applyStatus ||
+                                                          onPressed: curMod.applyStatus ||
                                                                   curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
                                                                       Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                              ? Theme.of(context).disabledColor
-                                                              : Colors.red,
-                                                        ),
-                                                        onPressed: curMod.applyStatus ||
-                                                                curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
-                                                                    Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                            ? null
-                                                            : () async {
-                                                                bool deleteConfirm = await modDeletionDialog(context, curMod.submods[modViewModSetSubModIndex].submodName);
-                                                                if (deleteConfirm) {
-                                                                  if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                      if (modViewItem!.isSet) {
-                                                                        for (var setName in modViewItem!.setNames) {
-                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
-                                                                          if (setIndex != -1) {
-                                                                            modSetList[setIndex].setItems.remove(modViewItem);
+                                                              ? null
+                                                              : () async {
+                                                                  bool deleteConfirm = await modDeletionDialog(context, curMod.submods[modViewModSetSubModIndex].submodName);
+                                                                  if (deleteConfirm) {
+                                                                    if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                      deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                        String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                        if (modViewItem!.isSet) {
+                                                                          for (var setName in modViewItem!.setNames) {
+                                                                            int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                            if (setIndex != -1) {
+                                                                              modSetList[setIndex].setItems.remove(modViewItem);
+                                                                            }
                                                                           }
                                                                         }
-                                                                      }
-                                                                      modViewCate!.items.remove(modViewItem);
-                                                                      modViewItem = null;
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
-                                                                  } else {
-                                                                    deleteSubmodFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
-                                                                      String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
-                                                                      curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
-                                                                      if (curMod.submods.isEmpty) {
-                                                                        modViewItem!.mods.remove(curMod);
-                                                                      } else {
-                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
-                                                                      }
-
-                                                                      if (modViewItem!.mods.isEmpty) {
                                                                         modViewCate!.items.remove(modViewItem);
                                                                         modViewItem = null;
-                                                                      } else {
-                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                      }
-                                                                      previewModName = '';
-                                                                      previewImages.clear();
-                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                          context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    });
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                            context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                        previewModName = '';
+                                                                        previewImages.clear();
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      });
+                                                                    } else {
+                                                                      deleteSubmodFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
+                                                                        String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
+                                                                        curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
+                                                                        if (curMod.submods.isEmpty) {
+                                                                          modViewItem!.mods.remove(curMod);
+                                                                        } else {
+                                                                          curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                        }
+
+                                                                        if (modViewItem!.mods.isEmpty) {
+                                                                          modViewCate!.items.remove(modViewItem);
+                                                                          modViewItem = null;
+                                                                        } else {
+                                                                          modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                        }
+                                                                        previewModName = '';
+                                                                        previewImages.clear();
+                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                            context, '${curLangText!.uiSuccess}!', uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                        saveModdedItemListToJson();
+                                                                        setState(() {});
+                                                                      });
+                                                                    }
                                                                   }
-                                                                }
-                                                              },
-                                                        child: Text(
-                                                          curLangText!.uiRemoveFromMM,
-                                                          style: TextStyle(
-                                                              color: curMod.applyStatus ||
-                                                                      curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
-                                                                          Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                                  ? Theme.of(context).disabledColor
-                                                                  : Colors.red),
-                                                        ),
-                                                      ),
-                                                    ])
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    children: [
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: curMod.submods.length,
-                                          itemBuilder: (context, submodIndex) {
-                                            var curSubmod = curMod.submods[submodIndex];
-                                            return Visibility(
-                                              visible: isFavListVisible && !isModViewFromApplied
-                                                  ? curSubmod.isFavorite
-                                                  : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
-                                                      ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
-                                                      : searchTextController.value.text.toLowerCase().isNotEmpty
-                                                          ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
-                                                              curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isEmpty
-                                                          : true,
-                                              child: InkWell(
-                                                //submod preview images
-                                                onTap: () {},
-                                                onSecondaryTap: () {
-                                                  if (previewImages.isNotEmpty) {
-                                                    previewDialogImages = previewImages.toList();
-                                                    previewDialogModName = previewModName;
-                                                    previewDialog(context);
-                                                  }
-                                                },
-                                                onHover: (hovering) {
-                                                  if (hovering && previewWindowVisible) {
-                                                    hoveringOnSubmod = true;
-                                                    previewModName = curSubmod.submodName;
-                                                    previewImages.clear();
-                                                    // videoPlayer.remove(0);
-                                                    for (var path in curSubmod.previewImages.toSet()) {
-                                                      previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
-                                                    }
-                                                    for (var path in curSubmod.previewVideos.toSet()) {
-                                                      previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curSubmod.submodName));
-                                                    }
-                                                  } else {
-                                                    previewModName = curMod.modName;
-                                                    hoveringOnSubmod = false;
-                                                    for (var path in curMod.previewImages) {
-                                                      previewImages.add(PreviewImageStack(
-                                                          imagePath: path,
-                                                          overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
-                                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
-                                                              : curMod.modName));
-                                                    }
-                                                    for (var path in curMod.previewVideos) {
-                                                      previewImages.add(PreviewVideoStack(
-                                                          videoPath: path,
-                                                          overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
-                                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
-                                                              : curMod.modName));
-                                                    }
-                                                  }
-                                                  setState(() {});
-                                                },
-                                                child: ExpansionTile(
-                                                  backgroundColor: Colors.transparent,
-                                                  textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  title: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                          child: Text(
-                                                        curSubmod.submodName,
-                                                        style: TextStyle(
-                                                            color: curSubmod.applyStatus
-                                                                ? Theme.of(context).colorScheme.primary
-                                                                : curSubmod.isNew
-                                                                    ? Colors.amber
-                                                                    : null),
-                                                      )),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 5),
-                                                        child: Wrap(
-                                                          crossAxisAlignment: WrapCrossAlignment.center,
-                                                          runAlignment: WrapAlignment.center,
-                                                          spacing: 5,
-                                                          children: [
-                                                            //cmx indicator
-                                                            if (curSubmod.hasCmx!)
-                                                              Container(
-                                                                padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
-                                                                decoration: BoxDecoration(
-                                                                  border: Border.all(color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                ),
-                                                                child: Text(curLangText!.uiCmx,
-                                                                    style: TextStyle(
-                                                                      color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : null,
-                                                                      fontSize: 15,
-                                                                    )),
-                                                              ),
-                                                            // apply locations
-                                                            if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
-
-                                                            //Apply button in submod
-                                                            //remove button
-                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
-                                                              Stack(
-                                                                children: [
-                                                                  Visibility(
-                                                                    visible: isModViewModsRemoving,
-                                                                    child: const SizedBox(
-                                                                      width: 20,
-                                                                      height: 20,
-                                                                      child: CircularProgressIndicator(),
-                                                                    ),
-                                                                  ),
-                                                                  Visibility(
-                                                                    visible: !isModViewModsRemoving,
-                                                                    child: ModManTooltip(
-                                                                      message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curSubmod.submodName),
-                                                                      child: InkWell(
-                                                                        child: const Icon(
-                                                                          FontAwesomeIcons.squareMinus,
-                                                                        ),
-                                                                        onTap: () async {
-                                                                          isModViewModsRemoving = true;
-                                                                          setState(() {});
-
-                                                                          Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                                                            //status
-                                                                            restoreOriginalFilesToTheGame(context, curSubmod.modFiles).then((value) async {
-                                                                              if (curSubmod.cmxApplied!) {
-                                                                                bool status = await cmxModRemoval(curSubmod.cmxStartPos!, curSubmod.cmxEndPos!);
-                                                                                if (status) {
-                                                                                  curSubmod.cmxApplied = false;
-                                                                                  curSubmod.cmxStartPos = -1;
-                                                                                  curSubmod.cmxEndPos = -1;
-                                                                                }
-                                                                              }
-                                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                curSubmod.applyStatus = false;
-                                                                              }
-                                                                              if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                curMod.applyStatus = false;
-                                                                              }
-                                                                              if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                modViewItem!.applyStatus = false;
-                                                                              }
-
-                                                                              filesRestoredMessage(context, curSubmod.modFiles, value);
-                                                                              appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                              isModViewModsRemoving = false;
-                                                                              saveModdedItemListToJson();
-                                                                              setState(() {});
-                                                                            });
-                                                                          });
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
-                                                              Stack(
-                                                                children: [
-                                                                  Visibility(
-                                                                    visible: isModViewModsApplying,
-                                                                    child: const SizedBox(
-                                                                      width: 20,
-                                                                      height: 20,
-                                                                      child: CircularProgressIndicator(),
-                                                                    ),
-                                                                  ),
-                                                                  Visibility(
-                                                                    visible: !isModViewModsApplying,
-                                                                    child: ModManTooltip(
-                                                                      message: uiInTextArg(curLangText!.uiApplyXToTheGame, curSubmod.submodName),
-                                                                      child: InkWell(
-                                                                        onTap: () async {
-                                                                          isModViewModsApplying = true;
-                                                                          setState(() {});
-                                                                          Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
-                                                                            //apply mod files
-                                                                            if (await originalFilesCheck(context, curSubmod.modFiles)) {
-                                                                              //local original files backup
-                                                                              //await localOriginalFilesBackup(curSubmod.modFiles);
-                                                                              //apply auto radius removal if on
-                                                                              if (removeBoundaryRadiusOnModsApply) {
-                                                                                removeBoundaryOnModsApply(context, curSubmod).then((value) async {
-                                                                                  await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
-                                                                                  setState(() {});
-                                                                                });
-                                                                              } else {
-                                                                                await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
-                                                                                setState(() {});
-                                                                              }
-                                                                            }
-                                                                            setState(() {});
-                                                                          });
-                                                                        },
-                                                                        child: const Icon(
-                                                                          FontAwesomeIcons.squarePlus,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-
-                                                            //More menu
-                                                            MenuAnchor(
-                                                                builder: (BuildContext context, MenuController controller, Widget? child) {
-                                                                  return ModManTooltip(
-                                                                    message: curLangText!.uiMore,
-                                                                    child: InkWell(
-                                                                      child: const Icon(
-                                                                        Icons.more_vert,
-                                                                      ),
-                                                                      onTap: () {
-                                                                        if (controller.isOpen) {
-                                                                          controller.close();
-                                                                        } else {
-                                                                          controller.open();
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                  );
                                                                 },
-                                                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                }), shape: MaterialStateProperty.resolveWith((states) {
-                                                                  return RoundedRectangleBorder(
-                                                                      side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                                })),
-                                                                menuChildren: [
-                                                                  // favorite
-                                                                  MenuItemButton(
-                                                                    leadingIcon: Icon(
-                                                                      curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
-                                                                      //size: 18,
+                                                          child: Text(
+                                                            curLangText!.uiRemoveFromMM,
+                                                            style: TextStyle(
+                                                                color: curMod.applyStatus ||
+                                                                        curMod.submods[modViewModSetSubModIndex].location == curMod.location &&
+                                                                            Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                    ? Theme.of(context).disabledColor
+                                                                    : Colors.red),
+                                                          ),
+                                                        ),
+                                                      ])
+                                                ],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      children: [
+                                        ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: curMod.submods.length,
+                                            itemBuilder: (context, submodIndex) {
+                                              var curSubmod = curMod.submods[submodIndex];
+                                              return Visibility(
+                                                visible: isFavListVisible && !isModViewFromApplied
+                                                    ? curSubmod.isFavorite
+                                                    : context.watch<StateProvider>().setsWindowVisible && !isModViewFromApplied
+                                                        ? curSubmod.isSet && curSubmod.setNames.contains(selectedModSetName)
+                                                        : searchTextController.value.text.toLowerCase().isNotEmpty
+                                                            ? curSubmod.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase()) ||
+                                                                curMod.submods.where((element) => element.submodName.toLowerCase().contains(searchTextController.value.text.toLowerCase())).isEmpty
+                                                            : true,
+                                                child: InkWell(
+                                                  //submod preview images
+                                                  onTap: () {},
+                                                  onSecondaryTap: () {
+                                                    if (previewImages.isNotEmpty) {
+                                                      previewDialogImages = previewImages.toList();
+                                                      previewDialogModName = previewModName;
+                                                      previewDialog(context);
+                                                    }
+                                                  },
+                                                  onHover: (hovering) {
+                                                    if (hovering && previewWindowVisible) {
+                                                      hoveringOnSubmod = true;
+                                                      previewModName = curSubmod.submodName;
+                                                      previewImages.clear();
+                                                      // videoPlayer.remove(0);
+                                                      for (var path in curSubmod.previewImages.toSet()) {
+                                                        previewImages.add(PreviewImageStack(imagePath: path, overlayText: curSubmod.submodName));
+                                                      }
+                                                      for (var path in curSubmod.previewVideos.toSet()) {
+                                                        previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curSubmod.submodName));
+                                                      }
+                                                    } else {
+                                                      previewModName = curMod.modName;
+                                                      hoveringOnSubmod = false;
+                                                      for (var path in curMod.previewImages) {
+                                                        previewImages.add(PreviewImageStack(
+                                                            imagePath: path,
+                                                            overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
+                                                                ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
+                                                                : curMod.modName));
+                                                      }
+                                                      for (var path in curMod.previewVideos) {
+                                                        previewImages.add(PreviewVideoStack(
+                                                            videoPath: path,
+                                                            overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
+                                                                ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
+                                                                : curMod.modName));
+                                                      }
+                                                    }
+                                                    setState(() {});
+                                                  },
+                                                  child: ModManPreviewTooltip(
+                                                    child: ExpansionTile(
+                                                      backgroundColor: Colors.transparent,
+                                                      textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                      iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                      collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                      title: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                              child: Text(
+                                                            curSubmod.submodName,
+                                                            style: TextStyle(
+                                                                color: curSubmod.applyStatus
+                                                                    ? Theme.of(context).colorScheme.primary
+                                                                    : curSubmod.isNew
+                                                                        ? Colors.amber
+                                                                        : null),
+                                                          )),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 5),
+                                                            child: Wrap(
+                                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                                              runAlignment: WrapAlignment.center,
+                                                              spacing: 5,
+                                                              children: [
+                                                                //cmx indicator
+                                                                if (curSubmod.hasCmx!)
+                                                                  Container(
+                                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                                    decoration: BoxDecoration(
+                                                                      border: Border.all(color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : Theme.of(context).primaryColorLight),
+                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                                                     ),
-                                                                    child: Text(
-                                                                      curSubmod.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
-                                                                    ),
-                                                                    onPressed: () async {
-                                                                      if (curSubmod.isFavorite) {
-                                                                        curSubmod.isFavorite = false;
-                                                                        if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
-                                                                          curMod.isFavorite = false;
-                                                                        }
-                                                                        if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
-                                                                          modViewItem!.isFavorite = false;
-                                                                        }
-                                                                      } else {
-                                                                        curSubmod.isFavorite = true;
-                                                                        curMod.isFavorite = true;
-                                                                        modViewItem!.isFavorite = true;
-                                                                      }
-                                                                      saveModdedItemListToJson();
-                                                                      setState(() {});
-                                                                    },
+                                                                    child: Text(curLangText!.uiCmx,
+                                                                        style: TextStyle(
+                                                                          color: curSubmod.cmxApplied! ? Theme.of(context).colorScheme.primary : null,
+                                                                          fontSize: 15,
+                                                                        )),
                                                                   ),
+                                                                // apply locations
+                                                                if (curSubmod.applyLocations!.isNotEmpty) const Icon(Icons.location_on_outlined),
 
-                                                                  //Add to set
-                                                                  SubmenuButton(
-                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
-                                                                      return RoundedRectangleBorder(
-                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                                    })),
-                                                                    alignmentOffset: const Offset(0, 8),
-                                                                    menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curSubmod),
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.list_alt_outlined,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiAddToModSets),
-                                                                  ),
-
-                                                                  // Apply location select
-                                                                  SubmenuButton(
-                                                                    menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
-                                                                      return RoundedRectangleBorder(
-                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                                                    })),
-                                                                    alignmentOffset: const Offset(0, 8),
-                                                                    menuChildren: modApplyingLocationsMenuButtons(context, curSubmod),
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.add_location_alt_outlined,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiSelectApplyingLocations),
-                                                                  ),
-
-                                                                  // add or change cmx file
-                                                                  Visibility(
-                                                                      visible: curSubmod.category == defaultCategoryDirs[1] ||
-                                                                          curSubmod.category == defaultCategoryDirs[6] ||
-                                                                          curSubmod.category == defaultCategoryDirs[11] ||
-                                                                          curSubmod.category == defaultCategoryDirs[15] ||
-                                                                          curSubmod.category == defaultCategoryDirs[16],
-                                                                      child: MenuItemButton(
-                                                                        leadingIcon: const Icon(
-                                                                          Icons.note_add_rounded,
+                                                                //Apply button in submod
+                                                                //remove button
+                                                                if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == true) != -1)
+                                                                  Stack(
+                                                                    children: [
+                                                                      Visibility(
+                                                                        visible: isModViewModsRemoving,
+                                                                        child: const SizedBox(
+                                                                          width: 20,
+                                                                          height: 20,
+                                                                          child: CircularProgressIndicator(),
                                                                         ),
-                                                                        child: Text(curLangText!.uiAddChangeCmxFile),
-                                                                        onPressed: () async {
-                                                                          XTypeGroup typeGroup = XTypeGroup(
-                                                                            label: curLangText!.uiCmxFile,
-                                                                            extensions: const <String>['txt'],
-                                                                          );
-                                                                          XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                                                          if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
-                                                                            final copiedCmxFile =
-                                                                                await File(selectedCmxFile.path).copy(Uri.file('${curSubmod.location}/${selectedCmxFile.name}').toFilePath());
-                                                                            if (copiedCmxFile.existsSync()) {
-                                                                              curSubmod.cmxFile = copiedCmxFile.path;
-                                                                              curSubmod.hasCmx = true;
-                                                                              saveModdedItemListToJson();
-                                                                              if (curSubmod.cmxApplied!) {
-                                                                                int startPos = -1, endPos = -1;
-                                                                                (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
-                                                                                if (startPos != -1 && endPos != -1) {
-                                                                                  curSubmod.cmxStartPos = startPos;
-                                                                                  curSubmod.cmxEndPos = endPos;
-                                                                                }
-                                                                              }
-                                                                              saveModdedItemListToJson();
-                                                                            }
-                                                                          }
-                                                                          setState(() {});
-                                                                        },
-                                                                      )),
-
-                                                                  // rename
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.edit_note,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiRename),
-                                                                    onPressed: () async {
-                                                                      String newName = await modsRenameDialog(context, curMod.location, curSubmod.location);
-                                                                      if (newName.isNotEmpty) {
-                                                                        //change paths
-                                                                        String oldSubmodPath = curSubmod.location;
-                                                                        String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
-                                                                        if (oldSubmodPath == curMod.location) {
-                                                                          await Directory(newSubmodPath).create(recursive: true);
-                                                                          curSubmod.submodName = newName;
-                                                                          curSubmod.location = newSubmodPath;
-                                                                          curSubmod.previewImages.clear();
-                                                                          curSubmod.previewVideos.clear();
-                                                                          renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
-                                                                          for (var modFile in curSubmod.modFiles) {
-                                                                            modFile.submodName = newName;
-                                                                            String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
-                                                                            final movedFile = await File(modFile.location).rename(newModFilePath);
-                                                                            modFile.location = movedFile.path;
-                                                                          }
-                                                                        } else {
-                                                                          await Directory(oldSubmodPath).rename(newSubmodPath);
-                                                                          curSubmod.submodName = newName;
-                                                                          curSubmod.location = newSubmodPath;
-                                                                          curSubmod.previewImages.clear();
-                                                                          curSubmod.previewVideos.clear();
-                                                                          renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
-                                                                          for (var modFile in curSubmod.modFiles) {
-                                                                            modFile.submodName = newName;
-                                                                            modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
-                                                                          }
-                                                                        }
-                                                                        await modSetLoader();
-                                                                        saveSetListToJson();
-                                                                        saveModdedItemListToJson();
-                                                                        setState(() {});
-                                                                      }
-                                                                    },
-                                                                  ),
-
-                                                                  // swap
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.swap_horizontal_circle_outlined,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiSwapToAnotherItem),
-                                                                    onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
-                                                                  ),
-
-                                                                  // export
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.import_export,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiExportThisMod),
-                                                                    onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod], false),
-                                                                  ),
-
-                                                                  // open in file explorer
-                                                                  MenuItemButton(
-                                                                    leadingIcon: const Icon(
-                                                                      Icons.folder_open_outlined,
-                                                                    ),
-                                                                    child: Text(curLangText!.uiOpenInFileExplorer),
-                                                                    onPressed: () async {
-                                                                      if (Directory(Uri.file(curSubmod.location).toFilePath()).existsSync()) {
-                                                                        await launchUrl(Uri.file(curSubmod.location));
-                                                                      } else {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
-                                                                      }
-                                                                    },
-                                                                  ),
-
-                                                                  // boundary
-                                                                  Visibility(
-                                                                    visible: curSubmod.category == defaultCategoryDirs[1] ||
-                                                                        curSubmod.category == defaultCategoryDirs[3] ||
-                                                                        curSubmod.category == defaultCategoryDirs[4] ||
-                                                                        curSubmod.category == defaultCategoryDirs[5] ||
-                                                                        curSubmod.category == defaultCategoryDirs[15] ||
-                                                                        curSubmod.category == defaultCategoryDirs[16],
-                                                                    child: MenuItemButton(
-                                                                      leadingIcon: const Icon(
-                                                                        Icons.radio_button_checked,
                                                                       ),
-                                                                      child: Text(curLangText!.uiRemoveBoundaryRadius),
-                                                                      onPressed: () {
-                                                                        Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                          element.deleteSync(recursive: true);
-                                                                        });
-                                                                        isBoundaryEdited = false;
-                                                                        modsBoundaryEditHomePage(context, curSubmod);
-                                                                      },
-                                                                    ),
-                                                                  ),
+                                                                      Visibility(
+                                                                        visible: !isModViewModsRemoving,
+                                                                        child: ModManTooltip(
+                                                                          message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curSubmod.submodName),
+                                                                          child: InkWell(
+                                                                            child: const Icon(
+                                                                              FontAwesomeIcons.squareMinus,
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              isModViewModsRemoving = true;
+                                                                              setState(() {});
 
-                                                                  //remove from set
-                                                                  Visibility(
-                                                                    visible: context.watch<StateProvider>().setsWindowVisible && curSubmod.isSet,
-                                                                    child: MenuItemButton(
-                                                                      leadingIcon: const Icon(
-                                                                        Icons.delete_forever_outlined,
-                                                                      ),
-                                                                      onPressed: () {
-                                                                        removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod);
-                                                                        saveSetListToJson();
-                                                                        saveModdedItemListToJson();
-                                                                        setState(() {});
-                                                                      },
-                                                                      child: Text(
-                                                                        curLangText!.uiRemoveFromThisSet,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  // delete
-                                                                  MenuItemButton(
-                                                                    leadingIcon: Icon(
-                                                                      Icons.delete_forever_outlined,
-                                                                      color: curSubmod.applyStatus ||
-                                                                              curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                                          ? Theme.of(context).disabledColor
-                                                                          : Colors.red,
-                                                                    ),
-                                                                    onPressed: curSubmod.applyStatus ||
-                                                                            curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                                        ? null
-                                                                        : () async {
-                                                                            bool deleteConfirm = await modDeletionDialog(context, curSubmod.submodName);
-                                                                            if (deleteConfirm) {
-                                                                              if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                                  if (modViewItem!.isSet) {
-                                                                                    for (var setName in modViewItem!.setNames) {
-                                                                                      int setIndex = modSetList.indexWhere((element) => element.setName == setName);
-                                                                                      if (setIndex != -1) {
-                                                                                        modSetList[setIndex].setItems.remove(modViewItem);
-                                                                                      }
+                                                                              Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                                                                //status
+                                                                                restoreOriginalFilesToTheGame(context, curSubmod.modFiles).then((value) async {
+                                                                                  if (curSubmod.cmxApplied!) {
+                                                                                    bool status = await cmxModRemoval(curSubmod.cmxStartPos!, curSubmod.cmxEndPos!);
+                                                                                    if (status) {
+                                                                                      curSubmod.cmxApplied = false;
+                                                                                      curSubmod.cmxStartPos = -1;
+                                                                                      curSubmod.cmxEndPos = -1;
                                                                                     }
                                                                                   }
-                                                                                  modViewCate!.items.remove(modViewItem);
-                                                                                  modViewItem = null;
-                                                                                  previewModName = '';
-                                                                                  previewImages.clear();
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                      uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                    curSubmod.applyStatus = false;
+                                                                                  }
+                                                                                  if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                    curMod.applyStatus = false;
+                                                                                  }
+                                                                                  if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                    modViewItem!.applyStatus = false;
+                                                                                    await restoreOverlayedIcon(modViewItem!);
+                                                                                  }
+
+                                                                                  await filesRestoredMessage(mainPageScaffoldKey.currentContext, curSubmod.modFiles, value);
+                                                                                  appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                  isModViewModsRemoving = false;
                                                                                   saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
-                                                                              } else {
-                                                                                deleteSubmodFromModMan(curSubmod.location, curMod.location).then((value) {
-                                                                                  String removedName = '${curMod.modName} > ${curSubmod.submodName}';
-                                                                                  curMod.submods.remove(curSubmod);
-                                                                                  if (curMod.submods.isEmpty) {
-                                                                                    modViewItem!.mods.remove(curMod);
+                                                                              });
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                if (curSubmod.modFiles.indexWhere((element) => element.applyStatus == false) != -1)
+                                                                  Stack(
+                                                                    children: [
+                                                                      Visibility(
+                                                                        visible: isModViewModsApplying,
+                                                                        child: const SizedBox(
+                                                                          width: 20,
+                                                                          height: 20,
+                                                                          child: CircularProgressIndicator(),
+                                                                        ),
+                                                                      ),
+                                                                      Visibility(
+                                                                        visible: !isModViewModsApplying,
+                                                                        child: ModManTooltip(
+                                                                          message: uiInTextArg(curLangText!.uiApplyXToTheGame, curSubmod.submodName),
+                                                                          child: InkWell(
+                                                                            onTap: () async {
+                                                                              isModViewModsApplying = true;
+                                                                              setState(() {});
+                                                                              Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                                                                                //apply mod files
+                                                                                if (await originalFilesCheck(context, curSubmod.modFiles)) {
+                                                                                  //local original files backup
+                                                                                  //await localOriginalFilesBackup(curSubmod.modFiles);
+                                                                                  //apply auto radius removal if on
+                                                                                  if (removeBoundaryRadiusOnModsApply) {
+                                                                                    removeBoundaryOnModsApply(context, curSubmod).then((value) async {
+                                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
+                                                                                      setState(() {});
+                                                                                    });
                                                                                   } else {
-                                                                                    curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
+                                                                                    setState(() {});
                                                                                   }
-                                                                                  if (modViewItem!.mods.isEmpty) {
-                                                                                    modViewCate!.items.remove(modViewItem);
-                                                                                    modViewItem = null;
-                                                                                  } else {
-                                                                                    modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                                  if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                                    await applyOverlayedIcon(context, modViewItem!);
                                                                                   }
-                                                                                  previewModName = '';
-                                                                                  previewImages.clear();
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                      uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
-                                                                                  saveModdedItemListToJson();
-                                                                                  setState(() {});
-                                                                                });
-                                                                              }
+                                                                                }
+                                                                                setState(() {});
+                                                                              });
+                                                                            },
+                                                                            child: const Icon(
+                                                                              FontAwesomeIcons.squarePlus,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+
+                                                                //More menu
+                                                                MenuAnchor(
+                                                                    builder: (BuildContext context, MenuController controller, Widget? child) {
+                                                                      return ModManTooltip(
+                                                                        message: curLangText!.uiMore,
+                                                                        child: InkWell(
+                                                                          child: const Icon(
+                                                                            Icons.more_vert,
+                                                                          ),
+                                                                          onTap: () {
+                                                                            if (controller.isOpen) {
+                                                                              controller.close();
+                                                                            } else {
+                                                                              controller.open();
                                                                             }
                                                                           },
-                                                                    child: Text(
-                                                                      curLangText!.uiRemoveFromMM,
-                                                                      style: TextStyle(
-                                                                          color: curSubmod.applyStatus ||
-                                                                                  curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
-                                                                              ? Theme.of(context).disabledColor
-                                                                              : Colors.red),
-                                                                    ),
-                                                                  ),
-                                                                ])
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  children: [
-                                                    ListView.builder(
-                                                        shrinkWrap: true,
-                                                        physics: const NeverScrollableScrollPhysics(),
-                                                        itemCount: curSubmod.modFiles.length,
-                                                        itemBuilder: (context, modFileIndex) {
-                                                          var curModFile = curSubmod.modFiles[modFileIndex];
-                                                          return Visibility(
-                                                            visible: context.watch<StateProvider>().setsWindowVisible ? curModFile.isSet : true,
-                                                            child: ListTile(
-                                                              tileColor: Colors.transparent,
-                                                              //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
-                                                              trailing: Wrap(
-                                                                crossAxisAlignment: WrapCrossAlignment.center,
-                                                                runAlignment: WrapAlignment.center,
-                                                                spacing: 5,
-                                                                children: [
-                                                                  //Add-Remove button
-                                                                  if (curModFile.applyStatus == false)
-                                                                    ModManTooltip(
-                                                                      message: uiInTextArg(curLangText!.uiApplyXToTheGame, curModFile.modFileName),
-                                                                      child: InkWell(
-                                                                        child: const Icon(
-                                                                          Icons.add,
                                                                         ),
-                                                                        onTap: () async {
-                                                                          //apply mod files
-                                                                          if (await originalFilesCheck(context, [curModFile])) {
-                                                                            modFilesApply(context, [curModFile]).then((value) async {
-                                                                              if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
-                                                                                curSubmod.applyDate = DateTime.now();
-                                                                                modViewItem!.applyDate = DateTime.now();
-                                                                                curMod.applyDate = DateTime.now();
-                                                                                curSubmod.applyStatus = true;
-                                                                                curSubmod.isNew = false;
-                                                                                curMod.applyStatus = true;
-                                                                                curMod.isNew = false;
-                                                                                modViewItem!.applyStatus = true;
-                                                                                if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
-                                                                                  modViewItem!.isNew = false;
-                                                                                }
-                                                                                List<ModFile> appliedModFiles = value;
-                                                                                String fileAppliedText = '';
-                                                                                for (var element in appliedModFiles) {
-                                                                                  if (fileAppliedText.isEmpty) {
-                                                                                    fileAppliedText =
-                                                                                        uiInTextArgs(curLangText!.uiSuccessfullyAppliedXInY, ['<x>', '<y>'], [curMod.modName, curSubmod.submodName]);
-                                                                                  }
-                                                                                  fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                                }
-                                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                              }
-
-                                                                              saveModdedItemListToJson();
-                                                                              setState(() {});
-                                                                            });
+                                                                      );
+                                                                    },
+                                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                      return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                      return RoundedRectangleBorder(
+                                                                          side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                    })),
+                                                                    menuChildren: [
+                                                                      // favorite
+                                                                      MenuItemButton(
+                                                                        leadingIcon: Icon(
+                                                                          curSubmod.isFavorite ? FontAwesomeIcons.heartCircleMinus : FontAwesomeIcons.heartCirclePlus,
+                                                                          //size: 18,
+                                                                        ),
+                                                                        child: Text(
+                                                                          curSubmod.isFavorite ? curLangText!.uiRemoveFromFavList : curLangText!.uiAddToFavList,
+                                                                        ),
+                                                                        onPressed: () async {
+                                                                          if (curSubmod.isFavorite) {
+                                                                            curSubmod.isFavorite = false;
+                                                                            if (curMod.submods.where((element) => element.isFavorite).isEmpty) {
+                                                                              curMod.isFavorite = false;
+                                                                            }
+                                                                            if (modViewItem!.mods.where((element) => element.isFavorite).isEmpty) {
+                                                                              modViewItem!.isFavorite = false;
+                                                                            }
+                                                                          } else {
+                                                                            curSubmod.isFavorite = true;
+                                                                            curMod.isFavorite = true;
+                                                                            modViewItem!.isFavorite = true;
                                                                           }
-                                                                          setState(() {});
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  if (curModFile.applyStatus == true)
-                                                                    ModManTooltip(
-                                                                      message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curModFile.modFileName),
-                                                                      child: InkWell(
-                                                                        child: const Icon(
-                                                                          Icons.remove,
-                                                                        ),
-                                                                        onTap: () async {
-                                                                          //status
-                                                                          restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
-                                                                            if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              curSubmod.applyStatus = false;
-                                                                            }
-                                                                            if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              curMod.applyStatus = false;
-                                                                            }
-                                                                            if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                              modViewItem!.applyStatus = false;
-                                                                            }
-
-                                                                            filesRestoredMessage(context, [curModFile], value);
-                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                            saveModdedItemListToJson();
-                                                                            setState(() {});
-                                                                          });
-                                                                        },
-                                                                      ),
-                                                                    ),
-
-                                                                  //Remove from current Set
-                                                                  Visibility(
-                                                                    visible: context.watch<StateProvider>().setsWindowVisible,
-                                                                    child: ModManTooltip(
-                                                                      message: uiInTextArg(curLangText!.uiHoldToRemoveXFromThisSet, curModFile.modFileName),
-                                                                      child: InkWell(
-                                                                        onLongPress: () {
-                                                                          removeModFileFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod, curModFile);
-                                                                          saveSetListToJson();
                                                                           saveModdedItemListToJson();
                                                                           setState(() {});
                                                                         },
-                                                                        child: const Icon(Icons.delete_forever_outlined),
                                                                       ),
-                                                                    ),
-                                                                  ),
 
-                                                                  //Delete
-                                                                  ModManTooltip(
-                                                                    message: uiInTextArg(curLangText!.uiHoldToRemoveXFromModMan, curModFile.modFileName),
-                                                                    child: InkWell(
-                                                                      onLongPress: curModFile.applyStatus
-                                                                          ? null
-                                                                          : () async {
-                                                                              if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
-                                                                                  String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
-                                                                                  modViewCate!.items.remove(modViewItem);
-                                                                                  modViewItem = null;
-                                                                                  previewModName = '';
-                                                                                  previewImages.clear();
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                      uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                      //Add to set
+                                                                      SubmenuButton(
+                                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                          return RoundedRectangleBorder(
+                                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                        })),
+                                                                        alignmentOffset: const Offset(0, 8),
+                                                                        menuChildren: modSetsMenuButtons(context, modViewItem!, curMod, curSubmod),
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.list_alt_outlined,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiAddToModSets),
+                                                                      ),
+
+                                                                      // Apply location select
+                                                                      SubmenuButton(
+                                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                          return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                          return RoundedRectangleBorder(
+                                                                              side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                                                                        })),
+                                                                        alignmentOffset: const Offset(0, 8),
+                                                                        menuChildren: modApplyingLocationsMenuButtons(context, curSubmod),
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.add_location_alt_outlined,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiSelectApplyingLocations),
+                                                                      ),
+
+                                                                      // add or change cmx file
+                                                                      Visibility(
+                                                                          visible: curSubmod.category == defaultCategoryDirs[1] ||
+                                                                              curSubmod.category == defaultCategoryDirs[6] ||
+                                                                              curSubmod.category == defaultCategoryDirs[11] ||
+                                                                              curSubmod.category == defaultCategoryDirs[15] ||
+                                                                              curSubmod.category == defaultCategoryDirs[16],
+                                                                          child: MenuItemButton(
+                                                                            leadingIcon: const Icon(
+                                                                              Icons.note_add_rounded,
+                                                                            ),
+                                                                            child: Text(curLangText!.uiAddChangeCmxFile),
+                                                                            onPressed: () async {
+                                                                              XTypeGroup typeGroup = XTypeGroup(
+                                                                                label: curLangText!.uiCmxFile,
+                                                                                extensions: const <String>['txt'],
+                                                                              );
+                                                                              XFile? selectedCmxFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                                              if (selectedCmxFile != null && selectedCmxFile.path.isNotEmpty) {
+                                                                                final copiedCmxFile =
+                                                                                    await File(selectedCmxFile.path).copy(Uri.file('${curSubmod.location}/${selectedCmxFile.name}').toFilePath());
+                                                                                if (copiedCmxFile.existsSync()) {
+                                                                                  curSubmod.cmxFile = copiedCmxFile.path;
+                                                                                  curSubmod.hasCmx = true;
                                                                                   saveModdedItemListToJson();
-                                                                                  setState(() {});
-                                                                                });
-                                                                              } else {
-                                                                                deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
-                                                                                  String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
-                                                                                  curSubmod.modFiles.remove(curModFile);
+                                                                                  if (curSubmod.cmxApplied!) {
+                                                                                    int startPos = -1, endPos = -1;
+                                                                                    (startPos, endPos) = await cmxModPatch(copiedCmxFile.path);
+                                                                                    if (startPos != -1 && endPos != -1) {
+                                                                                      curSubmod.cmxStartPos = startPos;
+                                                                                      curSubmod.cmxEndPos = endPos;
+                                                                                    }
+                                                                                  }
+                                                                                  saveModdedItemListToJson();
+                                                                                }
+                                                                              }
+                                                                              setState(() {});
+                                                                            },
+                                                                          )),
 
-                                                                                  if (curSubmod.modFiles.isEmpty) {
-                                                                                    curMod.submods.remove(curSubmod);
+                                                                      // rename
+                                                                      MenuItemButton(
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.edit_note,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiRename),
+                                                                        onPressed: () async {
+                                                                          String newName = await modsRenameDialog(context, curMod.location, curSubmod.location);
+                                                                          if (newName.isNotEmpty) {
+                                                                            //change paths
+                                                                            String oldSubmodPath = curSubmod.location;
+                                                                            String newSubmodPath = Uri.file('${curMod.location}/$newName').toFilePath();
+                                                                            if (oldSubmodPath == curMod.location) {
+                                                                              await Directory(newSubmodPath).create(recursive: true);
+                                                                              curSubmod.submodName = newName;
+                                                                              curSubmod.location = newSubmodPath;
+                                                                              curSubmod.previewImages.clear();
+                                                                              curSubmod.previewVideos.clear();
+                                                                              renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
+                                                                              for (var modFile in curSubmod.modFiles) {
+                                                                                modFile.submodName = newName;
+                                                                                String newModFilePath = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                                final movedFile = await File(modFile.location).rename(newModFilePath);
+                                                                                modFile.location = movedFile.path;
+                                                                              }
+                                                                            } else {
+                                                                              await Directory(oldSubmodPath).rename(newSubmodPath);
+                                                                              curSubmod.submodName = newName;
+                                                                              curSubmod.location = newSubmodPath;
+                                                                              curSubmod.previewImages.clear();
+                                                                              curSubmod.previewVideos.clear();
+                                                                              renamedPreviewPathsGet(curSubmod.location, curSubmod.previewImages, curSubmod.previewVideos);
+                                                                              for (var modFile in curSubmod.modFiles) {
+                                                                                modFile.submodName = newName;
+                                                                                modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
+                                                                              }
+                                                                            }
+                                                                            await modSetLoader();
+                                                                            saveSetListToJson();
+                                                                            saveModdedItemListToJson();
+                                                                            setState(() {});
+                                                                          }
+                                                                        },
+                                                                      ),
+
+                                                                      // swap
+                                                                      MenuItemButton(
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.swap_horizontal_circle_outlined,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiSwapToAnotherItem),
+                                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                      ),
+
+                                                                      // export
+                                                                      MenuItemButton(
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.import_export,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiExportThisMod),
+                                                                        onPressed: () async => modExportHomePage(context, moddedItemsList, [curSubmod], false),
+                                                                      ),
+
+                                                                      // open in file explorer
+                                                                      MenuItemButton(
+                                                                        leadingIcon: const Icon(
+                                                                          Icons.folder_open_outlined,
+                                                                        ),
+                                                                        child: Text(curLangText!.uiOpenInFileExplorer),
+                                                                        onPressed: () async {
+                                                                          if (Directory(Uri.file(curSubmod.location).toFilePath()).existsSync()) {
+                                                                            await launchUrl(Uri.file(curSubmod.location));
+                                                                          } else {
+                                                                            ScaffoldMessenger.of(context)
+                                                                                .showSnackBar(snackBarMessage(context, '${curLangText!.uiError}!', curLangText!.uiDirNotFound, 2000));
+                                                                          }
+                                                                        },
+                                                                      ),
+
+                                                                      // boundary
+                                                                      Visibility(
+                                                                        visible: curSubmod.category == defaultCategoryDirs[1] ||
+                                                                            curSubmod.category == defaultCategoryDirs[3] ||
+                                                                            curSubmod.category == defaultCategoryDirs[4] ||
+                                                                            curSubmod.category == defaultCategoryDirs[5] ||
+                                                                            curSubmod.category == defaultCategoryDirs[15] ||
+                                                                            curSubmod.category == defaultCategoryDirs[16],
+                                                                        child: MenuItemButton(
+                                                                          leadingIcon: const Icon(
+                                                                            Icons.radio_button_checked,
+                                                                          ),
+                                                                          child: Text(curLangText!.uiRemoveBoundaryRadius),
+                                                                          onPressed: () {
+                                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                              element.deleteSync(recursive: true);
+                                                                            });
+                                                                            isBoundaryEdited = false;
+                                                                            modsBoundaryEditHomePage(context, curSubmod);
+                                                                          },
+                                                                        ),
+                                                                      ),
+
+                                                                      //remove from set
+                                                                      Visibility(
+                                                                        visible: context.watch<StateProvider>().setsWindowVisible && curSubmod.isSet,
+                                                                        child: MenuItemButton(
+                                                                          leadingIcon: const Icon(
+                                                                            Icons.delete_forever_outlined,
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod);
+                                                                            saveSetListToJson();
+                                                                            saveModdedItemListToJson();
+                                                                            setState(() {});
+                                                                          },
+                                                                          child: Text(
+                                                                            curLangText!.uiRemoveFromThisSet,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      // delete
+                                                                      MenuItemButton(
+                                                                        leadingIcon: Icon(
+                                                                          Icons.delete_forever_outlined,
+                                                                          color: curSubmod.applyStatus ||
+                                                                                  curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                              ? Theme.of(context).disabledColor
+                                                                              : Colors.red,
+                                                                        ),
+                                                                        onPressed: curSubmod.applyStatus ||
+                                                                                curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                            ? null
+                                                                            : () async {
+                                                                                bool deleteConfirm = await modDeletionDialog(context, curSubmod.submodName);
+                                                                                if (deleteConfirm) {
+                                                                                  if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                                      if (modViewItem!.isSet) {
+                                                                                        for (var setName in modViewItem!.setNames) {
+                                                                                          int setIndex = modSetList.indexWhere((element) => element.setName == setName);
+                                                                                          if (setIndex != -1) {
+                                                                                            modSetList[setIndex].setItems.remove(modViewItem);
+                                                                                          }
+                                                                                        }
+                                                                                      }
+                                                                                      modViewCate!.items.remove(modViewItem);
+                                                                                      modViewItem = null;
+                                                                                      previewModName = '';
+                                                                                      previewImages.clear();
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                          uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                                      saveModdedItemListToJson();
+                                                                                      setState(() {});
+                                                                                    });
                                                                                   } else {
-                                                                                    curSubmod.isNew = curSubmod.getModFilesIsNewState();
+                                                                                    deleteSubmodFromModMan(curSubmod.location, curMod.location).then((value) {
+                                                                                      String removedName = '${curMod.modName} > ${curSubmod.submodName}';
+                                                                                      curMod.submods.remove(curSubmod);
+                                                                                      if (curMod.submods.isEmpty) {
+                                                                                        modViewItem!.mods.remove(curMod);
+                                                                                      } else {
+                                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                      }
+                                                                                      if (modViewItem!.mods.isEmpty) {
+                                                                                        modViewCate!.items.remove(modViewItem);
+                                                                                        modViewItem = null;
+                                                                                      } else {
+                                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                                      }
+                                                                                      previewModName = '';
+                                                                                      previewImages.clear();
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                          uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                                      saveModdedItemListToJson();
+                                                                                      setState(() {});
+                                                                                    });
                                                                                   }
-                                                                                  if (curMod.submods.isEmpty) {
-                                                                                    modViewItem!.mods.remove(curMod);
-                                                                                  } else {
-                                                                                    curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                }
+                                                                              },
+                                                                        child: Text(
+                                                                          curLangText!.uiRemoveFromMM,
+                                                                          style: TextStyle(
+                                                                              color: curSubmod.applyStatus ||
+                                                                                      curSubmod.location == curMod.location && Directory(curMod.location).listSync().whereType<Directory>().isNotEmpty
+                                                                                  ? Theme.of(context).disabledColor
+                                                                                  : Colors.red),
+                                                                        ),
+                                                                      ),
+                                                                    ])
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      children: [
+                                                        ListView.builder(
+                                                            shrinkWrap: true,
+                                                            physics: const NeverScrollableScrollPhysics(),
+                                                            itemCount: curSubmod.modFiles.length,
+                                                            itemBuilder: (context, modFileIndex) {
+                                                              var curModFile = curSubmod.modFiles[modFileIndex];
+                                                              return Visibility(
+                                                                visible: context.watch<StateProvider>().setsWindowVisible ? curModFile.isSet : true,
+                                                                child: ListTile(
+                                                                  tileColor: Colors.transparent,
+                                                                  //tileColor: Theme.of(context).canvasColor.withOpacity(context.watch<StateProvider>().uiOpacityValue),
+                                                                  trailing: Wrap(
+                                                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                                                    runAlignment: WrapAlignment.center,
+                                                                    spacing: 5,
+                                                                    children: [
+                                                                      //Add-Remove button
+                                                                      if (curModFile.applyStatus == false)
+                                                                        ModManTooltip(
+                                                                          message: uiInTextArg(curLangText!.uiApplyXToTheGame, curModFile.modFileName),
+                                                                          child: InkWell(
+                                                                            child: const Icon(
+                                                                              Icons.add,
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              //apply mod files
+                                                                              if (await originalFilesCheck(context, [curModFile])) {
+                                                                                modFilesApply(context, [curModFile]).then((value) async {
+                                                                                  if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) != -1) {
+                                                                                    curSubmod.applyDate = DateTime.now();
+                                                                                    modViewItem!.applyDate = DateTime.now();
+                                                                                    curMod.applyDate = DateTime.now();
+                                                                                    curSubmod.applyStatus = true;
+                                                                                    curSubmod.isNew = false;
+                                                                                    curMod.applyStatus = true;
+                                                                                    curMod.isNew = false;
+                                                                                    modViewItem!.applyStatus = true;
+                                                                                    if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
+                                                                                      modViewItem!.isNew = false;
+                                                                                    }
+                                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                                      await applyOverlayedIcon(context, modViewItem!);
+                                                                                    }
+                                                                                    List<ModFile> appliedModFiles = value;
+                                                                                    String fileAppliedText = '';
+                                                                                    for (var element in appliedModFiles) {
+                                                                                      if (fileAppliedText.isEmpty) {
+                                                                                        fileAppliedText = uiInTextArgs(
+                                                                                            curLangText!.uiSuccessfullyAppliedXInY, ['<x>', '<y>'], [curMod.modName, curSubmod.submodName]);
+                                                                                      }
+                                                                                      fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                    }
+                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                        snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                    appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   }
-                                                                                  if (modViewItem!.mods.isEmpty) {
-                                                                                    modViewCate!.items.remove(modViewItem);
-                                                                                    modViewItem = null;
-                                                                                  } else {
-                                                                                    modViewItem!.isNew = modViewItem!.getModsIsNewState();
-                                                                                  }
-                                                                                  previewModName = '';
-                                                                                  previewImages.clear();
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                      uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+
                                                                                   saveModdedItemListToJson();
                                                                                   setState(() {});
                                                                                 });
                                                                               }
+                                                                              setState(() {});
                                                                             },
-                                                                      child: Icon(
-                                                                        Icons.delete_forever_outlined,
-                                                                        color: curModFile.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                                          ),
+                                                                        ),
+                                                                      if (curModFile.applyStatus == true)
+                                                                        ModManTooltip(
+                                                                          message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, curModFile.modFileName),
+                                                                          child: InkWell(
+                                                                            child: const Icon(
+                                                                              Icons.remove,
+                                                                            ),
+                                                                            onTap: () async {
+                                                                              //status
+                                                                              restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
+                                                                                if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                  curSubmod.applyStatus = false;
+                                                                                }
+                                                                                if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                  curMod.applyStatus = false;
+                                                                                }
+                                                                                if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                  modViewItem!.applyStatus = false;
+                                                                                  await restoreOverlayedIcon(modViewItem!);
+                                                                                }
+
+                                                                                await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
+                                                                                appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                saveModdedItemListToJson();
+                                                                                setState(() {});
+                                                                              });
+                                                                            },
+                                                                          ),
+                                                                        ),
+
+                                                                      //Remove from current Set
+                                                                      Visibility(
+                                                                        visible: context.watch<StateProvider>().setsWindowVisible,
+                                                                        child: ModManTooltip(
+                                                                          message: uiInTextArg(curLangText!.uiHoldToRemoveXFromThisSet, curModFile.modFileName),
+                                                                          child: InkWell(
+                                                                            onLongPress: () {
+                                                                              removeModFileFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod, curModFile);
+                                                                              saveSetListToJson();
+                                                                              saveModdedItemListToJson();
+                                                                              setState(() {});
+                                                                            },
+                                                                            child: const Icon(Icons.delete_forever_outlined),
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                    ),
+
+                                                                      //Delete
+                                                                      ModManTooltip(
+                                                                        message: uiInTextArg(curLangText!.uiHoldToRemoveXFromModMan, curModFile.modFileName),
+                                                                        child: InkWell(
+                                                                          onLongPress: curModFile.applyStatus
+                                                                              ? null
+                                                                              : () async {
+                                                                                  if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
+                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                      String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
+                                                                                      modViewCate!.items.remove(modViewItem);
+                                                                                      modViewItem = null;
+                                                                                      previewModName = '';
+                                                                                      previewImages.clear();
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                          uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                                      saveModdedItemListToJson();
+                                                                                      setState(() {});
+                                                                                    });
+                                                                                  } else {
+                                                                                    deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
+                                                                                      String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
+                                                                                      curSubmod.modFiles.remove(curModFile);
+
+                                                                                      if (curSubmod.modFiles.isEmpty) {
+                                                                                        curMod.submods.remove(curSubmod);
+                                                                                      } else {
+                                                                                        curSubmod.isNew = curSubmod.getModFilesIsNewState();
+                                                                                      }
+                                                                                      if (curMod.submods.isEmpty) {
+                                                                                        modViewItem!.mods.remove(curMod);
+                                                                                      } else {
+                                                                                        curMod.isNew = curMod.getSubmodsIsNewState();
+                                                                                      }
+                                                                                      if (modViewItem!.mods.isEmpty) {
+                                                                                        modViewCate!.items.remove(modViewItem);
+                                                                                        modViewItem = null;
+                                                                                      } else {
+                                                                                        modViewItem!.isNew = modViewItem!.getModsIsNewState();
+                                                                                      }
+                                                                                      previewModName = '';
+                                                                                      previewImages.clear();
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                          uiInTextArg(curLangText!.uiSuccessfullyRemovedXFromModMan, removedName), 3000));
+                                                                                      saveModdedItemListToJson();
+                                                                                      setState(() {});
+                                                                                    });
+                                                                                  }
+                                                                                },
+                                                                          child: Icon(
+                                                                            Icons.delete_forever_outlined,
+                                                                            color: curModFile.applyStatus ? Theme.of(context).disabledColor : Colors.red,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              title: Text(
-                                                                curModFile.modFileName,
-                                                                style: TextStyle(color: curModFile.applyStatus ? Theme.of(context).colorScheme.primary : null),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        })
-                                                  ],
+                                                                  title: Text(
+                                                                    curModFile.modFileName,
+                                                                    style: TextStyle(color: curModFile.applyStatus ? Theme.of(context).colorScheme.primary : null),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            })
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }),
-                                    ],
+                                              );
+                                            }),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -4378,14 +4396,15 @@ class _HomePageState extends State<HomePage> {
                                 isModViewModsRemoving = true;
                                 isModViewModsApplying = true;
                                 setState(() {});
-                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
-                                  reapplySelectedAppliedMods(context).then((value) {
-                                    isModViewModsRemoving = false;
-                                    isModViewModsApplying = false;
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                    setState(() {});
-                                  });
+                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                                  final reappliedList = await reapplySelectedAppliedMods(context);
+                                  // .then((value) {
+                                  isModViewModsRemoving = false;
+                                  isModViewModsApplying = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, reappliedList.first, reappliedList[1], 3000));
+                                  setState(() {});
                                 });
+                                // });
                               },
                         child: Icon(
                           Icons.playlist_add,
@@ -4417,14 +4436,15 @@ class _HomePageState extends State<HomePage> {
                                 isModViewModsRemoving = true;
                                 isModViewModsApplying = true;
                                 setState(() {});
-                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                  unapplySelectedAppliedMods(context).then((value) {
-                                    isModViewModsRemoving = false;
-                                    isModViewModsApplying = false;
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                    setState(() {});
-                                  });
+                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
+                                  final unappliedList = await unapplySelectedAppliedMods(context);
+                                  // .then((value) {
+                                  isModViewModsRemoving = false;
+                                  isModViewModsApplying = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, unappliedList.first, unappliedList[1], 3000));
+                                  setState(() {});
                                 });
+                                // });
                               },
                         child: Icon(
                           Icons.playlist_remove,
@@ -4675,125 +4695,127 @@ class _HomePageState extends State<HomePage> {
                                                   }
                                                   setState(() {});
                                                 },
-                                                child: ListTile(
-                                                  tileColor: Colors.transparent,
-                                                  onTap: () {
-                                                    isModViewListHidden = false;
-                                                    isModViewFromApplied = true;
-                                                    modViewItem = curItem;
-                                                    setState(() {});
-                                                  },
-                                                  iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  title: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                        child: Container(
-                                                            width: 80,
-                                                            height: 80,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              border: Border.all(
-                                                                  color: curItem.applyStatus
-                                                                      ? Theme.of(context).colorScheme.primary
-                                                                      : curItem.isNew
-                                                                          ? Colors.amber
-                                                                          : Theme.of(context).hintColor,
-                                                                  width: curItem.isNew || curItem.applyStatus ? 3 : 1),
-                                                            ),
-                                                            child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
-                                                                ? Image.asset(
-                                                                    'assets/img/placeholdersquare.png',
-                                                                    filterQuality: FilterQuality.none,
-                                                                    fit: BoxFit.fitWidth,
-                                                                  )
-                                                                : curItem.icons.length > 1
-                                                                    ? ItemIconsCarousel(iconPaths: curItem.icons)
-                                                                    : Image.file(
-                                                                        File(curItem.icons.first),
-                                                                        filterQuality: FilterQuality.none,
-                                                                        fit: BoxFit.cover,
-                                                                      )),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              children: [
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    curItem.itemName.replaceAll('_', '/'),
-                                                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 5),
-                                                                  child: Wrap(
-                                                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                                                    runAlignment: WrapAlignment.center,
-                                                                    children: [
-                                                                      ModManTooltip(
-                                                                          message: uiInTextArg(curLangText!.uiOpenXInFileExplorer, curItem.itemName.replaceAll('_', '/')),
-                                                                          child: InkWell(
-                                                                            child: const Icon(Icons.folder_open),
-                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            const Divider(
-                                                              endIndent: 5,
-                                                              height: 5,
-                                                              thickness: 1,
-                                                            ),
-                                                            for (int m = 0; m < applyingModNames.length; m++)
+                                                child: ModManPreviewTooltip(
+                                                  child: ListTile(
+                                                    tileColor: Colors.transparent,
+                                                    onTap: () {
+                                                      isModViewListHidden = false;
+                                                      isModViewFromApplied = true;
+                                                      modViewItem = curItem;
+                                                      setState(() {});
+                                                    },
+                                                    iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                    textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                    title: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                          child: Container(
+                                                              width: 80,
+                                                              height: 80,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(3),
+                                                                border: Border.all(
+                                                                    color: curItem.applyStatus
+                                                                        ? Theme.of(context).colorScheme.primary
+                                                                        : curItem.isNew
+                                                                            ? Colors.amber
+                                                                            : Theme.of(context).hintColor,
+                                                                    width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                              ),
+                                                              child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
+                                                                  ? Image.asset(
+                                                                      'assets/img/placeholdersquare.png',
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.fitWidth,
+                                                                    )
+                                                                  : curItem.icons.length > 1
+                                                                      ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                      : Image.file(
+                                                                          File(curItem.icons.first),
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.cover,
+                                                                        )),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
                                                               Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                 children: [
                                                                   Expanded(
                                                                     child: Text(
-                                                                      applyingModNames[m],
-                                                                      //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                      curItem.itemName.replaceAll('_', '/'),
+                                                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                     ),
                                                                   ),
                                                                   Padding(
-                                                                    padding: const EdgeInsets.only(top: 5),
+                                                                    padding: const EdgeInsets.only(left: 5),
                                                                     child: Wrap(
                                                                       crossAxisAlignment: WrapCrossAlignment.center,
                                                                       runAlignment: WrapAlignment.center,
-                                                                      spacing: 5,
                                                                       children: [
-                                                                        //checkbox
                                                                         ModManTooltip(
-                                                                          message: modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
-                                                                              ? uiInTextArg(curLangText!.uiDeselectX, applyingModNames[m])
-                                                                              : uiInTextArg(curLangText!.uiSelectX, applyingModNames[m]),
-                                                                          child: InkWell(
-                                                                            onTap: () async {
-                                                                              if (modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])) {
-                                                                                for (var modFile in allAppliedModFiles[m]) {
-                                                                                  selectedModFilesInAppliedList.removeWhere((element) => element.location == modFile.location);
-                                                                                  selectedSubmodsInAppliedList.removeWhere((element) => element.location == p.dirname(modFile.location));
-                                                                                }
-                                                                              } else {
-                                                                                selectedModFilesInAppliedList.addAll(allAppliedModFiles[m]);
-                                                                                for (var type in appliedItemList) {
-                                                                                  for (var cate in type.categories) {
-                                                                                    for (var item in cate.items) {
-                                                                                      if (item.applyStatus) {
-                                                                                        for (var mod in item.mods) {
-                                                                                          if (mod.applyStatus) {
-                                                                                            for (var submod in mod.submods) {
-                                                                                              if (submod.applyStatus && submod.location == File(allAppliedModFiles[m].first.location).parent.path) {
-                                                                                                selectedSubmodsInAppliedList.add(submod);
+                                                                            message: uiInTextArg(curLangText!.uiOpenXInFileExplorer, curItem.itemName.replaceAll('_', '/')),
+                                                                            child: InkWell(
+                                                                              child: const Icon(Icons.folder_open),
+                                                                              onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                            )),
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              const Divider(
+                                                                endIndent: 5,
+                                                                height: 5,
+                                                                thickness: 1,
+                                                              ),
+                                                              for (int m = 0; m < applyingModNames.length; m++)
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        applyingModNames[m],
+                                                                        //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 5),
+                                                                      child: Wrap(
+                                                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                                                        runAlignment: WrapAlignment.center,
+                                                                        spacing: 5,
+                                                                        children: [
+                                                                          //checkbox
+                                                                          ModManTooltip(
+                                                                            message: modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
+                                                                                ? uiInTextArg(curLangText!.uiDeselectX, applyingModNames[m])
+                                                                                : uiInTextArg(curLangText!.uiSelectX, applyingModNames[m]),
+                                                                            child: InkWell(
+                                                                              onTap: () async {
+                                                                                if (modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])) {
+                                                                                  for (var modFile in allAppliedModFiles[m]) {
+                                                                                    selectedModFilesInAppliedList.removeWhere((element) => element.location == modFile.location);
+                                                                                    selectedSubmodsInAppliedList.removeWhere((element) => element.location == p.dirname(modFile.location));
+                                                                                  }
+                                                                                } else {
+                                                                                  selectedModFilesInAppliedList.addAll(allAppliedModFiles[m]);
+                                                                                  for (var type in appliedItemList) {
+                                                                                    for (var cate in type.categories) {
+                                                                                      for (var item in cate.items) {
+                                                                                        if (item.applyStatus) {
+                                                                                          for (var mod in item.mods) {
+                                                                                            if (mod.applyStatus) {
+                                                                                              for (var submod in mod.submods) {
+                                                                                                if (submod.applyStatus && submod.location == File(allAppliedModFiles[m].first.location).parent.path) {
+                                                                                                  selectedSubmodsInAppliedList.add(submod);
+                                                                                                }
                                                                                               }
                                                                                             }
                                                                                           }
@@ -4802,44 +4824,44 @@ class _HomePageState extends State<HomePage> {
                                                                                     }
                                                                                   }
                                                                                 }
-                                                                              }
-                                                                              setState(() {});
-                                                                            },
-                                                                            child: Icon(
-                                                                              size: 28,
-                                                                              color:
-                                                                                  modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m]) ? Theme.of(context).colorScheme.primary : null,
-                                                                              modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
-                                                                                  ? Icons.check_box_outlined
-                                                                                  : Icons.check_box_outline_blank_outlined,
+                                                                                setState(() {});
+                                                                              },
+                                                                              child: Icon(
+                                                                                size: 28,
+                                                                                color:
+                                                                                    modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m]) ? Theme.of(context).colorScheme.primary : null,
+                                                                                modFilesInList(selectedModFilesInAppliedList, allAppliedModFiles[m])
+                                                                                    ? Icons.check_box_outlined
+                                                                                    : Icons.check_box_outline_blank_outlined,
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
 
-                                                                        if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
-                                                                          Stack(
-                                                                            children: [
-                                                                              Visibility(
-                                                                                visible: isModViewModsRemoving,
-                                                                                child: const SizedBox(
-                                                                                  width: 20,
-                                                                                  height: 20,
-                                                                                  child: CircularProgressIndicator(),
+                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
+                                                                            Stack(
+                                                                              children: [
+                                                                                Visibility(
+                                                                                  visible: isModViewModsRemoving,
+                                                                                  child: const SizedBox(
+                                                                                    width: 20,
+                                                                                    height: 20,
+                                                                                    child: CircularProgressIndicator(),
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                              Visibility(
-                                                                                visible: !isModViewModsRemoving,
-                                                                                child: ModManTooltip(
-                                                                                  message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
-                                                                                  child: InkWell(
-                                                                                    child: const Icon(
-                                                                                      FontAwesomeIcons.squareMinus,
-                                                                                    ),
-                                                                                    onTap: () async {
-                                                                                      isModViewModsRemoving = true;
-                                                                                      setState(() {});
-                                                                                      Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                                                                        restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
+                                                                                Visibility(
+                                                                                  visible: !isModViewModsRemoving,
+                                                                                  child: ModManTooltip(
+                                                                                    message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
+                                                                                    child: InkWell(
+                                                                                      child: const Icon(
+                                                                                        FontAwesomeIcons.squareMinus,
+                                                                                      ),
+                                                                                      onTap: () async {
+                                                                                        isModViewModsRemoving = true;
+                                                                                        setState(() {});
+                                                                                        Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
+                                                                                          final restoredMods = await restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]);
+                                                                                          // .then((value) async {
                                                                                           previewImages.clear();
                                                                                           // videoPlayer.remove(0);
                                                                                           for (var mod in curMods) {
@@ -4872,42 +4894,41 @@ class _HomePageState extends State<HomePage> {
                                                                                           }
 
                                                                                           if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                            await restoreOverlayedIcon(curItem);
                                                                                             curItem.applyStatus = false;
                                                                                             curItem.applyDate = DateTime(0);
                                                                                           }
 
-                                                                                          filesRestoredMessage(context, allAppliedModFiles[m], value);
+                                                                                          await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], restoredMods);
                                                                                           appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                           if (appliedItemList.isEmpty) {
                                                                                             previewModName = '';
                                                                                             previewImages.clear();
-
-                                                                                            // videoPlayer.remove(0);
                                                                                           }
                                                                                           isModViewModsRemoving = false;
                                                                                           saveModdedItemListToJson();
                                                                                           setState(() {});
+                                                                                          // });
                                                                                         });
-                                                                                        //}
-                                                                                      });
-                                                                                    },
+                                                                                      },
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        //Apply button in submod
-                                                                        if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
-                                                                          ModManTooltip(
-                                                                            message: uiInTextArg(curLangText!.uiApplyXToTheGame, applyingModNames[m]),
-                                                                            child: InkWell(
-                                                                              onTap: () async {
-                                                                                //apply mod files
-                                                                                if (await originalFilesCheck(context, allAppliedModFiles[m])) {
-                                                                                  //local original files backup
-                                                                                  //await localOriginalFilesBackup(allAppliedModFiles[m]);
+                                                                              ],
+                                                                            ),
+                                                                          //Apply button in submod
+                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
+                                                                            ModManTooltip(
+                                                                              message: uiInTextArg(curLangText!.uiApplyXToTheGame, applyingModNames[m]),
+                                                                              child: InkWell(
+                                                                                onTap: () async {
+                                                                                  //apply mod files
+                                                                                  if (await originalFilesCheck(context, allAppliedModFiles[m])) {
+                                                                                    //local original files backup
+                                                                                    //await localOriginalFilesBackup(allAppliedModFiles[m]);
 
-                                                                                  modFilesApply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                    final appliedModFiles = await modFilesApply(context, allAppliedModFiles[m]);
+                                                                                    // .then((value) async {
                                                                                     if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
                                                                                       int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
                                                                                       int curSubModIndex = curItem.mods[curModIndex].submods
@@ -4923,7 +4944,10 @@ class _HomePageState extends State<HomePage> {
                                                                                         curItem.isNew = false;
                                                                                       }
                                                                                       curItem.applyDate = DateTime.now();
-                                                                                      List<ModFile> appliedModFiles = value;
+                                                                                      if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                                        await applyOverlayedIcon(context, curItem);
+                                                                                      }
+                                                                                      // List<ModFile> appliedModFiles = value;
                                                                                       String fileAppliedText = '';
                                                                                       for (var element in appliedModFiles) {
                                                                                         if (fileAppliedText.isEmpty) {
@@ -4938,51 +4962,52 @@ class _HomePageState extends State<HomePage> {
 
                                                                                     saveModdedItemListToJson();
                                                                                     setState(() {});
-                                                                                  });
-                                                                                }
-                                                                                setState(() {});
-                                                                              },
-                                                                              child: const Icon(
-                                                                                FontAwesomeIcons.squarePlus,
+                                                                                    // });
+                                                                                  }
+                                                                                  setState(() {});
+                                                                                },
+                                                                                child: const Icon(
+                                                                                  FontAwesomeIcons.squarePlus,
+                                                                                ),
                                                                               ),
-                                                                            ),
-                                                                          )
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            Wrap(
-                                                              spacing: 5,
-                                                              children: [
-                                                                Text(
-                                                                  '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
-                                                                  //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                            )
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
                                                                 ),
-                                                                if (curMods.where((mod) => mod.submods.where((submod) => submod.hasCmx!).isNotEmpty).isNotEmpty)
-                                                                  Container(
-                                                                    padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
-                                                                    decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                          color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
-                                                                              ? Theme.of(context).colorScheme.primary
-                                                                              : Theme.of(context).primaryColorLight),
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                                                    ),
-                                                                    child: Text(curLangText!.uiCmx,
-                                                                        style: TextStyle(
-                                                                          color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
-                                                                              ? Theme.of(context).colorScheme.primary
-                                                                              : null,
-                                                                          fontSize: 15,
-                                                                        )),
+                                                              Wrap(
+                                                                spacing: 5,
+                                                                children: [
+                                                                  Text(
+                                                                    '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
+                                                                    //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
                                                                   ),
-                                                              ],
-                                                            )
-                                                          ],
+                                                                  if (curMods.where((mod) => mod.submods.where((submod) => submod.hasCmx!).isNotEmpty).isNotEmpty)
+                                                                    Container(
+                                                                      padding: const EdgeInsets.only(left: 2, right: 2, top: 0, bottom: 1),
+                                                                      decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                            color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
+                                                                                ? Theme.of(context).colorScheme.primary
+                                                                                : Theme.of(context).primaryColorLight),
+                                                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                                                      ),
+                                                                      child: Text(curLangText!.uiCmx,
+                                                                          style: TextStyle(
+                                                                            color: curMods.where((mod) => mod.submods.where((submod) => submod.cmxApplied!).isNotEmpty).isNotEmpty
+                                                                                ? Theme.of(context).colorScheme.primary
+                                                                                : null,
+                                                                            fontSize: 15,
+                                                                          )),
+                                                                    ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -5303,10 +5328,11 @@ class _HomePageState extends State<HomePage> {
                                                               for (var item in curSet.setItems) {
                                                                 if (item.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                   item.applyStatus = false;
+                                                                  await restoreOverlayedIcon(item);
                                                                 }
                                                               }
 
-                                                              filesRestoredMessage(context, allAppliedModFiles, value);
+                                                              await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles, value);
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                               if (appliedItemList.isEmpty) {
                                                                 previewModName = '';
@@ -5379,6 +5405,7 @@ class _HomePageState extends State<HomePage> {
                                                                     if (curItem.mods.where((element) => element.isNew).isEmpty) {
                                                                       curItem.isNew = false;
                                                                     }
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, curItem);
                                                                   }
                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                   List<ModFile> appliedModFiles = value;
@@ -5517,281 +5544,287 @@ class _HomePageState extends State<HomePage> {
                                                   }
                                                   setState(() {});
                                                 },
-                                                child: ListTile(
-                                                  tileColor: Colors.transparent,
-                                                  onTap: () {
-                                                    isModViewListHidden = false;
-                                                    isModViewFromApplied = false;
-                                                    modViewItem = curItem;
-                                                    selectedModSetName = curSet.setName;
-                                                    setState(() {});
-                                                  },
-                                                  iconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  textColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                                  title: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
-                                                        child: Container(
-                                                            width: 80,
-                                                            height: 80,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(3),
-                                                              border: Border.all(
-                                                                  color: curItem.applyStatus
-                                                                      ? Theme.of(context).colorScheme.primary
-                                                                      : curItem.isNew
-                                                                          ? Colors.amber
-                                                                          : Theme.of(context).hintColor,
-                                                                  width: curItem.isNew || curItem.applyStatus ? 3 : 1),
-                                                            ),
-                                                            child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
-                                                                ? Image.asset(
-                                                                    'assets/img/placeholdersquare.png',
-                                                                    filterQuality: FilterQuality.none,
-                                                                    fit: BoxFit.fitWidth,
-                                                                  )
-                                                                : curItem.icons.length > 1
-                                                                    ? ItemIconsCarousel(iconPaths: curItem.icons)
-                                                                    : Image.file(
-                                                                        File(curItem.icons.first),
-                                                                        filterQuality: FilterQuality.none,
-                                                                        fit: BoxFit.cover,
-                                                                      )),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              children: [
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    curItem.itemName.replaceAll('_', '/'),
-                                                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.only(left: 5),
-                                                                  child: Wrap(
-                                                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                                                    runAlignment: WrapAlignment.center,
-                                                                    spacing: 5,
-                                                                    children: [
-                                                                      //open
-                                                                      ModManTooltip(
-                                                                          message: uiInTextArg(curLangText!.uiOpenXInFileExplorer, curItem.itemName.replaceAll('_', '/')),
-                                                                          child: InkWell(
-                                                                            child: const Icon(Icons.folder_open),
-                                                                            onTap: () async => await launchUrl(Uri.file(curItem.location)),
-                                                                          )),
-                                                                      //remove from set
-                                                                      ModManTooltip(
-                                                                          message: uiInTextArg(curLangText!.uiHoldToRemoveXFromThisSet, curItem.itemName.replaceAll('_', '/')),
-                                                                          child: InkWell(
-                                                                            onLongPress: () {
-                                                                              String tempItemName = curItem.itemName.replaceAll('_', '/');
-                                                                              removeModSetNameFromItems(curSet.setName, [curItem]);
-                                                                              modViewItem = null;
-                                                                              curSet.setItems.remove(curItem);
-                                                                              saveSetListToJson();
-                                                                              saveModdedItemListToJson();
-                                                                              ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
-                                                                                  uiInTextArgs(curLangText!.uiSuccessfullyRemovedXFromY, ['<x>', '<y>'], [tempItemName, curSet.setName]), 3000));
-                                                                              setState(() {});
-                                                                            },
-                                                                            child: const Icon(Icons.delete_forever_outlined),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            const Divider(
-                                                              endIndent: 5,
-                                                              height: 5,
-                                                              thickness: 1,
-                                                            ),
-                                                            for (int m = 0; m < applyingModNames.length; m++)
+                                                child: ModManPreviewTooltip(
+                                                  child: ListTile(
+                                                    tileColor: Colors.transparent,
+                                                    onTap: () {
+                                                      isModViewListHidden = false;
+                                                      isModViewFromApplied = false;
+                                                      modViewItem = curItem;
+                                                      selectedModSetName = curSet.setName;
+                                                      setState(() {});
+                                                    },
+                                                    iconColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                    textColor: Theme.of(context).textTheme.bodyMedium!.color,
+                                                    title: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 2, bottom: 2, right: 10),
+                                                          child: Container(
+                                                              width: 80,
+                                                              height: 80,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(3),
+                                                                border: Border.all(
+                                                                    color: curItem.applyStatus
+                                                                        ? Theme.of(context).colorScheme.primary
+                                                                        : curItem.isNew
+                                                                            ? Colors.amber
+                                                                            : Theme.of(context).hintColor,
+                                                                    width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                              ),
+                                                              child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
+                                                                  ? Image.asset(
+                                                                      'assets/img/placeholdersquare.png',
+                                                                      filterQuality: FilterQuality.none,
+                                                                      fit: BoxFit.fitWidth,
+                                                                    )
+                                                                  : curItem.icons.length > 1
+                                                                      ? ItemIconsCarousel(iconPaths: curItem.icons)
+                                                                      : Image.file(
+                                                                          File(curItem.icons.first),
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.cover,
+                                                                        )),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
                                                               Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                 children: [
                                                                   Expanded(
                                                                     child: Text(
-                                                                      applyingModNames[m],
-                                                                      //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                      curItem.itemName.replaceAll('_', '/'),
+                                                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                                                     ),
                                                                   ),
                                                                   Padding(
-                                                                    padding: const EdgeInsets.only(top: 5),
+                                                                    padding: const EdgeInsets.only(left: 5),
                                                                     child: Wrap(
                                                                       crossAxisAlignment: WrapCrossAlignment.center,
                                                                       runAlignment: WrapAlignment.center,
                                                                       spacing: 5,
                                                                       children: [
-                                                                        if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
-                                                                          Stack(
-                                                                            children: [
-                                                                              Visibility(
-                                                                                visible: isModViewModsRemoving,
-                                                                                child: const SizedBox(
-                                                                                  width: 20,
-                                                                                  height: 20,
-                                                                                  child: CircularProgressIndicator(),
-                                                                                ),
-                                                                              ),
-                                                                              Visibility(
-                                                                                visible: !isModViewModsRemoving,
-                                                                                child: ModManTooltip(
-                                                                                  message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
-                                                                                  child: InkWell(
-                                                                                    child: const Icon(
-                                                                                      FontAwesomeIcons.squareMinus,
-                                                                                    ),
-                                                                                    onTap: () async {
-                                                                                      isModViewModsRemoving = true;
-                                                                                      setState(() {});
-                                                                                      Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                                                                        //status
-                                                                                        restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
-                                                                                          previewImages.clear();
-                                                                                          // videoPlayer.remove(0);
-                                                                                          for (var mod in curMods) {
-                                                                                            for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                                                              if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                                if (submod.cmxApplied!) {
-                                                                                                  bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
-                                                                                                  if (status) {
-                                                                                                    submod.cmxApplied = false;
-                                                                                                    submod.cmxStartPos = -1;
-                                                                                                    submod.cmxEndPos = -1;
-                                                                                                  }
-                                                                                                }
-                                                                                                submod.applyStatus = false;
-                                                                                              }
-                                                                                              if (submod.applyStatus) {
-                                                                                                for (var path in submod.previewImages) {
-                                                                                                  previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
-                                                                                                }
-                                                                                                for (var path in submod.previewVideos) {
-                                                                                                  previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
-                                                                                                }
-                                                                                              }
-                                                                                            }
-                                                                                            if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              mod.applyStatus = false;
-                                                                                            }
-                                                                                          }
-
-                                                                                          if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                            curItem.applyStatus = false;
-                                                                                          }
-
-                                                                                          filesRestoredMessage(context, allAppliedModFiles[m], value);
-                                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                                          if (appliedItemList.isEmpty) {
-                                                                                            previewModName = '';
-                                                                                            previewImages.clear();
-                                                                                            // videoPlayer.remove(0);
-                                                                                          }
-
-                                                                                          isModViewModsRemoving = false;
-                                                                                          saveModdedItemListToJson();
-                                                                                          setState(() {});
-                                                                                        });
-                                                                                        //}
-                                                                                      });
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        //Apply button in submod
-                                                                        if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
-                                                                          ModManTooltip(
-                                                                            message: uiInTextArg(curLangText!.uiApplyXToTheGame, applyingModNames[m]),
+                                                                        //open
+                                                                        ModManTooltip(
+                                                                            message: uiInTextArg(curLangText!.uiOpenXInFileExplorer, curItem.itemName.replaceAll('_', '/')),
                                                                             child: InkWell(
-                                                                              onTap: () async {
-                                                                                //apply mod files
-                                                                                if (await originalFilesCheck(context, allAppliedModFiles[m])) {
-                                                                                  //local original files backup
-                                                                                  //await localOriginalFilesBackup(allAppliedModFiles[m]);
-                                                                                  modFilesApply(context, allAppliedModFiles[m]).then((value) async {
-                                                                                    if (value.indexWhere((element) => element.applyStatus) != -1) {
-                                                                                      // for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                                                      //   for (var curSubmod
-                                                                                      //       in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
-                                                                                      //     curSubmod.applyStatus = true;
-                                                                                      //     curSubmod.isNew = false;
-                                                                                      //     curSubmod.applyDate = DateTime.now();
-                                                                                      //   }
-                                                                                      //   curMod.applyStatus = true;
-                                                                                      //   curMod.isNew = false;
-                                                                                      //   curMod.applyDate = DateTime.now();
-                                                                                      // }
-                                                                                      // curItem.applyDate = DateTime.now();
-                                                                                      // curItem.applyStatus = true;
-                                                                                      // if (curItem.mods.where((element) => element.isNew).isEmpty) {
-                                                                                      //   curItem.isNew = false;
-                                                                                      // }
-
-                                                                                      int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
-                                                                                      int curSubModIndex = curItem.mods[curModIndex].submods
-                                                                                          .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
-                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
-                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
-                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
-                                                                                      curItem.mods[curModIndex].applyStatus = true;
-                                                                                      curItem.mods[curModIndex].isNew = false;
-                                                                                      curItem.mods[curModIndex].applyDate = DateTime.now();
-
-                                                                                      curItem.applyStatus = true;
-                                                                                      if (curItem.mods.where((element) => element.isNew).isEmpty) {
-                                                                                        curItem.isNew = false;
-                                                                                      }
-                                                                                      curItem.applyDate = DateTime.now();
-                                                                                      List<ModFile> appliedModFiles = value;
-                                                                                      String fileAppliedText = '';
-                                                                                      for (var element in appliedModFiles) {
-                                                                                        if (fileAppliedText.isEmpty) {
-                                                                                          fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, applyingModNames[m]);
-                                                                                        }
-                                                                                        fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                                      }
-                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                          context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                                      setState(() {});
-                                                                                    }
-
-                                                                                    saveModdedItemListToJson();
-                                                                                  });
-                                                                                }
+                                                                              child: const Icon(Icons.folder_open),
+                                                                              onTap: () async => await launchUrl(Uri.file(curItem.location)),
+                                                                            )),
+                                                                        //remove from set
+                                                                        ModManTooltip(
+                                                                            message: uiInTextArg(curLangText!.uiHoldToRemoveXFromThisSet, curItem.itemName.replaceAll('_', '/')),
+                                                                            child: InkWell(
+                                                                              onLongPress: () {
+                                                                                String tempItemName = curItem.itemName.replaceAll('_', '/');
+                                                                                removeModSetNameFromItems(curSet.setName, [curItem]);
+                                                                                modViewItem = null;
+                                                                                curSet.setItems.remove(curItem);
+                                                                                saveSetListToJson();
+                                                                                saveModdedItemListToJson();
+                                                                                ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!',
+                                                                                    uiInTextArgs(curLangText!.uiSuccessfullyRemovedXFromY, ['<x>', '<y>'], [tempItemName, curSet.setName]), 3000));
                                                                                 setState(() {});
                                                                               },
-                                                                              child: const Icon(
-                                                                                FontAwesomeIcons.squarePlus,
-                                                                              ),
-                                                                            ),
-                                                                          )
+                                                                              child: const Icon(Icons.delete_forever_outlined),
+                                                                            )),
                                                                       ],
                                                                     ),
                                                                   )
                                                                 ],
                                                               ),
-                                                            Text(
-                                                              '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
-                                                              //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
-                                                            ),
-                                                          ],
+                                                              const Divider(
+                                                                endIndent: 5,
+                                                                height: 5,
+                                                                thickness: 1,
+                                                              ),
+                                                              for (int m = 0; m < applyingModNames.length; m++)
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        applyingModNames[m],
+                                                                        //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 5),
+                                                                      child: Wrap(
+                                                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                                                        runAlignment: WrapAlignment.center,
+                                                                        spacing: 5,
+                                                                        children: [
+                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
+                                                                            Stack(
+                                                                              children: [
+                                                                                Visibility(
+                                                                                  visible: isModViewModsRemoving,
+                                                                                  child: const SizedBox(
+                                                                                    width: 20,
+                                                                                    height: 20,
+                                                                                    child: CircularProgressIndicator(),
+                                                                                  ),
+                                                                                ),
+                                                                                Visibility(
+                                                                                  visible: !isModViewModsRemoving,
+                                                                                  child: ModManTooltip(
+                                                                                    message: uiInTextArg(curLangText!.uiRemoveXFromTheGame, applyingModNames[m]),
+                                                                                    child: InkWell(
+                                                                                      child: const Icon(
+                                                                                        FontAwesomeIcons.squareMinus,
+                                                                                      ),
+                                                                                      onTap: () async {
+                                                                                        isModViewModsRemoving = true;
+                                                                                        setState(() {});
+                                                                                        Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                                                                          //status
+                                                                                          restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
+                                                                                            previewImages.clear();
+                                                                                            // videoPlayer.remove(0);
+                                                                                            for (var mod in curMods) {
+                                                                                              for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                                                                if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                  if (submod.cmxApplied!) {
+                                                                                                    bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
+                                                                                                    if (status) {
+                                                                                                      submod.cmxApplied = false;
+                                                                                                      submod.cmxStartPos = -1;
+                                                                                                      submod.cmxEndPos = -1;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  submod.applyStatus = false;
+                                                                                                }
+                                                                                                if (submod.applyStatus) {
+                                                                                                  for (var path in submod.previewImages) {
+                                                                                                    previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
+                                                                                                  }
+                                                                                                  for (var path in submod.previewVideos) {
+                                                                                                    previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
+                                                                                                  }
+                                                                                                }
+                                                                                              }
+                                                                                              if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                mod.applyStatus = false;
+                                                                                              }
+                                                                                            }
+
+                                                                                            if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                              curItem.applyStatus = false;
+                                                                                              await restoreOverlayedIcon(curItem);
+                                                                                            }
+
+                                                                                            await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], value);
+                                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                            if (appliedItemList.isEmpty) {
+                                                                                              previewModName = '';
+                                                                                              previewImages.clear();
+                                                                                              // videoPlayer.remove(0);
+                                                                                            }
+
+                                                                                            isModViewModsRemoving = false;
+                                                                                            saveModdedItemListToJson();
+                                                                                            setState(() {});
+                                                                                          });
+                                                                                          //}
+                                                                                        });
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          //Apply button in submod
+                                                                          if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == false) != -1)
+                                                                            ModManTooltip(
+                                                                              message: uiInTextArg(curLangText!.uiApplyXToTheGame, applyingModNames[m]),
+                                                                              child: InkWell(
+                                                                                onTap: () async {
+                                                                                  //apply mod files
+                                                                                  if (await originalFilesCheck(context, allAppliedModFiles[m])) {
+                                                                                    //local original files backup
+                                                                                    //await localOriginalFilesBackup(allAppliedModFiles[m]);
+                                                                                    modFilesApply(context, allAppliedModFiles[m]).then((value) async {
+                                                                                      if (value.indexWhere((element) => element.applyStatus) != -1) {
+                                                                                        // for (var curMod in curItem.mods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                                        //   for (var curSubmod
+                                                                                        //       in curMod.submods.where((element) => element.isSet && element.setNames.contains(curSet.setName))) {
+                                                                                        //     curSubmod.applyStatus = true;
+                                                                                        //     curSubmod.isNew = false;
+                                                                                        //     curSubmod.applyDate = DateTime.now();
+                                                                                        //   }
+                                                                                        //   curMod.applyStatus = true;
+                                                                                        //   curMod.isNew = false;
+                                                                                        //   curMod.applyDate = DateTime.now();
+                                                                                        // }
+                                                                                        // curItem.applyDate = DateTime.now();
+                                                                                        // curItem.applyStatus = true;
+                                                                                        // if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                        //   curItem.isNew = false;
+                                                                                        // }
+
+                                                                                        int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
+                                                                                        int curSubModIndex = curItem.mods[curModIndex].submods
+                                                                                            .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
+                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
+                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
+                                                                                        curItem.mods[curModIndex].applyStatus = true;
+                                                                                        curItem.mods[curModIndex].isNew = false;
+                                                                                        curItem.mods[curModIndex].applyDate = DateTime.now();
+
+                                                                                        curItem.applyStatus = true;
+                                                                                        if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                          curItem.isNew = false;
+                                                                                        }
+                                                                                        curItem.applyDate = DateTime.now();
+                                                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                                          await applyOverlayedIcon(context, curItem);
+                                                                                        }
+                                                                                        List<ModFile> appliedModFiles = value;
+                                                                                        String fileAppliedText = '';
+                                                                                        for (var element in appliedModFiles) {
+                                                                                          if (fileAppliedText.isEmpty) {
+                                                                                            fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, applyingModNames[m]);
+                                                                                          }
+                                                                                          fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                        }
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                            context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                        setState(() {});
+                                                                                      }
+
+                                                                                      saveModdedItemListToJson();
+                                                                                    });
+                                                                                  }
+                                                                                  setState(() {});
+                                                                                },
+                                                                                child: const Icon(
+                                                                                  FontAwesomeIcons.squarePlus,
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              Text(
+                                                                '$totalAppliedModFiles / $totalModFiles ${curLangText!.uiFilesApplied}',
+                                                                //style: TextStyle(color: Theme.of(context).textTheme.displaySmall?.color),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );

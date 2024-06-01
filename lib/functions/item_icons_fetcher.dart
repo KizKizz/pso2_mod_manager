@@ -14,7 +14,7 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 List<String> itemIconRefSheetsList = [];
 
 Future<String> autoItemIconFetcherMinimal(List<CsvItem> playerItemData, String itemDirPath, List<Mod> modList) async {
-  int itemDataIndex = playerItemData.indexWhere((element) => element.getENName() == p.basenameWithoutExtension(itemDirPath) || element.getJPName() == p.basenameWithoutExtension(itemDirPath));
+  int itemDataIndex = playerItemData.indexWhere((element) => p.basenameWithoutExtension(element.iconImagePath) == p.basenameWithoutExtension(itemDirPath) || element.getENName() == p.basenameWithoutExtension(itemDirPath).replaceAll('_', '/') || element.getJPName() == p.basenameWithoutExtension(itemDirPath).replaceAll('_', '/'));
   if (itemDataIndex != -1 && playerItemData[itemDataIndex].iconImagePath.isNotEmpty) {
     try {
       final dio = Dio();
@@ -35,7 +35,7 @@ Future<String> autoItemIconFetcherMinimal(List<CsvItem> playerItemData, String i
             try {
               final dio = Dio();
               String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
-              String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+              String iconImagePath = '$itemDirPath${p.separator}${p.basenameWithoutExtension(itemDirPath)}.png';
               await dio.download(iconImageLink, iconImagePath);
               if (File(iconImagePath).existsSync()) return iconImagePath;
             } catch (e) {
@@ -62,7 +62,7 @@ Future<List<String>> autoItemIconFetcherFull(List<CsvItem> playerItemData, Strin
           try {
             final dio = Dio();
             String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
-            String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+            String iconImagePath = '$itemDirPath${p.separator}${p.basenameWithoutExtension(itemDirPath)}.png';
             await dio.download(iconImageLink, itemDirPath);
             if (File(iconImagePath).existsSync() && !iconPaths.contains(iconImagePath)) {
               iconPaths.add(iconImagePath);

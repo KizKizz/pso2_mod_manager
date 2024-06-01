@@ -140,7 +140,7 @@ class TranslationText {
       uiUpdateNow = 'Update Now',
       uiTurnOffStartupIconsFetching = 'Turn off startup item icons fetching',
       uiTurnOnStartupIconsFetching = 'Turn on startup item icons fetching',
-      uiStartupItemIconsFetching = 'Startup Item Icons Fetching',
+      uiStartupItemIconsFetching = 'Fetch Item Icons On Launch',
       uiTurnOffSlidingItemIcons = 'Turn off sliding item icons',
       uiTurnOnSlidingItemIcons = 'Turn on sliding item icons',
       uiSlidingItemIcons = 'Sliding Item Icons',
@@ -173,7 +173,13 @@ class TranslationText {
       uiImportExportedMods = 'Import mods that exported from PSO2NGS Mod Manager',
       uiStartPSO2 = 'Start PSO2',
       uiLaunchGameJPVerOnly = 'Launch the game bypassing official launcher (JP ver only)',
-      uiIfGameNotLaunching = 'If the game is not launching, close and run the Mod Manager as administration and try again';
+      uiIfGameNotLaunching = 'If the game is not launching, close and run the Mod Manager as administration and try again',
+      uiPreviewWindow = 'Preview Window',
+      uiOtherSettings = 'Other Settings',
+      uiLocations = 'Locations',
+      uiMarkModdedItemOnIconInGame = 'Mark modded item on in-game icons',
+      uiMarkModdedItemInGame = 'Mark Modded Item Icons In Game',
+      uiOpenMarkedItemIconCacheFolder = 'Open Marked Item Icon Cache Folder';
 
   //homepage
   String uiItemList = 'Item List',

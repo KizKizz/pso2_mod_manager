@@ -1,4 +1,5 @@
 import 'package:pso2_mod_manager/functions/apply_mod_file.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 
@@ -40,6 +41,18 @@ Future<List<String>> reapplySelectedAppliedMods(context) async {
     String reappliedString = '${modFile.itemName} > ${modFile.modName} > ${modFile.submodName}';
     if (!reappliedFileNames.contains(reappliedString)) {
       reappliedFileNames.add(reappliedString);
+    }
+  }
+  for (var cateType in moddedItemsList) {
+    for (var cate in cateType.categories) {
+      for (var item in cate.items) {
+        if (item.applyStatus &&
+            selectedModFilesInAppliedList.where((element) => element.location.contains(item.location)).isNotEmpty &&
+            item.icons.isNotEmpty &&
+            !item.icons.contains('assets/img/placeholdersquare.png')) {
+          await applyOverlayedIcon(context, item);
+        }
+      }
     }
   }
   return ['${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyAppliedAllModsIn}\n${reappliedFileNames.join('\n')}'];

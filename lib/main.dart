@@ -14,6 +14,8 @@ import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
+import 'package:pso2_mod_manager/functions/internet_check.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
@@ -193,17 +195,25 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
 
   bool isDarkModeOn = false;
+  bool hasInternet = false;
 
   @override
   void initState() {
     windowManager.addListener(this);
     // clearAllTempDirsBeforeGettingPath();
     clearAppUpdateFolder();
-    getAppVer();
-    miscCheck();
-    getRefSheetsVersion();
-    checkForUpdates(context);
+    startupChecks();
     super.initState();
+  }
+
+  Future<void> startupChecks() async {
+    hasInternet = await connectedToInternet();
+    if (hasInternet) {
+      getAppVer();
+      miscCheck();
+      getRefSheetsVersion();
+      checkForUpdates(context);
+    }
   }
 
   Future<void> getAppVer() async {
@@ -324,6 +334,22 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         Provider.of<StateProvider>(context, listen: false).previewWindowVisibleSetFalse();
       }
 
+      //preview panel Check
+      bool showPreviewPanel = (prefs.getBool('showPreviewPanel') ?? false);
+      if (showPreviewPanel) {
+        Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+      }
+
+      //overlay icon
+      bool markModdedItem = (prefs.getBool('markModdedItem') ?? true);
+      if (markModdedItem) {
+        Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).markModdedItemSet(false);
+      }
+
       // First time user load
       firstTimeUser = (prefs.getBool('isFirstTimeLoadV2') ?? true);
       if (firstTimeUser) {
@@ -336,10 +362,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       //Set app version
       savedAppVersion = prefs.getString('savedAppVersion') ?? '';
-      
+
       //Current language set
       curActiveLang = prefs.getString('curActiveLanguage') ?? '';
-      
+
       //Current item name language
       modManCurActiveItemNameLanguage = prefs.getString('modManCurActiveItemNameLanguage') ?? '';
     });
@@ -347,8 +373,51 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: UILanguageLoadingPage(),
-    );
+    return Scaffold(
+        body: hasInternet
+            ? const UILanguageLoadingPage()
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.wifi_off),
+                        SizedBox(width: 10),
+                        Text(
+                          'No Internet Connection',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              windowManager.destroy();
+                            },
+                            child: const Row(
+                              children: [Icon(Icons.exit_to_app), SizedBox(width: 5), Text('Exit')],
+                            )),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                            onPressed: () {
+                              hasInternet = true;
+                              setState(() {});
+                            },
+                            child: const Row(
+                              children: [Icon(Icons.play_arrow), SizedBox(width: 5), Text('Enter')],
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+              ));
   }
 }

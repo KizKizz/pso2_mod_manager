@@ -1,9 +1,8 @@
-
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 
-Future<List<ModFile>> appliedFileCheck(List<CategoryType> appliedList) async {
+Future<List<ModFile>> appliedFileCheck(context, List<CategoryType> appliedList) async {
   List<ModFile> filesToApplyAndBackup = [];
   //List<ModFile> filesToApplyOnly = [];
   for (var cateType in appliedList) {

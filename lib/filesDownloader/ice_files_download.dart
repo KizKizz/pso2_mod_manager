@@ -52,7 +52,8 @@ Future<List<String>> fetchOfficialPatchFileList() async {
       // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 1: Success');
     }
-  } catch (e) {
+  } on DioException catch (e) {
+    debugPrint(e.toString());
     try {
       final response = await dio.get('${backupPatchURL}patchlist_region1st.txt');
       if (response.statusCode == 200) {
@@ -62,7 +63,7 @@ Future<List<String>> fetchOfficialPatchFileList() async {
         // debugPrint(officialPatchServerFileList.length.toString());
         returnStatus.add('Patch list 1: Success');
       }
-    } catch (e) {
+    } on DioException catch (e) {
       returnStatus.add('Patch list 1: Failed');
       debugPrint(e.toString());
     }
@@ -76,7 +77,8 @@ Future<List<String>> fetchOfficialPatchFileList() async {
       // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 2: Success');
     }
-  } catch (e) {
+  } on DioException catch (e) {
+    debugPrint(e.toString());
     try {
       final response = await dio.get('${backupPatchURL}patchlist_classic.txt');
       if (response.statusCode == 200) {
@@ -86,7 +88,7 @@ Future<List<String>> fetchOfficialPatchFileList() async {
         // debugPrint(officialPatchServerFileList.length.toString());
         returnStatus.add('Patch list 2: Success');
       }
-    } catch (e) {
+    } on DioException catch (e) {
       returnStatus.add('Patch list 2: Failed');
       debugPrint(e.toString());
     }
@@ -100,7 +102,8 @@ Future<List<String>> fetchOfficialPatchFileList() async {
       // debugPrint(officialPatchServerFileList.length.toString());
       returnStatus.add('Patch list 3: Success');
     }
-  } catch (e) {
+  } on DioException catch (e) {
+    debugPrint(e.toString());
     try {
       final response = await dio.get('${backupPatchURL}patchlist_avatar.txt');
       if (response.statusCode == 200) {
@@ -110,7 +113,7 @@ Future<List<String>> fetchOfficialPatchFileList() async {
         // debugPrint(officialPatchServerFileList.length.toString());
         returnStatus.add('Patch list 3: Success');
       }
-    } catch (e) {
+    } on DioException catch (e) {
       returnStatus.add('Patch list 3: Failed');
       debugPrint(e.toString());
     }
@@ -162,7 +165,7 @@ Future<List<String>> fetchOfficialPatchFileListForModsAdder() async {
       patchFileList.addAll(response.data.toString().split('\n'));
       //debugPrint(officialPatchFileList.toString());
     }
-  } catch (e) {
+  } on DioException catch (e) {
     debugPrint(e.toString());
   }
   try {
@@ -171,7 +174,7 @@ Future<List<String>> fetchOfficialPatchFileListForModsAdder() async {
       patchFileList.addAll(response.data.toString().split('\n'));
       //debugPrint(officialPatchFileList.toString());
     }
-  } catch (e) {
+  } on DioException catch (e) {
     debugPrint(e.toString());
   }
   try {
@@ -180,7 +183,7 @@ Future<List<String>> fetchOfficialPatchFileListForModsAdder() async {
       patchFileList.addAll(response.data.toString().split('\n'));
       //debugPrint(officialPatchFileList.toString());
     }
-  } catch (e) {
+  } on DioException catch (e) {
     debugPrint(e.toString());
   }
 
@@ -207,11 +210,12 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
         await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
         debugPrint('patch');
         downloadedIceList.add(path);
-      } on DioException {
+      } on DioException catch (e) {
+        debugPrint(e.toString());
         try {
           await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
-        } catch (e) {
+        } on DioException catch (e) {
           debugPrint(e.toString());
         }
       }
@@ -220,11 +224,12 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
         await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
         debugPrint('master');
         downloadedIceList.add(path);
-      } on DioException {
+      } on DioException catch (e) {
+        debugPrint(e.toString());
         try {
           await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
-        } catch (e) {
+        } on DioException catch (e) {
           debugPrint(e.toString());
         }
       }
@@ -233,20 +238,23 @@ Future<List<String>> downloadIceFromOfficial(List<String> dataIcePaths) async {
         await dio.download('$patchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
         //debugPrint('patch ${file.statusCode}');
         downloadedIceList.add(path);
-      } on DioException {
+      } on DioException catch (e) {
+        debugPrint(e.toString());
         try {
           await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
           downloadedIceList.add(path);
-        } on DioException {
+        } on DioException catch (e) {
+          debugPrint(e.toString());
           try {
             await dio.download('$masterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
             //debugPrint('master ${file.statusCode}');
             downloadedIceList.add(path);
-          } on DioException {
+          } on DioException catch (e) {
+            debugPrint(e.toString());
             try {
               await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$modManPso2binPath/$path').toFilePath());
               downloadedIceList.add(path);
-            } catch (e) {
+            } on DioException catch (e) {
               debugPrint(e.toString());
             }
           }
@@ -271,21 +279,24 @@ Future<File> swapperIceFileDownload(String dataIcePath, String saveToDirPath) as
     //debugPrint('$modManPso2binPath\\$path');
     dio.close();
     return File(saveToPath);
-  } on DioException {
+  } on DioException catch (e) {
+    debugPrint(e.toString());
     try {
       await dio.download('$backupPatchURL$webLinkPath.pat', saveToPath);
       downloadedFile = File(saveToPath);
-    } on DioException {
+    } on DioException catch (e) {
+      debugPrint(e.toString());
       try {
         final test = await dio.download('$masterURL$webLinkPath.pat', saveToPath);
         debugPrint(test.statusCode.toString());
         downloadedFile = File(saveToPath);
-      } on DioException {
+      } on DioException catch (e) {
+        debugPrint(e.toString());
         try {
           await dio.download('$backupMasterURL$webLinkPath.pat', saveToPath);
           downloadedFile = File(saveToPath);
-        } catch (e) {
-          //debugPrint(e.toString());
+        } on DioException catch (e) {
+          debugPrint(e.toString());
           downloadedFile = File('');
         }
       }
@@ -302,18 +313,19 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
 
   String downloadedIceFile = '';
 
-  String webLinkPath = iconIcePath.replaceAll('\\', '/');
+  String webLinkPath = iconIcePath.replaceFirst(Uri.file('$modManPso2binPath\\').toFilePath(), '').replaceAll('\\', '/');
 
   if (officialPatchFiles.contains(webLinkPath)) {
     try {
       await dio.download('$patchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
       //debugPrint('patch ${file.statusCode}');
       downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-    } on DioException {
+    } on DioException catch (e) {
+      debugPrint(e.toString());
       try {
         await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
         downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-      } catch (e) {
+      } on DioException catch (e) {
         debugPrint(e.toString());
       }
     }
@@ -322,11 +334,12 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
       await dio.download('$masterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
       //debugPrint('master ${file.statusCode}');
       downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-    } on DioException {
+    } on DioException catch (e) {
+      debugPrint(e.toString());
       try {
         await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
         downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-      } catch (e) {
+      } on DioException catch (e) {
         debugPrint(e.toString());
       }
     }
@@ -335,20 +348,23 @@ Future<String> downloadIconIceFromOfficial(String iconIcePath, String saveLocati
       await dio.download('$patchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
       //debugPrint('patch ${file.statusCode}');
       downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-    } on DioException {
+    } on DioException catch (e) {
+      debugPrint(e.toString());
       try {
         await dio.download('$backupPatchURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
         downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-      } on DioException {
+      } on DioException catch (e) {
+        debugPrint(e.toString());
         try {
           await dio.download('$masterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
           //debugPrint('master ${file.statusCode}');
           downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-        } on DioException {
+        } on DioException catch (e) {
+          debugPrint(e.toString());
           try {
             await dio.download('$backupMasterURL$webLinkPath.pat', Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath());
             downloadedIceFile = Uri.file('$saveLocation/${p.basenameWithoutExtension(iconIcePath)}').toFilePath();
-          } catch (e) {
+          } on DioException catch (e) {
             debugPrint(e.toString());
           }
         }

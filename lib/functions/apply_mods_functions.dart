@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
@@ -40,7 +41,7 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
 
       isModViewModsApplying = false;
       saveModdedItemListToJson();
-      
+
       //apply cmx
       if (curSubmod.hasCmx!) {
         int startIndex = -1, endIndex = -1;
