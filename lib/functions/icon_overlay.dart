@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:image/image.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +20,17 @@ Future<File?> iconOverlay(String iconImagePath) async {
   Image? icon = await decodePngFile(iconImagePath);
   Image? overlay;
   if (icon?.width == 128 && icon?.height == 128) {
-    overlay = await decodePngFile('assets/img/icon_overlay.png');
+    if (kDebugMode) {
+      overlay = await decodePngFile('assets/img/icon_overlay.png');
+    } else {
+      overlay = await decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/icon_overlay.png').toFilePath());
+    }
   } else if (icon?.width == 64 && icon?.height == 64) {
-    overlay = await decodePngFile('assets/img/icon_overlay_l.png');
+    if (kDebugMode) {
+      overlay = await decodePngFile('assets/img/icon_overlay_l.png');
+    } else {
+      overlay = await decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/icon_overlay_l.png').toFilePath());
+    }
   }
   if (overlay != null) {
     for (var oPixel in overlay.data!) {
