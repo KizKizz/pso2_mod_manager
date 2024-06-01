@@ -170,17 +170,18 @@ Future<bool> restoreOverlayedIcon(Item item) async {
   //     }
   //   }
   // }
-
-  String downloadedFilePath = await downloadIconIceFromOfficial(item.iconPath!.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), p.dirname(item.iconPath!));
-  if (File(downloadedFilePath).existsSync()) {
-    File restoredFile = await File(downloadedFilePath).copy(item.iconPath!);
-    if (restoredFile.existsSync()) {
-      File backupFile = File(item.backupIconPath!);
-      if (backupFile.existsSync()) backupFile.deleteSync();
-      item.backupIconPath = '';
-      item.isOverlayedIconApplied = false;
-      saveModdedItemListToJson();
-      return true;
+  if (item.isOverlayedIconApplied! && item.iconPath!.isNotEmpty) {
+    String downloadedFilePath = await downloadIconIceFromOfficial(item.iconPath!.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), p.dirname(item.iconPath!));
+    if (File(downloadedFilePath).existsSync()) {
+      File restoredFile = await File(downloadedFilePath).copy(item.iconPath!);
+      if (restoredFile.existsSync()) {
+        File backupFile = File(item.backupIconPath!);
+        if (backupFile.existsSync()) backupFile.deleteSync();
+        item.backupIconPath = '';
+        item.isOverlayedIconApplied = false;
+        saveModdedItemListToJson();
+        return true;
+      }
     }
   }
   return false;
