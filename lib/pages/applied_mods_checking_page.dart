@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/applied_files_check.dart';
 import 'package:pso2_mod_manager/functions/applied_mods_reapply.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/restore_functions.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -30,7 +31,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
       return const AppliedVitalGaugeCheckingPage();
     }
     return FutureBuilder(
-        future: _reAppliedStatus.isEmpty ? getUnappliedFileList = appliedFileCheck(appliedItemList) : getUnappliedFileList,
+        future: _reAppliedStatus.isEmpty ? getUnappliedFileList = appliedFileCheck(context, appliedItemList) : getUnappliedFileList,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -164,6 +165,32 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                             setState(() {});
                                             // ignore: use_build_context_synchronously
                                             await restoreOriginalFilesToTheGame(context, result);
+                                            for (var cateType in appliedItemList) {
+                                              for (var cate in cateType.categories) {
+                                                for (var item in cate.items) {
+                                                  if (item.applyStatus && result.where((element) => element.location.contains(item.location)).isNotEmpty && item.isOverlayedIconApplied!) {
+                                                    bool allUnapplied = true;
+                                                    for (var mod in item.mods) {
+                                                      for (var submod in mod.submods) {
+                                                        if (submod.modFiles.where((element) => element.applyStatus).isNotEmpty) {
+                                                          allUnapplied = false;
+                                                          break;
+                                                        }
+                                                      }
+                                                      if (!allUnapplied) {
+                                                        break;
+                                                      } else {
+                                                        if (mod.submods.where((element) => element.applyStatus).isNotEmpty) {
+                                                          allUnapplied = false;
+                                                          break;
+                                                        }
+                                                      }
+                                                    }
+                                                    if (allUnapplied) restoreOverlayedIcon(item);
+                                                  }
+                                                }
+                                              }
+                                            }
                                             _reAppliedStatus.clear();
                                             _gotoNext = true;
                                             setState(() {});
@@ -206,6 +233,20 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                               _reAppliedStatus[i] = false;
                                               await Future.delayed(const Duration(milliseconds: 100));
                                               setState(() {});
+                                            }
+                                          }
+
+                                          for (var cateType in appliedItemList) {
+                                            for (var cate in cateType.categories) {
+                                              for (var item in cate.items) {
+                                                if (item.applyStatus &&
+                                                    selectedModFilesInAppliedList.where((element) => element.location.contains(item.location)).isNotEmpty &&
+                                                    item.icons.isNotEmpty &&
+                                                    !item.icons.contains('assets/img/placeholdersquare.png')) {
+                                                  // ignore: use_build_context_synchronously
+                                                  await applyOverlayedIcon(context, item);
+                                                }
+                                              }
                                             }
                                           }
                                           _finish = true;

@@ -121,6 +121,9 @@ Future<bool> backupOverlayIcon(Item item) async {
 }
 
 Future<bool> applyOverlayedIcon(context, Item item) async {
+  if (item.icons.first.contains('assets/img/placeholdersquare.png') || item.icons.isEmpty) {
+    return false;
+  }
   if (item.overlayedIconPath!.isEmpty || !File(item.overlayedIconPath!).existsSync()) {
     File? overlayIcon = await iconOverlayIceConvert(context, item);
     if (overlayIcon != null) item.overlayedIconPath = overlayIcon.path;
@@ -143,27 +146,41 @@ Future<bool> applyOverlayedIcon(context, Item item) async {
 }
 
 Future<bool> restoreOverlayedIcon(Item item) async {
-  if (item.isOverlayedIconApplied! && item.iconPath!.isNotEmpty) {
-    File backupFile = File(item.backupIconPath!);
-    if (backupFile.existsSync()) {
-      File restoredFile = await backupFile.copy(item.iconPath!);
-      if (restoredFile.existsSync()) {
-        item.backupIconPath = '';
-        item.isOverlayedIconApplied = false;
-        saveModdedItemListToJson();
-        return true;
-      } else {
-        String downloadedFilePath = await downloadIconIceFromOfficial(item.iconPath!.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), p.dirname(item.iconPath!));
-        if (File(downloadedFilePath).existsSync()) {
-          File restoredFile = await File(downloadedFilePath).copy(item.iconPath!);
-          if (restoredFile.existsSync()) {
-            item.backupIconPath = '';
-            item.isOverlayedIconApplied = false;
-            saveModdedItemListToJson();
-            return true;
-          }
-        }
-      }
+  // if (item.isOverlayedIconApplied! && item.iconPath!.isNotEmpty) {
+  //   File backupFile = File(item.backupIconPath!);
+  //   if (backupFile.existsSync()) {
+  //     File restoredFile = await backupFile.copy(item.iconPath!);
+  //     if (restoredFile.existsSync()) {
+  // backupFile.deleteSync();
+  //       item.backupIconPath = '';
+  //       item.isOverlayedIconApplied = false;
+  //       saveModdedItemListToJson();
+  //       return true;
+  //     } else {
+  //       String downloadedFilePath = await downloadIconIceFromOfficial(item.iconPath!.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), p.dirname(item.iconPath!));
+  //       if (File(downloadedFilePath).existsSync()) {
+  //         File restoredFile = await File(downloadedFilePath).copy(item.iconPath!);
+  //         if (restoredFile.existsSync()) {
+  //           item.backupIconPath = '';
+  //           item.isOverlayedIconApplied = false;
+  //           saveModdedItemListToJson();
+  //           return true;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  String downloadedFilePath = await downloadIconIceFromOfficial(item.iconPath!.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), p.dirname(item.iconPath!));
+  if (File(downloadedFilePath).existsSync()) {
+    File restoredFile = await File(downloadedFilePath).copy(item.iconPath!);
+    if (restoredFile.existsSync()) {
+      File backupFile = File(item.backupIconPath!);
+      if (backupFile.existsSync()) backupFile.deleteSync();
+      item.backupIconPath = '';
+      item.isOverlayedIconApplied = false;
+      saveModdedItemListToJson();
+      return true;
     }
   }
   return false;

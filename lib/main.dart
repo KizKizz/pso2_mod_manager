@@ -15,6 +15,7 @@ import 'package:pso2_mod_manager/functions/app_update_dialog.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/icon_overlay.dart';
+import 'package:pso2_mod_manager/functions/internet_check.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/pages/ui_language_loading_page.dart';
@@ -194,18 +195,25 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final imgStream = StreamController();
 
   bool isDarkModeOn = false;
+  bool hasInternet = false;
 
   @override
   void initState() {
     windowManager.addListener(this);
     // clearAllTempDirsBeforeGettingPath();
     clearAppUpdateFolder();
-    getAppVer();
-    miscCheck();
-    getRefSheetsVersion();
-    checkForUpdates(context);
-    iconOverlay("E:\\Steam\\steamapps\\common\\PHANTASYSTARONLINE2_NA_STEAM\\pso2_bin\\PSO2 Mod Manager\\Mods\\Basewears\\Dragnier Flower [Ba]\\Dragnier Flower [Ba].png");
+    startupChecks();
     super.initState();
+  }
+
+  Future<void> startupChecks() async {
+    hasInternet = await connectedToInternet();
+    if (hasInternet) {
+      getAppVer();
+      miscCheck();
+      getRefSheetsVersion();
+      checkForUpdates(context);
+    }
   }
 
   Future<void> getAppVer() async {
@@ -365,8 +373,51 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: UILanguageLoadingPage(),
-    );
+    return Scaffold(
+        body: hasInternet
+            ? const UILanguageLoadingPage()
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.wifi_off),
+                        SizedBox(width: 10),
+                        Text(
+                          'No Internet Connection',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              windowManager.destroy();
+                            },
+                            child: const Row(
+                              children: [Icon(Icons.exit_to_app), SizedBox(width: 5), Text('Exit')],
+                            )),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                            onPressed: () {
+                              hasInternet = true;
+                              setState(() {});
+                            },
+                            child: const Row(
+                              children: [Icon(Icons.play_arrow), SizedBox(width: 5), Text('Enter')],
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+              ));
   }
 }

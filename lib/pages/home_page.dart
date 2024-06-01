@@ -48,6 +48,7 @@ import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
+import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_export.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
@@ -106,6 +107,7 @@ class _HomePageState extends State<HomePage> {
       }
       dotnetVerCheck(context);
       ogFilesPermChecker(context);
+      Provider.of<StateProvider>(context, listen: false).startupLoadingFinishSet(true);
     });
 
     super.initState();
@@ -2692,7 +2694,7 @@ class _HomePageState extends State<HomePage> {
                                                                         await restoreOverlayedIcon(modViewItem!);
                                                                       }
 
-                                                                      filesRestoredMessage(context, curMod.submods.first.modFiles, unappliedModFiles);
+                                                                      await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods.first.modFiles, unappliedModFiles);
                                                                       appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                       isModViewModsRemoving = false;
                                                                       saveModdedItemListToJson();
@@ -3171,7 +3173,7 @@ class _HomePageState extends State<HomePage> {
                                                                         await restoreOverlayedIcon(modViewItem!);
                                                                       }
 
-                                                                      filesRestoredMessage(context, curMod.submods[modViewModSetSubModIndex].modFiles, value);
+                                                                      await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods[modViewModSetSubModIndex].modFiles, value);
                                                                       appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                       isModViewModsRemoving = false;
                                                                       saveModdedItemListToJson();
@@ -3709,7 +3711,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     await restoreOverlayedIcon(modViewItem!);
                                                                                   }
 
-                                                                                  filesRestoredMessage(context, curSubmod.modFiles, value);
+                                                                                  await filesRestoredMessage(mainPageScaffoldKey.currentContext, curSubmod.modFiles, value);
                                                                                   appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                   isModViewModsRemoving = false;
                                                                                   saveModdedItemListToJson();
@@ -3756,8 +3758,9 @@ class _HomePageState extends State<HomePage> {
                                                                                     await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
                                                                                     setState(() {});
                                                                                   }
-                                                                                  if (Provider.of<StateProvider>(context, listen: false).markModdedItem)
+                                                                                  if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                     await applyOverlayedIcon(context, modViewItem!);
+                                                                                  }
                                                                                 }
                                                                                 setState(() {});
                                                                               });
@@ -4133,8 +4136,9 @@ class _HomePageState extends State<HomePage> {
                                                                                     if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
                                                                                       modViewItem!.isNew = false;
                                                                                     }
-                                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem)
+                                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                       await applyOverlayedIcon(context, modViewItem!);
+                                                                                    }
                                                                                     List<ModFile> appliedModFiles = value;
                                                                                     String fileAppliedText = '';
                                                                                     for (var element in appliedModFiles) {
@@ -4178,7 +4182,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   await restoreOverlayedIcon(modViewItem!);
                                                                                 }
 
-                                                                                filesRestoredMessage(context, [curModFile], value);
+                                                                                await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
                                                                                 appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                 saveModdedItemListToJson();
                                                                                 setState(() {});
@@ -4392,14 +4396,15 @@ class _HomePageState extends State<HomePage> {
                                 isModViewModsRemoving = true;
                                 isModViewModsApplying = true;
                                 setState(() {});
-                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () {
-                                  reapplySelectedAppliedMods(context).then((value) {
-                                    isModViewModsRemoving = false;
-                                    isModViewModsApplying = false;
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                    setState(() {});
-                                  });
+                                Future.delayed(Duration(milliseconds: applyButtonsDelay), () async {
+                                  final reappliedList = await reapplySelectedAppliedMods(context);
+                                  // .then((value) {
+                                  isModViewModsRemoving = false;
+                                  isModViewModsApplying = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, reappliedList.first, reappliedList[1], 3000));
+                                  setState(() {});
                                 });
+                                // });
                               },
                         child: Icon(
                           Icons.playlist_add,
@@ -4431,14 +4436,15 @@ class _HomePageState extends State<HomePage> {
                                 isModViewModsRemoving = true;
                                 isModViewModsApplying = true;
                                 setState(() {});
-                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
-                                  unapplySelectedAppliedMods(context).then((value) {
-                                    isModViewModsRemoving = false;
-                                    isModViewModsApplying = false;
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, value.first, value[1], 3000));
-                                    setState(() {});
-                                  });
+                                Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
+                                  final unappliedList = await unapplySelectedAppliedMods(context);
+                                  // .then((value) {
+                                  isModViewModsRemoving = false;
+                                  isModViewModsApplying = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, unappliedList.first, unappliedList[1], 3000));
+                                  setState(() {});
                                 });
+                                // });
                               },
                         child: Icon(
                           Icons.playlist_remove,
@@ -4893,7 +4899,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             curItem.applyDate = DateTime(0);
                                                                                           }
 
-                                                                                          await filesRestoredMessage(context, allAppliedModFiles[m], restoredMods);
+                                                                                          await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], restoredMods);
                                                                                           appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                           if (appliedItemList.isEmpty) {
                                                                                             previewModName = '';
@@ -4921,40 +4927,42 @@ class _HomePageState extends State<HomePage> {
                                                                                     //local original files backup
                                                                                     //await localOriginalFilesBackup(allAppliedModFiles[m]);
 
-                                                                                    modFilesApply(context, allAppliedModFiles[m]).then((value) async {
-                                                                                      if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
-                                                                                        int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
-                                                                                        int curSubModIndex = curItem.mods[curModIndex].submods
-                                                                                            .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
-                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
-                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
-                                                                                        curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
-                                                                                        curItem.mods[curModIndex].applyStatus = true;
-                                                                                        curItem.mods[curModIndex].isNew = false;
-                                                                                        curItem.mods[curModIndex].applyDate = DateTime.now();
-                                                                                        curItem.applyStatus = true;
-                                                                                        if (curItem.mods.where((element) => element.isNew).isEmpty) {
-                                                                                          curItem.isNew = false;
-                                                                                        }
-                                                                                        curItem.applyDate = DateTime.now();
-                                                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem)
-                                                                                          await applyOverlayedIcon(context, curItem);
-                                                                                        List<ModFile> appliedModFiles = value;
-                                                                                        String fileAppliedText = '';
-                                                                                        for (var element in appliedModFiles) {
-                                                                                          if (fileAppliedText.isEmpty) {
-                                                                                            fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, applyingModNames[m]);
-                                                                                          }
-                                                                                          fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
-                                                                                        }
-                                                                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-                                                                                            context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-                                                                                        appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                    final appliedModFiles = await modFilesApply(context, allAppliedModFiles[m]);
+                                                                                    // .then((value) async {
+                                                                                    if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
+                                                                                      int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
+                                                                                      int curSubModIndex = curItem.mods[curModIndex].submods
+                                                                                          .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].isNew = false;
+                                                                                      curItem.mods[curModIndex].submods[curSubModIndex].applyDate = DateTime.now();
+                                                                                      curItem.mods[curModIndex].applyStatus = true;
+                                                                                      curItem.mods[curModIndex].isNew = false;
+                                                                                      curItem.mods[curModIndex].applyDate = DateTime.now();
+                                                                                      curItem.applyStatus = true;
+                                                                                      if (curItem.mods.where((element) => element.isNew).isEmpty) {
+                                                                                        curItem.isNew = false;
                                                                                       }
+                                                                                      curItem.applyDate = DateTime.now();
+                                                                                      if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                                        await applyOverlayedIcon(context, curItem);
+                                                                                      }
+                                                                                      // List<ModFile> appliedModFiles = value;
+                                                                                      String fileAppliedText = '';
+                                                                                      for (var element in appliedModFiles) {
+                                                                                        if (fileAppliedText.isEmpty) {
+                                                                                          fileAppliedText = uiInTextArg(curLangText!.uiSuccessfullyAppliedX, applyingModNames[m]);
+                                                                                        }
+                                                                                        fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
+                                                                                      }
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                          context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
+                                                                                      appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                    }
 
-                                                                                      saveModdedItemListToJson();
-                                                                                      setState(() {});
-                                                                                    });
+                                                                                    saveModdedItemListToJson();
+                                                                                    setState(() {});
+                                                                                    // });
                                                                                   }
                                                                                   setState(() {});
                                                                                 },
@@ -5324,7 +5332,7 @@ class _HomePageState extends State<HomePage> {
                                                                 }
                                                               }
 
-                                                              filesRestoredMessage(context, allAppliedModFiles, value);
+                                                              await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles, value);
                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                               if (appliedItemList.isEmpty) {
                                                                 previewModName = '';
@@ -5712,7 +5720,7 @@ class _HomePageState extends State<HomePage> {
                                                                                               await restoreOverlayedIcon(curItem);
                                                                                             }
 
-                                                                                            filesRestoredMessage(context, allAppliedModFiles[m], value);
+                                                                                            await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], value);
                                                                                             appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                             if (appliedItemList.isEmpty) {
                                                                                               previewModName = '';
@@ -5776,8 +5784,9 @@ class _HomePageState extends State<HomePage> {
                                                                                           curItem.isNew = false;
                                                                                         }
                                                                                         curItem.applyDate = DateTime.now();
-                                                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem)
+                                                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                           await applyOverlayedIcon(context, curItem);
+                                                                                        }
                                                                                         List<ModFile> appliedModFiles = value;
                                                                                         String fileAppliedText = '';
                                                                                         for (var element in appliedModFiles) {

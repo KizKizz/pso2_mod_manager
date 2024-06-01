@@ -40,6 +40,7 @@ class StateProvider with ChangeNotifier {
   String _gameEdition = '';
   bool _showPreviewPanel = false;
   bool _markModdedItem = true;
+  bool _isStartupLoadingFinish = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -79,6 +80,12 @@ class StateProvider with ChangeNotifier {
   String get gameEdition => _gameEdition;
   bool get showPreviewPanel => _showPreviewPanel;
   bool get markModdedItem => _markModdedItem;
+  bool get isStartupLoadingFinish => _isStartupLoadingFinish;
+
+  void startupLoadingFinishSet(bool state) {
+    _isStartupLoadingFinish = state;
+    notifyListeners();
+  }
 
   void markModdedItemSet(bool state) {
     _markModdedItem = state;

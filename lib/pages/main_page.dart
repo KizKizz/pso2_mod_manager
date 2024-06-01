@@ -42,7 +42,7 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+final GlobalKey<ScaffoldState> mainPageScaffoldKey = GlobalKey();
 
 List<String> saveValues = ['off', 'minimal', 'all'];
 
@@ -76,7 +76,7 @@ class _MainPageState extends State<MainPage> {
       ModManTooltip(message: curLangText!.uiFetchAllMissingItemIcons, child: Text(curLangText!.uiAll))
     ];
     return Scaffold(
-      key: _scaffoldKey,
+      key: mainPageScaffoldKey,
       endDrawer: Drawer(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2171,7 +2171,7 @@ class _MainPageState extends State<MainPage> {
                               //width: 95,
                               child: MaterialButton(
                                 onPressed: (() {
-                                  _scaffoldKey.currentState!.openEndDrawer();
+                                  mainPageScaffoldKey.currentState!.openEndDrawer();
                                 }),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -2198,7 +2198,7 @@ class _MainPageState extends State<MainPage> {
           ),
 
           //New version banner
-          if (context.watch<StateProvider>().isUpdateAvailable && versionToSkipUpdate != appVersion && curLangText != null)
+          if (context.watch<StateProvider>().isStartupLoadingFinish && context.watch<StateProvider>().isUpdateAvailable && versionToSkipUpdate != appVersion && curLangText != null)
             ScaffoldMessenger(
                 child: Padding(
               padding: const EdgeInsets.only(bottom: 3),

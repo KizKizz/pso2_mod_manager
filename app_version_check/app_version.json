@@ -1,11 +1,17 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.0",
+    "version": "2.7.1",
     "description": [
-        "Switched to a new item database",
-        "Overhauled some core systems",
-        "新しいアイテム・データベースに変更",
-        "いくつかの基幹システムをオーバーホール"
+        "Added a feature to mark modded items in-game by adding a mark on their icons. (can be turned on/off in Settings)",
+        "Mod previews now show up next to mod tiles when cursor is hovering over by default",
+        "Old preview panel now hidden by default. Can be turned back on in Settings",
+        "New version update notification now only shows up after everything is loaded",
+        "Mod Manager now checks for internet connection on startup before loading (can be bypassed)",
+        "ゲーム内で改造されたアイテムのアイコンにマークを付ける機能を追加。(設定でオン・オフ可能）",
+        "デフォルトで、カーソルをMODタイルの上に置くと、MODプレビューがMODタイルの横に表示されるようになりました",
+        "旧プレビューパネルがデフォルトで非表示に。設定で元に戻せます",
+        "新バージョンのアップデート通知は、すべてがロードされた後にのみ表示されるようになりました",
+        "Mod Managerが起動時にインターネット接続をチェックしてからロードするようになりました"
     ],
     "windows_file": "",
     "linux_file": ""

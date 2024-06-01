@@ -35,7 +35,7 @@ Future<String> autoItemIconFetcherMinimal(List<CsvItem> playerItemData, String i
             try {
               final dio = Dio();
               String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
-              String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+              String iconImagePath = '$itemDirPath${p.separator}${p.basenameWithoutExtension(itemDirPath)}.png';
               await dio.download(iconImageLink, iconImagePath);
               if (File(iconImagePath).existsSync()) return iconImagePath;
             } catch (e) {
@@ -62,7 +62,7 @@ Future<List<String>> autoItemIconFetcherFull(List<CsvItem> playerItemData, Strin
           try {
             final dio = Dio();
             String iconImageLink = '$modManMAIconDatabaseLink${playerItemData[index].iconImagePath.replaceAll('\\', '/')}';
-            String iconImagePath = itemDirPath + p.separator + p.basename(playerItemData[index].iconImagePath);
+            String iconImagePath = '$itemDirPath${p.separator}${p.basenameWithoutExtension(itemDirPath)}.png';
             await dio.download(iconImageLink, itemDirPath);
             if (File(iconImagePath).existsSync() && !iconPaths.contains(iconImagePath)) {
               iconPaths.add(iconImagePath);
