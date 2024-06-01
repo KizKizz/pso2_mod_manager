@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart' as m;
 import 'package:image/image.dart';
+import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
@@ -11,6 +12,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:pso2_mod_manager/state_provider.dart';
 
 Future<File?> iconOverlay(String iconImagePath) async {
   if (!File(iconImagePath).existsSync()) return null;
@@ -121,7 +123,7 @@ Future<bool> backupOverlayIcon(Item item) async {
 }
 
 Future<bool> applyOverlayedIcon(context, Item item) async {
-  if (item.icons.first.contains('assets/img/placeholdersquare.png') || item.icons.isEmpty) {
+  if (!Provider.of<StateProvider>(context, listen: false).markModdedItem || item.icons.first.contains('assets/img/placeholdersquare.png') || item.icons.isEmpty) {
     return false;
   }
   if (item.overlayedIconPath!.isEmpty || !File(item.overlayedIconPath!).existsSync()) {
