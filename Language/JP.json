@@ -155,6 +155,7 @@
   "uiLocations": "所在地",
   "uiMarkModdedItemOnIconInGame": "ゲーム内のアイコンに改造アイテムをマーク",
   "uiMarkModdedItemInGame": "ゲーム内で改造アイテムをマークする",
+  "uiOpenMarkedItemIconCacheFolder": "マークされたアイコンのキャッシュフォルダを開く",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",

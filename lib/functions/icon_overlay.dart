@@ -70,38 +70,38 @@ Future<File?> iconOverlayIceConvert(context, Item item) async {
         }
       }
     }
+  }
 
-    //download ori ice and apply overlay
-    if (item.iconPath != null && item.iconPath!.isNotEmpty) {
-      clearAllTempDirs();
-      final dlIconIceFilePath = await downloadIconIceFromOfficial(item.iconPath!, modManAddModsTempDirPath);
-      if (dlIconIceFilePath.isNotEmpty) {
-        await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [dlIconIceFilePath]);
-        Directory extractedIceDir = Directory(Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(item.iconPath!)}_ext').toFilePath());
-        if (extractedIceDir.existsSync()) {
-          File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
-                (element) => p.extension(element.path) == '.dds',
-                orElse: () => File(''),
-              );
-          if (ddsFile.existsSync()) {
-            await Process.run(modManDdsPngToolExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
-            File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
-            if (convertedPng.existsSync()) {
-              ddsFile.deleteSync();
-              File? overlayedPng = await iconOverlay(convertedPng.path);
-              if (overlayedPng != null) {
-                await Process.run(
-                    modManDdsPngToolExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
-                overlayedPng.deleteSync();
-                await Process.run(
-                    '$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(item.iconPath!)}_ext').toFilePath()]);
-                Directory(modManOverlayedItemIconsDirPath).createSync(recursive: true);
-                File renamedIconFile = await File(Uri.file('${dlIconIceFilePath}_ext.ice').toFilePath())
-                    .rename(Uri.file(dlIconIceFilePath.replaceFirst(modManAddModsTempDirPath, modManOverlayedItemIconsDirPath)).toFilePath());
-                if (renamedIconFile.existsSync()) {
-                  clearAllTempDirs();
-                  return renamedIconFile;
-                }
+  //download ori ice and apply overlay
+  if (item.iconPath != null && item.iconPath!.isNotEmpty) {
+    clearAllTempDirs();
+    final dlIconIceFilePath = await downloadIconIceFromOfficial(item.iconPath!, modManAddModsTempDirPath);
+    if (dlIconIceFilePath.isNotEmpty) {
+      await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [dlIconIceFilePath]);
+      Directory extractedIceDir = Directory(Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(item.iconPath!)}_ext').toFilePath());
+      if (extractedIceDir.existsSync()) {
+        File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
+              (element) => p.extension(element.path) == '.dds',
+              orElse: () => File(''),
+            );
+        if (ddsFile.existsSync()) {
+          await Process.run(modManDdsPngToolExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+          File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
+          if (convertedPng.existsSync()) {
+            ddsFile.deleteSync();
+            File? overlayedPng = await iconOverlay(convertedPng.path);
+            if (overlayedPng != null) {
+              await Process.run(
+                  modManDdsPngToolExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+              overlayedPng.deleteSync();
+              await Process.run(
+                  '$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(item.iconPath!)}_ext').toFilePath()]);
+              Directory(modManOverlayedItemIconsDirPath).createSync(recursive: true);
+              File renamedIconFile = await File(Uri.file('${dlIconIceFilePath}_ext.ice').toFilePath())
+                  .rename(Uri.file(dlIconIceFilePath.replaceFirst(modManAddModsTempDirPath, modManOverlayedItemIconsDirPath)).toFilePath());
+              if (renamedIconFile.existsSync()) {
+                clearAllTempDirs();
+                return renamedIconFile;
               }
             }
           }
@@ -109,6 +109,7 @@ Future<File?> iconOverlayIceConvert(context, Item item) async {
       }
     }
   }
+
   return null;
 }
 

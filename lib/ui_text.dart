@@ -178,7 +178,8 @@ class TranslationText {
       uiOtherSettings = 'Other Settings',
       uiLocations = 'Locations',
       uiMarkModdedItemOnIconInGame = 'Mark modded item on in-game icons',
-      uiMarkModdedItemInGame = 'Mark Modded Item Icons In Game';
+      uiMarkModdedItemInGame = 'Mark Modded Item Icons In Game',
+      uiOpenMarkedItemIconCacheFolder = 'Open Marked Item Icon Cache Folder';
 
   //homepage
   String uiItemList = 'Item List',

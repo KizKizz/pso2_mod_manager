@@ -754,6 +754,31 @@ class _MainPageState extends State<MainPage> {
                         height: 5,
                       ),
 
+                      //Path open
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(modManOverlayedItemIconsDirPath));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenMarkedItemIconCacheFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 5,
+                      ),
+
                       const Divider(
                         indent: 5,
                         endIndent: 5,

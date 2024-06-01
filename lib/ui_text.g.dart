@@ -200,6 +200,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiMarkModdedItemOnIconInGame =
           json['uiMarkModdedItemOnIconInGame'] as String
       ..uiMarkModdedItemInGame = json['uiMarkModdedItemInGame'] as String
+      ..uiOpenMarkedItemIconCacheFolder =
+          json['uiOpenMarkedItemIconCacheFolder'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -749,6 +751,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiLocations': instance.uiLocations,
       'uiMarkModdedItemOnIconInGame': instance.uiMarkModdedItemOnIconInGame,
       'uiMarkModdedItemInGame': instance.uiMarkModdedItemInGame,
+      'uiOpenMarkedItemIconCacheFolder':
+          instance.uiOpenMarkedItemIconCacheFolder,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
