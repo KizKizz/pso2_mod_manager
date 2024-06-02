@@ -50,6 +50,9 @@ class _PlayerItemDataPreloadingPageState extends State<PlayerItemDataPreloadingP
             );
           } else {
             if (snapshot.hasError) {
+              if (File(modManPlayerItemDataPath).existsSync()) {
+                File(modManPlayerItemDataPath).deleteSync();
+              }
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
