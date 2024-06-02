@@ -1,7 +1,11 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.1",
+    "version": "2.7.2",
     "description": [
+        "v2.7.2:",
+        "Bug fixes for v2.7.1",
+        "v2.7.1のバグフィックス",
+        "v2.7.1:",
         "Added a feature to mark modded items in-game by adding a mark on their icons. (can be turned on/off in Settings)",
         "Mod previews now show up next to mod tiles when cursor is hovering over by default",
         "Old preview panel now hidden by default. Can be turned back on in Settings",

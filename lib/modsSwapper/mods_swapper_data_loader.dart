@@ -254,6 +254,8 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
     selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[2]));
   } else if (itemCategory == defaultCategoryDirs[2]) {
     selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[11]));
+  } else if (itemCategory == defaultCategoryDirs[16]) {
+    selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[1]));
   }
   for (var item in selectedPlayerItemData) {
     if (itemCategory == defaultCategoryDirs[0]) {
