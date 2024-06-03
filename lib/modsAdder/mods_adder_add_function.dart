@@ -144,10 +144,11 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
       }
     }
   }
+  Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('');
 
   //Save to json
   saveModdedItemListToJson();
-  
+
   //clear sheets
   // if (csvInfosFromSheets.isNotEmpty) {
   //   csvInfosFromSheets.clear();
@@ -167,8 +168,8 @@ Future<Item> newItemsFetcher(String catePath, String itemPath) async {
     itemIcons = ['assets/img/placeholdersquare.png'];
   }
 
-  return Item(
-      p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [], newModsFetcher(itemPath, p.basename(catePath), []));
+  return Item(p.basename(itemPath), [], itemIcons, '', '', '', false, p.basename(catePath), Uri.file(itemPath).toFilePath(), false, DateTime(0), 0, false, false, true, [],
+      newModsFetcher(itemPath, p.basename(catePath), []));
 }
 
 List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newModFolders) {
@@ -185,8 +186,8 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   List<File> iceFilesInItemDir = Directory(itemPath).listSync(recursive: false).whereType<File>().where((element) => p.extension(element.path) == '').toList();
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
-      modFilesInItemDir.add(
-          ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, true, [], [], [], []));
+      modFilesInItemDir.add(ModFile(
+          p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, false, true, [], [], [], []));
     }
     //Get preview images;
     List<String> modPreviewImages = [];
