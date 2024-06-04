@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.4",
+    "version": "2.7.3",
     "description": [
         "Mods preview popup now moved to the right of the tile",
         "Mark modded item icons in-game option now defaulted to off (Turn this feature off if your mod manager is crashing when applying mod)",
