@@ -13,7 +13,6 @@ import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
 import 'package:window_manager/window_manager.dart';
 
-final playerItemDataPreload = playerItemDataGet();
 
 class PlayerItemDataPreloadingPage extends StatefulWidget {
   const PlayerItemDataPreloadingPage({super.key});
@@ -23,8 +22,10 @@ class PlayerItemDataPreloadingPage extends StatefulWidget {
 }
 
 class _PlayerItemDataPreloadingPageState extends State<PlayerItemDataPreloadingPage> {
+  
   @override
   Widget build(BuildContext context) {
+    final playerItemDataPreload = playerItemDataGet(context);
     return FutureBuilder(
         future: playerItemDataPreload,
         builder: (

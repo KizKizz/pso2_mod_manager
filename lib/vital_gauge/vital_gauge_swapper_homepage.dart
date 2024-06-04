@@ -130,7 +130,7 @@ void vitalGaugeHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: vitalgaugeDataLoader = originalVitalBackgroundsFetching(),
+                                          future: vitalgaugeDataLoader = originalVitalBackgroundsFetching(context),
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
@@ -767,7 +767,7 @@ Future<bool> vitalGaugeImageCropDialog(context, File newImageFile) async {
       });
 }
 
-Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
+Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching(context) async {
   //get info from csv
   // List<String> vgCsvInfoList = [];
   // File vitalGaugeCsv = File(Uri.file('$modManRefSheetsDirPath/Player/Vital_Gauge.csv').toFilePath());
@@ -777,7 +777,7 @@ Future<List<VitalGaugeBackground>> originalVitalBackgroundsFetching() async {
 
   //Load vg from playerItemdata
   if (playerItemData.isEmpty) {
-    await playerItemDataGet();
+    await playerItemDataGet(context);
   }
   List<CsvItem> vgData = playerItemData.where((element) => element.csvFileName == 'Vital Gauge.csv').toList();
   List<VitalGaugeBackground> newVGInfoList = [];

@@ -248,7 +248,7 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
   // }
 
   // List<CsvItem> playerItemData = await playerItemDataGet();
-  if (playerItemData.isEmpty) playerItemDataGet();
+  if (playerItemData.isEmpty) playerItemDataGet(context);
   List<CsvItem> selectedPlayerItemData = playerItemData.where((element) => element.category == itemCategory).toList();
   if (itemCategory == defaultCategoryDirs[11]) {
     selectedPlayerItemData.addAll(playerItemData.where((element) => element.category == defaultCategoryDirs[2]));

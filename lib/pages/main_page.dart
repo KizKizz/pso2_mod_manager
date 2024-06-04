@@ -2333,8 +2333,7 @@ class _MainPageState extends State<MainPage> {
                       ElevatedButton(
                           onPressed: context.watch<StateProvider>().playerItemDataDownloadPercent < 1 && File(modManPlayerItemDataPath).existsSync()
                               ? (() async {
-                                  await downloadPlayerItemData(context);
-                                  playerItemData = await playerItemDataGet();
+                                  playerItemData = await playerItemDataGet(context);
                                   setState(() {});
                                 })
                               : null,
