@@ -840,10 +840,10 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
-                              prefs.setBool('markModdedItem', false);
+                              prefs.setBool('markModdedItemIcon', false);
                               Provider.of<StateProvider>(context, listen: false).markModdedItemSet(false);
                             } else {
-                              prefs.setBool('markModdedItem', true);
+                              prefs.setBool('markModdedItemIcon', true);
                               Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
                             }
                             setState(() {});

@@ -63,6 +63,8 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
+bool hoveringOnSubmod = false;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -76,7 +78,6 @@ class _HomePageState extends State<HomePage> {
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
 
-  bool hoveringOnSubmod = false;
   Category? modViewCate;
   double headersOpacityValue = 0.7;
   double headersExtraOpacityValue = 0.3;
@@ -2295,37 +2296,27 @@ class _HomePageState extends State<HomePage> {
                                 }
                               },
                               onHover: (hovering) {
-                                if (hovering && previewWindowVisible) {
+                                if (hovering && previewWindowVisible && !hoveringOnSubmod) {
                                   if (modViewModSetSubModIndex != -1) {
-                                    hoveringOnSubmod = true;
                                     previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
-                                    hoveringOnSubmod = true;
-                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewImages.toSet()) {
-                                      previewImages.add(PreviewImageStack(imagePath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
-                                    }
-                                    for (var path in curMod.submods[modViewModSetSubModIndex].previewVideos.toSet()) {
-                                      previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curMod.submods[modViewModSetSubModIndex].submodName));
-                                    }
+                                    previewImages.clear();
+                                    previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewImages
+                                        .toSet()
+                                        .map((path) => PreviewImageStack(imagePath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
+                                    previewImages.addAll(curMod.submods[modViewModSetSubModIndex].previewVideos
+                                        .toSet()
+                                        .map((path) => PreviewVideoStack(videoPath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
                                   } else {
-                                    hoveringOnSubmod = true;
                                     previewModName = curMod.modName;
-                                    for (var path in curMod.previewImages) {
-                                      previewImages.add(PreviewImageStack(
-                                          imagePath: path,
-                                          overlayText: curMod.submods.indexWhere((element) => element.previewImages.contains(path)) != -1
-                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewImages.contains(path))].submodName
-                                              : curMod.modName));
+                                    previewImages.clear();
+                                    for (var element in curMod.submods) {
+                                      previewImages.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
                                     }
-                                    for (var path in curMod.previewVideos) {
-                                      previewImages.add(PreviewVideoStack(
-                                          videoPath: path,
-                                          overlayText: curMod.submods.indexWhere((element) => element.previewVideos.contains(path)) != -1
-                                              ? curMod.submods[curMod.submods.indexWhere((element) => element.previewVideos.contains(path))].submodName
-                                              : curMod.modName));
+                                    for (var element in curMod.submods) {
+                                      previewImages.addAll(element.previewVideos.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
                                     }
                                   }
                                 } else {
-                                  hoveringOnSubmod = false;
                                   previewModName = '';
                                   previewImages.clear();
                                 }
@@ -2334,6 +2325,8 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 1),
                                 child: ModManPreviewTooltip(
+                                  contentPositionOffSet: previewTooltipDyOffset,
+                                  submods: modViewModSetSubModIndex != -1 ? [curMod.submods[modViewModSetSubModIndex]] : curMod.submods,
                                   child: Card(
                                     margin: EdgeInsets.zero,
                                     color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -3622,6 +3615,8 @@ class _HomePageState extends State<HomePage> {
                                                     setState(() {});
                                                   },
                                                   child: ModManPreviewTooltip(
+                                                    contentPositionOffSet: previewTooltipDyOffset,
+                                                    submods: [curSubmod],
                                                     child: ExpansionTile(
                                                       backgroundColor: Colors.transparent,
                                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -4649,8 +4644,10 @@ class _HomePageState extends State<HomePage> {
                                               List<String> allPreviewImages = [];
                                               int totalModFiles = 0;
                                               int totalAppliedModFiles = 0;
+                                              List<SubMod> curSubmods = [];
                                               for (var mod in curMods) {
                                                 for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                  curSubmods.add(submod);
                                                   allAppliedModFiles.add([]);
                                                   allAppliedModFiles.last.addAll(submod.modFiles);
                                                   applyingModNames.add('${mod.modName} > ${submod.submodName}');
@@ -4696,6 +4693,8 @@ class _HomePageState extends State<HomePage> {
                                                   setState(() {});
                                                 },
                                                 child: ModManPreviewTooltip(
+                                                  submods: curSubmods,
+                                                  contentPositionOffSet: Offset.zero,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {
@@ -5498,8 +5497,10 @@ class _HomePageState extends State<HomePage> {
                                               List<String> allPreviewImages = [];
                                               int totalModFiles = 0;
                                               int totalAppliedModFiles = 0;
+                                              List<SubMod> curSubmods = [];
                                               for (var mod in curMods) {
                                                 for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                  curSubmods.add(submod);
                                                   allAppliedModFiles.add([]);
                                                   allAppliedModFiles.last.addAll(submod.modFiles);
                                                   applyingModNames.add('${mod.modName} > ${submod.submodName}');
@@ -5545,6 +5546,8 @@ class _HomePageState extends State<HomePage> {
                                                   setState(() {});
                                                 },
                                                 child: ModManPreviewTooltip(
+                                                  submods: curSubmods,
+                                                  contentPositionOffSet: Offset.zero,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {
