@@ -48,7 +48,7 @@ Future<File?> iconOverlayIceConvert(context, Item item) async {
   //get ori icon ice path
   if (item.iconPath == null || item.iconPath!.isEmpty) {
     if (playerItemData.isEmpty) {
-      await playerItemDataGet();
+      await playerItemDataGet(context);
     }
     int itemDataIndex = playerItemData.indexWhere((element) =>
         p.basenameWithoutExtension(element.iconImagePath) == p.basenameWithoutExtension(item.location) ||

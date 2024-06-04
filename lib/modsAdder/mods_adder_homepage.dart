@@ -517,7 +517,9 @@ void modsAdderHomePage(context) {
                                               }
                                             }
                                             //get duplicates
-                                            processedFileList = getDuplicates(processedFileList);
+                                            if (!_isAddingMods) {
+                                              processedFileList = getDuplicates(processedFileList);
+                                            }
 
                                             pathCharLengthList = List.generate(processedFileList.length, (index) => []);
 

@@ -840,10 +840,10 @@ class _MainPageState extends State<MainPage> {
                           onPressed: (() async {
                             final prefs = await SharedPreferences.getInstance();
                             if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
-                              prefs.setBool('markModdedItem', false);
+                              prefs.setBool('markModdedItemIcon', false);
                               Provider.of<StateProvider>(context, listen: false).markModdedItemSet(false);
                             } else {
-                              prefs.setBool('markModdedItem', true);
+                              prefs.setBool('markModdedItemIcon', true);
                               Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
                             }
                             setState(() {});
@@ -2333,8 +2333,7 @@ class _MainPageState extends State<MainPage> {
                       ElevatedButton(
                           onPressed: context.watch<StateProvider>().playerItemDataDownloadPercent < 1 && File(modManPlayerItemDataPath).existsSync()
                               ? (() async {
-                                  await downloadPlayerItemData(context);
-                                  playerItemData = await playerItemDataGet();
+                                  playerItemData = await playerItemDataGet(context);
                                   setState(() {});
                                 })
                               : null,

@@ -233,6 +233,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     final prefs = await SharedPreferences.getInstance();
     prefs.setDouble('windowsWidth', curWindowSize.width);
     prefs.setDouble('windowsHeight', curWindowSize.height);
+    windowsWidth = curWindowSize.width;
+    windowsHeight = curWindowSize.height;
   }
 
   Future<void> miscCheck() async {
@@ -343,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //overlay icon
-      bool markModdedItem = (prefs.getBool('markModdedItem') ?? true);
+      bool markModdedItem = (prefs.getBool('markModdedItemIcon') ?? false);
       if (markModdedItem) {
         Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
       } else {

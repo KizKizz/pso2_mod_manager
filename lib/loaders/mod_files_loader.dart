@@ -36,7 +36,7 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   List<CsvItem> playerItemData = [];
 
   if (isAutoFetchingIconsOnStartup != 'off' && playerItemData.isEmpty) {
-    playerItemData = await playerItemDataGet();
+    playerItemData = await playerItemDataGet(context);
   }
   //load sheets
   // if (csvInfosFromSheets.isEmpty) {

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
@@ -30,24 +29,27 @@ Future<void> downloadPlayerItemData(context) async {
     File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsNewVersion.toString());
     Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
     Provider.of<StateProvider>(context, listen: false).playerItemDataDownloadPercentReset();
-    debugPrint('itemdatajson size: $totalCount');
+    // debugPrint('itemdatajson size: $totalCount');
     totalCount = 0;
-    if (playerItemData.isEmpty) {
-      playerItemData = await playerItemDataGet();
-    }
   }
 }
 
-Future<List<CsvItem>> playerItemDataGet() async {
-  await Future.delayed(const Duration(milliseconds: 500));
+Future<List<CsvItem>> playerItemDataGet(context) async {
+  if (Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailable || !File(modManPlayerItemDataPath).existsSync()) {
+    await downloadPlayerItemData(context);
+  }
   List<CsvItem> returnList = [];
-  File playerItemDataJson = File(modManPlayerItemDataPath);
-  if (playerItemDataJson.existsSync()) {
-    final dataFromJson = await playerItemDataJson.readAsString();
-    if (dataFromJson.isNotEmpty) {
-      var jsonData = jsonDecode(dataFromJson);
-      for (var data in jsonData) {
-        returnList.add(CsvItem.fromJson(data));
+  if (File(modManPlayerItemDataPath).existsSync()) {
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    File playerItemDataJson = File(modManPlayerItemDataPath);
+    if (playerItemDataJson.existsSync()) {
+      final dataFromJson = await playerItemDataJson.readAsString();
+      if (dataFromJson.isNotEmpty) {
+        var jsonData = jsonDecode(dataFromJson);
+        for (var data in jsonData) {
+          returnList.add(CsvItem.fromJson(data));
+        }
       }
     }
   }
