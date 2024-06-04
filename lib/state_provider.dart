@@ -41,6 +41,7 @@ class StateProvider with ChangeNotifier {
   bool _showPreviewPanel = false;
   bool _markModdedItem = true;
   bool _isStartupLoadingFinish = false;
+  bool _mouseHoveringSubmods = false;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -81,6 +82,12 @@ class StateProvider with ChangeNotifier {
   bool get showPreviewPanel => _showPreviewPanel;
   bool get markModdedItem => _markModdedItem;
   bool get isStartupLoadingFinish => _isStartupLoadingFinish;
+  bool get mouseHoveringSubmods => _mouseHoveringSubmods;
+
+  void mouseHoveringSubmodsSet(bool state) {
+    _mouseHoveringSubmods = state;
+    notifyListeners();
+  }
 
   void startupLoadingFinishSet(bool state) {
     _isStartupLoadingFinish = state;

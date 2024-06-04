@@ -2327,6 +2327,7 @@ class _HomePageState extends State<HomePage> {
                                 child: ModManPreviewTooltip(
                                   contentPositionOffSet: previewTooltipDyOffset,
                                   submods: modViewModSetSubModIndex != -1 ? [curMod.submods[modViewModSetSubModIndex]] : curMod.submods,
+                                  watchTrigger: true,
                                   child: Card(
                                     margin: EdgeInsets.zero,
                                     color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -3584,6 +3585,7 @@ class _HomePageState extends State<HomePage> {
                                                   },
                                                   onHover: (hovering) {
                                                     if (hovering && previewWindowVisible) {
+                                                      Provider.of<StateProvider>(context, listen: false).mouseHoveringSubmodsSet(true);
                                                       hoveringOnSubmod = true;
                                                       previewModName = curSubmod.submodName;
                                                       previewImages.clear();
@@ -3595,6 +3597,7 @@ class _HomePageState extends State<HomePage> {
                                                         previewImages.add(PreviewVideoStack(videoPath: path, overlayText: curSubmod.submodName));
                                                       }
                                                     } else {
+                                                      Provider.of<StateProvider>(context, listen: false).mouseHoveringSubmodsSet(false);
                                                       previewModName = curMod.modName;
                                                       hoveringOnSubmod = false;
                                                       for (var path in curMod.previewImages) {
@@ -3617,6 +3620,7 @@ class _HomePageState extends State<HomePage> {
                                                   child: ModManPreviewTooltip(
                                                     contentPositionOffSet: previewTooltipDyOffset,
                                                     submods: [curSubmod],
+                                                    watchTrigger: false,
                                                     child: ExpansionTile(
                                                       backgroundColor: Colors.transparent,
                                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -4695,6 +4699,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
                                                   contentPositionOffSet: Offset.zero,
+                                                  watchTrigger: false,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {
@@ -5548,6 +5553,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
                                                   contentPositionOffSet: Offset.zero,
+                                                  watchTrigger: false,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {
