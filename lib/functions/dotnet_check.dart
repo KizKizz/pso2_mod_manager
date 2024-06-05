@@ -48,8 +48,8 @@ Future<void> dotNetDialog(context, List<String> dotnetVerList) async {
         contentPadding: const EdgeInsets.all(10),
         content: ScrollbarTheme(
           data: ScrollbarThemeData(
-            thumbColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.hovered)) {
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) {
                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
               }
               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);

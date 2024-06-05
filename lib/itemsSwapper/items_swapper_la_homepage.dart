@@ -347,8 +347,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                         color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                           data: ScrollbarThemeData(
-                                            thumbColor: MaterialStateProperty.resolveWith((states) {
-                                              if (states.contains(MaterialState.hovered)) {
+                                            thumbColor: WidgetStateProperty.resolveWith((states) {
+                                              if (states.contains(WidgetState.hovered)) {
                                                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                               }
                                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -468,8 +468,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                         color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                         child: ScrollbarTheme(
                                             data: ScrollbarThemeData(
-                                              thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                if (states.contains(MaterialState.hovered)) {
+                                              thumbColor: WidgetStateProperty.resolveWith((states) {
+                                                if (states.contains(WidgetState.hovered)) {
                                                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                 }
                                                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -699,8 +699,8 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                           color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
                                           child: ScrollbarTheme(
                                               data: ScrollbarThemeData(
-                                                thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                  if (states.contains(MaterialState.hovered)) {
+                                                thumbColor: WidgetStateProperty.resolveWith((states) {
+                                                  if (states.contains(WidgetState.hovered)) {
                                                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                   }
                                                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -952,8 +952,8 @@ Future<void> swapperLaQueueConfirmDialog(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 content: ScrollbarTheme(
                   data: ScrollbarThemeData(
-                    thumbColor: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.hovered)) {
+                    thumbColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.hovered)) {
                         return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                       }
                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);

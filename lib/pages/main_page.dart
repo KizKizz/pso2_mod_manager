@@ -101,8 +101,8 @@ class _MainPageState extends State<MainPage> {
           Expanded(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  thumbColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.hovered)) {
+                  thumbColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.hovered)) {
                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                     }
                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -1948,9 +1948,9 @@ class _MainPageState extends State<MainPage> {
                                     ),
                                   );
                                 },
-                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                   return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                }), shape: MaterialStateProperty.resolveWith((states) {
+                                }), shape: WidgetStateProperty.resolveWith((states) {
                                   return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                 })),
                                 menuChildren: [

@@ -463,8 +463,8 @@ Future<void> swapperLaSwappingDialog(context, bool isVanillaItemSwap, SubMod fro
                                       )
                                     : ScrollbarTheme(
                                         data: ScrollbarThemeData(
-                                          thumbColor: MaterialStateProperty.resolveWith((states) {
-                                            if (states.contains(MaterialState.hovered)) {
+                                          thumbColor: WidgetStateProperty.resolveWith((states) {
+                                            if (states.contains(WidgetState.hovered)) {
                                               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                             }
                                             return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);

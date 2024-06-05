@@ -247,7 +247,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
   //create new set
   menuButtonList.add(
     MenuItemButton(
-      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+      style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
       })),
       child: Text(curLangText!.uiAddNewSet),
@@ -277,7 +277,7 @@ List<Widget> modSetsMenuButtons(context, Item item, Mod mod, SubMod submod) {
   for (var set in modSetList) {
     menuButtonList.add(
       MenuItemButton(
-        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+        style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
           return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
         })),
         child: Text(set.setName),
@@ -337,7 +337,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
   //create new set
   menuItemButtonList.add(
     MenuItemButton(
-      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+      style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
       })),
       child: Text(curLangText!.uiAddNewSet),
@@ -408,7 +408,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
   for (var set in modSetList) {
     menuItemButtonList.add(
       MenuItemButton(
-        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+        style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
           return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
         })),
         child: Text(set.setName),
