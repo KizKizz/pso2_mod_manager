@@ -80,6 +80,7 @@ Future<bool> modsBoundaryEditHomePage(context, SubMod submod) async {
 }
 
 void boundaryEdit(context, SubMod submod) async {
+  Directory(modManAddModsTempDirPath).createSync();
   List<String> boundaryRemovedFiles = [];
   List<String> boundaryNotFoundFiles = [];
   //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
@@ -187,12 +188,10 @@ void boundaryEdit(context, SubMod submod) async {
         .setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}\n${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   } else if (boundaryRemovedFiles.isNotEmpty && boundaryNotFoundFiles.isEmpty) {
-    Provider.of<StateProvider>(context, listen: false)
-        .setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}');
+    Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   } else if (boundaryRemovedFiles.isEmpty && boundaryNotFoundFiles.isNotEmpty) {
-    Provider.of<StateProvider>(context, listen: false)
-        .setBoundaryEditProgressStatus('${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
+    Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   }
   if (isBoundaryEditDuringApply) {

@@ -527,8 +527,8 @@ void modsAdderHomePage(context) {
                                               children: [
                                                 ScrollbarTheme(
                                                   data: ScrollbarThemeData(
-                                                    thumbColor: MaterialStateProperty.resolveWith((states) {
-                                                      if (states.contains(MaterialState.hovered)) {
+                                                    thumbColor: WidgetStateProperty.resolveWith((states) {
+                                                      if (states.contains(WidgetState.hovered)) {
                                                         return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                                                       }
                                                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -1872,8 +1872,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     if (matchData.isNotEmpty) {
       if (modsAdderGroupSameItemVariants) {
         for (var data in matchData) {
-          int matchIndex = foundItemData.indexWhere((element) => element.getBaseItemENName().contains(data.getBaseItemENName()) || element.getBaseItemJPName().contains(data.getBaseItemJPName()));
-          if (matchIndex != -1) foundItemData.removeAt(matchIndex);
+          if (data.category != defaultCategoryDirs[7] && data.category != defaultCategoryDirs[14]) {
+            int matchIndex = foundItemData.indexWhere((element) => element.getBaseItemENName().contains(data.getBaseItemENName()) || element.getBaseItemJPName().contains(data.getBaseItemJPName()));
+            if (matchIndex != -1) foundItemData.removeAt(matchIndex);
+          }
         }
       }
       foundItemData.addAll(matchData);

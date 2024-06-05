@@ -409,9 +409,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     },
-                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                       return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                    }), shape: MaterialStateProperty.resolveWith((states) {
+                    }), shape: WidgetStateProperty.resolveWith((states) {
                       return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                     })),
                     menuChildren: [
@@ -541,8 +541,8 @@ class _HomePageState extends State<HomePage> {
         Expanded(
             child: ScrollbarTheme(
           data: ScrollbarThemeData(
-            thumbColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.hovered)) {
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) {
                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
               }
               return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -1429,7 +1429,7 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                 )
-
+// ==========================================================================================
                               //Normal Catetype List
                               : ListView.builder(
                                   shrinkWrap: true,
@@ -2121,14 +2121,15 @@ class _HomePageState extends State<HomePage> {
                   height: !isModViewListHidden && modViewItem != null ? 84 : 30,
                   child: ScrollbarTheme(
                     data: ScrollbarThemeData(
+                      // ignore: deprecated_member_use
                       thickness: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.hovered)) {
+                        if (states.contains(WidgetState.hovered)) {
                           return !isModViewListHidden && modViewItem != null ? 5 : 0;
                         }
                         return !isModViewListHidden && modViewItem != null ? 3 : 0;
                       }),
-                      thumbColor: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.hovered)) {
+                      thumbColor: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.hovered)) {
                           return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                         }
                         return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -2248,8 +2249,8 @@ class _HomePageState extends State<HomePage> {
         Expanded(
             child: ScrollbarTheme(
                 data: ScrollbarThemeData(
-                  thumbColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.hovered)) {
+                  thumbColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.hovered)) {
                       return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                     }
                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -2335,7 +2336,8 @@ class _HomePageState extends State<HomePage> {
                                     shape: RoundedRectangleBorder(
                                         side: BorderSide(width: curMod.isNew ? 2 : 1, color: curMod.isNew ? Colors.amber : Theme.of(context).primaryColorLight),
                                         borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                    child: AdvanceExpansionTile(
+                                    //advanced
+                                    child: ExpansionTile(
                                       backgroundColor: Colors.transparent,
                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       iconColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -2474,9 +2476,9 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   );
                                                 },
-                                                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                   return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                }), shape: MaterialStateProperty.resolveWith((states) {
+                                                }), shape: WidgetStateProperty.resolveWith((states) {
                                                   return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                 })),
                                                 menuChildren: [
@@ -2739,7 +2741,9 @@ class _HomePageState extends State<HomePage> {
                                                                       await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
                                                                       setState(() {});
                                                                     }
-                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                      await applyOverlayedIcon(context, modViewItem!);
+                                                                    }
                                                                   }
                                                                   setState(() {});
                                                                 });
@@ -2769,9 +2773,9 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         );
                                                       },
-                                                      style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                      style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                      }), shape: MaterialStateProperty.resolveWith((states) {
+                                                      }), shape: WidgetStateProperty.resolveWith((states) {
                                                         return RoundedRectangleBorder(
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                       })),
@@ -2807,9 +2811,9 @@ class _HomePageState extends State<HomePage> {
 
                                                         //Add to set
                                                         SubmenuButton(
-                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                             return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          }), shape: WidgetStateProperty.resolveWith((states) {
                                                             return RoundedRectangleBorder(
                                                                 side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                           })),
@@ -2823,9 +2827,9 @@ class _HomePageState extends State<HomePage> {
 
                                                         // Apply location select
                                                         SubmenuButton(
-                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                             return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          }), shape: WidgetStateProperty.resolveWith((states) {
                                                             return RoundedRectangleBorder(
                                                                 side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                           })),
@@ -3220,7 +3224,9 @@ class _HomePageState extends State<HomePage> {
                                                                       await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                                       setState(() {});
                                                                     }
-                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                      await applyOverlayedIcon(context, modViewItem!);
+                                                                    }
                                                                   }
                                                                   setState(() {});
                                                                 });
@@ -3250,9 +3256,9 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         );
                                                       },
-                                                      style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                      style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                      }), shape: MaterialStateProperty.resolveWith((states) {
+                                                      }), shape: WidgetStateProperty.resolveWith((states) {
                                                         return RoundedRectangleBorder(
                                                             side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                       })),
@@ -3288,9 +3294,9 @@ class _HomePageState extends State<HomePage> {
 
                                                         //Add to set
                                                         SubmenuButton(
-                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                             return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          }), shape: WidgetStateProperty.resolveWith((states) {
                                                             return RoundedRectangleBorder(
                                                                 side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                           })),
@@ -3304,9 +3310,9 @@ class _HomePageState extends State<HomePage> {
 
                                                         // Apply location select
                                                         SubmenuButton(
-                                                          menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                          menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                             return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                          }), shape: MaterialStateProperty.resolveWith((states) {
+                                                          }), shape: WidgetStateProperty.resolveWith((states) {
                                                             return RoundedRectangleBorder(
                                                                 side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                           })),
@@ -3792,9 +3798,9 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       );
                                                                     },
-                                                                    style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                    style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                                       return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                    }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                    }), shape: WidgetStateProperty.resolveWith((states) {
                                                                       return RoundedRectangleBorder(
                                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                                     })),
@@ -3829,9 +3835,9 @@ class _HomePageState extends State<HomePage> {
 
                                                                       //Add to set
                                                                       SubmenuButton(
-                                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                        menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                                           return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                        }), shape: WidgetStateProperty.resolveWith((states) {
                                                                           return RoundedRectangleBorder(
                                                                               side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                                         })),
@@ -3845,9 +3851,9 @@ class _HomePageState extends State<HomePage> {
 
                                                                       // Apply location select
                                                                       SubmenuButton(
-                                                                        menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                                                        menuStyle: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                                           return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                                                        }), shape: MaterialStateProperty.resolveWith((states) {
+                                                                        }), shape: WidgetStateProperty.resolveWith((states) {
                                                                           return RoundedRectangleBorder(
                                                                               side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                                                                         })),
@@ -4490,9 +4496,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                style: MenuStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+                style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                   return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                }), shape: MaterialStateProperty.resolveWith((states) {
+                }), shape: WidgetStateProperty.resolveWith((states) {
                   return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
                 })),
                 menuChildren: modSetsMenuItemButtons(context, selectedModFilesInAppliedList)),
@@ -4537,8 +4543,8 @@ class _HomePageState extends State<HomePage> {
       Expanded(
         child: ScrollbarTheme(
             data: ScrollbarThemeData(
-              thumbColor: MaterialStateProperty.resolveWith((states) {
-                if (states.contains(MaterialState.hovered)) {
+              thumbColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.hovered)) {
                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                 }
                 return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -5194,8 +5200,8 @@ class _HomePageState extends State<HomePage> {
       Expanded(
           child: ScrollbarTheme(
               data: ScrollbarThemeData(
-                thumbColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.hovered)) {
+                thumbColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.hovered)) {
                     return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
                   }
                   return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
@@ -5859,7 +5865,7 @@ class _HomePageState extends State<HomePage> {
       menuButtonList.add(
         MenuItemButton(
             closeOnActivate: false,
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+            style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
               return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
             })),
             leadingIcon: submod.applyLocations!.contains(dataPath) ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank_rounded),
@@ -5891,7 +5897,7 @@ class _HomePageState extends State<HomePage> {
     menuButtonList.add(
       MenuItemButton(
           closeOnActivate: false,
-          style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+          style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
             return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
           })),
           leadingIcon: submod.applyLocations == null || submod.applyLocations!.isEmpty ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank_rounded),
