@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
-  // List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
+  List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
   CarouselController previewCarouselController = CarouselController();
 
   Category? modViewCate;
@@ -1050,10 +1051,10 @@ class _HomePageState extends State<HomePage> {
                                                                         ],
                                                                       ),
                                                                       onTap: () {
-                                                                        // for (var element in modViewETKeys) {
-                                                                        //   element.currentState?.collapse();
-                                                                        // }
-                                                                        // modViewETKeys.clear();
+                                                                        for (var element in modViewETKeys) {
+                                                                          element.currentState?.collapse();
+                                                                        }
+                                                                        modViewETKeys.clear();
                                                                         isModViewListHidden = false;
                                                                         isModViewFromApplied = false;
                                                                         modViewCate = curCategory;
@@ -1391,10 +1392,10 @@ class _HomePageState extends State<HomePage> {
                                                                               ],
                                                                             ),
                                                                             onTap: () {
-                                                                              // for (var element in modViewETKeys) {
-                                                                              //   element.currentState?.collapse();
-                                                                              // }
-                                                                              // modViewETKeys.clear();
+                                                                              for (var element in modViewETKeys) {
+                                                                                element.currentState?.collapse();
+                                                                              }
+                                                                              modViewETKeys.clear();
                                                                               isModViewListHidden = false;
                                                                               isModViewFromApplied = false;
                                                                               modViewCate = curCategory;
@@ -1428,7 +1429,7 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                 )
-
+// ==========================================================================================
                               //Normal Catetype List
                               : ListView.builder(
                                   shrinkWrap: true,
@@ -1972,10 +1973,10 @@ class _HomePageState extends State<HomePage> {
                                                                                   ],
                                                                                 ),
                                                                                 onTap: () {
-                                                                                  // for (var element in modViewETKeys) {
-                                                                                  //   element.currentState?.collapse();
-                                                                                  // }
-                                                                                  // modViewETKeys.clear();
+                                                                                  for (var element in modViewETKeys) {
+                                                                                    element.currentState?.collapse();
+                                                                                  }
+                                                                                  modViewETKeys.clear();
                                                                                   isModViewListHidden = false;
                                                                                   isModViewFromApplied = false;
                                                                                   modViewCate = curCategory;
@@ -2262,7 +2263,7 @@ class _HomePageState extends State<HomePage> {
                         //padding: const EdgeInsets.symmetric(horizontal: 1),
                         itemCount: modViewItem!.mods.length,
                         itemBuilder: (context, modIndex) {
-                          // modViewETKeys.add(GlobalKey());
+                          modViewETKeys.add(GlobalKey());
                           var curMod = modViewItem!.mods[modIndex];
                           if (isModViewItemListExpanded.isEmpty || isModViewItemListExpanded.length != modViewItem!.mods.length) {
                             isModViewItemListExpanded = List.generate(modViewItem!.mods.length, (index) => false);
@@ -2341,7 +2342,7 @@ class _HomePageState extends State<HomePage> {
                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                                       collapsedIconColor: Theme.of(context).textTheme.bodyMedium!.color,
-                                      // key: modViewETKeys[modIndex],
+                                      key: modViewETKeys[modIndex],
                                       onExpansionChanged: (value) {
                                         isModViewItemListExpanded[modIndex] = value;
                                         setState(() {});
