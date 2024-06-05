@@ -45,15 +45,15 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
     }
     return InfoPopupWidget(
         contentOffset: widget.contentPositionOffSet,
-        onControllerCreated: (controller) {
-          debugPrint(controller.contentOffset.dy.toString());
+        // onControllerCreated: (controller) {
+          // debugPrint(controller.contentOffset.dy.toString());
           // if (controller.contentOffset.dy.sign.isNegative) {
           //   previewTooltipDyOffset = const Offset(427, 0);
           // } else if (!controller.contentOffset.dy.sign.isNegative) {
           //   previewTooltipDyOffset = const Offset(427, -54);
           // }
           // previewTooltipDyOffset = Offset(427, -0.0);
-        },
+        // },
         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
         customContent: () => widget.watchTrigger
             ? (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&

@@ -2739,7 +2739,9 @@ class _HomePageState extends State<HomePage> {
                                                                       await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
                                                                       setState(() {});
                                                                     }
-                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                      await applyOverlayedIcon(context, modViewItem!);
+                                                                    }
                                                                   }
                                                                   setState(() {});
                                                                 });
@@ -3220,7 +3222,9 @@ class _HomePageState extends State<HomePage> {
                                                                       await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                                       setState(() {});
                                                                     }
-                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) await applyOverlayedIcon(context, modViewItem!);
+                                                                    if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+                                                                      await applyOverlayedIcon(context, modViewItem!);
+                                                                    }
                                                                   }
                                                                   setState(() {});
                                                                 });
