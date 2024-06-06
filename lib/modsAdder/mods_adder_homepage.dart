@@ -47,6 +47,7 @@ int _pathLengthInNameEdit = 0;
 String _errorMessage = '';
 
 void modsAdderHomePage(context) {
+  clearModAdderDirs();
   List<String> dropdownButtonCateList = [];
   for (var type in moddedItemsList) {
     dropdownButtonCateList.addAll(type.categories.map((e) => e.categoryName));
@@ -1659,7 +1660,7 @@ void modsAdderHomePage(context) {
                                                   renameTextBoxController.clear();
                                                   _selectedCategories.clear();
                                                   pathCharLengthList.clear();
-                                                  clearAllTempDirs();
+                                                  clearModAdderDirs();
                                                   dropZoneMax = true;
                                                   Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                   Navigator.of(context).pop();
@@ -1687,7 +1688,7 @@ void modsAdderHomePage(context) {
                                                     //   csvInfosFromSheets.clear();
                                                     // }
                                                     //_exitConfirmDialog = false;
-                                                    clearAllTempDirs();
+                                                    clearModAdderDirs();
                                                     Provider.of<StateProvider>(context, listen: false).modAdderReloadFalse();
                                                     _isNameEditing = false;
                                                     dropZoneMax = true;
@@ -1729,7 +1730,7 @@ void modsAdderHomePage(context) {
                                                         modsAdderModFilesAdder(context, toAddList).then(
                                                           (value) {
                                                             if (value) {
-                                                              clearAllTempDirs();
+                                                              clearModAdderDirs();
                                                               _itemNameRenameIndex.clear();
                                                               mainFolderRenameIndex.clear();
                                                               renameTextBoxController.clear();
