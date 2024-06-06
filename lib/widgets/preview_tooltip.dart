@@ -13,11 +13,12 @@ import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 Offset previewTooltipDyOffset = const Offset(427, 0);
 
 class ModManPreviewTooltip extends StatefulWidget {
-  const ModManPreviewTooltip({super.key, required this.contentPositionOffSet, required this.submods, required this.watchTrigger, required this.child});
+  const ModManPreviewTooltip({super.key, required this.contentPositionOffSet, required this.submods, required this.watchTrigger, required this.appliedListTrigger, required this.child});
 
   final Offset contentPositionOffSet;
   final List<SubMod> submods;
   final bool watchTrigger;
+  final bool appliedListTrigger;
   final Widget child;
 
   @override
@@ -25,7 +26,6 @@ class ModManPreviewTooltip extends StatefulWidget {
 }
 
 class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
-
   List<Widget> pWidgets = [];
 
   @override
@@ -45,14 +45,19 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
     }
     return InfoPopupWidget(
         contentOffset: widget.contentPositionOffSet,
+        dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
+        popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
+        onAreaPressed: (controller) {
+          controller.dismissInfoPopup();
+        },
         // onControllerCreated: (controller) {
-          // debugPrint(controller.contentOffset.dy.toString());
-          // if (controller.contentOffset.dy.sign.isNegative) {
-          //   previewTooltipDyOffset = const Offset(427, 0);
-          // } else if (!controller.contentOffset.dy.sign.isNegative) {
-          //   previewTooltipDyOffset = const Offset(427, -54);
-          // }
-          // previewTooltipDyOffset = Offset(427, -0.0);
+        // debugPrint(controller.contentOffset.dy.toString());
+        // if (controller.contentOffset.dy.sign.isNegative) {
+        //   previewTooltipDyOffset = const Offset(427, 0);
+        // } else if (!controller.contentOffset.dy.sign.isNegative) {
+        //   previewTooltipDyOffset = const Offset(427, -54);
+        // }
+        // previewTooltipDyOffset = Offset(427, -0.0);
         // },
         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
         customContent: () => widget.watchTrigger
@@ -83,32 +88,60 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
                     ),
                   )
                 : null
-            : (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
-                    pWidgets.isNotEmpty &&
-                    !context.watch<StateProvider>().showPreviewPanel
-                ? ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
-                          border: Border.all(color: Theme.of(context).primaryColorLight),
-                          borderRadius: const BorderRadius.all(Radius.circular(2))),
-                      child: ImageSlideshow(
-                        height: double.infinity,
-                        initialPage: 0,
-                        indicatorColor: Colors.transparent,
-                        indicatorBackgroundColor: Colors.transparent,
-                        autoPlayInterval: pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewVideoStack')).length == pWidgets.length
-                            ? 7000
-                            : pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewImageStack')).length == pWidgets.length
-                                ? 1000
-                                : 0,
-                        isLoop: true,
-                        children: pWidgets,
-                      ),
-                    ),
-                  )
-                : null,
+            : widget.appliedListTrigger
+                ? context.watch<StateProvider>().isCursorInAppliedList &&
+                        (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
+                        pWidgets.isNotEmpty &&
+                        !context.watch<StateProvider>().showPreviewPanel
+                    ? ConstrainedBox(
+                        constraints: BoxConstraints(minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                          child: ImageSlideshow(
+                            height: double.infinity,
+                            initialPage: 0,
+                            indicatorColor: Colors.transparent,
+                            indicatorBackgroundColor: Colors.transparent,
+                            autoPlayInterval: pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewVideoStack')).length == pWidgets.length
+                                ? 7000
+                                : pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewImageStack')).length == pWidgets.length
+                                    ? 1000
+                                    : 0,
+                            isLoop: true,
+                            children: pWidgets,
+                          ),
+                        ),
+                      )
+                    : null
+                : (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
+                        pWidgets.isNotEmpty &&
+                        !context.watch<StateProvider>().showPreviewPanel
+                    ? ConstrainedBox(
+                        constraints: BoxConstraints(minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
+                              border: Border.all(color: Theme.of(context).primaryColorLight),
+                              borderRadius: const BorderRadius.all(Radius.circular(2))),
+                          child: ImageSlideshow(
+                            height: double.infinity,
+                            initialPage: 0,
+                            indicatorColor: Colors.transparent,
+                            indicatorBackgroundColor: Colors.transparent,
+                            autoPlayInterval: pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewVideoStack')).length == pWidgets.length
+                                ? 7000
+                                : pWidgets.length > 1 && pWidgets.where((element) => element.toString() == ('PreviewImageStack')).length == pWidgets.length
+                                    ? 1000
+                                    : 0,
+                            isLoop: true,
+                            children: pWidgets,
+                          ),
+                        ),
+                      )
+                    : null,
         child: widget.child);
   }
 }

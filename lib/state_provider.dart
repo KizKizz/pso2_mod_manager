@@ -42,6 +42,7 @@ class StateProvider with ChangeNotifier {
   bool _markModdedItem = true;
   bool _isStartupLoadingFinish = false;
   bool _mouseHoveringSubmods = false;
+  bool _isCursorInAppliedList = true;
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -83,6 +84,12 @@ class StateProvider with ChangeNotifier {
   bool get markModdedItem => _markModdedItem;
   bool get isStartupLoadingFinish => _isStartupLoadingFinish;
   bool get mouseHoveringSubmods => _mouseHoveringSubmods;
+  bool get isCursorInAppliedList => _isCursorInAppliedList;
+
+  void cursorInALSet(bool state) {
+    _isCursorInAppliedList = state;
+    notifyListeners();
+  }
 
   void mouseHoveringSubmodsSet(bool state) {
     _mouseHoveringSubmods = state;

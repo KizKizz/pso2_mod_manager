@@ -298,7 +298,8 @@ class TranslationText {
       uiModSetRename = 'Mod Set Rename',
       uiImportMods = 'Import Mods',
       uiSelectApplyingLocations = 'Select applying locations',
-      uiApplyToAllLocations = 'Apply to all locations';
+      uiApplyToAllLocations = 'Apply to all locations',
+      uiExportAllMods = 'Export all mods in this item';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -393,7 +394,7 @@ class TranslationText {
 
 //mods_swapper_homepage
   String uiChooseAVariantFoundBellow = 'Select a variant found bellow (Preferably linked inner variant)',
-  uiChooseAPoseFoundBellow = 'Select a pose found below',
+      uiChooseAPoseFoundBellow = 'Select a pose found below',
       uiChooseAnItemBellowToSwap = 'Select an item to swap the mod onto',
       uiSearchSwapItems = 'Search items',
       uiReplaceNQwithHQ = 'Replace LQ ices with HQ',
