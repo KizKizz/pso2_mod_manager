@@ -131,7 +131,7 @@ class TranslationText {
       uiPatchNote = 'Patch Notes...',
       uiSkipMMUpdate = 'Skip This Version',
       uiUpdate = 'Update',
-      uiNewRefSheetsUpdate = 'New update available for item reference sheets (Important for many features to work correctly)',
+      uiNewRefSheetsUpdate = 'New update available for item data (Important for many features to work correctly)',
       uiDownloading = 'Downloading',
       uiOf = 'of',
       uiRefSheetsDownloadingCount = 'of the required item reference sheets.',
@@ -393,6 +393,7 @@ class TranslationText {
 
 //mods_swapper_homepage
   String uiChooseAVariantFoundBellow = 'Select a variant found bellow (Preferably linked inner variant)',
+  uiChooseAPoseFoundBellow = 'Select a pose found below',
       uiChooseAnItemBellowToSwap = 'Select an item to swap the mod onto',
       uiSearchSwapItems = 'Search items',
       uiReplaceNQwithHQ = 'Replace LQ ices with HQ',

@@ -213,7 +213,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                      child: Text(curLangText!.uiChooseAPoseFoundBellow),
                                     ),
                                     Expanded(
                                       child: Card(

@@ -349,6 +349,7 @@
   "uiOneIconEachItem": "每个物品一个图标",
   "uiFetchAll": "全部获取",
   "uiChooseAVariantFoundBellow": "请从以下备选种类中选择一种。",
+  "uiChooseAPoseFoundBellow": "Select a pose found below",
   "uiChooseAnItemBellowToSwap": "请从以下物品中选择想要幻化的外观",
   "uiSearchSwapItems": "搜索物品",
   "uiReplaceNQwithHQ": "用HQ替换LQ Ice文件",

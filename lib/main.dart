@@ -345,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //overlay icon
-      bool markModdedItem = (prefs.getBool('markModdedItemIcon') ?? false);
+      bool markModdedItem = (prefs.getBool('markModdedItemIcon') ?? true);
       if (markModdedItem) {
         Provider.of<StateProvider>(context, listen: false).markModdedItemSet(true);
       } else {
