@@ -420,10 +420,10 @@ class TranslationText {
       uiUnableToSwapTheseFilesBelow = 'Unable to swap these files below';
 
   //mods_swapper_data_loader
-  String uiLoadingItemRefSheetsData = 'Loading item reference sheets data',
-      uiErrorWhenLoadingItemRefSheets = 'Error when loading item reference sheets data',
-      uiFetchingItemInfo = 'Fetching item info',
-      uiErrorWhenFetchingItemInfo = 'Error when fetching item info',
+  String uiLoadingItemRefSheetsData = 'Loading item data',
+      uiErrorWhenLoadingItemRefSheets = 'Error when loading data',
+      uiFetchingItemInfo = 'Fetching item data',
+      uiErrorWhenFetchingItemInfo = 'Error when fetching item data',
       uiItemCategoryNotFound = 'Item Category Not Found';
 
   //mods_swapper_popup
