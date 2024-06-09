@@ -2356,7 +2356,7 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 1),
                                 child: ModManPreviewTooltip(
-                                  contentPositionOffSet: previewTooltipDyOffset,
+                                  contentPositionOffSet: const Offset(427, 0),
                                   submods: modViewModSetSubModIndex != -1 ? [curMod.submods[modViewModSetSubModIndex]] : curMod.submods,
                                   watchTrigger: true,
                                   appliedListTrigger: false,
@@ -3664,7 +3664,7 @@ class _HomePageState extends State<HomePage> {
                                                     setState(() {});
                                                   },
                                                   child: ModManPreviewTooltip(
-                                                    contentPositionOffSet: previewTooltipDyOffset,
+                                                    contentPositionOffSet: const Offset(427, 0),
                                                     submods: [curSubmod],
                                                     watchTrigger: false,
                                                     appliedListTrigger: false,
@@ -4750,7 +4750,7 @@ class _HomePageState extends State<HomePage> {
                                                 },
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
-                                                  contentPositionOffSet: Offset.zero,
+                                                  contentPositionOffSet: const Offset(-455, 0),
                                                   watchTrigger: false,
                                                   appliedListTrigger: true,
                                                   child: ListTile(
@@ -5606,7 +5606,7 @@ class _HomePageState extends State<HomePage> {
                                                 },
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
-                                                  contentPositionOffSet: previewTooltipDyOffset,
+                                                  contentPositionOffSet: const Offset(427, 0),
                                                   watchTrigger: false,
                                                   appliedListTrigger: false,
                                                   child: ListTile(
