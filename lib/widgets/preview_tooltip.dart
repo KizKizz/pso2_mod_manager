@@ -47,18 +47,11 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
         contentOffset: widget.contentPositionOffSet,
         dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
         popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-        onAreaPressed: (controller) {
-          controller.dismissInfoPopup();
+        onControllerCreated: (controller) {
+          if (controller.customContent == null) {
+            controller.dismissInfoPopup();
+          }
         },
-        // onControllerCreated: (controller) {
-        // debugPrint(controller.contentOffset.dy.toString());
-        // if (controller.contentOffset.dy.sign.isNegative) {
-        //   previewTooltipDyOffset = const Offset(427, 0);
-        // } else if (!controller.contentOffset.dy.sign.isNegative) {
-        //   previewTooltipDyOffset = const Offset(427, -54);
-        // }
-        // previewTooltipDyOffset = Offset(427, -0.0);
-        // },
         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
         customContent: () => widget.watchTrigger
             ? (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
