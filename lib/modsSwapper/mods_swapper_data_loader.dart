@@ -350,6 +350,9 @@ class ModsSwapperDataLoader extends StatefulWidget {
 class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
+    csvData.clear();
+    csvAccData.clear();
+    csvEmotesData.clear();
     return FutureBuilder(
         future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? sheetListFetchFromFiles(context, widget.fromItem.category, widget.fromSubmod.getDistinctModFilePaths()) : null,
         builder: (

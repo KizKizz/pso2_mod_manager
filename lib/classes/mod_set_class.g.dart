@@ -8,7 +8,7 @@ part of 'mod_set_class.dart';
 
 ModSet _$ModSetFromJson(Map<String, dynamic> json) => ModSet(
       json['setName'] as String,
-      json['position'] as int,
+      (json['position'] as num).toInt(),
       json['visible'] as bool,
       json['expanded'] as bool,
       DateTime.parse(json['addedDate'] as String),

@@ -17,7 +17,7 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
       json['location'] as String,
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
-      json['position'] as int,
+      (json['position'] as num).toInt(),
       json['isFavorite'] as bool,
       json['isSet'] as bool,
       json['isNew'] as bool,

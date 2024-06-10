@@ -2,6 +2,30 @@ import 'dart:io';
 
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
+void clearModAdderDirs() {
+  if (Directory(modManAddModsTempDirPath).existsSync()) {
+    try {
+      Directory(modManAddModsTempDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManAddModsTempDirPath)], runInShell: true);
+    }
+  }
+  if (Directory(modManAddModsUnpackDirPath).existsSync()) {
+    try {
+      Directory(modManAddModsUnpackDirPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManAddModsUnpackDirPath)], runInShell: true);
+    }
+  }
+  if (Directory(modManModsAdderPath).existsSync()) {
+    try {
+      Directory(modManModsAdderPath).deleteSync(recursive: true);
+    } catch (e) {
+      Process.runSync('cmd', ['rd', '/q', '/s', (modManModsAdderPath)], runInShell: true);
+    }
+  }
+}
+
 void clearAllTempDirs() {
   if (Directory(modManAddModsTempDirPath).existsSync()) {
     try {

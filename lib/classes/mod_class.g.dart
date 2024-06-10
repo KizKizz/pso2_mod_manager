@@ -13,7 +13,7 @@ Mod _$ModFromJson(Map<String, dynamic> json) => Mod(
       json['location'] as String,
       json['applyStatus'] as bool,
       DateTime.parse(json['applyDate'] as String),
-      json['position'] as int,
+      (json['position'] as num).toInt(),
       json['isNew'] as bool,
       json['isFavorite'] as bool,
       json['isSet'] as bool,

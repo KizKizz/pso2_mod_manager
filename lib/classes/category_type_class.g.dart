@@ -8,7 +8,7 @@ part of 'category_type_class.dart';
 
 CategoryType _$CategoryTypeFromJson(Map<String, dynamic> json) => CategoryType(
       json['groupName'] as String,
-      json['position'] as int,
+      (json['position'] as num).toInt(),
       json['visible'] as bool,
       json['expanded'] as bool,
       (json['categories'] as List<dynamic>)

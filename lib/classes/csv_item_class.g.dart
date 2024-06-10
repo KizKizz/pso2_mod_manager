@@ -15,7 +15,7 @@ CsvItem _$CsvItemFromJson(Map<String, dynamic> json) => CsvItem(
           .toList(),
       json['category'] as String,
       json['subCategory'] as String,
-      json['categoryIndex'] as int,
+      (json['categoryIndex'] as num).toInt(),
       json['iconImagePath'] as String,
       Map<String, String>.from(json['infos'] as Map),
     );

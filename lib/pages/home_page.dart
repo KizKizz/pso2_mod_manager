@@ -2150,19 +2150,48 @@ class _HomePageState extends State<HomePage> {
                             height: 5,
                             thickness: 1,
                           ),
+
                         //normal
                         if (modViewItem != null && !isFavListVisible && searchTextController.value.text.isEmpty && !context.watch<StateProvider>().setsWindowVisible)
-                          Container(
-                            padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Theme.of(context).primaryColorLight),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                          Row(children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              child: Text(
+                                modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
+                              ),
                             ),
-                            child: Text(
-                              modViewItem!.mods.length < 2 ? '${modViewItem!.mods.length} ${curLangText!.uiMod}' : '${modViewItem!.mods.length} ${curLangText!.uiMods}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
-                            ),
-                          ),
+                            // export
+                            Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 0),
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    List<SubMod> submodsToExport = [];
+                                    for (var mod in modViewItem!.mods) {
+                                      submodsToExport.addAll(mod.submods);
+                                    }
+                                    await modExportHomePage(context, moddedItemsList, submodsToExport, false);
+                                  },
+                                  child: Container(
+                                      height: 22,
+                                      padding: const EdgeInsets.only(left: 2, right: 2, bottom: 1),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Theme.of(context).primaryColorLight),
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                      ),
+                                      child: Row(children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(right: 5),
+                                          child: Icon(Icons.import_export, size: 18,),
+                                        ),
+                                        Text(curLangText!.uiExportAllMods)
+                                      ])),
+                                ))
+                          ]),
                         //fav
                         if (modViewItem != null && isFavListVisible && searchTextController.value.text.isEmpty && !isModViewFromApplied)
                           Container(
@@ -2220,6 +2249,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Theme.of(context).textTheme.bodyMedium?.color),
                             ),
                           ),
+
                         //Applied text
                         if (modViewItem != null && appBarAppliedModNames.isNotEmpty)
                           for (int i = 0; i < appBarAppliedModNames.length; i++)
@@ -2326,9 +2356,10 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 1),
                                 child: ModManPreviewTooltip(
-                                  contentPositionOffSet: previewTooltipDyOffset,
+                                  contentPositionOffSet: const Offset(427, 0),
                                   submods: modViewModSetSubModIndex != -1 ? [curMod.submods[modViewModSetSubModIndex]] : curMod.submods,
                                   watchTrigger: true,
+                                  appliedListTrigger: false,
                                   child: Card(
                                     margin: EdgeInsets.zero,
                                     color: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(context.watch<StateProvider>().uiOpacityValue),
@@ -2552,6 +2583,15 @@ class _HomePageState extends State<HomePage> {
                                                         setState(() {});
                                                       }
                                                     },
+                                                  ),
+
+                                                  // export
+                                                  MenuItemButton(
+                                                    leadingIcon: const Icon(
+                                                      Icons.import_export,
+                                                    ),
+                                                    child: Text(curLangText!.uiExportThisMod),
+                                                    onPressed: () async => modExportHomePage(context, moddedItemsList, curMod.submods, false),
                                                   ),
 
                                                   // open in file explorer
@@ -3624,9 +3664,10 @@ class _HomePageState extends State<HomePage> {
                                                     setState(() {});
                                                   },
                                                   child: ModManPreviewTooltip(
-                                                    contentPositionOffSet: previewTooltipDyOffset,
+                                                    contentPositionOffSet: const Offset(427, 0),
                                                     submods: [curSubmod],
                                                     watchTrigger: false,
+                                                    appliedListTrigger: false,
                                                     child: ExpansionTile(
                                                       backgroundColor: Colors.transparent,
                                                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
@@ -4314,7 +4355,12 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
-    return Column(children: [
+    return MouseRegion(
+                // onHover: (event) => Provider.of<StateProvider>(context, listen: false).cursorInAppSet(true),
+                onEnter: (event) => Provider.of<StateProvider>(context, listen: false).cursorInALSet(true),
+                onExit: (event) => Provider.of<StateProvider>(context, listen: false).cursorInALSet(false),
+                child:
+    Column(children: [
       AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
@@ -4704,8 +4750,9 @@ class _HomePageState extends State<HomePage> {
                                                 },
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
-                                                  contentPositionOffSet: Offset.zero,
+                                                  contentPositionOffSet: const Offset(-455, 0),
                                                   watchTrigger: false,
+                                                  appliedListTrigger: true,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {
@@ -5035,7 +5082,8 @@ class _HomePageState extends State<HomePage> {
               ),
             )),
       ),
-    ]);
+    ])
+    );
   }
 
 //PREVIEW=====================================================================================================================================================================================
@@ -5558,8 +5606,9 @@ class _HomePageState extends State<HomePage> {
                                                 },
                                                 child: ModManPreviewTooltip(
                                                   submods: curSubmods,
-                                                  contentPositionOffSet: Offset.zero,
+                                                  contentPositionOffSet: const Offset(427, 0),
                                                   watchTrigger: false,
+                                                  appliedListTrigger: false,
                                                   child: ListTile(
                                                     tileColor: Colors.transparent,
                                                     onTap: () {

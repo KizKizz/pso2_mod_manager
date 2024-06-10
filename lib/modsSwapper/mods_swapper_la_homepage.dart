@@ -213,7 +213,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                      child: Text(curLangText!.uiChooseAPoseFoundBellow),
                                     ),
                                     Expanded(
                                       child: Card(
@@ -421,6 +421,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                       ? null
                                                       : () {
                                                           swapperSearchTextController.clear();
+                                                          toIEmotesSearchResults.clear();
                                                           setState(() {});
                                                         },
                                                   child: Icon(
@@ -443,20 +444,20 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                               toIEmotesSearchResults = availableEmotesCsvData
                                                   .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
                                                       : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
                                                   .toList();
                                               setState(() {});
@@ -570,7 +571,7 @@ class _ModsSwapperEmotesHomePageState extends State<ModsSwapperEmotesHomePage> {
                                                                 : Text(toIEmotesSearchResults[i].enName),
                                                         subtitle: isEmotesToStandbyMotions || selectedMotionType.isNotEmpty
                                                             ? null
-                                                            : swapperSearchTextController.text.isEmpty
+                                                            : swapperSearchTextController.text.isEmpty && toIEmotesSearchResults.isEmpty
                                                                 ? Text(availableEmotesCsvData[i].gender)
                                                                 : Text(toIEmotesSearchResults[i].gender),
                                                         onChanged: (toIEmotesSearchResults.isNotEmpty && queueToEmoteCsvFiles.contains(toIEmotesSearchResults[i])) ||

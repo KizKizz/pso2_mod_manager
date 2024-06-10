@@ -131,7 +131,7 @@ class TranslationText {
       uiPatchNote = 'Patch Notes...',
       uiSkipMMUpdate = 'Skip This Version',
       uiUpdate = 'Update',
-      uiNewRefSheetsUpdate = 'New update available for item reference sheets (Important for many features to work correctly)',
+      uiNewRefSheetsUpdate = 'New update available for item data (Important for many features to work correctly)',
       uiDownloading = 'Downloading',
       uiOf = 'of',
       uiRefSheetsDownloadingCount = 'of the required item reference sheets.',
@@ -298,7 +298,8 @@ class TranslationText {
       uiModSetRename = 'Mod Set Rename',
       uiImportMods = 'Import Mods',
       uiSelectApplyingLocations = 'Select applying locations',
-      uiApplyToAllLocations = 'Apply to all locations';
+      uiApplyToAllLocations = 'Apply to all locations',
+      uiExportAllMods = 'Export all mods in this item';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -393,6 +394,7 @@ class TranslationText {
 
 //mods_swapper_homepage
   String uiChooseAVariantFoundBellow = 'Select a variant found bellow (Preferably linked inner variant)',
+      uiChooseAPoseFoundBellow = 'Select a pose found below',
       uiChooseAnItemBellowToSwap = 'Select an item to swap the mod onto',
       uiSearchSwapItems = 'Search items',
       uiReplaceNQwithHQ = 'Replace LQ ices with HQ',
@@ -418,10 +420,10 @@ class TranslationText {
       uiUnableToSwapTheseFilesBelow = 'Unable to swap these files below';
 
   //mods_swapper_data_loader
-  String uiLoadingItemRefSheetsData = 'Loading item reference sheets data',
-      uiErrorWhenLoadingItemRefSheets = 'Error when loading item reference sheets data',
-      uiFetchingItemInfo = 'Fetching item info',
-      uiErrorWhenFetchingItemInfo = 'Error when fetching item info',
+  String uiLoadingItemRefSheetsData = 'Loading item data',
+      uiErrorWhenLoadingItemRefSheets = 'Error when loading data',
+      uiFetchingItemInfo = 'Fetching item data',
+      uiErrorWhenFetchingItemInfo = 'Error when fetching item data',
       uiItemCategoryNotFound = 'Item Category Not Found';
 
   //mods_swapper_popup
