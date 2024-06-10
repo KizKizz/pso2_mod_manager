@@ -80,7 +80,8 @@ List<String> defaultCategoryNames = [
   curLangText!.dfMisc, //13
   curLangText!.dfMotions, //14
   curLangText!.dfOuterwears, //15
-  curLangText!.dfSetwears //16
+  curLangText!.dfSetwears, //16
+  curLangText!.dfWeapons //17
 ];
 List<String> defaultCategoryDirs = [
   'Accessories', //0
@@ -99,7 +100,8 @@ List<String> defaultCategoryDirs = [
   'Misc', //13
   'Motions', //14
   'Outerwears', //15
-  'Setwears' //16
+  'Setwears', //16
+  'Weapons' //17
 ];
 // List<String> defaultCateforyDirsJP = [
 //   'アクセサリー', //0

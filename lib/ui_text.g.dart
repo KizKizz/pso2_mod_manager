@@ -72,6 +72,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..dfMotions = json['dfMotions'] as String
       ..dfOuterwears = json['dfOuterwears'] as String
       ..dfSetwears = json['dfSetwears'] as String
+      ..dfWeapons = json['dfWeapons'] as String
       ..uiSettings = json['uiSettings'] as String
       ..uiLanguage = json['uiLanguage'] as String
       ..uiAddANewLanguage = json['uiAddANewLanguage'] as String
@@ -639,6 +640,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'dfMotions': instance.dfMotions,
       'dfOuterwears': instance.dfOuterwears,
       'dfSetwears': instance.dfSetwears,
+      'dfWeapons': instance.dfWeapons,
       'uiSettings': instance.uiSettings,
       'uiLanguage': instance.uiLanguage,
       'uiAddANewLanguage': instance.uiAddANewLanguage,

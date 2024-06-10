@@ -67,7 +67,8 @@ class TranslationText {
       dfMisc = 'Misc', //13
       dfMotions = 'Motions', //14
       dfOuterwears = 'Outerwears', //15
-      dfSetwears = 'Setwears'; //16
+      dfSetwears = 'Setwears', //16
+      dfWeapons = 'Weapons';
 
   //main page
   String uiSettings = 'Settings',
