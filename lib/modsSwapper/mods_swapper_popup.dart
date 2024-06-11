@@ -15,6 +15,10 @@ void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
   availableEmotesCsvData.clear();
   availableItemsCsvData.clear();
   availableWeaponCsvData.clear();
+  csvData.clear();
+  csvAccData.clear();
+  csvEmotesData.clear();
+  csvWeaponsData.clear();
   showDialog(
       barrierDismissible: true,
       context: context,
