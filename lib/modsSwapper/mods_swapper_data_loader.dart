@@ -10,6 +10,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_homepage.dart';
 // ignore: depend_on_referenced_packages
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_la_homepage.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_wp_homepage.dart';
 
 String unlistedItemCategoryF = '';
 
@@ -283,6 +284,8 @@ Future<bool> sheetListFetchFromFiles(context, String itemCategory, List<String> 
       //   item = itemSplit.join(',');
       // }
       csvData.add(CsvIceFile.fromListMags(item.getInfos()));
+    } else if (itemCategory == defaultCategoryDirs[17]) {
+      csvWeaponsData.add(CsvWeaponIceFile.fromList(item.getInfoForWeapons()));
     } else {
       csvData.add(CsvIceFile.fromList(item.getInfos()));
     }
@@ -337,6 +340,10 @@ Future<List<CsvEmoteIceFile>> getEmotesToMotionsSwapToCsvList(List<CsvEmoteIceFi
   return cvsEmoteDataInput.where((element) => element.category == itemCategory).toList();
 }
 
+Future<List<CsvWeaponIceFile>> getWeaponsSwapToCsvList(List<CsvWeaponIceFile> cvsWeaponDataInput, String swapFromItemCategory) async {
+  return cvsWeaponDataInput.where((element) => element.category == swapFromItemCategory).toList();
+}
+
 class ModsSwapperDataLoader extends StatefulWidget {
   const ModsSwapperDataLoader({super.key, required this.fromItem, required this.fromSubmod});
 
@@ -353,8 +360,11 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
     csvData.clear();
     csvAccData.clear();
     csvEmotesData.clear();
+    csvWeaponsData.clear();
     return FutureBuilder(
-        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? sheetListFetchFromFiles(context, widget.fromItem.category, widget.fromSubmod.getDistinctModFilePaths()) : null,
+        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty && csvWeaponsData.isEmpty
+            ? sheetListFetchFromFiles(context, widget.fromItem.category, widget.fromSubmod.getDistinctModFilePaths())
+            : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -430,12 +440,15 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
                               ? getEmotesSwapToCsvList(csvEmotesData,
                                   !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
-                              : null,
+                              : availableWeaponCsvData.isEmpty && csvWeaponsData.isNotEmpty
+                                  ? getWeaponsSwapToCsvList(csvWeaponsData,
+                                      !defaultCategoryDirs.contains(widget.fromItem.category) || widget.fromItem.category == defaultCategoryDirs[13] ? unlistedItemCategoryF : widget.fromItem.category)
+                                  : null,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot snapshot,
                   ) {
-                    if (snapshot.connectionState == ConnectionState.waiting && (availableItemsCsvData.isEmpty || availableAccCsvData.isEmpty)) {
+                    if (snapshot.connectionState == ConnectionState.waiting && (availableItemsCsvData.isEmpty || availableAccCsvData.isEmpty || availableWeaponCsvData.isEmpty)) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -524,6 +537,21 @@ class _ModsSwapperDataLoaderState extends State<ModsSwapperDataLoader> {
                             );
                           }
                           return ModsSwapperEmotesHomePage(
+                            fromItem: widget.fromItem,
+                            fromSubmod: widget.fromSubmod,
+                          );
+                        } else if (csvWeaponsData.isNotEmpty) {
+                          availableWeaponCsvData = snapshot.data;
+                          if (modManCurActiveItemNameLanguage == 'JP') {
+                            availableWeaponCsvData.sort(
+                              (a, b) => a.jpName.compareTo(b.jpName),
+                            );
+                          } else {
+                            availableWeaponCsvData.sort(
+                              (a, b) => a.enName.compareTo(b.enName),
+                            );
+                          }
+                          return ModsSwapperWeaponHomePage(
                             fromItem: widget.fromItem,
                             fromSubmod: widget.fromSubmod,
                           );

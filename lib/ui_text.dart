@@ -553,7 +553,12 @@ class TranslationText {
   String uiNoFilesInGameDataToReplace = 'No matching files in game data to replace. Check applying locations of the mod';
 
   //player_item_data_preload_page.dart
-  String uiLoadingPlayerItemData = 'Loading Player Item Data', uiErrorWhenLoadingPlayerItemData = 'Error when loading player item data';
+  String uiLoadingPlayerItemData = 'Loading Player Item Data',
+      uiErrorWhenLoadingPlayerItemData = 'Error when loading player item data',
+      uiImportItemDataFile = 'Import Item Data File',
+      uiManuallyDownload = 'Manually Download',
+      uiPlayerItemDataError =
+          'If the problem still exists after restart, you can manually download item data by clicking on the "Manually Download" button bellow.\nThen import it by clicking on "Import Item Data File" and select the .json file that you just downloaded';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

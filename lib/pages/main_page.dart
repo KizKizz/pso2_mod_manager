@@ -299,7 +299,8 @@ class _MainPageState extends State<MainPage> {
                                   curLangText!.dfMisc, //13
                                   curLangText!.dfMotions, //14
                                   curLangText!.dfOuterwears, //15
-                                  curLangText!.dfSetwears //16
+                                  curLangText!.dfSetwears, //16
+                                  curLangText!.dfWeapons //17
                                 ];
                               } else {
                                 lang.selected = false;

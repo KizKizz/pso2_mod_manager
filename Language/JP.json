@@ -469,5 +469,8 @@
   "uiApplyingImportedMods": "インポートしたMODを適用する",
   "uiNoFilesInGameDataToReplace": "置換するゲームデータに一致するファイルがありませんMODの適用場所を確認する",
   "uiLoadingPlayerItemData": "選手アイテムデータの読み込み",
-  "uiErrorWhenLoadingPlayerItemData": "プレイヤー・アイテム・データのロード時のエラー"
+  "uiErrorWhenLoadingPlayerItemData": "プレイヤー・アイテム・データのロード時のエラー",
+  "uiImportItemDataFile": "Import Item Data File",
+  "uiManuallyDownload": "Manually Download",
+  "uiPlayerItemDataError": "If the problem still exists after restart, you can manually download item data by clicking on the \"Manually Download\" button bellow.\nThen import it by clicking on \"Import Item Data File\" and select the .json file that you just downloaded"
 }

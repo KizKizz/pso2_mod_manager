@@ -1,21 +1,22 @@
-
 import 'package:card_banner/card_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
+import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
-
-
 String toItemName = '';
 
-
 void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
+  availableAccCsvData.clear();
+  availableEmotesCsvData.clear();
+  availableItemsCsvData.clear();
+  availableWeaponCsvData.clear();
   showDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

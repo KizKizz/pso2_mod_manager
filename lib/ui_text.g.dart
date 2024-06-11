@@ -589,7 +589,10 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiNoFilesInGameDataToReplace'] as String
       ..uiLoadingPlayerItemData = json['uiLoadingPlayerItemData'] as String
       ..uiErrorWhenLoadingPlayerItemData =
-          json['uiErrorWhenLoadingPlayerItemData'] as String;
+          json['uiErrorWhenLoadingPlayerItemData'] as String
+      ..uiImportItemDataFile = json['uiImportItemDataFile'] as String
+      ..uiManuallyDownload = json['uiManuallyDownload'] as String
+      ..uiPlayerItemDataError = json['uiPlayerItemDataError'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1095,4 +1098,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiLoadingPlayerItemData': instance.uiLoadingPlayerItemData,
       'uiErrorWhenLoadingPlayerItemData':
           instance.uiErrorWhenLoadingPlayerItemData,
+      'uiImportItemDataFile': instance.uiImportItemDataFile,
+      'uiManuallyDownload': instance.uiManuallyDownload,
+      'uiPlayerItemDataError': instance.uiPlayerItemDataError,
     };

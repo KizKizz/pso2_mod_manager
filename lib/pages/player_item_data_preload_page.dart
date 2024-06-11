@@ -2,7 +2,10 @@
 
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pso2_mod_manager/application.dart';
 import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -11,8 +14,10 @@ import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/pages/applied_mods_checking_page.dart';
 import 'package:pso2_mod_manager/pages/mod_set_loading_page.dart';
 import 'package:pso2_mod_manager/pages/mods_loading_page.dart';
+import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
-
 
 class PlayerItemDataPreloadingPage extends StatefulWidget {
   const PlayerItemDataPreloadingPage({super.key});
@@ -22,7 +27,6 @@ class PlayerItemDataPreloadingPage extends StatefulWidget {
 }
 
 class _PlayerItemDataPreloadingPageState extends State<PlayerItemDataPreloadingPage> {
-  
   @override
   Widget build(BuildContext context) {
     final playerItemDataPreload = playerItemDataGet(context);
@@ -70,11 +74,53 @@ class _PlayerItemDataPreloadingPageState extends State<PlayerItemDataPreloadingP
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          windowManager.destroy();
-                        },
-                        child: Text(curLangText!.uiExit))
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(curLangText!.uiPlayerItemDataError, textAlign: TextAlign.center, softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13)),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              windowManager.destroy();
+                            },
+                            child: Text(curLangText!.uiExit)),
+                        const SizedBox(width: 5),
+                        ElevatedButton(
+                            onPressed: () async {
+                              const XTypeGroup typeGroup = XTypeGroup(
+                                label: '.json',
+                                extensions: <String>['json'],
+                              );
+                              final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                              if (selectedFile != null && File(selectedFile.path).existsSync()) {
+                                await File(selectedFile.path).copy(modManPlayerItemDataPath);
+                                if (File(modManPlayerItemDataPath).existsSync() && refSheetsNewVersion > 0) {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setInt('refSheetsVersion', refSheetsNewVersion);
+                                  refSheetsVersion = refSheetsNewVersion;
+                                  modManRefSheetsLocalVersion = refSheetsNewVersion;
+                                  File(modManRefSheetsLocalVerFilePath).writeAsString(refSheetsNewVersion.toString());
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<StateProvider>(context, listen: false).refSheetsUpdateAvailableFalse();
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<StateProvider>(context, listen: false).playerItemDataDownloadPercentReset();
+                                }
+                                setState(() {});
+                              }
+                            },
+                            child: Text(curLangText!.uiImportItemDataFile)),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await launchUrl(Uri.parse('https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/json/playerItemData.json'));
+                            },
+                            child: Text(curLangText!.uiManuallyDownload)),
+                      ],
+                    )
                   ],
                 ),
               );

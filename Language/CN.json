@@ -469,5 +469,8 @@
   "uiApplyingImportedMods": "应用已导入的MOD",
   "uiNoFilesInGameDataToReplace": "在游戏文件中无匹配文件，请检查MOD的应用位置",
   "uiLoadingPlayerItemData": "正在读取玩家物品信息",
-  "uiErrorWhenLoadingPlayerItemData": "读取玩家物品信息时出错"
+  "uiErrorWhenLoadingPlayerItemData": "读取玩家物品信息时出错",
+  "uiImportItemDataFile": "Import Item Data File",
+  "uiManuallyDownload": "Manually Download",
+  "uiPlayerItemDataError": "If the problem still exists after restart, you can manually download item data by clicking on the \"Manually Download\" button bellow.\nThen import it by clicking on \"Import Item Data File\" and select the .json file that you just downloaded"
 }

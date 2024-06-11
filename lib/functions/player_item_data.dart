@@ -15,7 +15,7 @@ int totalCount = 0;
 Future<void> downloadPlayerItemData(context) async {
   final dio = Dio();
   String githubPath = 'https://raw.githubusercontent.com/KizKizz/pso2ngs_file_downloader/main/json/playerItemData.json';
-
+  
   await dio.download(githubPath, modManPlayerItemDataPath, onReceiveProgress: (count, total) {
     totalCount += count;
     String percentage = ((totalCount / 17321211633) * 100).toStringAsPrecision(1);
@@ -41,7 +41,7 @@ Future<List<CsvItem>> playerItemDataGet(context) async {
   List<CsvItem> returnList = [];
   if (File(modManPlayerItemDataPath).existsSync()) {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     File playerItemDataJson = File(modManPlayerItemDataPath);
     if (playerItemDataJson.existsSync()) {
       final dataFromJson = await playerItemDataJson.readAsString();
