@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_ice_file_class.dart';
@@ -9,25 +11,51 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/modsAdder/mods_adder_homepage.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
-import 'package:pso2_mod_manager/modsSwapper/mods_swapper_swappage.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
+import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController swapperSearchTextController = TextEditingController();
 List<CsvWeaponIceFile> toItemSearchResults = [];
 CsvWeaponIceFile? selectedFromCsvFile;
 CsvWeaponIceFile? selectedToCsvFile;
-List<String> fromItemIds = [];
-List<String> toItemIds = [];
-List<String> fromItemAvailableIces = [];
-List<String> toItemAvailableIces = [];
-bool isBodyPaintToInnerwear = false;
-bool isInnerwearToBodyPaint = false;
+String fromItemAvailableIce = '';
+String toItemAvailableIce = '';
 String fromItemIconLink = '';
 String toItemIconLink = '';
+List<String> weaponTypes = [
+  'All',
+  'Swords',
+  'Wired Lances',
+  'Partisans',
+  'Twin Daggers',
+  'Double Sabers',
+  'Knuckles',
+  'Katana',
+  'Soaring Blades',
+  'Assault Rifles',
+  ' Launchers',
+  'Twin Machine Guns',
+  'Bows',
+  'Gunblades',
+  'Rods',
+  'Talises',
+  'Wands',
+  'Jet Boots',
+  'Harmonizers',
+  'Unknown Weapons'
+];
+String dropDownSelectedWeaponType = weaponTypes.first;
+String selectedWeaponType = '';
+List<String> itemTypes = ['All', 'PSO2', 'NGS'];
+String dropDownSelectedItemType = itemTypes.first;
+String selectedItemType = '';
+List<String> itemVars = ['All', 'Weapons', 'Camos'];
+String dropDownSelectedItemVar = itemTypes.first;
+String selectedItemVar = '';
 
 class ModsSwapperWeaponHomePage extends StatefulWidget {
   const ModsSwapperWeaponHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -230,15 +258,15 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                                     onChanged: (CsvWeaponIceFile? currentItem) {
                                                       //print("Current ${moddedItemsList[i].groupName}");
                                                       selectedFromCsvFile = currentItem!;
-                                                      fromItemAvailableIces = [currentItem.iceName];
+                                                      fromItemAvailableIce = currentItem.iceName;
                                                       // fromItemIds = [selectedFromCsvFile!.id.toString(), selectedFromCsvFile!.adjustedId.toString()];
                                                       //set infos
                                                       if (selectedToCsvFile != null) {
-                                                        toItemAvailableIces.clear();
+                                                        toItemAvailableIce = '';
                                                         // List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
                                                         // for (var line in selectedToItemIceList) {
-                                                        // if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                        toItemAvailableIces.add(selectedToCsvFile!.iceName);
+                                                        // if (fromItemAvailableIce.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                        toItemAvailableIce = selectedToCsvFile!.iceName;
                                                         // }
                                                         // }
                                                       }
@@ -350,57 +378,263 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
                                       child: Row(
                                         crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          MaterialButton(
-                                            height: 29,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              isReplacingNQWithHQ ? isReplacingNQWithHQ = false : isReplacingNQWithHQ = true;
-                                              prefs.setBool('modsSwapperIsReplacingNQWithHQ', isReplacingNQWithHQ);
-                                              setState(() {});
-                                            },
-                                            child: Wrap(
-                                              alignment: WrapAlignment.center,
-                                              runAlignment: WrapAlignment.center,
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              spacing: 5,
-                                              children: [Icon(isReplacingNQWithHQ ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiReplaceNQwithHQ)],
+                                          //weapon types
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                                            child: SizedBox(
+                                              width: 200,
+                                              child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton2(
+                                                buttonStyleData: ButtonStyleData(
+                                                  height: 28.5,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).hintColor,
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                                dropdownStyleData: DropdownStyleData(
+                                                  maxHeight: windowsHeight * 0.5,
+                                                  elevation: 3,
+                                                  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(3),
+                                                    color: Theme.of(context).cardColor,
+                                                  ),
+                                                ),
+                                                iconStyleData: const IconStyleData(iconSize: 15),
+                                                menuItemStyleData: const MenuItemStyleData(
+                                                  height: 25,
+                                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                                ),
+                                                isDense: true,
+                                                items: weaponTypes
+                                                    .map((item) => DropdownMenuItem<String>(
+                                                        value: item,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(bottom: 3),
+                                                              child: Text(
+                                                                item,
+                                                                style: const TextStyle(
+                                                                    //fontSize: 14,
+                                                                    //fontWeight: FontWeight.bold,
+                                                                    //color: Colors.white,
+                                                                    ),
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )))
+                                                    .toList(),
+                                                value: dropDownSelectedWeaponType,
+                                                onChanged: (value) async {
+                                                  dropDownSelectedWeaponType = value.toString();
+                                                  selectedToCsvFile = null;
+                                                  // fromItemCsvData.clear();
+                                                  if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData;
+                                                  } else if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType != weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.subCategory.contains(dropDownSelectedWeaponType)).toList();
+                                                  } else if (dropDownSelectedItemType != itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.itemType.contains(dropDownSelectedItemType)).toList();
+                                                  } else {
+                                                    availableWeaponCsvData = csvWeaponsData
+                                                        .where((element) => element.subCategory.contains(dropDownSelectedWeaponType) && element.itemType.contains(dropDownSelectedItemType))
+                                                        .toList();
+                                                  }
+                                                  if (dropDownSelectedItemVar != itemVars.first) {
+                                                    if (availableWeaponCsvData.isEmpty) availableWeaponCsvData = csvWeaponsData;
+                                                    availableWeaponCsvData = availableWeaponCsvData
+                                                        .where((element) =>
+                                                            element.enName.isNotEmpty && element.enName.characters.first == '*' || element.jpName.isNotEmpty && element.jpName.characters.first == '*')
+                                                        .toList();
+                                                  }
+                                                  if (modManCurActiveItemNameLanguage == 'JP') {
+                                                    availableWeaponCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+                                                  } else {
+                                                    availableWeaponCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+                                                  }
+                                                  setState(() {});
+                                                },
+                                              )),
                                             ),
                                           ),
-                                          // MaterialButton(
-                                          //   height: 29,
-                                          //   padding: EdgeInsets.zero,
-                                          //   onPressed: () async {
-                                          //     final prefs = await SharedPreferences.getInstance();
-                                          //     isCopyAll ? isCopyAll = false : isCopyAll = true;
-                                          //     prefs.setBool('modsSwapperIsCopyAll', isCopyAll);
-                                          //     setState(() {});
-                                          //   },
-                                          //   child: Wrap(
-                                          //     alignment: WrapAlignment.center,
-                                          //     runAlignment: WrapAlignment.center,
-                                          //     crossAxisAlignment: WrapCrossAlignment.center,
-                                          //     spacing: 5,
-                                          //     children: [Icon(isCopyAll ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiSwapAllFilesInsideIce)],
-                                          //   ),
-                                          // ),
-                                          MaterialButton(
-                                            height: 29,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              isRemoveExtras ? isRemoveExtras = false : isRemoveExtras = true;
-                                              prefs.setBool('modsSwapperIsRemoveExtras', isRemoveExtras);
-                                              setState(() {});
-                                            },
-                                            child: Wrap(
-                                              alignment: WrapAlignment.center,
-                                              runAlignment: WrapAlignment.center,
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              spacing: 5,
-                                              children: [Icon(isRemoveExtras ? Icons.check_box_outlined : Icons.check_box_outline_blank), Text(curLangText!.uiRemoveUnmatchingFiles)],
+                                          //camo
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                                            child: SizedBox(
+                                              width: 100,
+                                              child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton2(
+                                                buttonStyleData: ButtonStyleData(
+                                                  height: 28.5,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).hintColor,
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                                dropdownStyleData: DropdownStyleData(
+                                                  maxHeight: windowsHeight * 0.5,
+                                                  elevation: 3,
+                                                  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(3),
+                                                    color: Theme.of(context).cardColor,
+                                                  ),
+                                                ),
+                                                iconStyleData: const IconStyleData(iconSize: 15),
+                                                menuItemStyleData: const MenuItemStyleData(
+                                                  height: 25,
+                                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                                ),
+                                                isDense: true,
+                                                items: itemVars
+                                                    .map((item) => DropdownMenuItem<String>(
+                                                        value: item,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(bottom: 3),
+                                                              child: Text(
+                                                                item,
+                                                                style: const TextStyle(
+                                                                    //fontSize: 14,
+                                                                    //fontWeight: FontWeight.bold,
+                                                                    //color: Colors.white,
+                                                                    ),
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )))
+                                                    .toList(),
+                                                value: dropDownSelectedItemVar,
+                                                onChanged: (value) async {
+                                                  dropDownSelectedItemVar = value.toString();
+                                                  selectedToCsvFile = null;
+                                                  // fromItemCsvData.clear();
+                                                  if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData;
+                                                  } else if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType != weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.subCategory.contains(dropDownSelectedWeaponType)).toList();
+                                                  } else if (dropDownSelectedItemType != itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.itemType.contains(dropDownSelectedItemType)).toList();
+                                                  } else {
+                                                    availableWeaponCsvData = csvWeaponsData
+                                                        .where((element) => element.subCategory.contains(dropDownSelectedWeaponType) && element.itemType.contains(dropDownSelectedItemType))
+                                                        .toList();
+                                                  }
+                                                  if (dropDownSelectedItemVar != itemVars.first) {
+                                                    if (availableWeaponCsvData.isEmpty) availableWeaponCsvData = csvWeaponsData;
+                                                    availableWeaponCsvData = availableWeaponCsvData
+                                                        .where((element) =>
+                                                            element.enName.isNotEmpty && element.enName.characters.first == '*' || element.jpName.isNotEmpty && element.jpName.characters.first == '*')
+                                                        .toList();
+                                                  }
+                                                  if (modManCurActiveItemNameLanguage == 'JP') {
+                                                    availableWeaponCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+                                                  } else {
+                                                    availableWeaponCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+                                                  }
+                                                  setState(() {});
+                                                },
+                                              )),
+                                            ),
+                                          ),
+                                          // item type
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                                            child: SizedBox(
+                                              width: 100,
+                                              child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton2(
+                                                buttonStyleData: ButtonStyleData(
+                                                  height: 28.5,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).hintColor,
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                                dropdownStyleData: DropdownStyleData(
+                                                  maxHeight: windowsHeight * 0.5,
+                                                  elevation: 3,
+                                                  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(3),
+                                                    color: Theme.of(context).cardColor,
+                                                  ),
+                                                ),
+                                                iconStyleData: const IconStyleData(iconSize: 15),
+                                                menuItemStyleData: const MenuItemStyleData(
+                                                  height: 25,
+                                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                                ),
+                                                isDense: true,
+                                                items: itemTypes
+                                                    .map((item) => DropdownMenuItem<String>(
+                                                        value: item,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Container(
+                                                              padding: const EdgeInsets.only(bottom: 3),
+                                                              child: Text(
+                                                                item,
+                                                                style: const TextStyle(
+                                                                    //fontSize: 14,
+                                                                    //fontWeight: FontWeight.bold,
+                                                                    //color: Colors.white,
+                                                                    ),
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )))
+                                                    .toList(),
+                                                value: dropDownSelectedItemType,
+                                                onChanged: (value) async {
+                                                  dropDownSelectedItemType = value.toString();
+                                                  selectedToCsvFile = null;
+                                                  // fromItemCsvData.clear();
+                                                  if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData;
+                                                  } else if (dropDownSelectedItemType == itemTypes.first && dropDownSelectedWeaponType != weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.subCategory.contains(dropDownSelectedWeaponType)).toList();
+                                                  } else if (dropDownSelectedItemType != itemTypes.first && dropDownSelectedWeaponType == weaponTypes.first) {
+                                                    availableWeaponCsvData = csvWeaponsData.where((element) => element.itemType.contains(dropDownSelectedItemType)).toList();
+                                                  } else {
+                                                    availableWeaponCsvData = csvWeaponsData
+                                                        .where((element) => element.subCategory.contains(dropDownSelectedWeaponType) && element.itemType.contains(dropDownSelectedItemType))
+                                                        .toList();
+                                                  }
+                                                  if (dropDownSelectedItemVar != itemVars.first) {
+                                                    if (availableWeaponCsvData.isEmpty) availableWeaponCsvData = csvWeaponsData;
+                                                    availableWeaponCsvData = availableWeaponCsvData
+                                                        .where((element) =>
+                                                            element.enName.isNotEmpty && element.enName.characters.first == '*' || element.jpName.isNotEmpty && element.jpName.characters.first == '*')
+                                                        .toList();
+                                                  }
+                                                  if (modManCurActiveItemNameLanguage == 'JP') {
+                                                    availableWeaponCsvData.sort((a, b) => a.jpName.compareTo(b.jpName));
+                                                  } else {
+                                                    availableWeaponCsvData.sort((a, b) => a.enName.compareTo(b.enName));
+                                                  }
+                                                  setState(() {});
+                                                },
+                                              )),
                                             ),
                                           ),
                                         ],
@@ -486,34 +720,34 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                                         ]),
                                                         subtitle: swapperSearchTextController.text.isEmpty
                                                             ? Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                              for (int j = 0; j < availableWeaponCsvData[i].getDetailedList().length; j++) Text(availableWeaponCsvData[i].getDetailedList()[j])
-                                                            ],)
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  for (int j = 0; j < availableWeaponCsvData[i].getDetailedList().length; j++) Text(availableWeaponCsvData[i].getDetailedList()[j])
+                                                                ],
+                                                              )
                                                             : Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                              for (int j = 0; j < toItemSearchResults[i].getDetailedList().length; j++) Text(toItemSearchResults[i].getDetailedList()[j])
-                                                            ],),
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [for (int j = 0; j < toItemSearchResults[i].getDetailedList().length; j++) Text(toItemSearchResults[i].getDetailedList()[j])],
+                                                              ),
                                                         onChanged: (CsvWeaponIceFile? currentItem) {
                                                           //print("Current ${moddedItemsList[i].groupName}");
                                                           selectedToCsvFile = currentItem!;
                                                           toItemName = modManCurActiveItemNameLanguage == 'JP' ? selectedToCsvFile!.jpName : selectedToCsvFile!.enName;
                                                           if (toItemName.isEmpty) toItemName = p.basenameWithoutExtension(selectedToCsvFile!.icePath);
                                                           // toItemIds = [selectedToCsvFile!.id.toString(), selectedToCsvFile!.adjustedId.toString()];
-                                                          if (fromItemAvailableIces.isNotEmpty) {
-                                                            toItemAvailableIces.clear();
+                                                          if (fromItemAvailableIce.isNotEmpty) {
+                                                            toItemAvailableIce = '';
                                                             // List<String> selectedToItemIceList = selectedToCsvFile!.getDetailedList();
                                                             // for (var line in selectedToItemIceList) {
-                                                            //   if (fromItemAvailableIces.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
-                                                            //     toItemAvailableIces.add(line);
+                                                            //   if (fromItemAvailableIce.where((element) => element.split(': ').first == line.split(': ').first).isNotEmpty) {
+                                                            //     toItemAvailableIce.add(line);
                                                             //   }
 
                                                             //   if (isReplacingNQWithHQ && line.split(': ').first.contains('Normal Quality')) {
-                                                            //     toItemAvailableIces.add(line);
+                                                            //     toItemAvailableIce.add(line);
                                                             //   }
                                                             // }
-                                                            toItemAvailableIces.add(currentItem.iceName);
+                                                            toItemAvailableIce = currentItem.iceName;
                                                           }
                                                           //confirm icon set
                                                           toItemIconLink = '$modManMAIconDatabaseLink${currentItem.iconImageWebPath.replaceAll('\\', '/').replaceAll(' ', '%20')}';
@@ -550,10 +784,8 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                     swapperSearchTextController.clear();
                                     selectedFromCsvFile = null;
                                     selectedToCsvFile = null;
-                                    fromItemIds.clear();
-                                    toItemIds.clear();
-                                    fromItemAvailableIces.clear();
-                                    toItemAvailableIces.clear();
+                                    fromItemAvailableIce = '';
+                                    toItemAvailableIce = '';
                                     csvWeaponsData.clear();
                                     availableWeaponCsvData.clear();
                                     toItemSearchResults.clear();
@@ -565,7 +797,7 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                       ? null
                                       : () {
                                           if (selectedFromCsvFile != null && selectedToCsvFile != null) {
-                                            swapperConfirmDialog(context, widget.fromSubmod, fromItemAvailableIces, toItemAvailableIces);
+                                            swapperConfirmDialog(context, widget.fromSubmod, fromItemAvailableIce, toItemAvailableIce);
                                           }
                                         },
                                   child: Text(curLangText!.uiNext))
@@ -583,7 +815,7 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
   }
 }
 
-Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromItemAvailableIces, List<String> toItemAvailableIces) async {
+Future<void> swapperConfirmDialog(context, SubMod fromSubmod, String fromItemAvailableIce, String toItemAvailableIce) async {
   await showDialog(
       barrierDismissible: true,
       context: context,
@@ -664,14 +896,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                             color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [for (int i = 0; i < fromItemAvailableIces.length; i++) Text(fromItemAvailableIces[i])],
-                              ),
-                            ),
+                            child: Padding(padding: const EdgeInsets.all(5.0), child: Text(fromItemAvailableIce)),
                           ),
                         ),
                         const Padding(
@@ -687,14 +912,7 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                             color: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [for (int i = 0; i < toItemAvailableIces.length; i++) Text(toItemAvailableIces[i])],
-                              ),
-                            ),
+                            child: Padding(padding: const EdgeInsets.all(5.0), child: Text(toItemAvailableIce)),
                           ),
                         )
                       ],
@@ -710,9 +928,296 @@ Future<void> swapperConfirmDialog(context, SubMod fromSubmod, List<String> fromI
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        swapperSwappingDialog(context, false, fromSubmod, fromItemAvailableIces, toItemAvailableIces, toItemName, fromItemIds[0], toItemIds[0]);
+                        swapperWpSwappingDialog(context, fromSubmod, fromItemAvailableIce, toItemAvailableIce, toItemName);
                       },
                       child: Text(curLangText!.uiSwap))
                 ]);
           }));
+}
+
+Future<void> swapperWpSwappingDialog(context, SubMod fromSubmod, String fromItemAvailableIce, String toItemAvailableIce, String toItemName) async {
+  String swappedModPath = '';
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
+                contentPadding: const EdgeInsets.all(16),
+                content: FutureBuilder(
+                    future: swappedModPath.isEmpty ? modsSwapperWpSwap(context, fromSubmod, fromItemAvailableIce, toItemAvailableIce, toItemName) : null,
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot snapshot,
+                    ) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                          width: 250,
+                          height: 250,
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  curLangText!.uiSwappingItem,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const CircularProgressIndicator(),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  curLangText!.uiErrorWhenSwapping,
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                  child: Text(snapshot.error.toString(), softWrap: true, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 15)),
+                                ),
+                                ElevatedButton(
+                                    child: Text(curLangText!.uiReturn),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ],
+                            ),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return SizedBox(
+                            width: 250,
+                            height: 250,
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    curLangText!.uiSwappingItem,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  const CircularProgressIndicator(),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          swappedModPath = snapshot.data;
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    swappedModPath.contains(modManSwapperOutputDirPath) ? curLangText!.uiSuccessfullySwapped : curLangText!.uiFailedToSwap,
+                                    style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                child: swappedModPath.contains(modManSwapperOutputDirPath)
+                                    ? Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Card(
+                                              margin: EdgeInsets.zero,
+                                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                              color: Colors.transparent,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(5.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      fromSubmod.itemName,
+                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                    ),
+                                                    if (!fromSubmod.modName.contains('_${curLangText!.uiSwap}') && !fromSubmod.submodName.contains('_${curLangText!.uiSwap}'))
+                                                      Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 5),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 5),
+                                              child: Icon(Icons.arrow_forward_ios_rounded),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Card(
+                                              margin: EdgeInsets.zero,
+                                              shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                              color: Colors.transparent,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(5.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      toItemName,
+                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                    ),
+                                                    Text('${fromSubmod.modName} > ${fromSubmod.submodName}'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : ScrollbarTheme(
+                                        data: ScrollbarThemeData(
+                                          thumbColor: WidgetStateProperty.resolveWith((states) {
+                                            if (states.contains(WidgetState.hovered)) {
+                                              return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.7);
+                                            }
+                                            return Theme.of(context).textTheme.displaySmall?.color?.withOpacity(0.5);
+                                          }),
+                                        ),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 10),
+                                                child: Text(
+                                                  curLangText!.uiUnableToSwapTheseFilesBelow,
+                                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              Text(swappedModPath)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(minWidth: 450),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Wrap(
+                                      runAlignment: WrapAlignment.center,
+                                      alignment: WrapAlignment.center,
+                                      spacing: 5,
+                                      children: [
+                                        ElevatedButton(
+                                            child: Text(curLangText!.uiReturn),
+                                            onPressed: () {
+                                              //clear
+                                              if (Directory(modManSwapperFromItemDirPath).existsSync()) {
+                                                Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+                                              }
+                                              if (Directory(modManSwapperToItemDirPath).existsSync()) {
+                                                Directory(modManSwapperToItemDirPath).deleteSync(recursive: true);
+                                              }
+                                              if (Directory(modManSwapperOutputDirPath).existsSync()) {
+                                                Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+                                              }
+                                              Navigator.pop(context);
+                                            }),
+                                        ElevatedButton(
+                                            onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
+                                                ? null
+                                                : () async {
+                                                    await launchUrl(Uri.file(swappedModPath));
+                                                  },
+                                            child: Text('${curLangText!.uiOpen} ${curLangText!.uiInFileExplorer}')),
+                                        ElevatedButton(
+                                            onPressed: !swappedModPath.contains(modManSwapperOutputDirPath)
+                                                ? null
+                                                : () {
+                                                    // newModDragDropList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // newModMainFolderList.add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName}').toFilePath()));
+                                                    // modAddHandler(context);
+                                                    modAdderDragDropFiles
+                                                        .add(XFile(Uri.file('$swappedModPath/${fromSubmod.modName.replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}').toFilePath()));
+                                                    modsAdderHomePage(context);
+                                                  },
+                                            child: Text(curLangText!.uiAddToModManager))
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          );
+                        }
+                      }
+                    }));
+          }));
+}
+
+Future<String> modsSwapperWpSwap(context, SubMod fromSubmod, String fromItemAvailableIce, String toItemAvailableIce, String toItemName) async {
+  //clean
+  if (Directory(modManSwapperOutputDirPath).existsSync()) {
+    Directory(modManSwapperOutputDirPath).deleteSync(recursive: true);
+  }
+  //create
+  Directory(modManSwapperFromItemDirPath).createSync(recursive: true);
+  Directory(modManSwapperToItemDirPath).createSync(recursive: true);
+  Directory(modManSwapperOutputDirPath).createSync(recursive: true);
+  String renamedItemPath = Uri.file('$modManSwapperOutputDirPath/$toItemName').toFilePath();
+  for (var modFile in fromSubmod.modFiles) {
+    File curFile = File(modFile.location);
+    if (fromItemAvailableIce == modFile.modFileName && curFile.existsSync()) {
+      toItemName = toItemName.replaceAll(RegExp(charToReplace), '_').trim();
+      String packDirPath = '';
+      if (fromSubmod.modName == fromSubmod.submodName) {
+        packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName.replaceAll(RegExp(charToReplace), '_')}').toFilePath();
+      } else {
+        packDirPath = Uri.file('$modManSwapperOutputDirPath/$toItemName/${fromSubmod.modName}/${fromSubmod.submodName.replaceAll(' > ', '/').replaceAll(RegExp(charToReplaceWithoutSeparators), '_')}')
+            .toFilePath();
+      }
+      Directory(packDirPath).createSync(recursive: true);
+      await curFile.copy(Uri.file('$packDirPath/$toItemAvailableIce').toFilePath());
+
+      //image
+      for (var imagePath in fromSubmod.previewImages) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(imagePath)).isEmpty) {
+          File(imagePath).copySync(Uri.file('$packDirPath/${p.basename(imagePath)}').toFilePath());
+        }
+      }
+      //video
+      for (var videoPath in fromSubmod.previewVideos) {
+        if (Directory(packDirPath).listSync().whereType<File>().where((element) => p.basename(element.path) == p.basename(videoPath)).isEmpty) {
+          File(videoPath).copySync(Uri.file('$packDirPath/${p.basename(videoPath)}').toFilePath());
+        }
+      }
+    }
+  }
+
+  return renamedItemPath;
 }

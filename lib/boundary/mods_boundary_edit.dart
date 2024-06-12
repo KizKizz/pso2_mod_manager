@@ -80,7 +80,7 @@ Future<bool> modsBoundaryEditHomePage(context, SubMod submod) async {
 }
 
 void boundaryEdit(context, SubMod submod) async {
-  Directory(modManAddModsTempDirPath).createSync();
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
   List<String> boundaryRemovedFiles = [];
   List<String> boundaryNotFoundFiles = [];
   //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
