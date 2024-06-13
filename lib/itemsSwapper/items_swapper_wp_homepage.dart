@@ -53,19 +53,12 @@ List<String> weaponTypes = [
 ];
 String dropDownSelectedFromWeaponType = weaponTypes.first;
 String dropDownSelectedWeaponType = weaponTypes.first;
-String selectedFromWeaponType = '';
-String selectedWeaponType = '';
 List<String> itemTypes = [curLangText!.uiAll, curLangText!.uiPSO2, curLangText!.uiNGS];
 String dropDownSelectedFromItemType = itemTypes.first;
 String dropDownSelectedItemType = itemTypes.first;
-String selectedFromItemType = '';
-String selectedItemType = '';
 List<String> itemVars = [curLangText!.uiAll, curLangText!.uiWeapons, curLangText!.uiCamos];
 String dropDownSelectedFromItemVar = itemVars.first;
 String dropDownSelectedItemVar = itemVars.first;
-String selectedFromItemVar = '';
-String selectedItemVar = '';
-
 class ItemsSwapperWeaponHomePage extends StatefulWidget {
   const ItemsSwapperWeaponHomePage({super.key});
   @override
@@ -994,6 +987,12 @@ class _ItemsSwapperWeaponHomePageState extends State<ItemsSwapperWeaponHomePage>
                                     csvWeaponsData.clear();
                                     availableWeaponCsvData.clear();
                                     toItemSearchResults.clear();
+                                    dropDownSelectedWeaponType = weaponTypes.first;
+                                    dropDownSelectedItemType = itemTypes.first;
+                                    dropDownSelectedItemVar = itemVars.first;
+                                    dropDownSelectedFromWeaponType = weaponTypes.first;
+                                    dropDownSelectedFromItemType = itemTypes.first;
+                                    dropDownSelectedFromItemVar = itemVars.first;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

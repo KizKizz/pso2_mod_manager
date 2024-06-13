@@ -50,13 +50,10 @@ List<String> weaponTypes = [
   curLangText!.uiUnknownWeapons
 ];
 String dropDownSelectedWeaponType = weaponTypes.first;
-String selectedWeaponType = '';
 List<String> itemTypes = [curLangText!.uiAll, curLangText!.uiPSO2, curLangText!.uiNGS];
 String dropDownSelectedItemType = itemTypes.first;
-String selectedItemType = '';
 List<String> itemVars = [curLangText!.uiAll, curLangText!.uiWeapons, curLangText!.uiCamos];
 String dropDownSelectedItemVar = itemTypes.first;
-String selectedItemVar = '';
 
 class ModsSwapperWeaponHomePage extends StatefulWidget {
   const ModsSwapperWeaponHomePage({super.key, required this.fromItem, required this.fromSubmod});
@@ -193,7 +190,7 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                      child: Text(curLangText!.uiChooseAVariantFoundBellow),
+                                      child: Text(curLangText!.uiSelectAWeaponBelow),
                                     ),
                                     Expanded(
                                       child: Card(
@@ -746,6 +743,9 @@ class _ModsSwapperWeaponHomePageState extends State<ModsSwapperWeaponHomePage> {
                                     csvWeaponsData.clear();
                                     availableWeaponCsvData.clear();
                                     toItemSearchResults.clear();
+                                    dropDownSelectedWeaponType = weaponTypes.first;
+                                    dropDownSelectedItemType = itemTypes.first;
+                                    dropDownSelectedItemVar = itemVars.first;
                                     Navigator.pop(context);
                                   },
                                   child: Text(curLangText!.uiClose)),

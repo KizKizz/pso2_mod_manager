@@ -561,7 +561,8 @@ class TranslationText {
           'If the problem still exists after restart, you can manually download item data by clicking on the "Manually Download" button bellow.\nThen import it by clicking on "Import Item Data File" and select the .json file that you just downloaded';
 
   //mods_swapper_wp_homepage.dart
-  String uiSwords = 'Swords',
+  String uiSelectAWeaponBelow = 'Select a weapon bellow',
+  uiSwords = 'Swords',
       uiWiredLances = 'Wired Lances',
       uiPartisans = 'Partisans',
       uiTwinDaggers = 'Twin Daggers',

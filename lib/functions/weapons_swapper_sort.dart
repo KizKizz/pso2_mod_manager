@@ -35,7 +35,7 @@ List<CsvWeaponIceFile> wpSwapperDropDownItemSort(String searchedText, String sel
     sortedList = sortedList.where((element) => element.subCategory.characters.first != '*' || element.subCategory.characters.first != '*').toList();
   }
 
-  debugPrint('$selectedWeaponType > $selectedItemVar > $selectedItemType');
+  // debugPrint('$selectedWeaponType > $selectedItemVar > $selectedItemType');
 
   return sortedList;
 }

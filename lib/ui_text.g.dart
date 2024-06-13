@@ -593,6 +593,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiImportItemDataFile = json['uiImportItemDataFile'] as String
       ..uiManuallyDownload = json['uiManuallyDownload'] as String
       ..uiPlayerItemDataError = json['uiPlayerItemDataError'] as String
+      ..uiSelectAWeaponBelow = json['uiSelectAWeaponBelow'] as String
       ..uiSwords = json['uiSwords'] as String
       ..uiWiredLances = json['uiWiredLances'] as String
       ..uiPartisans = json['uiPartisans'] as String
@@ -1131,6 +1132,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiImportItemDataFile': instance.uiImportItemDataFile,
       'uiManuallyDownload': instance.uiManuallyDownload,
       'uiPlayerItemDataError': instance.uiPlayerItemDataError,
+      'uiSelectAWeaponBelow': instance.uiSelectAWeaponBelow,
       'uiSwords': instance.uiSwords,
       'uiWiredLances': instance.uiWiredLances,
       'uiPartisans': instance.uiPartisans,
