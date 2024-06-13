@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.6",
+    "version": "2.7.7",
     "description": [
         "Added support for weapons and camos (recognizes when adding mods and weapons-camos swapping)",
         "More bug fixes",

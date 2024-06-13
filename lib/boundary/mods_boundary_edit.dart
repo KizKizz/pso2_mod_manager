@@ -83,6 +83,7 @@ void boundaryEdit(context, SubMod submod) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   List<String> boundaryRemovedFiles = [];
   List<String> boundaryNotFoundFiles = [];
+  int packRetries = 0;
   //if (itemCategory == defaultCateforyDirs[16] || itemCategory == defaultCateforyDirs[1] || itemName.contains('[Fu]')) {
   // if (itemCategory == defaultCategoryDirs[1] ||
   //     itemCategory == defaultCategoryDirs[3] ||
@@ -133,11 +134,19 @@ void boundaryEdit(context, SubMod submod) async {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiPackingFiles);
             await Future.delayed(const Duration(milliseconds: 100));
             //pack
-            await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+            while (!File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).existsSync()) {
+              await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+              packRetries++;
+              debugPrint(packRetries.toString());
+              if (packRetries == 10) {
+                break;
+              }
+            }
+            packRetries = 0;
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
             await Future.delayed(const Duration(milliseconds: 100));
-            File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
             try {
+              File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
               await renamedFile.copy(modFile.location);
             } catch (e) {
               Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
