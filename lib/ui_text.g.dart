@@ -592,7 +592,37 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiErrorWhenLoadingPlayerItemData'] as String
       ..uiImportItemDataFile = json['uiImportItemDataFile'] as String
       ..uiManuallyDownload = json['uiManuallyDownload'] as String
-      ..uiPlayerItemDataError = json['uiPlayerItemDataError'] as String;
+      ..uiPlayerItemDataError = json['uiPlayerItemDataError'] as String
+      ..uiSwords = json['uiSwords'] as String
+      ..uiWiredLances = json['uiWiredLances'] as String
+      ..uiPartisans = json['uiPartisans'] as String
+      ..uiTwinDaggers = json['uiTwinDaggers'] as String
+      ..uiDoubleSabers = json['uiDoubleSabers'] as String
+      ..uiKnuckles = json['uiKnuckles'] as String
+      ..uiKatanas = json['uiKatanas'] as String
+      ..uiSoaringBlades = json['uiSoaringBlades'] as String
+      ..uiAssualtRifles = json['uiAssualtRifles'] as String
+      ..uiLaunchers = json['uiLaunchers'] as String
+      ..uiTwinMachineGuns = json['uiTwinMachineGuns'] as String
+      ..uiBows = json['uiBows'] as String
+      ..uiGunblades = json['uiGunblades'] as String
+      ..uiRods = json['uiRods'] as String
+      ..uiTalises = json['uiTalises'] as String
+      ..uiWands = json['uiWands'] as String
+      ..uiJetBoots = json['uiJetBoots'] as String
+      ..uiHarmonizers = json['uiHarmonizers'] as String
+      ..uiUnknownWeapons = json['uiUnknownWeapons'] as String
+      ..uiPSO2 = json['uiPSO2'] as String
+      ..uiNGS = json['uiNGS'] as String
+      ..uiWeapons = json['uiWeapons'] as String
+      ..uiCamos = json['uiCamos'] as String
+      ..uiGlideMotion = json['uiGlideMotion'] as String
+      ..uiJumpMotion = json['uiJumpMotion'] as String
+      ..uiLandingMotion = json['uiLandingMotion'] as String
+      ..uiDashMotion = json['uiDashMotion'] as String
+      ..uiRunMotion = json['uiRunMotion'] as String
+      ..uiStandbyMotion = json['uiStandbyMotion'] as String
+      ..uiSwimMotion = json['uiSwimMotion'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1101,4 +1131,34 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiImportItemDataFile': instance.uiImportItemDataFile,
       'uiManuallyDownload': instance.uiManuallyDownload,
       'uiPlayerItemDataError': instance.uiPlayerItemDataError,
+      'uiSwords': instance.uiSwords,
+      'uiWiredLances': instance.uiWiredLances,
+      'uiPartisans': instance.uiPartisans,
+      'uiTwinDaggers': instance.uiTwinDaggers,
+      'uiDoubleSabers': instance.uiDoubleSabers,
+      'uiKnuckles': instance.uiKnuckles,
+      'uiKatanas': instance.uiKatanas,
+      'uiSoaringBlades': instance.uiSoaringBlades,
+      'uiAssualtRifles': instance.uiAssualtRifles,
+      'uiLaunchers': instance.uiLaunchers,
+      'uiTwinMachineGuns': instance.uiTwinMachineGuns,
+      'uiBows': instance.uiBows,
+      'uiGunblades': instance.uiGunblades,
+      'uiRods': instance.uiRods,
+      'uiTalises': instance.uiTalises,
+      'uiWands': instance.uiWands,
+      'uiJetBoots': instance.uiJetBoots,
+      'uiHarmonizers': instance.uiHarmonizers,
+      'uiUnknownWeapons': instance.uiUnknownWeapons,
+      'uiPSO2': instance.uiPSO2,
+      'uiNGS': instance.uiNGS,
+      'uiWeapons': instance.uiWeapons,
+      'uiCamos': instance.uiCamos,
+      'uiGlideMotion': instance.uiGlideMotion,
+      'uiJumpMotion': instance.uiJumpMotion,
+      'uiLandingMotion': instance.uiLandingMotion,
+      'uiDashMotion': instance.uiDashMotion,
+      'uiRunMotion': instance.uiRunMotion,
+      'uiStandbyMotion': instance.uiStandbyMotion,
+      'uiSwimMotion': instance.uiSwimMotion,
     };

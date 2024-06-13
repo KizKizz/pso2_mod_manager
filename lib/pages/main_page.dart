@@ -34,6 +34,7 @@ import 'package:pso2_mod_manager/pages/profiles_loading_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_import.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
+import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
@@ -281,27 +282,8 @@ class _MainPageState extends State<MainPage> {
                                 prefs.setString('curActiveLanguage', curActiveLang);
                                 var jsonData = jsonDecode(File(lang.langFilePath).readAsStringSync());
                                 curLangText = TranslationText.fromJson(jsonData);
-                                defaultCategoryTypeNames = [curLangText!.dfCastParts, curLangText!.dfLayeringWears, curLangText!.dfOthers];
-                                defaultCategoryNames = [
-                                  curLangText!.dfAccessories, //0
-                                  curLangText!.dfBasewears, //1
-                                  curLangText!.dfBodyPaints, //2
-                                  curLangText!.dfCastArmParts, //3
-                                  curLangText!.dfCastBodyParts, //4
-                                  curLangText!.dfCastLegParts, //5
-                                  curLangText!.dfCostumes, //6
-                                  curLangText!.dfEmotes, //7
-                                  curLangText!.dfEyes, //8
-                                  curLangText!.dfFacePaints, //9
-                                  curLangText!.dfHairs, //10
-                                  curLangText!.dfInnerwears, //11
-                                  curLangText!.dfMags, //12
-                                  curLangText!.dfMisc, //13
-                                  curLangText!.dfMotions, //14
-                                  curLangText!.dfOuterwears, //15
-                                  curLangText!.dfSetwears, //16
-                                  curLangText!.dfWeapons //17
-                                ];
+                                //refresh widgets language
+                                widgetsLanguageRefresh();
                               } else {
                                 lang.selected = false;
                               }
@@ -856,10 +838,7 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(
-                                  Provider.of<StateProvider>(context, listen: false).markModdedItem
-                                      ? '${curLangText!.uiMarkModdedItemInGame}: ON'
-                                      : '${curLangText!.uiMarkModdedItemInGame}: OFF',
+                              Text(Provider.of<StateProvider>(context, listen: false).markModdedItem ? '${curLangText!.uiMarkModdedItemInGame}: ON' : '${curLangText!.uiMarkModdedItemInGame}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
@@ -1043,10 +1022,7 @@ class _MainPageState extends State<MainPage> {
                                 size: 18,
                               ),
                               const SizedBox(width: 10),
-                              Text(
-                                  Provider.of<StateProvider>(context, listen: false).showPreviewPanel
-                                      ? '${curLangText!.uiPreviewWindow}: ON'
-                                      : '${curLangText!.uiPreviewWindow}: OFF',
+                              Text(Provider.of<StateProvider>(context, listen: false).showPreviewPanel ? '${curLangText!.uiPreviewWindow}: ON' : '${curLangText!.uiPreviewWindow}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),

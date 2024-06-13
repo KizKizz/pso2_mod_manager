@@ -560,6 +560,39 @@ class TranslationText {
       uiPlayerItemDataError =
           'If the problem still exists after restart, you can manually download item data by clicking on the "Manually Download" button bellow.\nThen import it by clicking on "Import Item Data File" and select the .json file that you just downloaded';
 
+  //mods_swapper_wp_homepage.dart
+  String uiSwords = 'Swords',
+      uiWiredLances = 'Wired Lances',
+      uiPartisans = 'Partisans',
+      uiTwinDaggers = 'Twin Daggers',
+      uiDoubleSabers = 'Double Sabers',
+      uiKnuckles = 'Knuckles',
+      uiKatanas = 'Katanas',
+      uiSoaringBlades = 'Soaring Blades',
+      uiAssualtRifles = 'Assault Rifles',
+      uiLaunchers = 'Launchers',
+      uiTwinMachineGuns = 'Twin Machine Guns',
+      uiBows = 'Bows',
+      uiGunblades = 'Gunblades',
+      uiRods = 'Rods',
+      uiTalises = 'Talises',
+      uiWands = 'Wands',
+      uiJetBoots = 'Jet Boots',
+      uiHarmonizers = 'Harmonizers',
+      uiUnknownWeapons = 'Unknown Weapons',
+      uiPSO2 = 'PSO2',
+      uiNGS = 'NGS',
+      uiWeapons = 'Weapons',
+      uiCamos = 'Camos';
+
+  //items_swapper_la_homepage.dart
+  String uiGlideMotion = 'Glide Motion',
+      uiJumpMotion = 'Jump Motion',
+      uiLandingMotion = 'Landing Motion',
+      uiDashMotion = 'Dash Motion',
+      uiRunMotion = 'Run Motion',
+      uiStandbyMotion = 'Standby Motion',
+      uiSwimMotion = 'Swim Motion';
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

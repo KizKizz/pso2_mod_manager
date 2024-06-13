@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/itemsSwapper/items_swapper_acc_homepage.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_homepage.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_la_homepage.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
+import 'package:pso2_mod_manager/itemsSwapper/items_swapper_wp_homepage.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -54,6 +55,10 @@ Future<List<CsvEmoteIceFile>> getEmotesToMotionsSwapToCsvList(List<CsvEmoteIceFi
   return cvsEmoteDataInput.where((element) => element.category == itemCategory).toList();
 }
 
+Future<List<CsvWeaponIceFile>> getWeaponsSwapToCsvList(List<CsvWeaponIceFile> cvsWeaponDataInput, String swapFromItemCategory) async {
+  return cvsWeaponDataInput.where((element) => element.category == swapFromItemCategory).toList();
+}
+
 class ItemsSwapperDataLoader extends StatefulWidget {
   const ItemsSwapperDataLoader({super.key});
 
@@ -65,7 +70,7 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty ? ms.sheetListFetchFromFiles(context, selectedCategoryF!, []) : null,
+        future: csvData.isEmpty && csvAccData.isEmpty && csvEmotesData.isEmpty && csvWeaponsData.isEmpty ? ms.sheetListFetchFromFiles(context, selectedCategoryF!, []) : null,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -139,7 +144,9 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                           ? getAccSwapToCsvList(csvAccData, selectedCategoryF!)
                           : availableEmotesCsvData.isEmpty && csvEmotesData.isNotEmpty
                               ? getEmotesSwapToCsvList(csvEmotesData, selectedCategoryF!)
-                              : null,
+                              : availableWeaponCsvData.isEmpty && csvWeaponsData.isNotEmpty
+                                  ? getWeaponsSwapToCsvList(csvWeaponsData, selectedCategoryF!)
+                                  : null,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot snapshot,
@@ -230,6 +237,19 @@ class _ItemsSwapperDataLoaderState extends State<ItemsSwapperDataLoader> {
                             );
                           }
                           return const ItemsSwapperEmotesHomePage();
+                        } else if (csvWeaponsData.isNotEmpty) {
+                          availableWeaponCsvData = snapshot.data;
+                          // if (modManCurActiveItemNameLanguage == 'JP') {
+                          //   availableWeaponCsvData.sort(
+                          //     (a, b) => a.jpName.compareTo(b.jpName),
+                          //   );
+                          // } else {
+                          //   availableWeaponCsvData.sort(
+                          //     (a, b) => a.enName.compareTo(b.enName),
+                          //   );
+                          // }
+                          return const ItemsSwapperWeaponHomePage(
+                          );
                         } else {
                           availableItemsCsvData = snapshot.data;
                           if (modManCurActiveItemNameLanguage == 'JP') {
