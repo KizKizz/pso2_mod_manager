@@ -244,3 +244,35 @@ class CsvEmoteIceFile {
     ];
   }
 }
+
+class CsvWeaponIceFile {
+  CsvWeaponIceFile(this.category, this.subCategory, this.itemType, this.iconImageWebPath, this.jpName, this.enName,  this.icePath, this.iceName);
+  String category;
+  String subCategory;
+  String itemType;
+  String iconImageWebPath;
+  String jpName;
+  String enName;
+  String icePath;
+  String iceName;
+  
+  CsvWeaponIceFile.fromList(List<String> items) : this(
+    items[0],
+    items[1],
+    items[2],
+    items[3],
+    items[4],
+    items[5],
+    items[6],
+    items[7].split('\\').last
+  );
+
+  List<String> getDetailedList() {
+    return [
+      'Sub Category: $subCategory',
+      'Item Type: $itemType',
+      'Ice Path: $icePath',
+      'Ice Name: $iceName'
+    ];
+  }
+}

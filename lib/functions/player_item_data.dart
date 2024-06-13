@@ -32,6 +32,7 @@ Future<void> downloadPlayerItemData(context) async {
     // debugPrint('itemdatajson size: $totalCount');
     totalCount = 0;
   }
+  dio.close();
 }
 
 Future<List<CsvItem>> playerItemDataGet(context) async {
@@ -41,7 +42,7 @@ Future<List<CsvItem>> playerItemDataGet(context) async {
   List<CsvItem> returnList = [];
   if (File(modManPlayerItemDataPath).existsSync()) {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     File playerItemDataJson = File(modManPlayerItemDataPath);
     if (playerItemDataJson.existsSync()) {
       final dataFromJson = await playerItemDataJson.readAsString();

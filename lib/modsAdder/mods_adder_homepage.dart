@@ -652,7 +652,7 @@ void modsAdderHomePage(context) {
                                                                                 height: 40,
                                                                                 child: Padding(
                                                                                   padding: const EdgeInsets.only(top: 10),
-                                                                                  child: Text(processedFileList[index].category,
+                                                                                  child: Text(defaultCategoryDirs.contains(processedFileList[index].category) ? defaultCategoryNames[defaultCategoryDirs.indexOf(processedFileList[index].category)] : processedFileList[index].category,
                                                                                       style: TextStyle(
                                                                                           fontWeight: FontWeight.w600,
                                                                                           color: !processedFileList[index].toBeAdded
@@ -711,16 +711,16 @@ void modsAdderHomePage(context) {
                                                                                                     if (renameTextBoxController.text.isNotEmpty) {
                                                                                                       //rename text
                                                                                                       String newItemName = renameTextBoxController.text.trim();
-                                                                                                      if (processedFileList[index].category == 'Basewears' &&
+                                                                                                      if (processedFileList[index].category == defaultCategoryDirs[1] &&
                                                                                                           !renameTextBoxController.text.contains('[Ba]')) {
                                                                                                         newItemName += ' [Ba]';
-                                                                                                      } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                      } else if (processedFileList[index].category == defaultCategoryDirs[11] &&
                                                                                                           !renameTextBoxController.text.contains('[In]')) {
                                                                                                         newItemName += ' [In]';
-                                                                                                      } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                      } else if (processedFileList[index].category == defaultCategoryDirs[15] &&
                                                                                                           !renameTextBoxController.text.contains('[Ou]')) {
                                                                                                         newItemName += ' [Ou]';
-                                                                                                      } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                      } else if (processedFileList[index].category == defaultCategoryDirs[16] &&
                                                                                                           !renameTextBoxController.text.contains('[Se]')) {
                                                                                                         newItemName += ' [Se]';
                                                                                                       } else {
@@ -763,16 +763,16 @@ void modsAdderHomePage(context) {
                                                                                                       if (renameTextBoxController.text.isNotEmpty) {
                                                                                                         //rename text
                                                                                                         String newItemName = renameTextBoxController.text.trim();
-                                                                                                        if (processedFileList[index].category == 'Basewears' &&
+                                                                                                        if (processedFileList[index].category == defaultCategoryDirs[1] &&
                                                                                                             !renameTextBoxController.text.contains('[Ba]')) {
                                                                                                           newItemName += ' [Ba]';
-                                                                                                        } else if (processedFileList[index].category == 'Innerwears' &&
+                                                                                                        } else if (processedFileList[index].category == defaultCategoryDirs[11] &&
                                                                                                             !renameTextBoxController.text.contains('[In]')) {
                                                                                                           newItemName += ' [In]';
-                                                                                                        } else if (processedFileList[index].category == 'Outerwears' &&
+                                                                                                        } else if (processedFileList[index].category == defaultCategoryDirs[15] &&
                                                                                                             !renameTextBoxController.text.contains('[Ou]')) {
                                                                                                           newItemName += ' [Ou]';
-                                                                                                        } else if (processedFileList[index].category == 'Setwears' &&
+                                                                                                        } else if (processedFileList[index].category == defaultCategoryDirs[16] &&
                                                                                                             !renameTextBoxController.text.contains('[Se]')) {
                                                                                                           newItemName += ' [Se]';
                                                                                                         } else {
@@ -826,7 +826,14 @@ void modsAdderHomePage(context) {
                                                                                         Expanded(
                                                                                           child: Padding(
                                                                                             padding: const EdgeInsets.only(bottom: 3),
-                                                                                            child: Text(processedFileList[index].itemName.replaceAll('_', '/'),
+                                                                                            child: Text(
+                                                                                                processedFileList[index].category == defaultCategoryDirs[17]
+                                                                                                    ? processedFileList[index].itemName.split('_').isNotEmpty &&
+                                                                                                            processedFileList[index].itemName.split('_').first == 'it' &&
+                                                                                                            processedFileList[index].itemName.split('_')[1] == 'wp'
+                                                                                                        ? processedFileList[index].itemName
+                                                                                                        : processedFileList[index].itemName.replaceFirst('_', '*').replaceAll('_', '/')
+                                                                                                    : processedFileList[index].itemName.replaceAll('_', '/'),
                                                                                                 style: TextStyle(
                                                                                                     fontWeight: FontWeight.w600,
                                                                                                     color: !processedFileList[index].toBeAdded
@@ -1798,7 +1805,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   // List<String> pathsWithNoIceInRoot = [];
   //copy files to temp
   for (var xFile in xFilePaths) {
-    String tempModDirName = p.basenameWithoutExtension(xFile.path);
+    String tempModDirName = p.basename(xFile.path);
     if (Directory(modManAddModsTempDirPath).existsSync() && Directory(modManAddModsTempDirPath).listSync().where((element) => p.basenameWithoutExtension(element.path) == tempModDirName).isNotEmpty) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
@@ -1866,10 +1873,10 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     Provider.of<StateProvider>(context, listen: false)
         .setModAdderProgressStatus('${curLangText!.uiProcessing}:\n${iceFile.path.replaceFirst(modManAddModsTempDirPath + p.separator, '').replaceAll(p.separator, ' > ')}');
     await Future.delayed(const Duration(milliseconds: 5));
-    final matchData = playerItemData.where((element) =>
-        element.containsIce(p.basenameWithoutExtension(iceFile.path)) &&
-        foundItemData.where((f) => f.containsIce(p.basenameWithoutExtension(iceFile.path))).isEmpty &&
-        (element.getENName().isNotEmpty || element.getJPName().isNotEmpty));
+    final matchData = playerItemData
+        .where((element) => element.containsIce(p.basenameWithoutExtension(iceFile.path)) && foundItemData.where((f) => f.containsIce(p.basenameWithoutExtension(iceFile.path))).isEmpty)
+        .toList();
+    matchData.where((element) => (element.getENName().isNotEmpty || element.getJPName().isNotEmpty) || element.category == defaultCategoryDirs[17]);
     if (matchData.isNotEmpty) {
       if (modsAdderGroupSameItemVariants) {
         for (var data in matchData) {
@@ -1923,7 +1930,11 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
 
       //No name items
       if (itemName.isEmpty) {
-        itemName = '${curLangText!.uiUnknownItem}_$formattedDateData';
+        if (data.category == defaultCategoryDirs[17] && data.infos.entries.firstWhere((e) => e.key == 'Path').value.isNotEmpty) {
+          itemName = p.basenameWithoutExtension(data.infos.entries.firstWhere((e) => e.key == 'Path').value);
+        } else {
+          itemName = '${curLangText!.uiUnknownItem}_$formattedDateData';
+        }
       }
 
       //construct category

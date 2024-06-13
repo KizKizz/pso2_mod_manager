@@ -38,6 +38,16 @@ class CsvItem {
     return returnInfos;
   }
 
+  List<String> getInfoForWeapons() {
+    List<String> returnInfos = [];
+    returnInfos.add(category);
+    returnInfos.add(subCategory);
+    returnInfos.add(itemType);
+    returnInfos.add(iconImagePath);
+    returnInfos.addAll(infos.values);
+    return returnInfos;
+  }
+
   String getBaseItemENName() {
     List<String> toRemove = ['[Ba]', '[Se]', '[Ou]', '[In]', '[Fu]'];
     String name = getENName();
@@ -59,7 +69,7 @@ class CsvItem {
   }
 
   String getIconIceName() {
-    return infos.entries.firstWhere((element) => element.key.contains('Icon')).value; 
+    return infos.entries.firstWhere((element) => element.key.contains('Icon')).value;
   }
 
   bool containsCategory(List<String> filters) {

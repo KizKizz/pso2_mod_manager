@@ -38,7 +38,16 @@ List<List<String>> queueFromEmotesAvailableIces = [];
 List<List<String>> queueToEmotesAvailableIces = [];
 List<String> queueSwappedLaPaths = [];
 List<String> queueToItemNames = [];
-List<String> motionTypes = ['All', 'Glide Motion', 'Jump Motion', 'Landing Motion', 'Dash Motion', 'Run Motion', 'Standby Motion', 'Swim Motion'];
+List<String> motionTypes = [
+  curLangText!.uiAll,
+  curLangText!.uiGlideMotion,
+  curLangText!.uiJumpMotion,
+  curLangText!.uiLandingMotion,
+  curLangText!.uiDashMotion,
+  curLangText!.uiRunMotion,
+  curLangText!.uiStandbyMotion,
+  curLangText!.uiSwimMotion
+];
 String dropDownSelectedMotionType = motionTypes.first;
 
 class ItemsSwapperEmotesHomePage extends StatefulWidget {
@@ -486,7 +495,9 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                                     child: ListTile(
                                                       shape: RoundedRectangleBorder(
                                                           side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                      tileColor: MyApp.themeNotifier.value == ThemeMode.light ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7) : Colors.transparent,
+                                                      tileColor: MyApp.themeNotifier.value == ThemeMode.light
+                                                          ? Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.7)
+                                                          : Colors.transparent,
                                                       title: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
@@ -600,20 +611,20 @@ class _ItemsSwapperEmotesHomePageState extends State<ItemsSwapperEmotesHomePage>
                                               toIEmotesSearchResults = availableEmotesCsvData
                                                   .where((element) => modManCurActiveItemNameLanguage == 'JP'
                                                       ? element.jpName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())
                                                       : element.enName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.pso2HashIceName .toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.pso2HashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.pso2VfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
-                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
-                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase())||
+                                                          element.rbCastFemaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbCastMaleHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbFigHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
+                                                          element.rbHumanHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()) ||
                                                           element.rbVfxHashIceName.toLowerCase().contains(swapperSearchTextController.text.toLowerCase()))
                                                   .toList();
                                               setState(() {});

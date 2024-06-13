@@ -154,7 +154,7 @@ Future<bool> modsAdderModFilesAdder(context, List<ModsAdderItem> itemsToAddList)
   // if (csvInfosFromSheets.isNotEmpty) {
   //   csvInfosFromSheets.clear();
   // }
-  clearAllTempDirs();
+  clearModAdderDirs();
 
   return true;
 }
