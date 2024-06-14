@@ -13,6 +13,10 @@ class Category {
   bool visible;
   List<Item> items;
 
+  int getNumOfAppliedItems() {
+    return items.where((e) => e.applyStatus).length;
+  }
+
   factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryToJson(this);
 }

@@ -180,7 +180,10 @@ class TranslationText {
       uiLocations = 'Locations',
       uiMarkModdedItemOnIconInGame = 'Mark modded item on in-game icons',
       uiMarkModdedItemInGame = 'Mark Modded Item Icons In Game',
-      uiOpenMarkedItemIconCacheFolder = 'Open Marked Item Icon Cache Folder';
+      uiOpenMarkedItemIconCacheFolder = 'Open Marked Item Icon Cache Folder',
+      uiBackupModSettings = 'Backup Mod Settings',
+      uiOpenModSettingsBackupFolder = 'Open Mod Settings Backup Folder',
+      uiBackups = 'Backups';
 
   //homepage
   String uiItemList = 'Item List',
@@ -562,7 +565,7 @@ class TranslationText {
 
   //mods_swapper_wp_homepage.dart
   String uiSelectAWeaponBelow = 'Select a weapon bellow',
-  uiSwords = 'Swords',
+      uiSwords = 'Swords',
       uiWiredLances = 'Wired Lances',
       uiPartisans = 'Partisans',
       uiTwinDaggers = 'Twin Daggers',

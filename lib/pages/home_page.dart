@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                         onTap: hiddenItemCategories.isEmpty
                             ? null
-                            : () {
+                            : () async {
                                 for (var cateType in hiddenItemCategories) {
                                   for (var cate in cateType.categories) {
                                     showAllHiddenCategory(hiddenItemCategories, cateType, cate);
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                         child: InkWell(
                             onTap: !isCateTypeReordering
                                 ? null
-                                : () {
+                                : () async {
                                     if (isCateTypeReordering) {
                                       int pos = 0;
                                       for (var type in moddedItemsList) {
@@ -771,7 +771,7 @@ class _HomePageState extends State<HomePage> {
                                                   message: uiInTextArg(curLangText!.uiRemoveXFromFav, moddedItemsList[groupIndex].groupName),
                                                   // message: '${curLangText!.uiRemove} ${moddedItemsList[groupIndex].groupName} ${curLangText!.uiFromFavList}',
                                                   child: InkWell(
-                                                      onTap: () {
+                                                      onTap: () async {
                                                         removeCateTypeFromFav(moddedItemsList[groupIndex]);
                                                         modViewItem = null;
                                                         saveModdedItemListToJson();
@@ -917,10 +917,10 @@ class _HomePageState extends State<HomePage> {
                                                                                   border: Border.all(
                                                                                       color: curItem.applyStatus
                                                                                           ? Theme.of(context).colorScheme.primary
-                                                                                          : curItem.isNew
+                                                                                          : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                               ? Colors.amber
                                                                                               : Theme.of(context).hintColor,
-                                                                                      width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                      width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                 ),
                                                                                 child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                     ? Image.asset(
@@ -1056,7 +1056,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       onLongPress: curItem.applyStatus
                                                                                           ? null
                                                                                           : () async {
-                                                                                              deleteItemFromModMan(curItem.location).then((value) {
+                                                                                              deleteItemFromModMan(curItem.location).then((value) async {
                                                                                                 String removedName =
                                                                                                     '${curCategory.categoryName} > ${curItem.category == defaultCategoryDirs[17] ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp' ? curItem.itemName : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/') : curItem.itemName.replaceAll('_', '/')}';
                                                                                                 if (modViewItem == curItem) {
@@ -1290,10 +1290,10 @@ class _HomePageState extends State<HomePage> {
                                                                                         border: Border.all(
                                                                                             color: curItem.applyStatus
                                                                                                 ? Theme.of(context).colorScheme.primary
-                                                                                                : curItem.isNew
+                                                                                                : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                                     ? Colors.amber
                                                                                                     : Theme.of(context).hintColor,
-                                                                                            width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                            width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                       ),
                                                                                       child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                           ? Image.asset(
@@ -1420,7 +1420,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             onLongPress: curItem.applyStatus
                                                                                                 ? null
                                                                                                 : () async {
-                                                                                                    deleteItemFromModMan(curItem.location).then((value) {
+                                                                                                    deleteItemFromModMan(curItem.location).then((value) async {
                                                                                                       String removedName =
                                                                                                           '${curCategory.categoryName} > ${curItem.category == defaultCategoryDirs[17] ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp' ? curItem.itemName : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/') : curItem.itemName.replaceAll('_', '/')}';
                                                                                                       if (modViewItem == curItem) {
@@ -1658,7 +1658,7 @@ class _HomePageState extends State<HomePage> {
                                                               child: const Icon(
                                                                 Icons.arrow_back_ios_new,
                                                               ),
-                                                              onTap: () {
+                                                              onTap: () async {
                                                                 int pos = 0;
                                                                 for (var cate in moddedItemsList[groupIndex].categories) {
                                                                   cate.position = pos;
@@ -1905,10 +1905,10 @@ class _HomePageState extends State<HomePage> {
                                                                                             border: Border.all(
                                                                                                 color: curItem.applyStatus
                                                                                                     ? Theme.of(context).colorScheme.primary
-                                                                                                    : curItem.isNew
+                                                                                                    : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                                         ? Colors.amber
                                                                                                         : Theme.of(context).hintColor,
-                                                                                                width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                                width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                           ),
                                                                                           child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                               ? Image.asset(
@@ -2019,7 +2019,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                   onLongPress: curItem.applyStatus
                                                                                                       ? null
                                                                                                       : () async {
-                                                                                                          deleteItemFromModMan(curItem.location).then((value) {
+                                                                                                          deleteItemFromModMan(curItem.location).then((value) async {
                                                                                                             String removedName =
                                                                                                                 '${curCategory.categoryName} > ${curItem.category == defaultCategoryDirs[17] ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp' ? curItem.itemName : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/') : curItem.itemName.replaceAll('_', '/')}';
                                                                                                             if (modViewItem == curItem) {
@@ -2708,7 +2708,7 @@ class _HomePageState extends State<HomePage> {
                                                             bool deleteConfirm = await modDeletionDialog(context, curMod.modName);
                                                             if (deleteConfirm) {
                                                               if (modViewItem!.mods.length < 2) {
-                                                                deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                deleteItemFromModMan(modViewItem!.location).then((value) async {
                                                                   String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                   if (modViewItem!.isSet) {
                                                                     for (var setName in modViewItem!.setNames) {
@@ -2728,7 +2728,7 @@ class _HomePageState extends State<HomePage> {
                                                                   setState(() {});
                                                                 });
                                                               } else {
-                                                                deleteModFromModMan(curMod.location, modViewItem!.location).then((value) {
+                                                                deleteModFromModMan(curMod.location, modViewItem!.location).then((value) async {
                                                                   String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
                                                                   modViewItem!.mods.remove(curMod);
                                                                   if (modViewItem!.mods.isEmpty) {
@@ -2810,7 +2810,9 @@ class _HomePageState extends State<HomePage> {
                                                                       }
                                                                       if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                         modViewItem!.applyStatus = false;
-                                                                        await restoreOverlayedIcon(modViewItem!);
+                                                                        if (modViewItem!.backupIconPath!.isNotEmpty) {
+                                                                          await restoreOverlayedIcon(modViewItem!);
+                                                                        }
                                                                       }
 
                                                                       await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods.first.modFiles, unappliedModFiles);
@@ -3133,7 +3135,7 @@ class _HomePageState extends State<HomePage> {
                                                             leadingIcon: const Icon(
                                                               Icons.delete_forever_outlined,
                                                             ),
-                                                            onPressed: () {
+                                                            onPressed: () async {
                                                               removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods.first);
                                                               saveSetListToJson();
                                                               saveModdedItemListToJson();
@@ -3161,7 +3163,7 @@ class _HomePageState extends State<HomePage> {
                                                                   bool deleteConfirm = await modDeletionDialog(context, curMod.submods.first.submodName);
                                                                   if (deleteConfirm) {
                                                                     if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                      deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                      deleteItemFromModMan(modViewItem!.location).then((value) async {
                                                                         String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                         if (modViewItem!.isSet) {
                                                                           for (var setName in modViewItem!.setNames) {
@@ -3181,7 +3183,7 @@ class _HomePageState extends State<HomePage> {
                                                                         setState(() {});
                                                                       });
                                                                     } else {
-                                                                      deleteSubmodFromModMan(curMod.submods.first.location, curMod.location).then((value) {
+                                                                      deleteSubmodFromModMan(curMod.submods.first.location, curMod.location).then((value) async {
                                                                         String removedName = '${curMod.modName} > ${curMod.submods.first.submodName}';
                                                                         curMod.submods.remove(curMod.submods.first);
                                                                         if (curMod.submods.isEmpty) {
@@ -3291,7 +3293,9 @@ class _HomePageState extends State<HomePage> {
                                                                       }
                                                                       if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                         modViewItem!.applyStatus = false;
-                                                                        await restoreOverlayedIcon(modViewItem!);
+                                                                        if (modViewItem!.backupIconPath!.isNotEmpty) {
+                                                                          await restoreOverlayedIcon(modViewItem!);
+                                                                        }
                                                                       }
 
                                                                       await filesRestoredMessage(mainPageScaffoldKey.currentContext, curMod.submods[modViewModSetSubModIndex].modFiles, value);
@@ -3596,7 +3600,7 @@ class _HomePageState extends State<HomePage> {
                                                           leadingIcon: const Icon(
                                                             Icons.delete_forever_outlined,
                                                           ),
-                                                          onPressed: () {
+                                                          onPressed: () async {
                                                             removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
                                                             saveSetListToJson();
                                                             saveModdedItemListToJson();
@@ -3625,7 +3629,7 @@ class _HomePageState extends State<HomePage> {
                                                                   bool deleteConfirm = await modDeletionDialog(context, curMod.submods[modViewModSetSubModIndex].submodName);
                                                                   if (deleteConfirm) {
                                                                     if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                      deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                      deleteItemFromModMan(modViewItem!.location).then((value) async {
                                                                         String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                         if (modViewItem!.isSet) {
                                                                           for (var setName in modViewItem!.setNames) {
@@ -3645,7 +3649,7 @@ class _HomePageState extends State<HomePage> {
                                                                         setState(() {});
                                                                       });
                                                                     } else {
-                                                                      deleteSubmodFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) {
+                                                                      deleteSubmodFromModMan(curMod.submods[modViewModSetSubModIndex].location, curMod.location).then((value) async {
                                                                         String removedName = '${curMod.modName} > ${curMod.submods[modViewModSetSubModIndex].submodName}';
                                                                         curMod.submods.remove(curMod.submods[modViewModSetSubModIndex]);
                                                                         if (curMod.submods.isEmpty) {
@@ -3837,7 +3841,9 @@ class _HomePageState extends State<HomePage> {
                                                                                   }
                                                                                   if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                                     modViewItem!.applyStatus = false;
-                                                                                    await restoreOverlayedIcon(modViewItem!);
+                                                                                    if (modViewItem!.backupIconPath!.isNotEmpty) {
+                                                                                      await restoreOverlayedIcon(modViewItem!);
+                                                                                    }
                                                                                   }
 
                                                                                   await filesRestoredMessage(mainPageScaffoldKey.currentContext, curSubmod.modFiles, value);
@@ -4138,7 +4144,7 @@ class _HomePageState extends State<HomePage> {
                                                                           leadingIcon: const Icon(
                                                                             Icons.delete_forever_outlined,
                                                                           ),
-                                                                          onPressed: () {
+                                                                          onPressed: () async {
                                                                             removeSubmodFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod);
                                                                             saveSetListToJson();
                                                                             saveModdedItemListToJson();
@@ -4165,7 +4171,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 bool deleteConfirm = await modDeletionDialog(context, curSubmod.submodName);
                                                                                 if (deleteConfirm) {
                                                                                   if (curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) async {
                                                                                       String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                                       if (modViewItem!.isSet) {
                                                                                         for (var setName in modViewItem!.setNames) {
@@ -4185,7 +4191,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       setState(() {});
                                                                                     });
                                                                                   } else {
-                                                                                    deleteSubmodFromModMan(curSubmod.location, curMod.location).then((value) {
+                                                                                    deleteSubmodFromModMan(curSubmod.location, curMod.location).then((value) async {
                                                                                       String removedName = '${curMod.modName} > ${curSubmod.submodName}';
                                                                                       curMod.submods.remove(curSubmod);
                                                                                       if (curMod.submods.isEmpty) {
@@ -4308,7 +4314,9 @@ class _HomePageState extends State<HomePage> {
                                                                                 }
                                                                                 if (modViewItem!.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                                   modViewItem!.applyStatus = false;
-                                                                                  await restoreOverlayedIcon(modViewItem!);
+                                                                                  if (modViewItem!.backupIconPath!.isNotEmpty) {
+                                                                                    await restoreOverlayedIcon(modViewItem!);
+                                                                                  }
                                                                                 }
 
                                                                                 await filesRestoredMessage(mainPageScaffoldKey.currentContext, [curModFile], value);
@@ -4326,7 +4334,7 @@ class _HomePageState extends State<HomePage> {
                                                                         child: ModManTooltip(
                                                                           message: uiInTextArg(curLangText!.uiHoldToRemoveXFromThisSet, curModFile.modFileName),
                                                                           child: InkWell(
-                                                                            onLongPress: () {
+                                                                            onLongPress: () async {
                                                                               removeModFileFromThisSet(selectedModSetName, modViewItem!, curMod, curSubmod, curModFile);
                                                                               saveSetListToJson();
                                                                               saveModdedItemListToJson();
@@ -4345,7 +4353,7 @@ class _HomePageState extends State<HomePage> {
                                                                               ? null
                                                                               : () async {
                                                                                   if (curSubmod.modFiles.length < 2 && curMod.submods.length < 2 && modViewItem!.mods.length < 2) {
-                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) {
+                                                                                    deleteItemFromModMan(modViewItem!.location).then((value) async {
                                                                                       String removedName = '${modViewCate!.categoryName} > ${modViewItem!.itemName}';
                                                                                       modViewCate!.items.remove(modViewItem);
                                                                                       modViewItem = null;
@@ -4357,7 +4365,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       setState(() {});
                                                                                     });
                                                                                   } else {
-                                                                                    deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) {
+                                                                                    deleteModFileFromModMan(curModFile.location, curSubmod.location, curMod.location).then((value) async {
                                                                                       String removedName = '${curMod.modName} > ${curSubmod.submodName} > $curModFile';
                                                                                       curSubmod.modFiles.remove(curModFile);
 
@@ -4683,7 +4691,7 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     physics: const PageScrollPhysics(),
                     padding: const EdgeInsets.only(right: 2),
-                    itemCount: appliedItemList.length,
+                    itemCount: appliedItemList.where((element) => element.getNumOfAppliedCates() > 0).length,
                     itemBuilder: (context, groupIndex) {
                       int cateListLength = appliedItemList[groupIndex].categories.where((element) => element.items.indexWhere((i) => i.applyStatus == true) != -1).length;
                       List<Category> cateList = appliedItemList[groupIndex].categories.where((element) => element.items.indexWhere((i) => i.applyStatus == true) != -1).toList();
@@ -5019,8 +5027,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             isModViewModsRemoving = true;
                                                                                             setState(() {});
                                                                                             Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
-                                                                                              final restoredMods = await restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]);
-                                                                                              // .then((value) async {
+                                                                                              await restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
                                                                                               previewImages.clear();
                                                                                               // videoPlayer.remove(0);
                                                                                               for (var mod in curMods) {
@@ -5053,21 +5060,26 @@ class _HomePageState extends State<HomePage> {
                                                                                               }
 
                                                                                               if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                                await restoreOverlayedIcon(curItem);
                                                                                                 curItem.applyStatus = false;
                                                                                                 curItem.applyDate = DateTime(0);
+                                                                                                if (curItem.backupIconPath!.isNotEmpty) {
+                                                                                                  await restoreOverlayedIcon(curItem);
+                                                                                                }
                                                                                               }
 
-                                                                                              await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], restoredMods);
+                                                                                              await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], value);
                                                                                               appliedItemList = await appliedListBuilder(moddedItemsList);
                                                                                               if (appliedItemList.isEmpty) {
                                                                                                 previewModName = '';
                                                                                                 previewImages.clear();
                                                                                               }
                                                                                               isModViewModsRemoving = false;
+                                                                                              isModViewModsApplying = false;
+
                                                                                               saveModdedItemListToJson();
+                                                                                              // await Future.delayed(const Duration(seconds: 5));
                                                                                               setState(() {});
-                                                                                              // });
+                                                                                              });
                                                                                             });
                                                                                           },
                                                                                         ),
@@ -5488,7 +5500,9 @@ class _HomePageState extends State<HomePage> {
                                                               for (var item in curSet.setItems) {
                                                                 if (item.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                   item.applyStatus = false;
-                                                                  await restoreOverlayedIcon(item);
+                                                                  if (item.backupIconPath!.isNotEmpty) {
+                                                                    await restoreOverlayedIcon(item);
+                                                                  }
                                                                 }
                                                               }
 
@@ -5812,7 +5826,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         : curItem.itemName.replaceFirst('_', '*').replaceAll('_', '/')
                                                                                     : curItem.itemName.replaceAll('_', '/')),
                                                                             child: InkWell(
-                                                                              onLongPress: () {
+                                                                              onLongPress: () async {
                                                                                 String tempItemName = curItem.category == defaultCategoryDirs[17]
                                                                                     ? curItem.itemName.split('_').isNotEmpty &&
                                                                                             curItem.itemName.split('_').first == 'it' &&
@@ -5881,55 +5895,58 @@ class _HomePageState extends State<HomePage> {
                                                                                       onTap: () async {
                                                                                         isModViewModsRemoving = true;
                                                                                         setState(() {});
-                                                                                        Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () {
+                                                                                        Future.delayed(Duration(milliseconds: unapplyButtonsDelay), () async {
                                                                                           //status
-                                                                                          restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]).then((value) async {
-                                                                                            previewImages.clear();
-                                                                                            // videoPlayer.remove(0);
-                                                                                            for (var mod in curMods) {
-                                                                                              for (var submod in mod.submods.where((element) => element.applyStatus)) {
-                                                                                                if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                                  if (submod.cmxApplied!) {
-                                                                                                    bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
-                                                                                                    if (status) {
-                                                                                                      submod.cmxApplied = false;
-                                                                                                      submod.cmxStartPos = -1;
-                                                                                                      submod.cmxEndPos = -1;
-                                                                                                    }
-                                                                                                  }
-                                                                                                  submod.applyStatus = false;
-                                                                                                }
-                                                                                                if (submod.applyStatus) {
-                                                                                                  for (var path in submod.previewImages) {
-                                                                                                    previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
-                                                                                                  }
-                                                                                                  for (var path in submod.previewVideos) {
-                                                                                                    previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
+                                                                                          final unappliedList = await restoreOriginalFilesToTheGame(context, allAppliedModFiles[m]);
+                                                                                          // .then((value) async {
+                                                                                          previewImages.clear();
+                                                                                          // videoPlayer.remove(0);
+                                                                                          for (var mod in curMods) {
+                                                                                            for (var submod in mod.submods.where((element) => element.applyStatus)) {
+                                                                                              if (submod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                                if (submod.cmxApplied!) {
+                                                                                                  bool status = await cmxModRemoval(submod.cmxStartPos!, submod.cmxEndPos!);
+                                                                                                  if (status) {
+                                                                                                    submod.cmxApplied = false;
+                                                                                                    submod.cmxStartPos = -1;
+                                                                                                    submod.cmxEndPos = -1;
                                                                                                   }
                                                                                                 }
+                                                                                                submod.applyStatus = false;
                                                                                               }
-                                                                                              if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                                mod.applyStatus = false;
+                                                                                              if (submod.applyStatus) {
+                                                                                                for (var path in submod.previewImages) {
+                                                                                                  previewImages.add(PreviewImageStack(imagePath: path, overlayText: submod.submodName));
+                                                                                                }
+                                                                                                for (var path in submod.previewVideos) {
+                                                                                                  previewImages.add(PreviewVideoStack(videoPath: path, overlayText: submod.submodName));
+                                                                                                }
                                                                                               }
                                                                                             }
+                                                                                            if (mod.submods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                              mod.applyStatus = false;
+                                                                                            }
+                                                                                          }
 
-                                                                                            if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
-                                                                                              curItem.applyStatus = false;
+                                                                                          if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
+                                                                                            curItem.applyStatus = false;
+                                                                                            if (curItem.backupIconPath!.isNotEmpty) {
                                                                                               await restoreOverlayedIcon(curItem);
                                                                                             }
+                                                                                          }
 
-                                                                                            await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], value);
-                                                                                            appliedItemList = await appliedListBuilder(moddedItemsList);
-                                                                                            if (appliedItemList.isEmpty) {
-                                                                                              previewModName = '';
-                                                                                              previewImages.clear();
-                                                                                              // videoPlayer.remove(0);
-                                                                                            }
+                                                                                          await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], unappliedList);
+                                                                                          appliedItemList = await appliedListBuilder(moddedItemsList);
+                                                                                          if (appliedItemList.isEmpty) {
+                                                                                            previewModName = '';
+                                                                                            previewImages.clear();
+                                                                                            // videoPlayer.remove(0);
+                                                                                          }
 
-                                                                                            isModViewModsRemoving = false;
-                                                                                            saveModdedItemListToJson();
-                                                                                            setState(() {});
-                                                                                          });
+                                                                                          isModViewModsRemoving = false;
+                                                                                          saveModdedItemListToJson();
+                                                                                          setState(() {});
+                                                                                          // });
                                                                                           //}
                                                                                         });
                                                                                       },

@@ -12,7 +12,7 @@ import 'package:pso2_mod_manager/widgets/preview_video_stack.dart';
 
 Offset previewTooltipDyOffset = const Offset(427, 0);
 
-class ModManPreviewTooltip extends StatefulWidget {
+class ModManPreviewTooltip extends StatelessWidget {
   const ModManPreviewTooltip({super.key, required this.contentPositionOffSet, required this.submods, required this.watchTrigger, required this.appliedListTrigger, required this.child});
 
   final Offset contentPositionOffSet;
@@ -22,29 +22,16 @@ class ModManPreviewTooltip extends StatefulWidget {
   final Widget child;
 
   @override
-  State<ModManPreviewTooltip> createState() => _ModManPreviewTooltipState();
-}
-
-class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
-  List<Widget> pWidgets = [];
-
-  @override
-  void dispose() {
-    pWidgets.clear();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    pWidgets.clear();
-    for (var element in widget.submods) {
+    List<Widget> pWidgets = [];
+    for (var element in submods) {
       pWidgets.addAll(element.previewImages.toSet().map((path) => PreviewImageStack(imagePath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
     }
-    for (var element in widget.submods) {
+    for (var element in submods) {
       pWidgets.addAll(element.previewVideos.toSet().map((path) => PreviewVideoStack(videoPath: path, overlayText: p.basenameWithoutExtension(p.dirname(path)))));
     }
     return InfoPopupWidget(
-        contentOffset: widget.contentPositionOffSet,
+        contentOffset: contentPositionOffSet,
         dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
         popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
         onControllerCreated: (controller) {
@@ -53,8 +40,8 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
           }
         },
         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-        customContent: () => widget.watchTrigger
-            ? (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
+        customContent: () => watchTrigger
+            ? (submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
                     pWidgets.isNotEmpty &&
                     !context.watch<StateProvider>().showPreviewPanel &&
                     !context.watch<StateProvider>().mouseHoveringSubmods
@@ -81,9 +68,9 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
                     ),
                   )
                 : null
-            : widget.appliedListTrigger
+            : appliedListTrigger
                 ? context.watch<StateProvider>().isCursorInAppliedList &&
-                        (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
+                        (submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
                         pWidgets.isNotEmpty &&
                         !context.watch<StateProvider>().showPreviewPanel
                     ? ConstrainedBox(
@@ -109,7 +96,7 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
                         ),
                       )
                     : null
-                : (widget.submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || widget.submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
+                : (submods.where((element) => element.previewImages.isNotEmpty).isNotEmpty || submods.where((element) => element.previewVideos.isNotEmpty).isNotEmpty) &&
                         pWidgets.isNotEmpty &&
                         !context.watch<StateProvider>().showPreviewPanel
                     ? ConstrainedBox(
@@ -135,6 +122,6 @@ class _ModManPreviewTooltipState extends State<ModManPreviewTooltip> {
                         ),
                       )
                     : null,
-        child: widget.child);
+        child: child);
   }
 }

@@ -1,10 +1,14 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.7",
+    "version": "2.7.8",
     "description": [
-        "Added support for weapons and camos (recognizes when adding mods and weapons-camos swapping)",
+        "Mod Manager now automatically backing up all mod settings once a day on the very first launch and up to 7 days before overwriting",
+        "Added a button in Settings to manually backup mod settings and a button to open the backup folder",
+        "Fixed a bug where return button on bounding radius popup being greyed out",
         "More bug fixes",
-        "武器とカモのサポートを追加（追加時の認識、武器とカモのスワップ）",
+        "MOD ManagerがすべてのMOD設定を自動的にバックアップするようになった",
+        "MODの設定を手動でバックアップするためのボタンと、バックアップフォルダを開くためのボタンを設定に追加",
+        "境界半径ポップアップの戻るボタンがグレーアウトしていたバグを修正",
         "その他のバグ修正"
     ],
     "windows_file": "",
