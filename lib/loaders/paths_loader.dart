@@ -61,6 +61,8 @@ String modManTempCmxDirPath = '';
 String modManExportedDirPath = '';
 String modManImportedDirPath = '';
 String modManOverlayedItemIconsDirPath = '';
+String modManJsonAutoSaveDir = '';
+String modManJsonManualSaveDir = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -914,4 +916,9 @@ Future<void> createSubDirs() async {
   //overlayed icon path
   modManOverlayedItemIconsDirPath = Uri.file('$modManDirPath/overlayed_item_icons').toFilePath();
   Directory(modManOverlayedItemIconsDirPath).createSync(recursive: true);
+  //json saves
+  modManJsonAutoSaveDir = Uri.file('$modManDirPath/jsonBackup/auto').toFilePath();
+  Directory(modManJsonAutoSaveDir).createSync(recursive: true);
+  modManJsonManualSaveDir = Uri.file('$modManDirPath/jsonBackup/manual').toFilePath();
+  Directory(modManJsonManualSaveDir).createSync(recursive: true);
 }

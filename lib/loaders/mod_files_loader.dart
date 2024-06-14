@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/csv_list_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_icons_fetcher.dart';
 import 'package:pso2_mod_manager/functions/item_variants_fetcher.dart';
+import 'package:pso2_mod_manager/functions/json_backup.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
 import 'package:pso2_mod_manager/functions/show_hide_cates.dart';
@@ -45,8 +46,9 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
   // }
 
   //Load list from json
-  if (File(modManModsListJsonPath).readAsStringSync().toString().isNotEmpty) {
-    var jsonData = jsonDecode(File(modManModsListJsonPath).readAsStringSync());
+  String modSettingsFromJson = await File(modManModsListJsonPath).readAsString();
+  if (modSettingsFromJson.isNotEmpty) {
+    var jsonData = await jsonDecode(modSettingsFromJson);
     for (var type in jsonData) {
       structureFromJson.add(CategoryType.fromJson(type));
     }
@@ -338,6 +340,9 @@ Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String ca
       element.deleteSync(recursive: true);
     }
   });
+
+  //backup all json files
+  await jsonAutoBackup();
 
   return items;
 }

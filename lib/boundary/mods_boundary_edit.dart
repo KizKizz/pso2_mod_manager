@@ -200,7 +200,7 @@ void boundaryEdit(context, SubMod submod) async {
     Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   } else if (boundaryRemovedFiles.isEmpty && boundaryNotFoundFiles.isNotEmpty) {
-    Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
+    Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   }
   if (isBoundaryEditDuringApply) {

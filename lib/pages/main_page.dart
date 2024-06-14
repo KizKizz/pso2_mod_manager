@@ -18,6 +18,7 @@ import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
+import 'package:pso2_mod_manager/functions/json_backup.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
@@ -549,6 +550,31 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //backup mod settings
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await jsonManualBackup();
+                          setState(() {});
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.save,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${curLangText!.uiBackupModSettings} - ${curLangText!.uiBackups}: ${Directory(modManJsonManualSaveDir).listSync().whereType<File>().where((element) => p.extension(element.path) == '.zip').length}',
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
                       //Path reselect
                       MaterialButton(
                         height: 40,
@@ -679,6 +705,30 @@ class _MainPageState extends State<MainPage> {
                             const SizedBox(width: 10),
                             Text(
                               curLangText!.uiOpenBackupFolder,
+                              style: const TextStyle(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
+                      //Path open json backup dir
+                      MaterialButton(
+                        height: 40,
+                        onPressed: (() async {
+                          await launchUrl(Uri.file(Directory(modManJsonAutoSaveDir).parent.path));
+                        }),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.folder_open_outlined,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              curLangText!.uiOpenModSettingsBackupFolder,
                               style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],

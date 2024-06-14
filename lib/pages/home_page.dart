@@ -917,10 +917,10 @@ class _HomePageState extends State<HomePage> {
                                                                                   border: Border.all(
                                                                                       color: curItem.applyStatus
                                                                                           ? Theme.of(context).colorScheme.primary
-                                                                                          : curItem.isNew
+                                                                                          : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                               ? Colors.amber
                                                                                               : Theme.of(context).hintColor,
-                                                                                      width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                      width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                 ),
                                                                                 child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                     ? Image.asset(
@@ -1290,10 +1290,10 @@ class _HomePageState extends State<HomePage> {
                                                                                         border: Border.all(
                                                                                             color: curItem.applyStatus
                                                                                                 ? Theme.of(context).colorScheme.primary
-                                                                                                : curItem.isNew
+                                                                                                : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                                     ? Colors.amber
                                                                                                     : Theme.of(context).hintColor,
-                                                                                            width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                            width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                       ),
                                                                                       child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                           ? Image.asset(
@@ -1905,10 +1905,10 @@ class _HomePageState extends State<HomePage> {
                                                                                             border: Border.all(
                                                                                                 color: curItem.applyStatus
                                                                                                     ? Theme.of(context).colorScheme.primary
-                                                                                                    : curItem.isNew
+                                                                                                    : curItem.mods.where((element) => element.isNew).isNotEmpty
                                                                                                         ? Colors.amber
                                                                                                         : Theme.of(context).hintColor,
-                                                                                                width: curItem.isNew || curItem.applyStatus ? 3 : 1),
+                                                                                                width: curItem.mods.where((element) => element.isNew).isNotEmpty || curItem.applyStatus ? 3 : 1),
                                                                                           ),
                                                                                           child: curItem.icons.first.contains('assets/img/placeholdersquare.png')
                                                                                               ? Image.asset(
