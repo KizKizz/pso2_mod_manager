@@ -12,6 +12,10 @@ class CategoryType {
   bool expanded;
   List<Category> categories;
 
+  int getNumOfAppliedCates() {
+    return categories.where((e) => e.getNumOfAppliedItems() > 0).length;
+  }
+
   factory CategoryType.fromJson(Map<String, dynamic> json) => _$CategoryTypeFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryTypeToJson(this);
 }

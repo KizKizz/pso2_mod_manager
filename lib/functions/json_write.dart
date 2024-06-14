@@ -5,23 +5,23 @@ import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 
-Future<void> saveModdedItemListToJson() async {
+void saveModdedItemListToJson() {
   //Save to json
   moddedItemsList.map((cateType) => cateType.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  await File(modManModsListJsonPath).writeAsString(encoder.convert(moddedItemsList));
+  File(modManModsListJsonPath).writeAsStringSync(encoder.convert(moddedItemsList));
 }
 
-Future<void> saveSetListToJson() async {
+void saveSetListToJson() {
   //Save to json
   modSetList.map((modSet) => modSet.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  await File(modManModSetsJsonPath).writeAsString(encoder.convert(modSetList));
+  File(modManModSetsJsonPath).writeAsStringSync(encoder.convert(modSetList));
 }
 
-Future<void> saveVitalGaugesInfoToJson(List<VitalGaugeBackground> vgList) async {
+void saveVitalGaugesInfoToJson(List<VitalGaugeBackground> vgList) {
   //Save to json
   vgList.map((vg) => vg.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-  await File(modManVitalGaugeJsonPath).writeAsString(encoder.convert(vgList));
+  File(modManVitalGaugeJsonPath).writeAsStringSync(encoder.convert(vgList));
 }
