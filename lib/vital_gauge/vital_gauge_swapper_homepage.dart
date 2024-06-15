@@ -917,25 +917,25 @@ Future<List<File>> customVitalBackgroundsFetching() async {
 Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgDataFile) async {
   clearAllTempDirs();
 
-  String logs = 'Custom Path: $imgPath\n';
+  // String logs = 'Custom Path: $imgPath\n';
 
   String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}/group2').toFilePath();
   Directory(newTempIcePath).createSync(recursive: true);
   if (Directory(newTempIcePath).existsSync()) {
     await Process.run(modManDdsPngToolExePath, [imgPath, Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath(), '-pngtodds']);
-    logs += 'Create: $newTempIcePath\n';
+    // logs += 'Create: $newTempIcePath\n';
   }
   if (File(Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath()).existsSync()) {
-    logs += 'Convert: ${Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath().toString()}\n';
+    // logs += 'Convert: ${Uri.file('$newTempIcePath/${vgDataFile.ddsName}.dds').toFilePath().toString()}\n';
     await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath()]);
     Directory(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath()).deleteSync(recursive: true);
 
     File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath());
     if (renamedFile.path.isNotEmpty) {
-      logs += 'Pack: ${renamedFile.path.toString()}\n';
+      // logs += 'Pack: ${renamedFile.path.toString()}\n';
       File copied = renamedFile.copySync(vgDataFile.icePath);
       vgDataFile.replacedMd5 = await getFileHash(copied.path);
-      logs += 'Copy: ${copied.path.toString()}\n';
+      // logs += 'Copy: ${copied.path.toString()}\n';
     }
 
     // File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(vgDataFile.icePath).then((value) async {
@@ -944,14 +944,14 @@ Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgData
     //   }
     // });
 
-    // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-    //   element.deleteSync(recursive: true);
-    // });
+    Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+      element.deleteSync(recursive: true);
+    });
   }
 
-  File vgLog = File(Uri.file('$modManDirPath/vgApplyLog.txt').toFilePath());
-  vgLog.createSync();
-  vgLog.writeAsStringSync(logs);
+  // File vgLog = File(Uri.file('$modManDirPath/vgApplyLog.txt').toFilePath());
+  // vgLog.createSync();
+  // vgLog.writeAsStringSync(logs);
 
   return true;
 }
