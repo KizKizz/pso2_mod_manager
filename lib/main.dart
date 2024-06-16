@@ -352,6 +352,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         Provider.of<StateProvider>(context, listen: false).markModdedItemSet(false);
       }
 
+      //mod adder ignore list
+      modAdderIgnoreListState = (prefs.getBool('modAdderIgnoreList') ?? false);
+
       // First time user load
       firstTimeUser = (prefs.getBool('isFirstTimeLoadV2') ?? true);
       if (firstTimeUser) {

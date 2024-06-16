@@ -459,7 +459,15 @@ class TranslationText {
       uiSorting = 'Sorting',
       uiSortingIceFiles = 'Sorting .ice files',
       uiSortingOtherFiles = 'Sorting other files',
-      uiProcessing = 'Processing';
+      uiProcessing = 'Processing',
+      uiIgnoreList = 'Ignore List';
+
+  //mods_adder+ignore_list.dart
+  String uiIgnoreFoldersThatContain = 'Ignore folders that contain:',
+  uiSeparateEachParamByAComma = 'Folders that contain these words in their names will be ignored during process\nSeparate each word by a comma. Case sensitive',
+  uiCurrentState = 'Current State',
+  uiHint = 'Hint',
+  uiSave = 'Save';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';

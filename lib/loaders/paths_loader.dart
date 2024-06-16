@@ -44,6 +44,7 @@ String modManChecksumFilePath = '';
 //Misc path
 String modManAddModsTempDirPath = '';
 String modManAddModsUnpackDirPath = '';
+String modManAddModsIgnoreListPath = '';
 String modManZamboniExePath = Uri.file('${Directory.current.path}/Zamboni/Zamboni.exe').toFilePath();
 String modManDdsPngToolExePath = Uri.file('${Directory.current.path}/png_dds_converter/png_dds_converter.exe').toFilePath();
 String modMan7zipExePath = Uri.file('${Directory.current.path}/7zip-x64/7z.exe').toFilePath();
@@ -921,4 +922,7 @@ Future<void> createSubDirs() async {
   Directory(modManJsonAutoSaveDir).createSync(recursive: true);
   modManJsonManualSaveDir = Uri.file('$modManDirPath/jsonBackup/manual').toFilePath();
   Directory(modManJsonManualSaveDir).createSync(recursive: true);
+  //mods adder ignore list
+  modManAddModsIgnoreListPath = Uri.file('$modManDirPath/modAdderIgnoreList.txt').toFilePath();
+  File(modManAddModsIgnoreListPath).createSync(recursive: true);
 }
