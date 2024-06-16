@@ -475,7 +475,7 @@
   "uiErrorWhenLoadingPlayerItemData": "读取玩家物品信息时出错",
   "uiImportItemDataFile": "导入物品数据文件",
   "uiManuallyDownload": "手动下载",
-  "uiPlayerItemDataError": "如果重启后问题仍然存在，您可以通过点击下面的“手动下载”按钮来手动下载项目数据。\n然后通过点击“导入项目数据文件”来导入，并选择您下载得到的 .json 文件。",
+  "uiPlayerItemDataError": "如果重启后问题仍然存在，您可以通过点击下面的“手动下载”按钮来手动下载物品数据。\n然后通过点击“导入物品数据文件”来导入，并选择您下载得到的 .json 文件。",
   "uiSelectAWeaponBelow": "从以下选择一把武器",
   "uiSwords": "大剑",
   "uiWiredLances": "自在枪",
