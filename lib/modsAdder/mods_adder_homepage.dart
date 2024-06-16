@@ -2035,6 +2035,9 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
         await Future.delayed(const Duration(milliseconds: 5));
         String newFilePath = iceFile.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
         newFilePath = removeRebootPath(newFilePath);
+        if (p.basenameWithoutExtension(File(newFilePath).parent.path) == itemName) {
+          newFilePath = File(newFilePath).path.replaceFirst(File(newFilePath).parent.path, File(newFilePath).parent.path + p.separator + curLangText!.uiUnknown);
+        } 
         await File(newFilePath).parent.create(recursive: true);
         try {
           iceFile.copySync(newFilePath);
