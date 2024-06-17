@@ -507,7 +507,7 @@ void modsAdderHomePage(context) {
                                               children: [
                                                 Text(
                                                   Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
-                                                      ? curLangText!.uiProcessingFiles
+                                                      ? curLangText!.uiWaitingForData
                                                       : Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus,
                                                   style: const TextStyle(fontSize: 20),
                                                   textAlign: TextAlign.center,
