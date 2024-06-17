@@ -374,6 +374,8 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiDuplicatesInAppliedModsFound'] as String
       ..uiApplyingWouldReplaceModFiles =
           json['uiApplyingWouldReplaceModFiles'] as String
+      ..uiSelectWhichFilesToBeReplacedWithThisMod =
+          json['uiSelectWhichFilesToBeReplacedWithThisMod'] as String
       ..uiNewCateGroup = json['uiNewCateGroup'] as String
       ..uiNameAlreadyExisted = json['uiNameAlreadyExisted'] as String
       ..uiNewCateGroupName = json['uiNewCateGroupName'] as String
@@ -501,6 +503,14 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSortingIceFiles = json['uiSortingIceFiles'] as String
       ..uiSortingOtherFiles = json['uiSortingOtherFiles'] as String
       ..uiProcessing = json['uiProcessing'] as String
+      ..uiIgnoreList = json['uiIgnoreList'] as String
+      ..uiIgnoreFoldersThatContain =
+          json['uiIgnoreFoldersThatContain'] as String
+      ..uiSeparateEachParamByAComma =
+          json['uiSeparateEachParamByAComma'] as String
+      ..uiCurrentState = json['uiCurrentState'] as String
+      ..uiHint = json['uiHint'] as String
+      ..uiSave = json['uiSave'] as String
       ..uiNewProfileName = json['uiNewProfileName'] as String
       ..uiApplyingAllAvailableMods =
           json['uiApplyingAllAvailableMods'] as String
@@ -948,6 +958,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiPickAColor': instance.uiPickAColor,
       'uiDuplicatesInAppliedModsFound': instance.uiDuplicatesInAppliedModsFound,
       'uiApplyingWouldReplaceModFiles': instance.uiApplyingWouldReplaceModFiles,
+      'uiSelectWhichFilesToBeReplacedWithThisMod':
+          instance.uiSelectWhichFilesToBeReplacedWithThisMod,
       'uiNewCateGroup': instance.uiNewCateGroup,
       'uiNameAlreadyExisted': instance.uiNameAlreadyExisted,
       'uiNewCateGroupName': instance.uiNewCateGroupName,
@@ -1056,6 +1068,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSortingIceFiles': instance.uiSortingIceFiles,
       'uiSortingOtherFiles': instance.uiSortingOtherFiles,
       'uiProcessing': instance.uiProcessing,
+      'uiIgnoreList': instance.uiIgnoreList,
+      'uiIgnoreFoldersThatContain': instance.uiIgnoreFoldersThatContain,
+      'uiSeparateEachParamByAComma': instance.uiSeparateEachParamByAComma,
+      'uiCurrentState': instance.uiCurrentState,
+      'uiHint': instance.uiHint,
+      'uiSave': instance.uiSave,
       'uiNewProfileName': instance.uiNewProfileName,
       'uiApplyingAllAvailableMods': instance.uiApplyingAllAvailableMods,
       'uiLocatingOriginalFiles': instance.uiLocatingOriginalFiles,

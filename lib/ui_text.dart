@@ -334,7 +334,8 @@ class TranslationText {
   String uiPickAColor = 'Pick a color';
 
   //modfiles_apply
-  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files';
+  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files',
+  uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod';
 
   //new_cate_adder
   String uiNewCateGroup = 'New Category Group',

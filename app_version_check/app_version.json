@@ -1,9 +1,9 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.8",
+    "version": "2.7.9",
     "description": [
-        "Mod Manager now automatically backing up all mod settings once a day on the very first launch and up to 7 days before overwriting",
-        "Added a button in Settings to manually backup mod settings and a button to open the backup folder",
+        "Added a custom filter to Add Mods that automatically ignores unwanted folders/mods when adding mods to the Manager",
+        "Mod Manager now allows to select which mod files to replace if duplicate are found in applied mods",
         "Fixed a bug where return button on bounding radius popup being greyed out",
         "More bug fixes",
         "MOD ManagerがすべてのMOD設定を自動的にバックアップするようになった",

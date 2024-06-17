@@ -23,9 +23,9 @@ Future<void> modAdderIgnoreListPopup(context) async {
             return AlertDialog(
                 shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(5))),
                 backgroundColor: Color(context.watch<StateProvider>().uiBackgroundColorValue).withOpacity(0.8),
-                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                titlePadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                 title: Text(curLangText!.uiIgnoreList, style: const TextStyle(fontWeight: FontWeight.w700)),
-                contentPadding: const EdgeInsets.only(left: 16, right: 16),
+                contentPadding: const EdgeInsets.only(left: 10, right: 10),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,6 @@ Future<void> modAdderIgnoreListPopup(context) async {
                     ),
                   ],
                 ),
-                actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 actions: <Widget>[
                   ElevatedButton(
                       child: Text(modAdderIgnoreListState ? '${curLangText!.uiCurrentState}: ${curLangText!.uiON}' : '${curLangText!.uiCurrentState}: ${curLangText!.uiOFF}'),
