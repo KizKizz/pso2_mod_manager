@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 class PreviewImageStack extends StatelessWidget {
   const PreviewImageStack({super.key, required this.imagePath, required this.overlayText});
@@ -31,7 +33,7 @@ class PreviewImageStack extends StatelessWidget {
               child: Center(
                   child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(overlayText, style: const TextStyle(fontSize: 17)),
+                child: Text(overlayText.replaceFirst(p.separator, '').replaceAll(p.separator, ' > '), style: const TextStyle(fontSize: 17)),
               ))),
         )
       ],

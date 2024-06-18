@@ -34,7 +34,7 @@ SubMod fromItemSubmodGet(List<String> iceFileNames) {
         orElse: () => '',
       );
       if (p.basename(icePathFromOgData) == iceName) {
-        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], [], []));
+        modFileList.add(ModFile(iceName, fromItemNameSwap, fromItemNameSwap, fromItemNameSwap, selectedCategoryF!, '', [], icePathFromOgData, false, DateTime(0), 0, false, false, false, [], [], [], [], [], []));
       }
     }
     //}

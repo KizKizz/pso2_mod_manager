@@ -303,7 +303,9 @@ class TranslationText {
       uiImportMods = 'Import Mods',
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
-      uiExportAllMods = 'Export all mods in this item';
+      uiExportAllMods = 'Export all mods in this item',
+      uiAddPreviewImagesOrVideos = 'Add Preview Images-Videos',
+      uiAddPreviews = 'Add preview images-videos';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

@@ -221,7 +221,7 @@ List<Mod> newModsFetcher(String itemPath, String cateName, List<Directory> newMo
   if (iceFilesInItemDir.isNotEmpty) {
     for (var iceFile in iceFilesInItemDir) {
       modFilesInItemDir.add(ModFile(p.basename(iceFile.path), p.basename(itemPath), p.basename(itemPath), p.basename(itemPath), cateName, '', [], iceFile.path, false, DateTime(0), 0, false, true,
-          true, [importedSetName], [], [], []));
+          true, [importedSetName], [], [], [], [], []));
     }
     //Get preview images;
     List<String> modPreviewImages = [];
@@ -296,7 +296,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       //   ogFilePaths.add(element.path);
       // }
       modFiles
-          .add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], []));
+          .add(ModFile(p.basename(file.path), p.basename(modPath), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }
@@ -369,7 +369,7 @@ List<SubMod> newSubModFetcher(String modPath, String cateName, String itemName, 
       parentPaths.removeWhere((element) => element.isEmpty);
 
       modFiles.add(
-          ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], []));
+          ModFile(p.basename(file.path), parentPaths.join(' > '), p.basename(modPath), itemName, cateName, '', [], file.path, false, DateTime(0), 0, false, true, true, [importedSetName], [], [], [], [], []));
       //Sort alpha
       modFiles.sort((a, b) => a.modFileName.toLowerCase().compareTo(b.modFileName.toLowerCase()));
     }

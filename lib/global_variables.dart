@@ -53,7 +53,7 @@ bool isEmptyCatesHide = false;
 List<CategoryType> hiddenItemCategories = [];
 List<ModSet> modSetList = [];
 List<Item> allSetItems = [];
-bool isModSetAdding = false;
+// bool isModSetAdding = false;
 Item? modViewItem;
 bool isModViewListHidden = false;
 bool isModViewFromApplied = false;

@@ -343,6 +343,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiSelectApplyingLocations = json['uiSelectApplyingLocations'] as String
       ..uiApplyToAllLocations = json['uiApplyToAllLocations'] as String
       ..uiExportAllMods = json['uiExportAllMods'] as String
+      ..uiAddPreviewImagesOrVideos =
+          json['uiAddPreviewImagesOrVideos'] as String
+      ..uiAddPreviews = json['uiAddPreviews'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -931,6 +934,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiSelectApplyingLocations': instance.uiSelectApplyingLocations,
       'uiApplyToAllLocations': instance.uiApplyToAllLocations,
       'uiExportAllMods': instance.uiExportAllMods,
+      'uiAddPreviewImagesOrVideos': instance.uiAddPreviewImagesOrVideos,
+      'uiAddPreviews': instance.uiAddPreviews,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
