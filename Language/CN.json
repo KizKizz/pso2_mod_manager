@@ -274,7 +274,7 @@
   "uiRenameThisSet": "重命名此组",
   "uiModSetRename": "重命名MOD组",
   "uiImportMods": "导入MOD",
-   "uiSelectApplyingLocations": "选择应用路径",
+  "uiSelectApplyingLocations": "选择应用路径",
   "uiApplyToAllLocations": "应用到所有路径",
   "uiExportAllMods": "导出所有Mod", 
   "uiAddPreviewImagesOrVideos": "添加预览图像视频",
