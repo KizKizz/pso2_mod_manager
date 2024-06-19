@@ -1060,9 +1060,11 @@ class _MainPageState extends State<MainPage> {
                             if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
                               prefs.setBool('showPreviewPanel', false);
                               Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+                              showPreviewPanel = false;
                             } else {
                               prefs.setBool('showPreviewPanel', true);
                               Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+                              showPreviewPanel = true;
                             }
                             setState(() {});
                           }),

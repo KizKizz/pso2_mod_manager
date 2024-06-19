@@ -209,6 +209,8 @@ Future<List<CategoryType>> modFileStructureLoader(context, bool reload) async {
                           modFile.ogMd5s = curJsonModFilesList[modFileIndex].ogMd5s;
                           //modFile.submodName = curJsonModFilesList[modFileIndex].submodName;
                           if (curJsonModFilesList[modFileIndex].applyLocations != null) modFile.applyLocations = curJsonModFilesList[modFileIndex].applyLocations;
+                          if (curJsonModFilesList[modFileIndex].previewImages != null) modFile.previewImages = curJsonModFilesList[modFileIndex].previewImages;
+                          if (curJsonModFilesList[modFileIndex].previewVideos != null) modFile.previewVideos = curJsonModFilesList[modFileIndex].previewVideos;
                           modFile.isSet = curJsonModFilesList[modFileIndex].isSet;
                           modFile.setNames = curJsonModFilesList[modFileIndex].setNames;
                         } else {

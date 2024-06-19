@@ -131,6 +131,7 @@ class ModManPreviewTooltip extends StatelessWidget {
     }
     return InfoPopupWidget(
         contentOffset: contentPositionOffSet,
+        horizontalDirection: 'right',
         dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
         popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
         onControllerCreated: (controller) {

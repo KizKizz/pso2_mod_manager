@@ -112,7 +112,7 @@ Future<void> main(List<String> args) async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
 
   // This widget is the root of your application.
   @override
@@ -317,9 +317,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       Provider.of<StateProvider>(context, listen: false).uiOpacityValueSet((prefs.getDouble('uiOpacityValue') ?? 0.6));
 
       //Darkmode check
-      isDarkModeOn = (prefs.getBool('isDarkModeOn') ?? false);
+      isDarkModeOn = (prefs.getBool('isDarkModeOn') ?? true);
       if (isDarkModeOn) {
         MyApp.themeNotifier.value = ThemeMode.dark;
+      } else {
+        MyApp.themeNotifier.value = ThemeMode.light;
       }
       //Set uibackground color value
       if (MyApp.themeNotifier.value == ThemeMode.light) {
@@ -337,7 +339,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       }
 
       //preview panel Check
-      bool showPreviewPanel = (prefs.getBool('showPreviewPanel') ?? false);
+      showPreviewPanel = (prefs.getBool('showPreviewPanel') ?? false);
       if (showPreviewPanel) {
         Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
       } else {

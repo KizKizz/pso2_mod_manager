@@ -166,3 +166,4 @@ List<SubMod> selectedSubmodsInAppliedList = [];
 bool cmxRefreshing = false;
 String modManCurActiveItemNameLanguage = '';
 bool modAdderIgnoreListState = false;
+bool showPreviewPanel = false;

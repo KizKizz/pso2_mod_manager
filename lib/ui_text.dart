@@ -304,8 +304,7 @@ class TranslationText {
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
       uiExportAllMods = 'Export all mods in this item',
-      uiAddPreviewImagesOrVideos = 'Add Preview Images-Videos',
-      uiAddPreviews = 'Add preview images-videos';
+      uiAddPreviews = 'Add/Change preview images-videos';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -466,7 +465,7 @@ class TranslationText {
       uiIgnoreList = 'Ignore List';
 
   //mods_adder+ignore_list.dart
-  String uiIgnoreFoldersThatContain = 'Ignore folders that contain:',
+  String uiIgnoreFoldersThatContain = 'Ignore folders that have name contains:',
   uiSeparateEachParamByAComma = 'Folders that contain these words in their names will be ignored during process\nSeparate each word by a comma. Case sensitive',
   uiCurrentState = 'Current State',
   uiHint = 'Hint',

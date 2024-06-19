@@ -1144,7 +1144,7 @@ void modsAdderHomePage(context) {
                                                                                         width: 5,
                                                                                       ),
                                                                                       Text('$_pathLengthInNameEdit/259 ${curLangText!.uiCharacters}',
-                                                                                          style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null)),
+                                                                                          style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color)),
                                                                                       const SizedBox(
                                                                                         width: 5,
                                                                                       ),
@@ -1212,7 +1212,7 @@ void modsAdderHomePage(context) {
                                                                                       ),
                                                                                       Text(
                                                                                         '${pathCharLengthList[index][mIndex]}/259 ${curLangText!.uiCharacters}',
-                                                                                        style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : null),
+                                                                                        style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color),
                                                                                       ),
                                                                                       const SizedBox(
                                                                                         width: 5,
