@@ -49,7 +49,6 @@ Future<List<ModSet>> modSetLoader() async {
     (a, b) => b.addedDate.compareTo(a.addedDate),
   );
 
-  //saveSetListToJson();
 
   return newModSets;
 }

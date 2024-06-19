@@ -303,7 +303,8 @@ class TranslationText {
       uiImportMods = 'Import Mods',
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
-      uiExportAllMods = 'Export all mods in this item';
+      uiExportAllMods = 'Export all mods in this item',
+      uiAddPreviews = 'Add/Change preview images-videos';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -334,7 +335,8 @@ class TranslationText {
   String uiPickAColor = 'Pick a color';
 
   //modfiles_apply
-  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files';
+  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files',
+  uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod';
 
   //new_cate_adder
   String uiNewCateGroup = 'New Category Group',
@@ -459,7 +461,15 @@ class TranslationText {
       uiSorting = 'Sorting',
       uiSortingIceFiles = 'Sorting .ice files',
       uiSortingOtherFiles = 'Sorting other files',
-      uiProcessing = 'Processing';
+      uiProcessing = 'Processing',
+      uiIgnoreList = 'Ignore List';
+
+  //mods_adder+ignore_list.dart
+  String uiIgnoreFoldersThatContain = 'Ignore folders that have name contains:',
+  uiSeparateEachParamByAComma = 'Folders that contain these words in their names will be ignored during process\nSeparate each word by a comma. Case sensitive',
+  uiCurrentState = 'Current State',
+  uiHint = 'Hint',
+  uiSave = 'Save';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';

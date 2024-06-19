@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/functions/checksum_check.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
 import 'package:pso2_mod_manager/functions/color_picker.dart';
 import 'package:pso2_mod_manager/functions/json_backup.dart';
+import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
@@ -1059,9 +1060,11 @@ class _MainPageState extends State<MainPage> {
                             if (Provider.of<StateProvider>(context, listen: false).showPreviewPanel) {
                               prefs.setBool('showPreviewPanel', false);
                               Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(false);
+                              showPreviewPanel = false;
                             } else {
                               prefs.setBool('showPreviewPanel', true);
                               Provider.of<StateProvider>(context, listen: false).showPreviewPanelSet(true);
+                              showPreviewPanel = true;
                             }
                             setState(() {});
                           }),
@@ -1910,14 +1913,15 @@ class _MainPageState extends State<MainPage> {
                               child: SizedBox(
                                 //width: 99,
                                 child: MaterialButton(
-                                  onPressed: (() {
+                                  onPressed: (() async {
                                     if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                                       isModViewListHidden = true;
-                                      isModSetAdding = false;
                                       Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                      saveSetListToJson();
                                     } else {
-                                      isModViewListHidden = true;
-                                      isModSetAdding = false;
+                                      isModViewListHidden = false;
+                                      modSetList = await modSetLoader();
+                                      saveSetListToJson();
                                       Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                                     }
                                   }),

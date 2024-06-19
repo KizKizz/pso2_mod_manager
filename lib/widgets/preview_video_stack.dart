@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart' as p;
 
 class PreviewVideoStack extends StatefulWidget {
   const PreviewVideoStack({super.key, required this.videoPath, required this.overlayText});
@@ -72,7 +74,7 @@ class _PreviewVideoStackState extends State<PreviewVideoStack> {
               child: Center(
                   child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(widget.overlayText, style: const TextStyle(fontSize: 17)),
+                child: Text(widget.overlayText.replaceFirst(p.separator, '').replaceAll(p.separator, ' > '), style: const TextStyle(fontSize: 17)),
               ))),
         )
       ],

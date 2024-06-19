@@ -27,6 +27,12 @@ ModFile _$ModFileFromJson(Map<String, dynamic> json) => ModFile(
           .toList(),
       (json['ogLocations'] as List<dynamic>).map((e) => e as String).toList(),
       (json['bkLocations'] as List<dynamic>).map((e) => e as String).toList(),
+      (json['previewImages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      (json['previewVideos'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
@@ -48,4 +54,6 @@ Map<String, dynamic> _$ModFileToJson(ModFile instance) => <String, dynamic>{
       'applyLocations': instance.applyLocations,
       'ogLocations': instance.ogLocations,
       'bkLocations': instance.bkLocations,
+      'previewImages': instance.previewImages,
+      'previewVideos': instance.previewVideos,
     };
