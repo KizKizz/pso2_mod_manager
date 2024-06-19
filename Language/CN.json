@@ -277,7 +277,7 @@
   "uiSelectApplyingLocations": "选择应用路径",
   "uiApplyToAllLocations": "应用到所有路径",
   "uiExportAllMods": "导出所有Mod", 
-  "uiAddPreviewImagesOrVideos": "添加预览图像视频",
+  "uiAddPreviewImagesOrVideos": "添加预览图像或视频",
   "uiAddPreviews": "添加预览",
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、.zip、.rar、.7z文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
