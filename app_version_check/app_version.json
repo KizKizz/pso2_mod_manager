@@ -1,6 +1,6 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.9",
+    "version": "2.7.10",
     "description": [
         "Added a custom filter to Add Mods that automatically ignores unwanted folders/mods when adding mods to the Manager",
         "Added an option to add preview images and videos to mods and to ice files",

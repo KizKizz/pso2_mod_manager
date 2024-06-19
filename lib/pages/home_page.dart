@@ -7,7 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart' as fcw;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:info_popup/info_popup.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -2458,7 +2458,7 @@ class _HomePageState extends State<HomePage> {
                               focusColor: Colors.transparent,
                               focusNode: expansionListFNodes[modIndex],
                               //Hover for preview
-                              onTap: () => '',
+                              onTap: () {},
                               onSecondaryTap: () {
                                 if (previewImages.isNotEmpty) {
                                   previewDialogImages = previewImages.toList();
@@ -2467,7 +2467,8 @@ class _HomePageState extends State<HomePage> {
                                 }
                               },
                               onHover: (hovering) {
-                                if (hovering && !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel) {
+                                previewImages.clear();
+                                if (hovering && !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible) {
                                   if (modViewModSetSubModIndex != -1) {
                                     previewModName = curMod.submods[modViewModSetSubModIndex].submodName;
                                     previewImages.clear();
@@ -2499,13 +2500,8 @@ class _HomePageState extends State<HomePage> {
                                   horizontalDirection: 'right',
                                   dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                   popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-                                  onControllerCreated: (controller) {
-                                    if (controller.customContent == null) {
-                                      controller.dismissInfoPopup();
-                                    }
-                                  },
                                   arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                  customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewImages.isNotEmpty
+                                  customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
                                       ? ConstrainedBox(
                                           constraints: BoxConstraints(
                                               minWidth: appWindow.size.width / 5, minHeight: appWindow.size.height / 5, maxWidth: appWindow.size.width / 3, maxHeight: appWindow.size.height / 3),
@@ -2514,18 +2510,27 @@ class _HomePageState extends State<HomePage> {
                                                 color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                            child: ImageSlideshow(
-                                              height: double.infinity,
-                                              initialPage: 0,
-                                              indicatorColor: Colors.transparent,
-                                              indicatorBackgroundColor: Colors.transparent,
-                                              autoPlayInterval: previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                  ? 7000
-                                                  : previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
-                                                      ? 1000
-                                                      : 0,
-                                              isLoop: true,
-                                              children: previewImages,
+                                            child: fcw.FlutterCarousel(
+                                              options: fcw.CarouselOptions(
+                                                  autoPlay: true,
+                                                  autoPlayInterval:
+                                                      previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                                                          ? const Duration(seconds: 5)
+                                                          : previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                                                              ? const Duration(seconds: 1)
+                                                              : const Duration(seconds: 2),
+                                                  disableCenter: true,
+                                                  viewportFraction: 1.0,
+                                                  height: double.infinity,
+                                                  floatingIndicator: false,
+                                                  enableInfiniteScroll: true,
+                                                  indicatorMargin: 4,
+                                                  slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                      itemSpacing: 10,
+                                                      indicatorRadius: 4,
+                                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                      indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                              items: previewImages,
                                             ),
                                           ),
                                         )
@@ -2677,7 +2682,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   );
                                                 },
-                                                onClose:() {
+                                                onClose: () {
                                                   expansionListFNodes[modIndex].unfocus();
                                                 },
                                                 style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -3014,9 +3019,9 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         );
                                                       },
-                                                      onClose:() {
-                                                  expansionListFNodes[modIndex].unfocus();
-                                                },
+                                                      onClose: () {
+                                                        expansionListFNodes[modIndex].unfocus();
+                                                      },
                                                       style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
                                                       }), shape: WidgetStateProperty.resolveWith((states) {
@@ -3531,9 +3536,9 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         );
                                                       },
-                                                      onClose:() {
-                                                  expansionListFNodes[modIndex].unfocus();
-                                                },
+                                                      onClose: () {
+                                                        expansionListFNodes[modIndex].unfocus();
+                                                      },
                                                       style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
                                                       }), shape: WidgetStateProperty.resolveWith((states) {
@@ -3890,7 +3895,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: InkWell(
                                                   focusColor: Colors.transparent,
                                                   //submod preview images
-                                                  onTap: () => '',
+                                                  onTap: () {},
                                                   onSecondaryTap: () {
                                                     if (previewImages.isNotEmpty) {
                                                       previewDialogImages = previewImages.toList();
@@ -3899,13 +3904,14 @@ class _HomePageState extends State<HomePage> {
                                                     }
                                                   },
                                                   onHover: (hovering) {
+                                                    previewImages.clear();
                                                     if (hovering) {
                                                       hoveringOnSubmod = true;
                                                       hoveringOnModFile = false;
                                                     } else {
                                                       hoveringOnSubmod = false;
                                                     }
-                                                    if (hovering && hoveringOnSubmod && previewWindowVisible && !showPreviewPanel) {
+                                                    if (hovering && hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible) {
                                                       previewModName = curSubmod.submodName;
                                                       previewImages.clear();
                                                       for (var path in curSubmod.previewImages.toSet()) {
@@ -3961,13 +3967,8 @@ class _HomePageState extends State<HomePage> {
                                                     horizontalDirection: 'right',
                                                     dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                     popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-                                                    onControllerCreated: (controller) {
-                                                      if (controller.customContent == null) {
-                                                        controller.dismissInfoPopup();
-                                                      }
-                                                    },
                                                     arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                    customContent: () => hoveringOnSubmod && !hoveringOnModFile && previewImages.isNotEmpty
+                                                    customContent: () => hoveringOnSubmod && !hoveringOnModFile && previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
                                                         ? ConstrainedBox(
                                                             constraints: BoxConstraints(
                                                                 minWidth: appWindow.size.width / 5,
@@ -3979,20 +3980,28 @@ class _HomePageState extends State<HomePage> {
                                                                   color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                   borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              child: ImageSlideshow(
-                                                                height: double.infinity,
-                                                                initialPage: 0,
-                                                                indicatorColor: Colors.transparent,
-                                                                indicatorBackgroundColor: Colors.transparent,
-                                                                autoPlayInterval: previewImages.length > 1 &&
-                                                                        previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                                    ? 7000
-                                                                    : previewImages.length > 1 &&
-                                                                            previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
-                                                                        ? 1000
-                                                                        : 0,
-                                                                isLoop: true,
-                                                                children: previewImages,
+                                                              child: fcw.FlutterCarousel(
+                                                                options: fcw.CarouselOptions(
+                                                                    autoPlay: true,
+                                                                    autoPlayInterval: previewImages.length > 1 &&
+                                                                            previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                                                                        ? const Duration(seconds: 5)
+                                                                        : previewImages.length > 1 &&
+                                                                                previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                                                                            ? const Duration(seconds: 1)
+                                                                            : const Duration(seconds: 2),
+                                                                    disableCenter: true,
+                                                                    viewportFraction: 1.0,
+                                                                    height: double.infinity,
+                                                                    floatingIndicator: false,
+                                                                    enableInfiniteScroll: true,
+                                                                    indicatorMargin: 4,
+                                                                    slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                        itemSpacing: 10,
+                                                                        indicatorRadius: 4,
+                                                                        currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                        indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                items: previewImages,
                                                               ),
                                                             ),
                                                           )
@@ -4171,9 +4180,9 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       );
                                                                     },
-                                                                    onClose:() {
-                                                  expansionListFNodes[modIndex].unfocus();
-                                                },
+                                                                    onClose: () {
+                                                                      expansionListFNodes[modIndex].unfocus();
+                                                                    },
                                                                     style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
                                                                       return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
                                                                     }), shape: WidgetStateProperty.resolveWith((states) {
@@ -4524,8 +4533,7 @@ class _HomePageState extends State<HomePage> {
                                                               return Visibility(
                                                                   visible: context.watch<StateProvider>().setsWindowVisible ? curModFile.isSet : true,
                                                                   child: InkWell(
-                                                                    focusColor: Colors.transparent,
-                                                                    onTap: () => '',
+                                                                    onTap: () {},
                                                                     onSecondaryTap: () {
                                                                       if (previewImages.isNotEmpty) {
                                                                         previewDialogImages = previewImages.toList();
@@ -4534,6 +4542,7 @@ class _HomePageState extends State<HomePage> {
                                                                       }
                                                                     },
                                                                     onHover: (hovering) {
+                                                                      previewImages.clear();
                                                                       if (hovering) {
                                                                         hoveringOnModFile = true;
                                                                         hoveringOnSubmod = false;
@@ -4541,9 +4550,9 @@ class _HomePageState extends State<HomePage> {
                                                                         hoveringOnSubmod = true;
                                                                         hoveringOnModFile = false;
                                                                       }
-                                                                      if (hovering && previewWindowVisible && hoveringOnModFile && !showPreviewPanel) {
+                                                                      if (hovering && previewWindowVisible && hoveringOnModFile) {
                                                                         previewModName = curModFile.modFileName;
-                                                                        previewImages.clear();
+
                                                                         //set preview images
                                                                         previewImages.addAll(curModFile.previewImages!
                                                                             .toSet()
@@ -4552,7 +4561,7 @@ class _HomePageState extends State<HomePage> {
                                                                         previewImages.addAll(curModFile.previewVideos!
                                                                             .toSet()
                                                                             .map((path) => PreviewImageStack(imagePath: path, overlayText: path.split(curSubmod.itemName).last)));
-                                                                      } else {
+                                                                      } else if (previewWindowVisible && hoveringOnSubmod && !hoveringOnModFile) {
                                                                         previewModName = curSubmod.submodName;
                                                                         previewImages.clear();
                                                                         for (var path in curSubmod.previewImages.toSet()) {
@@ -4568,13 +4577,8 @@ class _HomePageState extends State<HomePage> {
                                                                         horizontalDirection: 'right',
                                                                         dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                                         popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-                                                                        onControllerCreated: (controller) {
-                                                                          if (controller.customContent == null) {
-                                                                            controller.dismissInfoPopup();
-                                                                          }
-                                                                        },
                                                                         arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                                        customContent: () => hoveringOnModFile && previewImages.isNotEmpty
+                                                                        customContent: () => previewWindowVisible && hoveringOnModFile && !showPreviewPanel && previewImages.isNotEmpty
                                                                             ? ConstrainedBox(
                                                                                 constraints: BoxConstraints(
                                                                                     minWidth: appWindow.size.width / 5,
@@ -4586,21 +4590,30 @@ class _HomePageState extends State<HomePage> {
                                                                                       color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                  child: ImageSlideshow(
-                                                                                    height: double.infinity,
-                                                                                    initialPage: 0,
-                                                                                    indicatorColor: Colors.transparent,
-                                                                                    indicatorBackgroundColor: Colors.transparent,
-                                                                                    autoPlayInterval: previewImages.length > 1 &&
-                                                                                            previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                                                        ? 7000
-                                                                                        : previewImages.length > 1 &&
-                                                                                                previewImages.where((element) => element.toString() == ('PreviewImageStack')).length ==
+                                                                                  child: fcw.FlutterCarousel(
+                                                                                    options: fcw.CarouselOptions(
+                                                                                        autoPlay: true,
+                                                                                        autoPlayInterval: previewImages.length > 1 &&
+                                                                                                previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length ==
                                                                                                     previewImages.length
-                                                                                            ? 1000
-                                                                                            : 0,
-                                                                                    isLoop: true,
-                                                                                    children: previewImages,
+                                                                                            ? const Duration(seconds: 5)
+                                                                                            : previewImages.length > 1 &&
+                                                                                                    previewImages.where((element) => element.toString() == ('PreviewImageStack')).length ==
+                                                                                                        previewImages.length
+                                                                                                ? const Duration(seconds: 1)
+                                                                                                : const Duration(seconds: 2),
+                                                                                        disableCenter: true,
+                                                                                        viewportFraction: 1.0,
+                                                                                        height: double.infinity,
+                                                                                        floatingIndicator: false,
+                                                                                        enableInfiniteScroll: true,
+                                                                                        indicatorMargin: 4,
+                                                                                        slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                                            itemSpacing: 10,
+                                                                                            indicatorRadius: 4,
+                                                                                            currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                                            indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                                    items: previewImages,
                                                                                   ),
                                                                                 ),
                                                                               )
@@ -5221,7 +5234,7 @@ class _HomePageState extends State<HomePage> {
                                                   return InkResponse(
                                                     highlightShape: BoxShape.rectangle,
                                                     focusColor: Colors.transparent,
-                                                    onTap: () => '',
+                                                    onTap: () {},
                                                     onSecondaryTap: () {
                                                       if (previewImages.isNotEmpty) {
                                                         previewDialogImages = previewImages.toList();
@@ -5230,7 +5243,9 @@ class _HomePageState extends State<HomePage> {
                                                       }
                                                     },
                                                     onHover: (hovering) {
-                                                      if (hovering && previewWindowVisible && !showPreviewPanel) {
+                                                      previewImages.clear();
+                                                      if (hovering && previewWindowVisible) {
+                                                        previewImages.clear();
                                                         previewModName = curItem.category == defaultCategoryDirs[17]
                                                             ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp'
                                                                 ? curItem.itemName
@@ -5262,13 +5277,8 @@ class _HomePageState extends State<HomePage> {
                                                       horizontalDirection: 'left',
                                                       dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                       popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-                                                      onControllerCreated: (controller) {
-                                                        if (controller.customContent == null) {
-                                                          controller.dismissInfoPopup();
-                                                        }
-                                                      },
                                                       arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                      customContent: () => !hoveringOnSubmod && !hoveringOnModFile && previewImages.isNotEmpty && previewWindowVisible
+                                                      customContent: () => previewWindowVisible && !showPreviewPanel && previewWindowVisible
                                                           ? ConstrainedBox(
                                                               constraints: BoxConstraints(
                                                                   minWidth: appWindow.size.width / 5,
@@ -5280,20 +5290,28 @@ class _HomePageState extends State<HomePage> {
                                                                     color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                     borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                child: ImageSlideshow(
-                                                                  height: double.infinity,
-                                                                  initialPage: 0,
-                                                                  indicatorColor: Colors.transparent,
-                                                                  indicatorBackgroundColor: Colors.transparent,
-                                                                  autoPlayInterval: previewImages.length > 1 &&
-                                                                          previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                                      ? 7000
-                                                                      : previewImages.length > 1 &&
-                                                                              previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
-                                                                          ? 1000
-                                                                          : 0,
-                                                                  isLoop: true,
-                                                                  children: previewImages,
+                                                                child: fcw.FlutterCarousel(
+                                                                  options: fcw.CarouselOptions(
+                                                                      autoPlay: true,
+                                                                      autoPlayInterval: previewImages.length > 1 &&
+                                                                              previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                                                                          ? const Duration(seconds: 5)
+                                                                          : previewImages.length > 1 &&
+                                                                                  previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                                                                              ? const Duration(seconds: 1)
+                                                                              : const Duration(seconds: 2),
+                                                                      disableCenter: true,
+                                                                      viewportFraction: 1.0,
+                                                                      height: double.infinity,
+                                                                      floatingIndicator: false,
+                                                                      enableInfiniteScroll: true,
+                                                                      indicatorMargin: 4,
+                                                                      slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                          itemSpacing: 10,
+                                                                          indicatorRadius: 4,
+                                                                          currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                          indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                                  items: previewImages,
                                                                 ),
                                                               ),
                                                             )
@@ -6148,7 +6166,7 @@ class _HomePageState extends State<HomePage> {
                                               }
                                               return InkResponse(
                                                 highlightShape: BoxShape.rectangle,
-                                                onTap: () => '',
+                                                onTap: () {},
                                                 onSecondaryTap: () {
                                                   if (previewImages.isNotEmpty) {
                                                     previewDialogImages = previewImages.toList();
@@ -6157,7 +6175,8 @@ class _HomePageState extends State<HomePage> {
                                                   }
                                                 },
                                                 onHover: (hovering) {
-                                                  if (hovering && previewWindowVisible && !showPreviewPanel) {
+                                                  previewImages.clear();
+                                                  if (hovering && previewWindowVisible) {
                                                     previewModName = curItem.category == defaultCategoryDirs[17]
                                                         ? curItem.itemName.split('_').isNotEmpty && curItem.itemName.split('_').first == 'it' && curItem.itemName.split('_')[1] == 'wp'
                                                             ? curItem.itemName
@@ -6180,7 +6199,6 @@ class _HomePageState extends State<HomePage> {
                                                   } else {
                                                     previewModName = '';
                                                     previewImages.clear();
-                                                    // videoPlayer.remove(0);
                                                   }
                                                   setState(() {});
                                                 },
@@ -6188,13 +6206,8 @@ class _HomePageState extends State<HomePage> {
                                                   horizontalDirection: 'right',
                                                   dismissTriggerBehavior: PopupDismissTriggerBehavior.anyWhere,
                                                   popupClickTriggerBehavior: PopupClickTriggerBehavior.none,
-                                                  onControllerCreated: (controller) {
-                                                    if (controller.customContent == null) {
-                                                      controller.dismissInfoPopup();
-                                                    }
-                                                  },
                                                   arrowTheme: const InfoPopupArrowTheme(arrowSize: Size.zero),
-                                                  customContent: () => previewImages.isNotEmpty
+                                                  customContent: () => previewWindowVisible && !showPreviewPanel && previewImages.isNotEmpty
                                                       ? ConstrainedBox(
                                                           constraints: BoxConstraints(
                                                               minWidth: appWindow.size.width / 5,
@@ -6206,20 +6219,28 @@ class _HomePageState extends State<HomePage> {
                                                                 color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                            child: ImageSlideshow(
-                                                              height: double.infinity,
-                                                              initialPage: 0,
-                                                              indicatorColor: Colors.transparent,
-                                                              indicatorBackgroundColor: Colors.transparent,
-                                                              autoPlayInterval: previewImages.length > 1 &&
-                                                                      previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
-                                                                  ? 7000
-                                                                  : previewImages.length > 1 &&
-                                                                          previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
-                                                                      ? 1000
-                                                                      : 0,
-                                                              isLoop: true,
-                                                              children: previewImages,
+                                                            child: fcw.FlutterCarousel(
+                                                              options: fcw.CarouselOptions(
+                                                                  autoPlay: true,
+                                                                  autoPlayInterval: previewImages.length > 1 &&
+                                                                          previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                                                                      ? const Duration(seconds: 5)
+                                                                      : previewImages.length > 1 &&
+                                                                              previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                                                                          ? const Duration(seconds: 1)
+                                                                          : const Duration(seconds: 2),
+                                                                  disableCenter: true,
+                                                                  viewportFraction: 1.0,
+                                                                  height: double.infinity,
+                                                                  floatingIndicator: false,
+                                                                  enableInfiniteScroll: true,
+                                                                  indicatorMargin: 4,
+                                                                  slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                      itemSpacing: 10,
+                                                                      indicatorRadius: 4,
+                                                                      currentIndicatorColor: Theme.of(context).colorScheme.primary,
+                                                                      indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
+                                                              items: previewImages,
                                                             ),
                                                           ),
                                                         )
