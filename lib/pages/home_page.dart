@@ -4,10 +4,9 @@ import 'dart:io';
 
 import 'package:advance_expansion_tile/advance_expansion_tile.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart' as fcw;
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:info_popup/info_popup.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -79,7 +78,6 @@ class _HomePageState extends State<HomePage> {
   final MultiSplitViewController _viewsController = MultiSplitViewController(areas: [Area(weight: 0.285), Area(weight: 0.335)]);
   final MultiSplitViewController _verticalViewsController = MultiSplitViewController(areas: [Area(weight: 0.40)]);
   List<GlobalKey<AdvanceExpansionTileState>> modViewETKeys = [];
-  CarouselController previewCarouselController = CarouselController();
 
   Category? modViewCate;
   double headersOpacityValue = 0.7;
@@ -2510,8 +2508,8 @@ class _HomePageState extends State<HomePage> {
                                                 color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                            child: fcw.FlutterCarousel(
-                                              options: fcw.CarouselOptions(
+                                            child: FlutterCarousel(
+                                              options: CarouselOptions(
                                                   autoPlay: true,
                                                   autoPlayInterval:
                                                       previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
@@ -2525,7 +2523,7 @@ class _HomePageState extends State<HomePage> {
                                                   floatingIndicator: false,
                                                   enableInfiniteScroll: true,
                                                   indicatorMargin: 4,
-                                                  slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                  slideIndicator: CircularWaveSlideIndicator(
                                                       itemSpacing: 10,
                                                       indicatorRadius: 4,
                                                       currentIndicatorColor: Theme.of(context).colorScheme.primary,
@@ -3980,8 +3978,8 @@ class _HomePageState extends State<HomePage> {
                                                                   color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                   border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                   borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                              child: fcw.FlutterCarousel(
-                                                                options: fcw.CarouselOptions(
+                                                              child: FlutterCarousel(
+                                                                options: CarouselOptions(
                                                                     autoPlay: true,
                                                                     autoPlayInterval: previewImages.length > 1 &&
                                                                             previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
@@ -3996,7 +3994,7 @@ class _HomePageState extends State<HomePage> {
                                                                     floatingIndicator: false,
                                                                     enableInfiniteScroll: true,
                                                                     indicatorMargin: 4,
-                                                                    slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                    slideIndicator: CircularWaveSlideIndicator(
                                                                         itemSpacing: 10,
                                                                         indicatorRadius: 4,
                                                                         currentIndicatorColor: Theme.of(context).colorScheme.primary,
@@ -4590,8 +4588,8 @@ class _HomePageState extends State<HomePage> {
                                                                                       color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                                       border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                                  child: fcw.FlutterCarousel(
-                                                                                    options: fcw.CarouselOptions(
+                                                                                  child: FlutterCarousel(
+                                                                                    options: CarouselOptions(
                                                                                         autoPlay: true,
                                                                                         autoPlayInterval: previewImages.length > 1 &&
                                                                                                 previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length ==
@@ -4608,7 +4606,7 @@ class _HomePageState extends State<HomePage> {
                                                                                         floatingIndicator: false,
                                                                                         enableInfiniteScroll: true,
                                                                                         indicatorMargin: 4,
-                                                                                        slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                                        slideIndicator: CircularWaveSlideIndicator(
                                                                                             itemSpacing: 10,
                                                                                             indicatorRadius: 4,
                                                                                             currentIndicatorColor: Theme.of(context).colorScheme.primary,
@@ -5290,8 +5288,8 @@ class _HomePageState extends State<HomePage> {
                                                                     color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                     border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                     borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                                child: fcw.FlutterCarousel(
-                                                                  options: fcw.CarouselOptions(
+                                                                child: FlutterCarousel(
+                                                                  options: CarouselOptions(
                                                                       autoPlay: true,
                                                                       autoPlayInterval: previewImages.length > 1 &&
                                                                               previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
@@ -5306,7 +5304,7 @@ class _HomePageState extends State<HomePage> {
                                                                       floatingIndicator: false,
                                                                       enableInfiniteScroll: true,
                                                                       indicatorMargin: 4,
-                                                                      slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                      slideIndicator: CircularWaveSlideIndicator(
                                                                           itemSpacing: 10,
                                                                           indicatorRadius: 4,
                                                                           currentIndicatorColor: Theme.of(context).colorScheme.primary,
@@ -5710,18 +5708,22 @@ class _HomePageState extends State<HomePage> {
         ),
       if ((previewImages.isNotEmpty && !hoveringOnSubmod) || (previewImages.isNotEmpty && hoveringOnSubmod))
         Expanded(
-          child: CarouselSlider(
-            carouselController: previewCarouselController,
+          child: FlutterCarousel(
             options: CarouselOptions(
-              aspectRatio: 2.0,
-              viewportFraction: 1,
-              enlargeCenterPage: true,
-              scrollDirection: Axis.vertical,
-              enlargeStrategy: CenterPageEnlargeStrategy.scale,
-              reverse: true,
-              autoPlayInterval: previewImages.where((element) => element.toString().contains('PreviewVideoStack')).isNotEmpty ? const Duration(seconds: 5) : const Duration(seconds: 1),
-              autoPlay: previewImages.length > 1 ? true : false,
-            ),
+                autoPlay: true,
+                autoPlayInterval: previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
+                    ? const Duration(seconds: 5)
+                    : previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
+                        ? const Duration(seconds: 1)
+                        : const Duration(seconds: 2),
+                disableCenter: true,
+                viewportFraction: 1.0,
+                height: double.infinity,
+                floatingIndicator: false,
+                enableInfiniteScroll: true,
+                indicatorMargin: 4,
+                slideIndicator: CircularWaveSlideIndicator(
+                    itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
             items: previewImages,
           ),
         )
@@ -6219,8 +6221,8 @@ class _HomePageState extends State<HomePage> {
                                                                 color: Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8),
                                                                 border: Border.all(color: Theme.of(context).primaryColorLight),
                                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
-                                                            child: fcw.FlutterCarousel(
-                                                              options: fcw.CarouselOptions(
+                                                            child: FlutterCarousel(
+                                                              options: CarouselOptions(
                                                                   autoPlay: true,
                                                                   autoPlayInterval: previewImages.length > 1 &&
                                                                           previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
@@ -6235,7 +6237,7 @@ class _HomePageState extends State<HomePage> {
                                                                   floatingIndicator: false,
                                                                   enableInfiniteScroll: true,
                                                                   indicatorMargin: 4,
-                                                                  slideIndicator: fcw.CircularWaveSlideIndicator(
+                                                                  slideIndicator: CircularWaveSlideIndicator(
                                                                       itemSpacing: 10,
                                                                       indicatorRadius: 4,
                                                                       currentIndicatorColor: Theme.of(context).colorScheme.primary,

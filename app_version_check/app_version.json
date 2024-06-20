@@ -1,20 +1,8 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.10",
+    "version": "2.7.11",
     "description": [
-        "Added a custom filter to Add Mods that automatically ignores unwanted folders/mods when adding mods to the Manager",
-        "Added an option to add preview images and videos to mods and to ice files",
-        "Added an option to select which mod files to replace if duplicate are found in applied mods",
-        "Added highlight on selected item in Item List",
-        "Added mod preview when hovering on items in Set List",
-        "Fixed a bug where return button on bounding radius popup being greyed out",
         "More bug fixes",
-        "MODをManagerに追加する際、不要なフォルダやMODを自動的に無視するカスタムフィルタをAdd Modsに追加",
-        "MODとアイスファイルにプレビュー画像とビデオを追加するオプションを追加",
-        "適用されたMODで重複が見つかった場合、どのMODファイルを置き換えるかを選択できるオプションを追加",
-        "アイテムリストの選択アイテムにハイライトを追加",
-        "セットリストのアイテムにカーソルを置いたときのMODプレビューを追加",
-        "境界半径ポップアップの戻るボタンがグレーアウトしていたバグを修正",
         "その他のバグ修正"
     ],
     "windows_file": "",

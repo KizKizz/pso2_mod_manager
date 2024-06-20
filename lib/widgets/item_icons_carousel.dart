@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
@@ -24,17 +24,18 @@ class ItemIconsCarousel extends StatelessWidget {
       ));
     }
 
-    return CarouselSlider(
+    return FlutterCarousel(
       options: CarouselOptions(
-          aspectRatio: 2.0,
-          viewportFraction: 1,
-          disableCenter: true,
-          //enlargeCenterPage: true,
-          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-          reverse: true,
-          enableInfiniteScroll: true,
+          autoPlay: Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons && iconPaths.length > 1 ? true : false,
           autoPlayInterval: const Duration(seconds: 2),
-          autoPlay:  Provider.of<StateProvider>(context, listen: false).isSlidingItemIcons && iconPaths.length > 1 ? true : false),
+          disableCenter: true,
+          viewportFraction: 1.0,
+          height: double.infinity,
+          floatingIndicator: true,
+          enableInfiniteScroll: true,
+          indicatorMargin: 2,
+          slideIndicator: CircularWaveSlideIndicator(
+              itemSpacing: 10, indicatorRadius: 3, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
       items: imgWidgetList,
     );
   }
