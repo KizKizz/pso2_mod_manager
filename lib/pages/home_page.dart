@@ -2510,7 +2510,7 @@ class _HomePageState extends State<HomePage> {
                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
                                             child: FlutterCarousel(
                                               options: CarouselOptions(
-                                                  autoPlay: true,
+                                                  autoPlay: previewImages.length > 1,
                                                   autoPlayInterval:
                                                       previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
                                                           ? const Duration(seconds: 5)
@@ -3980,7 +3980,7 @@ class _HomePageState extends State<HomePage> {
                                                                   borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                               child: FlutterCarousel(
                                                                 options: CarouselOptions(
-                                                                    autoPlay: true,
+                                                                    autoPlay: previewImages.length > 1,
                                                                     autoPlayInterval: previewImages.length > 1 &&
                                                                             previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
                                                                         ? const Duration(seconds: 5)
@@ -4590,7 +4590,7 @@ class _HomePageState extends State<HomePage> {
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                                                   child: FlutterCarousel(
                                                                                     options: CarouselOptions(
-                                                                                        autoPlay: true,
+                                                                                        autoPlay: previewImages.length > 1,
                                                                                         autoPlayInterval: previewImages.length > 1 &&
                                                                                                 previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length ==
                                                                                                     previewImages.length
@@ -5290,7 +5290,7 @@ class _HomePageState extends State<HomePage> {
                                                                     borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                                 child: FlutterCarousel(
                                                                   options: CarouselOptions(
-                                                                      autoPlay: true,
+                                                                      autoPlay: previewImages.length > 1,
                                                                       autoPlayInterval: previewImages.length > 1 &&
                                                                               previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
                                                                           ? const Duration(seconds: 5)
@@ -5710,7 +5710,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           child: FlutterCarousel(
             options: CarouselOptions(
-                autoPlay: true,
+                autoPlay: previewImages.length > 1,
                 autoPlayInterval: previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
                     ? const Duration(seconds: 5)
                     : previewImages.length > 1 && previewImages.where((element) => element.toString() == ('PreviewImageStack')).length == previewImages.length
@@ -6223,7 +6223,7 @@ class _HomePageState extends State<HomePage> {
                                                                 borderRadius: const BorderRadius.all(Radius.circular(2))),
                                                             child: FlutterCarousel(
                                                               options: CarouselOptions(
-                                                                  autoPlay: true,
+                                                                  autoPlay: previewImages.length > 1,
                                                                   autoPlayInterval: previewImages.length > 1 &&
                                                                           previewImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewImages.length
                                                                       ? const Duration(seconds: 5)
