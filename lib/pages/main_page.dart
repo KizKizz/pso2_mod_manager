@@ -23,6 +23,7 @@ import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/mod_set_functions.dart';
 import 'package:pso2_mod_manager/functions/new_profile_name.dart';
 import 'package:pso2_mod_manager/functions/player_item_data.dart';
+import 'package:pso2_mod_manager/functions/quick_apply.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
@@ -1720,18 +1721,23 @@ class _MainPageState extends State<MainPage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ModManTooltip(
-                                  message: '${curLangText!.uiVersion}: $appVersion | ${curLangText!.uiMadeBy} キス★ (KizKizz)',
-                                  child: const Text(
+                          ModManTooltip(
+                              message: '${curLangText!.uiVersion}: $appVersion | ${curLangText!.uiMadeBy} キス★ (KizKizz)',
+                              child: Row(
+                                children: [
+                                  const Text(
                                     'PSO2NGS Mod Manager',
                                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                                  )),
-                            ],
-                          ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5, top: 2),
+                                    child: Text(
+                                      'v$appVersion',
+                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Theme.of(context).hintColor, fontStyle: FontStyle.italic),
+                                    ),
+                                  )
+                                ],
+                              )),
                           if (versionToSkipUpdate == appVersion && curLangText != null)
                             Padding(
                               padding: const EdgeInsets.only(left: 10, top: 3),
@@ -1792,233 +1798,233 @@ class _MainPageState extends State<MainPage> {
                           //   ),
                           // ),
 
-                          // jp ver start button
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons && context.watch<StateProvider>().gameEdition == 'jp',
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 2.5),
-                              child: ModManTooltip(
-                                message: curLangText!.uiLaunchGameJPVerOnly,
-                                child: SizedBox(
-                                  //width: curActiveLang == 'JP' ? 110 : 105,
-                                  child: MaterialButton(
-                                    color: Colors.blue,
-                                    onPressed: () async {
-                                      File startBatch = File(Uri.file('$modManDirPath/startpso2jp.bat').toFilePath());
-                                      if (!startBatch.existsSync()) await startBatch.create(recursive: true);
-                                      if (startBatch.existsSync()) {
-                                        //check for checksum
-                                        await applyModsChecksumChecker(context);
-                                        //create start file
-                                        String pathToExe = modManPso2binPath;
-                                        List<String> paths = modManPso2binPath.split(p.separator);
-                                        for (var i = 0; i < paths.length; i++) {
-                                          if (paths[i].contains(" ")) {
-                                            paths[i] = "\"${paths[i]}\"";
-                                          }
-                                        }
-                                        pathToExe = p.joinAll(paths);
-                                        await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
-                                        await Process.run(startBatch.path, []);
-                                        startBatch.deleteSync();
-                                      } else {
-                                        await applyModsChecksumChecker(context);
-                                        Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
-                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
-                                      }
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.play_arrow,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 2.5),
-                                        Text(curLangText!.uiStartPSO2, style: const TextStyle(fontWeight: FontWeight.w400))
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // // jp ver start button
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons && context.watch<StateProvider>().gameEdition == 'jp',
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(right: 2.5),
+                          //     child: ModManTooltip(
+                          //       message: curLangText!.uiLaunchGameJPVerOnly,
+                          //       child: SizedBox(
+                          //         //width: curActiveLang == 'JP' ? 110 : 105,
+                          //         child: MaterialButton(
+                          //           color: Colors.blue,
+                          //           onPressed: () async {
+                          //             File startBatch = File(Uri.file('$modManDirPath/startpso2jp.bat').toFilePath());
+                          //             if (!startBatch.existsSync()) await startBatch.create(recursive: true);
+                          //             if (startBatch.existsSync()) {
+                          //               //check for checksum
+                          //               await applyModsChecksumChecker(context);
+                          //               //create start file
+                          //               String pathToExe = modManPso2binPath;
+                          //               List<String> paths = modManPso2binPath.split(p.separator);
+                          //               for (var i = 0; i < paths.length; i++) {
+                          //                 if (paths[i].contains(" ")) {
+                          //                   paths[i] = "\"${paths[i]}\"";
+                          //                 }
+                          //               }
+                          //               pathToExe = p.joinAll(paths);
+                          //               await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
+                          //               await Process.run(startBatch.path, []);
+                          //               startBatch.deleteSync();
+                          //             } else {
+                          //               await applyModsChecksumChecker(context);
+                          //               Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                          //               ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
+                          //             }
+                          //           },
+                          //           child: Row(
+                          //             children: [
+                          //               const Icon(
+                          //                 Icons.play_arrow,
+                          //                 size: 18,
+                          //               ),
+                          //               const SizedBox(width: 2.5),
+                          //               Text(curLangText!.uiStartPSO2, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
-                          //add mods
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: ModManTooltip(
-                              message: curLangText!.uiAddNewModsToMM,
-                              child: SizedBox(
-                                //width: curActiveLang == 'JP' ? 110 : 105,
-                                child: MaterialButton(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
-                                  onPressed: () {
-                                    clearAllTempDirs();
-                                    modsAdderHomePage(context);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.add_circle_outline,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 2.5,
-                          ),
+                          // //add mods
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: ModManTooltip(
+                          //     message: curLangText!.uiAddNewModsToMM,
+                          //     child: SizedBox(
+                          //       //width: curActiveLang == 'JP' ? 110 : 105,
+                          //       child: MaterialButton(
+                          //         color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                          //         onPressed: () {
+                          //           clearAllTempDirs();
+                          //           modsAdderHomePage(context);
+                          //         },
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           crossAxisAlignment: CrossAxisAlignment.center,
+                          //           children: [
+                          //             const Icon(
+                          //               Icons.add_circle_outline,
+                          //               size: 18,
+                          //             ),
+                          //             const SizedBox(width: 2.5),
+                          //             Text(curLangText!.uiAddMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // const SizedBox(
+                          //   width: 2.5,
+                          // ),
 
-                          //import
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: ModManTooltip(
-                              message: curLangText!.uiImportExportedMods,
-                              child: SizedBox(
-                                //width: curActiveLang == 'JP' ? 110 : 105,
-                                child: MaterialButton(
-                                  color: Theme.of(context).colorScheme.primary.withRed(100).withOpacity(0.6),
-                                  onPressed: () {
-                                    modsImportHomePage(context);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.import_export,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 2.5),
-                                      Text(curLangText!.uiImportMods, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // //import
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: ModManTooltip(
+                          //     message: curLangText!.uiImportExportedMods,
+                          //     child: SizedBox(
+                          //       //width: curActiveLang == 'JP' ? 110 : 105,
+                          //       child: MaterialButton(
+                          //         color: Theme.of(context).colorScheme.primary.withRed(100).withOpacity(0.6),
+                          //         onPressed: () {
+                          //           modsImportHomePage(context);
+                          //         },
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           crossAxisAlignment: CrossAxisAlignment.center,
+                          //           children: [
+                          //             const Icon(
+                          //               Icons.import_export,
+                          //               size: 18,
+                          //             ),
+                          //             const SizedBox(width: 2.5),
+                          //             Text(curLangText!.uiImportMods, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
-                          //Mod sets
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: ModManTooltip(
-                              message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
-                              child: SizedBox(
-                                //width: 99,
-                                child: MaterialButton(
-                                  onPressed: (() async {
-                                    if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
-                                      isModViewListHidden = true;
-                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                                      saveSetListToJson();
-                                    } else {
-                                      isModViewListHidden = false;
-                                      modSetList = await modSetLoader();
-                                      saveSetListToJson();
-                                      Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
-                                    }
-                                  }),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                        const Icon(
-                                          Icons.list_alt_outlined,
-                                          size: 18,
-                                        ),
-                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
-                                        const Icon(
-                                          Icons.view_list_outlined,
-                                          size: 18,
-                                        ),
-                                      const SizedBox(width: 2.5),
-                                      if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
-                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // //Mod sets
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: ModManTooltip(
+                          //     message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
+                          //     child: SizedBox(
+                          //       //width: 99,
+                          //       child: MaterialButton(
+                          //         onPressed: (() async {
+                          //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                          //             isModViewListHidden = true;
+                          //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                          //             saveSetListToJson();
+                          //           } else {
+                          //             isModViewListHidden = false;
+                          //             modSetList = await modSetLoader();
+                          //             saveSetListToJson();
+                          //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                          //           }
+                          //         }),
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           crossAxisAlignment: CrossAxisAlignment.center,
+                          //           children: [
+                          //             if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                          //               const Icon(
+                          //                 Icons.list_alt_outlined,
+                          //                 size: 18,
+                          //               ),
+                          //             if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                          //               const Icon(
+                          //                 Icons.view_list_outlined,
+                          //                 size: 18,
+                          //               ),
+                          //             const SizedBox(width: 2.5),
+                          //             if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets, style: const TextStyle(fontWeight: FontWeight.w400)),
+                          //             if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
-                          //Extras
-                          Visibility(
-                            visible: context.watch<StateProvider>().showTitleBarButtons,
-                            child: MenuAnchor(
-                                builder: (BuildContext context, MenuController controller, Widget? child) {
-                                  return ModManTooltip(
-                                    message: curLangText!.uiOtherFeaturesOfPSO2NGSModManager,
-                                    child: MaterialButton(
-                                      onPressed: () {
-                                        if (controller.isOpen) {
-                                          controller.close();
-                                        } else {
-                                          controller.open();
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          const Icon(
-                                            Icons.extension_outlined,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 2.5),
-                                          Text(curLangText!.uiExtras, style: const TextStyle(fontWeight: FontWeight.w400))
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
-                                  return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
-                                }), shape: WidgetStateProperty.resolveWith((states) {
-                                  return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
-                                })),
-                                menuChildren: [
-                                  // Swap Items
-                                  MenuItemButton(
-                                    leadingIcon: const Icon(
-                                      Icons.swap_horizontal_circle_outlined,
-                                    ),
-                                    child: Text(curLangText!.uiSwapItems),
-                                    onPressed: () {
-                                      itemsSwapperCategorySelect(context);
-                                    },
-                                  ),
-                                  // Vital Gauge
-                                  MenuItemButton(
-                                    leadingIcon: const Icon(
-                                      Icons.horizontal_split,
-                                    ),
-                                    child: Text(curLangText!.uiVitalGauge),
-                                    onPressed: () {
-                                      clearAllTempDirs();
-                                      vitalGaugeHomePage(context);
-                                    },
-                                  ),
-                                ]),
-                          ),
+                          // //Extras
+                          // Visibility(
+                          //   visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //   child: MenuAnchor(
+                          //       builder: (BuildContext context, MenuController controller, Widget? child) {
+                          //         return ModManTooltip(
+                          //           message: curLangText!.uiOtherFeaturesOfPSO2NGSModManager,
+                          //           child: MaterialButton(
+                          //             onPressed: () {
+                          //               if (controller.isOpen) {
+                          //                 controller.close();
+                          //               } else {
+                          //                 controller.open();
+                          //               }
+                          //             },
+                          //             child: Row(
+                          //               mainAxisAlignment: MainAxisAlignment.center,
+                          //               crossAxisAlignment: CrossAxisAlignment.center,
+                          //               children: [
+                          //                 const Icon(
+                          //                   Icons.extension_outlined,
+                          //                   size: 18,
+                          //                 ),
+                          //                 const SizedBox(width: 2.5),
+                          //                 Text(curLangText!.uiExtras, style: const TextStyle(fontWeight: FontWeight.w400))
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         );
+                          //       },
+                          //       style: MenuStyle(backgroundColor: WidgetStateProperty.resolveWith((states) {
+                          //         return Color(Provider.of<StateProvider>(context, listen: false).uiBackgroundColorValue).withOpacity(0.8);
+                          //       }), shape: WidgetStateProperty.resolveWith((states) {
+                          //         return RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColorLight), borderRadius: const BorderRadius.all(Radius.circular(2)));
+                          //       })),
+                          //       menuChildren: [
+                          //         // Swap Items
+                          //         MenuItemButton(
+                          //           leadingIcon: const Icon(
+                          //             Icons.swap_horizontal_circle_outlined,
+                          //           ),
+                          //           child: Text(curLangText!.uiSwapItems),
+                          //           onPressed: () {
+                          //             itemsSwapperCategorySelect(context);
+                          //           },
+                          //         ),
+                          //         // Vital Gauge
+                          //         MenuItemButton(
+                          //           leadingIcon: const Icon(
+                          //             Icons.horizontal_split,
+                          //           ),
+                          //           child: Text(curLangText!.uiVitalGauge),
+                          //           onPressed: () {
+                          //             clearAllTempDirs();
+                          //             vitalGaugeHomePage(context);
+                          //           },
+                          //         ),
+                          //       ]),
+                          // ),
 
-                          //divider
-                          Visibility(
-                              visible: context.watch<StateProvider>().showTitleBarButtons,
-                              child: VerticalDivider(
-                                width: 2,
-                                thickness: 1,
-                                indent: 2,
-                                endIndent: 2,
-                                color: Theme.of(context).disabledColor,
-                              )),
+                          // //divider
+                          // Visibility(
+                          //     visible: context.watch<StateProvider>().showTitleBarButtons,
+                          //     child: VerticalDivider(
+                          //       width: 2,
+                          //       thickness: 1,
+                          //       indent: 2,
+                          //       endIndent: 2,
+                          //       color: Theme.of(context).disabledColor,
+                          //     )),
 
                           //Refresh
                           Visibility(
@@ -2251,6 +2257,272 @@ class _MainPageState extends State<MainPage> {
                 ],
               ),
             ),
+          ),
+
+          //Button bar
+          Visibility(
+            visible: curLangText != null && context.watch<StateProvider>().showTitleBarButtons,
+            child: Container(
+                height: 25,
+                color: Theme.of(context).canvasColor,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    //Buttons
+                    Padding(
+                      padding: EdgeInsets.zero,
+                      child: Row(
+                        children: [
+                          // jp ver start button
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons && context.watch<StateProvider>().gameEdition == 'jp',
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: ModManTooltip(
+                                message: curLangText!.uiLaunchGameJPVerOnly,
+                                child: SizedBox(
+                                  //width: curActiveLang == 'JP' ? 110 : 105,
+                                  child: MaterialButton(
+                                    color: Colors.blue,
+                                    onPressed: () async {
+                                      File startBatch = File(Uri.file('$modManDirPath/startpso2jp.bat').toFilePath());
+                                      if (!startBatch.existsSync()) await startBatch.create(recursive: true);
+                                      if (startBatch.existsSync()) {
+                                        //check for checksum
+                                        await applyModsChecksumChecker(context);
+                                        //create start file
+                                        String pathToExe = modManPso2binPath;
+                                        List<String> paths = modManPso2binPath.split(p.separator);
+                                        for (var i = 0; i < paths.length; i++) {
+                                          if (paths[i].contains(" ")) {
+                                            paths[i] = "\"${paths[i]}\"";
+                                          }
+                                        }
+                                        pathToExe = p.joinAll(paths);
+                                        await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
+                                        await Process.run(startBatch.path, []);
+                                        startBatch.deleteSync();
+                                      } else {
+                                        await applyModsChecksumChecker(context);
+                                        Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.play_arrow,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 2.5),
+                                        Text(curLangText!.uiStartPSO2, style: const TextStyle(fontWeight: FontWeight.w400))
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Mod sets
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 3),
+                              child: ModManTooltip(
+                                message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
+                                child: SizedBox(
+                                  width: 100,
+                                  child: MaterialButton(
+                                    color: Theme.of(context).colorScheme.primary.withGreen(100).withOpacity(0.9),
+                                    onPressed: (() async {
+                                      if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
+                                        isModViewListHidden = true;
+                                        Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
+                                        saveSetListToJson();
+                                      } else {
+                                        isModViewListHidden = false;
+                                        modSetList = await modSetLoader();
+                                        saveSetListToJson();
+                                        Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
+                                      }
+                                    }),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                          const Icon(
+                                            Icons.list_alt_outlined,
+                                            size: 18,
+                                          ),
+                                        if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible)
+                                          const Icon(
+                                            Icons.view_list_outlined,
+                                            size: 18,
+                                          ),
+                                        const SizedBox(width: 2.5),
+                                        if (!Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModSets),
+                                        if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) Text(curLangText!.uiModList)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Swap Items
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 3),
+                              child: ModManTooltip(
+                                message: curLangText!.uiSearchSwapItems,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                    const Icon(
+                                      Icons.swap_horizontal_circle_outlined,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiSwapItems)
+                                  ]),
+                                  onPressed: () {
+                                    clearAllTempDirs();
+                                    itemsSwapperCategorySelect(context);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Vital Gauge
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 3),
+                              child: ModManTooltip(
+                                message: curLangText!.uiCreateAndSwapVitalGaugeBackground,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                    const Icon(
+                                      Icons.horizontal_split,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 2.5),
+                                    Text(curLangText!.uiVitalGauge)
+                                  ]),
+                                  onPressed: () {
+                                    clearAllTempDirs();
+                                    vitalGaugeHomePage(context);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //import
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 3),
+                              child: ModManTooltip(
+                                message: curLangText!.uiImportExportedMods,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                  onPressed: () {
+                                    modsImportHomePage(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.import_export,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiImportMods)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //add mods
+                          Visibility(
+                            visible: context.watch<StateProvider>().showTitleBarButtons,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 3),
+                              child: ModManTooltip(
+                                message: curLangText!.uiAddNewModsToMM,
+                                child: MaterialButton(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                                  onPressed: () {
+                                    clearAllTempDirs();
+                                    modsAdderHomePage(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.add_circle_outline,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiAddMods)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //quick button
+                    Visibility(
+                      visible: context.watch<StateProvider>().showTitleBarButtons,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 3),
+                        child: ModManTooltip(
+                          message: File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
+                          child: MaterialButton(
+                            color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
+                            onPressed: appliedItemList.isNotEmpty || File(modManAppliedModsJsonPath).existsSync() 
+                                ? () async {
+                                    if (File(modManAppliedModsJsonPath).existsSync()) {
+                                      await quickModsReapply(context);
+                                    } else {
+                                      await quickModsRemoval(context);
+                                    }
+                                  }
+                                : null,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.import_export,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 2.5),
+                                Text(File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiQuickReapplyAllModsToTheGame : curLangText!.uiQuickRemoveAllMods)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
           ),
 
           //New version banner

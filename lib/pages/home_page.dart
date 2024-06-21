@@ -4967,6 +4967,7 @@ class _HomePageState extends State<HomePage> {
                                       // .then((value) {
                                       isModViewModsRemoving = false;
                                       isModViewModsApplying = false;
+                                      saveModdedItemListToJson();
                                       ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, reappliedList.first, reappliedList[1], 3000));
                                       setState(() {});
                                     });
