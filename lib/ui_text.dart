@@ -184,9 +184,9 @@ class TranslationText {
       uiBackupModSettings = 'Backup Mod Settings',
       uiOpenModSettingsBackupFolder = 'Open Mod Settings Backup Folder',
       uiBackups = 'Backups',
-      uiQuickRemoveAllMods = 'Quick All Mod Removal',
+      uiQuickRemoveAllMods = 'Save and Remove All Mods',
       uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater = 'Remove all mods from the game while saving them to re-apply later',
-      uiQuickReapplyAllModsToTheGame = 'Re-Apply All Mods',
+      uiQuickReapplyAllModsToTheGame = 'Re-apply All Saved Mods',
       uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game';
 
   //homepage
@@ -614,7 +614,7 @@ class TranslationText {
       uiSwimMotion = 'Swim Motion';
 
   //quick_apply.dart
-  String uiRemovingAllModsFromTheGame = 'Removing all mods from the game', uiReApplyingAllModsBackToTheGame = 'Re-applying all mods back to the game';
+  String uiRemovingAllModsFromTheGame = 'Removing all mods from the game', uiReApplyingAllModsBackToTheGame = 'Re-applying all saved mods back to the game';
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

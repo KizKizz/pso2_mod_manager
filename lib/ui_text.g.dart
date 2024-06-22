@@ -207,6 +207,13 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiOpenModSettingsBackupFolder =
           json['uiOpenModSettingsBackupFolder'] as String
       ..uiBackups = json['uiBackups'] as String
+      ..uiQuickRemoveAllMods = json['uiQuickRemoveAllMods'] as String
+      ..uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater =
+          json['uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater'] as String
+      ..uiQuickReapplyAllModsToTheGame =
+          json['uiQuickReapplyAllModsToTheGame'] as String
+      ..uiReapplyAllRemovedModsBackToTheGame =
+          json['uiReapplyAllRemovedModsBackToTheGame'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -638,7 +645,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiDashMotion = json['uiDashMotion'] as String
       ..uiRunMotion = json['uiRunMotion'] as String
       ..uiStandbyMotion = json['uiStandbyMotion'] as String
-      ..uiSwimMotion = json['uiSwimMotion'] as String;
+      ..uiSwimMotion = json['uiSwimMotion'] as String
+      ..uiRemovingAllModsFromTheGame =
+          json['uiRemovingAllModsFromTheGame'] as String
+      ..uiReApplyingAllModsBackToTheGame =
+          json['uiReApplyingAllModsBackToTheGame'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -809,6 +820,12 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiBackupModSettings': instance.uiBackupModSettings,
       'uiOpenModSettingsBackupFolder': instance.uiOpenModSettingsBackupFolder,
       'uiBackups': instance.uiBackups,
+      'uiQuickRemoveAllMods': instance.uiQuickRemoveAllMods,
+      'uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater':
+          instance.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
+      'uiQuickReapplyAllModsToTheGame': instance.uiQuickReapplyAllModsToTheGame,
+      'uiReapplyAllRemovedModsBackToTheGame':
+          instance.uiReapplyAllRemovedModsBackToTheGame,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -1190,4 +1207,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiRunMotion': instance.uiRunMotion,
       'uiStandbyMotion': instance.uiStandbyMotion,
       'uiSwimMotion': instance.uiSwimMotion,
+      'uiRemovingAllModsFromTheGame': instance.uiRemovingAllModsFromTheGame,
+      'uiReApplyingAllModsBackToTheGame':
+          instance.uiReApplyingAllModsBackToTheGame,
     };

@@ -160,6 +160,10 @@
   "uiBackupModSettings": "Backup Mod Settings",
   "uiOpenModSettingsBackupFolder": "Open Mod Settings Backup Folder",
   "uiBackups": "Backups",
+  "uiQuickRemoveAllMods": "Save and Remove All Mods",
+  "uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater": "Remove all mods from the game while saving them to re-apply later",
+  "uiQuickReapplyAllModsToTheGame": "Re-apply All Saved Mods",
+  "uiReapplyAllRemovedModsBackToTheGame": "Re-apply all saved mods back to the game",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -514,5 +518,7 @@
   "uiDashMotion": "Dash Motion",
   "uiRunMotion": "Run Motion",
   "uiStandbyMotion": "Standby Motion",
-  "uiSwimMotion": "Swim Motion"
+  "uiSwimMotion": "Swim Motion",
+  "uiRemovingAllModsFromTheGame": "Removing all mods from the game",
+  "uiReApplyingAllModsBackToTheGame": "Re-applying all saved mods back to the game"
 }

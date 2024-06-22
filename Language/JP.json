@@ -160,6 +160,10 @@
   "uiBackupModSettings": "MOD設定のバックアップ",
   "uiOpenModSettingsBackupFolder": "MOD設定のバックアップフォルダを開く",
   "uiBackups": "バックアップ",
+  "uiQuickRemoveAllMods": "すべてのMODを保存して削除する",
+  "uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater": "すべてのMODをゲームから削除し、後で再適用するために保存する",
+  "uiQuickReapplyAllModsToTheGame": "保存したすべてのMODを再適用する",
+  "uiReapplyAllRemovedModsBackToTheGame": "保存したすべてのMODをゲームに再適用する",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -515,5 +519,7 @@
   "uiDashMotion": "ダッシュ",
   "uiRunMotion": "ラン",
   "uiStandbyMotion": "スタンバイ",
-  "uiSwimMotion": "スイム"
+  "uiSwimMotion": "スイム",
+  "uiRemovingAllModsFromTheGame": "ゲームからすべてのMODを削除する",
+  "uiReApplyingAllModsBackToTheGame": "保存したすべてのMODをゲームに再適用する。"
 }
