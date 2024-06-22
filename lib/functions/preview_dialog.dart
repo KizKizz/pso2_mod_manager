@@ -1,5 +1,5 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
@@ -32,22 +32,31 @@ void previewDialog(context) async {
               ],
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 10),
-            content: CarouselSlider(
-              carouselController: previewDialogCarouselController,
+            content: FlutterCarousel(
               options: CarouselOptions(
-                  enableInfiniteScroll: isAutoPlay,
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                  controller: previewDialogCarouselController,
                   autoPlay: isAutoPlay,
-                  autoPlayInterval: const Duration(seconds: 1),
+                  autoPlayInterval: previewDialogImages.length > 1 && previewDialogImages.where((element) => element.toString() == ('PreviewVideoStack')).length == previewDialogImages.length
+                      ? const Duration(seconds: 5)
+                      : previewDialogImages.length > 1 && previewDialogImages.where((element) => element.toString() == ('previewDialogImagestack')).length == previewDialogImages.length
+                          ? const Duration(seconds: 1)
+                          : const Duration(seconds: 2),
+                  disableCenter: true,
+                  viewportFraction: 1.0,
+                  aspectRatio: 2.0,
+                  floatingIndicator: false,
+                  enableInfiniteScroll: true,
                   onPageChanged: (index, reason) {
                     setState(() {
                       currentImageIndex = index;
                     });
-                  }),
+                  },
+                  indicatorMargin: 4,
+                  slideIndicator: CircularWaveSlideIndicator(
+                      itemSpacing: 10, indicatorRadius: 4, currentIndicatorColor: Theme.of(context).colorScheme.primary, indicatorBackgroundColor: Theme.of(context).hintColor.withOpacity(0.3))),
               items: previewDialogImages,
             ),
+           
             actionsOverflowButtonSpacing: 5,
             actionsAlignment: MainAxisAlignment.spaceBetween,
             actions: <Widget>[

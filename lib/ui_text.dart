@@ -183,7 +183,11 @@ class TranslationText {
       uiOpenMarkedItemIconCacheFolder = 'Open Marked Item Icon Cache Folder',
       uiBackupModSettings = 'Backup Mod Settings',
       uiOpenModSettingsBackupFolder = 'Open Mod Settings Backup Folder',
-      uiBackups = 'Backups';
+      uiBackups = 'Backups',
+      uiQuickRemoveAllMods = 'Save and Remove All Mods',
+      uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater = 'Remove all mods from the game while saving them to re-apply later',
+      uiQuickReapplyAllModsToTheGame = 'Re-apply All Saved Mods',
+      uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game';
 
   //homepage
   String uiItemList = 'Item List',
@@ -335,8 +339,9 @@ class TranslationText {
   String uiPickAColor = 'Pick a color';
 
   //modfiles_apply
-  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found', uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files',
-  uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod';
+  String uiDuplicatesInAppliedModsFound = 'Duplicate(s) in applied mods found',
+      uiApplyingWouldReplaceModFiles = 'Applying this mod would replace these applied mod files',
+      uiSelectWhichFilesToBeReplacedWithThisMod = 'Select which currently applied files bellow to be replaced with files in this mod';
 
   //new_cate_adder
   String uiNewCateGroup = 'New Category Group',
@@ -466,10 +471,10 @@ class TranslationText {
 
   //mods_adder+ignore_list.dart
   String uiIgnoreFoldersThatContain = 'Ignore folders that have name contains:',
-  uiSeparateEachParamByAComma = 'Folders that contain these words in their names will be ignored during process\nSeparate each word by a comma. Case sensitive',
-  uiCurrentState = 'Current State',
-  uiHint = 'Hint',
-  uiSave = 'Save';
+      uiSeparateEachParamByAComma = 'Folders that contain these words in their names will be ignored during process\nSeparate each word by a comma. Case sensitive',
+      uiCurrentState = 'Current State',
+      uiHint = 'Hint',
+      uiSave = 'Save';
 
   //new_profile_name.dart
   String uiNewProfileName = 'New profile name';
@@ -607,6 +612,9 @@ class TranslationText {
       uiRunMotion = 'Run Motion',
       uiStandbyMotion = 'Standby Motion',
       uiSwimMotion = 'Swim Motion';
+
+  //quick_apply.dart
+  String uiRemovingAllModsFromTheGame = 'Removing all mods from the game', uiReApplyingAllModsBackToTheGame = 'Re-applying all saved mods back to the game';
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

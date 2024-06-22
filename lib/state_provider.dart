@@ -42,7 +42,8 @@ class StateProvider with ChangeNotifier {
   bool _markModdedItem = true;
   bool _isStartupLoadingFinish = false;
   bool _mouseHoveringSubmods = false;
-  bool _isCursorInAppliedList = true;
+  // bool _isCursorInAppliedList = true;
+  String _quickApplyState = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -84,12 +85,19 @@ class StateProvider with ChangeNotifier {
   bool get markModdedItem => _markModdedItem;
   bool get isStartupLoadingFinish => _isStartupLoadingFinish;
   bool get mouseHoveringSubmods => _mouseHoveringSubmods;
-  bool get isCursorInAppliedList => _isCursorInAppliedList;
+  // bool get isCursorInAppliedList => _isCursorInAppliedList;
+  String get quickApplyState => _quickApplyState;
 
-  void cursorInALSet(bool state) {
-    _isCursorInAppliedList = state;
+  void quickApplyStateSet(String state) {
+    //apply or remove
+    _quickApplyState = state;
     notifyListeners();
   }
+
+  // void cursorInALSet(bool state) {
+  //   _isCursorInAppliedList = state;
+  //   notifyListeners();
+  // }
 
   void mouseHoveringSubmodsSet(bool state) {
     _mouseHoveringSubmods = state;

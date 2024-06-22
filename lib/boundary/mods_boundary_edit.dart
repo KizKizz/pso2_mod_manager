@@ -121,52 +121,55 @@ void boundaryEdit(context, SubMod submod) async {
         for (var aqpFile in aqpFiles) {
           Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiReadingspace}${p.basename(aqpFile.path)}');
           await Future.delayed(const Duration(milliseconds: 100));
-          Uint8List aqpBytes = await File(aqpFile.path).readAsBytes();
-          if (aqpBytes[233] == 0 && aqpBytes[234] == 0 && aqpBytes[235] == 0) {
-            Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiEditingBoundaryRadiusValue);
-            await Future.delayed(const Duration(milliseconds: 100));
-            //-10
-            aqpBytes[236] = 0;
-            aqpBytes[237] = 0;
-            aqpBytes[238] = 32;
-            aqpBytes[239] = 193;
-            aqpFile.writeAsBytesSync(Uint8List.fromList(aqpBytes));
-            Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiPackingFiles);
-            await Future.delayed(const Duration(milliseconds: 100));
-            //pack
-            while (!File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).existsSync()) {
-              await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
-              packRetries++;
-              debugPrint(packRetries.toString());
-              if (packRetries == 10) {
-                break;
+          if (File(aqpFile.path).existsSync()) {
+            Uint8List aqpBytes = await File(aqpFile.path).readAsBytes();
+
+            if (aqpBytes[233] == 0 && aqpBytes[234] == 0 && aqpBytes[235] == 0) {
+              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiEditingBoundaryRadiusValue);
+              await Future.delayed(const Duration(milliseconds: 100));
+              //-10
+              aqpBytes[236] = 0;
+              aqpBytes[237] = 0;
+              aqpBytes[238] = 32;
+              aqpBytes[239] = 193;
+              aqpFile.writeAsBytesSync(Uint8List.fromList(aqpBytes));
+              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiPackingFiles);
+              await Future.delayed(const Duration(milliseconds: 100));
+              //pack
+              while (!File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).existsSync()) {
+                await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(aqpFile.parent.path)}"', [Uri.file(p.dirname(aqpFile.parent.path)).toFilePath()]);
+                packRetries++;
+                debugPrint(packRetries.toString());
+                if (packRetries == 10) {
+                  break;
+                }
               }
+              packRetries = 0;
+              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
+              await Future.delayed(const Duration(milliseconds: 100));
+              try {
+                File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
+                await renamedFile.copy(modFile.location);
+              } catch (e) {
+                Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
+              }
+              boundaryRemovedFiles.add(modFile.modFileName);
+              // if (modFile.modFileName == matchingFiles.last.modFileName) {
+              //   Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(
+              //       modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
+              //   await Future.delayed(const Duration(milliseconds: 100));
+              //   if (isBoundaryEditDuringApply) {
+              //     Navigator.pop(context, true);
+              //   }
+              // }
+            } else {
+              boundaryNotFoundFiles.add(modFile.modFileName);
+              // Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
+              // await Future.delayed(const Duration(milliseconds: 100));
+              // if (isBoundaryEditDuringApply) {
+              //   Navigator.pop(context, true);
+              // }
             }
-            packRetries = 0;
-            Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
-            await Future.delayed(const Duration(milliseconds: 100));
-            try {
-              File renamedFile = await File(Uri.file('${p.dirname(aqpFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(aqpFile.parent.path).replaceAll('_ext', '')).toFilePath());
-              await renamedFile.copy(modFile.location);
-            } catch (e) {
-              Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
-            }
-            boundaryRemovedFiles.add(modFile.modFileName);
-            // if (modFile.modFileName == matchingFiles.last.modFileName) {
-            //   Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(
-            //       modFile.applyStatus ? '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone}\n${curLangText!.uiMakeSureToReapplyThisMod}' : '${curLangText!.uiSuccess}\n${curLangText!.uiAllDone} ');
-            //   await Future.delayed(const Duration(milliseconds: 100));
-            //   if (isBoundaryEditDuringApply) {
-            //     Navigator.pop(context, true);
-            //   }
-            // }
-          } else {
-            boundaryNotFoundFiles.add(modFile.modFileName);
-            // Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${curLangText!.uiBoundaryRadiusValueNotFound}');
-            // await Future.delayed(const Duration(milliseconds: 100));
-            // if (isBoundaryEditDuringApply) {
-            //   Navigator.pop(context, true);
-            // }
           }
         }
       } else {

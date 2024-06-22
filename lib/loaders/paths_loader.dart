@@ -70,6 +70,7 @@ String modManModSetsJsonPath = '';
 // String modManRefSheetListFilePath = '';
 String modManRefSheetsLocalVerFilePath = '';
 String modManVitalGaugeJsonPath = '';
+String modManAppliedModsJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -905,6 +906,8 @@ Future<void> createSubDirs() async {
   File(modManVitalGaugeJsonPath).createSync(recursive: true);
   // modManModSettingsJsonPath = Uri.file('$modManDirPath/PSO2ModManSettings.json').toFilePath();
   // File(modManModSettingsJsonPath).createSync();
+  modManAppliedModsJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManAppliedMods.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManAppliedMods_profile2.json').toFilePath();
+
 
   //Swapper paths
   modManSwapperDirPath = Uri.file('$modManDirPath/swapper').toFilePath();
