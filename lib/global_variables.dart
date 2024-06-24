@@ -166,3 +166,6 @@ bool cmxRefreshing = false;
 String modManCurActiveItemNameLanguage = '';
 bool modAdderIgnoreListState = false;
 bool showPreviewPanel = false;
+bool autoAqmInject = false;
+String modManCustomAqmFileName = '';
+String modManCustomAqmFilePath = '';

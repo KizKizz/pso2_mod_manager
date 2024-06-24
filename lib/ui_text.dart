@@ -187,7 +187,11 @@ class TranslationText {
       uiQuickRemoveAllMods = 'Save and Remove All Mods',
       uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater = 'Remove all mods from the game while saving them to re-apply later',
       uiQuickReapplyAllModsToTheGame = 'Re-apply All Saved Mods',
-      uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game';
+      uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game',
+      uiAutoInjectCustomAqmFileIntoMods = 'Auto inject custom aqm file into [Ba] and [Se] mods when applying them to the game',
+      uiAutoCustomAqmInjection = 'Auto Custom aqm Injection',
+      uiSelectFile = 'Select File',
+      uiReSelectFile = 'Re-Select File';
 
   //homepage
   String uiItemList = 'Item List',
@@ -308,7 +312,9 @@ class TranslationText {
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
       uiExportAllMods = 'Export all mods in this item',
-      uiAddPreviews = 'Add/Change preview images-videos';
+      uiAddPreviews = 'Add/Change preview images-videos',
+      uiInjectCustomAqmFile = 'Inject custom aqm file',
+      uiSelectFileInSettings = 'Select file in Settings';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',

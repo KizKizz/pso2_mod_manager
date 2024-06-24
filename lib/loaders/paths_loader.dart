@@ -68,7 +68,7 @@ String modManImportedDirPath = '';
 String modManOverlayedItemIconsDirPath = '';
 String modManJsonAutoSaveDir = '';
 String modManJsonManualSaveDir = '';
-String modManCustomAqmFilePath = '';
+String modManCustomAqmDir = '';
 //Json files path
 String modManModsListJsonPath = '';
 String modManModSetsJsonPath = '';
@@ -160,7 +160,7 @@ Future<bool> pathsLoader(context) async {
   }
 
   //create/load folders
-  await createSubDirs();
+  await createSubDirs(context);
 
   //rename json
   jsonPso2binPathsRename(context, oldPso2binDirPath);
@@ -487,7 +487,7 @@ Future<bool> modManPathReloader(context) async {
   Provider.of<StateProvider>(context, listen: false).reloadSplashScreenTrue();
 
   //create/load folders
-  await createSubDirs();
+  await createSubDirs(context);
 
   // modManRefSheetListFilePath = Uri.file('$modManRefSheetsDirPath/PSO2ModManRefSheetList.txt').toFilePath();
   // File(modManRefSheetListFilePath).createSync();
@@ -859,7 +859,7 @@ Future<void> jsonPso2binPathsRename(context, String oldPso2binDirPath) async {
   }
 }
 
-Future<void> createSubDirs() async {
+Future<void> createSubDirs(context) async {
   await clearAllTempDirsBeforeGettingPath();
   //Create Mods folder and default categories
   modManModsDirPath = Uri.file('$modManDirPath/Mods').toFilePath();
@@ -927,4 +927,16 @@ Future<void> createSubDirs() async {
   //mods adder ignore list
   modManAddModsIgnoreListPath = Uri.file('$modManDirPath/modAdderIgnoreList.txt').toFilePath();
   File(modManAddModsIgnoreListPath).createSync(recursive: true);
+  //custom aqm
+  modManCustomAqmDir = Uri.file('$modManDirPath/customAqm').toFilePath();
+  Directory(modManCustomAqmDir).createSync(recursive: true);
+  if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+    modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+    if (!File(modManCustomAqmFilePath).existsSync() && Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
+      final prefs = await SharedPreferences.getInstance();
+      autoAqmInject = false;
+      prefs.setBool('autoAqmInject', false);
+      Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+    }
+  }
 }

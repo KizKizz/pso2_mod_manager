@@ -989,39 +989,68 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
-                      //Remove bounding radius on apply
-                      ModManTooltip(
-                        message: curLangText!.uiAutoRadiusRemovalTooltip,
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            final prefs = await SharedPreferences.getInstance();
-                            if (Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply) {
-                              removeBoundaryRadiusOnModsApply = false;
-                              prefs.setBool('removeBoundaryRadiusOnModsApply', false);
-                              Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
-                            } else {
-                              removeBoundaryRadiusOnModsApply = true;
-                              prefs.setBool('removeBoundaryRadiusOnModsApply', true);
-                              Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
-                            }
-                            setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.radio_button_checked,
-                                size: 18,
+                      //autoAqmInject
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ModManTooltip(
+                            message: curLangText!.uiAutoInjectCustomAqmFileIntoMods,
+                            child: MaterialButton(
+                              height: 40,
+                              onPressed: File(modManCustomAqmFilePath).existsSync() ? (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
+                                  autoAqmInject = false;
+                                  prefs.setBool('autoAqmInject', false);
+                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+                                } else {
+                                  autoAqmInject = true;
+                                  prefs.setBool('autoAqmInject', true);
+                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
+                                }
+                                setState(() {});
+                              }) : null,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.auto_fix_normal,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                      Provider.of<StateProvider>(context, listen: false).autoAqmInject
+                                          ? '${curLangText!.uiAutoCustomAqmInjection}: ON'
+                                          : '${curLangText!.uiAutoCustomAqmInjection}: OFF',
+                                      style: const TextStyle(fontWeight: FontWeight.w400))
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                  Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply
-                                      ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON'
-                                      : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
-                                  style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
+                            ),
                           ),
-                        ),
+                          ModManTooltip(
+                            message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectFile : '${curLangText!.uiSelectFile}: $modManCustomAqmFilePath',
+                            child: MaterialButton(
+                                minWidth: double.infinity,
+                                height: 30,
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  const XTypeGroup typeGroup = XTypeGroup(
+                                    label: '.aqm',
+                                    extensions: <String>['aqm'],
+                                  );
+                                  final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                  if (selectedFile != null) {
+                                    modManCustomAqmFileName = selectedFile.name;
+                                    prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                    if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                      modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                      File(selectedFile.path).copySync(modManCustomAqmFilePath);
+                                    }
+                                  }
+                                  setState(() {});
+                                }),
+                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectFile : curLangText!.uiReSelectFile, style: const TextStyle(fontWeight: FontWeight.w400))),
+                          ),
+                        ],
                       ),
 
                       //remove profanity Filter
@@ -2268,6 +2297,7 @@ class _MainPageState extends State<MainPage> {
                               //width: 95,
                               child: MaterialButton(
                                 onPressed: (() {
+                                  setState(() {});
                                   mainPageScaffoldKey.currentState!.openEndDrawer();
                                 }),
                                 child: Row(
@@ -2361,7 +2391,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             //Mod sets
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2409,7 +2439,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             // Swap Items
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2435,7 +2465,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             // Vital Gauge
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2461,7 +2491,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             //import
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2490,7 +2520,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             //add mods
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2523,17 +2553,19 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                       ),
-              
+
                       //quick button
                       Visibility(
                         visible: context.watch<StateProvider>().showTitleBarButtons,
                         child: Padding(
                           padding: const EdgeInsets.only(right: 3),
                           child: ModManTooltip(
-                            message: File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
+                            message:
+                                File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: (appliedItemList.isNotEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isEmpty) || (Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty && File(modManAppliedModsJsonPath).existsSync())
+                              onPressed: (appliedItemList.isNotEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isEmpty) ||
+                                      (Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty && File(modManAppliedModsJsonPath).existsSync())
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
@@ -2548,8 +2580,8 @@ class _MainPageState extends State<MainPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Icon(File(modManAppliedModsJsonPath).existsSync() ?
-                                    Icons.add_to_queue_sharp : Icons.remove_from_queue_sharp,
+                                  Icon(
+                                    File(modManAppliedModsJsonPath).existsSync() ? Icons.add_to_queue_sharp : Icons.remove_from_queue_sharp,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 2.5),
