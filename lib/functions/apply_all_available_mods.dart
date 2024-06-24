@@ -263,7 +263,9 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
           saveModdedItemListToJson();
         }
       }
-      await applyOverlayedIcon(context, item);
+      if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+        await applyOverlayedIcon(context, item);
+      }
 
       Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
       Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);

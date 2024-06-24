@@ -1,12 +1,10 @@
 {
     "name": "PSO2NGS Mod Manager",
-    "version": "2.7.11",
+    "version": "2.7.12",
     "description": [
-        "Added a button bar for function buttons",
-        "Added a quick mod removal and reapply button to either turn all applied mods on or off",
+        "Fixed a problem where Mod Manager could not figure out some paths when reselect pso_bin and Mod Manager Main folders",
         "More bug fixes",
-        "ファンクションボタン用のボタンバーを追加",
-        "すべての適用されたMODをオンまたはオフにするクイックMOD削除および再適用ボタンを追加",
+        "pso_binとMod Managerのメインフォルダを再選択する際、Mod Managerが一部のパスを把握できなかった問題を修正",
         "その他のバグ修正"
     ],
     "windows_file": "",

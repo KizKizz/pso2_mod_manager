@@ -580,8 +580,8 @@ class _MainPageState extends State<MainPage> {
                       //Path reselect
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {
-                          pso2PathsReloader(context);
+                        onPressed: (() async {
+                          await pso2PathsReloader(context);
                         }),
                         child: Row(
                           children: [
@@ -954,7 +954,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
-                      //Remove boundary radius on apply
+                      //Remove bounding radius on apply
                       ModManTooltip(
                         message: curLangText!.uiAutoRadiusRemovalTooltip,
                         child: MaterialButton(
@@ -969,6 +969,41 @@ class _MainPageState extends State<MainPage> {
                               removeBoundaryRadiusOnModsApply = true;
                               prefs.setBool('removeBoundaryRadiusOnModsApply', true);
                               Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApplyTrue();
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.radio_button_checked,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                  Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply
+                                      ? '${curLangText!.uiAutoBoundaryRadiusRemoval}: ON'
+                                      : '${curLangText!.uiAutoBoundaryRadiusRemoval}: OFF',
+                                  style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Remove bounding radius on apply
+                      ModManTooltip(
+                        message: curLangText!.uiAutoRadiusRemovalTooltip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (Provider.of<StateProvider>(context, listen: false).removeBoundaryRadiusOnModsApply) {
+                              removeBoundaryRadiusOnModsApply = false;
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', false);
+                              Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+                            } else {
+                              removeBoundaryRadiusOnModsApply = true;
+                              prefs.setBool('removeBoundaryRadiusOnModsApply', true);
+                              Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
                             }
                             setState(() {});
                           }),
@@ -1923,11 +1958,11 @@ class _MainPageState extends State<MainPage> {
                           //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                           //             isModViewListHidden = true;
                           //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                          //             saveSetListToJson();
+                          //             await saveSetListToJson();
                           //           } else {
                           //             isModViewListHidden = false;
                           //             modSetList = await modSetLoader();
-                          //             saveSetListToJson();
+                          //             await saveSetListToJson();
                           //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                           //           }
                           //         }),
