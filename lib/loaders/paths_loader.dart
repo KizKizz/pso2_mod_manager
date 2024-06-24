@@ -560,9 +560,6 @@ Future<bool> modManPathReloader(context) async {
     modFileStructureLoader(context, false).then((mValue) {
       moddedItemsList.clear();
       moddedItemsList.addAll(mValue);
-      appliedListBuilder(moddedItemsList).then((aValue) {
-        appliedItemList.clear();
-        appliedItemList.addAll(aValue);
         modSetLoader().then((sValue) {
           modSetList.clear();
           modSetList.addAll(sValue);
@@ -571,7 +568,6 @@ Future<bool> modManPathReloader(context) async {
             listsReloading = false;
           });
         });
-      });
     });
   });
 
@@ -759,11 +755,10 @@ Future<void> jsonPso2binPathsRename(context, String oldPso2binDirPath) async {
     ogModFilesReset();
     ogModFilesLoader();
     //appliedlist
-    if (appliedItemList.isNotEmpty) {
-      appliedItemList = await appliedListBuilder(moddedItemsList);
+    if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty) {
       //Apply mods to new data folder
-      for (var type in appliedItemList) {
-        for (var cate in type.categories) {
+      for (var type in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
+        for (var cate in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
           for (var item in cate.items) {
             if (item.applyStatus) {
               for (var mod in item.mods) {

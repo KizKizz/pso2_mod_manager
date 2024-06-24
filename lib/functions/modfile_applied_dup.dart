@@ -1,9 +1,9 @@
 import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 
-Future<ModFile?> modFileAppliedDupRestore(context, List<CategoryType> appliedList, ModFile modFile) async {
-  for (var cateType in appliedList) {
-    for (var cate in cateType.categories) {
+Future<ModFile?> modFileAppliedDupRestore(context, List<CategoryType> modList, ModFile modFile) async {
+  for (var cateType in modList.where((e) => e.getNumOfAppliedCates() > 0)) {
+    for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items) {
         if (item.applyStatus) {
           for (var mod in item.mods) {
@@ -42,9 +42,9 @@ Future<ModFile?> modFileAppliedDupRestore(context, List<CategoryType> appliedLis
   return null;
 }
 
-Future<ModFile?> modFileAppliedDupCheck(List<CategoryType> appliedList, ModFile modFile) async {
-  for (var cateType in appliedList) {
-    for (var cate in cateType.categories) {
+Future<ModFile?> modFileAppliedDupCheck(List<CategoryType> modList, ModFile modFile) async {
+  for (var cateType in modList.where((e) => e.getNumOfAppliedCates() > 0)) {
+    for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items) {
         if (item.applyStatus) {
           for (var mod in item.mods) {

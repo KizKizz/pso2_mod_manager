@@ -1,4 +1,6 @@
 
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
@@ -36,7 +38,6 @@ Future<bool> applyModsToTheGame(context, Item curItem, Mod curMod, SubMod curSub
           fileAppliedText += '${appliedModFiles.indexOf(element) + 1}.  ${element.modFileName}\n';
         }
         ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
-        appliedItemList = await appliedListBuilder(moddedItemsList);
       }
 
       isModViewModsApplying = false;

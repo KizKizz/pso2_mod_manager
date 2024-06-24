@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'dart:convert';
 import 'dart:io';
@@ -2104,9 +2104,6 @@ class _MainPageState extends State<MainPage> {
                                     modFileStructureLoader(context, true).then((value) {
                                       moddedItemsList.clear();
                                       moddedItemsList.addAll(value);
-                                      appliedListBuilder(moddedItemsList).then((aValue) {
-                                        appliedItemList.clear();
-                                        appliedItemList.addAll(aValue);
                                         modSetLoader().then((sValue) {
                                           modSetList.clear();
                                           modSetList.addAll(sValue);
@@ -2115,7 +2112,6 @@ class _MainPageState extends State<MainPage> {
                                             listsReloading = false;
                                           });
                                         });
-                                      });
                                       listsReloading = false;
                                       modViewItem = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
@@ -2564,8 +2560,7 @@ class _MainPageState extends State<MainPage> {
                                 File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: (appliedItemList.isNotEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isEmpty) ||
-                                      (Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty && File(modManAppliedModsJsonPath).existsSync())
+                              onPressed: Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);

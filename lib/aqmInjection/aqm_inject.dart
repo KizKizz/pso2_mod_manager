@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,14 +83,16 @@ Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
 void aqmInject(context, SubMod submod) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
-  List<String> boundaryNotFoundFiles = [];
   int packRetries = 0;
 
   //player item data
   List<CsvItem> basewearsItemData = playerItemData.where((e) => e.category == 'Basewears').toList();
   List<ModFile> filteredModFile = [];
   for (var modFile in submod.modFiles) {
-    if (basewearsItemData.where((e) => e.infos.entries.firstWhere((k) => k.key == 'Normal Quality' || k.key == 'High Quality').value == modFile.modFileName).isNotEmpty) {
+    if (basewearsItemData
+        .where(
+            (e) => e.infos.entries.firstWhere((k) => k.key == 'Normal Quality').value == modFile.modFileName || e.infos.entries.firstWhere((k) => k.key == 'High Quality').value == modFile.modFileName)
+        .isNotEmpty) {
       filteredModFile.add(modFile);
     }
   }
@@ -101,27 +102,27 @@ void aqmInject(context, SubMod submod) async {
     Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiMatchingFilesFound);
     await Future.delayed(const Duration(milliseconds: 100));
     for (var modFile in filteredModFile) {
-      int id = 0;
-      List<CsvItem> matchItems = basewearsItemData.where((e) => e.infos.values.contains(modFile.modFileName)).toList();
-      if (matchItems.length > 1) {
-        final dataItemIndex = matchItems.indexWhere((e) => e.getENName() == modFile.itemName.replaceAll('_', '/') || e.getJPName() == modFile.itemName.replaceAll('_', '/'));
-        if (dataItemIndex != -1) {
-          id = int.parse(matchItems[dataItemIndex].infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value);
-        }
-      } else if (matchItems.length == 1) {
-        id = int.parse(matchItems.first.infos.entries.firstWhere((e) => e.key == 'Adjusted Id').value);
-      }
-
       Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiExtractingFiles);
       await Future.delayed(const Duration(milliseconds: 100));
       //extract files
       await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [modFile.location]);
-      String extractedGroup1Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
-      if (Directory(extractedGroup1Path).existsSync()) {}
       String extractedGroup2Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group2').toFilePath();
       if (Directory(extractedGroup2Path).existsSync()) {
+        //get id from aqp file
+        File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
+        int id = -1;
+        if (aqpFile.existsSync()) {
+          final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
+          for (var part in aqpFileNameParts) {
+            if (int.tryParse(part) != null) {
+              id = int.parse(part);
+              break;
+            }
+          }
+        }
+        //copy custom aqm file
         final copiedFile = File(modManCustomAqmFilePath).copySync(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(modManCustomAqmFilePath)}').toFilePath());
-        if (copiedFile.existsSync()) {
+        if (copiedFile.existsSync() && id > -1) {
           Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiPackingFiles);
           await Future.delayed(const Duration(milliseconds: 100));
           //pack
@@ -140,13 +141,18 @@ void aqmInject(context, SubMod submod) async {
           try {
             File renamedFile = await File(Uri.file('${p.dirname(copiedFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(copiedFile.parent.path).replaceAll('_ext', '')).toFilePath());
             await renamedFile.copy(modFile.location);
+            aqmInjectedFiles.add('${p.basename(copiedFile.path)} -> ${modFile.modFileName}');
           } catch (e) {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
           }
-
-          aqmInjectedFiles.add(p.basename(copiedFile.path));
+          
+        } else {
+          Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiError}\nCustom aqm file or item ID not found');
+          await Future.delayed(const Duration(milliseconds: 100));
         }
       }
+       // String extractedGroup1Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
+      // if (Directory(extractedGroup1Path).existsSync()) {}
     }
     Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiSuccess}\n${aqmInjectedFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));

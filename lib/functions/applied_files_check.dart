@@ -2,11 +2,11 @@ import 'package:pso2_mod_manager/classes/category_type_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/functions/hash_generator.dart';
 
-Future<List<ModFile>> appliedFileCheck(context, List<CategoryType> appliedList) async {
+Future<List<ModFile>> appliedFileCheck(context, List<CategoryType> modList) async {
   List<ModFile> filesToApplyAndBackup = [];
   //List<ModFile> filesToApplyOnly = [];
-  for (var cateType in appliedList) {
-    for (var cate in cateType.categories) {
+  for (var cateType in modList.where((e) => e.getNumOfAppliedCates() > 0)) {
+    for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
       for (var item in cate.items) {
         if (item.applyStatus) {
           for (var mod in item.mods) {

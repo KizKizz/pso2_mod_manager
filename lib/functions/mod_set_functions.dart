@@ -350,7 +350,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
           List<Mod> matchedMods = [];
           List<SubMod> matchedSubmods = [];
           for (var modFile in selectedModFiles) {
-            var matchingTypes = appliedItemList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
+            var matchingTypes = moddedItemsList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
             for (var type in matchingTypes) {
               var matchingCates = type.categories.where((element) => modFile.location.contains(element.location));
               for (var cate in matchingCates) {
@@ -416,7 +416,7 @@ List<Widget> modSetsMenuItemButtons(context, List<ModFile> selectedModFiles) {
           List<Mod> matchedMods = [];
           List<SubMod> matchedSubmods = [];
           for (var modFile in selectedModFiles) {
-            var matchingTypes = appliedItemList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
+            var matchingTypes = moddedItemsList.where((element) => element.categories.where((cate) => cate.categoryName == modFile.category).isNotEmpty);
             for (var type in matchingTypes) {
               var matchingCates = type.categories.where((element) => modFile.location.contains(element.location));
               for (var cate in matchingCates) {

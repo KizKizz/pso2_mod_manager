@@ -31,7 +31,7 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
       return const AppliedVitalGaugeCheckingPage();
     }
     return FutureBuilder(
-        future: _reAppliedStatus.isEmpty ? getUnappliedFileList = appliedFileCheck(context, appliedItemList) : getUnappliedFileList,
+        future: _reAppliedStatus.isEmpty ? getUnappliedFileList = appliedFileCheck(context, moddedItemsList) : getUnappliedFileList,
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
@@ -165,8 +165,8 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                             setState(() {});
                                             // ignore: use_build_context_synchronously
                                             await restoreOriginalFilesToTheGame(context, result);
-                                            for (var cateType in appliedItemList) {
-                                              for (var cate in cateType.categories) {
+                                            for (var cateType in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
+                                              for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
                                                 for (var item in cate.items) {
                                                   if (item.applyStatus && result.where((element) => element.location.contains(item.location)).isNotEmpty && item.isOverlayedIconApplied!) {
                                                     bool allUnapplied = true;
@@ -236,8 +236,8 @@ class _AppliedModsCheckingPageState extends State<AppliedModsCheckingPage> {
                                             }
                                           }
 
-                                          for (var cateType in appliedItemList) {
-                                            for (var cate in cateType.categories) {
+                                          for (var cateType in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
+                                            for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
                                               for (var item in cate.items) {
                                                 if (item.applyStatus &&
                                                     selectedModFilesInAppliedList.where((element) => element.location.contains(item.location)).isNotEmpty &&

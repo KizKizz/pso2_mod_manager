@@ -156,8 +156,8 @@ Future<bool> cmxModRemoval(int startIndex, int endIndex) async {
 Future<bool> cmxRefresh() async {
   File cmxFile = await swapperIceFileDownload(cmxIceFilePath, File(cmxIceFilePath).parent.path);
   if (cmxFile.existsSync()) {
-    for (var type in appliedItemList) {
-      for (var cate in type.categories) {
+    for (var type in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
+      for (var cate in type.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
         for (var item in cate.items) {
           for (var mod in item.mods) {
             for (var submod in mod.submods) {
