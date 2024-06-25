@@ -3,8 +3,11 @@
     "version": "2.7.12",
     "description": [
         "Fixed a problem where Mod Manager could not figure out some paths when reselect pso_bin and Mod Manager Main folders",
+        "Added custom aqm injection to Basewears and Setwears (Both mods and original items)",
         "More bug fixes",
         "pso_binとMod Managerのメインフォルダを再選択する際、Mod Managerが一部のパスを把握できなかった問題を修正",
+        "ベースウェアとセットウェアにカスタムaqmファイルのインジェクションを追加",
+        "一部のJPユーザーはv2.7からMODを追加する際に問題が発生しています",
         "その他のバグ修正"
     ],
     "windows_file": "",

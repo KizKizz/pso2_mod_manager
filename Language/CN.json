@@ -493,7 +493,7 @@
   "uiImport": "导入",
   "uiImportAndApply": "导入并应用MOD",
   "uiApplyingImportedMods": "应用已导入的MOD",
-  "uiNoFilesInGameDataToReplace": "在游戏文件中无匹配文件，请检查MOD的应用位置",
+  "uiNoFilesInGameDataToReplace": "在游戏文件中无匹配文件,请检查MOD的应用位置",
   "uiLoadingPlayerItemData": "正在读取玩家物品信息",
   "uiErrorWhenLoadingPlayerItemData": "读取玩家物品信息时出错",
   "uiImportItemDataFile": "导入物品数据文件",
