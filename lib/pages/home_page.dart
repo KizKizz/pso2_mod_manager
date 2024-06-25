@@ -5602,7 +5602,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                 if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                                   previewModName = '';
                                                                                                   previewImages.clear();
-                                                                                                  // Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                                  Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
                                                                                                 }
                                                                                                 isModViewModsRemoving = false;
                                                                                                 isModViewModsApplying = false;

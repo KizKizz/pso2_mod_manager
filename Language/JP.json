@@ -534,11 +534,11 @@
   "uiCustomAqmFileOrItemIDNotFound": "Custom aqm file or item ID not found",
   "uiFetchingHQandLQFiles": "Fetching HQ and LQ files",
   "uiGroup2IsNotFoundInextractedIce": "Group2 is not found in extracted ice",
-  "uiFetchingItemID": "Fetching Item ID"
+  "uiFetchingItemID": "Fetching Item ID",
   "uiInjectCustomAqmIntoThisItem": "Add custom aqm to this item",
-  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item"
-  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection"
+  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item",
+  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection",
   "uiItemsToInjectCustomAqm": "Items to inject custom aqm",
-  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm"
-  "uiReApplyingAllModsBackToTheGame": "保存したすべてのMODをゲームに再適用する。"
+  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm",
+  "uiReApplyingAllModsBackToTheGame": "保存したすべてのMODをゲームに再適用する"
 }

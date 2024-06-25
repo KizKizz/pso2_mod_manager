@@ -2398,7 +2398,6 @@ class _MainPageState extends State<MainPage> {
                                 child: ModManTooltip(
                                   message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                                   child: SizedBox(
-                                    width: 100,
                                     child: MaterialButton(
                                       color: Theme.of(context).colorScheme.primary.withGreen(100).withOpacity(0.9),
                                       onPressed: (() async {

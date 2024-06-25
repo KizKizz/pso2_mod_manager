@@ -15,7 +15,9 @@ AqmItem _$AqmItemFromJson(Map<String, dynamic> json) => AqmItem(
       json['itemNameJP'] as String,
       json['hqIcePath'] as String,
       json['lqIcePath'] as String,
+      json['iconIcePath'] as String,
       json['isApplied'] as bool,
+      json['isIconReplaced'] as bool,
     );
 
 Map<String, dynamic> _$AqmItemToJson(AqmItem instance) => <String, dynamic>{
@@ -27,5 +29,7 @@ Map<String, dynamic> _$AqmItemToJson(AqmItem instance) => <String, dynamic>{
       'itemNameJP': instance.itemNameJP,
       'hqIcePath': instance.hqIcePath,
       'lqIcePath': instance.lqIcePath,
+      'iconIcePath': instance.iconIcePath,
       'isApplied': instance.isApplied,
+      'isIconReplaced': instance.isIconReplaced,
     };

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_injection_page.dart';
 import 'package:pso2_mod_manager/classes/aqm_item_class.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
 import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -50,6 +51,28 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
             e.infos.entries.firstWhere((i) => i.key == 'Normal Quality').value.isNotEmpty)
         .toList();
     List<AqmItem> aqmItems = [];
+    List<ModFile> allAppliedModFiles = [];
+    for (var cateType in moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0)) {
+      for (var cate in cateType.categories.where((e) => e.getNumOfAppliedItems() > 0)) {
+        for (var item in cate.items) {
+          if (item.applyStatus) {
+            for (var mod in item.mods) {
+              if (mod.applyStatus) {
+                for (var submod in mod.submods) {
+                  if (submod.applyStatus) {
+                    for (var modFile in submod.modFiles) {
+                      if (modFile.applyStatus) {
+                        allAppliedModFiles.add(modFile);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -311,12 +334,20 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                 ]),
                                                                 subtitle: ElevatedButton(
                                                                     onPressed: aqmItems
-                                                                            .where(
-                                                                                (element) => element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName()) 
-                                                                            .isEmpty && File(modManCustomAqmFilePath).existsSync()
+                                                                                .where((element) =>
+                                                                                    element.itemNameEN == availableItem[i].getENName() || element.itemNameJP == availableItem[i].getJPName())
+                                                                                .isEmpty &&
+                                                                            File(modManCustomAqmFilePath).existsSync() &&
+                                                                            allAppliedModFiles
+                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value)
+                                                                                .isEmpty &&
+                                                                            allAppliedModFiles
+                                                                                .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
+                                                                                .isEmpty
                                                                         ? () async {
                                                                             final hqIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
                                                                             final lqIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
+                                                                            final iconIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
                                                                             AqmItem newItem = AqmItem(
                                                                                 availableItem[i].category,
                                                                                 availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value,
@@ -324,8 +355,10 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                                 availableItem[i].iconImagePath,
                                                                                 availableItem[i].getENName(),
                                                                                 availableItem[i].getJPName(),
-                                                                                hqIcePaths.first,
-                                                                                lqIcePaths.first,
+                                                                                hqIcePaths.isNotEmpty ? hqIcePaths.first : '',
+                                                                                lqIcePaths.isNotEmpty ? lqIcePaths.first : '',
+                                                                                iconIcePaths.isNotEmpty ? iconIcePaths.first : '',
+                                                                                false,
                                                                                 false);
                                                                             bool value = await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath);
                                                                             if (value) {
@@ -569,7 +602,8 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                               }
                                               setState(() {});
                                             },
-                                            child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile, style: const TextStyle(fontWeight: FontWeight.w400))),
+                                            child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
+                                                style: const TextStyle(fontWeight: FontWeight.w400))),
                                         ElevatedButton(
                                             onPressed: () {
                                               injectedItemsSearchTextController.clear();
