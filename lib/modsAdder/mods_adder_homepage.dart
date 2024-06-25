@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
 import 'package:pso2_mod_manager/classes/mods_adder_file_class.dart';
 import 'package:pso2_mod_manager/functions/clear_temp_dirs.dart';
+import 'package:pso2_mod_manager/functions/og_ice_paths_fetcher.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -49,6 +50,7 @@ String _errorMessage = '';
 
 void modsAdderHomePage(context) {
   clearModAdderDirs();
+  Directory(modManModsAdderPath).createSync(recursive: true);
   List<String> dropdownButtonCateList = [];
   for (var type in moddedItemsList) {
     dropdownButtonCateList.addAll(type.categories.map((e) => e.categoryName));
@@ -459,11 +461,7 @@ void modsAdderHomePage(context) {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                _isAddingMods
-                                                    ? curLangText!.uiAddingMods
-                                                    : Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
-                                                        ? curLangText!.uiWaitingForData
-                                                        : Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus,
+                                                _isAddingMods ? curLangText!.uiAddingMods : curLangText!.uiWaitingForData,
                                                 style: const TextStyle(fontSize: 20),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -471,13 +469,13 @@ void modsAdderHomePage(context) {
                                                 height: 20,
                                               ),
                                               const CircularProgressIndicator(),
-                                              if (_isAddingMods)
-                                                Padding(
-                                                    padding: const EdgeInsets.only(top: 15),
-                                                    child: Text(
-                                                      context.watch<StateProvider>().modAdderProgressStatus,
-                                                      textAlign: TextAlign.center,
-                                                    ))
+                                              Padding(
+                                                  padding: const EdgeInsets.only(top: 20),
+                                                  child: Text(
+                                                    context.watch<StateProvider>().modAdderProgressStatus,
+                                                    textAlign: TextAlign.center,
+                                                     style: const TextStyle(fontSize: 16),
+                                                  ))
                                             ],
                                           ),
                                         );
@@ -492,10 +490,16 @@ void modsAdderHomePage(context) {
                                                   curLangText!.uiError,
                                                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                 ),
-                                                Text(
-                                                  _errorMessage,
-                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
-                                                ),
+                                                if (_errorMessage.isNotEmpty)
+                                                  Text(
+                                                    _errorMessage,
+                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
+                                                  ),
+                                                if (snapshot.error != null)
+                                                  Text(
+                                                    snapshot.error.toString(),
+                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
+                                                  ),
                                               ],
                                             ),
                                           );
@@ -1144,7 +1148,10 @@ void modsAdderHomePage(context) {
                                                                                         width: 5,
                                                                                       ),
                                                                                       Text('$_pathLengthInNameEdit/259 ${curLangText!.uiCharacters}',
-                                                                                          style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color)),
+                                                                                          style: TextStyle(
+                                                                                              color: pathCharLengthList[index][mIndex] > 259
+                                                                                                  ? Colors.red
+                                                                                                  : Theme.of(context).textTheme.bodyMedium!.color)),
                                                                                       const SizedBox(
                                                                                         width: 5,
                                                                                       ),
@@ -1212,7 +1219,9 @@ void modsAdderHomePage(context) {
                                                                                       ),
                                                                                       Text(
                                                                                         '${pathCharLengthList[index][mIndex]}/259 ${curLangText!.uiCharacters}',
-                                                                                        style: TextStyle(color: pathCharLengthList[index][mIndex] > 259 ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color),
+                                                                                        style: TextStyle(
+                                                                                            color:
+                                                                                                pathCharLengthList[index][mIndex] > 259 ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color),
                                                                                       ),
                                                                                       const SizedBox(
                                                                                         width: 5,
@@ -2031,15 +2040,16 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
       final matchingIceFiles = iceFileList.where((element) => value.contains(p.basenameWithoutExtension(element.path)));
       for (var iceFile in matchingIceFiles) {
         Provider.of<StateProvider>(context, listen: false)
-            .setModAdderProgressStatus('Sorting:\n${iceFile.path.replaceFirst(modManAddModsTempDirPath + p.separator, '').replaceAll(p.separator, ' > ')}');
+            .setModAdderProgressStatus('${curLangText!.uiSorting}:\n${iceFile.path.replaceFirst(modManAddModsTempDirPath + p.separator, '').replaceAll(p.separator, ' > ')}');
         await Future.delayed(const Duration(milliseconds: 5));
         String newFilePath = iceFile.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
-        newFilePath = removeRebootPath(newFilePath);
+        newFilePath = await removeRebootPath(context, newFilePath);
         if (p.basenameWithoutExtension(File(newFilePath).parent.path) == itemName) {
           newFilePath = File(newFilePath).path.replaceFirst(File(newFilePath).parent.path, File(newFilePath).parent.path + p.separator + curLangText!.uiUnknown);
-        } 
-        await File(newFilePath).parent.create(recursive: true);
+        }
+
         try {
+          await File(newFilePath).parent.create(recursive: true);
           iceFile.copySync(newFilePath);
         } catch (e) {
           _errorMessage = e.toString();
@@ -2050,7 +2060,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     //extra files copy
     for (var file in extraFileList) {
       String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderItemDirPath);
-      newFilePath = removeRebootPath(newFilePath);
+      newFilePath = await removeRebootPath(context, newFilePath);
       if (File(newFilePath).parent.existsSync()) {
         try {
           file.copySync(newFilePath);
@@ -2084,12 +2094,12 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('MM-dd-yyyy-kk-mm-ss').format(now);
     String unknownItemName = '${curLangText!.uiUnknownItem}_$formattedDate';
-    Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('Sorting: ${defaultCategoryNames[13]} > $unknownItemName');
+    Provider.of<StateProvider>(context, listen: false).setModAdderProgressStatus('${curLangText!.uiSorting}: ${defaultCategoryNames[13]} > $unknownItemName');
     await Future.delayed(const Duration(milliseconds: 5));
     String modAdderMiscItemDirPath = Uri.file('$modManModsAdderPath/${defaultCategoryDirs[13]}/$unknownItemName').toFilePath().trim();
     for (var file in iceFilesNotInItemData) {
       String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, modAdderMiscItemDirPath);
-      newFilePath = removeRebootPath(newFilePath);
+      newFilePath = await removeRebootPath(context, newFilePath);
       await File(newFilePath).parent.create(recursive: true);
       try {
         file.copySync(newFilePath);
@@ -2102,7 +2112,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
     for (var file in extraFileList) {
       for (var path in miscFilePaths) {
         String newFilePath = file.path.replaceFirst(modManAddModsTempDirPath, path);
-        newFilePath = removeRebootPath(newFilePath);
+        newFilePath = await removeRebootPath(context, newFilePath);
         if (File(newFilePath).parent.existsSync()) {
           try {
             file.copySync(newFilePath);
@@ -2293,34 +2303,35 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   return modsAdderItemList;
 }
 
-String findIcePathInGameData(String iceName) {
-  if (iceName.isEmpty) {
-    return '';
-  }
-  int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
-  if (win32PathIndex != -1) {
-    return ogWin32FilePaths[win32PathIndex];
-  }
-  int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
-  if (win32NAPathIndex != -1) {
-    return ogWin32NAFilePaths[win32NAPathIndex];
-  }
-  int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == iceName);
-  if (win32RebootPathIndex != -1) {
-    return ogWin32RebootFilePaths[win32RebootPathIndex];
-  }
-  int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == iceName);
-  if (win32RebootNAPathIndex != -1) {
-    return ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
-  }
-  return '';
-}
+// String findIcePathInGameData(String iceName) {
+//   if (iceName.isEmpty) {
+//     return '';
+//   }
+//   int win32PathIndex = ogWin32FilePaths.indexWhere((element) => p.basename(element) == iceName);
+//   if (win32PathIndex != -1) {
+//     return ogWin32FilePaths[win32PathIndex];
+//   }
+//   int win32NAPathIndex = ogWin32NAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+//   if (win32NAPathIndex != -1) {
+//     return ogWin32NAFilePaths[win32NAPathIndex];
+//   }
+//   int win32RebootPathIndex = ogWin32RebootFilePaths.indexWhere((element) => p.basename(element) == iceName);
+//   if (win32RebootPathIndex != -1) {
+//     return ogWin32RebootFilePaths[win32RebootPathIndex];
+//   }
+//   int win32RebootNAPathIndex = ogWin32RebootNAFilePaths.indexWhere((element) => p.basename(element) == iceName);
+//   if (win32RebootNAPathIndex != -1) {
+//     return ogWin32RebootNAFilePaths[win32RebootNAPathIndex];
+//   }
+//   return '';
+// }
 
-String removeRebootPath(String filePath) {
+Future<String> removeRebootPath(context, String filePath) async {
+  if (filePath.isEmpty) return filePath;
   String newPath = filePath;
-  String ogPath = findIcePathInGameData(p.basename(filePath));
-  if (ogPath.isEmpty) ogPath = officialPatchFiles.firstWhere((element) => element.contains(p.basename(filePath)), orElse: () => '');
-  if (ogPath.isEmpty) ogPath = officialMasterFiles.firstWhere((element) => element.contains(p.basename(filePath)), orElse: () => '');
+  final ogPaths = await originalFilePathGet(context, p.basenameWithoutExtension(filePath));
+  String ogPath = '';
+  if (ogPaths.isNotEmpty) ogPath = ogPaths.first;
 
   if (ogPath.isEmpty) {
     return filePath;

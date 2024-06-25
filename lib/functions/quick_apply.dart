@@ -11,7 +11,6 @@ import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
 import 'package:pso2_mod_manager/classes/sub_mod_class.dart';
-import 'package:pso2_mod_manager/functions/applied_list_builder.dart';
 import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/functions/json_write.dart';
 import 'package:pso2_mod_manager/functions/modfiles_apply.dart';
@@ -26,11 +25,11 @@ Future<void> quickModsRemoval(context) async {
   if (!appliedModsFile.existsSync()) {
     await appliedModsFile.create();
     if (appliedModsFile.existsSync()) {
-      appliedItemList.map((cateType) => cateType.toJson()).toList();
+      moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).map((cateType) => cateType.toJson()).toList();
       const JsonEncoder encoder = JsonEncoder.withIndent('  ');
       appliedModsFile.writeAsStringSync(encoder.convert(moddedItemsList));
       List<ModFile> allModFilesInAppliedList = [];
-      for (var type in appliedItemList) {
+      for (var type in moddedItemsList) {
         if (type.getNumOfAppliedCates() > 0) {
           for (var cate in type.categories) {
             if (cate.getNumOfAppliedItems() > 0) {
@@ -51,7 +50,6 @@ Future<void> quickModsRemoval(context) async {
           }
         }
       }
-      appliedItemList = await appliedListBuilder(moddedItemsList);
       Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('remove');
       await showDialog(
           barrierDismissible: false,
@@ -119,7 +117,7 @@ Future<void> quickModsRemoval(context) async {
                   }
 
                   saveModdedItemListToJson();
-                  if (appliedItemList.isEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty) {
+                  if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty) {
                     Navigator.pop(context);
                   }
                 }
@@ -223,7 +221,6 @@ Future<void> quickModsReapply(context) async {
                   }
                 }
 
-                appliedItemList = await appliedListBuilder(moddedItemsList);
                 saveModdedItemListToJson();
                 Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
                 File(modManAppliedModsJsonPath).deleteSync();

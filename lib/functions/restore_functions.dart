@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,7 +38,6 @@ Future<List<ModFile>> restoreOriginalFilesToTheGame(context, List<ModFile> modFi
   }
 
   selectedModFilesInAppliedList.removeWhere((element) => unappliedModFiles.where((e) => e.location == element.location).isNotEmpty);
-  appliedItemList = await appliedListBuilder(moddedItemsList);
   saveModdedItemListToJson();
 
   return unappliedModFiles;
@@ -79,7 +80,7 @@ Future<void> restoreOriginalFilesFromServers(context, List<ModFile> modFiles) as
     modFile.ogLocations.removeWhere((element) => pathsToRemove.contains(element.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim()));
     for (var pathToRemove in pathsToRemove) {
       File fileToRemove = File(Uri.file('$modManBackupsDirPath/${pathToRemove.replaceFirst(Uri.file('data/').toFilePath(), '')}').toFilePath());
-      if (fileToRemove.existsSync() && !multipleModFilesCheck(appliedItemList, modFile)) {
+      if (fileToRemove.existsSync() && !multipleModFilesCheck(moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).toList(), modFile)) {
         final deletedFile = await fileToRemove.delete();
         if (!deletedFile.existsSync()) {
           modFile.bkLocations.remove(fileToRemove.path);
@@ -102,7 +103,7 @@ Future<void> restoreOriginalFilesLocalBackups(context, List<ModFile> modFiles) a
       if (backupFile.existsSync()) {
         try {
           await backupFile.copy(originalFilePath);
-          if (!multipleModFilesCheck(appliedItemList, modFile) && backupFile.existsSync()) {
+          if (!multipleModFilesCheck(moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).toList(), modFile) && backupFile.existsSync()) {
             final deletedFile = await backupFile.delete();
             if (!deletedFile.existsSync()) {
               modFile.bkLocations.remove(backupFile.path);

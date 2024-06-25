@@ -214,6 +214,13 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiQuickReapplyAllModsToTheGame'] as String
       ..uiReapplyAllRemovedModsBackToTheGame =
           json['uiReapplyAllRemovedModsBackToTheGame'] as String
+      ..uiAutoInjectCustomAqmFileIntoMods =
+          json['uiAutoInjectCustomAqmFileIntoMods'] as String
+      ..uiAutoCustomAqmInjection = json['uiAutoCustomAqmInjection'] as String
+      ..uiSelectAqmFile = json['uiSelectAqmFile'] as String
+      ..uiReSelectAqmFile = json['uiReSelectAqmFile'] as String
+      ..uiInjectCustomAqmToBasewearsAndSetwears =
+          json['uiInjectCustomAqmToBasewearsAndSetwears'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -351,6 +358,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiApplyToAllLocations = json['uiApplyToAllLocations'] as String
       ..uiExportAllMods = json['uiExportAllMods'] as String
       ..uiAddPreviews = json['uiAddPreviews'] as String
+      ..uiInjectCustomAqmFile = json['uiInjectCustomAqmFile'] as String
+      ..uiSelectFileInSettings = json['uiSelectFileInSettings'] as String
+      ..uiRemoveInjectedCustomAqm = json['uiRemoveInjectedCustomAqm'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -649,7 +659,27 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiRemovingAllModsFromTheGame =
           json['uiRemovingAllModsFromTheGame'] as String
       ..uiReApplyingAllModsBackToTheGame =
-          json['uiReApplyingAllModsBackToTheGame'] as String;
+          json['uiReApplyingAllModsBackToTheGame'] as String
+      ..uiCustomAqmInjection = json['uiCustomAqmInjection'] as String
+      ..uiCustomAqmFileOrItemIDNotFound =
+          json['uiCustomAqmFileOrItemIDNotFound'] as String
+      ..uiFetchingHQandLQFiles = json['uiFetchingHQandLQFiles'] as String
+      ..uiGroup2IsNotFoundInextractedIce =
+          json['uiGroup2IsNotFoundInextractedIce'] as String
+      ..uiFetchingItemID = json['uiFetchingItemID'] as String
+      ..uiInjectCustomAqmIntoThisItem =
+          json['uiInjectCustomAqmIntoThisItem'] as String
+      ..uiRemoveCustomAqmFromThisItem =
+          json['uiRemoveCustomAqmFromThisItem'] as String
+      ..uiItemsToInjectCustomAqm = json['uiItemsToInjectCustomAqm'] as String
+      ..uiItemsAlreadyHaveCustomAqm =
+          json['uiItemsAlreadyHaveCustomAqm'] as String
+      ..uiNoteMustSelectACustomAqmFileBeforeInject =
+          json['uiNoteMustSelectACustomAqmFileBeforeInject'] as String
+      ..uiRemoveAll = json['uiRemoveAll'] as String
+      ..uiReInjectAll = json['uiReInjectAll'] as String
+      ..uiApplyingOverlayToIngameItemIcon =
+          json['uiApplyingOverlayToIngameItemIcon'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -826,6 +856,13 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiQuickReapplyAllModsToTheGame': instance.uiQuickReapplyAllModsToTheGame,
       'uiReapplyAllRemovedModsBackToTheGame':
           instance.uiReapplyAllRemovedModsBackToTheGame,
+      'uiAutoInjectCustomAqmFileIntoMods':
+          instance.uiAutoInjectCustomAqmFileIntoMods,
+      'uiAutoCustomAqmInjection': instance.uiAutoCustomAqmInjection,
+      'uiSelectAqmFile': instance.uiSelectAqmFile,
+      'uiReSelectAqmFile': instance.uiReSelectAqmFile,
+      'uiInjectCustomAqmToBasewearsAndSetwears':
+          instance.uiInjectCustomAqmToBasewearsAndSetwears,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -950,6 +987,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiApplyToAllLocations': instance.uiApplyToAllLocations,
       'uiExportAllMods': instance.uiExportAllMods,
       'uiAddPreviews': instance.uiAddPreviews,
+      'uiInjectCustomAqmFile': instance.uiInjectCustomAqmFile,
+      'uiSelectFileInSettings': instance.uiSelectFileInSettings,
+      'uiRemoveInjectedCustomAqm': instance.uiRemoveInjectedCustomAqm,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -1210,4 +1250,21 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiRemovingAllModsFromTheGame': instance.uiRemovingAllModsFromTheGame,
       'uiReApplyingAllModsBackToTheGame':
           instance.uiReApplyingAllModsBackToTheGame,
+      'uiCustomAqmInjection': instance.uiCustomAqmInjection,
+      'uiCustomAqmFileOrItemIDNotFound':
+          instance.uiCustomAqmFileOrItemIDNotFound,
+      'uiFetchingHQandLQFiles': instance.uiFetchingHQandLQFiles,
+      'uiGroup2IsNotFoundInextractedIce':
+          instance.uiGroup2IsNotFoundInextractedIce,
+      'uiFetchingItemID': instance.uiFetchingItemID,
+      'uiInjectCustomAqmIntoThisItem': instance.uiInjectCustomAqmIntoThisItem,
+      'uiRemoveCustomAqmFromThisItem': instance.uiRemoveCustomAqmFromThisItem,
+      'uiItemsToInjectCustomAqm': instance.uiItemsToInjectCustomAqm,
+      'uiItemsAlreadyHaveCustomAqm': instance.uiItemsAlreadyHaveCustomAqm,
+      'uiNoteMustSelectACustomAqmFileBeforeInject':
+          instance.uiNoteMustSelectACustomAqmFileBeforeInject,
+      'uiRemoveAll': instance.uiRemoveAll,
+      'uiReInjectAll': instance.uiReInjectAll,
+      'uiApplyingOverlayToIngameItemIcon':
+          instance.uiApplyingOverlayToIngameItemIcon,
     };

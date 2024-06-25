@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
-import 'package:pso2_mod_manager/pages/applied_mods_loading_page.dart';
+import 'package:pso2_mod_manager/pages/applied_mods_checking_page.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -103,7 +103,7 @@ class _ModsLoadingPageState extends State<ModsLoadingPage> {
               //isStartupModsLoad = false;
               moddedItemsList = snapshot.data;
 
-              return const AppliedModsLoadingPage();
+              return const AppliedModsCheckingPage();
             }
           }
         });

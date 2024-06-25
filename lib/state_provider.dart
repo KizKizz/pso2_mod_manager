@@ -44,6 +44,8 @@ class StateProvider with ChangeNotifier {
   bool _mouseHoveringSubmods = false;
   // bool _isCursorInAppliedList = true;
   String _quickApplyState = '';
+  bool _autoAqmInject = false;
+  String _aqmInjectionProgressStatus = '';
 
   bool get isMainBinFound => _isMainBinFound;
   bool get isMainModManPathFound => _isMainModManPathFound;
@@ -87,6 +89,18 @@ class StateProvider with ChangeNotifier {
   bool get mouseHoveringSubmods => _mouseHoveringSubmods;
   // bool get isCursorInAppliedList => _isCursorInAppliedList;
   String get quickApplyState => _quickApplyState;
+  bool get autoAqmInject => _autoAqmInject;
+  String get aqmInjectionProgressStatus => _aqmInjectionProgressStatus;
+
+  void setAqmInjectionProgressStatus(String status) {
+    _aqmInjectionProgressStatus = status;
+    notifyListeners();
+  }
+
+  void autoAqmInjectSet(bool state) {
+    _autoAqmInject = state;
+    notifyListeners();
+  }
 
   void quickApplyStateSet(String state) {
     //apply or remove

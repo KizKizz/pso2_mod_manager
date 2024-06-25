@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'dart:convert';
 import 'dart:io';
@@ -10,6 +10,8 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_injection_homepage.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_injection_popup.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
@@ -580,8 +582,8 @@ class _MainPageState extends State<MainPage> {
                       //Path reselect
                       MaterialButton(
                         height: 40,
-                        onPressed: (() {
-                          pso2PathsReloader(context);
+                        onPressed: (() async {
+                          await pso2PathsReloader(context);
                         }),
                         child: Row(
                           children: [
@@ -954,7 +956,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
-                      //Remove boundary radius on apply
+                      //Remove bounding radius on apply
                       ModManTooltip(
                         message: curLangText!.uiAutoRadiusRemovalTooltip,
                         child: MaterialButton(
@@ -987,6 +989,70 @@ class _MainPageState extends State<MainPage> {
                             ],
                           ),
                         ),
+                      ),
+
+                      //autoAqmInject
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ModManTooltip(
+                            message: curLangText!.uiAutoInjectCustomAqmFileIntoMods,
+                            child: MaterialButton(
+                              height: 40,
+                              onPressed: File(modManCustomAqmFilePath).existsSync() ? (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
+                                  autoAqmInject = false;
+                                  prefs.setBool('autoAqmInject', false);
+                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+                                } else {
+                                  autoAqmInject = true;
+                                  prefs.setBool('autoAqmInject', true);
+                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
+                                }
+                                setState(() {});
+                              }) : null,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.auto_fix_normal,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                      Provider.of<StateProvider>(context, listen: false).autoAqmInject
+                                          ? '${curLangText!.uiAutoCustomAqmInjection}: ON'
+                                          : '${curLangText!.uiAutoCustomAqmInjection}: OFF',
+                                      style: const TextStyle(fontWeight: FontWeight.w400))
+                                ],
+                              ),
+                            ),
+                          ),
+                          ModManTooltip(
+                            message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : '${curLangText!.uiSelectAqmFile}: $modManCustomAqmFilePath',
+                            child: MaterialButton(
+                                minWidth: double.infinity,
+                                height: 30,
+                                onPressed: (() async {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  const XTypeGroup typeGroup = XTypeGroup(
+                                    label: '.aqm',
+                                    extensions: <String>['aqm'],
+                                  );
+                                  final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                  if (selectedFile != null) {
+                                    modManCustomAqmFileName = selectedFile.name;
+                                    prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                    if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                      modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                      File(selectedFile.path).copySync(modManCustomAqmFilePath);
+                                    }
+                                  }
+                                  setState(() {});
+                                }),
+                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile, style: const TextStyle(fontWeight: FontWeight.w400))),
+                          ),
+                        ],
                       ),
 
                       //remove profanity Filter
@@ -1923,11 +1989,11 @@ class _MainPageState extends State<MainPage> {
                           //           if (Provider.of<StateProvider>(context, listen: false).setsWindowVisible) {
                           //             isModViewListHidden = true;
                           //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetFalse();
-                          //             saveSetListToJson();
+                          //             await saveSetListToJson();
                           //           } else {
                           //             isModViewListHidden = false;
                           //             modSetList = await modSetLoader();
-                          //             saveSetListToJson();
+                          //             await saveSetListToJson();
                           //             Provider.of<StateProvider>(context, listen: false).setsWindowVisibleSetTrue();
                           //           }
                           //         }),
@@ -2040,9 +2106,6 @@ class _MainPageState extends State<MainPage> {
                                     modFileStructureLoader(context, true).then((value) {
                                       moddedItemsList.clear();
                                       moddedItemsList.addAll(value);
-                                      appliedListBuilder(moddedItemsList).then((aValue) {
-                                        appliedItemList.clear();
-                                        appliedItemList.addAll(aValue);
                                         modSetLoader().then((sValue) {
                                           modSetList.clear();
                                           modSetList.addAll(sValue);
@@ -2051,7 +2114,6 @@ class _MainPageState extends State<MainPage> {
                                             listsReloading = false;
                                           });
                                         });
-                                      });
                                       listsReloading = false;
                                       modViewItem = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
@@ -2233,6 +2295,7 @@ class _MainPageState extends State<MainPage> {
                               //width: 95,
                               child: MaterialButton(
                                 onPressed: (() {
+                                  setState(() {});
                                   mainPageScaffoldKey.currentState!.openEndDrawer();
                                 }),
                                 child: Row(
@@ -2326,7 +2389,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             //Mod sets
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2335,7 +2398,6 @@ class _MainPageState extends State<MainPage> {
                                 child: ModManTooltip(
                                   message: Provider.of<StateProvider>(context, listen: false).setsWindowVisible ? curLangText!.uiManageModList : curLangText!.uiManageModSets,
                                   child: SizedBox(
-                                    width: 100,
                                     child: MaterialButton(
                                       color: Theme.of(context).colorScheme.primary.withGreen(100).withOpacity(0.9),
                                       onPressed: (() async {
@@ -2374,7 +2436,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             // Swap Items
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2400,7 +2462,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             // Vital Gauge
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2426,7 +2488,32 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
+                            // custom aqm
+                            Visibility(
+                              visible: context.watch<StateProvider>().showTitleBarButtons,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 3),
+                                child: ModManTooltip(
+                                  message: curLangText!.uiInjectCustomAqmToBasewearsAndSetwears,
+                                  child: MaterialButton(
+                                    color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                      const Icon(
+                                        Icons.auto_fix_normal,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiCustomAqmInjection)
+                                    ]),
+                                    onPressed: () {
+                                      aqmInjectionDialog(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             //import
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2455,7 +2542,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-              
+
                             //add mods
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2488,24 +2575,25 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                       ),
-              
+
                       //quick button
                       Visibility(
                         visible: context.watch<StateProvider>().showTitleBarButtons,
                         child: Padding(
                           padding: const EdgeInsets.only(right: 3),
                           child: ModManTooltip(
-                            message: File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
+                            message:
+                                File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: (appliedItemList.isNotEmpty && Provider.of<StateProvider>(context, listen: false).quickApplyState.isEmpty) || (Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty && File(modManAppliedModsJsonPath).existsSync())
+                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
                                         setState(() {});
                                       } else {
                                         await quickModsRemoval(context);
-                                        setState(() {});
+                                        Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
                                       }
                                     }
                                   : null,
@@ -2513,8 +2601,8 @@ class _MainPageState extends State<MainPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Icon(File(modManAppliedModsJsonPath).existsSync() ?
-                                    Icons.add_to_queue_sharp : Icons.remove_from_queue_sharp,
+                                  Icon(
+                                    File(modManAppliedModsJsonPath).existsSync() ? Icons.add_to_queue_sharp : Icons.remove_from_queue_sharp,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 2.5),

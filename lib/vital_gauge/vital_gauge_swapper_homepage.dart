@@ -19,6 +19,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
+import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
@@ -461,12 +462,18 @@ void vitalGaugeHomePage(context) {
                                                                                                     String downloadedFilePath = await downloadIconIceFromOfficial(
                                                                                                         vgData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                         modManAddModsTempDirPath);
-                                                                                                    File(downloadedFilePath).copySync(vgData[i].icePath);
-                                                                                                    vgData[i].replacedMd5 = '';
-                                                                                                    vgData[i].replacedImagePath = '';
-                                                                                                    vgData[i].replacedImageName = '';
-                                                                                                    vgData[i].isReplaced = false;
-                                                                                                    saveVitalGaugesInfoToJson(vgData);
+                                                                                                    try {
+                                                                                                      File(downloadedFilePath).copySync(vgData[i].icePath);
+                                                                                                      vgData[i].replacedMd5 = '';
+                                                                                                      vgData[i].replacedImagePath = '';
+                                                                                                      vgData[i].replacedImageName = '';
+                                                                                                      vgData[i].isReplaced = false;
+                                                                                                      saveVitalGaugesInfoToJson(vgData);
+                                                                                                    } catch (e) {
+                                                                                                      // ignore: use_build_context_synchronously
+                                                                                                      ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!',
+                                                                                                          '${vgData[i].iceName}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+                                                                                                    }
                                                                                                     setState(() {});
                                                                                                   },
                                                                                                 ),
@@ -514,7 +521,7 @@ void vitalGaugeHomePage(context) {
                                                                               setState(
                                                                                 () {
                                                                                   String imgPath = data.data.toString();
-                                                                                  customVgBackgroundApply(imgPath, vgData[i]).then((value) {
+                                                                                  customVgBackgroundApply(context, imgPath, vgData[i]).then((value) {
                                                                                     if (value) {
                                                                                       vgData[i].replacedImagePath = imgPath;
                                                                                       vgData[i].replacedImageName = p.basename(imgPath);
@@ -523,6 +530,11 @@ void vitalGaugeHomePage(context) {
                                                                                       // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                       //   element.deleteSync(recursive: true);
                                                                                       // });
+                                                                                      _loading[i] = false;
+                                                                                      setState(
+                                                                                        () {},
+                                                                                      );
+                                                                                    } else {
                                                                                       _loading[i] = false;
                                                                                       setState(
                                                                                         () {},
@@ -555,12 +567,22 @@ void vitalGaugeHomePage(context) {
                                                                                 Future.delayed(const Duration(milliseconds: 500), () async {
                                                                                   String downloadedFilePath = await downloadIconIceFromOfficial(
                                                                                       vg.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
-                                                                                  File(downloadedFilePath).copySync(vg.icePath);
-                                                                                  vg.replacedMd5 = '';
-                                                                                  vg.replacedImagePath = '';
-                                                                                  vg.replacedImageName = '';
-                                                                                  vg.isReplaced = false;
-                                                                                  saveVitalGaugesInfoToJson(vgData);
+                                                                                  try {
+                                                                                    File(downloadedFilePath).copySync(vg.icePath);
+                                                                                    vg.replacedMd5 = '';
+                                                                                    vg.replacedImagePath = '';
+                                                                                    vg.replacedImageName = '';
+                                                                                    vg.isReplaced = false;
+                                                                                    saveVitalGaugesInfoToJson(vgData);
+                                                                                  } catch (e) {
+                                                                                    // ignore: use_build_context_synchronously
+                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+                                                                                        // ignore: use_build_context_synchronously
+                                                                                        context,
+                                                                                        '${curLangText!.uiFailed}!',
+                                                                                        '${vg.iceName}\n${curLangText!.uiNoFilesInGameDataToReplace}',
+                                                                                        5000));
+                                                                                  }
                                                                                   _loading[index] = false;
                                                                                   setState(() {});
                                                                                 });
@@ -914,7 +936,7 @@ Future<List<File>> customVitalBackgroundsFetching() async {
   return returnList;
 }
 
-Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgDataFile) async {
+Future<bool> customVgBackgroundApply(context, String imgPath, VitalGaugeBackground vgDataFile) async {
   clearAllTempDirs();
 
   // String logs = 'Custom Path: $imgPath\n';
@@ -933,9 +955,21 @@ Future<bool> customVgBackgroundApply(String imgPath, VitalGaugeBackground vgData
     File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}').toFilePath());
     if (renamedFile.path.isNotEmpty) {
       // logs += 'Pack: ${renamedFile.path.toString()}\n';
-      File copied = renamedFile.copySync(vgDataFile.icePath);
-      vgDataFile.replacedMd5 = await getFileHash(copied.path);
-      // logs += 'Copy: ${copied.path.toString()}\n';
+      int i = 0;
+      while (i < 10) {
+        try {
+          File copied = renamedFile.copySync(vgDataFile.icePath);
+          vgDataFile.replacedMd5 = await getFileHash(copied.path);
+          i = 10;
+          // logs += 'Copy: ${copied.path.toString()}\n';
+        } catch (e) {
+          i++;
+        }
+      }
+      if (i > 10) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${vgDataFile.iceName}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+        return false;
+      }
     }
 
     // File(Uri.file('$modManAddModsTempDirPath/${vgDataFile.iceName}.ice').toFilePath()).rename(vgDataFile.icePath).then((value) async {

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
@@ -214,9 +216,7 @@ Future<void> applyAllCallBack(context) async {
         if (!item.applyStatus) {
           if (!item.mods.first.applyStatus) {
             if (!item.mods.first.submods.first.applyStatus) {
-              applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first).then((value) async {
-                appliedItemList = await appliedListBuilder(moddedItemsList);
-              });
+              await applyAllAvailableMods(context, item, item.mods.first, item.mods.first.submods.first);
             }
           }
         }
@@ -263,7 +263,9 @@ Future<String> applyAllAvailableMods(context, Item item, Mod mod, SubMod submod)
           saveModdedItemListToJson();
         }
       }
-      await applyOverlayedIcon(context, item);
+      if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
+        await applyOverlayedIcon(context, item);
+      }
 
       Provider.of<StateProvider>(context, listen: false).applyAllProgressCounterIncrease();
       Provider.of<StateProvider>(context, listen: false).setApplyAllStatus(appliedPath);

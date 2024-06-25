@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:pso2_mod_manager/classes/item_class.dart';
 import 'package:pso2_mod_manager/classes/mod_class.dart';
 import 'package:pso2_mod_manager/classes/mod_file_class.dart';
@@ -131,7 +133,6 @@ Future<List<String>> unapplySelectedAppliedMods(context) async {
     }
   }
 
-  appliedItemList = await appliedListBuilder(moddedItemsList);
   saveModdedItemListToJson();
 
   return ['${curLangText!.uiSuccess}!', '${curLangText!.uiSuccessfullyRemovedTheseMods}\n${unappliedFileNames.trim()}'];

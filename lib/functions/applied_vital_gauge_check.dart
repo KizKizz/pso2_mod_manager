@@ -6,7 +6,7 @@ import 'package:pso2_mod_manager/functions/hash_generator.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
 
-Future<List<VitalGaugeBackground>> appliedVitalGaugesCheck() async {
+Future<List<VitalGaugeBackground>> appliedVitalGaugesCheck(context) async {
   List<VitalGaugeBackground> reappliedList = [];
 
   //Load list from json
@@ -22,7 +22,7 @@ Future<List<VitalGaugeBackground>> appliedVitalGaugesCheck() async {
     if (vg.isReplaced) {
       String curIceMd5 = await getFileHash(vg.icePath);
       if (curIceMd5 != vg.replacedMd5) {
-        customVgBackgroundApply(vg.replacedImagePath, vg).then((value) {
+        customVgBackgroundApply(context, vg.replacedImagePath, vg).then((value) {
           if (value) {
             reappliedList.add(vg);
           }

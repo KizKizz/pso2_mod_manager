@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -507,7 +509,6 @@ Future<void> applyImportedMods(context, ModSet curSet) async {
               curItem.isNew = false;
             }
           }
-          appliedItemList = await appliedListBuilder(moddedItemsList);
           List<ModFile> appliedModFiles = value;
           String fileAppliedText = '';
 

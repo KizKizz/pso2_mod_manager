@@ -187,7 +187,12 @@ class TranslationText {
       uiQuickRemoveAllMods = 'Save and Remove All Mods',
       uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater = 'Remove all mods from the game while saving them to re-apply later',
       uiQuickReapplyAllModsToTheGame = 'Re-apply All Saved Mods',
-      uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game';
+      uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game',
+      uiAutoInjectCustomAqmFileIntoMods = 'Auto inject custom aqm file into [Ba] and [Se] mods when applying them to the game',
+      uiAutoCustomAqmInjection = 'Auto Custom aqm Injection',
+      uiSelectAqmFile = 'Select an aqm File',
+      uiReSelectAqmFile = 'Reselect aqm File',
+      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears';
 
   //homepage
   String uiItemList = 'Item List',
@@ -308,7 +313,10 @@ class TranslationText {
       uiSelectApplyingLocations = 'Select applying locations',
       uiApplyToAllLocations = 'Apply to all locations',
       uiExportAllMods = 'Export all mods in this item',
-      uiAddPreviews = 'Add/Change preview images-videos';
+      uiAddPreviews = 'Add/Change preview images-videos',
+      uiInjectCustomAqmFile = 'Inject custom aqm file',
+      uiSelectFileInSettings = 'Select file in Settings',
+      uiRemoveInjectedCustomAqm = 'Remove injected custom aqm file';
 
   //mod_add_handler
   String uiPreparing = 'Preparing',
@@ -615,6 +623,26 @@ class TranslationText {
 
   //quick_apply.dart
   String uiRemovingAllModsFromTheGame = 'Removing all mods from the game', uiReApplyingAllModsBackToTheGame = 'Re-applying all saved mods back to the game';
+
+  //aqm_inject.dart
+  String uiCustomAqmInjection = 'Custom aqm Injection',
+      uiCustomAqmFileOrItemIDNotFound = 'Custom aqm file or item ID not found',
+      uiFetchingHQandLQFiles = 'Fetching HQ and LQ files',
+      uiGroup2IsNotFoundInextractedIce = 'Group2 is not found in extracted ice',
+      uiFetchingItemID = 'Fetching Item ID';
+
+  //aqm_injection_homepage.dart
+  String uiInjectCustomAqmIntoThisItem = 'Add custom aqm to this item',
+      uiRemoveCustomAqmFromThisItem = 'Remove custom aqm from this item',
+      uiItemsToInjectCustomAqm = 'Items to inject custom aqm',
+      uiItemsAlreadyHaveCustomAqm = 'Items with custom aqm injected ',
+      uiNoteMustSelectACustomAqmFileBeforeInject = 'Must select a custom aqm file to enable injection. Backups are online only',
+      uiRemoveAll = 'Remove All',
+      uiReInjectAll = 'Reinject All';
+
+  //aqm_injection_page.dart
+  String uiApplyingOverlayToIngameItemIcon = 'Applying overlay to in-game item icon';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

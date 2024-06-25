@@ -1,4 +1,6 @@
 
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
@@ -85,7 +87,6 @@ Future<void> categoryMover(context, CategoryType curCateType, Category cateToMov
                         for (var cate in curCateType.categories) {
                           cate.position = curCateType.categories.indexOf(cate);
                         }
-                        appliedItemList = await appliedListBuilder(moddedItemsList);
                         saveModdedItemListToJson();
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context);

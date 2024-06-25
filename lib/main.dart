@@ -275,6 +275,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       //auto fetching icon
       isAutoFetchingIconsOnStartup = (prefs.getString('isAutoFetchingIconsOnStartup') ?? 'minimal');
 
+      //Aqm inject
+      autoAqmInject = (prefs.getBool('autoAqmInject') ?? false);
+      if (autoAqmInject) {
+        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
+      } else {
+        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+      }
+
       //Sliding item icons
       isSlidingItemIcons = (prefs.getBool('isSlidingItemIcons') ?? false);
       if (isSlidingItemIcons) {
@@ -366,6 +374,9 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
       // Check version to skip update
       versionToSkipUpdate = (prefs.getString('versionToSkipUpdate') ?? '');
+
+      // get custom aqm file path
+      modManCustomAqmFileName = (prefs.getString('modManCustomAqmFileName') ?? '');
 
       //Set app version
       savedAppVersion = prefs.getString('savedAppVersion') ?? '';

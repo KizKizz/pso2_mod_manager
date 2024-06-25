@@ -16,7 +16,7 @@ class _AppliedVitalGaugeCheckingPageState extends State<AppliedVitalGaugeCheckin
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: appliedVitalGaugesCheck(),
+        future: appliedVitalGaugesCheck(context),
         builder: (
           BuildContext context,
           AsyncSnapshot snapshot,
