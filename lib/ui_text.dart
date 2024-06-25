@@ -190,8 +190,9 @@ class TranslationText {
       uiReapplyAllRemovedModsBackToTheGame = 'Re-apply all saved mods back to the game',
       uiAutoInjectCustomAqmFileIntoMods = 'Auto inject custom aqm file into [Ba] and [Se] mods when applying them to the game',
       uiAutoCustomAqmInjection = 'Auto Custom aqm Injection',
-      uiSelectFile = 'Select File',
-      uiReSelectFile = 'Re-Select File';
+      uiSelectAqmFile = 'Select an aqm File',
+      uiReSelectAqmFile = 'Re-Select aqm File',
+      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears';
 
   //homepage
   String uiItemList = 'Item List',
@@ -621,6 +622,21 @@ class TranslationText {
 
   //quick_apply.dart
   String uiRemovingAllModsFromTheGame = 'Removing all mods from the game', uiReApplyingAllModsBackToTheGame = 'Re-applying all saved mods back to the game';
+
+  //aqm_inject.dart
+  String uiCustomAqmInjection = 'Custom aqm Injection',
+      uiCustomAqmFileOrItemIDNotFound = 'Custom aqm file or item ID not found',
+      uiFetchingHQandLQFiles = 'Fetching HQ and LQ files',
+      uiGroup2IsNotFoundInextractedIce = 'Group2 is not found in extracted ice',
+      uiFetchingItemID = 'Fetching Item ID';
+
+  //aqm_injection_homepage.dart
+  String uiInjectCustomAqmIntoThisItem = 'Add custom aqm to this item',
+      uiRemoveCustomAqmFromThisItem = 'Remove custom aqm from this item',
+      uiItemsToInjectCustomAqm = 'Items to inject custom aqm',
+      uiItemsAlreadyHaveCustomAqm = 'Items already injected with custom aqm',
+      uiNoteMustSelectACustomAqmFileBeforeInject = 'Must select a custom aqm file to enable injection';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

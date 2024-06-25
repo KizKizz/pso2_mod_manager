@@ -164,6 +164,13 @@
   "uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater": "Remove all mods from the game while saving them to re-apply later",
   "uiQuickReapplyAllModsToTheGame": "Re-apply All Saved Mods",
   "uiReapplyAllRemovedModsBackToTheGame": "Re-apply all saved mods back to the game",
+  "uiAutoInjectCustomAqmFileIntoMods": "Auto inject custom aqm file into [Ba] and [Se] mods when applying them to the game",
+  "uiAutoCustomAqmInjection": "Auto Custom aqm Injection",
+  "uiSelectAqmFile": "Select an aqm File",
+  "uiReSelectAqmFile": "Re-Select aqm File",
+  "uiSelectFile": "Select File",
+  "uiReSelectFile": "Re-Select File",
+  "uiInjectCustomAqmToBasewearsAndSetwears": "Inject custom aqm to Basewears and Setwears",
   "uiItemList": "物品列表",
   "uiLoadingUILanguage": "加载UI语言",
   "uiReloadingMods": "重新加载MOD",
@@ -282,6 +289,8 @@
   "uiApplyToAllLocations": "应用到所有路径",
   "uiExportAllMods": "导出所有Mod", 
   "uiAddPreviewImagesOrVideos": "添加预览图像或视频",
+  "uiInjectCustomAqmFile": "Inject custom aqm file",
+  "uiSelectFileInSettings": "Select file in Settings",
   "uiAddPreviews": "添加预览",
   "uiPreparing": "准备中",
   "uiDragDropFiles": "拖放文件夹、.zip、.rar、.7z文件\n以及.ice文件到这里\n或者点击\"添加文件夹或文件\"按钮选择文件夹或文件。\n大量文件的处理可能会花费较长时间。",
@@ -521,5 +530,15 @@
   "uiStandbyMotion": "行动方式-待机",
   "uiSwimMotion": "行动方式-游泳",
   "uiRemovingAllModsFromTheGame": "Removing all mods from the game",
+  "uiCustomAqmInjection": "Custom aqm Injection",
+  "uiCustomAqmFileOrItemIDNotFound": "Custom aqm file or item ID not found",
+  "uiFetchingHQandLQFiles": "Fetching HQ and LQ files",
+  "uiGroup2IsNotFoundInextractedIce": "Group2 is not found in extracted ice",
+  "uiFetchingItemID": "Fetching Item ID"
+  "uiInjectCustomAqmIntoThisItem": "Add custom aqm to this item",
+  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item"
+  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection"
+  "uiItemsToInjectCustomAqm": "Items to inject custom aqm",
+  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm"
   "uiReApplyingAllModsBackToTheGame": "Re-applying all saved mods back to the game"
 }

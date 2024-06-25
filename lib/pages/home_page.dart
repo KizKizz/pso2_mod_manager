@@ -12,6 +12,7 @@ import 'package:info_popup/info_popup.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
@@ -2981,15 +2982,11 @@ class _HomePageState extends State<HomePage> {
                                                                     //local backup
                                                                     //await localOriginalFilesBackup(curMod.submods.first.modFiles);
                                                                     //apply auto radius removal if on
-                                                                    if (removeBoundaryRadiusOnModsApply) {
-                                                                      removeBoundaryOnModsApply(context, curMod.submods.first).then((value) async {
-                                                                        await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
-                                                                        setState(() {});
-                                                                      });
-                                                                    } else {
-                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
-                                                                      setState(() {});
-                                                                    }
+                                                                    if (autoAqmInject) await aqmInjectionOnModsApply(context, curMod.submods.first);
+                                                                    if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, curMod.submods.first);
+
+                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods.first);
+
                                                                     if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                       await applyOverlayedIcon(context, modViewItem!);
                                                                     }
@@ -3292,7 +3289,12 @@ class _HomePageState extends State<HomePage> {
                                                             leadingIcon: const Icon(
                                                               Icons.auto_fix_normal,
                                                             ),
-                                                            onPressed: File(modManCustomAqmFilePath).existsSync() ? () {} : null,
+                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
+                                                                ? () async {
+                                                                    isAqmInjecting = false;
+                                                                    await modAqmInjectionHomePage(context, curMod.submods.first);
+                                                                  }
+                                                                : null,
                                                             child: Text(File(modManCustomAqmFilePath).existsSync()
                                                                 ? curLangText!.uiInjectCustomAqmFile
                                                                 : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
@@ -3515,15 +3517,11 @@ class _HomePageState extends State<HomePage> {
                                                                     //local original files backup
                                                                     //await localOriginalFilesBackup(curMod.submods[modViewModSetSubModIndex].modFiles);
                                                                     //apply auto radius removal if on
-                                                                    if (removeBoundaryRadiusOnModsApply) {
-                                                                      removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]).then((value) async {
-                                                                        await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
-                                                                        setState(() {});
-                                                                      });
-                                                                    } else {
-                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
-                                                                      setState(() {});
-                                                                    }
+                                                                    if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, curMod.submods[modViewModSetSubModIndex]);
+                                                                    if (autoAqmInject) await aqmInjectionOnModsApply(context, curMod.submods[modViewModSetSubModIndex]);
+
+                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curMod.submods[modViewModSetSubModIndex]);
+
                                                                     if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                       await applyOverlayedIcon(context, modViewItem!);
                                                                     }
@@ -3804,12 +3802,18 @@ class _HomePageState extends State<HomePage> {
 
                                                         // aqm inject
                                                         Visibility(
-                                                          visible: curMod.submods.first.category == defaultCategoryDirs[1] || curMod.submods.first.category == defaultCategoryDirs[16],
+                                                          visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
                                                           child: MenuItemButton(
                                                             leadingIcon: const Icon(
                                                               Icons.auto_fix_normal,
                                                             ),
-                                                            onPressed: File(modManCustomAqmFilePath).existsSync() ? () {} : null,
+                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
+                                                                ? () async {
+                                                                    isAqmInjecting = false;
+                                                                    await modAqmInjectionHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                                  }
+                                                                : null,
                                                             child: Text(File(modManCustomAqmFilePath).existsSync()
                                                                 ? curLangText!.uiInjectCustomAqmFile
                                                                 : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
@@ -4172,15 +4176,11 @@ class _HomePageState extends State<HomePage> {
                                                                                   //local original files backup
                                                                                   //await localOriginalFilesBackup(curSubmod.modFiles);
                                                                                   //apply auto radius removal if on
-                                                                                  if (removeBoundaryRadiusOnModsApply) {
-                                                                                    removeBoundaryOnModsApply(context, curSubmod).then((value) async {
-                                                                                      await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
-                                                                                      setState(() {});
-                                                                                    });
-                                                                                  } else {
-                                                                                    await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
-                                                                                    setState(() {});
-                                                                                  }
+                                                                                  if (removeBoundaryRadiusOnModsApply) await removeBoundaryOnModsApply(context, curSubmod);
+                                                                                  if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
+
+                                                                                  await applyModsToTheGame(context, modViewItem!, curMod, curSubmod);
+
                                                                                   if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                     await applyOverlayedIcon(context, modViewItem!);
                                                                                   }
@@ -4470,7 +4470,7 @@ class _HomePageState extends State<HomePage> {
 
                                                                       // aqm inject
                                                                       Visibility(
-                                                                        visible: curMod.submods.first.category == defaultCategoryDirs[1] || curMod.submods.first.category == defaultCategoryDirs[16],
+                                                                        visible: curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16],
                                                                         child: MenuItemButton(
                                                                           leadingIcon: const Icon(
                                                                             Icons.auto_fix_normal,
@@ -5159,7 +5159,7 @@ class _HomePageState extends State<HomePage> {
         thickness: 1,
         //color: Theme.of(context).textTheme.headlineMedium?.color,
       ),
-      if (Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty && moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty)
+      if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty)
         Expanded(
           child: ScrollbarTheme(
               data: ScrollbarThemeData(
@@ -5179,7 +5179,7 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, groupIndex) {
                     int cateListLength = moddedItemsList[groupIndex].categories.where((e) => e.getNumOfAppliedItems() > 0).length;
                     List<Category> cateList = moddedItemsList[groupIndex].categories.where((e) => e.getNumOfAppliedItems() > 0).toList();
-                        
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -5507,7 +5507,8 @@ class _HomePageState extends State<HomePage> {
                                                                                               for (var mod in item.mods) {
                                                                                                 if (mod.applyStatus) {
                                                                                                   for (var submod in mod.submods) {
-                                                                                                    if (submod.applyStatus && submod.location == File(allAppliedModFiles[m].first.location).parent.path) {
+                                                                                                    if (submod.applyStatus &&
+                                                                                                        submod.location == File(allAppliedModFiles[m].first.location).parent.path) {
                                                                                                       selectedSubmodsInAppliedList.add(submod);
                                                                                                     }
                                                                                                   }
@@ -5531,7 +5532,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   ),
                                                                                 ),
                                                                               ),
-                          
+
                                                                               if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus == true) != -1)
                                                                                 Stack(
                                                                                   children: [
@@ -5588,7 +5589,7 @@ class _HomePageState extends State<HomePage> {
                                                                                                     mod.applyDate = DateTime(0);
                                                                                                   }
                                                                                                 }
-                          
+
                                                                                                 if (curItem.mods.indexWhere((element) => element.applyStatus) == -1) {
                                                                                                   curItem.applyStatus = false;
                                                                                                   curItem.applyDate = DateTime(0);
@@ -5596,16 +5597,16 @@ class _HomePageState extends State<HomePage> {
                                                                                                     await restoreOverlayedIcon(curItem);
                                                                                                   }
                                                                                                 }
-                          
+
                                                                                                 await filesRestoredMessage(mainPageScaffoldKey.currentContext, allAppliedModFiles[m], value);
                                                                                                 if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                                   previewModName = '';
                                                                                                   previewImages.clear();
-                                                                                                  Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                                  // Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
                                                                                                 }
                                                                                                 isModViewModsRemoving = false;
                                                                                                 isModViewModsApplying = false;
-                          
+
                                                                                                 saveModdedItemListToJson();
                                                                                                 // await Future.delayed(const Duration(seconds: 5));
                                                                                                 setState(() {});
@@ -5627,11 +5628,12 @@ class _HomePageState extends State<HomePage> {
                                                                                       if (await originalFilesCheck(context, allAppliedModFiles[m])) {
                                                                                         //local original files backup
                                                                                         //await localOriginalFilesBackup(allAppliedModFiles[m]);
-                          
+
                                                                                         final appliedModFiles = await modFilesApply(context, allAppliedModFiles[m]);
                                                                                         // .then((value) async {
                                                                                         if (allAppliedModFiles[m].indexWhere((element) => element.applyStatus) != -1) {
-                                                                                          int curModIndex = curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
+                                                                                          int curModIndex =
+                                                                                              curItem.mods.indexWhere((element) => element.modName == allAppliedModFiles[m].first.modName);
                                                                                           int curSubModIndex = curItem.mods[curModIndex].submods
                                                                                               .indexWhere((element) => element.submodName == allAppliedModFiles[m].first.submodName);
                                                                                           curItem.mods[curModIndex].submods[curSubModIndex].applyStatus = true;
@@ -5660,7 +5662,7 @@ class _HomePageState extends State<HomePage> {
                                                                                           ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                               context, '${curLangText!.uiSuccess}!', fileAppliedText.trim(), appliedModFiles.length * 1000));
                                                                                         }
-                          
+
                                                                                         saveModdedItemListToJson();
                                                                                         setState(() {});
                                                                                         // });

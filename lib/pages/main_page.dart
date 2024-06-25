@@ -10,6 +10,8 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/application.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_injection_homepage.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_injection_popup.dart';
 import 'package:pso2_mod_manager/cmx/cmx_functions.dart';
 import 'package:pso2_mod_manager/custom_window_button.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
@@ -1027,7 +1029,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ),
                           ModManTooltip(
-                            message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectFile : '${curLangText!.uiSelectFile}: $modManCustomAqmFilePath',
+                            message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : '${curLangText!.uiSelectAqmFile}: $modManCustomAqmFilePath',
                             child: MaterialButton(
                                 minWidth: double.infinity,
                                 height: 30,
@@ -1048,7 +1050,7 @@ class _MainPageState extends State<MainPage> {
                                   }
                                   setState(() {});
                                 }),
-                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectFile : curLangText!.uiReSelectFile, style: const TextStyle(fontWeight: FontWeight.w400))),
+                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile, style: const TextStyle(fontWeight: FontWeight.w400))),
                           ),
                         ],
                       ),
@@ -2488,6 +2490,31 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
 
+                            // custom aqm
+                            Visibility(
+                              visible: context.watch<StateProvider>().showTitleBarButtons,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 3),
+                                child: ModManTooltip(
+                                  message: curLangText!.uiInjectCustomAqmToBasewearsAndSetwears,
+                                  child: MaterialButton(
+                                    color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                      const Icon(
+                                        Icons.auto_fix_normal,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiCustomAqmInjection)
+                                    ]),
+                                    onPressed: () {
+                                      aqmInjectionDialog(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             //import
                             Visibility(
                               visible: context.watch<StateProvider>().showTitleBarButtons,
@@ -2560,14 +2587,14 @@ class _MainPageState extends State<MainPage> {
                                 File(modManAppliedModsJsonPath).existsSync() ? curLangText!.uiReapplyAllRemovedModsBackToTheGame : curLangText!.uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater,
                             child: MaterialButton(
                               color: Theme.of(context).colorScheme.primary.withBlue(180).withOpacity(0.6),
-                              onPressed: Provider.of<StateProvider>(context, listen: false).quickApplyState.isNotEmpty
+                              onPressed: File(modManAppliedModsJsonPath).existsSync() || moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isNotEmpty
                                   ? () async {
                                       if (File(modManAppliedModsJsonPath).existsSync()) {
                                         await quickModsReapply(context);
                                         setState(() {});
                                       } else {
                                         await quickModsRemoval(context);
-                                        setState(() {});
+                                        Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('apply');
                                       }
                                     }
                                   : null,

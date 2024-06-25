@@ -164,6 +164,13 @@
   "uiRemoveAllModsFromTheGameAndSaveThemToReApplyLater": "すべてのMODをゲームから削除し、後で再適用するために保存する",
   "uiQuickReapplyAllModsToTheGame": "保存したすべてのMODを再適用する",
   "uiReapplyAllRemovedModsBackToTheGame": "保存したすべてのMODをゲームに再適用する",
+  "uiAutoInjectCustomAqmFileIntoMods": "Auto inject custom aqm file into [Ba] and [Se] mods when applying them to the game",
+  "uiAutoCustomAqmInjection": "Auto Custom aqm Injection",
+  "uiSelectAqmFile": "Select an aqm File",
+  "uiReSelectAqmFile": "Re-Select aqm File",
+  "uiSelectFile": "Select File",
+  "uiReSelectFile": "Re-Select File",
+  "uiInjectCustomAqmToBasewearsAndSetwears": "Inject custom aqm to Basewears and Setwears",
   "uiItemList": "アイテムリスト",
   "uiLoadingUILanguage": "UI言語の読み込み",
   "uiReloadingMods": "リローディングモッズ",
@@ -282,6 +289,8 @@
   "uiApplyToAllLocations": "全拠点に適用",
   "uiExportAllMods": "Export All Mods",
   "uiAddPreviewImagesOrVideos": "Add Preview Images-Videos",
+  "uiInjectCustomAqmFile": "Inject custom aqm file",
+  "uiSelectFileInSettings": "Select file in Settings",
   "uiAddPreviews": "Add preview images-videos",
   "uiPreparing": "準備中",
   "uiDragDropFiles": "フォルダ(.zip)(.rar)(.7z)ファイルのドラッグ&ドロップ\nおよび.iceファイルはこちら\nまたは、\"フォルダ/ファイルの追加\" ボタンを使って、フォルダやファイルを選択します\n大量のファイルの処理に時間がかかる場合があります",
@@ -521,5 +530,15 @@
   "uiStandbyMotion": "スタンバイ",
   "uiSwimMotion": "スイム",
   "uiRemovingAllModsFromTheGame": "ゲームからすべてのMODを削除する",
+  "uiCustomAqmInjection": "Custom aqm Injection",
+  "uiCustomAqmFileOrItemIDNotFound": "Custom aqm file or item ID not found",
+  "uiFetchingHQandLQFiles": "Fetching HQ and LQ files",
+  "uiGroup2IsNotFoundInextractedIce": "Group2 is not found in extracted ice",
+  "uiFetchingItemID": "Fetching Item ID"
+  "uiInjectCustomAqmIntoThisItem": "Add custom aqm to this item",
+  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item"
+  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection"
+  "uiItemsToInjectCustomAqm": "Items to inject custom aqm",
+  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm"
   "uiReApplyingAllModsBackToTheGame": "保存したすべてのMODをゲームに再適用する。"
 }

@@ -76,6 +76,7 @@ String modManModSetsJsonPath = '';
 String modManRefSheetsLocalVerFilePath = '';
 String modManVitalGaugeJsonPath = '';
 String modManAppliedModsJsonPath = '';
+String modManAqmInjectedItemListJsonPath = '';
 //Log file path
 String modManOpLogsFilePath = '';
 //Swapper paths
@@ -560,14 +561,14 @@ Future<bool> modManPathReloader(context) async {
     modFileStructureLoader(context, false).then((mValue) {
       moddedItemsList.clear();
       moddedItemsList.addAll(mValue);
-        modSetLoader().then((sValue) {
-          modSetList.clear();
-          modSetList.addAll(sValue);
-          Future.delayed(const Duration(milliseconds: 100), () {
-            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
-            listsReloading = false;
-          });
+      modSetLoader().then((sValue) {
+        modSetList.clear();
+        modSetList.addAll(sValue);
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+          listsReloading = false;
         });
+      });
     });
   });
 
@@ -934,4 +935,6 @@ Future<void> createSubDirs(context) async {
       Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
     }
   }
+  modManAqmInjectedItemListJsonPath = modManCurActiveProfile == 1 ? Uri.file('$modManDirPath/PSO2ModManAqmInjectedList.json').toFilePath() : Uri.file('$modManDirPath/PSO2ModManAqmInjectedList_profile2.json').toFilePath();
+  File(modManAqmInjectedItemListJsonPath).createSync(recursive: true);
 }
