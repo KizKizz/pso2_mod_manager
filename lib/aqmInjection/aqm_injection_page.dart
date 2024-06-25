@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
+import 'package:pso2_mod_manager/functions/icon_overlay.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -13,7 +14,7 @@ import 'package:path/path.dart' as p;
 bool isAqmInjecting = false;
 bool isAqmInjectDuringApply = false;
 
-Future<bool> itemAqmInjectionHomePage(context, String hqIcePath, String lqIcePath) async {
+Future<bool> itemAqmInjectionHomePage(context, String hqIcePath, String lqIcePath, String iconIcePath) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
@@ -22,7 +23,7 @@ Future<bool> itemAqmInjectionHomePage(context, String hqIcePath, String lqIcePat
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!isAqmInjecting) {
               isAqmInjecting = true;
-              itemAqmInject(context, hqIcePath, lqIcePath);
+              itemAqmInject(context, hqIcePath, lqIcePath, iconIcePath);
             }
           });
           return AlertDialog(
@@ -31,8 +32,8 @@ Future<bool> itemAqmInjectionHomePage(context, String hqIcePath, String lqIcePat
               contentPadding: const EdgeInsets.all(10),
               title: Center(
                 child: Text(
-                          curLangText!.uiCustomAqmInjection,
-                        ),
+                  curLangText!.uiCustomAqmInjection,
+                ),
               ),
               content: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 250, minWidth: 250, maxHeight: double.infinity, maxWidth: double.infinity),
@@ -76,7 +77,7 @@ Future<bool> itemAqmInjectionHomePage(context, String hqIcePath, String lqIcePat
       });
 }
 
-void itemAqmInject(context, String hqIcePath, String lqIcePath) async {
+void itemAqmInject(context, String hqIcePath, String lqIcePath, String iconIcePath) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
   int packRetries = 0;
@@ -84,7 +85,6 @@ void itemAqmInject(context, String hqIcePath, String lqIcePath) async {
   List<File> downloadedFiles = [];
   Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiFetchingHQandLQFiles);
   await Future.delayed(const Duration(milliseconds: 100));
-
 
   if (hqIcePath.isNotEmpty) {
     File hqIceFile = await swapperIceFileDownload(hqIcePath, modManAddModsTempDirPath);
@@ -160,6 +160,50 @@ void itemAqmInject(context, String hqIcePath, String lqIcePath) async {
       // String extractedGroup1Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group1').toFilePath();
       // if (Directory(extractedGroup1Path).existsSync()) {}
     }
+
+    //icon patching
+    File cachedIconIceFile = Directory(modManOverlayedItemIconsDirPath).listSync().whereType<File>().firstWhere((e) => p.basename(e.path) == p.basename(iconIcePath), orElse: () => File(''));
+    if (iconIcePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).markModdedItem && cachedIconIceFile.existsSync()) {
+      Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiApplyingOverlayToIngameItemIcon);
+      await Future.delayed(const Duration(milliseconds: 100));
+      cachedIconIceFile.copySync(iconIcePath);
+    } else if (iconIcePath.isNotEmpty && Provider.of<StateProvider>(context, listen: false).markModdedItem && !cachedIconIceFile.existsSync()) {
+      Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiApplyingOverlayToIngameItemIcon);
+      await Future.delayed(const Duration(milliseconds: 100));
+      File iconIceFile = await swapperIceFileDownload(iconIcePath, modManAddModsTempDirPath);
+      if (iconIceFile.existsSync()) {
+        await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [iconIceFile.path]);
+        Directory extractedIceDir = Directory(Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(iconIceFile.path)}_ext').toFilePath());
+        if (extractedIceDir.existsSync()) {
+          File ddsFile = extractedIceDir.listSync(recursive: true).whereType<File>().firstWhere(
+                (element) => p.extension(element.path) == '.dds',
+                orElse: () => File(''),
+              );
+          if (ddsFile.existsSync()) {
+            await Process.run(modManDdsPngToolExePath, [ddsFile.path, Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath(), '-ddstopng']);
+            File convertedPng = File(Uri.file('${p.dirname(ddsFile.path)}/${p.basenameWithoutExtension(ddsFile.path)}.png').toFilePath());
+            if (convertedPng.existsSync()) {
+              ddsFile.deleteSync();
+              File? overlayedPng = await iconOverlay(convertedPng.path);
+              if (overlayedPng != null) {
+                await Process.run(
+                    modManDdsPngToolExePath, [overlayedPng.path, Uri.file('${p.dirname(overlayedPng.path)}/${p.basenameWithoutExtension(overlayedPng.path)}.dds').toFilePath(), '-pngtodds']);
+                overlayedPng.deleteSync();
+                await Process.run(
+                    '$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basenameWithoutExtension(iconIceFile.path)}_ext').toFilePath()]);
+                Directory(modManOverlayedItemIconsDirPath).createSync(recursive: true);
+                File renamedIconFile = await File(Uri.file('${iconIceFile.path}_ext.ice').toFilePath())
+                    .rename(Uri.file(iconIceFile.path.replaceFirst(modManAddModsTempDirPath, modManOverlayedItemIconsDirPath)).toFilePath());
+                if (renamedIconFile.existsSync()) {
+                  renamedIconFile.copySync(iconIcePath);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiSuccess}\n${aqmInjectedFiles.join('\n')}');
     await Future.delayed(const Duration(milliseconds: 100));
   } else {
@@ -169,7 +213,7 @@ void itemAqmInject(context, String hqIcePath, String lqIcePath) async {
       Navigator.pop(context, true);
     }
   }
- 
+
   if (isAqmInjectDuringApply) {
     Navigator.pop(context, true);
   }

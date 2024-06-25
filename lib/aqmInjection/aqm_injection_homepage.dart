@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -23,7 +25,9 @@ TextEditingController injectedItemsSearchTextController = TextEditingController(
 TextEditingController availableItemsSearchTextController = TextEditingController();
 String fromItemIconLink = '';
 String toItemIconLink = '';
-Future allAqmItemList = basewearsListGet();
+bool isLoading = false;
+bool isAllButtonPressed = false;
+late Future allAqmItemList;
 
 class AqmInjectionHomePage extends StatefulWidget {
   const AqmInjectionHomePage({super.key});
@@ -36,9 +40,10 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
   @override
   void initState() {
     //clear
-    if (Directory(modManSwapperFromItemDirPath).existsSync()) {
-      Directory(modManSwapperFromItemDirPath).deleteSync(recursive: true);
+    if (Directory(modManAddModsTempDirPath).existsSync()) {
+      Directory(modManAddModsTempDirPath).deleteSync(recursive: true);
     }
+    allAqmItemList = basewearsListGet();
     super.initState();
   }
 
@@ -149,6 +154,12 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                           .toList();
                     }
                     //injected Items
+                    // aqmItems.removeWhere((e) => allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.hqIcePath)).isNotEmpty || allAppliedModFiles.where((i) => i.modFileName == p.basenameWithoutExtension(e.lqIcePath)).isNotEmpty);
+                    // //Save to json
+                    // aqmItems.map((item) => item.toJson()).toList();
+                    // const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                    // File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+
                     List<AqmItem> injectedItem = [];
                     if (injectedItemsSearchTextController.text.isEmpty) {
                       injectedItem = aqmItems;
@@ -343,11 +354,12 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                                 .isEmpty &&
                                                                             allAppliedModFiles
                                                                                 .where((e) => e.modFileName == availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value)
-                                                                                .isEmpty
+                                                                                .isEmpty &&
+                                                                            !isAllButtonPressed
                                                                         ? () async {
-                                                                            final hqIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
-                                                                            final lqIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
-                                                                            final iconIcePaths = fetchOriginalIcePaths(availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
+                                                                            final hqIcePaths = await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'High Quality').value);
+                                                                            final lqIcePaths = await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Normal Quality').value);
+                                                                            final iconIcePaths = await originalFilePathGet(context, availableItem[i].infos.entries.firstWhere((e) => e.key == 'Icon').value);
                                                                             AqmItem newItem = AqmItem(
                                                                                 availableItem[i].category,
                                                                                 availableItem[i].infos.entries.firstWhere((e) => e.key == 'Id').value,
@@ -360,10 +372,12 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                                 iconIcePaths.isNotEmpty ? iconIcePaths.first : '',
                                                                                 false,
                                                                                 false);
-                                                                            bool value = await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath);
+                                                                            bool value = await itemAqmInjectionHomePage(context, newItem.hqIcePath, newItem.lqIcePath, newItem.iconIcePath);
                                                                             if (value) {
                                                                               newItem.isApplied = true;
+                                                                              if (Provider.of<StateProvider>(context, listen: false).markModdedItem) newItem.isIconReplaced = true;
                                                                               aqmItems.add(newItem);
+
                                                                               //Save to json
                                                                               aqmItems.map((item) => item.toJson()).toList();
                                                                               const JsonEncoder encoder = JsonEncoder.withIndent('  ');
@@ -541,26 +555,54 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                                                         )),
                                                                   ]),
                                                                   subtitle: ElevatedButton(
-                                                                      onPressed: () async {
-                                                                        List<String> restorePaths = [];
-                                                                        if (injectedItem[i].hqIcePath.isNotEmpty) {
-                                                                          restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                        }
-                                                                        if (injectedItem[i].lqIcePath.isNotEmpty) {
-                                                                          restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
-                                                                        }
-                                                                        if (restorePaths.isNotEmpty) {
-                                                                          await downloadIceFromOfficial(restorePaths);
-                                                                          aqmItems.remove(injectedItem[i]);
-                                                                        }
-                                                                        //Save to json
-                                                                        aqmItems.map((item) => item.toJson()).toList();
-                                                                        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-                                                                        File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                                      onPressed: !isAllButtonPressed
+                                                                          ? () async {
+                                                                              setState(() {
+                                                                                isLoading = true;
+                                                                                isAllButtonPressed = true;
+                                                                              });
+                                                                              List<String> restorePaths = [];
+                                                                              if (injectedItem[i].hqIcePath.isNotEmpty) {
+                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                              }
+                                                                              if (injectedItem[i].lqIcePath.isNotEmpty) {
+                                                                                restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                              }
+                                                                              if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
+                                                                                restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                                              }
+                                                                              if (restorePaths.isNotEmpty) {
+                                                                                await downloadIceFromOfficial(restorePaths);
+                                                                                aqmItems.remove(injectedItem[i]);
+                                                                              }
+                                                                              //Save to json
+                                                                              aqmItems.map((item) => item.toJson()).toList();
+                                                                              const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                                              File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
 
-                                                                        setState(() {});
-                                                                      },
-                                                                      child: Text(curLangText!.uiRemoveCustomAqmFromThisItem)),
+                                                                              setState(() {
+                                                                                isLoading = false;
+                                                                                isAllButtonPressed = false;
+                                                                              });
+                                                                            }
+                                                                          : null,
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Visibility(
+                                                                              visible: isLoading,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(right: 10),
+                                                                                child: SizedBox(
+                                                                                    width: 15,
+                                                                                    height: 15,
+                                                                                    child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                                              )),
+                                                                          const SizedBox(width: 10),
+                                                                          Text(curLangText!.uiRemoveCustomAqmFromThisItem)
+                                                                        ],
+                                                                      )),
                                                                 ),
                                                               );
                                                             }))),
@@ -585,29 +627,119 @@ class _AqmInjectionHomePageState extends State<AqmInjectionHomePage> {
                                       spacing: 5,
                                       children: [
                                         ElevatedButton(
-                                            onPressed: () async {
-                                              final prefs = await SharedPreferences.getInstance();
-                                              const XTypeGroup typeGroup = XTypeGroup(
-                                                label: '.aqm',
-                                                extensions: <String>['aqm'],
-                                              );
-                                              final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                              if (selectedFile != null) {
-                                                modManCustomAqmFileName = selectedFile.name;
-                                                prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
-                                                if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
-                                                  modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
-                                                  File(selectedFile.path).copySync(modManCustomAqmFilePath);
-                                                }
-                                              }
-                                              setState(() {});
-                                            },
+                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
+                                                ? () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                      isAllButtonPressed = true;
+                                                    });
+                                                    for (int i = 0; i < injectedItem.length; i++) {
+                                                      List<String> restorePaths = [];
+                                                      if (injectedItem[i].hqIcePath.isNotEmpty) {
+                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (injectedItem[i].lqIcePath.isNotEmpty) {
+                                                        restorePaths.add(injectedItem[i].hqIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (injectedItem[i].iconIcePath.isNotEmpty && injectedItem[i].isIconReplaced) {
+                                                        restorePaths.add(injectedItem[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), '').trim());
+                                                      }
+                                                      if (restorePaths.isNotEmpty) {
+                                                        await downloadIceFromOfficial(restorePaths);
+                                                        aqmItems.remove(injectedItem[i]);
+                                                      }
+                                                    }
+                                                    //Save to json
+                                                    aqmItems.map((item) => item.toJson()).toList();
+                                                    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                    File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+
+                                                    setState(() {
+                                                      isLoading = false;
+                                                      isAllButtonPressed = false;
+                                                    });
+                                                  }
+                                                : null,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Visibility(
+                                                    visible: isLoading,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                    )),
+                                                const SizedBox(width: 10),
+                                                Text(curLangText!.uiRemoveAll)
+                                              ],
+                                            )),
+                                        ElevatedButton(
+                                            onPressed: injectedItem.isNotEmpty && !isAllButtonPressed
+                                                ? () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                      isAllButtonPressed = true;
+                                                    });
+                                                    for (int i = 0; i < injectedItem.length; i++) {
+                                                      bool value = await itemAqmInjectionHomePage(context, injectedItem[i].hqIcePath, injectedItem[i].lqIcePath, injectedItem[i].iconIcePath);
+                                                      if (value) {
+                                                        injectedItem[i].isApplied = true;
+                                                        if (Provider.of<StateProvider>(context, listen: false).markModdedItem) injectedItem[i].isIconReplaced = true;
+                                                      }
+                                                      //Save to json
+                                                      aqmItems.map((item) => item.toJson()).toList();
+                                                      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                                                      File(modManAqmInjectedItemListJsonPath).writeAsStringSync(encoder.convert(aqmItems));
+                                                    }
+
+                                                    setState(() {
+                                                      isLoading = false;
+                                                      isAllButtonPressed = false;
+                                                    });
+                                                  }
+                                                : null,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Visibility(
+                                                    visible: isLoading,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 10),
+                                                      child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Theme.of(context).buttonTheme.colorScheme!.onSurface)),
+                                                    )),
+                                                Text(curLangText!.uiReInjectAll)
+                                              ],
+                                            )),
+                                        ElevatedButton(
+                                            onPressed: !isAllButtonPressed
+                                                ? () async {
+                                                    final prefs = await SharedPreferences.getInstance();
+                                                    const XTypeGroup typeGroup = XTypeGroup(
+                                                      label: '.aqm',
+                                                      extensions: <String>['aqm'],
+                                                    );
+                                                    final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                                    if (selectedFile != null) {
+                                                      modManCustomAqmFileName = selectedFile.name;
+                                                      prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                                      if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                                        modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                                        File(selectedFile.path).copySync(modManCustomAqmFilePath);
+                                                      }
+                                                    }
+                                                    setState(() {});
+                                                  }
+                                                : null,
                                             child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
                                                 style: const TextStyle(fontWeight: FontWeight.w400))),
                                         ElevatedButton(
                                             onPressed: () {
                                               injectedItemsSearchTextController.clear();
                                               availableItemsSearchTextController.clear();
+                                              isLoading = false;
+                                              isAllButtonPressed = false;
                                               Navigator.pop(context);
                                             },
                                             child: Text(curLangText!.uiClose)),

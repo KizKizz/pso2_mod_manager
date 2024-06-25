@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,19 +14,18 @@ import 'package:pso2_mod_manager/state_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-bool isAqmInjecting = false;
-bool isAqmInjectDuringApply = false;
+bool isAqmInjectionRemoving = false;
 
-Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
+Future<bool> modAqmInjectionRemovalHomePage(context, SubMod submod) async {
   return await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (dialogContext, setState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!isAqmInjecting) {
-              isAqmInjecting = true;
-              aqmInject(context, submod);
+            if (!isAqmInjectionRemoving) {
+              isAqmInjectionRemoving = true;
+              aqmInjectionRemoval(context, submod);
             }
           });
           return AlertDialog(
@@ -53,9 +54,8 @@ Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Visibility(
-                      visible: !isAqmInjectDuringApply,
-                      child: Padding(
+                    
+                      Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: ElevatedButton(
                             onPressed: context.watch<StateProvider>().aqmInjectionProgressStatus.split('\n').first == curLangText!.uiError ||
@@ -64,13 +64,13 @@ Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
                                     Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                       element.deleteSync(recursive: true);
                                     });
-                                    isAqmInjecting = false;
+                                    isAqmInjectionRemoving = false;
                                     Navigator.pop(context, true);
                                   }
                                 : null,
                             child: Text(curLangText!.uiReturn)),
                       ),
-                    ),
+                  
                   ],
                 ),
               ));
@@ -78,7 +78,7 @@ Future<bool> modAqmInjectionHomePage(context, SubMod submod) async {
       });
 }
 
-void aqmInject(context, SubMod submod) async {
+Future<void> aqmInjectionRemoval(context, SubMod submod) async {
   Directory(modManAddModsTempDirPath).createSync(recursive: true);
   List<String> aqmInjectedFiles = [];
   int packRetries = 0;
@@ -121,13 +121,13 @@ void aqmInject(context, SubMod submod) async {
           }
         }
         //copy custom aqm file
-        final copiedFile = File(modManCustomAqmFilePath).copySync(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(modManCustomAqmFilePath)}').toFilePath());
-        if (copiedFile.existsSync() && id > -1) {
+        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(modManCustomAqmFilePath)}').toFilePath());
+        if (customAqmFile.existsSync()) {
           Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus(curLangText!.uiPackingFiles);
           await Future.delayed(const Duration(milliseconds: 100));
           //pack
-          while (!File(Uri.file('${p.dirname(copiedFile.parent.path)}.ice').toFilePath()).existsSync()) {
-            await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(copiedFile.parent.path)}"', [Uri.file(p.dirname(copiedFile.parent.path)).toFilePath()]);
+          while (!File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).existsSync()) {
+            await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(customAqmFile.parent.path)}"', [Uri.file(p.dirname(customAqmFile.parent.path)).toFilePath()]);
             packRetries++;
             // debugPrint(packRetries.toString());
             if (packRetries == 10) {
@@ -139,9 +139,9 @@ void aqmInject(context, SubMod submod) async {
           Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus(curLangText!.uiReplacingModFiles);
           await Future.delayed(const Duration(milliseconds: 100));
           try {
-            File renamedFile = await File(Uri.file('${p.dirname(copiedFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(copiedFile.parent.path).replaceAll('_ext', '')).toFilePath());
+            File renamedFile = await File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
             await renamedFile.copy(modFile.location);
-            aqmInjectedFiles.add('${p.basename(copiedFile.path)} -> ${modFile.modFileName}');
+            aqmInjectedFiles.add('${p.basename(customAqmFile.path)} -> ${modFile.modFileName}');
           } catch (e) {
             Provider.of<StateProvider>(context, listen: false).setBoundaryEditProgressStatus('${curLangText!.uiError}\n${e.toString()}');
           }
@@ -161,34 +161,73 @@ void aqmInject(context, SubMod submod) async {
   } else {
     Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}');
     await Future.delayed(const Duration(milliseconds: 100));
-    if (isAqmInjectDuringApply) {
-      Navigator.pop(context, true);
+    
+  }
+  
+  isAqmInjectionRemoving = true;
+}
+
+
+Future<void> aqmInjectionRemovalSilent(context, SubMod submod) async {
+  if (Directory(modManAddModsTempDirPath).existsSync()) {
+    Directory(modManAddModsTempDirPath).deleteSync();
+  }
+  Directory(modManAddModsTempDirPath).createSync(recursive: true);
+
+  int packRetries = 0;
+
+  //player item data
+  List<CsvItem> basewearsItemData = playerItemData.where((e) => e.category == defaultCategoryDirs[1]).toList();
+  List<ModFile> filteredModFile = [];
+  for (var modFile in submod.modFiles) {
+    if (basewearsItemData
+        .where(
+            (e) => e.infos.entries.firstWhere((k) => k.key == 'Normal Quality').value == modFile.modFileName || e.infos.entries.firstWhere((k) => k.key == 'High Quality').value == modFile.modFileName)
+        .isNotEmpty) {
+      filteredModFile.add(modFile);
     }
   }
-  // } else {
-  //   Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiError}\n${curLangText!.uiOnlyBasewearsAndSetwearsCanBeModified}');
-  //   await Future.delayed(const Duration(milliseconds: 100));
-  //   if (isAqmInjectDuringApply) {
-  //     Navigator.pop(context, true);
-  //   }
-  // }
-  // if (boundaryRemovedFiles.isNotEmpty && boundaryNotFoundFiles.isNotEmpty) {
-  //   Provider.of<StateProvider>(context, listen: false)
-  //       .setAqmInjectionProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}\n${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
-  //   await Future.delayed(const Duration(milliseconds: 100));
-  // } else if (boundaryRemovedFiles.isNotEmpty && boundaryNotFoundFiles.isEmpty) {
-  //   Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiSuccess}\n${boundaryRemovedFiles.join('\n')}');
-  //   await Future.delayed(const Duration(milliseconds: 100));
-  // } else if (boundaryRemovedFiles.isEmpty && boundaryNotFoundFiles.isNotEmpty) {
-  //   Provider.of<StateProvider>(context, listen: false).setAqmInjectionProgressStatus('${curLangText!.uiError}\n${curLangText!.uiNoMatchingFileFound}\n${boundaryNotFoundFiles.join('\n')}');
-  //   await Future.delayed(const Duration(milliseconds: 100));
-  // }
-  if (isAqmInjectDuringApply) {
-    Navigator.pop(context, true);
+  if (filteredModFile.isNotEmpty) {
+    for (var modFile in filteredModFile) {
+      //extract files
+      await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [modFile.location]);
+      String extractedGroup2Path = Uri.file('$modManAddModsTempDirPath/${modFile.modFileName}_ext/group2').toFilePath();
+      if (Directory(extractedGroup2Path).existsSync()) {
+        //get id from aqp file
+        File aqpFile = Directory(extractedGroup2Path).listSync().whereType<File>().firstWhere((e) => p.extension(e.path) == '.aqp', orElse: () => File(''));
+        int id = -1;
+        if (aqpFile.existsSync()) {
+          final aqpFileNameParts = p.basenameWithoutExtension(aqpFile.path).split('_');
+          for (var part in aqpFileNameParts) {
+            if (int.tryParse(part) != null) {
+              id = int.parse(part);
+              break;
+            }
+          }
+        }
+        //find custom aqm file to remove
+        final customAqmFile = File(Uri.file('$extractedGroup2Path/pl_rbd_${id}_bw_sa${p.extension(modManCustomAqmFilePath)}').toFilePath());
+        if (customAqmFile.existsSync()) {
+          //delete
+          await customAqmFile.delete();
+          //pack
+          while (!File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).existsSync()) {
+            await Process.run('$modManZamboniExePath -c -pack -outdir "${p.dirname(customAqmFile.parent.path)}"', [Uri.file(p.dirname(customAqmFile.parent.path)).toFilePath()]);
+            packRetries++;
+            if (packRetries == 10) {
+              break;
+            }
+          }
+          packRetries = 0;
+          try {
+            File renamedFile =
+                await File(Uri.file('${p.dirname(customAqmFile.parent.path)}.ice').toFilePath()).rename(Uri.file(p.dirname(customAqmFile.parent.path).replaceAll('_ext', '')).toFilePath());
+            await renamedFile.copy(modFile.location);
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+        }
+      }
+    }
   }
-
-  isAqmInjecting = true;
-  // if (isAqmInjectDuringApply) {
-  //   Navigator.pop(context, true);
-  // }
 }

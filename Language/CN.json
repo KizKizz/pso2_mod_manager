@@ -289,6 +289,7 @@
   "uiApplyToAllLocations": "应用到所有路径",
   "uiExportAllMods": "导出所有Mod", 
   "uiAddPreviewImagesOrVideos": "添加预览图像或视频",
+  "uiRemoveInjectedCustomAqm": "Remove injected custom aqm file",
   "uiInjectCustomAqmFile": "Inject custom aqm file",
   "uiSelectFileInSettings": "Select file in Settings",
   "uiAddPreviews": "添加预览",
@@ -534,11 +535,14 @@
   "uiCustomAqmFileOrItemIDNotFound": "Custom aqm file or item ID not found",
   "uiFetchingHQandLQFiles": "Fetching HQ and LQ files",
   "uiGroup2IsNotFoundInextractedIce": "Group2 is not found in extracted ice",
-  "uiFetchingItemID": "Fetching Item ID"
+  "uiFetchingItemID": "Fetching Item ID",
   "uiInjectCustomAqmIntoThisItem": "Add custom aqm to this item",
-  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item"
-  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection"
+  "uiRemoveCustomAqmFromThisItem": "Remove custom aqm from this item",
+  "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection",
+  "uiRemoveAll": "Remove All",
+  "uiReInjectAll": "Reinject All",
+  "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon",
   "uiItemsToInjectCustomAqm": "Items to inject custom aqm",
-  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm"
+  "uiItemsAlreadyHaveCustomAqm": "Items already injected with custom aqm",
   "uiReApplyingAllModsBackToTheGame": "Re-applying all saved mods back to the game"
 }

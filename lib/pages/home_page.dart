@@ -13,6 +13,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject.dart';
 import 'package:pso2_mod_manager/aqmInjection/aqm_inject_functions.dart';
+import 'package:pso2_mod_manager/aqmInjection/aqm_removal.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_edit.dart';
 import 'package:pso2_mod_manager/boundary/mods_boundary_functions.dart';
 import 'package:pso2_mod_manager/classes/category_class.dart';
@@ -2925,6 +2926,9 @@ class _HomePageState extends State<HomePage> {
                                                                           curMod.submods.first.cmxEndPos = -1;
                                                                         }
                                                                       }
+                                                                      if (autoAqmInject) {
+                                                                        await aqmInjectionRemovalSilent(context, curMod.submods.first);
+                                                                      }
                                                                       if (curMod.submods.first.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                         curMod.submods.first.applyStatus = false;
                                                                       }
@@ -3301,6 +3305,25 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
 
+                                                        // aqm inject removal
+                                                        Visibility(
+                                                          visible: curMod.submods.first.category == defaultCategoryDirs[1] || curMod.submods.first.category == defaultCategoryDirs[16],
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.auto_fix_off,
+                                                            ),
+                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
+                                                                ? () async {
+                                                                    isAqmInjectionRemoving = false;
+                                                                    await modAqmInjectionRemovalHomePage(context, curMod.submods.first);
+                                                                  }
+                                                                : null,
+                                                            child: Text(File(modManCustomAqmFilePath).existsSync()
+                                                                ? curLangText!.uiRemoveInjectedCustomAqm
+                                                                : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                          ),
+                                                        ),
+
                                                         //remove from set
                                                         Visibility(
                                                           visible: context.watch<StateProvider>().setsWindowVisible && curMod.submods.first.isSet,
@@ -3457,6 +3480,9 @@ class _HomePageState extends State<HomePage> {
                                                                           curMod.submods[modViewModSetSubModIndex].cmxStartPos = -1;
                                                                           curMod.submods[modViewModSetSubModIndex].cmxEndPos = -1;
                                                                         }
+                                                                      }
+                                                                      if (autoAqmInject) {
+                                                                        await aqmInjectionRemovalSilent(context, curMod.submods[modViewModSetSubModIndex]);
                                                                       }
                                                                       if (curMod.submods[modViewModSetSubModIndex].modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                         curMod.submods[modViewModSetSubModIndex].applyStatus = false;
@@ -3820,6 +3846,26 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
 
+                                                        // aqm inject removal
+                                                        Visibility(
+                                                          visible: curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[1] ||
+                                                              curMod.submods[modViewModSetSubModIndex].category == defaultCategoryDirs[16],
+                                                          child: MenuItemButton(
+                                                            leadingIcon: const Icon(
+                                                              Icons.auto_fix_off,
+                                                            ),
+                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
+                                                                ? () async {
+                                                                    isAqmInjectionRemoving = false;
+                                                                    await modAqmInjectionRemovalHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                                  }
+                                                                : null,
+                                                            child: Text(File(modManCustomAqmFilePath).existsSync()
+                                                                ? curLangText!.uiRemoveInjectedCustomAqm
+                                                                : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                          ),
+                                                        ),
+
                                                         // remove from modset
                                                         MenuItemButton(
                                                           leadingIcon: const Icon(
@@ -4122,6 +4168,9 @@ class _HomePageState extends State<HomePage> {
                                                                                       curSubmod.cmxStartPos = -1;
                                                                                       curSubmod.cmxEndPos = -1;
                                                                                     }
+                                                                                  }
+                                                                                  if (autoAqmInject) {
+                                                                                    await aqmInjectionRemovalSilent(context, curSubmod);
                                                                                   }
                                                                                   if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                     curSubmod.applyStatus = false;
@@ -4487,6 +4536,25 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       ),
 
+                                                                      // aqm inject removal
+                                                                      Visibility(
+                                                                        visible: curSubmod.category == defaultCategoryDirs[1] || curSubmod.category == defaultCategoryDirs[16],
+                                                                        child: MenuItemButton(
+                                                                          leadingIcon: const Icon(
+                                                                            Icons.auto_fix_off,
+                                                                          ),
+                                                                          onPressed: File(modManCustomAqmFilePath).existsSync()
+                                                                              ? () async {
+                                                                                  isAqmInjectionRemoving = false;
+                                                                                  await modAqmInjectionRemovalHomePage(context, curSubmod);
+                                                                                }
+                                                                              : null,
+                                                                          child: Text(File(modManCustomAqmFilePath).existsSync()
+                                                                              ? curLangText!.uiRemoveInjectedCustomAqm
+                                                                              : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                                        ),
+                                                                      ),
+
                                                                       //remove from set
                                                                       Visibility(
                                                                         visible: context.watch<StateProvider>().setsWindowVisible && curSubmod.isSet,
@@ -4707,6 +4775,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             if (modViewItem!.mods.where((element) => element.isNew).isEmpty) {
                                                                                               modViewItem!.isNew = false;
                                                                                             }
+                                                                                            if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
                                                                                             if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                               await applyOverlayedIcon(context, modViewItem!);
                                                                                             }
@@ -4744,6 +4813,9 @@ class _HomePageState extends State<HomePage> {
                                                                                       restoreOriginalFilesToTheGame(context, [curModFile]).then((value) async {
                                                                                         if (curSubmod.modFiles.indexWhere((element) => element.applyStatus) == -1) {
                                                                                           curSubmod.applyStatus = false;
+                                                                                          if (autoAqmInject) {
+                                                                                            await aqmInjectionRemovalSilent(context, curSubmod);
+                                                                                          }
                                                                                         }
                                                                                         if (curMod.submods.indexWhere((element) => element.applyStatus) == -1) {
                                                                                           curMod.applyStatus = false;
@@ -5570,6 +5642,9 @@ class _HomePageState extends State<HomePage> {
                                                                                                           submod.cmxEndPos = -1;
                                                                                                         }
                                                                                                       }
+                                                                                                      if (autoAqmInject) {
+                                                                                                        await aqmInjectionRemovalSilent(context, submod);
+                                                                                                      }
                                                                                                       submod.applyStatus = false;
                                                                                                       submod.applyDate = DateTime(0);
                                                                                                     }
@@ -5647,6 +5722,7 @@ class _HomePageState extends State<HomePage> {
                                                                                             curItem.isNew = false;
                                                                                           }
                                                                                           curItem.applyDate = DateTime.now();
+                                                                                          if (autoAqmInject) await aqmInjectionOnModsApply(context, curItem.mods[curModIndex].submods[curSubModIndex]);
                                                                                           if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                             await applyOverlayedIcon(context, curItem);
                                                                                           }
@@ -6016,6 +6092,9 @@ class _HomePageState extends State<HomePage> {
                                                                           submod.cmxEndPos = -1;
                                                                         }
                                                                       }
+                                                                      if (autoAqmInject) {
+                                                                        await aqmInjectionRemovalSilent(context, submod);
+                                                                      }
                                                                       submod.applyStatus = false;
                                                                     }
                                                                     if (submod.applyStatus) {
@@ -6104,6 +6183,7 @@ class _HomePageState extends State<HomePage> {
                                                                         curSubmod.applyStatus = true;
                                                                         curSubmod.isNew = false;
                                                                         curSubmod.applyDate = DateTime.now();
+                                                                        if (autoAqmInject) await aqmInjectionOnModsApply(context, curSubmod);
                                                                       }
                                                                       curMod.applyStatus = true;
                                                                       curMod.isNew = false;
@@ -6492,6 +6572,9 @@ class _HomePageState extends State<HomePage> {
                                                                                                     submod.cmxEndPos = -1;
                                                                                                   }
                                                                                                 }
+                                                                                                if (autoAqmInject) {
+                                                                                                  await aqmInjectionRemovalSilent(context, submod);
+                                                                                                }
                                                                                                 submod.applyStatus = false;
                                                                                               }
                                                                                               if (submod.applyStatus) {
@@ -6578,6 +6661,7 @@ class _HomePageState extends State<HomePage> {
                                                                                           curItem.isNew = false;
                                                                                         }
                                                                                         curItem.applyDate = DateTime.now();
+                                                                                        if (autoAqmInject) await aqmInjectionOnModsApply(context, curItem.mods[curModIndex].submods[curSubModIndex]);
                                                                                         if (Provider.of<StateProvider>(context, listen: false).markModdedItem) {
                                                                                           await applyOverlayedIcon(context, curItem);
                                                                                         }

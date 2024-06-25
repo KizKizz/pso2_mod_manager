@@ -360,6 +360,7 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiAddPreviews = json['uiAddPreviews'] as String
       ..uiInjectCustomAqmFile = json['uiInjectCustomAqmFile'] as String
       ..uiSelectFileInSettings = json['uiSelectFileInSettings'] as String
+      ..uiRemoveInjectedCustomAqm = json['uiRemoveInjectedCustomAqm'] as String
       ..uiPreparing = json['uiPreparing'] as String
       ..uiDragDropFiles = json['uiDragDropFiles'] as String
       ..uiAchiveCurrentlyNotSupported =
@@ -674,7 +675,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiItemsAlreadyHaveCustomAqm =
           json['uiItemsAlreadyHaveCustomAqm'] as String
       ..uiNoteMustSelectACustomAqmFileBeforeInject =
-          json['uiNoteMustSelectACustomAqmFileBeforeInject'] as String;
+          json['uiNoteMustSelectACustomAqmFileBeforeInject'] as String
+      ..uiRemoveAll = json['uiRemoveAll'] as String
+      ..uiReInjectAll = json['uiReInjectAll'] as String
+      ..uiApplyingOverlayToIngameItemIcon =
+          json['uiApplyingOverlayToIngameItemIcon'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -984,6 +989,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiAddPreviews': instance.uiAddPreviews,
       'uiInjectCustomAqmFile': instance.uiInjectCustomAqmFile,
       'uiSelectFileInSettings': instance.uiSelectFileInSettings,
+      'uiRemoveInjectedCustomAqm': instance.uiRemoveInjectedCustomAqm,
       'uiPreparing': instance.uiPreparing,
       'uiDragDropFiles': instance.uiDragDropFiles,
       'uiAchiveCurrentlyNotSupported': instance.uiAchiveCurrentlyNotSupported,
@@ -1257,4 +1263,8 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiItemsAlreadyHaveCustomAqm': instance.uiItemsAlreadyHaveCustomAqm,
       'uiNoteMustSelectACustomAqmFileBeforeInject':
           instance.uiNoteMustSelectACustomAqmFileBeforeInject,
+      'uiRemoveAll': instance.uiRemoveAll,
+      'uiReInjectAll': instance.uiReInjectAll,
+      'uiApplyingOverlayToIngameItemIcon':
+          instance.uiApplyingOverlayToIngameItemIcon,
     };
