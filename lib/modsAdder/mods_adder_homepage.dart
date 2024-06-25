@@ -461,11 +461,7 @@ void modsAdderHomePage(context) {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                _isAddingMods
-                                                    ? curLangText!.uiAddingMods
-                                                    : Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus.isEmpty
-                                                        ? curLangText!.uiWaitingForData
-                                                        : Provider.of<StateProvider>(context, listen: false).modAdderProgressStatus,
+                                                _isAddingMods ? curLangText!.uiAddingMods : curLangText!.uiWaitingForData,
                                                 style: const TextStyle(fontSize: 20),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -473,13 +469,13 @@ void modsAdderHomePage(context) {
                                                 height: 20,
                                               ),
                                               const CircularProgressIndicator(),
-                                              if (_isAddingMods)
-                                                Padding(
-                                                    padding: const EdgeInsets.only(top: 15),
-                                                    child: Text(
-                                                      context.watch<StateProvider>().modAdderProgressStatus,
-                                                      textAlign: TextAlign.center,
-                                                    ))
+                                              Padding(
+                                                  padding: const EdgeInsets.only(top: 20),
+                                                  child: Text(
+                                                    context.watch<StateProvider>().modAdderProgressStatus,
+                                                    textAlign: TextAlign.center,
+                                                     style: const TextStyle(fontSize: 16),
+                                                  ))
                                             ],
                                           ),
                                         );
@@ -495,15 +491,15 @@ void modsAdderHomePage(context) {
                                                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 20),
                                                 ),
                                                 if (_errorMessage.isNotEmpty)
-                                                Text(
-                                                  _errorMessage,
-                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
-                                                ),
+                                                  Text(
+                                                    _errorMessage,
+                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
+                                                  ),
                                                 if (snapshot.error != null)
-                                                Text(
-                                                  snapshot.error.toString(),
-                                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
-                                                ),
+                                                  Text(
+                                                    snapshot.error.toString(),
+                                                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 18),
+                                                  ),
                                               ],
                                             ),
                                           );
