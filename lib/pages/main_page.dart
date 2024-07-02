@@ -869,6 +869,31 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //cmx file refresh
+                      ModManTooltip(
+                        message: curLangText!.uiCmxRefreshToolTip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            cmxRefreshing = true;
+                            setState(() {});
+                            await cmxRefresh();
+                            cmxRefreshing = false;
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.rotate_left,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
                       //overlay icons
                       ModManTooltip(
                         message: curLangText!.uiMarkModdedItemOnIconInGame,
@@ -894,31 +919,6 @@ class _MainPageState extends State<MainPage> {
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).markModdedItem ? '${curLangText!.uiMarkModdedItemInGame}: ON' : '${curLangText!.uiMarkModdedItemInGame}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      //cmx file refresh
-                      ModManTooltip(
-                        message: curLangText!.uiCmxRefreshToolTip,
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            cmxRefreshing = true;
-                            setState(() {});
-                            await cmxRefresh();
-                            cmxRefreshing = false;
-                            setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.rotate_left,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -999,19 +999,21 @@ class _MainPageState extends State<MainPage> {
                             message: curLangText!.uiAutoInjectCustomAqmFileIntoMods,
                             child: MaterialButton(
                               height: 40,
-                              onPressed: File(modManCustomAqmFilePath).existsSync() ? (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
-                                  autoAqmInject = false;
-                                  prefs.setBool('autoAqmInject', false);
-                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
-                                } else {
-                                  autoAqmInject = true;
-                                  prefs.setBool('autoAqmInject', true);
-                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
-                                }
-                                setState(() {});
-                              }) : null,
+                              onPressed: File(modManCustomAqmFilePath).existsSync()
+                                  ? (() async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
+                                        autoAqmInject = false;
+                                        prefs.setBool('autoAqmInject', false);
+                                        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+                                      } else {
+                                        autoAqmInject = true;
+                                        prefs.setBool('autoAqmInject', true);
+                                        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
+                                      }
+                                      setState(() {});
+                                    })
+                                  : null,
                               child: Row(
                                 children: [
                                   const Icon(
@@ -1050,9 +1052,16 @@ class _MainPageState extends State<MainPage> {
                                   }
                                   setState(() {});
                                 }),
-                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile, style: const TextStyle(fontWeight: FontWeight.w400))),
+                                child: Row(
+                                children: [
+                                  const SizedBox(width: 28),
+                                  Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
+                                    style: const TextStyle(fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                                 
                           ),
-                        ],
+                      )],
                       ),
 
                       //remove profanity Filter
@@ -2106,14 +2115,14 @@ class _MainPageState extends State<MainPage> {
                                     modFileStructureLoader(context, true).then((value) {
                                       moddedItemsList.clear();
                                       moddedItemsList.addAll(value);
-                                        modSetLoader().then((sValue) {
-                                          modSetList.clear();
-                                          modSetList.addAll(sValue);
-                                          Future.delayed(const Duration(milliseconds: 100), () {
-                                            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
-                                            listsReloading = false;
-                                          });
+                                      modSetLoader().then((sValue) {
+                                        modSetList.clear();
+                                        modSetList.addAll(sValue);
+                                        Future.delayed(const Duration(milliseconds: 100), () {
+                                          Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                          listsReloading = false;
                                         });
+                                      });
                                       listsReloading = false;
                                       modViewItem = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();

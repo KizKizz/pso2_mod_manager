@@ -134,7 +134,6 @@ class _HomePageState extends State<HomePage> {
       headersOpacityValue = context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue;
     }
 
-
     MultiSplitView mainViews = MultiSplitView(
       controller: _viewsController,
       onWeightChange: () {
@@ -2785,7 +2784,7 @@ class _HomePageState extends State<HomePage> {
                                                             }
                                                           }
                                                         }
-                                                        await modSetLoader();
+                                                        modSetList = await modSetLoader();
                                                         saveSetListToJson();
                                                         saveModdedItemListToJson();
                                                         setState(() {});
@@ -3223,7 +3222,7 @@ class _HomePageState extends State<HomePage> {
                                                                   }
                                                                 }
                                                               }
-                                                              await modSetLoader();
+                                                              modSetList = await modSetLoader();
                                                               saveSetListToJson();
                                                               saveModdedItemListToJson();
                                                               setState(() {});
@@ -3313,15 +3312,11 @@ class _HomePageState extends State<HomePage> {
                                                             leadingIcon: const Icon(
                                                               Icons.auto_fix_off,
                                                             ),
-                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
-                                                                ? () async {
-                                                                    isAqmInjectionRemoving = false;
-                                                                    await modAqmInjectionRemovalHomePage(context, curMod.submods.first);
-                                                                  }
-                                                                : null,
-                                                            child: Text(File(modManCustomAqmFilePath).existsSync()
-                                                                ? curLangText!.uiRemoveInjectedCustomAqm
-                                                                : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                            onPressed: () async {
+                                                              isAqmInjectionRemoving = false;
+                                                              await modAqmInjectionRemovalHomePage(context, curMod.submods.first);
+                                                            },
+                                                            child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                           ),
                                                         ),
 
@@ -3763,7 +3758,7 @@ class _HomePageState extends State<HomePage> {
                                                                   modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
                                                                 }
                                                               }
-                                                              await modSetLoader();
+                                                              modSetList = await modSetLoader();
                                                               saveSetListToJson();
                                                               saveModdedItemListToJson();
                                                               setState(() {});
@@ -3855,15 +3850,11 @@ class _HomePageState extends State<HomePage> {
                                                             leadingIcon: const Icon(
                                                               Icons.auto_fix_off,
                                                             ),
-                                                            onPressed: File(modManCustomAqmFilePath).existsSync()
-                                                                ? () async {
-                                                                    isAqmInjectionRemoving = false;
-                                                                    await modAqmInjectionRemovalHomePage(context, curMod.submods[modViewModSetSubModIndex]);
-                                                                  }
-                                                                : null,
-                                                            child: Text(File(modManCustomAqmFilePath).existsSync()
-                                                                ? curLangText!.uiRemoveInjectedCustomAqm
-                                                                : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                            onPressed: () async {
+                                                              isAqmInjectionRemoving = false;
+                                                              await modAqmInjectionRemovalHomePage(context, curMod.submods[modViewModSetSubModIndex]);
+                                                            },
+                                                            child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                           ),
                                                         ),
 
@@ -4453,7 +4444,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 modFile.location = modFile.location.replaceFirst(oldSubmodPath, newSubmodPath);
                                                                               }
                                                                             }
-                                                                            await modSetLoader();
+                                                                            modSetList = await modSetLoader();
                                                                             saveSetListToJson();
                                                                             saveModdedItemListToJson();
                                                                             setState(() {});
@@ -4544,15 +4535,11 @@ class _HomePageState extends State<HomePage> {
                                                                           leadingIcon: const Icon(
                                                                             Icons.auto_fix_off,
                                                                           ),
-                                                                          onPressed: File(modManCustomAqmFilePath).existsSync()
-                                                                              ? () async {
-                                                                                  isAqmInjectionRemoving = false;
-                                                                                  await modAqmInjectionRemovalHomePage(context, curSubmod);
-                                                                                }
-                                                                              : null,
-                                                                          child: Text(File(modManCustomAqmFilePath).existsSync()
-                                                                              ? curLangText!.uiRemoveInjectedCustomAqm
-                                                                              : '${curLangText!.uiInjectCustomAqmFile}\n${curLangText!.uiSelectFileInSettings}'),
+                                                                          onPressed: () async {
+                                                                            isAqmInjectionRemoving = false;
+                                                                            await modAqmInjectionRemovalHomePage(context, curSubmod);
+                                                                          },
+                                                                          child: Text(curLangText!.uiRemoveInjectedCustomAqm),
                                                                         ),
                                                                       ),
 
@@ -5687,9 +5674,8 @@ class _HomePageState extends State<HomePage> {
                                                                                                 // await Future.delayed(const Duration(seconds: 5));
                                                                                                 setState(() {
                                                                                                   if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
-                                                                                                 
-                                                                                                  Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
-                                                                                                }
+                                                                                                    Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                                  }
                                                                                                 });
                                                                                               });
                                                                                             });
