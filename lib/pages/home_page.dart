@@ -134,6 +134,7 @@ class _HomePageState extends State<HomePage> {
       headersOpacityValue = context.watch<StateProvider>().uiOpacityValue + headersExtraOpacityValue;
     }
 
+
     MultiSplitView mainViews = MultiSplitView(
       controller: _viewsController,
       onWeightChange: () {
@@ -2727,7 +2728,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     child: Text(curLangText!.uiRename),
                                                     onPressed: () async {
-                                                      String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                      String newName = await modsRenameDialog(context, modViewItem!.location, curMod.modName);
                                                       if (newName.isNotEmpty) {
                                                         //change paths
                                                         String oldModPath = curMod.location;
@@ -3171,7 +3172,7 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                           child: Text(curLangText!.uiRename),
                                                           onPressed: () async {
-                                                            String newName = await modsRenameDialog(context, curMod.location, curMod.submods.first.location);
+                                                            String newName = await modsRenameDialog(context, modViewItem!.location, curMod.modName);
                                                             if (newName.isNotEmpty) {
                                                               //change paths
                                                               String oldModPath = curMod.location;
@@ -5677,14 +5678,19 @@ class _HomePageState extends State<HomePage> {
                                                                                                 if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
                                                                                                   previewModName = '';
                                                                                                   previewImages.clear();
-                                                                                                  Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                                  // Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
                                                                                                 }
                                                                                                 isModViewModsRemoving = false;
                                                                                                 isModViewModsApplying = false;
 
                                                                                                 saveModdedItemListToJson();
                                                                                                 // await Future.delayed(const Duration(seconds: 5));
-                                                                                                setState(() {});
+                                                                                                setState(() {
+                                                                                                  if (moddedItemsList.where((e) => e.getNumOfAppliedCates() > 0).isEmpty) {
+                                                                                                 
+                                                                                                  Provider.of<StateProvider>(context, listen: false).quickApplyStateSet('');
+                                                                                                }
+                                                                                                });
                                                                                               });
                                                                                             });
                                                                                           },
