@@ -554,6 +554,42 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //JP start anticheat select
+                      Visibility(
+                        visible: false,
+                        // visible: context.watch<StateProvider>().gameEdition == 'jp',
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (gameguardAnticheat) {
+                              gameguardAnticheat = false;
+                              prefs.setBool('gameguardAnticheat', false);
+                            } else {
+                              gameguardAnticheat = true;
+                              prefs.setBool('gameguardAnticheat', true);
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.shield_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                gameguardAnticheat ? '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiGameguard}' : '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiWellbia}',
+                                style: const TextStyle(fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
                       //backup mod settings
                       MaterialButton(
                         height: 40,
@@ -1033,35 +1069,35 @@ class _MainPageState extends State<MainPage> {
                           ModManTooltip(
                             message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : '${curLangText!.uiSelectAqmFile}: $modManCustomAqmFilePath',
                             child: MaterialButton(
-                                minWidth: double.infinity,
-                                height: 30,
-                                onPressed: (() async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  const XTypeGroup typeGroup = XTypeGroup(
-                                    label: '.aqm',
-                                    extensions: <String>['aqm'],
-                                  );
-                                  final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                  if (selectedFile != null) {
-                                    modManCustomAqmFileName = selectedFile.name;
-                                    prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
-                                    if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
-                                      modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
-                                      File(selectedFile.path).copySync(modManCustomAqmFilePath);
-                                    }
+                              minWidth: double.infinity,
+                              height: 30,
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                const XTypeGroup typeGroup = XTypeGroup(
+                                  label: '.aqm',
+                                  extensions: <String>['aqm'],
+                                );
+                                final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                if (selectedFile != null) {
+                                  modManCustomAqmFileName = selectedFile.name;
+                                  prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                  if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                    modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                    File(selectedFile.path).copySync(modManCustomAqmFilePath);
                                   }
-                                  setState(() {});
-                                }),
-                                child: Row(
+                                }
+                                setState(() {});
+                              }),
+                              child: Row(
                                 children: [
                                   const SizedBox(width: 28),
                                   Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
-                                    style: const TextStyle(fontWeight: FontWeight.w400)),
+                                      style: const TextStyle(fontWeight: FontWeight.w400)),
                                 ],
                               ),
-                                 
-                          ),
-                      )],
+                            ),
+                          )
+                        ],
                       ),
 
                       //remove profanity Filter
@@ -2356,7 +2392,6 @@ class _MainPageState extends State<MainPage> {
                                 child: ModManTooltip(
                                   message: curLangText!.uiLaunchGameJPVerOnly,
                                   child: SizedBox(
-                                    //width: curActiveLang == 'JP' ? 110 : 105,
                                     child: MaterialButton(
                                       color: Colors.blue,
                                       onPressed: () async {
@@ -2374,12 +2409,20 @@ class _MainPageState extends State<MainPage> {
                                             }
                                           }
                                           pathToExe = p.joinAll(paths);
-                                          await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
+                                          if (gameguardAnticheat) {
+                                            await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe${p.separator}pso2.exe +0x33aca2b9 -reboot -optimize');
+                                          } else {
+                                            await startBatch.writeAsString('cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart $pathToExe${p.separator}sub${p.separator}pso2.exe +0x33aca2b9 -reboot -optimize');
+                                          }
                                           await Process.run(startBatch.path, []);
                                           startBatch.deleteSync();
                                         } else {
                                           await applyModsChecksumChecker(context);
-                                          Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                                          if (gameguardAnticheat) {
+                                            Process.runSync(Uri.file('$modManPso2binPath${p.separator}pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                                          } else {
+                                            Process.runSync(Uri.file('$modManPso2binPath${p.separator}sub${p.separator}pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
+                                          }
                                           ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
                                         }
                                       },

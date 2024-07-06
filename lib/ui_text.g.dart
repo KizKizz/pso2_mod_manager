@@ -221,6 +221,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiReSelectAqmFile = json['uiReSelectAqmFile'] as String
       ..uiInjectCustomAqmToBasewearsAndSetwears =
           json['uiInjectCustomAqmToBasewearsAndSetwears'] as String
+      ..uiAntiCheatSelect = json['uiAntiCheatSelect'] as String
+      ..uiGameguard = json['uiGameguard'] as String
+      ..uiWellbia = json['uiWellbia'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -863,6 +866,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReSelectAqmFile': instance.uiReSelectAqmFile,
       'uiInjectCustomAqmToBasewearsAndSetwears':
           instance.uiInjectCustomAqmToBasewearsAndSetwears,
+      'uiAntiCheatSelect': instance.uiAntiCheatSelect,
+      'uiGameguard': instance.uiGameguard,
+      'uiWellbia': instance.uiWellbia,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

@@ -192,7 +192,10 @@ class TranslationText {
       uiAutoCustomAqmInjection = 'Auto Custom aqm Injection',
       uiSelectAqmFile = 'Select an aqm File',
       uiReSelectAqmFile = 'Reselect aqm File',
-      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears';
+      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears',
+      uiAntiCheatSelect = 'Anticheat (JP only)',
+      uiGameguard = 'Gameguard',
+      uiWellbia = 'Wellbia';
 
   //homepage
   String uiItemList = 'Item List',

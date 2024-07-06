@@ -3,8 +3,10 @@
     "version": "2.7.13",
     "description": [
         "Fixed a problem where mod manager did not check for existing mod names when renaming a mod",
+        "Added a button in Settings to switch between Gameguard or Wellbia anticheat when launching the game with Mod Manager (JP version only)",
         "More bug fixes",
         "MODの名前を変更する際に、MODマネージャが既存のMODの名前をチェックしていなかった問題を修正",
+        "MODマネージャーでゲームを起動する際、ゲームガードとウェルビアアンチヒートを切り替えるボタンを設定に追加(JP版のみ)",
         "その他のバグ修正"
     ],
     "windows_file": "",
