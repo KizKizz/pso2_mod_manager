@@ -41,8 +41,10 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
+import 'package:pso2_mod_manager/widgets/alert_popup.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
@@ -556,8 +558,7 @@ class _MainPageState extends State<MainPage> {
 
                       //JP start anticheat select
                       Visibility(
-                        visible: false,
-                        // visible: context.watch<StateProvider>().gameEdition == 'jp',
+                        visible: context.watch<StateProvider>().gameEdition == 'jp',
                         child: MaterialButton(
                           height: 40,
                           onPressed: (() async {
@@ -2401,29 +2402,23 @@ class _MainPageState extends State<MainPage> {
                                           //check for checksum
                                           await applyModsChecksumChecker(context);
                                           //create start file
-                                          String pathToExe = modManPso2binPath;
-                                          List<String> paths = modManPso2binPath.split(p.separator);
-                                          for (var i = 0; i < paths.length; i++) {
-                                            if (paths[i].contains(" ")) {
-                                              paths[i] = "\"${paths[i]}\"";
+                                          if (gameguardAnticheat) {
+                                            await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                            await Process.run(startBatch.path, []);
+                                              startBatch.deleteSync();
+                                         } else {
+                                            if (File(Uri.file("$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe").toFilePath()).existsSync()) {
+                                              await startBatch.writeAsString(
+                                                  'cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe" "$modManPso2binPath${p.separator}sub${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                              await Process.run(startBatch.path, []);
+                                              startBatch.deleteSync();
+                                            } else {
+                                              modManAlertOkPopup(context, AlertType.error, curLangText!.uiError,
+                                                  curLangText!.uiWellbiaLoaderFileNotFound);
                                             }
                                           }
-                                          pathToExe = p.joinAll(paths);
-                                          if (gameguardAnticheat) {
-                                            await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe${p.separator}pso2.exe +0x33aca2b9 -reboot -optimize');
-                                          } else {
-                                            await startBatch.writeAsString('cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart $pathToExe${p.separator}sub${p.separator}pso2.exe +0x33aca2b9 -reboot -optimize');
-                                          }
-                                          await Process.run(startBatch.path, []);
-                                          startBatch.deleteSync();
                                         } else {
-                                          await applyModsChecksumChecker(context);
-                                          if (gameguardAnticheat) {
-                                            Process.runSync(Uri.file('$modManPso2binPath${p.separator}pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
-                                          } else {
-                                            Process.runSync(Uri.file('$modManPso2binPath${p.separator}sub${p.separator}pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
-                                          }
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
+                                          modManAlertOkPopup(context, AlertType.error, curLangText!.uiError, curLangText!.uiCouldNotCreateCustomLauncher);
                                         }
                                       },
                                       child: Row(

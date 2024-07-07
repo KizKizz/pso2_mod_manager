@@ -172,6 +172,8 @@
   "uiAntiCheatSelect": "Anticheat (JP only)",
   "uiGameguard": "Gameguard",
   "uiWellbia": "Wellbia",
+  "uiWellbiaLoaderFileNotFound": "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled on the launcher\nThen try again",
+  "uiCouldNotCreateCustomLauncher": "Could not create custom launcher",
   "uiReSelectFile": "重新选择文件",
   "uiInjectCustomAqmToBasewearsAndSetwears": "将自定义AQM文件注入到基底服装和套装服饰",
   "uiItemList": "物品列表",

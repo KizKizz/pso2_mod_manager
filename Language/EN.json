@@ -172,6 +172,8 @@
   "uiAntiCheatSelect": "Anticheat (JP only)",
   "uiGameguard": "Gameguard",
   "uiWellbia": "Wellbia",
+  "uiWellbiaLoaderFileNotFound": "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled in the launcher\nThen try again",
+  "uiCouldNotCreateCustomLauncher": "Could not create custom launcher",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
