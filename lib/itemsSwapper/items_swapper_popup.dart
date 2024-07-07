@@ -11,59 +11,6 @@ String fromItemName = '';
 String toItemName = '';
 List<String> swapCategoriesF = defaultCategoryDirs.where((element) => element != defaultCategoryDirs[13]).toList();
 
-// List<String> swapCategoriesF = [
-//   'Accessories',
-//   'Basewears',
-//   'Body Paints',
-//   'Cast Arm Parts',
-//   'Cast Body Parts',
-//   'Cast Leg Parts',
-//   'Costumes',
-//   'Emotes',
-//   'Eyes',
-//   'Face Paints',
-//   'Hairs',
-//   'Innerwears',
-//   'Mags',
-//   'Motions',
-//   'Outerwears',
-//   'Setwears'
-// ];
-// List<String> jpSwapCategoriesF = [
-//   'アクセサリー', //0
-//   'ベースウェア/フルセットウェア', //1
-//   'ボディペイント', //2
-//   'キャストアームパーツ', //3
-//   'キャストボディパーツ', //4
-//   'キャストレッグパーツ', //5
-//   'コスチューム', //6
-//   'ロビーアクション', //7
-//   '瞳・まゆ・まつげ', //8
-//   'メイクパターン', //9
-//   'ヘアスタイル', //10
-//   'インナーウェア', //11
-//   'マグ',
-//   'モーション', //14
-//   'アウターウェア', //15
-//   'セットウェア' //16
-// ];
-// List<String> swapCategoriesF = [
-//   'Accessories',
-//   'Basewears',
-//   'Body Paints',
-//   'Cast Arm Parts',
-//   'Cast Body Parts',
-//   'Cast Leg Parts',
-//   'Emotes',
-//   'Eyes',
-//   'Face Paints',
-//   'Hairs',
-//   'Innerwears',
-//   'Motions',
-//   'Outerwears',
-//   'Setwears'
-// ];
-
 String? selectedCategoryF;
 
 void itemsSwapperDialog(context) {

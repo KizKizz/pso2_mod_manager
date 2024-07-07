@@ -257,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       // isEmotesToStandbyMotions = (prefs.getBool('isEmotesToStandbyMotions') ?? false);
       isReplacingNQWithHQ = (prefs.getBool('modsSwapperIsReplacingNQWithHQ') ?? false);
       isCopyAll = (prefs.getBool('modsSwapperIsCopyAll') ?? false);
-      isRemoveExtras = (prefs.getBool('modsSwapperIsRemoveExtras') ?? false);
+      isRemoveExtras = (prefs.getBool('modsSwapperIsRemoveExtras') ?? true);
 
       //Background Image check
       showBackgroundImage = (prefs.getBool('showBgImage') ?? true);

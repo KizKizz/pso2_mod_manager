@@ -1910,7 +1910,7 @@ Future<List<ModsAdderItem>> modsAdderFilesProcess(context, List<XFile> xFilePath
   await Future.delayed(const Duration(milliseconds: 5));
   List<File> iceFileList = [];
   for (var dir in Directory(modManAddModsTempDirPath).listSync(recursive: false).whereType<Directory>()) {
-    if (modAdderIgnoreListState && ignoredParams.isNotEmpty) {
+    if (modAdderIgnoreListState && ignoredParams.isNotEmpty && dir.listSync().whereType<Directory>().isNotEmpty) {
       for (var subDir in dir.listSync(recursive: true).whereType<Directory>()) {
         bool ignore = false;
         for (var part in subDir.path.replaceFirst(dir.path + p.separator, '').split(p.separator)) {
