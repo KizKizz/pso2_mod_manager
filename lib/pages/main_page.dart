@@ -41,8 +41,10 @@ import 'package:pso2_mod_manager/state_provider.dart';
 import 'package:pso2_mod_manager/ui_text.dart';
 import 'package:pso2_mod_manager/ui_translation_helper.dart';
 import 'package:pso2_mod_manager/vital_gauge/vital_gauge_swapper_homepage.dart';
+import 'package:pso2_mod_manager/widgets/alert_popup.dart';
 import 'package:pso2_mod_manager/widgets/snackbar.dart';
 import 'package:pso2_mod_manager/widgets/tooltip.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
@@ -554,6 +556,41 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //JP start anticheat select
+                      Visibility(
+                        visible: context.watch<StateProvider>().gameEdition == 'jp',
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            final prefs = await SharedPreferences.getInstance();
+                            if (gameguardAnticheat) {
+                              gameguardAnticheat = false;
+                              prefs.setBool('gameguardAnticheat', false);
+                            } else {
+                              gameguardAnticheat = true;
+                              prefs.setBool('gameguardAnticheat', true);
+                            }
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.shield_outlined,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                gameguardAnticheat ? '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiGameguard}' : '${curLangText!.uiAntiCheatSelect}: ${curLangText!.uiWellbia}',
+                                style: const TextStyle(fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+
                       //backup mod settings
                       MaterialButton(
                         height: 40,
@@ -869,6 +906,31 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
+                      //cmx file refresh
+                      ModManTooltip(
+                        message: curLangText!.uiCmxRefreshToolTip,
+                        child: MaterialButton(
+                          height: 40,
+                          onPressed: (() async {
+                            cmxRefreshing = true;
+                            setState(() {});
+                            await cmxRefresh();
+                            cmxRefreshing = false;
+                            setState(() {});
+                          }),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.rotate_left,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ),
+
                       //overlay icons
                       ModManTooltip(
                         message: curLangText!.uiMarkModdedItemOnIconInGame,
@@ -894,31 +956,6 @@ class _MainPageState extends State<MainPage> {
                               const SizedBox(width: 10),
                               Text(Provider.of<StateProvider>(context, listen: false).markModdedItem ? '${curLangText!.uiMarkModdedItemInGame}: ON' : '${curLangText!.uiMarkModdedItemInGame}: OFF',
                                   style: const TextStyle(fontWeight: FontWeight.w400))
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      //cmx file refresh
-                      ModManTooltip(
-                        message: curLangText!.uiCmxRefreshToolTip,
-                        child: MaterialButton(
-                          height: 40,
-                          onPressed: (() async {
-                            cmxRefreshing = true;
-                            setState(() {});
-                            await cmxRefresh();
-                            cmxRefreshing = false;
-                            setState(() {});
-                          }),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.rotate_left,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(cmxRefreshing ? curLangText!.uiRefreshingCmx : curLangText!.uiRefreshCmx, style: const TextStyle(fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -999,19 +1036,21 @@ class _MainPageState extends State<MainPage> {
                             message: curLangText!.uiAutoInjectCustomAqmFileIntoMods,
                             child: MaterialButton(
                               height: 40,
-                              onPressed: File(modManCustomAqmFilePath).existsSync() ? (() async {
-                                final prefs = await SharedPreferences.getInstance();
-                                if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
-                                  autoAqmInject = false;
-                                  prefs.setBool('autoAqmInject', false);
-                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
-                                } else {
-                                  autoAqmInject = true;
-                                  prefs.setBool('autoAqmInject', true);
-                                  Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
-                                }
-                                setState(() {});
-                              }) : null,
+                              onPressed: File(modManCustomAqmFilePath).existsSync()
+                                  ? (() async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      if (Provider.of<StateProvider>(context, listen: false).autoAqmInject) {
+                                        autoAqmInject = false;
+                                        prefs.setBool('autoAqmInject', false);
+                                        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(false);
+                                      } else {
+                                        autoAqmInject = true;
+                                        prefs.setBool('autoAqmInject', true);
+                                        Provider.of<StateProvider>(context, listen: false).autoAqmInjectSet(true);
+                                      }
+                                      setState(() {});
+                                    })
+                                  : null,
                               child: Row(
                                 children: [
                                   const Icon(
@@ -1031,27 +1070,34 @@ class _MainPageState extends State<MainPage> {
                           ModManTooltip(
                             message: !File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : '${curLangText!.uiSelectAqmFile}: $modManCustomAqmFilePath',
                             child: MaterialButton(
-                                minWidth: double.infinity,
-                                height: 30,
-                                onPressed: (() async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  const XTypeGroup typeGroup = XTypeGroup(
-                                    label: '.aqm',
-                                    extensions: <String>['aqm'],
-                                  );
-                                  final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                                  if (selectedFile != null) {
-                                    modManCustomAqmFileName = selectedFile.name;
-                                    prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
-                                    if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
-                                      modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
-                                      File(selectedFile.path).copySync(modManCustomAqmFilePath);
-                                    }
+                              minWidth: double.infinity,
+                              height: 30,
+                              onPressed: (() async {
+                                final prefs = await SharedPreferences.getInstance();
+                                const XTypeGroup typeGroup = XTypeGroup(
+                                  label: '.aqm',
+                                  extensions: <String>['aqm'],
+                                );
+                                final XFile? selectedFile = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                                if (selectedFile != null) {
+                                  modManCustomAqmFileName = selectedFile.name;
+                                  prefs.setString('modManCustomAqmFileName', modManCustomAqmFileName);
+                                  if (Directory(modManCustomAqmDir).existsSync() && modManCustomAqmFileName.isNotEmpty) {
+                                    modManCustomAqmFilePath = Uri.file('$modManCustomAqmDir/$modManCustomAqmFileName').toFilePath();
+                                    File(selectedFile.path).copySync(modManCustomAqmFilePath);
                                   }
-                                  setState(() {});
-                                }),
-                                child: Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile, style: const TextStyle(fontWeight: FontWeight.w400))),
-                          ),
+                                }
+                                setState(() {});
+                              }),
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 28),
+                                  Text(!File(modManCustomAqmFilePath).existsSync() ? curLangText!.uiSelectAqmFile : curLangText!.uiReSelectAqmFile,
+                                      style: const TextStyle(fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ),
+                          )
                         ],
                       ),
 
@@ -2106,14 +2152,14 @@ class _MainPageState extends State<MainPage> {
                                     modFileStructureLoader(context, true).then((value) {
                                       moddedItemsList.clear();
                                       moddedItemsList.addAll(value);
-                                        modSetLoader().then((sValue) {
-                                          modSetList.clear();
-                                          modSetList.addAll(sValue);
-                                          Future.delayed(const Duration(milliseconds: 100), () {
-                                            Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
-                                            listsReloading = false;
-                                          });
+                                      modSetLoader().then((sValue) {
+                                        modSetList.clear();
+                                        modSetList.addAll(sValue);
+                                        Future.delayed(const Duration(milliseconds: 100), () {
+                                          Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
+                                          listsReloading = false;
                                         });
+                                      });
                                       listsReloading = false;
                                       modViewItem = null;
                                       Provider.of<StateProvider>(context, listen: false).reloadSplashScreenFalse();
@@ -2347,7 +2393,6 @@ class _MainPageState extends State<MainPage> {
                                 child: ModManTooltip(
                                   message: curLangText!.uiLaunchGameJPVerOnly,
                                   child: SizedBox(
-                                    //width: curActiveLang == 'JP' ? 110 : 105,
                                     child: MaterialButton(
                                       color: Colors.blue,
                                       onPressed: () async {
@@ -2357,21 +2402,23 @@ class _MainPageState extends State<MainPage> {
                                           //check for checksum
                                           await applyModsChecksumChecker(context);
                                           //create start file
-                                          String pathToExe = modManPso2binPath;
-                                          List<String> paths = modManPso2binPath.split(p.separator);
-                                          for (var i = 0; i < paths.length; i++) {
-                                            if (paths[i].contains(" ")) {
-                                              paths[i] = "\"${paths[i]}\"";
+                                          if (gameguardAnticheat) {
+                                            await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                            await Process.run(startBatch.path, []);
+                                              startBatch.deleteSync();
+                                         } else {
+                                            if (File(Uri.file("$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe").toFilePath()).existsSync()) {
+                                              await startBatch.writeAsString(
+                                                  'cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe" "$modManPso2binPath${p.separator}sub${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                              await Process.run(startBatch.path, []);
+                                              startBatch.deleteSync();
+                                            } else {
+                                              modManAlertOkPopup(context, AlertType.error, curLangText!.uiError,
+                                                  curLangText!.uiWellbiaLoaderFileNotFound);
                                             }
                                           }
-                                          pathToExe = p.joinAll(paths);
-                                          await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart $pathToExe/pso2.exe +0x33aca2b9 -reboot -optimize');
-                                          await Process.run(startBatch.path, []);
-                                          startBatch.deleteSync();
                                         } else {
-                                          await applyModsChecksumChecker(context);
-                                          Process.runSync(Uri.file('$modManPso2binPath/pso2.exe').toFilePath(), ["+0x33aca2b9", "-reboot", "-optimize"], workingDirectory: modManPso2binPath);
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '', curLangText!.uiIfGameNotLaunching, 3000));
+                                          modManAlertOkPopup(context, AlertType.error, curLangText!.uiError, curLangText!.uiCouldNotCreateCustomLauncher);
                                         }
                                       },
                                       child: Row(

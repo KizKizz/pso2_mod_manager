@@ -192,7 +192,12 @@ class TranslationText {
       uiAutoCustomAqmInjection = 'Auto Custom aqm Injection',
       uiSelectAqmFile = 'Select an aqm File',
       uiReSelectAqmFile = 'Reselect aqm File',
-      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears';
+      uiInjectCustomAqmToBasewearsAndSetwears = 'Inject custom aqm to Basewears and Setwears',
+      uiAntiCheatSelect = 'Anticheat (JP only)',
+      uiGameguard = 'Gameguard',
+      uiWellbia = 'Wellbia',
+      uiWellbiaLoaderFileNotFound = "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled in the launcher\nThen try again",
+      uiCouldNotCreateCustomLauncher = "Could not create custom launcher";
 
   //homepage
   String uiItemList = 'Item List',
