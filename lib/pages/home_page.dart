@@ -52,6 +52,7 @@ import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
 import 'package:pso2_mod_manager/main.dart';
+import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/modsSwapper/mods_swapper_popup.dart';
 import 'package:pso2_mod_manager/pages/main_page.dart';
 import 'package:pso2_mod_manager/sharing/mods_export.dart';
@@ -3236,7 +3237,12 @@ class _HomePageState extends State<HomePage> {
                                                             Icons.swap_horizontal_circle_outlined,
                                                           ),
                                                           child: Text(curLangText!.uiSwapToAnotherItem),
-                                                          onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods.first),
+                                                          onPressed: () async {
+                                                            if (!defaultCategoryDirs.contains(modViewItem!.category)) {
+                                                              fromItemCategory = await modsSwapperCategorySelect(context);
+                                                            }
+                                                            modsSwapperDialog(context, modViewItem!, curMod.submods.first);
+                                                          },
                                                         ),
 
                                                         // export
@@ -3772,7 +3778,12 @@ class _HomePageState extends State<HomePage> {
                                                             Icons.swap_horizontal_circle_outlined,
                                                           ),
                                                           child: Text(curLangText!.uiSwapToAnotherItem),
-                                                          onPressed: () async => modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]),
+                                                          onPressed: () async {
+                                                            if (!defaultCategoryDirs.contains(modViewItem!.category)) {
+                                                              fromItemCategory = await modsSwapperCategorySelect(context);
+                                                            }
+                                                            modsSwapperDialog(context, modViewItem!, curMod.submods[modViewModSetSubModIndex]);
+                                                          },
                                                         ),
 
                                                         // export
@@ -4458,7 +4469,12 @@ class _HomePageState extends State<HomePage> {
                                                                           Icons.swap_horizontal_circle_outlined,
                                                                         ),
                                                                         child: Text(curLangText!.uiSwapToAnotherItem),
-                                                                        onPressed: () async => modsSwapperDialog(context, modViewItem!, curSubmod),
+                                                                        onPressed: () async {
+                                                                          if (!defaultCategoryDirs.contains(modViewItem!.category)) {
+                                                                            fromItemCategory = await modsSwapperCategorySelect(context);
+                                                                          }
+                                                                          modsSwapperDialog(context, modViewItem!, curSubmod);
+                                                                        },
                                                                       ),
 
                                                                       // export

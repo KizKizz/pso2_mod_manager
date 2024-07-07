@@ -9,6 +9,7 @@ import 'package:pso2_mod_manager/modsSwapper/mods_swapper_data_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
 
 String toItemName = '';
+String fromItemCategory = '';
 
 void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
   availableAccCsvData.clear();
@@ -19,6 +20,7 @@ void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
   csvAccData.clear();
   csvEmotesData.clear();
   csvWeaponsData.clear();
+
   showDialog(
       barrierDismissible: true,
       context: context,
@@ -38,3 +40,6 @@ void modsSwapperDialog(context, Item fromItem, SubMod fromSubmod) {
             ));
       });
 }
+
+
+
