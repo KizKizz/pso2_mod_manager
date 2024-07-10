@@ -305,11 +305,11 @@ Future<List<Item>> itemsFetcher(context, List<CsvItem> playerItemData, String ca
     } else {
       final iconFilesInDir = dir.listSync().whereType<File>().where((element) => p.extension(element.path) == '.png');
       if (isAutoFetchingIconsOnStartup == 'off') {
-        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isNotEmpty) {
+        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
           itemIcons.addAll(iconFilesInDir.map((e) => e.path));
         }
       } else if (isAutoFetchingIconsOnStartup == 'minimal') {
-        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basenameWithoutExtension(dir.path)).isNotEmpty) {
+        if (iconFilesInDir.where((element) => p.basenameWithoutExtension(element.path) == p.basename(dir.path)).isNotEmpty) {
           itemIcons.addAll(iconFilesInDir.map((e) => e.path));
         } else {
           final downloadedIconPath = await autoItemIconFetcherMinimal(playerItemData, dir.path, modList);
