@@ -12,14 +12,12 @@ Check back for latest releases
 
 - Organize, keep track of available and applied mods
 - Add, remove single/multiple items or mods
-- Swapping mods to another items (excludes emotes. motions)
-- Apply entire mod, or single .ice file
+- Swapping mods to another items
 - Mod sets, save mods into sets to apply later 
-- Backup originals from the game, restore when unapplying mods
+- Backup original files and restore when unapplying mods
 - Auto apply checksum and reapply mods if they are being unapply after game update
 - Preview mods by hovering mouse cursor on them, and right click to zoom on an image (if there are images [.jpg, .png] or videos [.mp4, .webm] included inside the mod)
-- Search (any keyword, even .ice file names)
-- Organize mods into Favorite, Set List
+- Organize mods into Favorites, Sets
 
 and more..
 
