@@ -405,7 +405,7 @@
   "uiItemCategoryNotFound": "找不到类别",
   "uiExperimental": "实验性功能",
   "uiChooseAnItemBelow": "请从下面选择想幻化的本体",
-  "uiSelectAnItemToBeReplaced": "选择要替换为主要物品的项目",
+  "uiSelectAnItemToBeReplaced": "从以下选择外观进行替换",
   "uiItemCategories": "物品类别",
   "uiFetchingItemPatchListsFromServers": "从服务器获取物品补丁列表\n(可能需要一段时间)",
   "uiErrorWhenTryingToFetchingItemPatchListsFromServers": "从服务器获取物品补丁列表时出错",
