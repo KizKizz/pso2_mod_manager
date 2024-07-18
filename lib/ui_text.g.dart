@@ -228,6 +228,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiWellbiaLoaderFileNotFound'] as String
       ..uiCouldNotCreateCustomLauncher =
           json['uiCouldNotCreateCustomLauncher'] as String
+      ..uiLineStrike = json['uiLineStrike'] as String
+      ..uiEditAndReplaceLineStrikeRelatedStuff =
+          json['uiEditAndReplaceLineStrikeRelatedStuff'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -875,6 +878,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiWellbia': instance.uiWellbia,
       'uiWellbiaLoaderFileNotFound': instance.uiWellbiaLoaderFileNotFound,
       'uiCouldNotCreateCustomLauncher': instance.uiCouldNotCreateCustomLauncher,
+      'uiLineStrike': instance.uiLineStrike,
+      'uiEditAndReplaceLineStrikeRelatedStuff':
+          instance.uiEditAndReplaceLineStrikeRelatedStuff,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,

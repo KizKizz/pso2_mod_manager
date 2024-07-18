@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -24,4 +25,11 @@ void saveVitalGaugesInfoToJson(List<VitalGaugeBackground> vgList) {
   vgList.map((vg) => vg.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   File(modManVitalGaugeJsonPath).writeAsStringSync(encoder.convert(vgList));
+}
+
+void saveLineStrikeSleeveInfoToJson(List<LineStrikeSleeve> sleeveList) {
+  //Save to json
+  sleeveList.map((sleeve) => sleeve.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(modManLineStrikeSleeveJsonPath).writeAsStringSync(encoder.convert(sleeveList));
 }

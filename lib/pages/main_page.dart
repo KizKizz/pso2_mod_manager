@@ -29,6 +29,7 @@ import 'package:pso2_mod_manager/functions/quick_apply.dart';
 import 'package:pso2_mod_manager/functions/text_input_uppercase.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
 import 'package:pso2_mod_manager/itemsSwapper/items_swapper_popup.dart';
+import 'package:pso2_mod_manager/line_duel/line_duel_selection.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/loaders/mod_files_loader.dart';
 import 'package:pso2_mod_manager/loaders/paths_loader.dart';
@@ -2403,18 +2404,18 @@ class _MainPageState extends State<MainPage> {
                                           await applyModsChecksumChecker(context);
                                           //create start file
                                           if (gameguardAnticheat) {
-                                            await startBatch.writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
+                                            await startBatch
+                                                .writeAsString('cd "$modManPso2binPath"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
                                             await Process.run(startBatch.path, []);
-                                              startBatch.deleteSync();
-                                         } else {
+                                            startBatch.deleteSync();
+                                          } else {
                                             if (File(Uri.file("$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe").toFilePath()).existsSync()) {
                                               await startBatch.writeAsString(
                                                   'cd "$modManPso2binPath${p.separator}sub"\nSET -pso2=+0x33aca2b9\nstart "" "$modManPso2binPath${p.separator}sub${p.separator}ucldr_PSO2_JP_loader_x64.exe" "$modManPso2binPath${p.separator}sub${p.separator}pso2.exe" +0x33aca2b9 -reboot -optimize');
                                               await Process.run(startBatch.path, []);
                                               startBatch.deleteSync();
                                             } else {
-                                              modManAlertOkPopup(context, AlertType.error, curLangText!.uiError,
-                                                  curLangText!.uiWellbiaLoaderFileNotFound);
+                                              modManAlertOkPopup(context, AlertType.error, curLangText!.uiError, curLangText!.uiWellbiaLoaderFileNotFound);
                                             }
                                           }
                                         } else {
@@ -2530,6 +2531,32 @@ class _MainPageState extends State<MainPage> {
                                     onPressed: () {
                                       clearAllTempDirs();
                                       vitalGaugeHomePage(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Line Strike
+                            Visibility(
+                              visible: context.watch<StateProvider>().showTitleBarButtons,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 3),
+                                child: ModManTooltip(
+                                  message: curLangText!.uiEditAndReplaceLineStrikeRelatedStuff,
+                                  child: MaterialButton(
+                                    color: Theme.of(context).colorScheme.primary.withRed(60).withOpacity(0.6),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                      const Icon(
+                                        Icons.view_carousel_rounded,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 2.5),
+                                      Text(curLangText!.uiLineStrike)
+                                    ]),
+                                    onPressed: () {
+                                      clearAllTempDirs();
+                                      lineDuelSelection(context);
                                     },
                                   ),
                                 ),
