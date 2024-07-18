@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
@@ -32,4 +33,11 @@ void saveLineStrikeSleeveInfoToJson(List<LineStrikeSleeve> sleeveList) {
   sleeveList.map((sleeve) => sleeve.toJson()).toList();
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   File(modManLineStrikeSleeveJsonPath).writeAsStringSync(encoder.convert(sleeveList));
+}
+
+void saveLineStrikeBoardInfoToJson(List<LineStrikeBoard> boardList) {
+  //Save to json
+  boardList.map((board) => board.toJson()).toList();
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+  File(modManLineStrikeBoardJsonPath).writeAsStringSync(encoder.convert(boardList));
 }

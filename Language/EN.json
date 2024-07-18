@@ -548,5 +548,8 @@
   "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection. Backups are online only",
   "uiRemoveAll": "Remove All",
   "uiReInjectAll": "Reinject All",
-  "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon"
+  "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon",
+  "uiCustomCardSleeves": "Custom Card Sleeves",
+  "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
+  "uiCreateNewCardSleeve": "Create New Card Sleeve"
 }

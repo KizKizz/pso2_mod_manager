@@ -650,6 +650,9 @@ class TranslationText {
   //aqm_injection_page.dart
   String uiApplyingOverlayToIngameItemIcon = 'Applying overlay to in-game item icon';
 
+  //line_duel_sleeves_homepage.dart
+  String uiCustomCardSleeves = 'Custom Card Sleeves', uiSwappedAvailableCardSleeves = 'Swapped - Available Card Sleeves', uiCreateNewCardSleeve = 'Create New Card Sleeve';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

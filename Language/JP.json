@@ -548,5 +548,8 @@
   "uiNoteMustSelectACustomAqmFileBeforeInject": "インジェクションを有効にするには、カスタムaqmファイルを選択する必要があります。バックアップはオンラインのみ",
   "uiRemoveAll": "すべて削除",
   "uiReInjectAll": "すべて再射出",
-  "uiApplyingOverlayToIngameItemIcon": "ゲーム内アイテムのアイコンにオーバーレイを適用する"
+  "uiApplyingOverlayToIngameItemIcon": "ゲーム内アイテムのアイコンにオーバーレイを適用する",
+  "uiCustomCardSleeves": "Custom Card Sleeves",
+  "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
+  "uiCreateNewCardSleeve": "Create New Card Sleeves"
 }

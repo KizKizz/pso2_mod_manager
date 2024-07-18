@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/global_variables.dart';
+import 'package:pso2_mod_manager/line_duel/line_duel_boards_homepage.dart';
 import 'package:pso2_mod_manager/line_duel/line_duel_sleeves_homepage.dart';
 import 'package:pso2_mod_manager/loaders/language_loader.dart';
 import 'package:pso2_mod_manager/state_provider.dart';
@@ -104,7 +105,9 @@ Future<void> lineDuelSelection(context) async {
                           ? null
                           : () {
                               Navigator.pop(context);
-                              if (selectedType == lineDuelSelections[2]) {
+                              if (selectedType == lineDuelSelections[0]) {
+                                lineDuelBoardsHomePage(context);
+                              } else if (selectedType == lineDuelSelections[2]) {
                                 lineDuelSleevesHomePage(context);
                               }
                             },

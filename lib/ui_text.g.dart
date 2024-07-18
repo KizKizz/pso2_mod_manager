@@ -689,7 +689,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiRemoveAll = json['uiRemoveAll'] as String
       ..uiReInjectAll = json['uiReInjectAll'] as String
       ..uiApplyingOverlayToIngameItemIcon =
-          json['uiApplyingOverlayToIngameItemIcon'] as String;
+          json['uiApplyingOverlayToIngameItemIcon'] as String
+      ..uiCustomCardSleeves = json['uiCustomCardSleeves'] as String
+      ..uiSwappedAvailableCardSleeves =
+          json['uiSwappedAvailableCardSleeves'] as String
+      ..uiCreateNewCardSleeve = json['uiCreateNewCardSleeve'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -1285,4 +1289,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReInjectAll': instance.uiReInjectAll,
       'uiApplyingOverlayToIngameItemIcon':
           instance.uiApplyingOverlayToIngameItemIcon,
+      'uiCustomCardSleeves': instance.uiCustomCardSleeves,
+      'uiSwappedAvailableCardSleeves': instance.uiSwappedAvailableCardSleeves,
+      'uiCreateNewCardSleeve': instance.uiCreateNewCardSleeve,
     };

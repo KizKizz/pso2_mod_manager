@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'line_strike_sleeve_class.dart';
+part of 'line_strike_board_class.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-LineStrikeSleeve _$LineStrikeSleeveFromJson(Map<String, dynamic> json) =>
-    LineStrikeSleeve(
+LineStrikeBoard _$LineStrikeBoardFromJson(Map<String, dynamic> json) =>
+    LineStrikeBoard(
       json['icePath'] as String,
       json['iconIcePath'] as String,
       json['iceDdsName'] as String,
@@ -19,7 +19,7 @@ LineStrikeSleeve _$LineStrikeSleeveFromJson(Map<String, dynamic> json) =>
       json['isReplaced'] as bool,
     );
 
-Map<String, dynamic> _$LineStrikeSleeveToJson(LineStrikeSleeve instance) =>
+Map<String, dynamic> _$LineStrikeBoardToJson(LineStrikeBoard instance) =>
     <String, dynamic>{
       'icePath': instance.icePath,
       'iconIcePath': instance.iconIcePath,

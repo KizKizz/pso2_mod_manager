@@ -549,6 +549,9 @@
   "uiRemoveAll": "移除全部",
   "uiReInjectAll": "重新注入全部",
   "uiApplyingOverlayToIngameItemIcon": "将覆盖层应用于游戏内物品图标",
+  "uiCustomCardSleeves": "Custom Card Sleeves",
+  "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
+  "uiCreateNewCardSleeve": "Create New Card Sleeves"
   "uiItemsToInjectCustomAqm": "要注入自定义aqm的物品",
   "uiItemsAlreadyHaveCustomAqm": "已注入自定义aqm的物品",
   "uiReApplyingAllModsBackToTheGame": "将所有保存的MOD重新应用到游戏中"

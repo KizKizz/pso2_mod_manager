@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pso2_mod_manager/classes/csv_item_class.dart';
+import 'package:pso2_mod_manager/classes/line_strike_board_class.dart';
 import 'package:pso2_mod_manager/classes/line_strike_sleeve_class.dart';
 import 'package:pso2_mod_manager/classes/vital_gauge_class.dart';
 import 'package:pso2_mod_manager/filesDownloader/ice_files_download.dart';
@@ -31,11 +32,11 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as img;
 
-Future? sleeveDataLoader;
-Future? customSleevesLoader;
+Future? boardDataLoader;
+Future? customBoardsLoader;
 List<bool> _loading = [];
 
-void lineDuelSleevesHomePage(context) {
+void lineDuelBoardsHomePage(context) {
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -67,12 +68,12 @@ void lineDuelSleevesHomePage(context) {
                         ),
                         Expanded(
                             child: FutureBuilder(
-                                future: customSleevesLoader = customSleevesFetch(),
+                                future: customBoardsLoader = customBoardsFetch(),
                                 builder: ((
                                   BuildContext context,
                                   AsyncSnapshot snapshot,
                                 ) {
-                                  if (snapshot.connectionState == ConnectionState.waiting && customSleevesLoader == null) {
+                                  if (snapshot.connectionState == ConnectionState.waiting && customBoardsLoader == null) {
                                     return Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,12 +136,12 @@ void lineDuelSleevesHomePage(context) {
                                     } else {
                                       List<File> allCustomBackgrounds = snapshot.data;
                                       return FutureBuilder(
-                                          future: sleeveDataLoader = originalSleevesFetch(context),
+                                          future: boardDataLoader = originalBoardsFetch(context),
                                           builder: ((
                                             BuildContext context,
                                             AsyncSnapshot snapshot,
                                           ) {
-                                            if (snapshot.connectionState == ConnectionState.waiting && sleeveDataLoader == null) {
+                                            if (snapshot.connectionState == ConnectionState.waiting && boardDataLoader == null) {
                                               return Center(
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -201,9 +202,9 @@ void lineDuelSleevesHomePage(context) {
                                                   ),
                                                 );
                                               } else {
-                                                List<LineStrikeSleeve> sleeveData = snapshot.data;
-                                                if (_loading.length != sleeveData.length) {
-                                                  _loading = List.generate(sleeveData.length, (index) => false);
+                                                List<LineStrikeBoard> boardData = snapshot.data;
+                                                if (_loading.length != boardData.length) {
+                                                  _loading = List.generate(boardData.length, (index) => false);
                                                 }
                                                 return Row(
                                                   children: [
@@ -278,7 +279,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                 child: ModManTooltip(
                                                                                   message: curLangText!.uiHoldToDeleteThisBackground,
                                                                                   child: InkWell(
-                                                                                    onLongPress: sleeveData.indexWhere((element) => element.replacedImagePath == allCustomBackgrounds[i].path) != -1
+                                                                                    onLongPress: boardData.indexWhere((element) => element.replacedImagePath == allCustomBackgrounds[i].path) != -1
                                                                                         ? null
                                                                                         : () async {
                                                                                             setState(() {
@@ -295,7 +296,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                       ),
                                                                                       child: Icon(
                                                                                         Icons.delete,
-                                                                                        color: sleeveData.indexWhere((element) => element.replacedImagePath == allCustomBackgrounds[i].path) != -1
+                                                                                        color: boardData.indexWhere((element) => element.replacedImagePath == allCustomBackgrounds[i].path) != -1
                                                                                             ? Theme.of(context).disabledColor
                                                                                             : Colors.red,
                                                                                       ),
@@ -328,7 +329,7 @@ void lineDuelSleevesHomePage(context) {
                                                             children: [
                                                               ElevatedButton(
                                                                   onPressed: () async {
-                                                                    await customSleevesFetch();
+                                                                    await customBoardsFetch();
                                                                     setState(
                                                                       () {},
                                                                     );
@@ -340,7 +341,7 @@ void lineDuelSleevesHomePage(context) {
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () async {
-                                                                      await launchUrl(Uri.file(modManLineStrikeSleeveDirPath));
+                                                                      await launchUrl(Uri.file(modManLineStrikeBoardDirPath));
                                                                     },
                                                                     child: Text(curLangText!.uiOpenInFileExplorer)),
                                                               ),
@@ -356,7 +357,7 @@ void lineDuelSleevesHomePage(context) {
                                                                       );
                                                                       final selectedImage = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
                                                                       if (selectedImage != null && context.mounted) {
-                                                                        customSleeveImageCropDialog(context, File(selectedImage.path)).then((value) {
+                                                                        customBoardImageCropDialog(context, File(selectedImage.path)).then((value) {
                                                                           setState(() {});
                                                                         });
                                                                       }
@@ -405,12 +406,12 @@ void lineDuelSleevesHomePage(context) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
                                                                       shrinkWrap: true,
-                                                                      itemCount: sleeveData.length,
+                                                                      itemCount: boardData.length,
                                                                       itemBuilder: (context, i) {
                                                                         return DragTarget(
                                                                           builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
                                                                             return Center(
-                                                                              child: sleeveData[i].isReplaced
+                                                                              child: boardData[i].isReplaced
                                                                                   ? Stack(
                                                                                       alignment: AlignmentDirectional.bottomCenter,
                                                                                       children: [
@@ -420,15 +421,20 @@ void lineDuelSleevesHomePage(context) {
                                                                                             AspectRatio(
                                                                                               aspectRatio: 1,
                                                                                               child: Image.network(
-                                                                                                sleeveData[i].iconWebPath,
+                                                                                                boardData[i].iconWebPath,
                                                                                                 fit: BoxFit.fill,
                                                                                                 filterQuality: FilterQuality.high,
+                                                                                                errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
                                                                                               ),
                                                                                             ),
                                                                                             AspectRatio(
                                                                                               aspectRatio: 0.42,
                                                                                               child: Image.file(
-                                                                                                File(sleeveData[i].replacedImagePath),
+                                                                                                File(boardData[i].replacedImagePath),
                                                                                                 fit: BoxFit.scaleDown,
                                                                                                 alignment: Alignment.bottomCenter,
                                                                                               ),
@@ -454,26 +460,26 @@ void lineDuelSleevesHomePage(context) {
                                                                                               ),
                                                                                               onLongPress: () async {
                                                                                                 String downloadedIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    sleeveData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                    boardData[i].icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                     modManAddModsTempDirPath);
                                                                                                 String downloadedIconIceFilePath = await downloadIconIceFromOfficial(
-                                                                                                    sleeveData[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
+                                                                                                    boardData[i].iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''),
                                                                                                     modManAddModsTempDirPath);
                                                                                                 try {
-                                                                                                  File(downloadedIceFilePath).copySync(sleeveData[i].icePath);
-                                                                                                  File(downloadedIconIceFilePath).copySync(sleeveData[i].iconIcePath);
-                                                                                                  sleeveData[i].replacedIceMd5 = '';
-                                                                                                  sleeveData[i].replacedIconIceMd5 = '';
-                                                                                                  sleeveData[i].replacedImagePath = '';
-                                                                                                  sleeveData[i].isReplaced = false;
-                                                                                                  saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                                  File(downloadedIceFilePath).copySync(boardData[i].icePath);
+                                                                                                  File(downloadedIconIceFilePath).copySync(boardData[i].iconIcePath);
+                                                                                                  boardData[i].replacedIceMd5 = '';
+                                                                                                  boardData[i].replacedIconIceMd5 = '';
+                                                                                                  boardData[i].replacedImagePath = '';
+                                                                                                  boardData[i].isReplaced = false;
+                                                                                                  saveLineStrikeBoardInfoToJson(boardData);
                                                                                                 } catch (e) {
                                                                                                   // ignore: use_build_context_synchronously
                                                                                                   ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
                                                                                                       // ignore: use_build_context_synchronously
                                                                                                       context,
                                                                                                       '${curLangText!.uiFailed}!',
-                                                                                                      '${p.basename(sleeveData[i].icePath)}\n${p.basename(sleeveData[i].iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
+                                                                                                      '${p.basename(boardData[i].icePath)}\n${p.basename(boardData[i].iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}',
                                                                                                       5000));
                                                                                                 }
                                                                                                 setState(() {});
@@ -496,9 +502,14 @@ void lineDuelSleevesHomePage(context) {
                                                                                           //           side: BorderSide(color: Theme.of(context).primaryColorLight),
                                                                                           //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
                                                                                           child: Image.network(
-                                                                                            sleeveData[i].iconWebPath,
+                                                                                            boardData[i].iconWebPath,
                                                                                             filterQuality: FilterQuality.high,
                                                                                             fit: BoxFit.fill,
+                                                                                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                                          'assets/img/placeholdersquare.png',
+                                                                          filterQuality: FilterQuality.none,
+                                                                          fit: BoxFit.fitWidth,
+                                                                        ),
                                                                                           ),
                                                                                           // ),
                                                                                         ),
@@ -523,11 +534,11 @@ void lineDuelSleevesHomePage(context) {
                                                                               setState(
                                                                                 () {
                                                                                   String imgPath = data.data.toString();
-                                                                                  customSleeveApply(context, imgPath, sleeveData[i]).then((value) {
+                                                                                  customBoardApply(context, imgPath, boardData[i]).then((value) {
                                                                                     if (value) {
-                                                                                      sleeveData[i].replacedImagePath = imgPath;
-                                                                                      sleeveData[i].isReplaced = true;
-                                                                                      saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                      boardData[i].replacedImagePath = imgPath;
+                                                                                      boardData[i].isReplaced = true;
+                                                                                      saveLineStrikeBoardInfoToJson(boardData);
                                                                                       // Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                                       //   element.deleteSync(recursive: true);
                                                                                       // });
@@ -555,15 +566,15 @@ void lineDuelSleevesHomePage(context) {
                                                             children: [
                                                               Expanded(
                                                                 child: ElevatedButton(
-                                                                    onLongPress: sleeveData.where((element) => element.isReplaced).isEmpty
+                                                                    onLongPress: boardData.where((element) => element.isReplaced).isEmpty
                                                                         ? null
                                                                         : () async {
                                                                             Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
                                                                               element.deleteSync(recursive: true);
                                                                             });
-                                                                            for (var sleeve in sleeveData) {
+                                                                            for (var sleeve in boardData) {
                                                                               if (sleeve.isReplaced) {
-                                                                                int index = sleeveData.indexOf(sleeve);
+                                                                                int index = boardData.indexOf(sleeve);
                                                                                 _loading[index] = true;
                                                                                 Future.delayed(const Duration(milliseconds: 500), () async {
                                                                                   String downloadedIceFilePath = await downloadIconIceFromOfficial(
@@ -577,7 +588,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                     sleeve.replacedIconIceMd5 = '';
                                                                                     sleeve.replacedImagePath = '';
                                                                                     sleeve.isReplaced = false;
-                                                                                    saveLineStrikeSleeveInfoToJson(sleeveData);
+                                                                                    saveLineStrikeBoardInfoToJson(boardData);
                                                                                   } catch (e) {
                                                                                     // ignore: use_build_context_synchronously
                                                                                     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
@@ -591,7 +602,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                   setState(() {});
                                                                                 });
                                                                               } else {
-                                                                                int index = sleeveData.indexOf(sleeve);
+                                                                                int index = boardData.indexOf(sleeve);
                                                                                 _loading[index] = true;
                                                                                 Future.delayed(const Duration(milliseconds: 500), () async {
                                                                                   String downloadedIceFilePath = await downloadIconIceFromOfficial(
@@ -609,7 +620,7 @@ void lineDuelSleevesHomePage(context) {
                                                                               element.deleteSync(recursive: true);
                                                                             });
                                                                           },
-                                                                    onPressed: sleeveData.where((element) => element.isReplaced).isEmpty ? null : () {},
+                                                                    onPressed: boardData.where((element) => element.isReplaced).isEmpty ? null : () {},
                                                                     child: Text(curLangText!.uiRestoreAll)),
                                                               ),
                                                               const SizedBox(
@@ -618,8 +629,8 @@ void lineDuelSleevesHomePage(context) {
                                                               Expanded(
                                                                 child: ElevatedButton(
                                                                     onPressed: () {
-                                                                      customSleevesLoader = null;
-                                                                      sleeveDataLoader = null;
+                                                                      customBoardsLoader = null;
+                                                                      boardDataLoader = null;
 
                                                                       Navigator.pop(context);
                                                                     },
@@ -646,7 +657,7 @@ void lineDuelSleevesHomePage(context) {
 }
 
 //suport functions
-Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
+Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
   final imageCropController = CropController(
     aspectRatio: 183 / 256,
     //minimumImageSize: 100,
@@ -686,7 +697,7 @@ Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
                       textAlignVertical: TextAlignVertical.center,
                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.deny(RegExp('[\\/:*?"<>|]'))],
                       validator: (value) {
-                        if (Directory(modManLineStrikeSleeveDirPath).listSync().whereType<File>().where((element) => p.basenameWithoutExtension(element.path) == newImageName.text).isNotEmpty) {
+                        if (Directory(modManLineStrikeBoardDirPath).listSync().whereType<File>().where((element) => p.basenameWithoutExtension(element.path) == newImageName.text).isNotEmpty) {
                           return curLangText!.uiNameAlreadyExisted;
                         }
                         return null;
@@ -748,7 +759,7 @@ Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
                                 img.Image? image = img.decodePng(bytes);
                                 img.Image resized = img.copyResize(image!, width: 183, height: 256);
 
-                                File croppedImage = File(Uri.file('$modManLineStrikeSleeveDirPath/${newImageName.text}.png').toFilePath());
+                                File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                                 croppedImage.writeAsBytesSync(img.encodePng(resized));
                                 //croppedImage.writeAsBytes(bytes, flush: true);
                                 imageCropController.dispose();
@@ -774,7 +785,7 @@ Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
                               img.Image? image = img.decodePng(bytes);
                               img.Image resized = img.copyResize(image!, width: 183, height: 256);
 
-                              File croppedImage = File(Uri.file('$modManLineStrikeSleeveDirPath/${newImageName.text}.png').toFilePath());
+                              File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                               croppedImage.writeAsBytesSync(img.encodePng(resized));
                               //croppedImage.writeAsBytes(bytes, flush: true);
                               imageCropController.dispose();
@@ -796,65 +807,65 @@ Future<bool> customSleeveImageCropDialog(context, File newImageFile) async {
       });
 }
 
-Future<List<LineStrikeSleeve>> originalSleevesFetch(context) async {
+Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
   //Load vg from playerItemdata
   if (playerItemData.isEmpty) {
     await playerItemDataGet(context);
   }
-  List<CsvItem> sleeveData = playerItemData.where((element) => element.csvFileName == 'Line Duel Sleeves.csv').toList();
-  List<LineStrikeSleeve> newSleeveInfoList = [];
-  for (var data in sleeveData) {
+  List<CsvItem> boardData = playerItemData.where((element) => element.csvFileName == 'Line Duel Boards.csv').toList();
+  List<LineStrikeBoard> newBoardInfoList = [];
+  for (var data in boardData) {
     String icePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash').value.split('\\').last);
     String iconIcePath = ogVitalGaugeIcePathsFetcher(data.infos.entries.firstWhere((element) => element.key == 'Ice Hash - Image').value.split('\\').last);
     String iceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'IcePath').value.split('/').last);
     String iconIceDdsName = p.basenameWithoutExtension(data.infos.entries.firstWhere((element) => element.key == 'ImagePath').value.split('/').last);
     String iconWebPath = '$modManMAIconDatabaseLink${data.iconImagePath.replaceAll('\\', '/')}';
-    newSleeveInfoList.add(LineStrikeSleeve(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, await getFileHash(icePath), await getFileHash(iconIcePath), '', false));
+    newBoardInfoList.add(LineStrikeBoard(icePath, iconIcePath, iceDdsName, iconIceDdsName, iconWebPath, await getFileHash(icePath), await getFileHash(iconIcePath), '', false));
   }
 
   //Load list from json
-  List<LineStrikeSleeve> sleevesData = [];
-  if (File(modManLineStrikeSleeveJsonPath).readAsStringSync().toString().isNotEmpty) {
-    var jsonData = jsonDecode(File(modManLineStrikeSleeveJsonPath).readAsStringSync());
+  List<LineStrikeBoard> boardsData = [];
+  if (File(modManLineStrikeBoardJsonPath).readAsStringSync().toString().isNotEmpty) {
+    var jsonData = jsonDecode(File(modManLineStrikeBoardJsonPath).readAsStringSync());
     for (var type in jsonData) {
-      sleevesData.add(LineStrikeSleeve.fromJson(type));
+      boardsData.add(LineStrikeBoard.fromJson(type));
     }
   }
 
   //replace settings
-  for (var i = 0; i < newSleeveInfoList.length; i++) {
-    for (var sleeveInJson in sleevesData) {
-      if (p.basename(newSleeveInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newSleeveInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
-        newSleeveInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
-        newSleeveInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
-        newSleeveInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
-        newSleeveInfoList[i].isReplaced = sleeveInJson.isReplaced;
+  for (var i = 0; i < newBoardInfoList.length; i++) {
+    for (var sleeveInJson in boardsData) {
+      if (p.basename(newBoardInfoList[i].icePath) == p.basename(sleeveInJson.icePath) && p.basename(newBoardInfoList[i].iconIcePath) == p.basename(sleeveInJson.iconIcePath)) {
+        newBoardInfoList[i].replacedImagePath = sleeveInJson.replacedImagePath;
+        newBoardInfoList[i].replacedIceMd5 = sleeveInJson.replacedIceMd5;
+        newBoardInfoList[i].replacedIconIceMd5 = sleeveInJson.replacedIconIceMd5;
+        newBoardInfoList[i].isReplaced = sleeveInJson.isReplaced;
         break;
       }
     }
   }
 
-  newSleeveInfoList.sort(
+  newBoardInfoList.sort(
     (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
   );
-  saveLineStrikeSleeveInfoToJson(newSleeveInfoList);
+  saveLineStrikeBoardInfoToJson(newBoardInfoList);
 
-  return newSleeveInfoList;
+  return newBoardInfoList;
 }
 
-Future<List<File>> customSleevesFetch() async {
+Future<List<File>> customBoardsFetch() async {
   List<File> returnList = [];
   //remove local originals
-  if (customSleevesLoader == null) {
+  if (customBoardsLoader == null) {
     await Future.delayed(const Duration(milliseconds: 250));
   } else {
     await Future.delayed(const Duration(milliseconds: 150));
   }
-  returnList = Directory(modManLineStrikeSleeveDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
+  returnList = Directory(modManLineStrikeBoardDirPath).listSync().whereType<File>().where((element) => p.extension(element.path) == '.png').toList();
   return returnList;
 }
 
-Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveDataFile) async {
+Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardDataFile) async {
   clearAllTempDirs();
   //prep image
   img.Image? iconTemplate;
@@ -871,39 +882,39 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
 
   //download and replace
   //icon
-  String downloadedIconIceFilePath = await downloadIconIceFromOfficial(sleeveDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+  String downloadedIconIceFilePath = await downloadIconIceFromOfficial(boardDataFile.iconIcePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
   await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedIconIceFilePath]);
-  String newTempIconIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.iconIcePath)}_ext/group2').toFilePath();
+  String newTempIconIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext/group2').toFilePath();
 
   if (Directory(newTempIconIcePath).existsSync()) {
     await Process.run(modManDdsPngToolExePath,
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
-    img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath());
+        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), '-ddstopng']);
+    img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
       if (templatePixel.a > 0) {
         iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceImage.getPixel(templatePixel.x - 49, templatePixel.y - 16));
       }
     }
 
-    await File(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(iconImage!));
+    await File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(iconImage!));
 
     await Process.run(modManDdsPngToolExePath,
-        [Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
-    await File(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.png').toFilePath()).delete();
+        [Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath(), Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath(), '-pngtodds']);
+    await File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath()).delete();
   }
 
-  if (File(Uri.file('$newTempIconIcePath/${sleeveDataFile.iconIceDdsName}.dds').toFilePath()).existsSync()) {
-    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.iconIcePath)}_ext').toFilePath()]);
-    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.iconIcePath)}').toFilePath()).deleteSync(recursive: true);
+  if (File(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.dds').toFilePath()).existsSync()) {
+    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext').toFilePath()]);
+    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.iconIcePath)}').toFilePath()).deleteSync(recursive: true);
 
-    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.iconIcePath)}_ext.ice').toFilePath())
-        .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.iconIcePath)}').toFilePath());
+    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.iconIcePath)}_ext.ice').toFilePath())
+        .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.iconIcePath)}').toFilePath());
     if (renamedFile.path.isNotEmpty) {
       int i = 0;
       while (i < 10) {
         try {
-          File copied = renamedFile.copySync(sleeveDataFile.iconIcePath);
-          sleeveDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
+          File copied = renamedFile.copySync(boardDataFile.iconIcePath);
+          boardDataFile.replacedIconIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
           i++;
@@ -911,7 +922,7 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       }
       if (i > 10) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(sleeveDataFile.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+            .showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(boardDataFile.iconIcePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
         return false;
       }
     }
@@ -922,15 +933,15 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
   }
 
   //sleeve
-  // String downloadedIceFilePath = await downloadIconIceFromOfficial(sleeveDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
+  // String downloadedIceFilePath = await downloadIconIceFromOfficial(boardDataFile.icePath.replaceFirst(Uri.file('$modManPso2binPath/').toFilePath(), ''), modManAddModsTempDirPath);
   // await Process.run('$modManZamboniExePath -outdir "$modManAddModsTempDirPath"', [downloadedIceFilePath]);
-  String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.icePath)}/group2').toFilePath();
+  String newTempIcePath = Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}/group2').toFilePath();
   Directory(newTempIcePath).createSync(recursive: true);
 
   if (Directory(newTempIcePath).existsSync()) {
     // await Process.run(
-    //     modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), '-ddstopng']);
-    // img.Image? iceImage = await img.decodePngFile(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath());
+    //     modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), '-ddstopng']);
+    // img.Image? iceImage = await img.decodePngFile(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath());
     for (var templatePixel in sleeveTemplate!.data!) {
       if (templatePixel.a > 0) {
         templatePixel.set(replaceImage.getPixel(templatePixel.x, templatePixel.y));
@@ -938,32 +949,32 @@ Future<bool> customSleeveApply(context, String imgPath, LineStrikeSleeve sleeveD
       }
     }
 
-    await File(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(sleeveTemplate));
+    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(sleeveTemplate));
 
     await Process.run(
-        modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
-    await File(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.png').toFilePath()).delete();
+        modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
+    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).delete();
   }
 
-  if (File(Uri.file('$newTempIcePath/${sleeveDataFile.iceDdsName}.dds').toFilePath()).existsSync()) {
-    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.icePath)}').toFilePath()]);
-    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.icePath)}').toFilePath()).deleteSync(recursive: true);
+  if (File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath()).existsSync()) {
+    await Process.run('$modManZamboniExePath -c -pack -outdir "$modManAddModsTempDirPath"', [Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()]);
+    Directory(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath()).deleteSync(recursive: true);
 
-    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.icePath)}.ice').toFilePath())
-        .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(sleeveDataFile.icePath)}').toFilePath());
+    File renamedFile = await File(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}.ice').toFilePath())
+        .rename(Uri.file('$modManAddModsTempDirPath/${p.basename(boardDataFile.icePath)}').toFilePath());
     if (renamedFile.path.isNotEmpty) {
       int i = 0;
       while (i < 10) {
         try {
-          File copied = renamedFile.copySync(sleeveDataFile.icePath);
-          sleeveDataFile.replacedIceMd5 = await getFileHash(copied.path);
+          File copied = renamedFile.copySync(boardDataFile.icePath);
+          boardDataFile.replacedIceMd5 = await getFileHash(copied.path);
           i = 10;
         } catch (e) {
           i++;
         }
       }
       if (i > 10) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(sleeveDataFile.icePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
+        ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(context, '${curLangText!.uiFailed}!', '${p.basename(boardDataFile.icePath)}\n${curLangText!.uiNoFilesInGameDataToReplace}', 5000));
         return false;
       }
     }

@@ -103,6 +103,7 @@ flutter:
       - assets/img/icon_overlay.png
       - assets/img/icon_overlay_l.png
       - assets/img/line_strike_sleeve_icon_template.png
+      - assets/img/line_strike_sleeve_template.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
