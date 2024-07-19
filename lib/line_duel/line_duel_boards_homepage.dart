@@ -564,9 +564,11 @@ void lineDuelBoardsHomePage(context) {
                                                                     onLongPress: boardData.where((element) => element.isReplaced).isEmpty
                                                                         ? null
                                                                         : () async {
-                                                                            Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
-                                                                              element.deleteSync(recursive: true);
-                                                                            });
+                                                                            if (Directory(modManAddModsTempDirPath).existsSync()) {
+                                                                              Directory(modManAddModsTempDirPath).listSync(recursive: false).forEach((element) {
+                                                                                element.deleteSync(recursive: true);
+                                                                              });
+                                                                            }
                                                                             for (var sleeve in boardData) {
                                                                               if (sleeve.isReplaced) {
                                                                                 int index = boardData.indexOf(sleeve);
