@@ -174,6 +174,8 @@
   "uiWellbia": "Wellbia",
   "uiWellbiaLoaderFileNotFound": "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled on the launcher\nThen try again",
   "uiCouldNotCreateCustomLauncher": "Could not create custom launcher",
+  "uiLineStrike": "Line Strike",
+  "uiEditAndReplaceLineStrikeRelatedStuff": "Edit and replace Line Strike replated stuff",
   "uiReSelectFile": "重新选择文件",
   "uiInjectCustomAqmToBasewearsAndSetwears": "将自定义AQM文件注入到基底服装和套装服饰",
   "uiItemList": "物品列表",
@@ -547,6 +549,9 @@
   "uiRemoveAll": "移除全部",
   "uiReInjectAll": "重新注入全部",
   "uiApplyingOverlayToIngameItemIcon": "将覆盖层应用于游戏内物品图标",
+  "uiCustomCardSleeves": "Custom Card Sleeves",
+  "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
+  "uiCreateNewCardSleeve": "Create New Card Sleeves"
   "uiItemsToInjectCustomAqm": "要注入自定义aqm的物品",
   "uiItemsAlreadyHaveCustomAqm": "已注入自定义aqm的物品",
   "uiReApplyingAllModsBackToTheGame": "将所有保存的MOD重新应用到游戏中"

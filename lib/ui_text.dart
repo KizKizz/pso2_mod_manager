@@ -197,7 +197,9 @@ class TranslationText {
       uiGameguard = 'Gameguard',
       uiWellbia = 'Wellbia',
       uiWellbiaLoaderFileNotFound = "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled in the launcher\nThen try again",
-      uiCouldNotCreateCustomLauncher = "Could not create custom launcher";
+      uiCouldNotCreateCustomLauncher = "Could not create custom launcher",
+      uiLineStrike = 'Line Strike',
+      uiEditAndReplaceLineStrikeRelatedStuff = 'Edit and replace Line Strike replated stuff';
 
   //homepage
   String uiItemList = 'Item List',
@@ -647,6 +649,9 @@ class TranslationText {
 
   //aqm_injection_page.dart
   String uiApplyingOverlayToIngameItemIcon = 'Applying overlay to in-game item icon';
+
+  //line_duel_sleeves_homepage.dart
+  String uiCustomCardSleeves = 'Custom Card Sleeves', uiSwappedAvailableCardSleeves = 'Swapped - Available Card Sleeves', uiCreateNewCardSleeve = 'Create New Card Sleeve';
 
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);

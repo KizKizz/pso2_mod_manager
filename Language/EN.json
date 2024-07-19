@@ -174,6 +174,8 @@
   "uiWellbia": "Wellbia",
   "uiWellbiaLoaderFileNotFound": "Wellbia loader file not found\nPlease start the game once using the official launcher with Wellbia enabled in the launcher\nThen try again",
   "uiCouldNotCreateCustomLauncher": "Could not create custom launcher",
+  "uiLineStrike": "Line Strike",
+  "uiEditAndReplaceLineStrikeRelatedStuff": "Edit and replace Line Strike replated stuff",
   "uiItemList": "Item List",
   "uiLoadingUILanguage": "Loading UI Language",
   "uiReloadingMods": "Reloading Mods",
@@ -546,5 +548,8 @@
   "uiNoteMustSelectACustomAqmFileBeforeInject": "Must select a custom aqm file to enable injection. Backups are online only",
   "uiRemoveAll": "Remove All",
   "uiReInjectAll": "Reinject All",
-  "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon"
+  "uiApplyingOverlayToIngameItemIcon": "Applying overlay to in-game item icon",
+  "uiCustomCardSleeves": "Custom Card Sleeves",
+  "uiSwappedAvailableCardSleeves": "Swapped - Available Card Sleeves",
+  "uiCreateNewCardSleeve": "Create New Card Sleeve"
 }

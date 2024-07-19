@@ -228,6 +228,9 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
           json['uiWellbiaLoaderFileNotFound'] as String
       ..uiCouldNotCreateCustomLauncher =
           json['uiCouldNotCreateCustomLauncher'] as String
+      ..uiLineStrike = json['uiLineStrike'] as String
+      ..uiEditAndReplaceLineStrikeRelatedStuff =
+          json['uiEditAndReplaceLineStrikeRelatedStuff'] as String
       ..uiItemList = json['uiItemList'] as String
       ..uiLoadingUILanguage = json['uiLoadingUILanguage'] as String
       ..uiReloadingMods = json['uiReloadingMods'] as String
@@ -686,7 +689,11 @@ TranslationText _$TranslationTextFromJson(Map<String, dynamic> json) =>
       ..uiRemoveAll = json['uiRemoveAll'] as String
       ..uiReInjectAll = json['uiReInjectAll'] as String
       ..uiApplyingOverlayToIngameItemIcon =
-          json['uiApplyingOverlayToIngameItemIcon'] as String;
+          json['uiApplyingOverlayToIngameItemIcon'] as String
+      ..uiCustomCardSleeves = json['uiCustomCardSleeves'] as String
+      ..uiSwappedAvailableCardSleeves =
+          json['uiSwappedAvailableCardSleeves'] as String
+      ..uiCreateNewCardSleeve = json['uiCreateNewCardSleeve'] as String;
 
 Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
     <String, dynamic>{
@@ -875,6 +882,9 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiWellbia': instance.uiWellbia,
       'uiWellbiaLoaderFileNotFound': instance.uiWellbiaLoaderFileNotFound,
       'uiCouldNotCreateCustomLauncher': instance.uiCouldNotCreateCustomLauncher,
+      'uiLineStrike': instance.uiLineStrike,
+      'uiEditAndReplaceLineStrikeRelatedStuff':
+          instance.uiEditAndReplaceLineStrikeRelatedStuff,
       'uiItemList': instance.uiItemList,
       'uiLoadingUILanguage': instance.uiLoadingUILanguage,
       'uiReloadingMods': instance.uiReloadingMods,
@@ -1279,4 +1289,7 @@ Map<String, dynamic> _$TranslationTextToJson(TranslationText instance) =>
       'uiReInjectAll': instance.uiReInjectAll,
       'uiApplyingOverlayToIngameItemIcon':
           instance.uiApplyingOverlayToIngameItemIcon,
+      'uiCustomCardSleeves': instance.uiCustomCardSleeves,
+      'uiSwappedAvailableCardSleeves': instance.uiSwappedAvailableCardSleeves,
+      'uiCreateNewCardSleeve': instance.uiCreateNewCardSleeve,
     };
