@@ -653,6 +653,9 @@ class TranslationText {
   //line_duel_sleeves_homepage.dart
   String uiCustomCardSleeves = 'Custom Card Sleeves', uiSwappedAvailableCardSleeves = 'Swapped - Available Card Sleeves', uiCreateNewCardSleeve = 'Create New Card Sleeve';
 
+  //line_duel_boards_homepage.dart
+  String uiCustomBoards = 'Custom Boards', uiSwappedAvailableBoards = 'Swapped - Available Boards', uiCreateNewBoard = 'Create New Board';
+
   factory TranslationText.fromJson(Map<String, dynamic> json) => _$TranslationTextFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationTextToJson(this);
 }

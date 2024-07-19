@@ -412,7 +412,7 @@ void lineDuelSleevesHomePage(context) {
                                                                             return Center(
                                                                               child: sleeveData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomEnd,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
@@ -436,7 +436,7 @@ void lineDuelSleevesHomePage(context) {
                                                                                           ],
                                                                                         ),
                                                                                         Padding(
-                                                                                          padding: const EdgeInsets.only(left: 1, bottom: 1),
+                                                                                          padding: const EdgeInsets.all(0),
                                                                                           child: ModManTooltip(
                                                                                             message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
                                                                                             child: InkWell(

@@ -211,7 +211,7 @@ void lineDuelBoardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiCustomCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiCustomBoards, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -232,7 +232,8 @@ void lineDuelBoardsHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                          crossAxisCount: 2, childAspectRatio: 867 / 488, mainAxisSpacing: 5, crossAxisSpacing: 5),
                                                                       shrinkWrap: true,
                                                                       //physics: const PageScrollPhysics(),
                                                                       itemCount: allCustomBackgrounds.length,
@@ -243,17 +244,13 @@ void lineDuelBoardsHomePage(context) {
 
                                                                         return Draggable(
                                                                           dragAnchorStrategy: pointerDragAnchorStrategy,
-                                                                          // feedback: Container(
-                                                                          //   width: 483,
-                                                                          //   height: 100,
-                                                                          //   decoration: ShapeDecoration(
-                                                                          //       shape: RoundedRectangleBorder(
-                                                                          //           side: BorderSide(color: Theme.of(context).primaryColorLight),
-                                                                          //           borderRadius: const BorderRadius.all(Radius.circular(0)))),
-                                                                          feedback: Image.file(
-                                                                            allCustomBackgrounds[i],
-                                                                            filterQuality: FilterQuality.high,
-                                                                            fit: BoxFit.fill,
+                                                                          feedback: ConstrainedBox(
+                                                                            constraints: const BoxConstraints(maxHeight: 512 / 2, maxWidth: 1024 / 2),
+                                                                            child: Image.file(
+                                                                              allCustomBackgrounds[i],
+                                                                              filterQuality: FilterQuality.high,
+                                                                              fit: BoxFit.fill,
+                                                                            ),
                                                                           ),
                                                                           // ),
                                                                           data: allCustomBackgrounds[i].path,
@@ -261,7 +258,7 @@ void lineDuelBoardsHomePage(context) {
                                                                             alignment: AlignmentDirectional.bottomStart,
                                                                             children: [
                                                                               AspectRatio(
-                                                                                aspectRatio: 183 / 256,
+                                                                                aspectRatio: 867 / 488,
                                                                                 child: Container(
                                                                                   decoration: ShapeDecoration(
                                                                                       shape: RoundedRectangleBorder(
@@ -362,7 +359,7 @@ void lineDuelBoardsHomePage(context) {
                                                                         });
                                                                       }
                                                                     },
-                                                                    child: Text(curLangText!.uiCreateNewCardSleeve)),
+                                                                    child: Text(curLangText!.uiCreateNewBoard)),
                                                               )
                                                             ],
                                                           ),
@@ -380,7 +377,7 @@ void lineDuelBoardsHomePage(context) {
                                                     Expanded(
                                                         child: Column(
                                                       children: [
-                                                        Text(curLangText!.uiSwappedAvailableCardSleeves, style: Theme.of(context).textTheme.titleLarge),
+                                                        Text(curLangText!.uiSwappedAvailableBoards, style: Theme.of(context).textTheme.titleLarge),
                                                         Divider(
                                                           height: 10,
                                                           thickness: 1,
@@ -401,7 +398,7 @@ void lineDuelBoardsHomePage(context) {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1),
                                                                       // itemBuilder: (BuildContext context, int index) {
                                                                       //   return const SizedBox(height: 4);
                                                                       // },
@@ -413,7 +410,7 @@ void lineDuelBoardsHomePage(context) {
                                                                             return Center(
                                                                               child: boardData[i].isReplaced
                                                                                   ? Stack(
-                                                                                      alignment: AlignmentDirectional.bottomCenter,
+                                                                                      alignment: AlignmentDirectional.bottomEnd,
                                                                                       children: [
                                                                                         Stack(
                                                                                           alignment: AlignmentDirectional.bottomEnd,
@@ -425,14 +422,14 @@ void lineDuelBoardsHomePage(context) {
                                                                                                 fit: BoxFit.fill,
                                                                                                 filterQuality: FilterQuality.high,
                                                                                                 errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
+                                                                                                  'assets/img/placeholdersquare.png',
+                                                                                                  filterQuality: FilterQuality.none,
+                                                                                                  fit: BoxFit.fitWidth,
+                                                                                                ),
                                                                                               ),
                                                                                             ),
                                                                                             AspectRatio(
-                                                                                              aspectRatio: 0.42,
+                                                                                              aspectRatio: 0.8,
                                                                                               child: Image.file(
                                                                                                 File(boardData[i].replacedImagePath),
                                                                                                 fit: BoxFit.scaleDown,
@@ -442,7 +439,7 @@ void lineDuelBoardsHomePage(context) {
                                                                                           ],
                                                                                         ),
                                                                                         Padding(
-                                                                                          padding: const EdgeInsets.only(left: 1, bottom: 1),
+                                                                                          padding: const EdgeInsets.all(0),
                                                                                           child: ModManTooltip(
                                                                                             message: curLangText!.uiHoldToRestoreThisBackgroundToItsOriginal,
                                                                                             child: InkWell(
@@ -489,8 +486,6 @@ void lineDuelBoardsHomePage(context) {
                                                                                         ),
                                                                                       ],
                                                                                     )
-                                                                                  // ),
-
                                                                                   : Stack(
                                                                                       alignment: AlignmentDirectional.bottomCenter,
                                                                                       children: [
@@ -506,10 +501,10 @@ void lineDuelBoardsHomePage(context) {
                                                                                             filterQuality: FilterQuality.high,
                                                                                             fit: BoxFit.fill,
                                                                                             errorBuilder: (context, error, stackTrace) => Image.asset(
-                                                                          'assets/img/placeholdersquare.png',
-                                                                          filterQuality: FilterQuality.none,
-                                                                          fit: BoxFit.fitWidth,
-                                                                        ),
+                                                                                              'assets/img/placeholdersquare.png',
+                                                                                              filterQuality: FilterQuality.none,
+                                                                                              fit: BoxFit.fill,
+                                                                                            ),
                                                                                           ),
                                                                                           // ),
                                                                                         ),
@@ -659,7 +654,7 @@ void lineDuelBoardsHomePage(context) {
 //suport functions
 Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
   final imageCropController = CropController(
-    aspectRatio: 183 / 256,
+    aspectRatio: 867 / 488,
     //minimumImageSize: 100,
     // defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
@@ -757,7 +752,7 @@ Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
                                 final data = await croppedImageBitmap.toByteData(format: ImageByteFormat.png);
                                 final bytes = data!.buffer.asUint8List();
                                 img.Image? image = img.decodePng(bytes);
-                                img.Image resized = img.copyResize(image!, width: 183, height: 256);
+                                img.Image resized = img.copyResize(image!, width: 867, height: 488);
 
                                 File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                                 croppedImage.writeAsBytesSync(img.encodePng(resized));
@@ -783,7 +778,7 @@ Future<bool> customBoardImageCropDialog(context, File newImageFile) async {
                               final data = await croppedImageBitmap.toByteData(format: ImageByteFormat.png);
                               final bytes = data!.buffer.asUint8List();
                               img.Image? image = img.decodePng(bytes);
-                              img.Image resized = img.copyResize(image!, width: 183, height: 256);
+                              img.Image resized = img.copyResize(image!, width: 867, height: 488);
 
                               File croppedImage = File(Uri.file('$modManLineStrikeBoardDirPath/${newImageName.text}.png').toFilePath());
                               croppedImage.writeAsBytesSync(img.encodePng(resized));
@@ -845,9 +840,9 @@ Future<List<LineStrikeBoard>> originalBoardsFetch(context) async {
     }
   }
 
-  newBoardInfoList.sort(
-    (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
-  );
+  // newBoardInfoList.sort(
+  //   (a, b) => p.basename(b.icePath).compareTo(p.basename(a.icePath)),
+  // );
   saveLineStrikeBoardInfoToJson(newBoardInfoList);
 
   return newBoardInfoList;
@@ -869,16 +864,16 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
   clearAllTempDirs();
   //prep image
   img.Image? iconTemplate;
-  img.Image? sleeveTemplate;
+  img.Image? boardTemplate;
   if (kDebugMode) {
-    iconTemplate = await img.decodePngFile('assets/img/line_strike_sleeve_icon_template.png');
-    sleeveTemplate = await img.decodePngFile('assets/img/line_strike_sleeve_template.png');
+    iconTemplate = await img.decodePngFile('assets/img/line_strike_board_icon_template.png');
+    boardTemplate = await img.decodePngFile('assets/img/line_strike_board_template.png');
   } else {
-    iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_sleeve_icon_template.png').toFilePath());
-    sleeveTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_sleeve_template.png').toFilePath());
+    iconTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_board_icon_template.png').toFilePath());
+    boardTemplate = await img.decodePngFile(Uri.file('${Directory.current.path}/data/flutter_assets/assets/img/line_strike_board_template.png').toFilePath());
   }
   img.Image? replaceImage = await img.decodePngFile(imgPath);
-  img.Image resizedReplaceImage = img.copyResize(replaceImage!, width: 159, height: 224);
+  img.Image resizedReplaceIconImage = img.copyResize(replaceImage!, width: 226, height: 128);
 
   //download and replace
   //icon
@@ -892,7 +887,12 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
     img.Image? iconImage = await img.decodePngFile(Uri.file('$newTempIconIcePath/${boardDataFile.iconIceDdsName}.png').toFilePath());
     for (var templatePixel in iconTemplate!.data!) {
       if (templatePixel.a > 0) {
-        iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceImage.getPixel(templatePixel.x - 49, templatePixel.y - 16));
+        try {
+          iconImage!.setPixel(templatePixel.x, templatePixel.y, resizedReplaceIconImage.getPixel(templatePixel.x - 15, templatePixel.y - 64));
+          // debugPrint(resizedReplaceIconImage.getPixel(templatePixel.x - 37, templatePixel.y - 64).toString());
+        } catch (e) {
+          break;
+        }
       }
     }
 
@@ -942,14 +942,18 @@ Future<bool> customBoardApply(context, String imgPath, LineStrikeBoard boardData
     // await Process.run(
     //     modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), '-ddstopng']);
     // img.Image? iceImage = await img.decodePngFile(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath());
-    for (var templatePixel in sleeveTemplate!.data!) {
+    for (var templatePixel in boardTemplate!.data!) {
       if (templatePixel.a > 0) {
-        templatePixel.set(replaceImage.getPixel(templatePixel.x, templatePixel.y));
-        // iceImage!.setPixel(templatePixel.x, templatePixel.y, replaceImage.getPixel(templatePixel.x, templatePixel.y));
+        try {
+          templatePixel.set(replaceImage.getPixel(templatePixel.x - 77, templatePixel.y - 12));
+          // iceImage!.setPixel(templatePixel.x, templatePixel.y, replaceImage.getPixel(templatePixel.x, templatePixel.y));
+        } catch (e) {
+          break;
+        }
       }
     }
 
-    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(sleeveTemplate));
+    await File(Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath()).writeAsBytes(img.encodePng(boardTemplate));
 
     await Process.run(
         modManDdsPngToolExePath, [Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.png').toFilePath(), Uri.file('$newTempIcePath/${boardDataFile.iceDdsName}.dds').toFilePath(), '-pngtodds']);
